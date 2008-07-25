@@ -9,10 +9,9 @@ import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
 import org.jdna.media.metadata.IVideoSearchResult;
 import org.jdna.media.metadata.SearchException;
-import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 
 public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
-	private static final Logger log = Logger.getLogger(IMDBMetaDataProvider.class);
+	private static final Logger log = Logger.getLogger(DVDProfMetaDataProvider.class);
 
 	public static final String PROVIDER_ID = "dvdprofiler";
 	public static final String PROVIDER_NAME = "DVD Profiler Provider by Stuckless";
@@ -78,6 +77,7 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 			String profs[] = urls.split(",");
 			MovieIndex.getInstance().beginIndexing();
 			for (String u : profs) {
+				log.debug("Indexing: " + u);
 				DVDProfFrameParser fparser = new DVDProfFrameParser(u);
 				try {
 					fparser.parse(cookieHandler);

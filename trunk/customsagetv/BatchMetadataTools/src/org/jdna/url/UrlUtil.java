@@ -38,4 +38,15 @@ public class UrlUtil {
 		
 		return sb.toString();
 	}
+
+	public static String getPathName(String url) {
+		URL u;
+		try {
+			u = new URL(url);
+			return u.getPath();
+		} catch (MalformedURLException e) {
+			log.error("getPathName() Failed! " + url, e);
+		}
+		return null;
+	}
 }

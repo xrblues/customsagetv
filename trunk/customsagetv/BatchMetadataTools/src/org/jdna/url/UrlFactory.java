@@ -15,7 +15,7 @@ public class UrlFactory implements IUrlFactory {
 		try {
 			return factory.createUrl(url);
 		} catch (Exception e) {
-			log.error("Factory failed to create a url from the factory, so we are returning default url.");
+			log.error("Factory failed to create a url from the factory, so we are returning default url.", e);
 			// we never a let url return the error
 			return new Url(url);
 		}

@@ -5,6 +5,7 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.jdna.url.URLSaxParser;
+import org.jdna.url.UrlUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -19,10 +20,12 @@ public class DVDProfFrameParser extends URLSaxParser {
 	
 	private String url = null;
 	private String origUrl = null;
+	private String pathName = null;
 	
 	public DVDProfFrameParser(String url) {
 		super(url);
 		this.origUrl = url;
+		this.pathName = UrlUtil.getPathName(url);
 	}
 
 	@Override
@@ -36,6 +39,13 @@ public class DVDProfFrameParser extends URLSaxParser {
 				log.debug("Frame is a list frame.");
 				try {
 					url = parseBaseUrl(origUrl) + atts.getValue("src");
+					if (url.contains("?")) {
+						url += "&";
+					} else {
+						url += "?";
+					}
+					// we add a unique userid so that the url caching doesn't bomb.
+					url += "juuid=" + pathName;
 					log.debug("Movie List Url: " + url);
 				} catch (MalformedURLException e) {
 					log.error("Failed to parse profile url from : " + uri, e);

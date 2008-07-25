@@ -69,6 +69,7 @@ public class MovieIndex {
 	}
 
 	public void addMovie(String name, String date, String url) throws Exception {
+		log.debug("Indexing Movie: " + name + "; date: " + date + "; url: " + url);
 		Document doc = createDocument(name, date, url);
 		writer.addDocument(doc);
 	}
