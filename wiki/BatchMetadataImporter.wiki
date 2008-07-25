@@ -7,8 +7,8 @@ This is a commandline tool to create SageTV metadata properties from external pr
 This tool will scan a given file/directory and create/update the required SageTV properties/jpg so that SageTV can refresh its metadata with what is in the updated properties.
 
 For details about each provider, check out the links below
-* [IMDBProvider IMDB Provider]
-* [DVDProfilerProvider DVD Profiler Provider]
+ * [IMDBProvider IMDB Provider]
+ * [DVDProfilerProvider DVD Profiler Provider]
 
  NOTE: This tool by default will scan and process multi cd movies, and it will only fetch the metadata once, but it will write it out for each cd, since that is how SageTV requires it. This is also known as cd stacking or grouping.
 
