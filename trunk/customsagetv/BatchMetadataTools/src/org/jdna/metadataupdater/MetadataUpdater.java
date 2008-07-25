@@ -148,9 +148,10 @@ public class MetadataUpdater {
 				mf = new MediaFolder(null, file.getParentFile());
 				if (isOfflineEnabled()) {
 					log.debug("Offline Media File Created: " + mf.getLocationUri());
-					mf.touch();
 				}
-				processMediaFile(new MediaFile(mf, file));
+				IMediaFile mfNew = new MediaFile(mf, file);
+				mfNew.touch();
+				processMediaFile(mfNew);
 			} else {
 				mf = new MediaFolder(null, file);
 				processMediaFolder(mf);

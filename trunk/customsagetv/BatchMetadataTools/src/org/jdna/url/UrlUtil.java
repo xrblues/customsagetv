@@ -15,7 +15,11 @@ public class UrlUtil {
 	 * @return
 	 */
 	public static String getBaseUrl(String url) {
-		return url.substring(0,url.lastIndexOf("/"));
+		String path = getPathName(url);
+		if (path != null && path.contains("/")) {
+			path = path.substring(0, path.lastIndexOf("/"));
+		}
+		return getDomainUrl(url) + path;
 	}
 	
 	public static String getDomainUrl(String url) {
