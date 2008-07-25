@@ -2,15 +2,17 @@
 
 = Introduction =
 
-This is a commandline tool to create sagetv metadata properties from external sources.
+This is a commandline tool to create SageTV metadata properties from external providers.
 
-This tool will scan a given file/directory and create/update the required Sage properties/jpg so that Sage can refresh its metadata with what is in the updated properties.
+This tool will scan a given file/directory and create/update the required SageTV properties/jpg so that SageTV can refresh its metadata with what is in the updated properties.
 
-The current implementation provides a Metadata providers for IMDB and DVD Profiler and a Persistence implementation for Sage Properties with thumbnails. This means that the tool out of the box should work to get movie information from IMDB or DVD Profiler and export the results to a Sage style movie metadata property file.
+For details about each provider, check out the links below
+* [IMDBProvider IMDB Provider]
+* [DVDProfilerProvider DVD Profiler Provider]
 
- NOTE: This tool by default will scan and process mult cd movies, but it will only fetch the metadata once, but it will write it out for each cd, since that is how Sage requires it. This is also known as cd stacking or grouping.
+ NOTE: This tool by default will scan and process multi cd movies, and it will only fetch the metadata once, but it will write it out for each cd, since that is how SageTV requires it. This is also known as cd stacking or grouping.
 
- NOTE: Once you run the tool on your movies, you'll need to tell Sage to refresh it's metadata by going into the Options menu, in the Videos View, and tell Sage to refresh/rescan media.
+ NOTE: Once you run the tool on your movies, you'll need to tell SageTV to refresh it's metadata by going into the Options menu, in the Videos View, and tell Sage to refresh/rescan media.
 
 = Installation =
 Download the zip and extract into a new directory.
@@ -36,8 +38,6 @@ Java 5 or later
   --listProviders        Just list the installed metadata providers. (default false)
   --update               Update Missing AND Updated Metadata. (default false)
   --agressive            If the first search doesn't return clean results, then try additional searches. (default true)
-
-
   --offline              if true, then the passed file(s) will be treated as offline files. (default false)
   --provider             Set the metadata provider. (default imdb)
 }}}
@@ -50,14 +50,14 @@ Once that works, try
 # java -jar MetadataTool.jar --listProviders
 }}}
 
-This should list the installed metadata providers. There are 2 but only the "stuckless" one is default. See the Advance section of a detailed discussion on why there are 2.
+This should list the installed metadata providers. You should see at least 1 provider.  You may see more depending of the version of the tool, or if you've downloaded other provider plugins.  See [CreatingProviderPlugins Creating Provider Plugins] for information on how to create and register your own plugin.
 
 Next, try to scan your Movie directory without changing anything....
 {{{
 # java -jar MetadataTool.jar --listMovies YOUR_MOVIE_DIR
 }}}
 
-This should provide you with a list of Movies that it found. If you are expecting to see multiple entries for each movie because you have multi cd movies, then you may be surprised to see (hopefully) that you only see one movie entry per multi cd movie. You can change this by using the --stack option.
+This should provide you with a list of Movies that it found. If you are expecting to see multiple entries for each movie because you have multi cd movies, then you may be surprised to see (hopefully) that you only see one movie entry per multi cd movie. You can change this by using the *--stack* option.
 
 {{{
 # java -jar MetadataTool.jar --stack=false --listMovies YOUR_MOVIE_DIR
@@ -79,15 +79,15 @@ The default options will automatically select what it feels is the best choice a
 
 Once all movies are scanned, it will display a summary at the end.
 
-If you need/want to process subdirectories, then pass the --recurse switch so that the processor will follow subdirectories.
+If you need/want to process subdirectories, then pass the *--recurse* switch so that the processor will follow subdirectories.
 
-If you find that the tool made an incorrect selection, you can either call the tool on the file directory, passing the --auto=false flag with the --force flag and it will re do the search only for that file. Keep in mind that if you pass a single file, stacking does not work.
+If you find that the tool made an incorrect selection, you can either call the tool on the file directory, passing the *--auto=false* flag with the *--force* flag and it will re do the search only for that file. Keep in mind that if you pass a single file, stacking does not work.
 
 {{{
 # java -jar MetadataTool.jar --auto=false --force YOUR_MOVIE_FILE
 }}}
 
-Another way to update a video metadata is to edit the .property or create a new one, and set the _providerId=imdb and the _providerDataUrl=IMDB_URL, and then run the command using --update
+Another way to update a video metadata is to edit the .property or create a new one, and set the *_providerId=imdb* and the *_providerDataUrl=IMDB_URL*, and then run the command using *--update*
 eg, (edit properties)
 {{{
 _providerDataUrl=http\://www.imdb.com/title/tt0416236/
@@ -100,14 +100,17 @@ then run
 }}}
 
 = Advanced Topics =
-You may have noticed that there are 2 imdb metadata providers. There is mine, and there is one built on Nielm's. I originally started out using Nielms, but I ended up writing my own because I needed to know more information about the search results, such as if the result was an exact match, partial match, popular match, etc. Knowing this was critical to implementing the --auto functionality. Keep in mind that if you switch to use Nielm's implementation, then it should still work, but you will be prompted for each Movie, since there is no way to tell what type of search result it is returning. Also note that my provider ONLY parses the imdb Title page and as such, my information is not as detailed as Nielms. I may in time, either create a Composite provider combining both providers, but for now, you have to use one or the other and suffer the consequences of each
+== Why 2 IMDB Providers ==
+You may have noticed that there are 2 imdb metadata providers. There is mine, and there is one built on Nielm's. I originally started out using Nielm's, but I ended up writing my own because I needed to know more information about the search results, such as if the result was an exact match, partial match, popular match, etc. Knowing this was critical to implementing the *--auto* functionality. Keep in mind that if you switch to use Nielm's implementation, then it should still work, but you will be prompted for each Movie, since there is no way to tell what type of search result it is returning. Also note that my provider ONLY parses the IMDB Title page and as such, my information is not as detailed as Nielm's. I may in time, either create a Composite provider combining both providers, but for now, you have to use one or the other and suffer the consequences of each
 
-
+== Architecture Overview ==
 The basic architecture is that the inputs and outputs are all pluggable. In other words, other providers can be written and plugged in, so that if you wrote a metadata service that worked with another site (ie DVD Profiler), you can plug it in. To do this, see the default properties at the end. To create a new Metadata provider, implement the IVideoMetaDataProvider interface and the IVideoMetaData interface.
 
 The same is true for metadata persistence. The default and only one provided is for Sage metadata properties. But you can write your own if you implement the IVideoMetaDataPersistence interface.
 
 The other note about plugability is the fact that even the "Screen" is pluggable. I implemented a ConsoleScreen, so that that the tool could be interfaced to the command line, but somone could create a Sage UI Screen implementation that enabled the engine to work directly from within Sage (hint hint). The same is true if someone wanted to write a Web Screen so that it could be web enabled. To create a new Screeen, implement the IMetaDataUpdaterScreen interface.
+
+See [FrameworkOverview Framework Overview] for more information on the Metadata Tools framework.
 
 == Properties ==
 The tool comes with a base set of properties. You can override these properties by putting another property file, called metadataupdater.properties, in your current working directory.
