@@ -29,6 +29,8 @@ public class MovieListIndexerParser extends URLSaxParser {
 	public MovieListIndexerParser(String url) {
 		super(url);
 		
+		log.debug("Movie Index Url: " + url);
+		
 		baseUrl = UrlUtil.getBaseUrl(url);
 	}
 
@@ -70,9 +72,7 @@ public class MovieListIndexerParser extends URLSaxParser {
 
 		if (state==STARTING && isTag("a", localName)) {
 			String target = atts.getValue("target");
-			log.debug("Target: " + target);
 			if ("entry".equalsIgnoreCase(target)) {
-				log.debug("Got a Movie");
 				entry = new Entry();
 				entry.url = atts.getValue("href");
 				state=PARSE_DVD_TITLE;

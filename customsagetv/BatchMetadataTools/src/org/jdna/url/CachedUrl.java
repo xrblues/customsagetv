@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
@@ -36,9 +37,11 @@ public class CachedUrl extends Url implements IUrl {
 				f.delete();
 			}
 		} else {
+			File f = propFile.getParentFile();
+			f.mkdirs();
 			log.debug("Creating a new cached url for: " + url);
-			props.put("url", url);
-			props.put("file", createCachedFile());
+			props.setProperty("url", url);
+			props.setProperty("file", createCachedFile());
 		}
 		
 		// sanity check
@@ -48,10 +51,20 @@ public class CachedUrl extends Url implements IUrl {
 	}
 
 	private String getCachedFileName(String url) {
-		File f = new File(url);
-		String name = f.getName();
-		name = name.replaceAll("[^a-zA-Z0-9]+", "_");
-		return name;
+		try {
+			URL u = new URL(url);
+			String path = u.getPath();
+			String q = u.getQuery();
+			if (q==null) {
+				return path;
+			} else {
+				String name = q.replaceAll("[^a-zA-Z0-9]+", "_");
+				return path + "_" + name;
+			}
+		} catch (MalformedURLException e) {
+			log.error("Failed to create cached filename for url: " + url, e);
+			throw new RuntimeException(e);
+		}
 	}
 	
 	private boolean isExpired(File cachedFile) {
