@@ -1,0 +1,7 @@
+#summary Batch Metadata Import Tool for SageTV
+
+= Introduction =
+
+This is a commandline tool to create sagetv metadata properties from external sources.
+
+= Details =
