@@ -19,15 +19,14 @@ Download the zip and extract into a new directory.
 Java 5 or later
 
 == Usage ==
-Code:
+{{{
+ # java -jar MetadataTool.jar
+ Usage:org.jdna.metadataupdater.MetadataUpdater OPTIONS ...
 
-# java -jar MetadataTool.jar
-Usage:org.jdna.metadataupdater.MetadataUpdater OPTIONS ...
-
-OPTIONS: (* are required)
-OPTIONS: (* are required)
+ OPTIONS: (* are required)
+ OPTIONS: (* are required)
   --recurse              Recursively process sub directories. (default false)
-  --auto                 Automatically update meta data if there are exact matches, 1 match, or popular matches.  Otherwise will skip/prompt. (default true)
+  --auto                 Automatically update meta data if there are exact matches, 1  match, or popular matches.  Otherwise will skip/prompt. (default true)
   --force                Force download of metadata, even if metadata exists and has not been updated. Does not overwrite thumbnails. (default false)
   --forceThumbnail       Force download/overwrite of thumbnails. (default false)
   --reindex              Tells Metadata providers that require indexing (ie, DVD Profiler) to rebuild it's index. (default false)
@@ -41,14 +40,13 @@ OPTIONS: (* are required)
 
   --offline              if true, then the passed file(s) will be treated as offline files. (default false)
   --provider             Set the metadata provider. (default imdb)
+}}}
 
-Usage Overview
+== Usage Overview ==
 Before you get started, you may have to execute the command once without any arguments to see the help screen.
 
 Once that works, try
-Code:
-
-# java -jar MetadataTool.jar --listProviders
+ {{{# java -jar MetadataTool.jar --listProviders}}}
 
 This should list the installed metadata providers. There are 2 but only the "stuckless" one is default. See the Advance section of a detailed discussion on why there are 2.
 
