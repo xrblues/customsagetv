@@ -46,28 +46,30 @@ Java 5 or later
 Before you get started, you may have to execute the command once without any arguments to see the help screen.
 
 Once that works, try
- {{{# java -jar MetadataTool.jar --listProviders}}}
+{{{
+# java -jar MetadataTool.jar --listProviders
+}}}
 
 This should list the installed metadata providers. There are 2 but only the "stuckless" one is default. See the Advance section of a detailed discussion on why there are 2.
 
 Next, try to scan your Movie directory without changing anything....
-Code:
-
+{{{
 # java -jar MetadataTool.jar --listMovies YOUR_MOVIE_DIR
+}}}
 
 This should provide you with a list of Movies that it found. If you are expecting to see multiple entries for each movie because you have multi cd movies, then you may be surprised to see (hopefully) that you only see one movie entry per multi cd movie. You can change this by using the --stack option.
 
-Code:
-
+{{{
 # java -jar MetadataTool.jar --stack=false --listMovies YOUR_MOVIE_DIR
+}}}
 
 This will show the same list as before, but it will not attempt to stack/group multi cd movies.
 
 Now you are ready to do some real work. For testing, perhaps copy a handfull of movies to working directory and start there, until you feel comfortable with the tool.
 To create the Sage Metadata and Thumbnails using the default options...
-Code:
-
+{{{
 # java -jar MetadataTool.jar YOUR_MOVIE_DIR
+}}}
 
 This should create the necessary properties and download the thumbnails, if there were any.
 
@@ -80,23 +82,24 @@ Once all movies are scanned, it will display a summary at the end.
 If you need/want to process subdirectories, then pass the --recurse switch so that the processor will follow subdirectories.
 
 If you find that the tool made an incorrect selection, you can either call the tool on the file directory, passing the --auto=false flag with the --force flag and it will re do the search only for that file. Keep in mind that if you pass a single file, stacking does not work.
-Code:
 
+{{{
 # java -jar MetadataTool.jar --auto=false --force YOUR_MOVIE_FILE
+}}}
 
 Another way to update a video metadata is to edit the .property or create a new one, and set the _providerId=imdb and the _providerDataUrl=IMDB_URL, and then run the command using --update
 eg, (edit properties)
-Code:
-
+{{{
 _providerDataUrl=http\://www.imdb.com/title/tt0416236/
 _providerId=imdb
+}}}
 
-the run
-Code:
-
+then run
+{{{
 # java -jar MetadataTool.jar --update YOUR_MOVIE_FILE_OR_DIR
+}}}
 
-Advanced Topics
+= Advanced Topics =
 You may have noticed that there are 2 imdb metadata providers. There is mine, and there is one built on Nielm's. I originally started out using Nielms, but I ended up writing my own because I needed to know more information about the search results, such as if the result was an exact match, partial match, popular match, etc. Knowing this was critical to implementing the --auto functionality. Keep in mind that if you switch to use Nielm's implementation, then it should still work, but you will be prompted for each Movie, since there is no way to tell what type of search result it is returning. Also note that my provider ONLY parses the imdb Title page and as such, my information is not as detailed as Nielms. I may in time, either create a Composite provider combining both providers, but for now, you have to use one or the other and suffer the consequences of each
 
 
@@ -106,11 +109,10 @@ The same is true for metadata persistence. The default and only one provided is 
 
 The other note about plugability is the fact that even the "Screen" is pluggable. I implemented a ConsoleScreen, so that that the tool could be interfaced to the command line, but somone could create a Sage UI Screen implementation that enabled the engine to work directly from within Sage (hint hint). The same is true if someone wanted to write a Web Screen so that it could be web enabled. To create a new Screeen, implement the IMetaDataUpdaterScreen interface.
 
-Properties
+== Properties ==
 The tool comes with a base set of properties. You can override these properties by putting another property file, called metadataupdater.properties, in your current working directory.
 
-Code:
-
+{{{
 # NOTE when you enter a regex in a prop file you need to escape it even more
 # ie, \s+ should become \\s+
 
@@ -181,7 +183,4 @@ org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.profileUrls=http://
 
 # Set to true when you want to force an index rebuild
 org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.forceRebuild=false
-
-If you have any questions / feedback / bugs / etc, then PM me, or post to this thread.
-
-= Details =
+}}}
