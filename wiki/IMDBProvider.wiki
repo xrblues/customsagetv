@@ -1,0 +1,13 @@
+#summary IMDB Metadata Providers
+
+= Introduction =
+There are currently 2 IMDB Providers.  Both offer different levels of functionality.
+
+
+= Core IMDB Provdider (imdb) =
+This provider will ONLY parse the IMDB Title page and as such it's information is not as detailed as the other IMDB Provider.
+
+But, this plugin does a better job with the search results to be able to match exact matches and popular matches, so it's a better plugin to use if you want to automate the downloading of thumbnails and metadata.
+
+= Nielm's IMDB Provider (nielm_imdb) =
+This provider will fetch more detailed results, but it does not automatically return search results that identify exact matches.  If you use this provider, you will prompted for each movie.
