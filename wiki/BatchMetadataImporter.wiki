@@ -1,4 +1,5 @@
 #summary Batch Metadata Import Tool for SageTV
+#labels Phase-Deploy,Featured,Phase-Requirements
 
 = Introduction =
 
