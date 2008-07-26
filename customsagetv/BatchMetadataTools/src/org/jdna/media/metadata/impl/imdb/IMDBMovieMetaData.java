@@ -6,7 +6,6 @@ import java.util.List;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoSearchResult;
-import org.jdna.media.metadata.MetaDataException;
 
 public class IMDBMovieMetaData implements IVideoMetaData, IVideoSearchResult {
 
@@ -146,7 +145,7 @@ public class IMDBMovieMetaData implements IVideoMetaData, IVideoSearchResult {
 		return IMDBMetaDataProvider.PROVIDER_ID;
 	}
 
-	public IVideoMetaData getMetaData() throws MetaDataException {
+	public IVideoMetaData getMetaData() throws Exception {
 		// just return a reference to ourselves....
 		return this;
 	}

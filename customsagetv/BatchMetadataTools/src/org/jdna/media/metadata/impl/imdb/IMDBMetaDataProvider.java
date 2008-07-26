@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
 import org.jdna.media.metadata.IVideoSearchResult;
-import org.jdna.media.metadata.SearchException;
 import org.xml.sax.SAXException;
 
 public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
@@ -18,14 +17,14 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 	
 	public static final String IMDB_FIND_URL = "http://www.imdb.com/find?s=tt&q={0}&x=0&y=0";
 	public static final String PROVIDER_ID = "imdb";
-	public static final String PROVIDER_NAME = "IMDB Provider by Stuckless";
+	public static final String PROVIDER_NAME = "IMDB Provider (Stuckless)";
 	public static final String PROVIDER_ICON_URL = "http://i.media-imdb.com/images/nb15/logo2.gif";
 
 	public String getIconUrl() {
 		return PROVIDER_ICON_URL;
 	}
 
-	public Object getId() {
+	public String getId() {
 		return PROVIDER_ID;
 	}
 
@@ -33,7 +32,7 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 		return PROVIDER_NAME;
 	}
 
-	public List<IVideoSearchResult> search(int searchType, String arg) throws SearchException {
+	public List<IVideoSearchResult> search(int searchType, String arg) throws Exception {
 		List<IVideoSearchResult> results=null;
 		if (searchType==IVideoMetaDataProvider.SEARCH_TITLE) {
 			String eArg = URLEncoder.encode(arg);
@@ -58,7 +57,7 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 			}
 		} else {
 			log.error("Search Type no Supported: " + searchType);
-			throw new SearchException("Seach Type Not Supported: " + searchType, new Exception());
+			throw new Exception("Seach Type Not Supported: " + searchType);
 		}
 		return results;
 	}

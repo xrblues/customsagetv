@@ -33,22 +33,18 @@ public class VideoMetaDataFinder {
 		providers.remove(provider);
 	}
 
-	public List<IVideoSearchResult> search(String providerId, int searchType, String arg) throws SearchException {
+	public List<IVideoSearchResult> search(String providerId, int searchType, String arg) throws Exception {
 		log.info("Searching: providerId: " + providerId + "; searchType: " + searchType + "; query: " + arg);
 		IVideoMetaDataProvider provider = getProvider(providerId);
 		if (provider == null) {
 			log.error("Failed to find metadata provider: " + providerId);
-			throw new SearchException("Unknown Provider: " + providerId,
-					new Exception());
+			throw new Exception("Unknown Provider: " + providerId);
 		}
 		return provider.search(searchType, arg);
 	}
 
-	public List<IVideoSearchResult> search(int searchType, String arg)
-			throws SearchException {
-		if (providers.size() == 0)
-			throw new SearchException("No Providers Installed!",
-					new Exception());
+	public List<IVideoSearchResult> search(int searchType, String arg) throws Exception {
+		if (providers.size() == 0)	throw new Exception("No Providers Installed!");
 		return providers.get(0).search(searchType, arg);
 	}
 

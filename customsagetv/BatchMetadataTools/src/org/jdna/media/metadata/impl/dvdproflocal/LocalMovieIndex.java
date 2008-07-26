@@ -1,4 +1,4 @@
-package org.jdna.media.metadata.impl.dvdprof;
+package org.jdna.media.metadata.impl.dvdproflocal;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,12 +16,12 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.w3c.dom.Element;
 
-public class MovieIndex {
-	private static final Logger log = Logger.getLogger(MovieIndex.class);
-	private static MovieIndex indexer = new MovieIndex();
+public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
+	private static final Logger log = Logger.getLogger(LocalMovieIndex.class);
+	private static LocalMovieIndex indexer = new LocalMovieIndex();
 	
 	private IndexReader reader = null;
 	private IndexWriter writer = null;
@@ -31,7 +31,7 @@ public class MovieIndex {
     private Analyzer analyzer = new StandardAnalyzer();
     private QueryParser parser = new QueryParser("title", analyzer);
 	
-	public static MovieIndex getInstance() {
+	public static LocalMovieIndex getInstance() {
 		return indexer;
 	}
 	
@@ -64,22 +64,17 @@ public class MovieIndex {
 		searcher = new IndexSearcher(reader);
 	}
 
-	public void addMovie(String name, String date, String url) throws Exception {
-		log.debug("Indexing Movie: " + name + "; date: " + date + "; url: " + url);
-		Document doc = createDocument(name, date, url);
+	public void addMovie(String name, String date, String id) throws Exception {
+		log.debug("Indexing Movie: " + name + "; date: " + date + "; id: " + id);
+		Document doc = createDocument(name, date, id);
 		writer.addDocument(doc);
 	}
 	
 	private File getIndexDir() {
-		String sdir = ConfigurationManager.getInstance().getProperty(MovieIndex.class.getName(), "indexDir", "cache/index");
-		File dir = new File(sdir);
-		if (!dir.exists()) {
-			log.debug("Creating Lucene Index Dir: " + dir.getAbsolutePath());
-		}
-		return dir;
+		return indexDir;
 	}
 
-	public static Document createDocument(String name, String date, String url) {
+	public static Document createDocument(String name, String date, String id) {
 	    // make a new, empty document
 	    Document doc = new Document();
 
@@ -88,14 +83,14 @@ public class MovieIndex {
 
 	    // Store release date but not index
 	    doc.add(new Field("release", date, Field.Store.YES, Field.Index.NO));
-	    doc.add(new Field("url", url, Field.Store.YES, Field.Index.NO));
+	    doc.add(new Field("id", id, Field.Store.YES, Field.Index.NO));
 
 	    // return the document
 	    return doc;
 	}
 	
 	
-	public List<IVideoSearchResult> searchTitle(String title, CookieHandler handler) throws Exception {
+	public List<IVideoSearchResult> searchTitle(String title) throws Exception {
 		if (searcher==null) openIndex();
 		
 		Query query = parser.parse(title);
@@ -115,14 +110,12 @@ public class MovieIndex {
 			
 			String name = d.get("title");
 			String date = d.get("release");
-			String url = d.get("url");
+			String id = d.get("id");
 			
-			results.add(new DVDProfSearchResult(type, name, date, url, hits.score(i), handler));
+			results.add(new LocalDVDProfSearchResult(type, name, date, id, hits.score(i)));
 		}
 		
-		
 		return results;
-		
 	}
 
 	public void clean() {
@@ -140,5 +133,22 @@ public class MovieIndex {
 		}
 		log.debug("Finished Deleting documents.");
 	}
-	
+
+	public void setIndexDir(String indexDir2) {
+		this.indexDir=new File(indexDir2);
+		if (!indexDir.exists()) {
+			log.debug("Creating Lucene Index Dir: " + indexDir.getAbsolutePath());
+		}
+	}
+
+	public void visitMovie(Element el) {
+		String id = DVDProfXmlFile.getElementValue(el, "ID");
+		String title = DVDProfXmlFile.getElementValue(el, "Title");
+		String year = DVDProfXmlFile.getElementValue(el, "ProductionYear");
+		try {
+			addMovie(title, year, id);
+		} catch (Exception e) {
+			log.error("Can't index movie node: " + el.getTextContent(), e);
+		}
+	}
 }

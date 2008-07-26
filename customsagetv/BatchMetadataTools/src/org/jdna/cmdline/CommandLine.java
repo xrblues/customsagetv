@@ -30,12 +30,23 @@ public class CommandLine {
 	private Map<String, Object> map;
 	private List<String> extra;
 
+	private String commandTitle;
+
+	private String command;
+
+	private String description;
+
 	/**
 	 * Create a CommandLine from the passed args
 	 * 
-	 * @param args
+	 * @param commandTitle Simple title for the command (used for help)
+	 * @param command String that shows the command usage (used for help)
+	 * @param args commandline args (these will be processed)
+	 * @param description Describes the command (used for help)
 	 */
-	public CommandLine(String args[]) {
+	public CommandLine(String commandTitle, String command, String args[]) {
+		this.commandTitle = commandTitle;
+		this.command = command;
 		this.args = args;
 	}
 
@@ -243,8 +254,8 @@ public class CommandLine {
 	 * @param command
 	 * @param o
 	 */
-	public void help(String command, Object o) {
-		help(command, o, null);
+	public void help(Object o) {
+		help(o, null);
 	}
 	
 	/**
@@ -254,17 +265,22 @@ public class CommandLine {
 	 * @param o Annotated object
 	 * @param e if not null, then it will print out the error.
 	 */
-	public void help(String command, Object o, Throwable e) {
-		if (e!=null) {
-			System.out.printf("ERROR: %s\n", e.getMessage());
+	public void help(Object o, Throwable e) {
+		if (commandTitle!=null) {
+			System.out.printf("%s\n", commandTitle);
 		}
+		
 		CommandLineProcess clp = o.getClass().getAnnotation(CommandLineProcess.class);
+		System.out.printf("%s\n", clp.description());
+		
 		if (clp==null) {
 			System.out.println("help() called on non-annotated class:"+o.getClass().getName()+ ".\nBe sure to add @CommandLineProcess and @CommandLineArg annotations to to your class.");
 			return;
 		}
-		System.out.printf("Command: %s - %s\n", command, clp.description());
-		System.out.printf("Usage:");
+		if (e!=null) {
+			System.out.printf("ERROR: %s\n", e.getMessage());
+		}
+		System.out.printf("\nUsage:");
 		System.out.printf("%s OPTIONS %s\n", command, (clp.acceptExtraArgs() ? "..." : ""));
 		System.out.println("");
 		System.out.println("OPTIONS: (* are required)");

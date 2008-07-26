@@ -25,7 +25,7 @@ public class TestCommandLine {
 	
 	public static void main(String[] args) throws Exception {
 		log.info("Testing Command Line");
-		CommandLine cl = new CommandLine(args);
+		CommandLine cl = new CommandLine("Test Commandline", "TestCommandLine", args);
 		cl.process();
 		
 		System.out.println("Named Args------------");
@@ -44,7 +44,7 @@ public class TestCommandLine {
 		cl.applyToAnnotated(tcl);
 		
 		System.out.println("Will Now Attempt to call help");
-		cl.help("TestCommandLine", tcl);
+		cl.help(tcl);
 		
 		System.out.println("Done");
 	}

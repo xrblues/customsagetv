@@ -28,7 +28,7 @@ public class MetadataTool {
 	public static void main(String[] args) {
 		debug = Boolean.getBoolean("MetadataTool.debug");
 		
-		String mainClass = DEFAULT_MAIN_CLASS;
+		String mainClass = System.getProperty("jdna.MainClass", DEFAULT_MAIN_CLASS);
 
 		if (debug) System.out.println("Using main class: " + mainClass);
 		

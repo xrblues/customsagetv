@@ -6,7 +6,6 @@ import net.sf.sageplugins.sageimdb.Role;
 
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoSearchResult;
-import org.jdna.media.metadata.MetaDataException;
 
 public class NielmVideoSearchResult implements IVideoSearchResult {
 	private ImdbWebBackend db;
@@ -30,15 +29,11 @@ public class NielmVideoSearchResult implements IVideoSearchResult {
 		}
 	}
 
-	public IVideoMetaData getMetaData() throws MetaDataException {
+	public IVideoMetaData getMetaData() throws Exception {
 		
 		if (metaData==null) {
 			DbTitleObject title;
-			try {
-				title = (DbTitleObject) role.getName().getDbObject(db);
-			} catch (Exception e) {
-				throw new MetaDataException("Failed to get metadata!", e);
-			}
+			title = (DbTitleObject) role.getName().getDbObject(db);
 			metaData = new NeilmIMDBMetaData(db, title);
 		}
 		return metaData;
