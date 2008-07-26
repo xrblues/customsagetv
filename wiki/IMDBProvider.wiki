@@ -1,13 +1,20 @@
 #summary IMDB Metadata Providers
 
-= Introduction =
 There are currently 2 IMDB Providers.  Both offer different levels of functionality, but it recommened that you use the default one.
 
-
 = Default IMDB Provdider (imdb) =
-This provider will ONLY parse the IMDB Title page.  Because of this it is faster, but it the actor list will not be complete, since IMDB only shows a summary on the title screen.
-
-This plugin can detect exact matches and popular matches.  Because of this, the tool can select a good match if the --auto is enabled, which it is by default.
+ * Fetches IMDB Title Page Only
+ * Fast
+ * Limited Actor List
+ * Limited Plot Information
+ * Works with --auto switch
 
 = Nielm's IMDB Provider (nielm_imdb) =
-This provider will fetch more detailed plots and a more detailed list of actors, BUT it does not fetch Directors, Writers, Aspect Ratio or Studio.  I started out using this provider, but later switched to building a new one, since I needed/wanted the additional details.
+ * Fethes IMDB Title page and additional pages
+ * A Little Slow (because of the extra page fetching)
+ * Complete Actor List
+ * Complete Plot Information
+ * No Studio
+ * No Directors
+ * No Writers
+ * No Aspect Ratio
