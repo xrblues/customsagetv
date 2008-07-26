@@ -1,0 +1,13 @@
+#summary DVD Profiler Provider Information
+
+There are 2 DVD Profiler Plugins.  An internet one, and a local one.
+
+= DVD Profiler Remote Url Provider (dvdprofiler) =
+ * Requires Url to be set in the properties
+ * Supports multiple Urls
+ * Indexes movie list using Lucene for fast lookups
+
+= DVD Profiler Local Provider (dvdprofiler_local) =
+ * Requires local Collection.xml and images
+ * Supports ONLY single location
+ * Indexes movie list using Lucene for fast lookups
