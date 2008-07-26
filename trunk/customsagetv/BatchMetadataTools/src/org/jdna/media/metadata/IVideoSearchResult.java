@@ -21,7 +21,7 @@ public interface IVideoSearchResult {
 	};
 	
 	
-	public IVideoMetaData getMetaData() throws MetaDataException;
+	public IVideoMetaData getMetaData() throws Exception;
 	public String getTitle();
 	public String getYear();
 	public int getResultType();

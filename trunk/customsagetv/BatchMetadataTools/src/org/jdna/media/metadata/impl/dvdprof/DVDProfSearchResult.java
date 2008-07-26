@@ -2,7 +2,6 @@ package org.jdna.media.metadata.impl.dvdprof;
 
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoSearchResult;
-import org.jdna.media.metadata.MetaDataException;
 import org.jdna.url.CachedUrl;
 
 public class DVDProfSearchResult implements IVideoSearchResult {
@@ -24,14 +23,14 @@ public class DVDProfSearchResult implements IVideoSearchResult {
 		this.handler=handler;
 	}
 	
-	public IVideoMetaData getMetaData() throws MetaDataException {
+	public IVideoMetaData getMetaData() throws Exception {
 		if (metadata==null) {
 			try {
 				metadata = new DVDProfMetaData(this, handler);
 			} catch (Exception e) {
 				// remove this url from the caced urls.... in case url caching is enabled
 				CachedUrl.remove(this.dataUrl);
-				throw new MetaDataException("Failed to get metadata for: " + dataUrl, e);
+				throw new Exception("Failed to get metadata for: " + dataUrl, e);
 			}
 		}
 		return metadata;

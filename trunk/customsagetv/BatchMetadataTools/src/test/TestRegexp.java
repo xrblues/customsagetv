@@ -10,9 +10,7 @@ import java.util.regex.Pattern;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.impl.CDStackingModel;
 import org.jdna.media.impl.MediaFile;
-import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.VideoMetaDataUtils;
-import org.jdna.media.metadata.impl.imdb.IMDBCastMember;
 import org.jdna.metadataupdater.MetadataUpdater;
 
 public class TestRegexp {

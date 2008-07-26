@@ -5,7 +5,6 @@ import java.text.MessageFormat;
 
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoSearchResult;
-import org.jdna.media.metadata.MetaDataException;
 
 public class IMDBSearchResult implements IVideoSearchResult {
 	private static final String TITLE_URL = "http://www.imdb.com/title/{0}/"; 
@@ -19,17 +18,13 @@ public class IMDBSearchResult implements IVideoSearchResult {
 		this.resultType=type;
 	}
 	
-	public IVideoMetaData getMetaData() throws MetaDataException {
+	public IVideoMetaData getMetaData() throws Exception {
 		if (metadata==null) {
-			try {
-				String url = MessageFormat.format(TITLE_URL, getTitleId());
-				IMDBMovieMetaDataParser parser = new IMDBMovieMetaDataParser(url);
-				parser.parse();
-				if (parser.hasError()) throw new IOException("Failed to Parse MetaData for url: " + url);
-				metadata = parser.getMetatData();
-			} catch (Exception e) {
-				throw new MetaDataException("Failed to get MetaData for Movie", e);
-			}
+			String url = MessageFormat.format(TITLE_URL, getTitleId());
+			IMDBMovieMetaDataParser parser = new IMDBMovieMetaDataParser(url);
+			parser.parse();
+			if (parser.hasError()) throw new IOException("Failed to Parse MetaData for url: " + url);
+			metadata = parser.getMetatData();
 		}
 		
 		return metadata;

@@ -4,17 +4,15 @@ import java.util.List;
 
 import org.jdna.media.metadata.IVideoMetaDataProvider;
 import org.jdna.media.metadata.IVideoSearchResult;
-import org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider;
+import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
 import org.jdna.metadataupdater.MetadataUpdater;
 
-public class TestDVDProfiler {
+public class TestLocalDVDProfiler {
 	public static void main(String args[]) throws Exception {
 		MetadataUpdater.initConfiguration();
 
-		DVDProfMetaDataProvider prov = new DVDProfMetaDataProvider();
-		List<IVideoSearchResult> results = prov.search(IVideoMetaDataProvider.SEARCH_TITLE, "Sharkboy");
-		//List<IVideoSearchResult> results = prov.search(prov.SEARCH_TITLE, "Everyone's Hero");
-		//List<IVideoSearchResult> results = prov.search(prov.SEARCH_TITLE, "8 Mile");
+		IVideoMetaDataProvider prov = new LocalDVDProfMetaDataProvider();
+		List<IVideoSearchResult> results = prov.search(IVideoMetaDataProvider.SEARCH_TITLE, "Batman Begins");
 
 		TestUtils.dumpResults(results);
 		

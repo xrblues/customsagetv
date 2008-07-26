@@ -59,7 +59,7 @@ public class MetadataUpdater {
 	public static void main(String args[]) throws Exception {
 		try {
 			// process the command line
-			CommandLine cl = new CommandLine(args);
+			CommandLine cl = new CommandLine("Batch MetaData Tools ("+Version.VERSION+")", "java MetadataTool", args);
 			cl.process();
 
 			// apply the command line args to this instance.
@@ -69,11 +69,11 @@ public class MetadataUpdater {
 
 				// check for help
 				if (cl.hasArg("help") || !cl.hasArgs()) {
-					cl.help(mdu.getClass().getName(), mdu);
+					cl.help(mdu);
 					return;
 				}
 			} catch (Exception e) {
-				cl.help(mdu.getClass().getName(), mdu, e);
+				cl.help(mdu, e);
 				return;
 			}
 
@@ -119,6 +119,8 @@ public class MetadataUpdater {
 		initFinder();
 		initPersistence();
 
+		log.info("Version: " + Version.VERSION);
+		
 		if (listProvders) {
 			screen.renderProviders(VideoMetaDataFinder.getInstance().getProviders(), provider);
 			return;
@@ -315,15 +317,19 @@ public class MetadataUpdater {
 		} else {
 			int n = 0;
 			try {
-				n = Integer.parseInt(data);
-				
+				try {
+					n = Integer.parseInt(data);
+				} catch (Exception e) {
+					log.warn("Debug: Failed to parse: " + data + " as a number, using it again as a search.");
+					fetchMetaData(file, data);
+				}
 				IVideoSearchResult sr = results.get(n);
 				IVideoMetaData md = sr.getMetaData();
 				exportMetaData(md, file);
 				screen.notifyManualUpdate(file, md);
 			} catch (RuntimeException e) {
-				// not a number, do the search again using the buffer
-				fetchMetaData(file, data);
+				log.error("Failed while fetching metadata for movie: " + name, e);
+				screen.error("Failed to get/export Metadata for movie: " + name);
 			}
 		}
 	}
@@ -473,6 +479,7 @@ public class MetadataUpdater {
 	public void setReindex(boolean b) {
 		// this is a hack, for now...
 		System.setProperty("org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.forceRebuild", "true");
+		System.setProperty("org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.forceRebuild", "true");
 	}
 	
 	/**
@@ -551,7 +558,7 @@ public class MetadataUpdater {
 	public void setMetadataProvicer(String s) {
 		this.provider = s;
 	}
-
+	
 	/**
 	 * TODO: Handle quit in a better way.
 	 */

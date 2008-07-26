@@ -226,6 +226,7 @@ public class SageVideoMetaData implements IVideoMetaData {
 	}
 
 	private String encodeWriters(List<ICastMember> writers) {
+		if (writers==null) return "";
 		StringBuffer sb = new StringBuffer();
 		for (ICastMember c : writers) {
 			sb.append(c.getName()).append(";");
@@ -234,6 +235,8 @@ public class SageVideoMetaData implements IVideoMetaData {
 	}
 
 	private String encodeDirectors(List<ICastMember> directors) {
+		if (directors==null) return "";
+		
 		StringBuffer sb = new StringBuffer();
 		for (ICastMember c : directors) {
 			sb.append(c.getName()).append(";");
@@ -242,6 +245,8 @@ public class SageVideoMetaData implements IVideoMetaData {
 	}
 
 	private String encodeActors(List<ICastMember> actors, String mask) {
+		if (actors==null) return "";
+		
 		if (mask == null)
 			mask = "{0} -- {1};";
 
@@ -260,6 +265,8 @@ public class SageVideoMetaData implements IVideoMetaData {
 	}
 
 	private String encodeGenres(List<String> genres) {
+		if (genres==null) return "";
+		
 		boolean single = Boolean.parseBoolean(ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "singleGenreField", "true"));
 		if (single && genres != null && genres.size()>0) {
 			return genres.get(0);
