@@ -3,6 +3,7 @@ package org.jdna.media.metadata.impl.dvdprof;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoSearchResult;
 import org.jdna.url.CachedUrl;
+import org.jdna.url.CookieHandler;
 
 public class DVDProfSearchResult implements IVideoSearchResult {
 

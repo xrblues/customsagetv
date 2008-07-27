@@ -1,4 +1,4 @@
-package org.jdna.media.metadata.impl.dvdprof;
+package org.jdna.url;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -7,8 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.jdna.url.ICookieHandler;
-import org.jdna.url.Url;
 
 public class CookieHandler implements ICookieHandler {
 	private static final Logger log = Logger.getLogger(CookieHandler.class);

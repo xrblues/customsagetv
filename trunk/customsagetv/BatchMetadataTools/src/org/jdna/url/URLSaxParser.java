@@ -5,8 +5,7 @@ import java.io.InputStream;
 import java.net.URLDecoder;
 
 import org.apache.log4j.Logger;
-import org.jdna.media.metadata.impl.dvdprof.CookieHandler;
-import org.jdna.media.metadata.impl.imdb.AbstractSaxHandler;
+import org.jdna.util.AbstractSaxHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

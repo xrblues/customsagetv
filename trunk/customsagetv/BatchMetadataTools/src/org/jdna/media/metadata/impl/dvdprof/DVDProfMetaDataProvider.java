@@ -7,6 +7,7 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.url.CookieHandler;
 
 public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 	private static final Logger log = Logger.getLogger(DVDProfMetaDataProvider.class);
