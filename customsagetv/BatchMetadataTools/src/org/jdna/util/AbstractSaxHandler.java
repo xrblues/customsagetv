@@ -1,4 +1,4 @@
-package org.jdna.media.metadata.impl.imdb;
+package org.jdna.util;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;

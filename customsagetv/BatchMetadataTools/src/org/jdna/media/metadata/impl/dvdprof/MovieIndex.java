@@ -18,6 +18,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.url.CookieHandler;
 
 public class MovieIndex {
 	private static final Logger log = Logger.getLogger(MovieIndex.class);

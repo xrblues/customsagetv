@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IVideoMetaData;
+import org.jdna.url.CookieHandler;
 import org.jdna.url.URLSaxParser;
 import org.jdna.url.UrlUtil;
 import org.xml.sax.Attributes;
