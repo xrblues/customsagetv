@@ -18,6 +18,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.VideoSearchResult;
 import org.jdna.url.CookieHandler;
 
 public class MovieIndex {
@@ -118,7 +119,7 @@ public class MovieIndex {
 			String date = d.get("release");
 			String url = d.get("url");
 			
-			results.add(new DVDProfSearchResult(type, name, date, url, hits.score(i), handler));
+			results.add(new VideoSearchResult(DVDProfMetaDataProvider.PROVIDER_ID, url, name, date, type));
 		}
 		
 		

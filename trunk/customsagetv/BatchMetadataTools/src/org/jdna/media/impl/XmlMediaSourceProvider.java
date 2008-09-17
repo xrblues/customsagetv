@@ -1,7 +1,9 @@
 package org.jdna.media.impl;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.log4j.Logger;
 import org.jdna.media.IMediaSource;
 import org.jdna.media.IMediaSourceProvider;
 import org.w3c.dom.Document;
@@ -18,6 +21,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class XmlMediaSourceProvider implements IMediaSourceProvider {
+	private static final Logger log = Logger.getLogger(XmlMediaSourceProvider.class);
+	
 	private File xmlFile = null;
 	private DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 	private long lastModified = -1;
@@ -31,11 +36,18 @@ public class XmlMediaSourceProvider implements IMediaSourceProvider {
 		checkAndReload();
 		sources.add(source);
 		save();
-		return null;
+		return source;
 	}
 
 	public IMediaSource getSource(String name) throws IOException {
 		checkAndReload();
+		
+		for (IMediaSource ms : sources) {
+			if (name.equals(ms.getName())) {
+				return ms;
+			}
+		}
+		
 		return null;
 	}
 
@@ -87,37 +99,49 @@ public class XmlMediaSourceProvider implements IMediaSourceProvider {
 	}
 
 	private void addSourceNode(Element item) throws IOException {
-		DirectoryMediaSource dms = new DirectoryMediaSource();
+		String path = null;
 		String name = item.getAttribute("name");
 		if (name==null) {
 			throw new IOException("Missing name attribute for source");
 		}
-		dms.setName(name);
 		
 		NodeList nl = item.getChildNodes();
 		for (int i=0;i<nl.getLength();i++) {
 			Node n = nl.item(i);
 			if (n.getNodeType()==Node.ELEMENT_NODE) {
 				Element e = (Element) n;
-				if ("path".equals(e.getNodeName())) {
-					// TODO: check to sage: paths, but now, assume all dir paths
-					String path = e.getTextContent().trim();
-					File file  = new File(path);
-					if (!file.exists()) {
-						throw new IOException("Invalid Path: " + path + " for media source: " + dms.getName());
-					}
-					dms.setDirectory(file);
+				if ("locationUri".equals(e.getNodeName())) {
+					path = e.getTextContent().trim();
 				}
 			}
 		}
-		if (dms.getPath()==null) {
-			throw new IOException("Missing <path> element for media source: " + dms.getName());
+		
+		if (path==null) {
+			throw new IOException("Missing <path> element for media source: " + name);
 		}
 		
-		sources.add(dms);
+		IMediaSource ms = createSource(name, path);
+		sources.add(ms);
 	}
 
 	private void save() throws IOException {
-		throw new IOException("Save not implemented");
+		PrintWriter pw = new PrintWriter(new FileWriter(xmlFile));
+		
+		pw.println("<sources>");
+		for (IMediaSource ms : sources) {
+			pw.printf("   <source name=\"%s\">", ms.getName());
+			pw.printf("      <locationUri>%s</locationUri>", ms.getLocationUri());
+			pw.println("   </source>");
+		}
+		pw.println("</sources>");
+		
+		pw.flush();
+		pw.close();
+		
+		log.info("Saved Xml Media Sources: " + xmlFile.getAbsolutePath());
+	}
+
+	public IMediaSource createSource(String name, String uri) throws IOException {
+		return new MediaSource(name, uri);
 	}
 }

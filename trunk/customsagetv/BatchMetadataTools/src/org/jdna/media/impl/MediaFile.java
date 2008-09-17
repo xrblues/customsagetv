@@ -45,7 +45,9 @@ public class MediaFile extends FileMediaResource implements IMediaFile {
 				parts.add(this);
 				
 				// setup the media file title
-				setTitle(parent.getStackingModel().getStackedTitle(this));
+				if (parent!=null) {
+					setTitle(parent.getStackingModel().getStackedTitle(this));
+				}
 			}
 		} else {
 			if (parts!=null) {

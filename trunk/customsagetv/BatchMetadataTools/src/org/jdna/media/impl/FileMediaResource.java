@@ -1,7 +1,6 @@
 package org.jdna.media.impl;
 
 import java.io.File;
-import java.net.URI;
 
 import org.apache.log4j.Logger;
 import org.jdna.media.IMediaFolder;
@@ -25,8 +24,8 @@ public class FileMediaResource extends AbstractMediaResource {
 		return file.exists();
 	}
 	
-	public URI getLocationUri() {
-		return file.toURI();
+	public String getLocationUri() {
+		return file.toURI().toString();
 	}
 
 	public String getName() {

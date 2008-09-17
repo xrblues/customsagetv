@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.VideoSearchResult;
 import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -24,6 +25,8 @@ import org.xml.sax.SAXException;
  */
 public class IMDBSearchResultParser extends URLSaxParser {
 	private static final Logger log = Logger.getLogger(IMDBSearchResultParser.class);
+
+	private static final String TITLE_URL = "http://www.imdb.com/title/%s/"; 
 	
 	private static String POPULAR_TITLE_MATCH="Popular Titles";
 	private static String PARTIAL_TITLE_MATCH="Titles (Approx Matches)";
@@ -43,7 +46,7 @@ public class IMDBSearchResultParser extends URLSaxParser {
 	private int aState = TITLE_DONE;
 	
 	private String charBuffer = null;
-	private IMDBSearchResult curResult = null;
+	private VideoSearchResult curResult = null;
 	
 	private List<IVideoSearchResult> results = new ArrayList<IVideoSearchResult>();
 	
@@ -98,10 +101,10 @@ public class IMDBSearchResultParser extends URLSaxParser {
 				aState = TITLE_READ_TITLE;
 				
 				// create the IVIdeoResult
-				curResult = new IMDBSearchResult(state);
+				curResult = new VideoSearchResult(IMDBMetaDataProvider.PROVIDER_ID, state);
 				
-				// set the imdb title id
-				curResult.setTitleId(parseTitleId(href));
+				// set the imdb title url
+				curResult.setId(String.format(TITLE_URL,parseTitleId(href)));
 			}
 		}
 	}

@@ -41,7 +41,7 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 
 	public IVideoMetaData getMetaData(String providerDataUrl) throws Exception {
 		if (!initialized) initialize();
-		return new LocalDVDProfMetaData(providerDataUrl);
+		return new LocalDVDProfParser(providerDataUrl).getMetaData();
 	}
 
 	public String getName() {
@@ -119,5 +119,9 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 	
 	public File getImagesDir() {
 		return imageDir;
+	}
+
+	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
+		return getMetaData(result.getId());
 	}
 }

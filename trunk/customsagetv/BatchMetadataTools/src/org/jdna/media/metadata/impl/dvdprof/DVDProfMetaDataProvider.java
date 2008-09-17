@@ -7,6 +7,7 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.url.CachedUrl;
 import org.jdna.url.CookieHandler;
 
 public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
@@ -33,9 +34,16 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 
 	public IVideoMetaData getMetaData(String providerDataUrl) throws Exception {
 		if (!initialized) initialize();
-		
-		// TODO: refactor so that DVDProfMetatData() can accept just a url
-		return null;
+
+		IVideoMetaData metadata = null;
+		try {
+			metadata = new DVDProfMetaDataParser(providerDataUrl, cookieHandler).getMetaData();
+		} catch (Exception e) {
+			// remove this url from the caced urls.... in case url caching is enabled
+			CachedUrl.remove(providerDataUrl);
+			throw new Exception("Failed to get metadata for: " + providerDataUrl, e);
+		}
+		return metadata;
 	}
 
 	public String getName() {
@@ -114,6 +122,10 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 
 	private boolean shouldRebuildIndexes() {
 		return MovieIndex.getInstance().isNew() || rebuildIndex;
+	}
+
+	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
+		return getMetaData(result.getId());
 	}
 
 	

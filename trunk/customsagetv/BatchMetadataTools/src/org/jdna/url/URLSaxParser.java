@@ -115,6 +115,8 @@ public class URLSaxParser extends AbstractSaxHandler {
 			charbuf = charbuf.trim();
 
 			// just remove html entities
+			charbuf = charbuf.replaceAll("&nbsp;", " ");
+			
 			charbuf = charbuf.replaceAll("&[#0-9a-zA-Z]+;", "");
 
 		} catch (Throwable e) {

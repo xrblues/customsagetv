@@ -4,7 +4,7 @@
 	
 	<property name="target" value="target"/>
 	<property name="name" value="metadata-updater"/>
-	<property name="version" value="1.4"/>
+	<property name="version" value="1.5"/>
 	<property name="jarname" value="${name}-${version}.jar"/>
 	<property name="launcher" value="MetadataTool"/>
 	
@@ -14,11 +14,30 @@
 			<fileset dir="docs">
 			</fileset>
 		</copy>
-		<copy file="src/org/jdna/metadataupdater/metadataupdater.properties" tofile="${target}/metadataupdater.properties.sample"></copy>
+		<copy file="src/configurationmanager.properties" tofile="${target}/metadataupdater.properties.sample"></copy>
 		<zip destfile="${name}-${version}.zip">
 			<fileset dir="${target}"></fileset>
 		</zip>
 	</target>
+	
+	<target name="gwt-package" depends="package">
+		<copy toDir="${target}/gwt/">
+			<fileset dir="bin" excludes="**/*.properties,/test/*,*.class"/>
+		</copy>
+		
+		<copy  toDir="${target}/gwt/org/jdna/media/super/">
+			<fileset dir="src" includes="org/jdna/media/**/I*.java,org/jdna/media/metadata/VideoMetaData.java,org/jdna/media/metadata/CastMember.java">
+				<exclude name="**/impl/**"/>
+			</fileset>
+		</copy>
+		
+		<copy file="gwt/MediaApi.gwt.xml" todir="${target}/gwt/org/jdna/media/"/>
+		
+		<jar destfile="${target}/gwt-${jarname}">
+			<fileset dir="${target}/gwt/"/>
+		</jar>
+	</target>
+	
 	
 	<target name="copyJars">
 		<copydir dest="${target}/libs" src="libs"></copydir>
@@ -39,6 +58,7 @@
 	</target>
 
     <target name="init">
+    	<delete dir="target" failonerror="false"></delete>
         <mkdir dir="target"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src" excludes="**/*.launch, **/*.java"/>

@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.IVideoMetaData;
-import org.jdna.media.metadata.impl.dvdprof.DVDProfCastMember;
+import org.jdna.media.metadata.VideoMetaData;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class LocalDVDProfMetaData implements IVideoMetaData {
-	private static final Logger log = Logger.getLogger(LocalDVDProfMetaData.class);
+public class LocalDVDProfParser {
+	private static final Logger log = Logger.getLogger(LocalDVDProfParser.class);
 	
 	private String id = null;
 	
@@ -21,25 +21,47 @@ public class LocalDVDProfMetaData implements IVideoMetaData {
 	private DVDProfXmlFile dvdFile = null;
 	private Element node = null;
 	
-	private List<ICastMember> actors = new ArrayList<ICastMember>();;
-	private List<ICastMember> directors =new ArrayList<ICastMember>();
+	private List<CastMember> actors = new ArrayList<CastMember>();;
+	private List<CastMember> directors =new ArrayList<CastMember>();
 	private List<String> genres = new ArrayList<String>();
-	private List<ICastMember> writers = new ArrayList<ICastMember>();
+	private List<CastMember> writers = new ArrayList<CastMember>();
 	
-	public LocalDVDProfMetaData(String id) throws Exception {
+	private VideoMetaData metadata;
+	
+	public LocalDVDProfParser(String id) throws Exception {
 		this.id=id;
 		this.provider=LocalDVDProfMetaDataProvider.getInstance();
 		this.dvdFile = provider.getDvdProfilerXmlFile();
 		this.node = dvdFile.findMovieById(id);
 	}
+	
+	public VideoMetaData getMetaData() {
+		metadata = new VideoMetaData();
+		metadata.setActors(getActors().toArray(new CastMember[actors.size()]));
+		metadata.setAspectRatio(getAspectRatio());
+		metadata.setCompany(getCompany());
+		metadata.setDirectors(getDirectors().toArray(new CastMember[directors.size()]));
+		metadata.setGenres(getGenres().toArray(new String[genres.size()]));
+		metadata.setMPAARating(getMPAARating());
+		metadata.setPlot(getPlot());
+		metadata.setProviderDataUrl(getProviderDataUrl());
+		metadata.setReleaseDate(getReleaseDate());
+		metadata.setRuntime(getRuntime());
+		metadata.setThumbnailUrl(getThumbnailUrl());
+		metadata.setTitle(getTitle());
+		metadata.setUpdated(isUpdated());
+		metadata.setUserRating(getUserRating());
+		metadata.setWriters(getWriters().toArray(new CastMember[writers.size()]));
+		metadata.setYear(getYear());
+		return metadata;
+	}
 
-	public List<ICastMember> getActors() {
+	public List<CastMember> getActors() {
 		if (actors.size()==0) {
 			NodeList nl = node.getElementsByTagName("Actor");
 			for (int i=0;i<nl.getLength();i++) {
 				Element e = (Element) nl.item(i);
-				DVDProfCastMember cm = new DVDProfCastMember();
-				cm.setType(ICastMember.ACTOR);
+				CastMember cm = new CastMember(ICastMember.ACTOR);
 				cm.setName(String.format("%s %s", e.getAttribute("FirstName"), e.getAttribute("LastName")));
 				cm.setPart(e.getAttribute("Role"));
 				actors.add(cm);
@@ -56,15 +78,14 @@ public class LocalDVDProfMetaData implements IVideoMetaData {
 		return DVDProfXmlFile.getElementValue(node, "Studio");
 	}
 
-	public List<ICastMember> getDirectors() {
+	public List<CastMember> getDirectors() {
 		if (directors.size()==0) {
 			NodeList nl = node.getElementsByTagName("Credit");
 			for (int i=0;i<nl.getLength();i++) {
 				Element e = (Element) nl.item(i);
 				String credType = e.getAttribute("CreditType");
 				if ("Direction".equals(credType)) {
-					DVDProfCastMember cm = new DVDProfCastMember();
-					cm.setType(ICastMember.DIRECTOR);
+					CastMember cm = new CastMember(ICastMember.DIRECTOR);
 					cm.setName(String.format("%s %s", e.getAttribute("FirstName"), e.getAttribute("LastName")));
 					cm.setPart(credType);
 					directors.add(cm);
@@ -132,15 +153,14 @@ public class LocalDVDProfMetaData implements IVideoMetaData {
 		return null;
 	}
 
-	public List<ICastMember> getWriters() {
+	public List<CastMember> getWriters() {
 		if (writers.size()==0) {
 			NodeList nl = node.getElementsByTagName("Credit");
 			for (int i=0;i<nl.getLength();i++) {
 				Element e = (Element) nl.item(i);
 				String credType = e.getAttribute("CreditType");
 				if ("Writing".equals(credType)) {
-					DVDProfCastMember cm = new DVDProfCastMember();
-					cm.setType(ICastMember.WRITER);
+					CastMember cm = new CastMember(ICastMember.WRITER);
 					cm.setName(String.format("%s %s", e.getAttribute("FirstName"), e.getAttribute("LastName")));
 					cm.setPart(credType);
 					writers.add(cm);

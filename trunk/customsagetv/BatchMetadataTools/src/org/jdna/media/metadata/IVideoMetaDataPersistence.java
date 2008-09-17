@@ -24,7 +24,7 @@ public interface IVideoMetaDataPersistence {
 	 * @param mediaFile file to which this metadata attached
 	 * @throws IOException if it connot be saved
 	 */
-	public void storeMetaData(IVideoMetaData md, IMediaFile mediaFile) throws IOException;
+	public void storeMetaData(IVideoMetaData md, IMediaFile mediaFile) throws Exception;
 	
 	/**
 	 * loads the saved IVideoMetaData associated with the given media file.  This method must return null if there is no metadata.

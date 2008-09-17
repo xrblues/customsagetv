@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.VideoSearchResult;
 import org.xml.sax.SAXException;
 
 public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
@@ -20,6 +21,7 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 	public static final String PROVIDER_NAME = "IMDB Provider (Stuckless)";
 	public static final String PROVIDER_ICON_URL = "http://i.media-imdb.com/images/nb15/logo2.gif";
 
+	
 	public String getIconUrl() {
 		return PROVIDER_ICON_URL;
 	}
@@ -65,20 +67,33 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 	private List<IVideoSearchResult> returnSingleResult(String redirectUrl) throws IOException {
 		List<IVideoSearchResult> result = new ArrayList<IVideoSearchResult>();
 		
+		IVideoMetaData md = getMetaData(redirectUrl);
+		VideoSearchResult vsr = new VideoSearchResult();
+		vsr.setId(md.getProviderDataUrl());
+		vsr.setTitle(md.getTitle());
+		vsr.setYear(md.getYear());
+		vsr.setResultType(IVideoSearchResult.RESULT_TYPE_EXACT_MATCH);
+		
 		// the IMDBMovieMetaData implements the IVideoSearchResult interface
-		result.add((IVideoSearchResult) getMetaData(redirectUrl));
+		result.add(vsr);
 		
 		return result;
 	}
 
 	public IVideoMetaData getMetaData(String providerDataUrl) throws IOException {
-		IMDBMovieMetaDataParser parser = new IMDBMovieMetaDataParser(providerDataUrl);
 		try {
+			String url = providerDataUrl;
+			IMDBMovieMetaDataParser parser = new IMDBMovieMetaDataParser(url);
 			parser.parse();
+			if (parser.hasError()) throw new IOException("Failed to Parse MetaData for url: " + url);
+			return parser.getMetatData();
 		} catch (SAXException e) {
 			log.error("Failed to getMetaData for url: " + providerDataUrl);
 			throw new IOException("Failed to parse providerDataUrl: " + providerDataUrl, e);
 		}
-		return parser.getMetatData();
+	}
+
+	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
+		return getMetaData(result.getId());
 	}
 }

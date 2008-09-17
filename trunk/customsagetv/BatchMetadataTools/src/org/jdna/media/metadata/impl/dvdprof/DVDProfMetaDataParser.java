@@ -5,15 +5,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.IVideoMetaData;
+import org.jdna.media.metadata.VideoMetaData;
 import org.jdna.url.CookieHandler;
 import org.jdna.url.URLSaxParser;
 import org.jdna.url.UrlUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class DVDProfMetaData extends URLSaxParser implements IVideoMetaData {
+public class DVDProfMetaDataParser extends URLSaxParser {
 	private static final int READING=0;
 	private static final int YEAR=1;
 	private static final int DIRECTORS=2;
@@ -26,6 +27,7 @@ public class DVDProfMetaData extends URLSaxParser implements IVideoMetaData {
 	private static final int GENRES=10;
 	private static final int STUDIO=11;
 	private static final int ACTORS=12;
+	private static final int TITLE=14;
 	private static final int DONE=99;
 	
 	private static final String YEAR_TOKEN = "Production\\s+Year:";
@@ -41,36 +43,27 @@ public class DVDProfMetaData extends URLSaxParser implements IVideoMetaData {
 	
 	private int state = READING;
 	
-	private String providerUrl = null;
-	private List<ICastMember> actors = new ArrayList<ICastMember>();;
-	private String aspectRatio;
-	private String studio;
-	private List<ICastMember> directors =new ArrayList<ICastMember>();
+	private List<CastMember> actors = new ArrayList<CastMember>();;
+	private List<CastMember> directors =new ArrayList<CastMember>();
 	private List<String> genres = new ArrayList<String>();
-	private String rating;
-	private String plot;
-	private String releaseDate;
-	private String runTime;
-	private String thumbnailUr;
-	private String title;
-	private String userRating;
-	private List<ICastMember> writers = new ArrayList<ICastMember>();
-	private String year;
-	private String charbuf;
-	private List<ICastMember> otherCast = new ArrayList<ICastMember>();
-	private String baseUrl = null;
+	private List<CastMember> writers = new ArrayList<CastMember>();
+	private List<CastMember> otherCast = new ArrayList<CastMember>();
 
-	public DVDProfMetaData(DVDProfSearchResult result, CookieHandler handler) throws Exception {
-		super(result.getDataUrl());
-		this.providerUrl = result.getDataUrl();
-		this.title = result.getTitle();
-		this.baseUrl = UrlUtil.getBaseUrl(result.getDataUrl());
-		
+	private VideoMetaData metadata = new VideoMetaData();
+	private String baseUrl;
+	private String charbuf;
+	
+	public DVDProfMetaDataParser(String dataUrl, CookieHandler handler) throws Exception {
+		super(dataUrl);
+		metadata.setProviderId(DVDProfMetaDataProvider.PROVIDER_ID);
+		metadata.setProviderDataUrl(dataUrl);
+		this.baseUrl = UrlUtil.getBaseUrl(dataUrl);
 		
 		// force a parse of the metadata.
 		parse(handler);
-		if (this.year==null) {
-			throw new Exception("Could not parse: " + this.providerUrl + " as a valid DVD Profiler URL!");
+		
+		if (metadata.getYear()==null) {
+			throw new Exception("Could not parse: " + metadata.getProviderDataUrl() + " as a valid DVD Profiler URL!");
 		}
 	}
 
@@ -86,7 +79,7 @@ public class DVDProfMetaData extends URLSaxParser implements IVideoMetaData {
 		if (charbuf==null || charbuf.trim().length()==0) return;
 		
 		if (state == YEAR) {
-			year=charbuf;
+			metadata.setYear(charbuf);
 			state=READING;
 			return;
 		} else if (state == DIRECTORS) {
@@ -96,39 +89,40 @@ public class DVDProfMetaData extends URLSaxParser implements IVideoMetaData {
 				String role = m.group(2);
 				if (role!=null) {
 					if (role.equalsIgnoreCase("director")) {
-						DVDProfCastMember cm = new DVDProfCastMember();
+						CastMember cm = new CastMember(ICastMember.DIRECTOR);
 						cm.setName(m.group(1));
-						cm.setType(ICastMember.DIRECTOR);
-						getDirectors().add(cm);
+						directors.add(cm);
 					} else if (role.equalsIgnoreCase("writer")) { 
-						DVDProfCastMember cm = new DVDProfCastMember();
+						CastMember cm = new CastMember(ICastMember.WRITER);
 						cm.setName(m.group(1));
-						cm.setType(ICastMember.WRITER);
-						getWriters().add(cm);
+						writers.add(cm);
 					} else {
-						DVDProfCastMember cm = new DVDProfCastMember();
+						CastMember cm = new CastMember(ICastMember.OTHER);
 						cm.setName(m.group(1));
-						cm.setType(ICastMember.OTHER);
 						cm.setPart(m.group(2));
-						getOtherCast().add(cm);
+						otherCast.add(cm);
 					}
 				}
 			}
 			return;
+		} else if (state==TITLE) {
+			metadata.setTitle(charbuf);
+			state=READING;
+			return;
 		} else if (state==RATING) {
-			rating = charbuf;
+			metadata.setMPAARating(charbuf);
 			state=READING;
 			return;
 		} else if (state==RELEASE) {
-			releaseDate = charbuf;
+			metadata.setReleaseDate(charbuf);
 			state=READING;
 			return;
 		} else if (state==RUNNINGTIME) {
-			runTime = charbuf;
+			metadata.setRuntime(charbuf);
 			state=READING;
 			return;
 		} else if (state==ASPECTRATIO) {
-			aspectRatio = charbuf;
+			metadata.setAspectRatio(charbuf);
 			state=READING;
 			return;
 		} else if (state==SRP) {
@@ -136,10 +130,10 @@ public class DVDProfMetaData extends URLSaxParser implements IVideoMetaData {
 			state=PLOT;
 			return;
 		} else if (state==PLOT) {
-			if (plot==null) {
-				plot = charbuf;
+			if (metadata.getPlot()==null) {
+				metadata.setPlot(charbuf);
 			} else {
-				plot += ("\n" + charbuf); 
+				metadata.setPlot(metadata.getPlot() + ("\n" + charbuf)); 
 			}
 			// keep the state == plot until we read td
 			state=PLOT;
@@ -148,15 +142,14 @@ public class DVDProfMetaData extends URLSaxParser implements IVideoMetaData {
 			genres.add(charbuf);
 			return;
 		} else if (state==STUDIO) {
-			studio=charbuf;
+			metadata.setCompany(charbuf);
 			state=READING;
 			return;
 		} else if (state==ACTORS) {
 			Pattern p = Pattern.compile("(.*)\\s+as\\s+(.*)");
 			Matcher m =p.matcher(charbuf);
 			if (m.find()) {
-				DVDProfCastMember cm = new DVDProfCastMember();
-				cm.setType(ICastMember.ACTOR);
+				CastMember cm = new CastMember(ICastMember.ACTOR);
 				cm.setName(m.group(1));
 				cm.setPart(m.group(2));
 				actors.add(cm);
@@ -189,10 +182,6 @@ public class DVDProfMetaData extends URLSaxParser implements IVideoMetaData {
 		}
 	}
 
-	private List<ICastMember> getOtherCast() {
-		return otherCast ;
-	}
-
 
 	@Override
 	public void endElement(String uri, String localName, String name)
@@ -201,7 +190,7 @@ public class DVDProfMetaData extends URLSaxParser implements IVideoMetaData {
 		if (state==DIRECTORS && isTag("td", localName)) state=READING;
 		
 		// end the plot once we reach the span after the text
-		if (state==PLOT && plot!=null && isTag("span", localName)) state=READING;
+		if (state==PLOT && metadata.getPlot()!=null && isTag("span", localName)) state=READING;
 	
 		// end genres after the table
 		if (state==GENRES && isTag("table", localName)) state=READING;
@@ -213,77 +202,22 @@ public class DVDProfMetaData extends URLSaxParser implements IVideoMetaData {
 
 	@Override
 	public void startElement(String uri, String localName, String name,	Attributes atts) throws SAXException {
-		if (thumbnailUr==null && plot!=null && isTag("img", localName)) {
+		if (metadata.getThumbnailUrl()==null && metadata.getPlot()!=null && isTag("img", localName)) {
 			String src = atts.getValue("src");
-			thumbnailUr = UrlUtil.joinUrlPath(UrlUtil.getDomainUrl(baseUrl), src); 
+			metadata.setThumbnailUrl(UrlUtil.joinUrlPath(UrlUtil.getDomainUrl(baseUrl), src)); 
+		}
+		
+		if (state==READING && isTag("td", localName) && "styletitle".equals(attr(atts, "class"))) {
+			// found title
+			state=TITLE;
 		}
 	}
-
-	public List<ICastMember> getActors() {
-		return actors;
-	}
-
-	public String getAspectRatio() {
-		return aspectRatio;
-	}
-		
-	public String getCompany() {
-		return studio;
-	}
-
-	public List<ICastMember> getDirectors() {
-		return directors;
-	}
-
-	public List<String> getGenres() {
-		return genres;
-	}
-
-	public String getMPAARating() {
-		return rating;
-	}
-
-	public String getPlot() {
-		return plot;
-	}
-
-	public String getProviderDataUrl() {
-		return providerUrl;
-	}
-
-	public String getProviderId() {
-		return DVDProfMetaDataProvider.PROVIDER_ID;
-	}
-
-	public String getReleaseDate() {
-		return releaseDate;
-	}
-
-	public String getRuntime() {
-		return runTime;
-	}
-
-	public String getThumbnailUrl() {
-		return thumbnailUr;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public String getUserRating() {
-		return userRating;
-	}
-
-	public List<ICastMember> getWriters() {
-		return writers;
-	}
-
-	public String getYear() {
-		return year;
-	}
-
-	public boolean isUpdated() {
-		return false;
+	
+	public VideoMetaData getMetaData() {
+		metadata.setGenres(genres.toArray(new String[genres.size()]));
+		metadata.setActors(actors.toArray(new CastMember[actors.size()]));
+		metadata.setDirectors(directors.toArray(new CastMember[directors.size()]));
+		metadata.setWriters(writers.toArray(new CastMember[writers.size()]));
+		return metadata;
 	}
 }

@@ -7,14 +7,21 @@ import java.util.Vector;
 
 import net.sf.sageplugins.sageimdb.DbFailureException;
 import net.sf.sageplugins.sageimdb.DbNotFoundException;
+import net.sf.sageplugins.sageimdb.DbObjectRef;
+import net.sf.sageplugins.sageimdb.DbTitleObject;
 import net.sf.sageplugins.sageimdb.ImdbWebBackend;
+import net.sf.sageplugins.sageimdb.ImdbWebObjectRef;
 import net.sf.sageplugins.sageimdb.Role;
 
+import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.VideoSearchResult;
 
 public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
+	private static final Logger log  = Logger.getLogger(NielmIMDBMetaDataProvider.class);
+	
 	private static final String PROVIDER_THUMNAIL_URL = "http://i.media-imdb.com/images/nb15/logo2.gif";
 	public static final String PROVIDER_NAME = "IMDB Provider (Nielm)";
 	public static final String PROVIDER_ID = "nielm_imdb";
@@ -24,7 +31,6 @@ public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
 		db = new ImdbWebBackend();
 	}
 	
-	
 	public List<IVideoSearchResult> search(int type, String arg) throws Exception {
 		List<IVideoSearchResult> results = new ArrayList<IVideoSearchResult>();
 		
@@ -32,7 +38,19 @@ public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
 			try {
 				Vector<Role> list = db.searchTitle(arg);
 				for (Role r: list) {
-					results.add(new NielmVideoSearchResult(db, r));
+					VideoSearchResult vsr = new VideoSearchResult();
+					updateTitleAndYear(vsr, r);
+					vsr.setResultType(IVideoSearchResult.RESULT_TYPE_UNKNOWN);
+					vsr.setProviderId(NielmIMDBMetaDataProvider.PROVIDER_ID);
+					DbObjectRef objRef = r.getName();
+					if (objRef instanceof ImdbWebObjectRef) {
+						// set the imdb url as the ID for this result.
+						// that will enable us to find it later
+						vsr.setId(((ImdbWebObjectRef) objRef).getImdbRef());
+					} else {
+						log.error("Imdb Search result was incorrect type: " + objRef.getClass().getName());
+					}
+					results.add(vsr);
 				}
 			} catch (DbNotFoundException e) {
 				throw new Exception("Database Not Found!", e);
@@ -42,6 +60,22 @@ public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
 		}
 		
 		return results;
+	}
+
+	private void updateTitleAndYear(VideoSearchResult vsr, Role r) {
+		String buf = r.getName().getName();
+		String title, year;
+		// Nielm's titles are 'Title (Year)'
+		int br = buf.indexOf("(");
+		if (br>0)  {
+			title = buf.substring(0, br);
+			year = buf.substring(br+1, br+5);
+		} else {
+			title = buf;
+			year = "n/a";
+		}
+		vsr.setTitle(title);
+		vsr.setYear(year);
 	}
 
 
@@ -57,9 +91,20 @@ public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
 	    return PROVIDER_ID;	
 	}
 
-
 	public IVideoMetaData getMetaData(String providerDataUrl) throws IOException {
-		throw new UnsupportedOperationException("getMetaData(url) is not supported!");
+		ImdbWebObjectRef objRef = new ImdbWebObjectRef(DbObjectRef.DB_TYPE_TITLE, "IMDB Url", providerDataUrl);
+		DbTitleObject title;
+		try {
+			title = (DbTitleObject) objRef.getDbObject(db);
+			return new NeilmIMDBMetaDataParser(db, title).getMetaData();
+		} catch (Exception e) {
+			log.error("IMDB Lookup Failed:" + providerDataUrl, e);
+			throw new IOException(e);
+		}
+	}
+
+	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
+		return getMetaData(result.getId());
 	}
 
 }

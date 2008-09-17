@@ -1,6 +1,11 @@
 package org.jdna.media.metadata.impl.imdb;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
+import org.jdna.media.metadata.VideoMetaData;
 import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -25,7 +30,9 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 	private static final Object CAST_MATCH = "Cast";
 	
 	
-	private IMDBMovieMetaData metadata = null;
+	private VideoMetaData metadata = null;
+	private List<String> genres;
+	private List<CastMember> cast = new ArrayList<CastMember>();
 	
 	private static final int LOOKING = 0;
 	private static final int TITLE = 1;
@@ -56,18 +63,19 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 	private static int headerState = HEADER_OFF;
 
 	
-	private IMDBCastMember curCastMember = null;
+	private CastMember curCastMember = null;
 	
 	private String charbuf = null; 
 	private String curTag = null;
 	
 	public IMDBMovieMetaDataParser(String url) {
 		super(url);
-		metadata = new IMDBMovieMetaData();
+		metadata = new VideoMetaData();
 		metadata.setProviderDataUrl(url);
+		metadata.setProviderId(IMDBMetaDataProvider.PROVIDER_ID);
 	}
 	
-	public IMDBMovieMetaData getMetatData() {
+	public VideoMetaData getMetatData() {
 		return metadata;
 	}
 
@@ -110,24 +118,26 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 		
 		if (state==LOOKING && DIRECTOR_MATCH.equals(charbuf)) {
 			state = DIRECTORS;
+			cast = new ArrayList<CastMember>();
 			return;
 		}
 		
 		if (state==DIRECTORS) {
 			getCurCastMember().setName(charbuf);
-			metadata.getDirectors().add(getCurCastMember());
+			cast.add(getCurCastMember());
 			curCastMember = null;
 			return;
 		}
 		
 		if (state==LOOKING && isTag("H5", curTag) && WRITER_MATCH.equals(charbuf)) {
 			state = WRITERS;
+			cast = new ArrayList<CastMember>();
 			return;
 		}
 		
 		if (state==WRITERS && curCastMember!=null) {
 			curCastMember.setName(charbuf);
-			metadata.getWriters().add(curCastMember);
+			cast.add(curCastMember);
 			curCastMember=null;
 			return;
 		}
@@ -145,11 +155,12 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 		
 		if (state==LOOKING && GENRE_MATCH.equals(charbuf)) {
 			state=GENRE;
+			genres = new ArrayList<String>();
 			return;
 		}
 		
 		if (state==GENRE && subState == SS_GENRE_TEXT) {
-			metadata.getGenres().add(charbuf);
+			genres.add(charbuf);
 			subState=SS_NONE;
 			return;
 		}
@@ -226,7 +237,7 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 
 		if (state==CAST && subState==SS_CAST_CHAR) {
 			getCurCastMember().setPart(charbuf);
-			metadata.getActors().add(getCurCastMember());
+			cast.add(getCurCastMember());
 			curCastMember = null;
 			subState=SS_NONE;
 			return;
@@ -239,6 +250,22 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 		if (state==ENDED) return;
 	
 		if (( state==DIRECTORS || state==WRITERS || state==GENRE) && isTag("DIV", localName)) {
+			if (state==DIRECTORS) {
+				if (cast!=null && cast.size()>0) {
+					metadata.setDirectors(cast.toArray(new CastMember[cast.size()]));
+					cast.clear();
+				}
+			} else if (state==WRITERS) {
+				if (cast!=null && cast.size()>0) {
+					metadata.setWriters(cast.toArray(new CastMember[cast.size()]));
+					cast.clear();
+				}
+			} else if (state==GENRE) {
+				if (genres!=null && genres.size()>0) {
+					metadata.setGenres(genres.toArray(new String[genres.size()]));
+					genres.clear();
+				}
+			}
 			state=LOOKING;
 			subState=SS_NONE;
 		}
@@ -246,6 +273,10 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 		if (state==CAST && isTag("table", localName)) {
 			state=LOOKING;
 			subState=SS_NONE;
+			if (cast!=null && cast.size()>0) {
+				metadata.setActors(cast.toArray(new CastMember[cast.size()]));
+				cast.clear();
+			}
 		}
 
 		if (isTag("h5", localName)) headerState = HEADER_OFF;
@@ -315,9 +346,9 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 		return aValue.equals(attr(atts, aName));
 	}
 
-	public IMDBCastMember getCurCastMember() {
+	public CastMember getCurCastMember() {
 		if (curCastMember==null) {
-			curCastMember = new IMDBCastMember();
+			curCastMember = new CastMember();
 			if (state==DIRECTORS) {
 				curCastMember.setType(ICastMember.DIRECTOR);
 			} else if (state==WRITERS) {

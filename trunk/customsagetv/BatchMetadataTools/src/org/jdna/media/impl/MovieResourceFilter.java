@@ -17,7 +17,7 @@ public class MovieResourceFilter implements IMediaResourceFilter {
 	private Pattern dirExcludePattern = null;
 	
 	public MovieResourceFilter() {
-		String pat = ConfigurationManager.getInstance().getProperty(MovieResourceFilter.class.getName(), "VideoExtensionRegex", "avi|mpg|divx|mkv");
+		String pat = ConfigurationManager.getInstance().getProperty(MovieResourceFilter.class.getName(), "VideoExtensionRegex", "avi|mpg|divx|mkv|wmv|mov|xvid");
 		log.debug("Using Movie Filter Regex: " + pat);
 		filePattern = Pattern.compile(pat,Pattern.CASE_INSENSITIVE);
 		
