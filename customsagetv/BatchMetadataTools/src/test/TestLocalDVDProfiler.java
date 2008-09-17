@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.jdna.media.metadata.IVideoMetaDataProvider;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.VideoMetaDataFactory;
 import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
 import org.jdna.metadataupdater.MetadataUpdater;
 
@@ -18,7 +19,7 @@ public class TestLocalDVDProfiler {
 		
 		if (results!=null && results.size()>0) {
 			IVideoSearchResult res = results.get(0);
-			TestUtils.dumpMetaData(res.getMetaData());
+			TestUtils.dumpMetaData(VideoMetaDataFactory.getInstance().getMetaData(res));
 		}
 	}
 }

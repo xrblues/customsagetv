@@ -21,7 +21,18 @@ public interface IVideoSearchResult {
 	};
 	
 	
-	public IVideoMetaData getMetaData() throws Exception;
+	/**
+	 * returns the provider id that created this result.
+	 * @return
+	 */
+	public String getProviderId();
+
+	/**
+	 * id of the this result.  Should have meaning to the provider that created the result.
+	 * @return
+	 */
+	public String getId();
+	
 	public String getTitle();
 	public String getYear();
 	public int getResultType();

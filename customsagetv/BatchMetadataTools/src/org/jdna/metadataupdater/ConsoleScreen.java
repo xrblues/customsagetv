@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
+import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
 import org.jdna.media.metadata.IVideoSearchResult;
@@ -138,5 +139,56 @@ public class ConsoleScreen implements IMetaDataUpdaterScreen {
 		} else {
 			System.out.printf("%10s: %-30s (%s)\n","Updated", md.getTitle(), r.getName());
 		}
+	}
+
+	public void showMetadata(IMediaFile mf, IVideoMetaData md) {
+		col2("Movie:", mf.getName());
+		col2("Title:", md.getTitle());
+		col2("Plot:", md.getPlot());
+		col2("Genres:", toGenreString(md.getGenres()));
+		col2("MPAA Rating:", md.getMPAARating());
+		col2("User Rating:", md.getUserRating());
+		col2("Company:", md.getCompany());
+		col2("Year:", md.getYear());
+		col2("Release Date:", md.getReleaseDate());
+		col2("Runtime:", md.getRuntime());
+		col2("Aspect Ratio:", md.getAspectRatio());
+		col2("Provider Url:", md.getProviderDataUrl());
+		col2("Provider Id:", md.getProviderId());
+		col2("ThumbnailUrl:", md.getThumbnailUrl());
+		col2("Directors:", toSimpleCastString(md.getDirectors()));
+		col2("Writers:", toSimpleCastString(md.getWriters()));
+		if (md.getActors()!=null) {
+			col2("Actors:", "-----------");
+			for (ICastMember cm : md.getActors()) {
+				col2(cm.getName()+":", cm.getPart());
+			}
+		} else {
+			col2("Actors:", "-- NONE --");
+		}
+		
+
+	}
+	
+	private String toSimpleCastString(ICastMember[] cast) {
+		if (cast==null) return "-- NONE --";
+		StringBuffer sb = new StringBuffer();
+		for (ICastMember cm : cast) {
+			sb.append(cm.getName()).append(" / ");
+		}
+		return sb.toString();
+	}
+
+	private String toGenreString(String[] genres) {
+		if (genres==null) return "-- NONE --";
+		StringBuffer sb = new StringBuffer();
+		for (String s : genres) {
+			sb.append(s).append(" / ");
+		}
+		return sb.toString();
+	}
+
+	private void col2(String c1, String c2) {
+		System.out.printf("%25s %s\n", c1, c2);
 	}
 }

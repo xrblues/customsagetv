@@ -39,7 +39,7 @@ public class VideoMetaDataUtils {
 	 * </pre>
 	 */
 	public static String cleanSearchCriteria(String s, boolean removeYear) {
-		String wordTokens[] = ConfigurationManager.getInstance().getProperty(VideoMetaDataUtils.class.getName(), "cleanSearchCriteria.wordTokens", "dvd,dvrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx").split(",");
+		String wordTokens[] = ConfigurationManager.getInstance().getProperty(VideoMetaDataUtils.class.getName(), "cleanSearchCriteria.wordTokens", "dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv").split(",");
 
 		s = CDStackingModel.INSTANCE.getStackedTitle(s);
 		log.debug("Cleaning Search Criteria: " + s);

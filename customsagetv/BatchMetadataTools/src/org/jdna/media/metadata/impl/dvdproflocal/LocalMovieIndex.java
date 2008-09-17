@@ -17,6 +17,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.VideoSearchResult;
 import org.w3c.dom.Element;
 
 public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
@@ -112,7 +113,7 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
 			String date = d.get("release");
 			String id = d.get("id");
 			
-			results.add(new LocalDVDProfSearchResult(type, name, date, id, hits.score(i)));
+			results.add(new VideoSearchResult(LocalDVDProfMetaDataProvider.PROVIDER_ID, id, name, date, type));
 		}
 		
 		return results;

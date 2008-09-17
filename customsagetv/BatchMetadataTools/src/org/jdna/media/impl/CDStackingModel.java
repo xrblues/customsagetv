@@ -27,7 +27,7 @@ public class CDStackingModel implements IMediaStackModel {
 	private Pattern pattern = null;
 	
 	public CDStackingModel() {
-		String pat = ConfigurationManager.getInstance().getProperty(CDStackingModel.class.getName(), "StackingRegex");
+		String pat = ConfigurationManager.getInstance().getProperty(CDStackingModel.class.getName(), "StackingRegex", "[ _\\\\.-]+(cd|dvd|part)[ _\\\\.-]*([0-9a-d]+)");
 		log.debug("CD Stacking Regex: " + pat);
 		pattern = Pattern.compile(pat,Pattern.CASE_INSENSITIVE);
 	}

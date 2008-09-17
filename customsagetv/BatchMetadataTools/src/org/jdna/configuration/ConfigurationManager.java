@@ -1,5 +1,9 @@
 package org.jdna.configuration;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 
 
@@ -15,15 +19,45 @@ import org.apache.log4j.Logger;
 public class ConfigurationManager {
 	private static final Logger log = Logger.getLogger(ConfigurationManager.class);
 	
-	private static ConfigurationManager instance = new ConfigurationManager();
+	private static ConfigurationManager instance;
 	
 	public static ConfigurationManager getInstance() {
+		if (instance == null) instance=new ConfigurationManager();
 		return instance;
 	}
 	
 	public IConfigurationProvider config = null;
 	
 	public ConfigurationManager() {
+		// attempt to load a default set of configuration properties from the res://configurationmanager.properties
+		PropertiesConfigurationProvider pcp = new PropertiesConfigurationProvider();
+		try {
+			try {
+				pcp.addProperties(this.getClass().getClassLoader().getResourceAsStream("configurationmanager.properties"));
+				log.info("Loaded default configuration.");
+			} catch (Exception e) {
+				log.error("Failed to load default configuration properties!", e);
+			}
+			
+			String propFile = System.getProperty("configurationmanager.properties", "configurationmanager.properties");
+			File pFile = null;
+			pFile = new File(propFile);
+
+			if (!pFile.exists()) {
+				log.info("No user configuration.  You can create a user configuration by creating the following file: " + pFile.getAbsolutePath());
+			} else {
+				log.info("Attempting to load user defined properties: " + pFile.getAbsolutePath());
+				try {
+					pcp.addProperties(new FileInputStream(pFile));
+				} catch (IOException e) {
+					log.error("Failed to load properties: " + pFile.getAbsolutePath(), e);
+					throw e;
+				}
+			}
+		} catch (Exception e) {
+			log.error("No default properties configuration found.  Using System.getProperties() as the default properties.");
+		}
+		config = pcp;
 	}
 	
 	/**
@@ -46,7 +80,6 @@ public class ConfigurationManager {
 	 * @return
 	 */
 	public String getProperty(String path, String key, String def) {
-		if (config==null) throw new RuntimeException("ConfigurationManager is not initialized!  Please call setProvider() first.");
 		String v = config.getProperty(path, key);
 		return (v==null) ? def : v;
 	}
@@ -70,5 +103,9 @@ public class ConfigurationManager {
 	 */
 	public String getProperty(String key) {
 		return getProperty(null, key, null);
+	}
+	
+	public IConfigurationProvider getProvider() {
+		return config;
 	}
 }

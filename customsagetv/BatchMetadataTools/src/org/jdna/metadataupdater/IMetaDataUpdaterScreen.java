@@ -124,4 +124,6 @@ public interface IMetaDataUpdaterScreen {
 	 * Once process is done, renderStats() will be called to render information to the user about the processing.
 	 */
 	public void renderStats();
+	
+	public void showMetadata(IMediaFile mf, IVideoMetaData md);
 }

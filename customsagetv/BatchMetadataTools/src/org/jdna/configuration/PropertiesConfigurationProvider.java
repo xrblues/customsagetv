@@ -14,11 +14,11 @@ import java.util.Properties;
 public class PropertiesConfigurationProvider implements IConfigurationProvider {
 	private Properties props;
 	
-	public PropertiesConfigurationProvider(Properties parent) {
-		if (parent==null) {
+	public PropertiesConfigurationProvider(Properties defaultProps) {
+		if (defaultProps==null) {
 			props = new Properties();
 		} else {
-			props = new Properties(parent);
+			props = new Properties(defaultProps);
 		}
 	}
 	
@@ -50,6 +50,21 @@ public class PropertiesConfigurationProvider implements IConfigurationProvider {
 
 	public String getName() {
 		return this.getClass().getName();
+	}
+	
+	/**
+	 * This will load a new set of properties as the main set of properties.  If there is already a set of properties loaded,
+	 * then those existing properties will serve as defaults of the new set of properties.
+	 * @param newProps
+	 */
+	public void addProperties(InputStream is) throws IOException {
+		try {
+			Properties newProps = new Properties(props);
+			newProps.load(is);
+			props = newProps;
+		} catch (IOException e) {
+			throw e;
+		}
 	}
 	
 }

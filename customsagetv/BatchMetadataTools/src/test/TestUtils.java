@@ -1,7 +1,5 @@
 package test;
 
-import java.util.List;
-
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoSearchResult;
@@ -45,7 +43,7 @@ public class TestUtils {
 		System.out.println("MetaData End");
 	}
 	
-	public static void dumpCastMember(List<ICastMember> members) {
+	public static void dumpCastMember(ICastMember[] members) {
 		for (ICastMember cm : members) {
 			if (cm.getType()==ICastMember.ACTOR) {
 				System.out.printf("Actor: %s as %s\n", cm.getName(), cm.getPart());
