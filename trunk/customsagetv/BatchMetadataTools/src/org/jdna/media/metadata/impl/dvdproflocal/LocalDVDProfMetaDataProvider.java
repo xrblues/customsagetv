@@ -7,14 +7,19 @@ import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
+import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.ProviderInfo;
 
 public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 	private static final Logger log = Logger.getLogger(LocalDVDProfMetaDataProvider.class);
 
 	public static final String PROVIDER_ID = "dvdprofiler_local";
-	public static final String PROVIDER_NAME = "DVD Profiler Provider using local xml and images (Stuckless)";
+	public static final String PROVIDER_NAME = "Local DVD Profiler Provider";
 	public static final String PROVIDER_ICON_URL = "http://www.invelos.com/images/Logo.png";
+	private static final String PROVIDER_DESC = "DVD Profiler Provider using local xml and images (Stuckless).";
+	
+	private static IProviderInfo info = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_ICON_URL);
 
 	private boolean rebuildIndex = false;
 	private File xmlFile = null;
@@ -123,5 +128,9 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 
 	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
 		return getMetaData(result.getId());
+	}
+
+	public IProviderInfo getInfo() {
+		return info;
 	}
 }

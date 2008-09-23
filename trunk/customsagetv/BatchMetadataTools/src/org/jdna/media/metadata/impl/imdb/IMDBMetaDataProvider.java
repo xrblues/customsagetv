@@ -9,7 +9,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
+import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.VideoSearchResult;
 import org.xml.sax.SAXException;
 
@@ -20,6 +22,9 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 	public static final String PROVIDER_ID = "imdb";
 	public static final String PROVIDER_NAME = "IMDB Provider (Stuckless)";
 	public static final String PROVIDER_ICON_URL = "http://i.media-imdb.com/images/nb15/logo2.gif";
+	private static final String PROVIDER_DESC = "IMDB Provider that provides very resonable results, AND exact match searches.";
+	
+	private static IProviderInfo info = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_ICON_URL);
 
 	
 	public String getIconUrl() {
@@ -95,5 +100,9 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 
 	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
 		return getMetaData(result.getId());
+	}
+
+	public IProviderInfo getInfo() {
+		return info;
 	}
 }

@@ -136,6 +136,7 @@ public class CachedUrl extends Url implements IUrl {
 		if (c instanceof HttpURLConnection) {
 			HttpURLConnection conn = (HttpURLConnection) c;
 			conn.setInstanceFollowRedirects(false);
+			conn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008072820 Firefox/3.0.1");
 			InputStream is = conn.getInputStream();
 			int rc = conn.getResponseCode();
 			if (rc == HttpURLConnection.HTTP_MOVED_PERM
@@ -176,6 +177,7 @@ public class CachedUrl extends Url implements IUrl {
 	@Override
 	public InputStream getInputStream(ICookieHandler handler) throws IOException {
 		URL u = getUrl(handler);
+		
 		return u.openStream();
 	}
 

@@ -26,7 +26,7 @@
 		</copy>
 		
 		<copy  toDir="${target}/gwt/org/jdna/media/super/">
-			<fileset dir="src" includes="org/jdna/media/**/I*.java,org/jdna/media/metadata/VideoMetaData.java,org/jdna/media/metadata/CastMember.java">
+			<fileset dir="src" includes="org/jdna/media/**/I*.java,org/jdna/media/metadata/VideoMetaData.java,org/jdna/media/metadata/CastMember.java,org/jdna/media/metadata/ProviderInfo.java,org/jdna/media/metadata/VideoSearchResult.java,org/jdna/media/metadata/CoverResult.java">
 				<exclude name="**/impl/**"/>
 			</fileset>
 		</copy>
