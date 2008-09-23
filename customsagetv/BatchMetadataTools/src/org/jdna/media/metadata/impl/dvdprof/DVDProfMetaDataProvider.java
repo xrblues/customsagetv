@@ -6,7 +6,9 @@ import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
+import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.url.CachedUrl;
 import org.jdna.url.CookieHandler;
 
@@ -14,8 +16,11 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 	private static final Logger log = Logger.getLogger(DVDProfMetaDataProvider.class);
 
 	public static final String PROVIDER_ID = "dvdprofiler";
-	public static final String PROVIDER_NAME = "DVD Profiler Provider using remote Url (Stuckless)";
+	public static final String PROVIDER_NAME = "Url DVD Profiler Provider";
 	public static final String PROVIDER_ICON_URL = "http://www.invelos.com/images/Logo.png";
+	private static final String PROVIDER_DESC = "DVD Profiler Provider using remote Url (Stuckless).";
+	
+	private static IProviderInfo info = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_ICON_URL);
 
 	private CookieHandler cookieHandler;
 	private boolean rebuildIndex = false;
@@ -126,6 +131,10 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 
 	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
 		return getMetaData(result.getId());
+	}
+
+	public IProviderInfo getInfo() {
+		return info;
 	}
 
 	

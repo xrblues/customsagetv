@@ -17,7 +17,9 @@ public class VideoMetaDataFactory {
 		return instance;
 	}
 
-	private List<IVideoMetaDataProvider> providers = new ArrayList<IVideoMetaDataProvider>();
+	private List<IVideoMetaDataProvider> metadataProviders = new ArrayList<IVideoMetaDataProvider>();
+	private List<ICoverProvider> coverProviders = new ArrayList<ICoverProvider>();
+	
 	private IVideoMetaDataPersistence persistence;
 
 	public VideoMetaDataFactory() {
@@ -39,7 +41,7 @@ public class VideoMetaDataFactory {
 				p = p.trim();
 				try {
 					Class<IVideoMetaDataProvider> cl = (Class<IVideoMetaDataProvider>) Class.forName(p);
-					addProvider(cl.newInstance());
+					addMetaDataProvider(cl.newInstance());
 				} catch (Throwable e) {
 					log.error("Failed to register new Metadata Provider: " + p, e);
 				}
@@ -50,22 +52,22 @@ public class VideoMetaDataFactory {
 
 		if (getProvider(IMDBMetaDataProvider.PROVIDER_ID) == null) {
 			log.debug("Adding in the default IMDB Provider.");
-			addProvider(new IMDBMetaDataProvider());
+			addMetaDataProvider(new IMDBMetaDataProvider());
 		}
 
 	}
 
-	public List<IVideoMetaDataProvider> getProviders() {
-		return providers;
+	public List<IVideoMetaDataProvider> getMetaDataProviders() {
+		return metadataProviders;
 	}
 
-	public void addProvider(IVideoMetaDataProvider provider) {
-		log.info("Adding MetaDataProvider: " + provider.getName());
-		providers.add(provider);
+	public void addMetaDataProvider(IVideoMetaDataProvider provider) {
+		log.info("Adding MetaDataProvider: " + provider.getInfo().getName());
+		metadataProviders.add(provider);
 	}
 
-	public void removeProvider(IVideoMetaDataProvider provider) {
-		providers.remove(provider);
+	public void removeMetaDataProvider(IVideoMetaDataProvider provider) {
+		metadataProviders.remove(provider);
 	}
 
 	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
@@ -84,15 +86,15 @@ public class VideoMetaDataFactory {
 	}
 
 	public List<IVideoSearchResult> search(int searchType, String arg) throws Exception {
-		if (providers.size() == 0)
+		if (metadataProviders.size() == 0)
 			throw new Exception("No Providers Installed!");
-		return providers.get(0).search(searchType, arg);
+		return metadataProviders.get(0).search(searchType, arg);
 	}
 
 	public IVideoMetaDataProvider getProvider(String providerId) {
 		IVideoMetaDataProvider provider = null;
-		for (IVideoMetaDataProvider p : providers) {
-			if (providerId.equals(p.getId())) {
+		for (IVideoMetaDataProvider p : metadataProviders) {
+			if (providerId.equals(p.getInfo().getId())) {
 				provider = p;
 				break;
 			}
@@ -103,4 +105,19 @@ public class VideoMetaDataFactory {
 	public IVideoMetaDataPersistence getDefaultPeristence() {
 		return persistence;
 	}
+	
+	
+	public List<ICoverProvider> getCoverProviders() {
+		return coverProviders;
+	}
+
+	public void addCoverProvider(ICoverProvider provider) {
+		log.info("Adding Cover Provider: " + provider.getInfo().getName());
+		coverProviders.add(provider);
+	}
+
+	public void removeCoverProvider(ICoverProvider provider) {
+		metadataProviders.remove(provider);
+	}
+
 }

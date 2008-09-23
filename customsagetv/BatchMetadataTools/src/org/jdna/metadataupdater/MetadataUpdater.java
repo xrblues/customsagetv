@@ -122,7 +122,7 @@ public class MetadataUpdater {
 		log.info("Version: " + Version.VERSION);
 
 		if (listProvders) {
-			screen.renderProviders(VideoMetaDataFactory.getInstance().getProviders(), provider);
+			screen.renderProviders(VideoMetaDataFactory.getInstance().getMetaDataProviders(), provider);
 			return;
 		}
 

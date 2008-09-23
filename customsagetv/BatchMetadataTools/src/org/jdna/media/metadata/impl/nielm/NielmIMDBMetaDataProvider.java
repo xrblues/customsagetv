@@ -16,7 +16,9 @@ import net.sf.sageplugins.sageimdb.Role;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
+import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.VideoSearchResult;
 
 public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
@@ -25,6 +27,10 @@ public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
 	private static final String PROVIDER_THUMNAIL_URL = "http://i.media-imdb.com/images/nb15/logo2.gif";
 	public static final String PROVIDER_NAME = "IMDB Provider (Nielm)";
 	public static final String PROVIDER_ID = "nielm_imdb";
+	private static final String PROVIDER_DESC = "IMDB Provider that provides very detailed results, but no exact match searches.";
+	
+	private static IProviderInfo info = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_THUMNAIL_URL);
+	
 	private ImdbWebBackend db = null;
 	
 	public NielmIMDBMetaDataProvider() {
@@ -105,6 +111,10 @@ public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
 
 	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
 		return getMetaData(result.getId());
+	}
+
+	public IProviderInfo getInfo() {
+		return info;
 	}
 
 }

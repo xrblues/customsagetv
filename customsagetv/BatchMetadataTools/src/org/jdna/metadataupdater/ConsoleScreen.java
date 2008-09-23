@@ -99,7 +99,7 @@ public class ConsoleScreen implements IMetaDataUpdaterScreen {
 	public void renderProviders(List<IVideoMetaDataProvider> providers, String defaultProvider) {
 		System.out.println("\n\nInstalled Metadata Providers (*=default");
 		for (IVideoMetaDataProvider p : providers) {
-			System.out.printf("%1s %-20s %s\n", (p.getId().equals(defaultProvider)?"*":""), p.getId(), p.getName());
+			System.out.printf("%1s %-20s %s\n", (p.getInfo().getId().equals(defaultProvider)?"*":""), p.getInfo().getId(), p.getInfo().getName());
 		}
 	}
 

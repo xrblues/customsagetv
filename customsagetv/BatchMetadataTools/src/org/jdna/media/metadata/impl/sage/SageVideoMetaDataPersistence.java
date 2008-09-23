@@ -237,13 +237,8 @@ public class SageVideoMetaDataPersistence implements IVideoMetaDataPersistence {
 			props.store(new FileOutputStream(partFile), "Sage Video Metadata for " + mf.getLocationUri());
 
 			// now download and save the thumbnail, if it does not exist
-			ConfigurationManager cm = ConfigurationManager.getInstance();
-			boolean dlThumb = Boolean.parseBoolean(cm.getProperty(this.getClass().getName(), DOWNLOAD_THUMBNAIL_KEY, "true"));
-			boolean downloadThumb = md.getThumbnailUrl() != null && md.getThumbnailUrl().trim().length() > 0 && dlThumb;
-			boolean overwrite = Boolean.parseBoolean(cm.getProperty(this.getClass().getName(), "overwriteThumbnail", "false"));
-			if (downloadThumb) {
 				thumbFile = getThumbnailFile(mf);
-				if (!thumbFile.exists() || overwrite) {
+				if (!thumbFile.exists() || md.isThumbnailUpdated()) {
 					try {
 						if (localThumbFile == null) {
 							localThumbFile = md.getThumbnailUrl();
@@ -259,9 +254,6 @@ public class SageVideoMetaDataPersistence implements IVideoMetaDataPersistence {
 						log.error("Failed to save/download thumbnail: " + localThumbFile + " to: " + thumbFile.getAbsolutePath() + "; But the rest of the property data has been saved.", e);
 					}
 				}
-			} else {
-				log.warn("Skipping Thumbnail download for " + mf.getLocationUri());
-			}
 
 			// update the file data/time on the mediafile
 			mf.touch();
