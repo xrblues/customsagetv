@@ -1,0 +1,2 @@
+#labels SageTV,Featured
+Allows SageTV to use an external command, under Linux, to change channels on a remote tuner.
