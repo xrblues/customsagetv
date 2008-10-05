@@ -4,14 +4,14 @@
 
 SageTV documents their [http://download.sage.tv/api/ API] but unfortunately, they don't provide an API that matches their documentation.  Instead, in order to use their API, you need to call the sage service and pass in the named SageTV Api method.  This unfortunately leads to typos, and if you are using a modern IDE, then there is no auto completion.
 
-[http://forums.sagetv.com/forums/member.php?u=5484 Greg], an avid SageTV developer, solved this API anomaly by creating a new [http://forums.sagetv.com/forums/downloads.php?do=file&id=128 API] that mirrored SageTV's intention.  
+[http://forums.sagetv.com/forums/member.php?u=5484 Greg], a very competent SageTV developer, solved this API anomaly by creating a new [http://forums.sagetv.com/forums/downloads.php?do=file&id=128 API] that mirrored SageTV's intention.  
 
 
 = Why create another API? =
 
 It begs the question as to why I'd create another API, if there are already available.  I guess the question could be answered by asking another question; Why create a second API where there was already one available?
 
-The answer is simple.  I needed it to do more.  Greg's API is rich.  It's a complete API replacement, wrapping all sage objects and calls.  Unfortunately, this leads to a lot of extra object being creating for the purpose of making the SageTV api more userfriendly.
+The answer is simple.  I needed it to do more. 
 
 I wanted to be able to access the SageTV api remotely.  I tried to find the generator that Greg used to see if maybe I could modify it, but unfortunately the source wasn't released (or I couldn't find it).
 
@@ -75,6 +75,8 @@ This is simply a testing stub.  It does nothing.  It can't be used for anything,
 
 = Future =
 The goal is to export the API as a set of xml and JSON services in addition to the Java RPC api.  This would allow for simpler integration into a web application.
+
+Maybe this will be merged with Greg's API??
 
 = Limitations =
   * Currently does not support calls that require a SageTV Context.  ie, UI related calls.  This will be implemented, just not needed right now.
