@@ -1,0 +1,74 @@
+#Multifunction Api for SageTV
+
+= Background =
+
+SageTV documents their [http://download.sage.tv/api/ API] but unfortunately, they don't provide an API that matches their documentation.  Instead, in order to use their API, you need to call the sage service and pass in the named SageTV Api method.  This unfortunately leads to typos, and if you are using a modern IDE, then there is no auto completion.
+
+[http://forums.sagetv.com/forums/member.php?u=5484 Greg], an avid SageTV developer, solved this API anomaly by creating a new [http://forums.sagetv.com/forums/downloads.php?do=file&id=128 API] that mirrored SageTV's intention.  
+
+
+= Why create another API? =
+
+It begs the question as to why I'd create another API, if there are already available.  I guess the question could be answered by asking another question; Why create a second API where there was already one available?
+
+The answer is simple.  I needed it to do more.  Greg's API is rich.  It's a complete API replacement, wrapping all sage objects and calls.  Unfortunately, this leads to a lot of extra object being creating for the purpose of making the SageTV api more userfriendly.
+
+I wanted to be able to access the SageTV api remotely.  I tried to find the generator that Greg used to see if maybe I could modify it, but unfortunately the source wasn't released (or I couldn't find it).
+
+I wanted the API to reflect what SageTV had documented.  In other words, I wasn't looking to create wrapper objects, etc, I just wanted to be able to use the API as SageTV had documented it.
+
+This new api achieves all of this.
+
+
+= What makes it really different? =
+I took a 3 tier approach to this API.  Despite the 3 teirs, there isn't that much to it.  The first tier consists of a set of Static Classes and Methods that is auto generated from the SageTV javadoc.  This in itself is exactly what Greg had done.
+
+The generated Methods simply call a static method
+{{{
+   sagex.SageAPI.call(String name, Object[] args);
+}}}
+
+So instead of calling SageTV directly, I call another layer.
+
+The SageAPI layer accepts an ISageAPIProvider instance that is responsible for doing the real work.  SageAPI has a setProvider() method where you can explicitly set the provider to use for the global instance, or if none is set, then it will attempt to find the best known provider.
+
+== ISageAPIProvider Implementations ==
+
+=== EmbeddedSageAPIProvider ===
+This provider is the provider that is used when the API is embedded into a running SageTV process.  This api is simply a pass through to the actual SageTV api as is.  There is no marshalling and unmarshalling of data, so it's very efficient at handling SageTV requests without creating a lot of extra objects.
+
+=== RemoteSageAPIProvider ===
+This provider is the provider that is used when you are running code outside the SageTV server process.  This provider requires that you install the RPC server in the SageTV server process so that it can communicate.  In this mode, extra objects are created on both the client and server.  So it's not extremely efficient, but it works quite well.
+
+==== Installation ====
+To install this Provider....
+  * Stop Sage Server
+  * Copy the sagex-api.6.3.10.jar to the SAGE_HOME/JARs dir
+  * Add/edit the following to the Sage.properties
+{{{
+load_at_startup_runnable_classes=sagex.remote.SageRPCServerRunner
+}}}
+
+{{{
+  NOTE: if you have more than 1 class you need to separate them with a semi-colon ;
+}}}
+  * Start Sage Server
+
+Your remote client code will also require that the sagex-api.6.3.10.jar is in it's classpath.
+
+In your client code, you simply need to invoke the SageTV api and it should find the remote server automatically. 
+{{{
+		// Simply media file test....
+		Object files[] = MediaFileAPI.GetMediaFiles();
+		if (files!=null) {
+			System.out.println("Got Files: " + files.length);
+			Object mf = files[0];
+			System.out.println("Title: " + MediaFileAPI.GetMediaTitle(mf));
+			System.out.println("Runtime: " + MediaFileAPI.GetFileDuration(mf));
+			System.out.println("ID: " + MediaFileAPI.GetMediaFileID(mf));
+		}
+}}}
+
+
+=== StubSageAPIProvider ===
+This is simply a testing stub.  It does nothing.  It can't be used for anything, but it does allow for some offline testing.
