@@ -72,3 +72,10 @@ In your client code, you simply need to invoke the SageTV api and it should find
 
 === StubSageAPIProvider ===
 This is simply a testing stub.  It does nothing.  It can't be used for anything, but it does allow for some offline testing.
+
+= Future =
+The goal is to export the API as a set of xml and JSON services in addition to the Java RPC api.  This would allow for simpler integration into a web application.
+
+= Limitations =
+  * Currently does not support calls that require a SageTV Context.  ie, UI related calls.  This will be implemented, just not needed right now.
+  * No authorization for RPC calls.  A model needs to be implemented to provide transparent authorization when using RPC.  Currently, it's wide open. 
