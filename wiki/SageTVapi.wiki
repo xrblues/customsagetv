@@ -49,9 +49,9 @@ To install this Provider....
 load_at_startup_runnable_classes=sagex.remote.SageRPCServerRunner
 }}}
 
-{{{
+
   NOTE: if you have more than 1 class you need to separate them with a semi-colon ;
-}}}
+
   * Start Sage Server
 
 Your remote client code will also require that the sagex-api.6.3.10.jar is in it's classpath.
