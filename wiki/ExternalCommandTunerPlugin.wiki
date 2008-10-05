@@ -1,2 +1,4 @@
+#summary External Command Tuner for Linux and SageTV
 #labels SageTV,Featured
+
 Allows SageTV to use an external command, under Linux, to change channels on a remote tuner.
