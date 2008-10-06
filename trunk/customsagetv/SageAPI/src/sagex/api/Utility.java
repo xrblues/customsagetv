@@ -1,0 +1,1263 @@
+package sagex.api;
+
+/**
+ * Unofficial SageTV Generated File - Never Edit Generated Date/Time: 05/10/08
+ * 4:56 PM See Official Sage Documentation at <a
+ * href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a> This
+ * Generated API is not Affiliated with SageTV. It is user contributed.
+ */
+public class Utility {
+	/**
+	 * Gets the value for the specified key out of a map. Useful for analyzing
+	 * data from aGroupByMethod () call.
+	 * 
+	 * Parameters: Grouping- the map to get the value from Key- the key to use
+	 * for retrieving the value Returns: the value for the specified key in the
+	 * specified map
+	 */
+	public static java.lang.Object GetSubgroup(java.util.Map Grouping, java.lang.Object Key) {
+		return (java.lang.Object) sagex.SageAPI.call("GetSubgroup", new Object[] { Grouping, Key });
+	}
+
+	/**
+	 * Executes the specified keystroke in either the SageTV event system or by
+	 * emulation in the operating system
+	 * 
+	 * Parameters: Character- the keystroke to perform, can contain Ctrl, Shift,
+	 * Alt and combinations thereof with the specified key name System- if true
+	 * then an operating system keystroke should be emulated, if false then keep
+	 * the keystroke within SageTV
+	 */
+	public static void Keystroke(java.lang.String Character, boolean System) {
+		sagex.SageAPI.call("Keystroke", new Object[] { Character, System });
+	}
+
+	/**
+	 * Returns the size of the specified data.
+	 * 
+	 * Parameters: Data- the object to get the data size of Returns: for a
+	 * Collection or Map, the size of it; for an array, the length; for a
+	 * string, the length, otherwise 0 is returned
+	 */
+	public static int Size(java.lang.Object Data) {
+		return (Integer) sagex.SageAPI.call("Size", new Object[] { Data });
+	}
+
+	/**
+	 * Returns a formatted date string for the specified Date.
+	 * 
+	 * Parameters: Format- null if SageTV's default date format should be used,
+	 * otherwise use a formatting string as specified in
+	 * java.text.SimpleDateFormat Date- either a java.util.Date object or a long
+	 * which corresponds to the date Returns: the date formatted string
+	 */
+	public static java.lang.String DateFormat(java.lang.String Format, java.lang.Object Date) {
+		return (java.lang.String) sagex.SageAPI.call("DateFormat", new Object[] { Format, Date });
+	}
+
+	/**
+	 * Returns a formatted numeric string for the specified number.
+	 * 
+	 * Parameters: Format- a formatting string as specified in
+	 * java.text.DecimalFormat Number- the floating point number to format
+	 * Returns: the formatted numeric string
+	 */
+	public static java.lang.String NumberFormat(java.lang.String Format, float Number) {
+		return (java.lang.String) sagex.SageAPI.call("NumberFormat", new Object[] { Format, Number });
+	}
+
+	/**
+	 * Returns a formatted duration String for a period of time in milliseconds.
+	 * The formatting string uses the % character for escapement (%% is not
+	 * supported, you cannot display the % symbol in a duration string). The
+	 * 'd', 'h', 'm' and 's' characters can be used to indicate days, hours,
+	 * minutes and seconds respectively. Any format character may be prefixed by
+	 * the 'r' character to indicate it is a required field.For example, the
+	 * format string %rh:%m for 20 minutes would return 0:20 and for the string
+	 * $h:%m it would return 20 If there's characters before a field value then
+	 * that value will be zero padded, i.e. 65 minutes for %h:%m would be 1:05
+	 * 
+	 * 
+	 * Parameters: Format- the duration format string, or null to use SageTV's
+	 * default duration formatting Duration- the duration to print out in
+	 * milliseconds Returns: the formatted duration string
+	 */
+	public static java.lang.String DurFormat(java.lang.String Format, long Duration) {
+		return (java.lang.String) sagex.SageAPI.call("DurFormat", new Object[] { Format, Duration });
+	}
+
+	/**
+	 * Returns a length 2 Long object array which can be used for specifying a
+	 * time span in a table. The first element will be the StartTime and the
+	 * second will be the EndTime
+	 * 
+	 * Parameters: StartTime- the long value which specifies the start value of
+	 * the time span EndTime- the long value which specifies the end value of
+	 * the time span Returns: an array which represents this time span
+	 */
+	public static java.lang.Long[] CreateTimeSpan(long StartTime, long EndTime) {
+		return (java.lang.Long[]) sagex.SageAPI.call("CreateTimeSpan", new Object[] { StartTime, EndTime });
+	}
+
+	/**
+	 * Returns the element at the specified index in this data; works for arrays
+	 * and java.util.List implementations (i.e. Vector, etc.)
+	 * 
+	 * Parameters: Data- the java.util.List or array object to get the element
+	 * from Index- the 0-based index of the element to retrieve Returns: the
+	 * element at the specified index or null if there is no such element
+	 */
+	public static java.lang.Object GetElement(java.lang.Object Data, int Index) {
+		return (java.lang.Object) sagex.SageAPI.call("GetElement", new Object[] { Data, Index });
+	}
+
+	/**
+	 * Sets the element at the specified index in this data; works for arrays
+	 * and java.util.List implementations (i.e. Vector, etc.)
+	 * 
+	 * Parameters: Data- the java.util.List or array object to set the element
+	 * for Index- the 0-based index of the element to set Value- the value to
+	 * set Returns: the Value parameters is returned
+	 */
+	public static java.lang.Object SetElement(java.lang.Object Data, int Index, java.lang.Object Value) {
+		return (java.lang.Object) sagex.SageAPI.call("SetElement", new Object[] { Data, Index, Value });
+	}
+
+	/**
+	 * Removes the element at the specified index in this data; works
+	 * java.util.List implementations (i.e. Vector, etc.)
+	 * 
+	 * Parameters: Data- the java.util.List object to remove the element from
+	 * Index- the 0-based index of the element to remove Returns: the element at
+	 * the specified index or null if there is no such element
+	 */
+	public static java.lang.Object RemoveElementAtIndex(java.util.List Data, int Index) {
+		return (java.lang.Object) sagex.SageAPI.call("RemoveElementAtIndex", new Object[] { Data, Index });
+	}
+
+	/**
+	 * Removes the element at with the specified value from this data. Works for
+	 * java.util.Collection or java.util.Map implementations. If the value
+	 * appears multiple times in the data (for Collections) only the first
+	 * occurrence is removed.
+	 * 
+	 * Parameters: Data- the java.util.Collection or java.util.Map object to
+	 * remove the element from; for maps it removes based on key Value- the
+	 * value to remove from the data Returns: for java.util.Collections true if
+	 * the element exists and was removed, false otherwise; for java.util.Maps
+	 * it returns the value that the specified key corresponded to
+	 */
+	public static java.lang.Object RemoveElement(java.lang.Object Data, java.lang.Object Value) {
+		return (java.lang.Object) sagex.SageAPI.call("RemoveElement", new Object[] { Data, Value });
+	}
+
+	/**
+	 * Returns the index in the data that the specified element is found at. If
+	 * there are multiple occurrences of this element only the first index is
+	 * returned. This works for arrays and java.util.List implementations.
+	 * 
+	 * Parameters: Data- the java.util.List or array to look in Element- the
+	 * value to search the data for Returns: the 0-based index of the specified
+	 * element in the data, or -1 if it does not exist
+	 */
+	public static int FindElementIndex(java.lang.Object Data, java.lang.Object Element) {
+		return (Integer) sagex.SageAPI.call("FindElementIndex", new Object[] { Data, Element });
+	}
+
+	/**
+	 * Searches a sorted list of data to find the index that the specified
+	 * criteria exists at; or if it doesn't exist in the data it will use the
+	 * index that would be the appropriate insertion point for the criteria in
+	 * the data in order to maintain sort order. The element at that index is
+	 * what is returned
+	 * 
+	 * Parameters: Data- the data to sort, this must be a java.util.Collection,
+	 * a java.util.Map, or an array Criteria- the object to compare the elements
+	 * to; this must implement java.lang.Comparable Method- the method name to
+	 * execute on each element to get the value to compare; use null to compare
+	 * the elements themselves Returns: the element at the comparative insertion
+	 * point
+	 */
+	public static java.lang.Object FindComparativeElement(java.lang.Object Data, java.lang.Comparable Criteria, java.lang.String Method) {
+		return (java.lang.Object) sagex.SageAPI.call("FindComparativeElement", new Object[] { Data, Criteria, Method });
+	}
+
+	/**
+	 * Returns the substring from a specified string. Same as
+	 * java.lang.String.substring(int startIndex, int endIndex)
+	 * 
+	 * Parameters: String- the string to get the substring of StartIndex- the
+	 * 0-based index that the substring starts at EndIndex- the 0-based index
+	 * that the substring ends at or -1 if the substring goes to the end of the
+	 * string Returns: the substring from the specified string
+	 */
+	public static java.lang.String Substring(java.lang.String String, int StartIndex, int EndIndex) {
+		return (java.lang.String) sagex.SageAPI.call("Substring", new Object[] { String, StartIndex, EndIndex });
+	}
+
+	/**
+	 * Rounds a floating point number to an integral value. For Doubles a Long
+	 * is returned, for Floats an Integer is returned
+	 * 
+	 * Parameters: Number- the number to round Returns: the rounded value
+	 */
+	public static java.lang.Object Round(java.lang.Object Number) {
+		return (java.lang.Object) sagex.SageAPI.call("Round", new Object[] { Number });
+	}
+
+	/**
+	 * Returns the current time; see java.lang.System.currentTimeMillis() for
+	 * the explanation of the units.
+	 * 
+	 * Returns: the current time
+	 */
+	public static long Time() {
+		return (Long) sagex.SageAPI.call("Time", (Object[]) null);
+	}
+
+	/**
+	 * Returns a string that represents the current time.
+	 * 
+	 * Returns: a string that represents the current time.
+	 */
+	public static java.lang.String PrintCurrentTime() {
+		return (java.lang.String) sagex.SageAPI.call("PrintCurrentTime", (Object[]) null);
+	}
+
+	/**
+	 * Returns a formatted date string using the java.text.DateFormat.MEDIUM
+	 * formatting technique
+	 * 
+	 * Parameters: Date- the date value to format Returns: a formatted date
+	 * string
+	 */
+	public static java.lang.String PrintDate(long Date) {
+		return (java.lang.String) sagex.SageAPI.call("PrintDate", new Object[] { Date });
+	}
+
+	/**
+	 * Returns a formatted date string using SageTV's default detailed date
+	 * formatting
+	 * 
+	 * Parameters: Date- the date value to format Returns: a formatted date
+	 * string
+	 */
+	public static java.lang.String PrintDateLong(long Date) {
+		return (java.lang.String) sagex.SageAPI.call("PrintDateLong", new Object[] { Date });
+	}
+
+	/**
+	 * Returns a formatted date string using the java.text.DateFormat.SHORT
+	 * formatting technique
+	 * 
+	 * Parameters: Date- the date value to format Returns: a formatted date
+	 * string
+	 */
+	public static java.lang.String PrintDateShort(long Date) {
+		return (java.lang.String) sagex.SageAPI.call("PrintDateShort", new Object[] { Date });
+	}
+
+	/**
+	 * Returns a formatted date string using the java.text.DateFormat.FULL
+	 * formatting technique
+	 * 
+	 * Parameters: Date- the date value to format Returns: a formatted date
+	 * string
+	 */
+	public static java.lang.String PrintDateFull(long Date) {
+		return (java.lang.String) sagex.SageAPI.call("PrintDateFull", new Object[] { Date });
+	}
+
+	/**
+	 * Returns a formatted time string using the java.text.DateFormat.MEDIUM
+	 * formatting technique
+	 * 
+	 * Parameters: Time- the time value to format Returns: a formatted time
+	 * string
+	 */
+	public static java.lang.String PrintTime(long Time) {
+		return (java.lang.String) sagex.SageAPI.call("PrintTime", new Object[] { Time });
+	}
+
+	/**
+	 * Returns a formatted time string using the java.text.DateFormat.LONG
+	 * formatting technique
+	 * 
+	 * Parameters: Time- the time value to format Returns: a formatted time
+	 * string
+	 */
+	public static java.lang.String PrintTimeLong(long Time) {
+		return (java.lang.String) sagex.SageAPI.call("PrintTimeLong", new Object[] { Time });
+	}
+
+	/**
+	 * Returns a formatted time string using the java.text.DateFormat.SHORT
+	 * formatting technique
+	 * 
+	 * Parameters: Time- the time value to format Returns: a formatted time
+	 * string
+	 */
+	public static java.lang.String PrintTimeShort(long Time) {
+		return (java.lang.String) sagex.SageAPI.call("PrintTimeShort", new Object[] { Time });
+	}
+
+	/**
+	 * Returns a formatted time string using the java.text.DateFormat.FULL
+	 * formatting technique
+	 * 
+	 * Parameters: Time- the time value to format Returns: a formatted time
+	 * string
+	 */
+	public static java.lang.String PrintTimeFull(long Time) {
+		return (java.lang.String) sagex.SageAPI.call("PrintTimeFull", new Object[] { Time });
+	}
+
+	/**
+	 * Returns a formatted duration string according to SageTV's verbose
+	 * duration formating, minutes is the most detailed resolution of this
+	 * format
+	 * 
+	 * Parameters: Duration- the duration in milliseconds to print Returns: the
+	 * formatted duration string
+	 */
+	public static java.lang.String PrintDuration(long Duration) {
+		return (java.lang.String) sagex.SageAPI.call("PrintDuration", new Object[] { Duration });
+	}
+
+	/**
+	 * Returns a formatted duration string according to SageTV's default
+	 * duration formating, seconds is the most detailed resolution of this
+	 * format
+	 * 
+	 * Parameters: Duration- the duration in milliseconds to print Returns: the
+	 * formatted duration string
+	 */
+	public static java.lang.String PrintDurationWithSeconds(long Duration) {
+		return (java.lang.String) sagex.SageAPI.call("PrintDurationWithSeconds", new Object[] { Duration });
+	}
+
+	/**
+	 * Returns a formatted duration string according to SageTV's concise
+	 * duration formating, minutes is the most detailed resolution of this
+	 * format
+	 * 
+	 * Parameters: Duration- the duration in milliseconds to print Returns: the
+	 * formatted duration string
+	 */
+	public static java.lang.String PrintDurationShort(long Duration) {
+		return (java.lang.String) sagex.SageAPI.call("PrintDurationShort", new Object[] { Duration });
+	}
+
+	/**
+	 * Returns the amount of disk free space in bytes at the specified path
+	 * 
+	 * Parameters: DrivePath- the path string of a disk to get the free space of
+	 * Returns: the free space on the specified disk in bytes
+	 */
+	public static long GetDiskFreeSpace(java.lang.String DrivePath) {
+		return (Long) sagex.SageAPI.call("GetDiskFreeSpace", new Object[] { DrivePath });
+	}
+
+	/**
+	 * Returns the amount of total disk space in bytes at the specified path
+	 * 
+	 * Parameters: DrivePath- the path string of a disk to get the total space
+	 * of Returns: the total space on the specified disk in bytes
+	 */
+	public static long GetDiskTotalSpace(java.lang.String DrivePath) {
+		return (Long) sagex.SageAPI.call("GetDiskTotalSpace", new Object[] { DrivePath });
+	}
+
+	/**
+	 * Gets the name of the filesystem type at the specified path
+	 * 
+	 * Parameters: DrivePath- the path string of a disk to get the filesystem
+	 * type for Returns: the name of the filesystem type at the specified path
+	 */
+	public static java.lang.String GetFileSystemType(java.lang.String DrivePath) {
+		return (java.lang.String) sagex.SageAPI.call("GetFileSystemType", new Object[] { DrivePath });
+	}
+
+	/**
+	 * Returns a list of the Windows registry names which exist under the
+	 * specified root & key (Windows only) Acceptable values for the Root are:
+	 * "HKCR", "HKEY_CLASSES_ROOT", "HKCC", "HKEY_CURRENT_CONFIG", "HKCU",
+	 * "HKEY_CURRENT_USER", "HKU", "HKEY_USERS", "HKLM" or "HKEY_LOCAL_MACHINE"
+	 * (HKLM is the default if nothing matches)
+	 * 
+	 * Parameters: Root- the registry hive to look in Key- the key path in the
+	 * registry hive Returns: the names stored in the registry under the
+	 * specified key
+	 */
+	public static java.lang.String[] GetWindowsRegistryNames(java.lang.String Root, java.lang.String Key) {
+		return (java.lang.String[]) sagex.SageAPI.call("GetWindowsRegistryNames", new Object[] { Root, Key });
+	}
+
+	/**
+	 * Returns a DWORD value from the Windows registry for the specified root,
+	 * key and name(Windows only) Acceptable values for the Root are: "HKCR",
+	 * "HKEY_CLASSES_ROOT", "HKCC", "HKEY_CURRENT_CONFIG", "HKCU",
+	 * "HKEY_CURRENT_USER", "HKU", "HKEY_USERS", "HKLM" or "HKEY_LOCAL_MACHINE"
+	 * (HKLM is the default if nothing matches)
+	 * 
+	 * Parameters: Root- the registry hive to look in Key- the key path in the
+	 * registry hive Name- the name of the registry value to retrieve Returns:
+	 * the value of the specified registry setting as a DWORD
+	 */
+	public static int GetWindowsRegistryDWORDValue(java.lang.String Root, java.lang.String Key, java.lang.String Name) {
+		return (Integer) sagex.SageAPI.call("GetWindowsRegistryDWORDValue", new Object[] { Root, Key, Name });
+	}
+
+	/**
+	 * Returns a string value from the Windows registry for the specified root,
+	 * key and name(Windows only) Acceptable values for the Root are: "HKCR",
+	 * "HKEY_CLASSES_ROOT", "HKCC", "HKEY_CURRENT_CONFIG", "HKCU",
+	 * "HKEY_CURRENT_USER", "HKU", "HKEY_USERS", "HKLM" or "HKEY_LOCAL_MACHINE"
+	 * (HKLM is the default if nothing matches)
+	 * 
+	 * Parameters: Root- the registry hive to look in Key- the key path in the
+	 * registry hive Name- the name of the registry value to retrieve Returns:
+	 * the value of the specified registry setting as a string
+	 */
+	public static int GetWindowsRegistryStringValue(java.lang.String Root, java.lang.String Key, java.lang.String Name) {
+		return (Integer) sagex.SageAPI.call("GetWindowsRegistryStringValue", new Object[] { Root, Key, Name });
+	}
+
+	/**
+	 * Removes a value from the Windows registry for the specified root, key and
+	 * name(Windows only) Acceptable values for the Root are: "HKCR",
+	 * "HKEY_CLASSES_ROOT", "HKCC", "HKEY_CURRENT_CONFIG", "HKCU",
+	 * "HKEY_CURRENT_USER", "HKU", "HKEY_USERS", "HKLM" or "HKEY_LOCAL_MACHINE"
+	 * (HKLM is the default if nothing matches)
+	 * 
+	 * Parameters: Root- the registry hive to look in Key- the key path in the
+	 * registry hive Name- the name of the registry value to remove Returns:
+	 * true if the specified setting was removed, false otherwise
+	 */
+	public static boolean RemoveWindowsRegistryValue(java.lang.String Root, java.lang.String Key, java.lang.String Name) {
+		return (Boolean) sagex.SageAPI.call("RemoveWindowsRegistryValue", new Object[] { Root, Key, Name });
+	}
+
+	/**
+	 * Sets a DWORD value in the Windows registry for the specified root, key
+	 * and name(Windows only) The name will be created if it doesn't already
+	 * exist. Acceptable values for the Root are: "HKCR", "HKEY_CLASSES_ROOT",
+	 * "HKCC", "HKEY_CURRENT_CONFIG", "HKCU", "HKEY_CURRENT_USER", "HKU",
+	 * "HKEY_USERS", "HKLM" or "HKEY_LOCAL_MACHINE" (HKLM is the default if
+	 * nothing matches)
+	 * 
+	 * Parameters: Root- the registry hive to use Key- the key path in the
+	 * registry hive Name- the name of the registry value to set Value- the
+	 * value of the specified registry setting as a DWORD Returns: true if the
+	 * operation was successful, false otherwise
+	 */
+	public static boolean SetWindowsRegistryDWORDValue(java.lang.String Root, java.lang.String Key, java.lang.String Name, int Value) {
+		return (Boolean) sagex.SageAPI.call("SetWindowsRegistryDWORDValue", new Object[] { Root, Key, Name, Value });
+	}
+
+	/**
+	 * Sets a string value in the Windows registry for the specified root, key
+	 * and name(Windows only) The name will be created if it doesn't already
+	 * exist. Acceptable values for the Root are: "HKCR", "HKEY_CLASSES_ROOT",
+	 * "HKCC", "HKEY_CURRENT_CONFIG", "HKCU", "HKEY_CURRENT_USER", "HKU",
+	 * "HKEY_USERS", "HKLM" or "HKEY_LOCAL_MACHINE" (HKLM is the default if
+	 * nothing matches)
+	 * 
+	 * Parameters: Root- the registry hive to use Key- the key path in the
+	 * registry hive Name- the name of the registry value to set Value- the
+	 * value of the specified registry setting as a string Returns: true if the
+	 * operation was successful, false otherwise
+	 */
+	public static boolean SetWindowsRegistryStringValue(java.lang.String Root, java.lang.String Key, java.lang.String Name, java.lang.String Value) {
+		return (Boolean) sagex.SageAPI.call("SetWindowsRegistryStringValue", new Object[] { Root, Key, Name, Value });
+	}
+
+	/**
+	 * Plays the specified sound file (used for sound effects, don't use for
+	 * music playback)
+	 * 
+	 * Parameters: SoundFile- the path of the sound resource to play back
+	 */
+	public static void PlaySound(java.lang.String SoundFile) {
+		sagex.SageAPI.call("PlaySound", new Object[] { SoundFile });
+	}
+
+	/**
+	 * Returns the second argument if the first argument is true, otherwise the
+	 * third argument is returned. All 3 arguments will be evaluated in all
+	 * cases. This does NOT have a short-circuit which prevents evaluation of
+	 * the third argument if the first is true.
+	 * 
+	 * Parameters: Condition- the value to test to see if it is true True- the
+	 * value to return if the Condition is true False- the value to return if
+	 * the Condition is not true Returns: the appropriate value based on the
+	 * condition
+	 */
+	public static java.lang.Object If(boolean Condition, java.lang.Object True, java.lang.Object False) {
+		return (java.lang.Object) sagex.SageAPI.call("If", new Object[] { Condition, True, False });
+	}
+
+	/**
+	 * Returns the file name from the specified file path; this just returns the
+	 * filename without any path information.
+	 * 
+	 * Parameters: FilePath- the filepath to get the filename for Returns: the
+	 * filename from the specified file path
+	 */
+	public static java.lang.String GetFileNameFromPath(java.io.File FilePath) {
+		return (java.lang.String) sagex.SageAPI.call("GetFileNameFromPath", new Object[] { FilePath });
+	}
+
+	/**
+	 * Returns the file name extension from the specified file path (not
+	 * including the '.')
+	 * 
+	 * Parameters: FilePath- the file path to get the extension of Returns: the
+	 * extension from the specified file path Since: 6.4
+	 */
+	public static java.lang.String GetFileExtensionFromPath(java.lang.String FilePath) {
+		return (java.lang.String) sagex.SageAPI.call("GetFileExtensionFromPath", new Object[] { FilePath });
+	}
+
+	/**
+	 * Causes the currently executing thread to sleep for the specified amount
+	 * of time in milliseconds.
+	 * 
+	 * Parameters: Time- the amount of time to sleep this thread for in
+	 * milliseconds
+	 */
+	public static void Wait(long Time) {
+		sagex.SageAPI.call("Wait", new Object[] { Time });
+	}
+
+	/**
+	 * Returns the maximum of the two arguments; the type of the returned
+	 * argument will be the same as the highest precision argument
+	 * 
+	 * Parameters: Value1- one of the values Value2- the other value Returns:
+	 * the maximum of the passed in values
+	 */
+	public static java.lang.Number Max(java.lang.Number Value1, java.lang.Number Value2) {
+		return (java.lang.Number) sagex.SageAPI.call("Max", new Object[] { Value1, Value2 });
+	}
+
+	/**
+	 * Returns the minimum of the two arguments; the type of the returned
+	 * argument will be the same as the highest precision argument
+	 * 
+	 * Parameters: Value1- one of the values Value2- the other value Returns:
+	 * the minimum of the passed in values
+	 */
+	public static java.lang.Number Min(java.lang.Number Value1, java.lang.Number Value2) {
+		return (java.lang.Number) sagex.SageAPI.call("Min", new Object[] { Value1, Value2 });
+	}
+
+	/**
+	 * Executes a new process on the system
+	 * 
+	 * Parameters: CommandString- the command to execute (i.e.
+	 * C:\windows\notepad.exe or ifconfig) Arguments- the arguments to pass to
+	 * the command that is executed, if it's a java.util.Collection or array
+	 * then each element is an argument, otherwise it is considered a single
+	 * argument; use null for no arguments WorkingDirectory- the directory to
+	 * execute the process from or null to execute it from the current working
+	 * directory ConsoleApp- if true then SageTV will consume the stdout and
+	 * stderr output from the process that is launched; if false it will not
+	 * Returns: the java.lang.Process object that represents the launched
+	 * process
+	 */
+	public static java.lang.Process ExecuteProcess(java.lang.String CommandString, java.lang.Object Arguments, java.io.File WorkingDirectory, boolean ConsoleApp) {
+		return (java.lang.Process) sagex.SageAPI.call("ExecuteProcess", new Object[] { CommandString, Arguments, WorkingDirectory, ConsoleApp });
+	}
+
+	/**
+	 * Executes a new process on the system and returns as a String the output
+	 * of the process
+	 * 
+	 * Parameters: CommandString- the command to execute (i.e.
+	 * C:\windows\notepad.exe or ifconfig) Arguments- the arguments to pass to
+	 * the command that is executed, if it's a java.util.Collection or array
+	 * then each element is an argument, otherwise it is considered a single
+	 * argument; use null for no arguments WorkingDirectory- the directory to
+	 * execute the process from or null to execute it from the current working
+	 * directory ReturnStdout- if true then SageTV will return the data from
+	 * stdout as part of the return value ReturnStderr- if true then SageTV will
+	 * return the data from stderr as part of the return value Returns: a String
+	 * which contains the data from stdout/stderr (depending upon the
+	 * arguments), null if there was a failure Since: 6.0
+	 */
+	public static java.lang.String ExecuteProcessReturnOutput(java.lang.String CommandString, java.lang.Object Arguments, java.io.File WorkingDirectory, boolean ReturnStdout, boolean ReturnStderr) {
+		return (java.lang.String) sagex.SageAPI.call("ExecuteProcessReturnOutput", new Object[] { CommandString, Arguments, WorkingDirectory, ReturnStdout, ReturnStderr });
+	}
+
+	/**
+	 * Returns a MetaImage object that refers to the specified image file. Used
+	 * for passing images into Widgets.
+	 * 
+	 * Parameters: FilePath- the file path of the image to load Returns: the
+	 * loaded image object
+	 */
+	public static Object LoadImageFile(java.io.File FilePath) {
+		return (Object) sagex.SageAPI.call("LoadImageFile", new Object[] { FilePath });
+	}
+
+	/**
+	 * Returns a MetaImage object that refers to a specified image resource.
+	 * This can be used to load images from URLs, JAR resources or the file
+	 * system.It also has a secondary purpose where you can pass it a MetaImage
+	 * and then it will load that image into the current image cache so it will
+	 * render as fast as possible in the next drawing cycle. Good for preloading
+	 * the next image in a slideshow.
+	 * 
+	 * 
+	 * Parameters: Resource- if this is a MetaImage then the image is loaded
+	 * into the cache, otherwise its converted to a string and then a MetaImage
+	 * is returned for that resource Returns: the MetaImage that refers to the
+	 * passed specified resource, if a MetaImage was passed in then the same
+	 * object is returned
+	 */
+	public static Object LoadImage(java.lang.Object Resource) {
+		return (Object) sagex.SageAPI.call("LoadImage", new Object[] { Resource });
+	}
+
+	/**
+	 * Returns a java.awt.image.BufferedImage object. This can be used to load
+	 * images from URLs, JAR resources or the file system.
+	 * 
+	 * 
+	 * Parameters: Resource- if this is a MetaImage then the buffered image is
+	 * taken from that, otherwise its converted to a string and then the image
+	 * is loaded from that path Returns: a newly allocated
+	 * java.awt.image.BufferedImage corresponding to the specified resource
+	 * Since: 4.1
+	 */
+	public static java.awt.image.BufferedImage GetImageAsBufferedImage(java.lang.Object Resource) {
+		return (java.awt.image.BufferedImage) sagex.SageAPI.call("GetImageAsBufferedImage", new Object[] { Resource });
+	}
+
+	/**
+	 * Returns a java.awt.image.BufferedImage object. This can be used to load
+	 * images from URLs, JAR resources or the file system. The size of the
+	 * returned image will match the passed in arguments.
+	 * 
+	 * Parameters: Resource- if this is a MetaImage then the buffered image is
+	 * taken from that, otherwise its converted to a string and then the image
+	 * is loaded from that path Width- the desired width of the returned image
+	 * Height- the desired height of the returned image Returns: a newly
+	 * allocated java.awt.image.BufferedImage corresponding to the specified
+	 * resource Since: 4.1
+	 */
+	public static java.awt.image.BufferedImage GetScaledImageAsBufferedImage(java.lang.Object Resource, int Width, int Height) {
+		return (java.awt.image.BufferedImage) sagex.SageAPI.call("GetScaledImageAsBufferedImage", new Object[] { Resource, Width, Height });
+	}
+
+	/**
+	 * Unloads the specified image resource from memory. NOTE: This does not
+	 * care about the internal reference count in SageTV for this image which
+	 * could mean bad things will happen if you use this on images other than
+	 * ones that you are explicitly managing.
+	 * 
+	 * Parameters: ResPath- the path to the image resource, can be a url, JAR
+	 * resource path or a file path
+	 */
+	public static void UnloadImage(java.lang.String ResPath) {
+		sagex.SageAPI.call("UnloadImage", new Object[] { ResPath });
+	}
+
+	/**
+	 * Checks whether the passed in MetaImage (from an API call that returns
+	 * MetaImage), MediaFile, File, URL or Album is loaded into system memory or
+	 * into the VRAM cache of the corresponding UI making the call.
+	 * 
+	 * Parameters: Image- the MetaImage to check, or a MediaFile or an Album or
+	 * a java.io.File or a java.net.URL Returns: true if the MetaImage (or the
+	 * MetaImage that would correspond to the passed in resource) is loaded into
+	 * system memory or the calling UI's VRAM, false otherwise Since: 6.1
+	 */
+	public static boolean IsImageLoaded(java.lang.Object Image) {
+		return (Boolean) sagex.SageAPI.call("IsImageLoaded", new Object[] { Image });
+	}
+
+	/**
+	 * Returns a list of the files in the specified directory
+	 * 
+	 * Parameters: DirectoryPath- the directory to list the files in Returns: a
+	 * list of files in the specified directory
+	 */
+	public static java.io.File[] DirectoryListing(java.io.File DirectoryPath) {
+		return (java.io.File[]) sagex.SageAPI.call("DirectoryListing", new Object[] { DirectoryPath });
+	}
+
+	/**
+	 * Returns a list of the files in the specified directory on the local
+	 * filesystem
+	 * 
+	 * Parameters: DirectoryPath- the directory to list the files in Returns: a
+	 * list of files in the specified directory Since: 6.4
+	 */
+	public static java.io.File[] LocalDirectoryListing(java.io.File DirectoryPath) {
+		return (java.io.File[]) sagex.SageAPI.call("LocalDirectoryListing", new Object[] { DirectoryPath });
+	}
+
+	/**
+	 * Returns the root directories of the file systems (on Linux this'll just
+	 * be / and on Windows it'll be the drive letters)
+	 * 
+	 * Returns: the root directories of the file systems
+	 */
+	public static java.io.File[] GetFileSystemRoots() {
+		return (java.io.File[]) sagex.SageAPI.call("GetFileSystemRoots", (Object[]) null);
+	}
+
+	/**
+	 * Returns the root directories of the local file systems (on Linux this'll
+	 * just be / and on Windows it'll be the drive letters)
+	 * 
+	 * Returns: the root directories of the local file systems Since: 6.4
+	 */
+	public static java.io.File[] GetLocalFileSystemRoots() {
+		return (java.io.File[]) sagex.SageAPI.call("GetLocalFileSystemRoots", (Object[]) null);
+	}
+
+	/**
+	 * Returns true if the first string ends with the second, uses
+	 * java.lang.String.endsWith
+	 * 
+	 * Parameters: FullString- the string to search in MatchString- the string
+	 * to search for Returns: true if FullString ends with MatchString, false
+	 * otherwise
+	 */
+	public static boolean StringEndsWith(java.lang.String FullString, java.lang.String MatchString) {
+		return (Boolean) sagex.SageAPI.call("StringEndsWith", new Object[] { FullString, MatchString });
+	}
+
+	/**
+	 * Returns true if the first string starts with the second, uses
+	 * java.lang.String.startsWith
+	 * 
+	 * Parameters: FullString- the string to search in MatchString- the string
+	 * to search for Returns: true if FullString starts with MatchString, false
+	 * otherwise
+	 */
+	public static boolean StringStartsWith(java.lang.String FullString, java.lang.String MatchString) {
+		return (Boolean) sagex.SageAPI.call("StringStartsWith", new Object[] { FullString, MatchString });
+	}
+
+	/**
+	 * Returns the index of the second string within the first string, -1 if it
+	 * is not found. Uses java.lang.String.indexOf
+	 * 
+	 * Parameters: FullString- the string to search in MatchString- the string
+	 * to search for Returns: the first 0-based index in FullString that
+	 * MatchString occurs at or -1 if it is not found
+	 */
+	public static int StringIndexOf(java.lang.String FullString, java.lang.String MatchString) {
+		return (Integer) sagex.SageAPI.call("StringIndexOf", new Object[] { FullString, MatchString });
+	}
+
+	/**
+	 * Returns the last index of the second string within the first string, -1
+	 * if it is not found. Uses java.lang.String.lastIndexOf
+	 * 
+	 * Parameters: FullString- the string to search in MatchString- the string
+	 * to search for Returns: the last 0-based index in FullString that
+	 * MatchString occurs at or -1 if it is not found
+	 */
+	public static int StringLastIndexOf(java.lang.String FullString, java.lang.String MatchString) {
+		return (Integer) sagex.SageAPI.call("StringLastIndexOf", new Object[] { FullString, MatchString });
+	}
+
+	/**
+	 * Returns the current working directory for the application
+	 * 
+	 * Returns: the current working directory for the application
+	 */
+	public static java.lang.String GetWorkingDirectory() {
+		return (java.lang.String) sagex.SageAPI.call("GetWorkingDirectory", (Object[]) null);
+	}
+
+	/**
+	 * Returns true if this client has a local file system that can be accessed.
+	 * 
+	 * Returns: true if this client has a local file system that can be accessed
+	 * Since: 6.4
+	 */
+	public static boolean HasLocalFilesystem() {
+		return (Boolean) sagex.SageAPI.call("HasLocalFilesystem", (Object[]) null);
+	}
+
+	/**
+	 * Creates a new file object for the specified directory and file name or
+	 * relative path
+	 * 
+	 * Parameters: Directory- the directory name File- the file within the
+	 * directory or relative file path Returns: a new file object for the
+	 * specified directory and file name or relative path
+	 */
+	public static java.io.File CreateFilePath(java.lang.String Directory, java.lang.String File) {
+		return (java.io.File) sagex.SageAPI.call("CreateFilePath", new Object[] { Directory, File });
+	}
+
+	/**
+	 * Returns true if the specified file path is marked as a hidden file
+	 * 
+	 * Parameters: FilePath- the file path to test Returns: true if the
+	 * specified file path is marked as a hidden file
+	 */
+	public static boolean IsFilePathHidden(java.lang.String FilePath) {
+		return (Boolean) sagex.SageAPI.call("IsFilePathHidden", new Object[] { FilePath });
+	}
+
+	/**
+	 * Returns true if the specified local file path is marked as a hidden file
+	 * 
+	 * Parameters: FilePath- the file path to test Returns: true if the
+	 * specified local file path is marked as a hidden file Since: 6.4
+	 */
+	public static boolean IsLocalFilePathHidden(java.lang.String FilePath) {
+		return (Boolean) sagex.SageAPI.call("IsLocalFilePathHidden", new Object[] { FilePath });
+	}
+
+	/**
+	 * Returns true if the specified file path denotes a file that exists and is
+	 * not a directory
+	 * 
+	 * Parameters: FilePath- the file path to test Returns: true if the
+	 * specified file path denotes a file that exists and is not a directory
+	 */
+	public static boolean IsFilePath(java.lang.String FilePath) {
+		return (Boolean) sagex.SageAPI.call("IsFilePath", new Object[] { FilePath });
+	}
+
+	/**
+	 * Returns true if the specified local file path denotes a file that exists
+	 * and is not a directory
+	 * 
+	 * Parameters: FilePath- the file path to test Returns: true if the
+	 * specified local file path denotes a file that exists and is not a
+	 * directory Since: 6.4
+	 */
+	public static boolean IsLocalFilePath(java.lang.String FilePath) {
+		return (Boolean) sagex.SageAPI.call("IsLocalFilePath", new Object[] { FilePath });
+	}
+
+	/**
+	 * Returns true if the specified path denotes a directory that exists
+	 * 
+	 * Parameters: FilePath- the file path to test Returns: true if the
+	 * specified path denotes a directory that exists
+	 */
+	public static boolean IsDirectoryPath(java.lang.String FilePath) {
+		return (Boolean) sagex.SageAPI.call("IsDirectoryPath", new Object[] { FilePath });
+	}
+
+	/**
+	 * Returns true if the specified local path denotes a directory that exists
+	 * 
+	 * Parameters: FilePath- the file path to test Returns: true if the
+	 * specified local path denotes a directory that exists Since: 6.4
+	 */
+	public static boolean IsLocalDirectoryPath(java.lang.String FilePath) {
+		return (Boolean) sagex.SageAPI.call("IsLocalDirectoryPath", new Object[] { FilePath });
+	}
+
+	/**
+	 * Creates a new directory and any parent directories for the specified
+	 * directory path.
+	 * 
+	 * Parameters: DirectoryPath- the directory to create Returns: true if
+	 * successful, false otherwise
+	 */
+	public static boolean CreateNewDirectory(java.io.File DirectoryPath) {
+		return (Boolean) sagex.SageAPI.call("CreateNewDirectory", new Object[] { DirectoryPath });
+	}
+
+	/**
+	 * Creates a new local directory and any parent directories for the
+	 * specified directory path.
+	 * 
+	 * Parameters: DirectoryPath- the directory to create Returns: true if
+	 * successful, false otherwise Since: 6.4
+	 */
+	public static boolean CreateNewLocalDirectory(java.io.File DirectoryPath) {
+		return (Boolean) sagex.SageAPI.call("CreateNewLocalDirectory", new Object[] { DirectoryPath });
+	}
+
+	/**
+	 * Returns the parent directory for the specified file path
+	 * 
+	 * Parameters: FilePath- the file path to get the parent directory for
+	 * Returns: the parent directory for the specified file path
+	 */
+	public static java.io.File GetPathParentDirectory(java.io.File FilePath) {
+		return (java.io.File) sagex.SageAPI.call("GetPathParentDirectory", new Object[] { FilePath });
+	}
+
+	/**
+	 * Returns the last modified time of the specified file path
+	 * 
+	 * Parameters: FilePath- the file path Returns: the last modified time of
+	 * the specified file path
+	 */
+	public static long GetPathLastModifiedTime(java.io.File FilePath) {
+		return (Long) sagex.SageAPI.call("GetPathLastModifiedTime", new Object[] { FilePath });
+	}
+
+	/**
+	 * Returns the last modified time of the specified local file path
+	 * 
+	 * Parameters: FilePath- the file path Returns: the last modified time of
+	 * the specified local file path Since: 6.4
+	 */
+	public static long GetLocalPathLastModifiedTime(java.io.File FilePath) {
+		return (Long) sagex.SageAPI.call("GetLocalPathLastModifiedTime", new Object[] { FilePath });
+	}
+
+	/**
+	 * Returns the size in bytes of the specified file path
+	 * 
+	 * Parameters: FilePath- the file path Returns: the size in bytes of the
+	 * specified file path Since: 6.4
+	 */
+	public static long GetFilePathSize(java.io.File FilePath) {
+		return (Long) sagex.SageAPI.call("GetFilePathSize", new Object[] { FilePath });
+	}
+
+	/**
+	 * Returns the size in bytes of the specified local file path
+	 * 
+	 * Parameters: FilePath- the file path Returns: the size in bytes of the
+	 * specified local file path Since: 6.4
+	 */
+	public static long GetLocalFilePathSize(java.io.File FilePath) {
+		return (Long) sagex.SageAPI.call("GetLocalFilePathSize", new Object[] { FilePath });
+	}
+
+	/**
+	 * Adds the specified value into the grouping using the specified key.
+	 * Useful on results fromGroupByMethod() This works using a Map
+	 * implementation that has Collections as the values and objects as the
+	 * keys. So if two objects have the same key they will both still exist in
+	 * the map by being in the Collection that corresponds to their key.
+	 * 
+	 * Parameters: Grouping- the grouping (Map) to add the new key/value pair to
+	 * Key- the key to use to store the value in the map Value- the value to
+	 * store Returns: true is always returned
+	 */
+	public static boolean AddToGrouping(java.util.Map Grouping, java.lang.Object Key, java.lang.Object Value) {
+		return (Boolean) sagex.SageAPI.call("AddToGrouping", new Object[] { Grouping, Key, Value });
+	}
+
+	/**
+	 * Opens a TCP/IP socket connection to the specified hostname on the
+	 * specified port and then sends the specified command. After that the
+	 * socket is closed.
+	 * 
+	 * Parameters: Hostname- the hostname to connect to Port- the port to
+	 * connect on Command- either a byte[] or a String to send across the socket
+	 * Returns: true if successful, false otherwise
+	 */
+	public static boolean SendNetworkCommand(java.lang.String Hostname, int Port, java.lang.Object Command) {
+		return (Boolean) sagex.SageAPI.call("SendNetworkCommand", new Object[] { Hostname, Port, Command });
+	}
+
+	/**
+	 * Scales a java.awt.image.BufferedImage object using optimized techniques
+	 * 
+	 * Parameters: JavaBufferedImage- the BufferedImage object that is the
+	 * source for the scaling Width- the width of the target image Height- the
+	 * height of the target image Alpha- true if the scaling should be done in
+	 * ARGB, false if it should be done in RGB Returns: a new BufferedImage that
+	 * is a scaled version of the specified image
+	 */
+	public static java.awt.image.BufferedImage ScaleBufferedImage(java.awt.image.BufferedImage JavaBufferedImage, int Width, int Height, boolean Alpha) {
+		return (java.awt.image.BufferedImage) sagex.SageAPI.call("ScaleBufferedImage", new Object[] { JavaBufferedImage, Width, Height, Alpha });
+	}
+
+	/**
+	 * Returns a localized version of the specified string. Uses SageTV's core
+	 * translation properties to do this.
+	 * 
+	 * Parameters: EnglishText- the English string to translate from Returns:
+	 * the translated version of the specified string in the currently
+	 * configured language
+	 */
+	public static java.lang.String LocalizeString(java.lang.String EnglishText) {
+		return (java.lang.String) sagex.SageAPI.call("LocalizeString", new Object[] { EnglishText });
+	}
+
+	/**
+	 * Returns the IP address of the machine
+	 * 
+	 * Returns: the IP address of the machine
+	 */
+	public static java.lang.String GetLocalIPAddress() {
+		return (java.lang.String) sagex.SageAPI.call("GetLocalIPAddress", (Object[]) null);
+	}
+
+	/**
+	 * Returns true if the specified file path has a file extension which would
+	 * be imported by SageTV into its library.
+	 * 
+	 * Parameters: Filename- the file path to test Returns: true if the
+	 * specified file path has a file extension which would be imported by
+	 * SageTV into its library, false otherwise
+	 */
+	public static boolean IsImportableFileType(java.lang.String Filename) {
+		return (Boolean) sagex.SageAPI.call("IsImportableFileType", new Object[] { Filename });
+	}
+
+	/**
+	 * Guesses what media type the specified filename corresponds to. It does
+	 * this based on the configuration for the import library file types.
+	 * 
+	 * Parameters: Filename- the file path to test Returns: "M", "V", "P" or "D"
+	 * for a music, video, picture or DVD file respectively; if it can't tell it
+	 * returns "V" Since: 6.4
+	 */
+	public static java.lang.String GuessMajorFileType(java.lang.String Filename) {
+		return (java.lang.String) sagex.SageAPI.call("GuessMajorFileType", new Object[] { Filename });
+	}
+
+	/**
+	 * Connects to the SageTV Locator server and submits the specified Locator
+	 * ID for a 'ping'. The Locator server will then attempt to connect to the
+	 * IP for that GUID and report back the status. The return code is an
+	 * integer as follows: -1 - Unable to connect to the locator server
+	 * (internet connection is down or locator server is down) 0 - The locator
+	 * server did not have an IP address registered for this GUID 1 - The
+	 * locator server could not connect to the IP address registered for the
+	 * GUID 2 - The locator server can connect to the IP address registered for
+	 * the GUID, but not to the Placeshifter port 3 - The locator server can
+	 * connect to the IP address/port for the GUID, but the server that is there
+	 * is not the Placeshifter 10 - The ping was successful. External
+	 * connections to the Placeshifter should work correctly.
+	 * 
+	 * Parameters: LocatorID- the GUID that should be used for the 'ping'
+	 * Returns: an integer status code as described above.
+	 */
+	public static int TestPlaceshifterConnectivity(java.lang.String LocatorID) {
+		return (Integer) sagex.SageAPI.call("TestPlaceshifterConnectivity", new Object[] { LocatorID });
+	}
+
+	/**
+	 * Creates a java.lang.Object array and initializes each element to the
+	 * passed in argument. NOTE: This method takes a variable number of
+	 * arguments, and the length of the returned array will be equal to the
+	 * number of arguments. i.e. calling CreateArray(1, 2) returns an Object
+	 * array with elements 1 and 2 in it
+	 * 
+	 * Parameters: Value- a value for an element of the array (multiple
+	 * arguments allowed) Returns: the newly allocated Object array with its
+	 * elements set to the arguments Since: 6.0
+	 */
+	public static java.lang.Object[] CreateArray(java.lang.Object Value) {
+		return (java.lang.Object[]) sagex.SageAPI.call("CreateArray", new Object[] { Value });
+	}
+
+	/**
+	 * Scrolls the closest pageable UI parent component (or sibling of a parent)
+	 * to the specified position.
+	 * 
+	 * Parameters: RelativeX- the X position to scroll to between 0.0 and 1.0
+	 * (use a negative number to not change the X position) RelativeY- the Y
+	 * position to scroll to between 0.0 and 1.0 (use a negative number to not
+	 * change the Y position) Since: 6.2
+	 */
+	public static void SetScrollPosition(float RelativeX, float RelativeY) {
+		sagex.SageAPI.call("SetScrollPosition", new Object[] { RelativeX, RelativeY });
+	}
+
+	/**
+	 * Clears the cache that links Widgets to the in memory-menu representations
+	 * for this UI.
+	 * 
+	 * Since: 6.2
+	 */
+	public static void ClearMenuCache() {
+		sagex.SageAPI.call("ClearMenuCache", (Object[]) null);
+	}
+
+	/**
+	 * Starts an animation for the specified Widget in the specified Layer. If
+	 * the Widget name ends with a '*' then all Widgets that match will be
+	 * animated; otherwise only the first visible Widget matching the name will
+	 * be animated. The Widget must also have the specified Layer as it's
+	 * animation layer (i.e. if the Layer is Foreground, then the corresponding
+	 * Widget should have an Animation property of LayerForeground). The type of
+	 * animation is controlled by AnimtionName. There's also suffixes that can
+	 * be appened to the AnimationName that effect how the timescale for the
+	 * animation progresses. There's also other suffixes that can be used to
+	 * specify other options for the animations.Valid strings for the
+	 * AnimationName are: FullSlideDownOut - slides down off the bottom of the
+	 * screen FullSlideDownIn - slides down in from the top of the screen
+	 * FullSlideUpOut - slides up off the top of the screen FullSlideUpIn -
+	 * slides up in from the bottom of the screen FullSlideLeftOut - slides off
+	 * to the left of the screen FullSlideLeftIn - slides in from the left of
+	 * the screen FullSlideRightOut - slides off the right of the screen
+	 * FullSlideRightIn - slides in from the right of the screen SlideDownOut -
+	 * slides down off the bottom of its parent component SlideDownIn - slides
+	 * down in from the top of its parent component SlideUpOut - slides up off
+	 * the top of its parent component SlideUpIn - slides up in from the bottom
+	 * of its parent component SlideLeftOut - slides off to the left of its
+	 * parent component SlideLeftIn - slides in from the left of its parent
+	 * component SlideRightOut - slides off the right of its parent component
+	 * SlideRightIn - slides in from the right of its parent component FadeOut -
+	 * fades out FadeIn - fades in Smooth - smoothly transitions from one
+	 * position & size to another; the destination image is used for the
+	 * animation Morph - smoothly transitions from one position & size to
+	 * another; the image fades between the source and the destination ZoomOut -
+	 * shrinks the size down to nothing from its source size ZoomIn - grows the
+	 * size from nothing to its destination size HZoomOut - shrinks the size
+	 * down to nothing horitonzatlly from its source sizeHZoomIn - grows the
+	 * size from nothing horitonzatlly to its destination size VZoomOut -
+	 * shrinks the size down to nothing vertically from its source sizeVZoomIn -
+	 * grows the size from nothing vertically to its destination size
+	 * 
+	 * Timeline modifications for animations affect how the timescale
+	 * progresses. For out animations, they are eased out if non-linear. For in
+	 * animations, they are eased in if non-linear. For animations that are
+	 * neither; the timescale modification occurs at both ends. Bounce only
+	 * works properly for 'in' animations. Valid suffixes for any of the
+	 * animations are (default is Quadratic): Linear - animation follows a
+	 * smooth timeline (first order) Quadratic - animation follows a quadratic
+	 * timeline (second order) Cubic - animation follows a cubic timeline (third
+	 * order) Bounce - animation follows a timeline that looks like it 'bounces'
+	 * in
+	 * 
+	 * Additional options for the animation may also be specified by combining
+	 * additional suffixes to the AnimationName. The following is a list of
+	 * valid option suffixes. Fade - applies an additional fade in/out effect to
+	 * the animation (i.e. ZoomOutFade) North - for Zoom animations will center
+	 * the zoom around the top of the component (i.e. ZoomInNorth) West - for
+	 * Zoom animations will center the zoom around the left of the component
+	 * South - for Zoom animations will center the zoom around the bottom of the
+	 * component East - for Zoom animations will center the zoom around the
+	 * right of the component
+	 * 
+	 * Behind - for Out animations will cause it to be rendered behind the other
+	 * layers instead of on top as Out animations usually areUnclipped - for
+	 * Slide animations will cause the same motion to occur but without clipping
+	 * the area when drawnUnease - for In or Out animations it will reverse the
+	 * 'easing' direction so you can slide in & out the same panel w/ out
+	 * overlapYou may combine the directional suffixes to get an additional four
+	 * directions (i.e. ZoomOutNorthEast). And this can also be combined with
+	 * the timeline suffixes as well, or even Fade (i.e.
+	 * ZoomInQuadraticSouthWestFade)For delaying the start of an animation; see
+	 * hereAnimateDelayed()
+	 * 
+	 * 
+	 * 
+	 * Parameters: WidgetName- the name of the Widget that should be animated
+	 * LayerName- the name of the Layer the animated Widget must be in
+	 * AnimationName- the name of the animation to perform Duration- the time in
+	 * milliseconds that it should take for the animation to complete Returns:
+	 * returns true if a matching Widget was found to perform the animation on;
+	 * false otherwise Since: 6.2
+	 */
+	public static boolean Animate(java.lang.String WidgetName, java.lang.String LayerName, java.lang.String AnimationName, long Duration) {
+		return (Boolean) sagex.SageAPI.call("Animate", new Object[] { WidgetName, LayerName, AnimationName, Duration });
+	}
+
+	/**
+	 * For more details on Animations see here:Animate() In addition to what's
+	 * specified in the Animate API call; this also offers restricting of an
+	 * Animation by a variable name and value. Usage of the '*' suffix on the
+	 * WidgetName is allowed.
+	 * 
+	 * Parameters: WidgetName- the name of the Widget that should be animated
+	 * LayerName- the name of the Layer the animated Widget must be in VarName-
+	 * the name of the variable that must match for the Widget to be animated
+	 * VarValue- the value of the variable to match AnimationName- the name of
+	 * the animation to perform Duration- the time in milliseconds that it
+	 * should take for the animation to complete StartDelay- the delay in
+	 * milliseconds before this animation should start Interruptable- true if
+	 * the animation can be interrupted to render the next UI update; false if
+	 * it must complete (this parameter is optional and defaults to false)
+	 * Returns: returns true if a matching Widget was found to perform the
+	 * animation on; false otherwise Since: 6.3
+	 */
+	public static boolean AnimateVariable(java.lang.String WidgetName, java.lang.String LayerName, java.lang.String VarName, java.lang.Object VarValue, java.lang.String AnimationName, long Duration, long StartDelay, boolean Interruptable) {
+		return (Boolean) sagex.SageAPI.call("AnimateVariable", new Object[] { WidgetName, LayerName, VarName, VarValue, AnimationName, Duration, StartDelay, Interruptable });
+	}
+
+	/**
+	 * Performs an Animation between two different Widgets. Normally animations
+	 * are performed between two different states for a single Widget. This API
+	 * call allows an animation to occur between two different Widgets and will
+	 * usually be used with a 'Morph' AnimationName. This may only target a
+	 * single Widget; so the '*' suffix is not used on the WidgetNames in this
+	 * call.For more details on Animations see here:Animate()
+	 * 
+	 * 
+	 * Parameters: SourceWidgetName- the name of the Widget to use as the source
+	 * for this animation TargetWidgetName- the name of the Widget to use as the
+	 * target (destination) for this animation LayerName- the name of the Layer
+	 * the animated Widget must be in AnimationName- the name of the animation
+	 * to perform Duration- the time in milliseconds that it should take for the
+	 * animation to complete StartDelay- the delay in milliseconds before this
+	 * animation should start Interruptable- true if the animation can be
+	 * interrupted to render the next UI update; false if it must complete (this
+	 * parameter is optional and defaults to false) Returns: returns true if a
+	 * matching Widget was found to perform the animation on; false otherwise
+	 * Since: 6.3
+	 */
+	public static boolean AnimateTransition(java.lang.String SourceWidgetName, java.lang.String TargetWidgetName, java.lang.String LayerName, java.lang.String AnimationName, long Duration, long StartDelay, boolean Interruptable) {
+		return (Boolean) sagex.SageAPI.call("AnimateTransition", new Object[] { SourceWidgetName, TargetWidgetName, LayerName, AnimationName, Duration, StartDelay, Interruptable });
+	}
+
+	/**
+	 * This is the same as the Animate API call; but it allows specifiying a
+	 * delay that should occur before the animation actually starts. Useful for
+	 * creating sequences of animation effects.
+	 * 
+	 * For more details see here:Animate()
+	 * 
+	 * 
+	 * Parameters: WidgetName- the name of the Widget that should be animated
+	 * LayerName- the name of the Layer the animated Widget must be in
+	 * AnimationName- the name of the animation to perform Duration- the time in
+	 * milliseconds that it should take for the animation to complete
+	 * StartDelay- the delay in milliseconds before this animation should start
+	 * Interruptable- true if the animation can be interrupted to render the
+	 * next UI update; false if it must complete (this parameter is optional and
+	 * defaults to false) Returns: returns true if a matching Widget was found
+	 * to perform the animation on; false otherwise Since: 6.2
+	 */
+	public static boolean AnimateDelayed(java.lang.String WidgetName, java.lang.String LayerName, java.lang.String AnimationName, long Duration, long StartDelay, boolean Interruptable) {
+		return (Boolean) sagex.SageAPI.call("AnimateDelayed", new Object[] { WidgetName, LayerName, AnimationName, Duration, StartDelay, Interruptable });
+	}
+
+	/**
+	 * Sets whether or not core animation support is enabled (animations that
+	 * use layers and the Animate API calls for their effects)
+	 * 
+	 * Parameters: Enabled- true to enable core animations; false otherwise
+	 * Since: 6.2
+	 */
+	public static void SetCoreAnimationsEnabled(boolean Enabled) {
+		sagex.SageAPI.call("SetCoreAnimationsEnabled", new Object[] { Enabled });
+	}
+
+	/**
+	 * Returns whether or not core animation support is enabled (animations that
+	 * use layers and the Animate API calls for their effects)
+	 * 
+	 * Returns: true if core animations are enabled; false otherwise Since: 6.2
+	 */
+	public static boolean AreCoreAnimationsEnabled() {
+		return (Boolean) sagex.SageAPI.call("AreCoreAnimationsEnabled", (Object[]) null);
+	}
+
+	/**
+	 * Calculates the MD5 Sum of a given file
+	 * 
+	 * Parameters: FilePath- the path to the file who's MD sum should be
+	 * calculated Returns: the MD5 sum of the specified file as a String, null
+	 * if the file doesn't exist or there's an error reading it Since: 6.3
+	 */
+	public static java.lang.String CalculateMD5Sum(java.io.File FilePath) {
+		return (java.lang.String) sagex.SageAPI.call("CalculateMD5Sum", new Object[] { FilePath });
+	}
+
+}
