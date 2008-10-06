@@ -33,6 +33,8 @@ So instead of calling SageTV directly, I call another layer.
 
 The SageAPI layer accepts an ISageAPIProvider instance that is responsible for doing the real work.  SageAPI has a setProvider() method where you can explicitly set the provider to use for the global instance, or if none is set, then it will attempt to find the best known provider.
 
+One very interesting capability of using this API is that code written using this API can run inside the SageTV Process or Externally without code changes or recompiling.  This is one of the primary reasons why I created the API.  I have some projects that I'm working on, but I don't want to litter the SageTV jvm with these processes.  Now I an host these processes externally in another JVM.  I have process isolation, so that unstable code that I might write won't cause the SageTV process to fail.
+
 == ISageAPIProvider Implementations ==
 
 === EmbeddedSageAPIProvider ===
