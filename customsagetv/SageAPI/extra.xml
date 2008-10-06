@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="package" name="SageAPI">
+    <property environment="env"/>
+	
+	<property name="target" value="target"/>
+	<property name="name" value="sagex.api"/>
+	<property name="version" value="6.3.10"/>
+	<property name="jarname" value="${name}-${version}.jar"/>
+
+	<path id="SageAPI.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="libs/htmlparser.jar"/>
+        <pathelement location="libs/log4j-1.2.15.jar"/>
+        <pathelement location="libs/metadata-updater-1.5.jar"/>
+        <pathelement location="libs/Sage.jar"/>
+    </path>
+	
+	<target name="package" depends="init,makeJar">
+	</target>
+	
+	<target name="makeJar">
+		<jar destfile="${target}/${jarname}">
+			<fileset dir="bin" includes="sagex/**"></fileset>
+		</jar>
+	</target>
+
+    <target name="init">
+    	<delete dir="target" failonerror="false"></delete>
+        <mkdir dir="target"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src" excludes="**/*.launch, **/*.java"/>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="target"/>
+    </target>
+	
+    <target name="cleanGeneratedAPI">
+        <delete dir="src/sagex/api/"/>
+    </target>
+	
+	<target name="generateSageAPI" depends="init,cleanGeneratedAPI">
+		<java classname="org.jdna.sage.api.generator.Main" classpathref="SageAPI.classpath" fork="true"/>
+	</target>
+</project>
