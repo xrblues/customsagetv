@@ -57,6 +57,9 @@ load_at_startup_runnable_classes=sagex.remote.SageRPCServerRunner
 
   * Start Sage Server
 
+The Sage RPC server will start up and listen for requests on port 9999.
+
+
 Your remote client code will also require that the sagex-api.6.3.10.jar is in it's classpath.
 
 In your client code, you simply need to invoke the SageTV api and it should find the remote server automatically. 
