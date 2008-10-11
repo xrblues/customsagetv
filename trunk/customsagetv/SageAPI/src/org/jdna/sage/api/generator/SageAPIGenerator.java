@@ -13,7 +13,7 @@ import org.jdna.sage.api.generator.MethodParser.SageMethod;
 
 public class SageAPIGenerator {
 	private static final Logger log = Logger.getLogger(SageAPIGenerator.class);
-	
+
 	private File srcDir;
 	private String packageName;
 	private String className;
@@ -26,49 +26,48 @@ public class SageAPIGenerator {
 		this.srcDir = srcDir;
 		this.packageName = packageName;
 		this.className = className;
-		this.methods=methods;
-		
+		this.methods = methods;
+
 		outDir = new File(srcDir, packageName.replaceAll("\\.", "/") + "/");
 	}
-	
+
 	public void generate() throws Exception {
 		outDir.mkdirs();
 		outFile = new File(outDir, className + ".java");
 
 		log.info("Creating Java: " + outFile.getAbsolutePath());
-		
+
 		pw = new PrintWriter(new FileWriter(outFile));
 		pw.printf("package %s;\n\n", packageName);
 
 		pw.println("/**");
 		pw.println(" * Unofficial SageTV Generated File - Never Edit");
 		pw.println(" * Generated Date/Time: " + new SimpleDateFormat().format(new Date()));
-		pw.printf( " * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/%s.html'>%s</a>\n", className, className);
+		pw.printf(" * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/%s.html'>%s</a>\n", className, className);
 		pw.println(" * This Generated API is not Affiliated with SageTV.  It is user contributed.");
 		pw.println(" */");
-		
+
 		// pw.println("import org.apache.log4j.Logger;");
-		
+
 		pw.printf("public class %s {\n", className);
-		
-		
-		//pw.printf("protected static final Logger log = Logger.getLogger(%s.class);\n", className);
+
+		// pw.printf("protected static final Logger log =
+		// Logger.getLogger(%s.class);\n", className);
 		for (SageMethod m : methods) {
-			if (m.comment!=null && m.comment.trim().length()>0) {
+			if (m.comment != null && m.comment.trim().length() > 0) {
 				pw.println("/**");
 				pw.println(m.comment.trim());
 				pw.println(" */");
 			}
 			pw.printf("public static %s %s (%s) {\n", fixSageApi(m.returnType), m.name, createArgList(m.args));
-			
+
 			// build the body to call a sage service
 			callSageSerice(pw, m);
-			
-			
+
 			pw.println("}\n");
 		}
 		pw.println("}");
-		
+
 		pw.close();
 		pw.flush();
 	}
@@ -80,21 +79,23 @@ public class SageAPIGenerator {
 	private void callSageSerice(PrintWriter pw, SageMethod m) {
 		String objArr = buildObjectArray(m);
 		String retStr = buildReturnString(m);
-		//pw.println("try {");
+		// pw.println("try {");
 		pw.printf("   %s sagex.SageAPI.call(\"%s\", %s);\n", retStr, m.name, objArr);
-		//pw.println("} catch (Throwable t) {");
-		//pw.printf("   log.error(\"Failed to call Sage Service: %s\", t);", m.name);
-		//pw.println("}");
+		// pw.println("} catch (Throwable t) {");
+		// pw.printf(" log.error(\"Failed to call Sage Service: %s\", t);",
+		// m.name);
+		// pw.println("}");
 	}
 
 	private String buildObjectArray(SageMethod m) {
-		if (m.args.size()==0) return "(Object[])null";
-		
+		if (m.args.size() == 0)
+			return "(Object[])null";
+
 		StringBuffer sb = new StringBuffer("new Object[] {");
-		for (int i=0;i<m.args.size();i++) {
+		for (int i = 0; i < m.args.size(); i++) {
 			MethodParam mp = m.args.get(i);
 			sb.append(mp.varName);
-			if (i<m.args.size()-1) {
+			if (i < m.args.size() - 1) {
 				sb.append(",");
 			}
 		}
@@ -106,7 +107,7 @@ public class SageAPIGenerator {
 		if (m.returnType.contains("void")) {
 			return "";
 		} else {
-			return "return ("+ makeObject(fixSageApi(m.returnType))+")";
+			return "return (" + makeObject(fixSageApi(m.returnType)) + ")";
 		}
 	}
 
@@ -125,12 +126,12 @@ public class SageAPIGenerator {
 
 	private String createArgList(List<MethodParam> args) {
 		StringBuffer sb = new StringBuffer();
-		for (int i=0;i<args.size();i++) {
+		for (int i = 0; i < args.size(); i++) {
 			MethodParam p = args.get(i);
 			sb.append(fixSageApi(p.dataType));
 			sb.append(" ");
 			sb.append(p.varName);
-			if (i<args.size()-1) {
+			if (i < args.size() - 1) {
 				sb.append(", ");
 			}
 		}

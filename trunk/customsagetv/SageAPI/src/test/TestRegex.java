@@ -17,9 +17,9 @@ public class TestRegex {
 		Pattern p = Pattern.compile("\\s*([^\\s$]+)\\s?([^$\r\n]+)?");
 		Matcher m = p.matcher(s);
 		while (m.find()) {
-			System.out.printf("Groups: %d; String: %s; Pattern: %s\n",m.groupCount(), s, p.pattern());
-			for (int i=0;i<=m.groupCount();i++) {
-				System.out.printf("Group[%d]; [%s]\n",i, m.group(i) );
+			System.out.printf("Groups: %d; String: %s; Pattern: %s\n", m.groupCount(), s, p.pattern());
+			for (int i = 0; i <= m.groupCount(); i++) {
+				System.out.printf("Group[%d]; [%s]\n", i, m.group(i));
 			}
 		}
 	}
@@ -28,9 +28,9 @@ public class TestRegex {
 		Pattern p = Pattern.compile("([^\\s]+)\\s+([^\\s,$]+)[\\s,]*");
 		Matcher m = p.matcher(s);
 		while (m.find()) {
-			System.out.printf("Groups: %d; String: %s; Pattern: %s\n",m.groupCount(), s, p.pattern());
-			for (int i=0;i<=m.groupCount();i++) {
-				System.out.printf("Group[%d]; [%s]\n",i, m.group(i) );
+			System.out.printf("Groups: %d; String: %s; Pattern: %s\n", m.groupCount(), s, p.pattern());
+			for (int i = 0; i <= m.groupCount(); i++) {
+				System.out.printf("Group[%d]; [%s]\n", i, m.group(i));
 			}
 		}
 	}

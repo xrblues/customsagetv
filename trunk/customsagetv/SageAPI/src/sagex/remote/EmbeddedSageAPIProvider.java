@@ -12,8 +12,16 @@ public class EmbeddedSageAPIProvider implements ISageAPIProvider {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public String toString() {
 		return "sage://embedded";
+	}
+
+	public Object callService(String context, String name, Object[] args) {
+		try {
+			return sage.SageTV.apiUI(context, name, args);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

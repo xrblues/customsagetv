@@ -4,26 +4,30 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 
 import sagex.SageAPI;
-import sagex.api.Configuration;
 import sagex.api.Global;
-import sagex.api.Utility;
-import sagex.remote.minihttpd.DatagramServer;
+import sagex.remote.javarpc.SageRPCServlet;
 import sagex.remote.minihttpd.DatagramListener;
+import sagex.remote.minihttpd.DatagramServer;
 import sagex.remote.minihttpd.HTTPD;
 import sagex.remote.minihttpd.HTTPDListener;
-import sagex.remote.minihttpd.SageRPCServlet;
 import sagex.remote.minihttpd.ServerInfo;
+import sagex.remote.xmlrpc.XMLRPCServlet;
 
 public class SageRPCServerRunner implements Runnable {
 	public static final String MULTICAST_GROUP = "228.5.6.7";
-	public static final int MULTICAST_PORT= 9998;
-	
-	private HTTPD server=null;
-	private DatagramServer udpServer=null;
+	public static final int MULTICAST_PORT = 9998;
+
+	private HTTPD server = null;
+	private DatagramServer udpServer = null;
+
 	public void run() {
 		// force the running API implementation to be the local sage api
 		SageAPI.setProvider(new EmbeddedSageAPIProvider());
-		
+
+		// for tesing locally
+		// TODO: don't leave this in there...
+		// SageAPI.setProvider(new SageAPIRemote("mediaserver", 9999));
+
 		// create the udp server that will listen for "where are you?" requests
 		udpServer = new DatagramServer(MULTICAST_GROUP, MULTICAST_PORT, new DatagramListener() {
 			public byte[] onDatagramPacketReceived(DatagramPacket packet) {
@@ -49,7 +53,7 @@ public class SageRPCServerRunner implements Runnable {
 			public void serverStopped(DatagramServer server) {
 			}
 		});
-		
+
 		// start the rpc server
 		server = new HTTPD(9999, new HTTPDListener() {
 			public void serverStarted(HTTPD server) {
@@ -67,9 +71,10 @@ public class SageRPCServerRunner implements Runnable {
 				udpServer.stopServer();
 			}
 		});
+		server.addServlet(XMLRPCServlet.SAGE_RPC_PATH, new XMLRPCServlet());
 		server.addServlet(SageRPCServlet.SAGE_RPC_PATH, new SageRPCServlet());
 		server.startServer();
-		
+
 		// add hook to stop the server when sage stops
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override

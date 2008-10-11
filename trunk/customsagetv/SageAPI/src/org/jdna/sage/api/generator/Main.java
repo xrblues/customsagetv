@@ -1,6 +1,7 @@
 package org.jdna.sage.api.generator;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -17,11 +18,15 @@ import org.jdna.sage.api.generator.MethodParser.SageMethod;
 public class Main {
 	private static final Logger log = Logger.getLogger(Main.class);
 
+	public class ClassMetadata {
+		public String name;
+		public List<SageMethod> methods;
+	}
+
 	public static void main(String args[]) {
 		try {
 			// process the command line
-			CommandLine cl = new CommandLine("Generate SageTV API ("
-					+ Version.VERSION + ")", "java MetadataTool", args);
+			CommandLine cl = new CommandLine("Generate SageTV API (" + Version.VERSION + ")", "java MetadataTool", args);
 			cl.process();
 
 			// apply the command line args to this instance.
@@ -48,41 +53,59 @@ public class Main {
 
 	private void process() throws Exception {
 		initConfiguration();
-		
+
 		PackageParser parser = new PackageParser(ConfigurationManager.getInstance().getProperty("sage.packageFrameUrl"));
 		parser.parse();
 		List<String> urls = parser.getUrls();
-		
-		String baseUrl = ConfigurationManager.getInstance().getProperty("sage.baseApiUrl");
-		String srcDir = ConfigurationManager.getInstance().getProperty("sage.src");
-		String packageName = ConfigurationManager.getInstance().getProperty("sage.packageName");
-		
+
+		// for regular api stuff
+		String baseUrl = ConfigurationManager.getInstance().getProperty("sage.baseApiUrl", "http://download.sage.tv/api/sage/api/");
+		String srcDir = ConfigurationManager.getInstance().getProperty("sage.src", "src");
+		String packageName = ConfigurationManager.getInstance().getProperty("sage.packageName", "sagex.api");
+
+		// for request factory stuff
+		String requestFactoryPackage = ConfigurationManager.getInstance().getProperty("sage.requestFactory.packageName", "sagex.remote.factory.request");
+
+		List<ClassMetadata> allMetaData = new ArrayList<ClassMetadata>();
+
 		for (String url : urls) {
-			String fullUrl = baseUrl +  url;
+			String fullUrl = baseUrl + url;
 			// System.out.printf("Using Url: %s\n",fullUrl);
 			Pattern p = Pattern.compile("([A-Za-z]+).html");
 			Matcher m = p.matcher(url);
 			if (m.find()) {
 				String name = m.group(1);
-				
+
 				log.info("Getting API For: " + fullUrl + "; ClassName: " + name + "; src: " + srcDir + "; package: " + packageName);
-				
+
 				MethodParser mp = new MethodParser(fullUrl);
 				mp.parse();
-				
+
 				List<SageMethod> methods = mp.getMethods();
 
-				System.out.println("Generating " + name);
+				System.out.println("Generating sagex.api." + name);
 				SageAPIGenerator sag = new SageAPIGenerator(new File(srcDir), packageName, name, methods);
 				sag.generate();
-				
-				
+
+				System.out.println("Generating sagex.api.remote.factory." + name + "Factory");
+				ApiFactoryGenerator classFactory = new ApiFactoryGenerator(new File(srcDir), requestFactoryPackage, name + "Factory", methods);
+				classFactory.generate();
+
+				// keep track of all classes for the parent factories
+				ClassMetadata md = new ClassMetadata();
+				md.methods = methods;
+				md.name = name;
+				allMetaData.add(md);
+
 			} else {
 				log.error("Problem url Url Name: " + url + "; Could not parse title");
 			}
 		}
-		
-		
+
+		// now generate files requiring ALL metedata
+		SageRPCRequestFactoryGenerator gen = new SageRPCRequestFactoryGenerator(new File(srcDir), requestFactoryPackage, "SageRPCRequestFactory", allMetaData);
+		gen.generate();
+
 	}
 
 	private void initConfiguration() throws Exception {

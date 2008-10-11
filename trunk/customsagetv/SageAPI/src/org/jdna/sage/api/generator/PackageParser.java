@@ -11,7 +11,7 @@ import org.xml.sax.SAXException;
 public class PackageParser extends URLSaxParser {
 	private String[] skipNames = null;
 	private List<String> urls = new ArrayList<String>();
-	
+
 	public PackageParser(String url) {
 		super(url);
 		skipNames = ConfigurationManager.getInstance().getProperty("sage.ignore", "package-summary.html").split("\\s*,\\s*");
@@ -21,10 +21,10 @@ public class PackageParser extends URLSaxParser {
 	public void startElement(String uri, String localName, String name, Attributes atts) throws SAXException {
 		if (isTag("A", localName)) {
 			String url = atts.getValue("href");
-			boolean skip=false;
-			for (int i=0;i<skipNames.length;i++) {
+			boolean skip = false;
+			for (int i = 0; i < skipNames.length; i++) {
 				if (url.endsWith(skipNames[i])) {
-					skip=true;
+					skip = true;
 					break;
 				}
 			}
@@ -37,5 +37,5 @@ public class PackageParser extends URLSaxParser {
 	public List<String> getUrls() {
 		return urls;
 	}
-	
+
 }

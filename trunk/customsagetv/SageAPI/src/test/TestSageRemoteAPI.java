@@ -2,12 +2,11 @@ package test;
 
 import java.io.Serializable;
 
-
 public class TestSageRemoteAPI {
 	public static void main(String args[]) {
 		printObject("Sean");
 		printObject(new int[4]);
-		printObject(new String[] {"Sean","Stuckless"});
+		printObject(new String[] { "Sean", "Stuckless" });
 	}
 
 	private static void printObject(Object o) {
