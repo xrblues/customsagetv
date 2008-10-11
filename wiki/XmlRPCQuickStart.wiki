@@ -1,0 +1,25 @@
+#summary Xml RPC for SageTV api
+
+Before you begin, ensure that you have installed the latest sages-api jar on the SageTV server.
+
+If you have configured the server correctly, then you can test if you have basic access, by going to the url: http://localhost:9999/sagex/rpcXml/Global/GetOS
+
+If you get back an xml file that contains the OS of the Sage server, then you are up and running.
+
+== Anatomy of an Xml Request ==
+
+The Xml Request has the following structure...
+
+http://server:9999/sagex/rpcXml/SageAPI/SageCommand/Arg1/Arg2/.../context:CONTEXT
+
+SageAPI is one of the Top Level Sage API classes in the sage.api package from their [http://download.sage.tv/api/index.html?sage/api/Global.html javadoc].  (case matters)
+
+SageCommand is one of the Methods associated with the SageAPI (case matters)
+
+Arg1..Argn are the parameters (position matters)
+
+context:CONTEXT is how you can pass a UI context
+
+
+When executing Xml RPC commands, it's a good idea to find your command in the SageTV JavaDoc and the convert that Java Command into Xml.
+
