@@ -2,7 +2,9 @@
 
 Before you begin, ensure that you have installed the latest sages-api jar on the SageTV server.
 
-If you have configured the server correctly, then you can test if you have basic access, by going to the url: http://localhost:9999/sagex/rpcXml/Global/GetOS
+If you have configured the server correctly, then you can test if you have basic access, by going to the following url
+
+ http://localhost:9999/sagex/rpcXml/Global/GetOS
 
 If you get back an xml file that contains the OS of the Sage server, then you are up and running.
 
@@ -22,3 +24,49 @@ The Xml Request has the following structure...
 
 
 When executing Xml RPC commands, it's a good idea to find your command in the SageTV Javadoc and then convert that Java Command into Xml.
+
+So, if you wanted to see the capture devices that are installed on your server, you would issue the following request
+ http://localhost:9999/sagex/rpcXml/CaptureDeviceAPI/GetCaptureDevices
+
+The resulting xml would look something like this
+{{{
+<response>
+  <header>
+  </header>
+  <body>
+    <array size="2">
+      <value index="0">adapter0</value>
+      <value index="1">video0</value>
+    </array>
+  </body>
+</response>
+}}}
+
+== Anatomy of an Xml Response ==
+The response the comes back from an Xml RPC call, always has the following structure
+ * response
+   * header
+     * error @code="#"
+       * message
+       * exception
+   * body
+     * array @size="#"
+       * value @index="#"
+     * arrayRef @ref="" @size="#"
+     * objectRef @ref=""
+     * value
+
+Each response call will contain the <error> and the <body> elements.
+
+The Error Node will ONLY exist if there was an error.  So testing for the existence of this node will allow you to test for an error.  Testing the <message> node will contain the friendly message and the <exception> node will contain the java stack trace from the age api call.
+
+If your call only returns a simple primitive value or string, then the body will contain a single <value> element containing the value.
+
+If your object returns a simple array containing strings or primimitives, then you will get the entire array back as an <array> element containing <value> elements.  The array will tell you it's size and each value element will contain an attribute for it's index position.
+
+If the array comming back is not serializable, then you will be get back an <arrayRef> element that only contains it's reference id and the array size.  This is the case when you call something like /MediaFileAPI/GetMediaFiles/
+
+In the case that you have an arrarRef, you can still get access to the array elements by passing the arrayRef:index as an api argument.  For example, if you asked for all media files and the array ref was 9814147.  You can then call GetMediaTitle using the follow command
+ http://localhost:9999/sagex/rpcXml/MediaFileAPI/GetMediaTitle/9814147:10
+Where the *MediaFile* argument is passed as the Array Reference and the Index from that array that you want to access.  So, in the above command, i'm asking for the MediaFileTitle for the 10th element in the array 9814147.
+
