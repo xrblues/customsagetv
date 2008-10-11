@@ -4,7 +4,7 @@ Before you begin, ensure that you have installed the latest sages-api jar on the
 
 If you have configured the server correctly, then you can test if you have basic access, by going to the following url
 
- http://localhost:9999/sagex/rpcXml/Global/GetOS
+ http://server:9999/sagex/rpcXml/Global/GetOS
 
 If you get back an xml file that contains the OS of the Sage server, then you are up and running.
 
@@ -26,7 +26,7 @@ The Xml Request has the following structure...
 When executing Xml RPC commands, it's a good idea to find your command in the SageTV Javadoc and then convert that Java Command into Xml.
 
 So, if you wanted to see the capture devices that are installed on your server, you would issue the following request
- http://localhost:9999/sagex/rpcXml/CaptureDeviceAPI/GetCaptureDevices
+ http://server:9999/sagex/rpcXml/CaptureDeviceAPI/GetCaptureDevices
 
 The resulting xml would look something like this
 {{{
@@ -67,7 +67,14 @@ If your object returns a simple array containing strings or primimitives, then y
 If the array comming back is not serializable, then you will be get back an *arrayRef* element that only contains it's reference id and the array size.  This is the case when you call something like /MediaFileAPI/GetMediaFiles/
 
 In the case that you have an arrarRef, you can still get access to the array elements by passing the arrayRef:index as an api argument.  For example, if you asked for all media files and the array ref was 9814147.  You can then call GetMediaTitle using the follow command
- http://localhost:9999/sagex/rpcXml/MediaFileAPI/GetMediaTitle/9814147:10
+ http://server:9999/sagex/rpcXml/MediaFileAPI/GetMediaTitle/9814147:10
 Where the *MediaFile* argument is passed as the Array Reference and the Index from that array that you want to access.  So, in the above command, i'm asking for the MediaFileTitle for the 10th element in the array 9814147.
 
 While the concept of the arrayRef is not ideal, it does serve 2 purposes.  The first is that it prevent an entire large object array from being serialized and sent across the network, which could be time consuming, especially if you only need to access a few elements.  The second, is that the SageAPI is setup this way.  In other words, Sage does not expose their object, but rather they expose services that can act on those objects.  The arrayRef mimics this behaviour.
+
+= Tips =
+Over time, users will contribute Tips for using this xml rpc api.  I'll try to keep adding to this list as they come in.
+
+
+* Understand the javadoc before you start using the api, since the api is simply an extension of the javadoc.
+* Remember that all API commands are case sensisitive.
