@@ -89,7 +89,7 @@ public class HTTPDThreadHandler extends Thread {
 							long st = System.currentTimeMillis();
 							servlet.doGet(new HTTPRequest(params, page), resp);
 							long et = System.currentTimeMillis();
-							long dt = et-st;
+							long dt = et - st;
 							output = baos.toByteArray();
 							replyHdrs.put("X-ServletRuntime", String.valueOf(dt));
 							replyHdrs.put("Content-Type", resp.getContentType());
@@ -100,7 +100,7 @@ public class HTTPDThreadHandler extends Thread {
 							if (server.getDocRoot() == null) {
 								throw new FileNotFoundException("Page Not Found: " + page);
 							}
-							
+
 							File file = new File(server.getDocRoot(), page);
 							System.out.println("Attempting to get file: [" + file.getAbsolutePath() + "]");
 							if (!file.exists()) {
@@ -114,7 +114,7 @@ public class HTTPDThreadHandler extends Thread {
 						}
 
 						if (output != null) {
-							
+
 							replyHdrs.put("Content-Length", String.valueOf(length));
 							o.write(("HTTP/1.0 200 OK\n").getBytes());
 

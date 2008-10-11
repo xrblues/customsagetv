@@ -18,7 +18,7 @@ public class MethodParser extends URLSaxParser {
 		String dataType;
 		String varName;
 	}
-	
+
 	public class SageMethod {
 		public String comment;
 		public String returnType;
@@ -31,8 +31,9 @@ public class MethodParser extends URLSaxParser {
 	private static final int READ_PREFIX = 1;
 	private static final int READ_NAME = 2;
 	private static final int READ_ARGS = 3;
-	
-	// TODO: start with the DL tag and end with the HR tag... preserve all inline HTML in between.
+
+	// TODO: start with the DL tag and end with the HR tag... preserve all
+	// inline HTML in between.
 	private static final int LOOK_JAVADOC = 4;
 	private static final int READ_JAVADOC = 5;
 	private static final int DONE = 99;
@@ -44,8 +45,7 @@ public class MethodParser extends URLSaxParser {
 	private List<SageMethod> methods = new ArrayList<SageMethod>();
 
 	@Override
-	public void characters(char[] ch, int start, int length)
-			throws SAXException {
+	public void characters(char[] ch, int start, int length) throws SAXException {
 		super.characters(ch, start, length);
 		if (state == DONE || state == READING)
 			return;
@@ -62,23 +62,24 @@ public class MethodParser extends URLSaxParser {
 			state = READ_ARGS;
 		} else if (state == READ_ARGS) {
 			charbuf = charbuf.replaceAll("[()]+", "").trim();
-			
-			//Pattern p = Pattern.compile("([a-zA-Z0-9\\._]+)\\s+([a-zA-Z0-9\\._]+)[\\s,]*");
+
+			// Pattern p =
+			// Pattern.compile("([a-zA-Z0-9\\._]+)\\s+([a-zA-Z0-9\\._]+)[\\s,]*");
 			Pattern p = Pattern.compile("([^\\s]+)\\s+([^\\s,$]+)[\\s,]*");
 			Matcher m = p.matcher(charbuf);
 			while (m.find()) {
 				MethodParam mp = new MethodParam();
-				mp.dataType=m.group(1);
-				mp.varName=m.group(2);
+				mp.dataType = m.group(1);
+				mp.varName = m.group(2);
 				method.args.add(mp);
 			}
 
-			//state = READ_METHODS;
+			// state = READ_METHODS;
 
 			methods.add(method);
-			//method = null;
+			// method = null;
 			state = LOOK_JAVADOC;
-		} else if (state==READ_JAVADOC) {
+		} else if (state == READ_JAVADOC) {
 			method.comment += charbuf;
 		}
 	}
@@ -88,15 +89,14 @@ public class MethodParser extends URLSaxParser {
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String name,
-			Attributes atts) throws SAXException {
-		if ((state==READ_JAVADOC || state == LOOK_JAVADOC) && isTag("hr", localName)) {
+	public void startElement(String uri, String localName, String name, Attributes atts) throws SAXException {
+		if ((state == READ_JAVADOC || state == LOOK_JAVADOC) && isTag("hr", localName)) {
 			state = READ_METHODS;
-		} else  if (state==READ_JAVADOC) {
-		} else if (state==LOOK_JAVADOC) {
+		} else if (state == READ_JAVADOC) {
+		} else if (state == LOOK_JAVADOC) {
 			if (isTag("dl", localName)) {
-				method.comment="";
-				state=READ_JAVADOC;
+				method.comment = "";
+				state = READ_JAVADOC;
 			}
 		} else if (isTag("A", localName)) {
 			if ("method_detail".equals(atts.getValue("NAME"))) {
@@ -106,9 +106,8 @@ public class MethodParser extends URLSaxParser {
 	}
 
 	@Override
-	public void endElement(String uri, String localName, String name)
-			throws SAXException {
-		if (state==READ_JAVADOC) {
+	public void endElement(String uri, String localName, String name) throws SAXException {
+		if (state == READ_JAVADOC) {
 			method.comment += "\n";
 		}
 		if (state == READ_METHODS && isTag("h3", localName)) {

@@ -1,8 +1,8 @@
 package sagex.api;
 
 /**
- * Unofficial SageTV Generated File - Never Edit Generated Date/Time: 05/10/08
- * 4:56 PM See Official Sage Documentation at <a
+ * Unofficial SageTV Generated File - Never Edit Generated Date/Time: 10/10/08
+ * 7:29 PM See Official Sage Documentation at <a
  * href='http://download.sage.tv/api/sage/api/Global.html'>Global</a> This
  * Generated API is not Affiliated with SageTV. It is user contributed.
  */

@@ -24,11 +24,11 @@ public class HTTPD {
 	private int threads = 4;
 	private ServerSocket sock;
 	private HTTPDListener serverListener = null;
-	
+
 	public HTTPD(int port) {
 		this(port, null);
 	}
-	
+
 	public HTTPD(int port, HTTPDListener listener) {
 		this.port = port;
 		this.serverListener = listener;
@@ -84,7 +84,8 @@ public class HTTPD {
 				}
 			};
 			server.start();
-			if (serverListener!=null) serverListener.serverStarted(this);
+			if (serverListener != null)
+				serverListener.serverStarted(this);
 		} catch (Exception e) {
 			e.printStackTrace(System.out);
 		}
@@ -95,7 +96,18 @@ public class HTTPD {
 	}
 
 	public Servlet getServlet(String page) {
-		return servlets.get(page);
+		Servlet s = servlets.get(page);
+		if (s == null) {
+			// if there isn't an explicit servlet, then try to find the nearest
+			// match...
+			for (Map.Entry<String, Servlet> e : servlets.entrySet()) {
+				if (page.startsWith(e.getKey())) {
+					s = e.getValue();
+					break;
+				}
+			}
+		}
+		return s;
 	}
 
 	public File getDocRoot() {
@@ -115,14 +127,15 @@ public class HTTPD {
 			h.shutdown();
 		}
 		running = false;
-		if (sock!=null) {
+		if (sock != null) {
 			try {
 				sock.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		if (serverListener!=null) serverListener.serverStopped(this);
+
+		if (serverListener != null)
+			serverListener.serverStopped(this);
 	}
 }

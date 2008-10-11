@@ -10,57 +10,59 @@ public class DatagramServer {
 	private MulticastSocket socket;
 	private boolean running = false;
 	private DatagramListener listener = null;
-	private String server = null; 
-	
+	private String server = null;
+
 	public DatagramServer(String server, int port, DatagramListener listener) {
 		this.server = server;
-		this.port=port;
-		this.listener=listener;
+		this.port = port;
+		this.listener = listener;
 	}
-	
+
 	public void startServer() throws Exception {
 		socket = new MulticastSocket(port);
 		socket.joinGroup(InetAddress.getByName(server));
-		
+
 		Runnable r = new Runnable() {
 			public void run() {
-				running=true;
+				running = true;
 				byte buf[] = new byte[256];
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
 				while (running) {
 					// listen for request
 					try {
 						socket.receive(packet);
-						
+
 						// handle request
-						if (listener!=null) {
+						if (listener != null) {
 							byte[] reply = listener.onDatagramPacketReceived(packet);
-			                packet = new DatagramPacket(reply, reply.length, packet.getAddress(),  packet.getPort());
-			                socket.send(packet);
+							packet = new DatagramPacket(reply, reply.length, packet.getAddress(), packet.getPort());
+							socket.send(packet);
 						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+
 				}
 			}
 		};
-		
+
 		Thread t = new Thread(r);
 		t.start();
-		
-		if (listener!=null) listener.serverStarted(this);
+
+		if (listener != null)
+			listener.serverStarted(this);
 	}
-	
+
 	public void stopServer() {
-		running=false;
+		running = false;
 		try {
 			socket.leaveGroup(InetAddress.getByName(server));
 			socket.close();
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-		if (listener!=null) listener.serverStopped(this);
+		if (listener != null)
+			listener.serverStopped(this);
 	}
 }

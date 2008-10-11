@@ -4,7 +4,7 @@
 	
 	<property name="target" value="target"/>
 	<property name="name" value="sagex.api"/>
-	<property name="version" value="6.3.10"/>
+	<property name="version" value="6.4.8"/>
 	<property name="jarname" value="${name}-${version}.jar"/>
 
 	<path id="SageAPI.classpath">
@@ -39,7 +39,7 @@
         <delete dir="src/sagex/api/"/>
     </target>
 	
-	<target name="generateSageAPI" depends="init,cleanGeneratedAPI">
+	<target name="generateSageAPI" depends="init">
 		<java classname="org.jdna.sage.api.generator.Main" classpathref="SageAPI.classpath" fork="true"/>
 	</target>
 </project>

@@ -12,12 +12,16 @@ public class StubSageAPI implements ISageAPIProvider {
 			}
 		}
 		if ("GetMediaFiles".equals(name)) {
-			return new String[] {"MediaFile1", "MediaFile2", "MediaFile3"};
+			return new String[] { "MediaFile1", "MediaFile2", "MediaFile3" };
 		}
 		return null;
 	}
-	
+
 	public String toString() {
 		return "sage://stub";
+	}
+
+	public Object callService(String context, String name, Object[] args) {
+		return callService(name, args);
 	}
 }

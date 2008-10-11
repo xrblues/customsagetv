@@ -36,7 +36,7 @@ public class HTTPResponse implements Response {
 	}
 
 	public PrintWriter getWriter() {
-		if (pw==null) {
+		if (pw == null) {
 			pw = new PrintWriter(getOutputStream());
 		}
 		return pw;
