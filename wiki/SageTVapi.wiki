@@ -10,7 +10,7 @@
 * Complete access to the Sage API via Xml and Http
 * Xml RPC can pass ui context.
 
-If you are looking for the Xml RPC documentation, then read the install documentation from this page and then go to XmlRPCQuickStart .
+If you are looking for the Xml RPC documentation, then read the install documentation from this page and then go to [http://code.google.com/p/customsagetv/wiki/XmlRPCQuickStart Xml RPC Guide] .
 
 = Background =
 
