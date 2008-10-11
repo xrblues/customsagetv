@@ -56,17 +56,18 @@ The response the comes back from an Xml RPC call, always has the following struc
      * objectRef @ref=""
      * value
 
-Each response call will contain the <error> and the <body> elements.
+Each response call will contain the *error* and the *body* elements.
 
-The Error Node will ONLY exist if there was an error.  So testing for the existence of this node will allow you to test for an error.  Testing the <message> node will contain the friendly message and the <exception> node will contain the java stack trace from the age api call.
+The Error Node will ONLY exist if there was an error.  So testing for the existence of this node will allow you to test for an error.  The *message* node will contain the friendly message and the *exception* node will contain the java stack trace from the age api call.
 
-If your call only returns a simple primitive value or string, then the body will contain a single <value> element containing the value.
+If your call only returns a simple primitive value or string, then the body will contain a single *value* element containing the value.
 
-If your object returns a simple array containing strings or primimitives, then you will get the entire array back as an <array> element containing <value> elements.  The array will tell you it's size and each value element will contain an attribute for it's index position.
+If your object returns a simple array containing strings or primimitives, then you will get the entire array back as an *array* element containing *value* elements.  The array will tell you it's size and each value element will contain an attribute for it's index position.
 
-If the array comming back is not serializable, then you will be get back an <arrayRef> element that only contains it's reference id and the array size.  This is the case when you call something like /MediaFileAPI/GetMediaFiles/
+If the array comming back is not serializable, then you will be get back an *arrayRef* element that only contains it's reference id and the array size.  This is the case when you call something like /MediaFileAPI/GetMediaFiles/
 
 In the case that you have an arrarRef, you can still get access to the array elements by passing the arrayRef:index as an api argument.  For example, if you asked for all media files and the array ref was 9814147.  You can then call GetMediaTitle using the follow command
  http://localhost:9999/sagex/rpcXml/MediaFileAPI/GetMediaTitle/9814147:10
 Where the *MediaFile* argument is passed as the Array Reference and the Index from that array that you want to access.  So, in the above command, i'm asking for the MediaFileTitle for the 10th element in the array 9814147.
 
+While the concept of the arrayRef is not ideal, it does serve 2 purposes.  The first is that it prevent an entire large object array from being serialized and sent across the network, which could be time consuming, especially if you only need to access a few elements.  The second, is that the SageAPI is setup this way.  In other words, Sage does not expose their object, but rather they expose services that can act on those objects.  The arrayRef mimics this behaviour.
