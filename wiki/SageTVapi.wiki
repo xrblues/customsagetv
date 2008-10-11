@@ -1,12 +1,22 @@
 #summary New API for SageTV include RPC features
 #labels Featured
 
+= Feature Set =
+
+* Complete access to the Sage API from Java
+* Java code can run remotely and access the Sage Server (Java RPC)
+* Java code can run within the SageTV process
+* Java client can auto discover the running sage server for transparent access
+* Complete access to the Sage API via Xml and Http
+* Xml RPC can pass ui context.
+
+If you are looking for the Xml RPC documentation, then read the install documentation from this page and then go to XmlRPCQuickStart .
+
 = Background =
 
 SageTV documents their [http://download.sage.tv/api/ API] but unfortunately, they don't provide an API that matches their documentation.  Instead, in order to use their API, you need to call the sage service and pass in the named SageTV Api method.  This unfortunately leads to typos, and if you are using a modern IDE, then there is no auto completion.
 
 [http://forums.sagetv.com/forums/member.php?u=5484 Greg], a very competent SageTV developer, solved this API problem by creating a new [http://forums.sagetv.com/forums/downloads.php?do=file&id=128 API] that mirrored SageTV's intention.  
-
 
 = Why create another API? =
 
@@ -87,14 +97,14 @@ Autogenerating a set of typesafe xml/json wrapper would be fairly trivial.
 Maybe this will be merged with Greg's API??  I do like the rcp ability and the thin wrapper approach, but I also agree with a comment that Greg stated... Maybe 1 extra api is enough ;)
 
 = Limitations =
-  * Currently does not support calls that require a SageTV Context.  ie, UI related calls.  This will be implemented, just not needed right now.
+  * The Java RPC does allow for a context (it's comming...)
   * No authorization for RPC calls.  A model needs to be implemented to provide transparent authorization when using RPC. 
 
 = Technical Details =
-The RPC server is a micro http server and udp server.  The client, if it's not specifically configured with a RemoteSageAPIProvider will querry the server for it's address using udp.  It sends a message on the group 227.5.6.7 on the port 9998.  The RPC server sends back it's host and port to the client.
+The RPC server is a micro http server and udp server.  The client, if it's not specifically configured with a RemoteSageAPIProvider will querry the server for it's address using udp.  It sends a message on the group 228.5.6.7 on the port 9998.  The RPC server sends back it's host and port to the client.
 
 == Building The Source ==
-The project is an exclipe project.  All jars are provided, except for the Sage.jar.  You will need to copy that from your sage install and add it to the classpath for the project.
+The project is an eclipe project.  All jars are provided, except for the Sage.jar.  You will need to copy that from your sage install and add it to the classpath for the project.
 
 === Regenerating the API ===
 The code to regerate the API is in the org.jdna.sage.api.generator Package.  You can rebuild the source using the ant build file and the following command.
