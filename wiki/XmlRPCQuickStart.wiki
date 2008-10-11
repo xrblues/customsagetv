@@ -76,5 +76,5 @@ While the concept of the arrayRef is not ideal, it does serve 2 purposes.  The f
 Over time, users will contribute Tips for using this xml rpc api.  I'll try to keep adding to this list as they come in.
 
 
-* Understand the javadoc before you start using the api, since the api is simply an extension of the javadoc.
-* Remember that all API commands are case sensisitive.
+ * Understand the javadoc before you start using the api, since the api is simply an extension of the javadoc.
+ * Remember that all API commands are case sensisitive.
