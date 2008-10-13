@@ -2,7 +2,6 @@
 #labels Featured
 
 = Feature Set =
-
 * Complete access to the Sage API from Java
 * Java code can run remotely and access the Sage Server (Java RPC)
 * Java code can run within the SageTV process
@@ -53,24 +52,24 @@ This provider is the provider that is used when the API is embedded into a runni
 === RemoteSageAPIProvider ===
 This provider is the provider that is used when you are running code outside the SageTV server process.  This provider requires that you install the RPC server in the SageTV server process so that it can communicate.  In this mode, extra objects are created on both the client and server.  So it's not extremely efficient, but it works quite well.
 
-==== Installation ====
+The RPC server requires that you have [http://forums.sagetv.com/forums/downloads.php?do=file&id=26 Nielm's Webserver Plugin] installed.  Later I'll provide a package for Jreichen's [http://forums.sagetv.com/forums/downloads.php?do=file&id=233 Jetty Plugin].
+
+==== Installation for Nielm's Server ====
 To install this Provider....
   * Stop Sage Server
-  * Copy the sagex-api.6.3.10.jar to the SAGE_HOME/JARs dir
-  * Add/edit the following to the Sage.properties
+  * Copy the sagex-api.VERSION.jar to the SAGE_HOME/JARs dir
+  * Add/edit the following in webserver/servlet.properties
 {{{
-load_at_startup_runnable_classes=sagex.remote.SageRPCServerRunner
+# Sage RPC Api
+servlet./sagex.code=sagex.remote.SagexServlet
 }}}
-
-
-  NOTE: if you have more than 1 class you need to separate them with a semi-colon ;
 
   * Start Sage Server
 
-The Sage RPC server will start up and listen for requests on port 9999.
+The Sage RPC server will start up and listen for requests on the same port as the webserver.
 
 
-Your remote client code will also require that the sagex-api.6.3.10.jar is in it's classpath.
+Your remote client code will also require that the sagex-api.VERSION.jar is in it's classpath.  
 
 In your client code, you simply need to invoke the SageTV api and it should find the remote server automatically. 
 {{{
@@ -92,16 +91,15 @@ This is simply a testing stub.  It does nothing.  It can't be used for anything,
 = Future =
 The goal is to export the API as a set of xml and JSON services in addition to the Java RPC api.  This would allow for simpler integration into a web application.
 
-Autogenerating a set of typesafe xml/json wrapper would be fairly trivial.
+Autogenerating a set of typesafe json wrapper would be fairly trivial.
 
 Maybe this will be merged with Greg's API??  I do like the rcp ability and the thin wrapper approach, but I also agree with a comment that Greg stated... Maybe 1 extra api is enough ;)
 
 = Limitations =
   * The Java RPC does allow for a context (it's comming...)
-  * No authorization for RPC calls.  A model needs to be implemented to provide transparent authorization when using RPC. 
 
 = Technical Details =
-The RPC server is a micro http server and udp server.  The client, if it's not specifically configured with a RemoteSageAPIProvider will querry the server for it's address using udp.  It sends a message on the group 228.5.6.7 on the port 9998.  The RPC server sends back it's host and port to the client.
+The RPC server uses and existing Servlet engine and a UDP server.  The client, if it's not specifically configured with a RemoteSageAPIProvider will querry the server for it's address using udp.  It sends a message on the group 228.5.6.7 on the port 9998.  The RPC server sends back it's rpcJava url to the client.
 
 == Building The Source ==
 The project is an eclipe project.  All jars are provided, except for the Sage.jar.  You will need to copy that from your sage install and add it to the classpath for the project.
@@ -120,3 +118,6 @@ ant -f extra.xml
 
 = Contributions =
 If you want to work on the project, or feel that something is missing.  Send me a message.
+
+== Taglib Generator ==
+Jreichen has created a set of sage api tags using the parser from this project.  I'm assuming he'll be releasing those with his Jetty Plugin.
