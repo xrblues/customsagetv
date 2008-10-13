@@ -77,11 +77,11 @@ While the concept of the arrayRef is not ideal, it does serve 2 purposes.  The f
 This package also includes a servlet for requesting thumbnails and mediafiles.  
 
 To Request a Media File
- http://server:8080/sagex/media/medafile/*MEDIAFILEID*
+ http://server:8080/sagex/media/medafile/MEDIAFILEID
 Where *MEDIAFILEID* is Sage's MediaFileID for the requested video.
 
 To Request a Thumbnail
- http://server:8080/sagex/media/thumbnail/*MEDIAFILEID*
+ http://server:8080/sagex/media/thumbnail/MEDIAFILEID
 Where *MEDIAFILEID* is Sage's MediaFileID for the requested video.
 
 *Special Not Regarding Thumbnails*
