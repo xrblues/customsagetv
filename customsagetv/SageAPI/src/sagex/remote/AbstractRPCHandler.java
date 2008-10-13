@@ -1,6 +1,7 @@
 package sagex.remote;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -27,7 +28,7 @@ import sagex.SageAPI;
 public abstract class AbstractRPCHandler implements IRCPHandler {
 	// for now we are using a weak hashmap, but we really should use a thread
 	// and clean out stale items ourself.
-	private Map<String, Object> objectRefs = new WeakHashMap<String, Object>();
+	private Map<String, Object> objectRefs = new HashMap<String, Object>();
 
 	public void handleRPCCall(RemoteRequest request, RemoteResponse response) {
 		try {
@@ -53,7 +54,7 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 
 			// invoke the server
 			Object oreply = null;
-			if (request.getContext()!=null) {
+			if (request.getContext() != null) {
 				oreply = SageAPI.call(request.getContext(), request.getCommand(), request.getParameters());
 			} else {
 				oreply = SageAPI.call(request.getCommand(), request.getParameters());
@@ -101,7 +102,8 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 	}
 
 	public Object getReference(RemoteObjectRef ref) {
-		if (ref==null) throw new RuntimeException("Object Reference is null");
+		if (ref == null)
+			throw new RuntimeException("Object Reference is null");
 		try {
 			return objectRefs.get(ref.getId());
 		} catch (Throwable t) {

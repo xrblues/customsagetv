@@ -6,40 +6,32 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import sagex.ISageAPIProvider;
-import sagex.remote.javarpc.SageRPCServlet;
-import sagex.remote.minihttpd.ServerInfo;
-import sagex.remote.minihttpd.SimpleDatagramClient;
+import sagex.remote.javarpc.JavaRPCHandler;
+import sagex.remote.server.ServerInfo;
+import sagex.remote.server.SimpleDatagramClient;
 
 public class SageAPIRemote implements ISageAPIProvider {
-	private String server;
-	private int port;
-	private String baseUrl;
+	private String rpcUrl;
 
 	public SageAPIRemote() {
 		try {
 			ServerInfo si = findRemoteServer(5000);
-			updateServer(si.host, si.port);
+			this.rpcUrl = si.baseServerUrl;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public SageAPIRemote(String server, int port) {
-		updateServer(server, port);
-	}
-
-	private void updateServer(String server, int port) {
-		this.server = server;
-		this.port = port;
-		this.baseUrl = String.format("http://%s:%s%s", server, port, SageRPCServlet.SAGE_RPC_PATH);
+	public SageAPIRemote(String rpcUrl) {
+		this.rpcUrl = rpcUrl;
 	}
 
 	public Object callService(String context, String name, Object[] args) {
 		// Create the url to the call
 		Object replyData = null;
 		try {
-			String urlStr = baseUrl;
-			urlStr += ("?" + SageRPCServlet.CMD_ARG + "=" + java.net.URLEncoder.encode(MarshalUtils.marshal(new RemoteRequest(context, name, args)), MarshalUtils.ENCODING));
+			String urlStr = rpcUrl;
+			urlStr += ("?" + JavaRPCHandler.CMD_ARG + "=" + java.net.URLEncoder.encode(MarshalUtils.marshal(new RemoteRequest(context, name, args)), MarshalUtils.ENCODING));
 
 			// System.out.println("Request: " + urlStr);
 
@@ -84,21 +76,17 @@ public class SageAPIRemote implements ISageAPIProvider {
 		return replyData;
 	}
 
-	public String getServer() {
-		return server;
-	}
-
-	public int getPort() {
-		return port;
+	public String getServerUrl() {
+		return rpcUrl;
 	}
 
 	public String toString() {
-		return "sage://" + server + ":" + port + "/";
+		return rpcUrl;
 	}
 
 	public static ServerInfo findRemoteServer(long timeout) throws Exception {
 		SimpleDatagramClient<ServerInfo> client = new SimpleDatagramClient<ServerInfo>();
-		ServerInfo info = client.send("where are you?", SageRPCServerRunner.MULTICAST_GROUP, SageRPCServerRunner.MULTICAST_PORT, timeout);
+		ServerInfo info = client.send("where are you?", SagexServlet.MULTICAST_GROUP, SagexServlet.MULTICAST_PORT, timeout);
 		return info;
 	}
 

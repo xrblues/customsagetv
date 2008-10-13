@@ -1,14 +1,16 @@
 package test;
 
-import sagex.remote.SageRPCServerRunner;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.servlet.Context;
+import org.mortbay.jetty.servlet.ServletHolder;
+
+import sagex.remote.SagexServlet;
 
 public class TestHTTPD {
-	public static void main(String args[]) throws InterruptedException {
-		SageRPCServerRunner run = new SageRPCServerRunner();
-		run.run();
-
-		System.out.println("Ctrl+C to kill server...");
-		while (true)
-			Thread.currentThread().sleep(5000);
+	public static void main(String args[]) throws Exception {
+		Server server = new Server(9999);
+		Context root = new Context(server,"/",Context.SESSIONS);
+		root.addServlet(new ServletHolder(new SagexServlet()), "/sagex/*");
+		server.start();
 	}
 }

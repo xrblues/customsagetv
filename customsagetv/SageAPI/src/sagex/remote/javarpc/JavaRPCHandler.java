@@ -1,13 +1,33 @@
 package sagex.remote.javarpc;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import sagex.remote.AbstractRPCHandler;
 import sagex.remote.MarshalUtils;
 import sagex.remote.RemoteRequest;
 import sagex.remote.RemoteResponse;
+import sagex.remote.SagexServlet.SageHandler;
 
-public class JavaRPCHandler extends AbstractRPCHandler {
+public class JavaRPCHandler extends AbstractRPCHandler implements SageHandler {
+	public static final String SAGE_RPC_PATH = "rpcJava";
+	public static final String CMD_ARG = "request";
+
+	public JavaRPCHandler() {
+		System.out.println("Sage Java RPC Servlet Created.");
+	}
+
+	public void hanleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String payload = req.getParameter(CMD_ARG);
+		resp.setContentType("text/plain");
+		PrintWriter pw = resp.getWriter();
+		pw.print(handleRPCCall(payload));
+		pw.flush();
+	}
 
 	public String handleRPCCall(String payload) {
 		RemoteResponse response = new RemoteResponse();
@@ -28,6 +48,5 @@ public class JavaRPCHandler extends AbstractRPCHandler {
 			e.printStackTrace();
 			return null;
 		}
-
 	}
 }
