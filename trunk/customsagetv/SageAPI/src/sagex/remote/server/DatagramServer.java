@@ -1,4 +1,4 @@
-package sagex.remote.minihttpd;
+package sagex.remote.server;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

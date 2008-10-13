@@ -1,4 +1,4 @@
-package sagex.remote.minihttpd;
+package sagex.remote.server;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;

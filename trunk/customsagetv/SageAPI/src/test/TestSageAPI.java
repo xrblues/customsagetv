@@ -20,7 +20,7 @@ import sagex.remote.SageAPIRemote;
 public class TestSageAPI {
 	public static void main(String args[]) throws Exception {
 		// we can explicitly set the remote server, or let it figure it out...
-		SageAPI.setProvider(new SageAPIRemote("localhost", 9999));
+		// SageAPI.setProvider(new SageAPIRemote("http://mediaserver:8080/sagex/rpcJava"));
 
 		// what os is the remote server running...
 		System.out.println("Remote Sage OS: " + Global.GetOS());

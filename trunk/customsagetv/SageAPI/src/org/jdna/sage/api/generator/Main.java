@@ -53,35 +53,35 @@ public class Main {
 
 	private void process() throws Exception {
 		initConfiguration();
-		
+
 		PackageParser parser = new PackageParser(ConfigurationManager.getInstance().getProperty("sage.packageFrameUrl"));
 		parser.parse();
 		List<String> urls = parser.getUrls();
-		
+
 		// for regular api stuff
 		String baseUrl = ConfigurationManager.getInstance().getProperty("sage.baseApiUrl", "http://download.sage.tv/api/sage/api/");
 		String srcDir = ConfigurationManager.getInstance().getProperty("sage.src", "src");
-        String tagsDir = ConfigurationManager.getInstance().getProperty("sage.tags", "tags");
+		String tagsDir = ConfigurationManager.getInstance().getProperty("sage.tags", "tags");
 		String packageName = ConfigurationManager.getInstance().getProperty("sage.packageName", "sagex.api");
 
 		// for request factory stuff
 		String requestFactoryPackage = ConfigurationManager.getInstance().getProperty("sage.requestFactory.packageName", "sagex.remote.factory.request");
 
 		List<ClassMetadata> allMetaData = new ArrayList<ClassMetadata>();
-		
+
 		for (String url : urls) {
-			String fullUrl = baseUrl +  url;
+			String fullUrl = baseUrl + url;
 			// System.out.printf("Using Url: %s\n",fullUrl);
 			Pattern p = Pattern.compile("([A-Za-z]+).html");
 			Matcher m = p.matcher(url);
 			if (m.find()) {
 				String name = m.group(1);
-				
+
 				log.info("Getting API For: " + fullUrl + "; ClassName: " + name + "; src: " + srcDir + "; package: " + packageName);
-				
+
 				MethodParser mp = new MethodParser(fullUrl);
 				mp.parse();
-				
+
 				List<SageMethod> methods = mp.getMethods();
 
 				System.out.println("Generating sagex.api." + name);
@@ -97,10 +97,10 @@ public class Main {
 				md.methods = methods;
 				md.name = name;
 				allMetaData.add(md);
-				
-                SageTagFileAPIGenerator stag = new SageTagFileAPIGenerator(new File(tagsDir), packageName, name, methods);
-                stag.generate();
-				
+
+				SageTagFileAPIGenerator stag = new SageTagFileAPIGenerator(new File(tagsDir), packageName, name, methods);
+				stag.generate();
+
 			} else {
 				log.error("Problem url Url Name: " + url + "; Could not parse title");
 			}
