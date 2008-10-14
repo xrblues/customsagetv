@@ -2,11 +2,9 @@ package test;
 
 import java.io.File;
 
-import sagex.SageAPI;
 import sagex.api.Configuration;
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
-import sagex.remote.SageAPIRemote;
 
 /**
  * To enable the remote sage api, you need to add
