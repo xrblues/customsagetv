@@ -54,10 +54,6 @@ public class SageVideoMetaDataPersistence implements IVideoMetaDataPersistence {
 	public static final String GENRE = "Genre";
 	public static final String RATED = "Rated";
 
-	public static final String DESCRIPTION_MASK_KEY = "descriptionMask";
-	public static final String ACTOR_MASK_KEY = "actorMask";
-	public static final String DOWNLOAD_THUMBNAIL_KEY = "downloadThumbnail";
-
 	public SageVideoMetaDataPersistence() {
 	}
 
@@ -81,16 +77,12 @@ public class SageVideoMetaDataPersistence implements IVideoMetaDataPersistence {
 	/**
 	 * We only load the metadata for the first part of a MediaFile.
 	 */
-	private Properties loadProperties(IMediaFile mf) {
+	private Properties loadProperties(IMediaFile mf) throws Exception {
 		File propFile = getPropertyFile(mf);
 		Properties props = new Properties();
-		if (propFile != null && propFile.exists()) {
-			try {
-				log.debug("Loading Sage Video Metadata properties: " + propFile.getAbsolutePath());
-				props.load(new FileInputStream(propFile));
-			} catch (IOException e) {
-				log.error("Failed to load sage properties: " + propFile.getAbsolutePath(), e);
-			}
+		if (propFile != null && propFile.exists() && propFile.canRead()) {
+			log.debug("Loading Sage Video Metadata properties: " + propFile.getAbsolutePath());
+			props.load(new FileInputStream(propFile));
 		}
 		return props;
 	}
@@ -102,14 +94,25 @@ public class SageVideoMetaDataPersistence implements IVideoMetaDataPersistence {
 		ConfigurationManager cm = ConfigurationManager.getInstance();
 
 		// now copy this metadata...
-		Properties props = loadProperties(mediaFile);
+		Properties props;
+		try {
+			props = loadProperties(mediaFile);
+		} catch (Exception e) {
+			log.error("There was an error trying reload the existing properties.  We may lose some data.", e);
+			props = new Properties();
+		}
 
 		// Store other props and serializedProps
 		props.put(_COMPANY, encodeString(md.getCompany()));
 		props.put(_PROVIDER_DATA_URL, encodeString(md.getProviderDataUrl()));
 		props.put(_PROVIDER_ID, encodeString(md.getProviderId()));
 		props.put(_USER_RATING, encodeString(md.getUserRating()));
-		props.put(_THUMBNAIL_URL, encodeString(md.getThumbnailUrl()));
+		
+		// we only copy/update the thumbnail url IF the update thumbnail has been set.
+		// this prevents us from frivously updating a custom set thumbnail url
+		if (md.isThumbnailUpdated()) {
+			props.put(_THUMBNAIL_URL, encodeString(md.getThumbnailUrl()));
+		}
 		props.put(_RELEASE_DATE, encodeString(md.getReleaseDate()));
 		props.put(_ASPECT_RATIO, encodeString(md.getAspectRatio()));
 
@@ -131,14 +134,14 @@ public class SageVideoMetaDataPersistence implements IVideoMetaDataPersistence {
 		props.put(GENRE, encodeString(encodeGenres(md.getGenres())));
 		props.put(RATED, encodeString(md.getMPAARating()));
 		props.put(RUNNING_TIME, encodeString(md.getRuntime()));
-		props.put(ACTOR, encodeString(encodeActors(md.getActors(), cm.getProperty(this.getClass().getName(), ACTOR_MASK_KEY, "{0} -- {1};\n"))));
+		props.put(ACTOR, encodeString(encodeActors(md.getActors(), cm.getProperty("org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence.actorMask", "{0} -- {1};\n"))));
 		props.put(WRITER, encodeString(encodeWriters(md.getWriters())));
 		props.put(DIRECTOR, encodeString(encodeDirectors(md.getDirectors())));
 		props.put(DESCRIPTION, encodeString(md.getPlot()));
 
 		// lastly encode the description, to ensure that all other props are
 		// set.
-		props.put(DESCRIPTION, encodeDescription(md, cm.getProperty(this.getClass().getName(), DESCRIPTION_MASK_KEY, "${Description}\nUser Rating: ${_userRating}\n"), props));
+		props.put(DESCRIPTION, encodeDescription(md, cm.getProperty("org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence.descriptionMask", "${Description}\nUser Rating: ${_userRating}\n"), props));
 
 		// do the actual save
 		save(mediaFile, md, props);
@@ -206,7 +209,7 @@ public class SageVideoMetaDataPersistence implements IVideoMetaDataPersistence {
 					// set the disc # in the props
 					props.setProperty(_DISC, String.valueOf(i++));
 					// update it using the mask
-					props.setProperty(TITLE, VideoMetaDataUtils.format(ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "titleMaskMultiCd", "${Title} Disc ${_disc}"), props));
+					props.setProperty(TITLE, VideoMetaDataUtils.format(ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence.titleMaskMultiCd", "${Title} Disc ${_disc}"), props));
 					// for multiple parts, we try tro re-use the thumbnail to
 					// reduce the amount of downloading...
 					localThumb = save(props, (IMediaFile) mf, md, localThumb);
@@ -218,7 +221,7 @@ public class SageVideoMetaDataPersistence implements IVideoMetaDataPersistence {
 			// store the title
 			props.setProperty(TITLE, props.getProperty(_SER_TITLE));
 			// update it using the mask
-			props.setProperty(TITLE, VideoMetaDataUtils.format(ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "titleMask", "${Title}"), props));
+			props.setProperty(TITLE, VideoMetaDataUtils.format(ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence.titleMask", "${Title}"), props));
 			save(props, mediaFileParent, md, null);
 		}
 	}
@@ -314,7 +317,7 @@ public class SageVideoMetaDataPersistence implements IVideoMetaDataPersistence {
 		if (genres == null)
 			return "";
 
-		boolean single = Boolean.parseBoolean(ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "singleGenreField", "true"));
+		boolean single = Boolean.parseBoolean(ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence.singleGenreField", "true"));
 		if (single && genres != null && genres.length > 0) {
 			return genres[0];
 		} else {
@@ -400,11 +403,11 @@ public class SageVideoMetaDataPersistence implements IVideoMetaDataPersistence {
 			cm.setPart(flds[2]);
 			cm.setProviderDataUrl(flds[3]);
 
-		} catch (Exception e) {
-			log.error("Failed to parse cast member from string: " + cmStr, e);
-			for (String f : flds) {
-				log.debug(String.format("Field: [%s]", f));
-			}
+		} catch (Throwable e) {
+			log.warn("Failed to parse cast member from string: " + cmStr);
+			//for (String f : flds) {
+			//	log.debug(String.format("Field: [%s]", f));
+			//}
 		}
 
 		return cm;
@@ -421,7 +424,7 @@ public class SageVideoMetaDataPersistence implements IVideoMetaDataPersistence {
 	public File getThumbnailFile(IMediaFile mediaFile) {
 		File f = new File(URI.create(mediaFile.getLocationUri()));
 		if (mediaFile instanceof DVDMediaFolder) {
-			boolean useTSVIDEO = Boolean.parseBoolean(ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "thumbnailInTS_VIDEO", "false"));
+			boolean useTSVIDEO = Boolean.parseBoolean(ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence.thumbnailInTS_VIDEO", "false"));
 			File tsdir = new File(f, "VIDEO_TS");
 			if (tsdir.exists() && useTSVIDEO) {
 				return new File(tsdir, "folder.jpg");

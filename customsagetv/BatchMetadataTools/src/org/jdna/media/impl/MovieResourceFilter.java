@@ -17,11 +17,11 @@ public class MovieResourceFilter implements IMediaResourceFilter {
 	private Pattern dirExcludePattern = null;
 	
 	public MovieResourceFilter() {
-		String pat = ConfigurationManager.getInstance().getProperty(MovieResourceFilter.class.getName(), "VideoExtensionRegex", "avi|mpg|divx|mkv|wmv|mov|xvid");
+		String pat = ConfigurationManager.getInstance().getProperty("org.jdna.media.impl.MovieResourceFilter.VideoExtensionRegex", "avi|mpg|divx|mkv|wmv|mov|xvid");
 		log.debug("Using Movie Filter Regex: " + pat);
 		filePattern = Pattern.compile(pat,Pattern.CASE_INSENSITIVE);
 		
-		pat = ConfigurationManager.getInstance().getProperty(MovieResourceFilter.class.getName(), "ExcludeDirRegex",null);
+		pat = ConfigurationManager.getInstance().getProperty("org.jdna.media.impl.MovieResourceFilter.ExcludeDirRegex",null);
 		if (pat==null) {
 			log.debug("Not Using any Directory Exclude Filters.");
 		} else {

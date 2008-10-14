@@ -46,6 +46,7 @@ import org.jdna.metadataupdater.IMetaDataUpdaterScreen.MovieEntry;
  */
 @CommandLineProcess(acceptExtraArgs = true, description = "Import/Update Movie MetaData from a MetaData Provider.")
 public class MetadataUpdater {
+	
 	public static final Logger log = Logger.getLogger(MetadataUpdater.class);
 	private static final String RESOURCE_PROPS = "/org/jdna/metadataupdater/metadataupdater.properties";
 
@@ -348,7 +349,7 @@ public class MetadataUpdater {
 	}
 
 	private void initScreen() throws Exception {
-		String scr = ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "ScreenClass", "org.jdna.metadataupdater.ConsoleScreen");
+		String scr = ConfigurationManager.getInstance().getProperty("org.jdna.metadataupdater.MetadataUpdater.ScreenClass", "org.jdna.metadataupdater.ConsoleScreen");
 		screen = (IMetaDataUpdaterScreen) Class.forName(scr).newInstance();
 		log.info("Using Screen Engine: " + scr);
 	}

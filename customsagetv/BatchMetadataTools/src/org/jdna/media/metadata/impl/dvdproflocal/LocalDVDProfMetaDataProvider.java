@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
+import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
-import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.IVideoSearchResult;
 import org.jdna.media.metadata.ProviderInfo;
 
@@ -76,11 +76,11 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 
 		
 		
-		String indexDir = ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "indexDir", "cache/indexDVDProfLocal/");
+		String indexDir = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.indexDir", "cache/indexDVDProfLocal/");
 		LocalMovieIndex.getInstance().setIndexDir(indexDir);
 
 		
-		String imageDir = ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "imageDir", null);
+		String imageDir = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.imageDir", null);
 		if (imageDir==null) {
 			throw new Exception(String.format("Missing imageDir.  Please Set: %s.imageDir", this.getClass().getName()));
 		}
@@ -89,7 +89,7 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 			throw new Exception("Imagedir does not exist: " + imageDir);
 		}
 		
-		String xml = ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "xmlFile", null);
+		String xml = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.xmlFile", null);
 		if (xml==null) {
 			throw new Exception(String.format("Missing xml.  Please Set: %s.xmlFile", this.getClass().getName()));
 		}
@@ -100,7 +100,7 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 		}
 		
 		xmlFileTool = new DVDProfXmlFile(xmlFile);
-		rebuildIndex = Boolean.parseBoolean(ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "forceRebuild", "false"));
+		rebuildIndex = Boolean.parseBoolean(ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.forceRebuild", "false"));
 	}
 
 	private void rebuildIndexes() throws Exception {

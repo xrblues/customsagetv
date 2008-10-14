@@ -6,16 +6,17 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="MovieMetadataUpdater">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../../apps/eclipse-3.3"/>
+    <property name="SageAPI.location" value="../SageAPI"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.6"/>
-    <property name="source" value="1.6"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
     <path id="MovieMetadataUpdater.classpath">
         <pathelement location="bin"/>
         <pathelement location="libs/nielm_sageimdb.jar"/>
         <pathelement location="libs/nielm_sageutls.jar"/>
         <pathelement location="libs/htmlparser.jar"/>
         <pathelement location="libs/log4j-1.2.15.jar"/>
+        <pathelement location="libs/lucene-core-2.3.2.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -36,18 +37,38 @@
             <classpath refid="MovieMetadataUpdater.classpath"/>
         </javac>
     </target>
-    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
-        <copy todir="${ant.library.dir}">
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </copy>
-        <unzip dest="${ant.library.dir}">
-            <patternset includes="jdtCompilerAdapter.jar"/>
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </unzip>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
+        <ant antfile="${SageAPI.location}/build.xml" inheritAll="false" target="clean"/>
+        <ant antfile="${SageAPI.location}/build.xml" inheritAll="false" target="build"/>
     </target>
-    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
-        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
-        <antcall target="build"/>
+    <target name="TestCachedUrl">
+        <java classname="test.TestCachedUrl" failonerror="true" fork="yes">
+            <classpath refid="MovieMetadataUpdater.classpath"/>
+        </java>
+    </target>
+    <target name="TestRegexp">
+        <java classname="test.TestRegexp" failonerror="true" fork="yes">
+            <classpath refid="MovieMetadataUpdater.classpath"/>
+        </java>
+    </target>
+    <target name="TestCoverSearch">
+        <java classname="test.TestCoverSearch" failonerror="true" fork="yes">
+            <classpath refid="MovieMetadataUpdater.classpath"/>
+        </java>
+    </target>
+    <target name="TestResourceVisitor">
+        <java classname="test.TestResourceVisitor" failonerror="true" fork="yes">
+            <classpath refid="MovieMetadataUpdater.classpath"/>
+        </java>
+    </target>
+    <target name="TestMisc">
+        <java classname="test.TestMisc" failonerror="true" fork="yes">
+            <classpath refid="MovieMetadataUpdater.classpath"/>
+        </java>
+    </target>
+    <target name="TestDVDProfiler">
+        <java classname="test.TestDVDProfiler" failonerror="true" fork="yes">
+            <classpath refid="MovieMetadataUpdater.classpath"/>
+        </java>
     </target>
 </project>

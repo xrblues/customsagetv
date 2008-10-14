@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 import org.jdna.media.IMediaFolder;
+import org.jdna.media.IResourceVisitor;
 
 public class FileMediaResource extends AbstractMediaResource {
 	public static final Logger log = Logger.getLogger(FileMediaResource.class);
@@ -54,6 +55,10 @@ public class FileMediaResource extends AbstractMediaResource {
 		} catch (Exception e) {
 			log.error("File Touch Failed for: " + file.getAbsolutePath());
 		}
+	}
+
+	public void accept(IResourceVisitor visitor) {
+		visitor.visit(this);
 	}
 	
 }

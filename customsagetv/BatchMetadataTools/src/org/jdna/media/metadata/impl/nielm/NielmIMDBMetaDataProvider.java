@@ -14,9 +14,9 @@ import net.sf.sageplugins.sageimdb.ImdbWebObjectRef;
 import net.sf.sageplugins.sageimdb.Role;
 
 import org.apache.log4j.Logger;
+import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
-import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.IVideoSearchResult;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.VideoSearchResult;

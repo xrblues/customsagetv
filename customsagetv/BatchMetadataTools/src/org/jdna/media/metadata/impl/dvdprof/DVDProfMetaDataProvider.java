@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
+import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.IVideoMetaData;
 import org.jdna.media.metadata.IVideoMetaDataProvider;
-import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.IVideoSearchResult;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.url.CachedUrl;
@@ -21,7 +21,7 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 	private static final String PROVIDER_DESC = "DVD Profiler Provider using remote Url (Stuckless).";
 	
 	private static IProviderInfo info = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_ICON_URL);
-
+	
 	private CookieHandler cookieHandler;
 	private boolean rebuildIndex = false;
 	private boolean initialized=false;
@@ -76,7 +76,7 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 	private void initialize() throws Exception {
 		initialized=true;
 		
-		String urls = ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "profileUrls", null);
+		String urls = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.profileUrls", null);
 		if (urls == null) {
 			throw new Exception("No Profile Urls specified.  Please add some urls to your configuration: " + this.getClass().getName() + ".profileUrls");
 		} else {
@@ -85,7 +85,7 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 			
 		}
 		
-		rebuildIndex = Boolean.parseBoolean(ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "forceRebuild", "false"));
+		rebuildIndex = Boolean.parseBoolean(ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.forceRebuild", "false"));
 	}
 
 	private void rebuildIndexes() throws Exception {
@@ -93,7 +93,7 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 
 		MovieIndex.getInstance().clean();
 		
-		String urls = ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "profileUrls", null);
+		String urls = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.profileUrls", null);
 		if (urls == null) {
 			log.error("No Profile Urls specified.  Please add some urls to your configuration: " + this.getClass().getName() + ".profileUrls");
 		} else {

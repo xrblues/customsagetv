@@ -10,13 +10,14 @@ import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceFilter;
 import org.jdna.media.IMediaStackModel;
+import org.jdna.media.IResourceVisitor;
 
 public class MediaFolder extends FileMediaResource implements IMediaFolder {
 	private static final Logger log = Logger.getLogger(MediaFolder.class);
 	
 	private static long updateDelay = 600 * 1000;
-	private IMediaResourceFilter filter;
-	private IMediaStackModel stackingModel;
+	private IMediaResourceFilter xfilter;
+	private IMediaStackModel xstackingModel;
 	
 	private List<IMediaResource> members = new ArrayList<IMediaResource>();
 	private long lastUpdate = 0;
@@ -53,6 +54,7 @@ public class MediaFolder extends FileMediaResource implements IMediaFolder {
 					r = new MediaFile(this, f);
 				}
 
+				IMediaResourceFilter filter = getFilter();
 				if (filter==null || filter.accept(r)) {
 					l.add(r);
 				}
@@ -60,6 +62,7 @@ public class MediaFolder extends FileMediaResource implements IMediaFolder {
 			
 			Collections.sort(l);
 			
+			IMediaStackModel stackingModel = getStackingModel();
 			if (stackingModel!=null) {
 				List <IMediaResource> stackedList = new ArrayList<IMediaResource>(l.size());
 				String lastTitle = null;
@@ -108,22 +111,26 @@ public class MediaFolder extends FileMediaResource implements IMediaFolder {
 	}
 
 	public IMediaResourceFilter getFilter() {
-		return filter;
+		if (xfilter!=null) return xfilter;
+		if (parent!=null) return parent.getFilter();
+		return null;
 	}
 
 	public IMediaStackModel getStackingModel() {
-		return stackingModel;
+		if (xstackingModel!=null) return xstackingModel;
+		if (parent!=null) return parent.getStackingModel();
+		return null;
 	}
 
 	public void setFilter(IMediaResourceFilter filter) {
-		this.filter = filter;
+		this.xfilter = filter;
 		
 		// refresh data
 		this.lastUpdate = 0;
 	}
 
 	public void setStackingModel(IMediaStackModel stackingModel) {
-		this.stackingModel = stackingModel;
+		this.xstackingModel = stackingModel;
 		
 		// refresh data
 		this.lastUpdate = 0;
@@ -146,4 +153,15 @@ public class MediaFolder extends FileMediaResource implements IMediaFolder {
 			file.mkdir();
 		}
 	}
+
+	@Override
+	public void accept(IResourceVisitor visitor) {
+		visitor.visit(this);
+		List<IMediaResource> m = members();
+		for (IMediaResource r : m) {
+			r.accept(visitor);
+		}
+	}
+	
+	
 }

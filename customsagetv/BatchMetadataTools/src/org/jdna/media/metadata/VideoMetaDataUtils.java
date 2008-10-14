@@ -14,7 +14,8 @@ import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.impl.CDStackingModel;
 
-public class VideoMetaDataUtils {
+public class VideoMetaDataUtils{
+	
 	private static final Logger log = Logger.getLogger(VideoMetaDataUtils.class);
 	
 	/**
@@ -39,7 +40,7 @@ public class VideoMetaDataUtils {
 	 * </pre>
 	 */
 	public static String cleanSearchCriteria(String s, boolean removeYear) {
-		String wordTokens[] = ConfigurationManager.getInstance().getProperty(VideoMetaDataUtils.class.getName(), "cleanSearchCriteria.wordTokens", "dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv").split(",");
+		String wordTokens[] = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.VideoMetaDataUtils.cleanSearchCriteria.wordTokens", "dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv").split(",");
 
 		s = CDStackingModel.INSTANCE.getStackedTitle(s);
 		log.debug("Cleaning Search Criteria: " + s);
