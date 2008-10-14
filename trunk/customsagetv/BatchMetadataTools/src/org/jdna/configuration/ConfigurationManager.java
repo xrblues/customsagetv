@@ -1,8 +1,7 @@
 package org.jdna.configuration;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -22,42 +21,21 @@ public class ConfigurationManager {
 	private static ConfigurationManager instance;
 	
 	public static ConfigurationManager getInstance() {
-		if (instance == null) instance=new ConfigurationManager();
+		if (instance == null) instance=new ConfigurationManager(null);
 		return instance;
 	}
 	
 	public IConfigurationProvider config = null;
 	
-	public ConfigurationManager() {
-		// attempt to load a default set of configuration properties from the res://configurationmanager.properties
-		PropertiesConfigurationProvider pcp = new PropertiesConfigurationProvider();
-		try {
-			try {
-				pcp.addProperties(this.getClass().getClassLoader().getResourceAsStream("configurationmanager.properties"));
-				log.info("Loaded default configuration.");
-			} catch (Exception e) {
-				log.error("Failed to load default configuration properties!", e);
-			}
-			
-			String propFile = System.getProperty("configurationmanager.properties", "configurationmanager.properties");
-			File pFile = null;
-			pFile = new File(propFile);
-
-			if (!pFile.exists()) {
-				log.info("No user configuration.  You can create a user configuration by creating the following file: " + pFile.getAbsolutePath());
-			} else {
-				log.info("Attempting to load user defined properties: " + pFile.getAbsolutePath());
-				try {
-					pcp.addProperties(new FileInputStream(pFile));
-				} catch (IOException e) {
-					log.error("Failed to load properties: " + pFile.getAbsolutePath(), e);
-					throw e;
-				}
-			}
-		} catch (Exception e) {
-			log.error("No default properties configuration found.  Using System.getProperties() as the default properties.");
+	public ConfigurationManager(IConfigurationProvider conf) {
+		if (conf==null) {
+			// use a default.
+			log.error("Configuration Manager is being initialized WITHOUT a valid properties set.");
+			conf = new PropertiesConfigurationProvider(null, new Properties());
+		} else {
+			log.info("Configuration manager is setting a new Configuration Provider");
 		}
-		config = pcp;
+		setProvider(conf);
 	}
 	
 	/**
@@ -79,8 +57,8 @@ public class ConfigurationManager {
 	 * 
 	 * @return
 	 */
-	public String getProperty(String path, String key, String def) {
-		String v = config.getProperty(path, key);
+	public String getProperty(String key, String def) {
+		String v = config.getProperty(key);
 		return (v==null) ? def : v;
 	}
 	
@@ -91,21 +69,15 @@ public class ConfigurationManager {
 	 * @param key
 	 * @return
 	 */
-	public String getProperty(String path, String key) {
-		return getProperty(path, key, null);
+	public String getProperty(String key) {
+		return getProperty(key, null);
 	}
 
-	/**
-	 * Convenience getProperty() method that uses a null path and a null default value.  Using a null path assumes the root of the configuration manager.
-	 * 
-	 * @param key
-	 * @return
-	 */
-	public String getProperty(String key) {
-		return getProperty(null, key, null);
-	}
-	
 	public IConfigurationProvider getProvider() {
 		return config;
+	}
+	
+	public void save() throws IOException {
+		config.save();
 	}
 }

@@ -73,7 +73,7 @@ public class MovieIndex {
 	}
 	
 	private File getIndexDir() {
-		String sdir = ConfigurationManager.getInstance().getProperty(MovieIndex.class.getName(), "indexDir", "cache/index");
+		String sdir = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdprof.MovieIndex.indexDir", "cache/index");
 		File dir = new File(sdir);
 		if (!dir.exists()) {
 			log.debug("Creating Lucene Index Dir: " + dir.getAbsolutePath());

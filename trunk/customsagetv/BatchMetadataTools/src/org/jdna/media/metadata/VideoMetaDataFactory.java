@@ -8,6 +8,7 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 
 public class VideoMetaDataFactory {
+	
 	private static VideoMetaDataFactory instance = null;
 	private static final Logger log = Logger.getLogger(VideoMetaDataFactory.class);
 
@@ -25,7 +26,7 @@ public class VideoMetaDataFactory {
 	public VideoMetaDataFactory() {
 		try {
 			// create the default persistence...
-			String cl = ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "PersistenceClass", "org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence");
+			String cl = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.VideoMetaDataFactory.PersistenceClass", "org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence");
 			persistence = (IVideoMetaDataPersistence) Class.forName(cl).newInstance();
 			log.info("Using Default Persistence Engine: " + cl);
 		} catch (Exception e) {
@@ -34,7 +35,7 @@ public class VideoMetaDataFactory {
 
 		// create the default provider list
 		try {
-			String providers = ConfigurationManager.getInstance().getProperty("VideoMetaData", "MetadataProviders",
+			String providers = ConfigurationManager.getInstance().getProperty("VideoMetaData.MetadataProviders",
 					"org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider,org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider,org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider,org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider");
 			String mdps[] = providers.split(",");
 			for (String p : mdps) {

@@ -12,8 +12,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
+import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaSource;
 import org.jdna.media.IMediaSourceProvider;
+import org.jdna.media.MediaResourceFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -76,6 +78,7 @@ public class XmlMediaSourceProvider implements IMediaSourceProvider {
 	}
 
 	private void load() throws IOException {
+		sources.clear();
 		DocumentBuilder parser;
 		try {
 			parser = docFactory.newDocumentBuilder();
@@ -125,6 +128,10 @@ public class XmlMediaSourceProvider implements IMediaSourceProvider {
 	}
 
 	private void save() throws IOException {
+		if (!xmlFile.exists()) {
+			xmlFile.getParentFile().mkdirs();
+		}
+		
 		PrintWriter pw = new PrintWriter(new FileWriter(xmlFile));
 		
 		pw.println("<sources>");
@@ -142,6 +149,20 @@ public class XmlMediaSourceProvider implements IMediaSourceProvider {
 	}
 
 	public IMediaSource createSource(String name, String uri) throws IOException {
-		return new MediaSource(name, uri);
+		IMediaResource r = MediaResourceFactory.getInstance().createResource(uri);
+		MediaSource ms = new MediaSource(name, r.getLocationUri());
+		return ms;
+	}
+	
+	public boolean containsSource(IMediaSource s) {
+		try {
+			for (IMediaSource ms : getSources()) {
+				if (ms.getName().equalsIgnoreCase(s.getName())) return true;
+				if (ms.getLocationUri().equals(s.getLocationUri())) return true;
+			}
+		} catch (Exception e) {
+			// nevermind
+		}
+		return false;
 	}
 }

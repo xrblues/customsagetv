@@ -23,7 +23,7 @@ public class UrlFactory implements IUrlFactory {
 	
 	private static void createFactory() {
 		try {
-			String cl = ConfigurationManager.getInstance().getProperty(UrlFactory.class.getName(), "factoryClass", "org.jdna.url.CachedUrlFactory");
+			String cl = ConfigurationManager.getInstance().getProperty("org.jdna.url.UrlFactory.factoryClass", "org.jdna.url.CachedUrlFactory");
 			if (cl==null) {
 				factory = new UrlFactory();
 			} else {

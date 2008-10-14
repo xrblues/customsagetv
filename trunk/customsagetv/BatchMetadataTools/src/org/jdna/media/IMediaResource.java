@@ -1,7 +1,7 @@
 package org.jdna.media;
 
 public interface IMediaResource extends Comparable<IMediaResource> {
-	// public void accept(IResourceVisitor visitor);
+	public void accept(IResourceVisitor visitor);
 	// public void copy()
 	// public void delete();
 	public String getName();

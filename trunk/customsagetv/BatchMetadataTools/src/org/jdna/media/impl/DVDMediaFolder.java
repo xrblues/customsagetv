@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
+import org.jdna.media.IResourceVisitor;
 
 /**
  * DVD Media Folder is a special Folder that behaves like a folder and it also behaves as file.
@@ -57,5 +58,13 @@ public class DVDMediaFolder extends MediaFolder implements IMediaFile {
 			return false;
 		}
 	}
+
+	@Override
+	public void accept(IResourceVisitor visitor) {
+		// treat dvd folders as a single item
+		visitor.visit(this);
+	}
+	
+	
 
 }

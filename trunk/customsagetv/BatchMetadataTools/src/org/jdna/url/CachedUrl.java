@@ -16,6 +16,7 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.util.IOUtils;
 
 public class CachedUrl extends Url implements IUrl {
+	
 	private static final Logger log = Logger.getLogger(CachedUrl.class);
 
 	private File propFile = null;
@@ -68,7 +69,7 @@ public class CachedUrl extends Url implements IUrl {
 	}
 	
 	private boolean isExpired(File cachedFile) {
-		long secs = Long.parseLong(ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "expireSeconds", String.valueOf(60*60*24)));
+		long secs = Long.parseLong(ConfigurationManager.getInstance().getProperty("org.jdna.url.CachedUrl.expireSeconds", String.valueOf(60*60*24)));
 		long diff = (System.currentTimeMillis()/1000) - cachedFile.lastModified();
 		if (diff>secs) {
 			return true;
@@ -78,7 +79,7 @@ public class CachedUrl extends Url implements IUrl {
 
 	private File getCacheDir() {
 		if (urlCacheDir==null) {
-			urlCacheDir = new File(ConfigurationManager.getInstance().getProperty(this.getClass().getName(), "cacheDir", "cache/url/"));
+			urlCacheDir = new File(ConfigurationManager.getInstance().getProperty("org.jdna.url.CachedUrl.cacheDir", "cache/url/"));
 			if (!urlCacheDir.exists()) urlCacheDir.mkdirs();
 		}
 		return urlCacheDir;
