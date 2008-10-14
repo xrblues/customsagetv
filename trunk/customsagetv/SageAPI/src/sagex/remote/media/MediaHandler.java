@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import sage.media.image.RawImage;
 import sagex.api.MediaFileAPI;
 import sagex.remote.SagexServlet.SageHandler;
-import sun.util.logging.resources.logging;
 
 public class MediaHandler implements SageHandler {
 
