@@ -9,9 +9,9 @@ If you have configured the server correctly, then you can test if you have basic
 
 If you get back an xml file that contains the OS of the Sage server, then you are up and running.
 
-== Anatomy of an Xml Request ==
+== Anatomy of a Rest Service Request ==
 
-The Xml Request has the following structure...
+The Rest Service Request has the following structure...
 
  http://server:8080/sagex/rpcXml/SageAPI/SageCommand/Arg1/Arg2/.../context:CONTEXT
 
@@ -24,7 +24,7 @@ The Xml Request has the following structure...
 *context:_CONTEXT_* is how you can pass a UI context
 
 
-When executing Xml RPC commands, it's a good idea to find your command in the SageTV Javadoc and then convert that Java Command into Xml.
+When executing Rest services, it's a good idea to find your command in the SageTV Javadoc and then convert that Java Command into a Rest Service Request.
 
 So, if you wanted to see the capture devices that are installed on your server, you would issue the following request
  http://server:8080/sagex/rpcXml/CaptureDeviceAPI/GetCaptureDevices
@@ -43,8 +43,8 @@ The resulting xml would look something like this
 </response>
 }}}
 
-== Anatomy of an Xml Response ==
-The response the comes back from an Xml RPC call, always has the following structure
+== Anatomy of an Rest Service Xml Response ==
+The response that comes back from a Rest Request, always has the following structure
  * response
    * header
      * error @code="#"
@@ -69,7 +69,7 @@ If the array comming back is not serializable, then you will be get back an *arr
 
 In the case that you have an arrarRef, you can still get access to the array elements by passing the arrayRef:index as an api argument.  For example, if you asked for all media files and the array ref was 9814147.  You can then call GetMediaTitle using the follow command
  http://server:8080/sagex/rpcXml/MediaFileAPI/GetMediaTitle/9814147:10
-Where the *MediaFile* argument is passed as the Array Reference and the Index from that array that you want to access.  So, in the above command, i'm asking for the MediaFileTitle for the 10th element in the array 9814147.
+Where the *MediaFile* argument is passed as the Array Reference and the Index from that array that you want to access.  So, in the above command, i'm asking for the MediaFileTitle for the *10th* element in the array reference *9814147*.
 
 While the concept of the arrayRef is not ideal, it does serve 2 purposes.  The first is that it prevent an entire large object array from being serialized and sent across the network, which could be time consuming, especially if you only need to access a few elements.  The second, is that the SageAPI is setup this way.  In other words, Sage does not expose their object, but rather they expose services that can act on those objects.  The arrayRef mimics this behaviour.
 
@@ -90,7 +90,7 @@ While I could get access to Sage's internal representation of a thumbnail image,
 If anyone has any idea why the Sage Image is returns a negative image, please let me know.
 
 = Tips =
-Over time, users will contribute Tips for using this xml rpc api.  I'll try to keep adding to this list as they come in.
+Over time, users will contribute Tips for using this Rest Service.  I'll try to keep adding to this list as they come in.
 
 
  * Understand the javadoc before you start using the api, since the api is simply an extension of the javadoc.
