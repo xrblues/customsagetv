@@ -6,10 +6,10 @@
  * Java code can run remotely and access the Sage Server (Java RPC)
  * Java code can run within the SageTV process
  * Java client can auto discover the running sage server for transparent access
- * Complete access to the Sage API via Xml and Http
- * Xml RPC can pass ui context.
+ * Complete access to the Sage API via Rest services
+ * Rest API can pass ui context.
 
-If you are looking for the Xml RPC documentation, then read the install documentation from this page and then go to [http://code.google.com/p/customsagetv/wiki/XmlRPCQuickStart Xml RPC Guide] .
+If you are looking for the Rest API documentation, then read the install documentation from this page and then go to [http://code.google.com/p/customsagetv/wiki/XmlRPCQuickStart Rest Services Quickstart Guide] .
 
 = Background =
 
