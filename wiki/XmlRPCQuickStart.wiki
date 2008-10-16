@@ -84,10 +84,6 @@ To Request a Thumbnail
  http://server:8080/sagex/media/thumbnail/MEDIAFILEID
 Where *MEDIAFILEID* is Sage's MediaFileID for the requested video.
 
-*Special Not Regarding Thumbnails*
-While I could get access to Sage's internal representation of a thumbnail image, whenever I tried to send it out, it always came acros as a negative image.  I'm not sure why, and as such, I decided to implement the thumbnail code to ONLY return images that reside with the media. ie, folder.jpg, moviename.jpg.
-
-If anyone has any idea why the Sage Image is returns a negative image, please let me know.
 
 = Tips =
 Over time, users will contribute Tips for using this Rest Service.  I'll try to keep adding to this list as they come in.
