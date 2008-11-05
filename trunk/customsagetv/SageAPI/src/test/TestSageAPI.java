@@ -2,9 +2,11 @@ package test;
 
 import java.io.File;
 
+import sagex.SageAPI;
 import sagex.api.Configuration;
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
+import sagex.api.WidgetAPI;
 
 /**
  * To enable the remote sage api, you need to add
@@ -57,6 +59,20 @@ public class TestSageAPI {
 		// dump out a server config property
 		System.out.println("Get Runnable Classes: " + Configuration.GetProperty("load_at_startup_runnable_classes", "Not Set"));
 
+		String uiContexts[] = Global.GetUIContextNames();
+		for (String ui : uiContexts) {
+			System.out.println("Context: " + ui);
+			WidgetAPI.setUIContext(ui);
+		}
+		System.out.printf("Current STV File: %s\n", WidgetAPI.GetCurrentSTVFile());
+		
+		Object currentMenu = WidgetAPI.GetCurrentMenuWidget();
+		
+		System.out.println("Press any key; Current Widget name: " + WidgetAPI.GetWidgetName(currentMenu));
+		System.in.read();
+		
+		WidgetAPI.LaunchMenuWidget(currentMenu);
+		
 		System.out.println("Were Done.");
 	}
 }

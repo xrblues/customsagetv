@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.net.URI;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import sage.media.image.RawImage;
 import sagex.api.MediaFileAPI;
+import sagex.api.Utility;
 import sagex.remote.SagexServlet.SageHandler;
 
 public class MediaHandler implements SageHandler {
@@ -44,7 +46,12 @@ public class MediaHandler implements SageHandler {
 		} else if ("mediafile".equals(args[2])) {
 			writeMediaFile(args[3], resp);
 		} else if ("thumbnail".equals(args[2])) {
-			writeImage(args[3], resp);
+			String file = req.getParameter("mediafile");
+			if (file==null) {
+				writeImage(args[3], resp);
+			} else {
+				writeImageForFile(file, resp);
+			}
 		} else if ("sagethumbnail".equals(args[2])) {
 			writeSageImage(args[3], resp);
 		} else if ("properties".equals(args[2])) {
@@ -131,7 +138,12 @@ public class MediaHandler implements SageHandler {
 				name += ".jpg";
 				thFile = new File(file.getParentFile(), name);
 			}
-			if (thFile==null || !thFile.exists()) throw new FileNotFoundException(thFile.getAbsolutePath());
+			
+			// write sage thumbnail for this file
+			if (thFile==null || !thFile.exists()) {
+				writeSageImage(mediaFileId, resp);
+				return;
+			}
 			
 			resp.setContentType("image/jpeg");
 			resp.setHeader("Content-Length", String.valueOf(thFile.length()));
@@ -142,6 +154,12 @@ public class MediaHandler implements SageHandler {
 			resp.sendError(404, "Image Not Found: " + mediaFileId);
 		}
 	}
+
+	private void writeImageForFile(String fileUri, HttpServletResponse resp) throws Exception {
+	   Object sageMediaFile = MediaFileAPI.GetMediaFileForFilePath(new File(new URI(fileUri)));
+	   writeImage(String.valueOf(MediaFileAPI.GetMediaFileID(sageMediaFile)), resp);
+	}
+
 
 	public static void copyStream(InputStream is, OutputStream os) throws IOException {
 		byte buf[] = new byte[4096];
@@ -166,24 +184,10 @@ public class MediaHandler implements SageHandler {
 		// get the media file that we are going to be using
 		Object sagefile = MediaFileAPI.GetMediaFileForID(Integer.parseInt(mediaFileId));
 		Object sageImage = MediaFileAPI.GetThumbnail(sagefile);
-
-		Method method = null;
-		Method m[]  = sageImage.getClass().getMethods();
-		for (int i=0;i<m.length;i++) {
-			if (sage.media.image.RawImage.class.equals(m[i].getReturnType())) {
-				// potential contender
-				method = m[i];
-				break;
-			}
-		}
-		
-		if (method == null) throw new Exception("No Method to return image!");
-		
-		RawImage rimg  = (RawImage) method.invoke(sageImage, new Object[] {0});
-		BufferedImage img =rimg.convertToBufferedImage();
-		resp.setContentType("image/jpeg");
+		BufferedImage img =Utility.GetImageAsBufferedImage(sageImage);
+		resp.setContentType("image/png");
 		OutputStream os = resp.getOutputStream();
-		ImageIO.write((RenderedImage) img, "jpeg", os);
+		ImageIO.write((RenderedImage) img, "png", os);
 		os.flush();
 	}
 }
