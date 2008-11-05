@@ -54,18 +54,27 @@ public class SageAPIGenerator {
 		// pw.printf("protected static final Logger log =
 		// Logger.getLogger(%s.class);\n", className);
 		for (SageMethod m : methods) {
+			// normal sage method
 			if (m.comment != null && m.comment.trim().length() > 0) {
 				pw.println("/**");
 				pw.println(m.comment.trim());
 				pw.println(" */");
 			}
-			pw.printf("public static %s %s (%s) {\n", fixSageApi(m.returnType), m.name, createArgList(m.args));
+			pw.printf("public static %s %s (%s) {\n", fixSageApi(m.returnType), m.name, createArgList(m.args,false));
 
 			// build the body to call a sage service
 			callSageSerice(pw, m);
 
 			pw.println("}\n");
 		}
+		
+		// now we generate a utility method for setting a context
+		pw.println("\n\n");
+		pw.println("/** Convenience method for setting this thread's UI Context\n@see sagex.SageAPI.setUIConext()*/");
+		pw.println("public static void setUIContext(String context) {");
+		pw.println("   sagex.SageAPI.setUIContext(context);");
+		pw.println("}");
+		
 		pw.println("}");
 
 		pw.close();
@@ -79,12 +88,13 @@ public class SageAPIGenerator {
 	private void callSageSerice(PrintWriter pw, SageMethod m) {
 		String objArr = buildObjectArray(m);
 		String retStr = buildReturnString(m);
-		// pw.println("try {");
 		pw.printf("   %s sagex.SageAPI.call(\"%s\", %s);\n", retStr, m.name, objArr);
-		// pw.println("} catch (Throwable t) {");
-		// pw.printf(" log.error(\"Failed to call Sage Service: %s\", t);",
-		// m.name);
-		// pw.println("}");
+	}
+
+	private void callSageUISerice(PrintWriter pw, SageMethod m) {
+		String objArr = buildObjectArray(m);
+		String retStr = buildReturnString(m);
+		pw.printf("   %s sagex.SageAPI.call(context, \"%s\", %s);\n", retStr, m.name, objArr);
 	}
 
 	private String buildObjectArray(SageMethod m) {
@@ -124,7 +134,7 @@ public class SageAPIGenerator {
 		return o;
 	}
 
-	private String createArgList(List<MethodParam> args) {
+	private String createArgList(List<MethodParam> args, boolean addContext) {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < args.size(); i++) {
 			MethodParam p = args.get(i);
@@ -134,6 +144,12 @@ public class SageAPIGenerator {
 			if (i < args.size() - 1) {
 				sb.append(", ");
 			}
+		}
+		if (addContext) {
+			if (sb.length()>0) {
+				sb.append(", ");
+			}
+			sb.append("String context");
 		}
 		return sb.toString();
 	}
