@@ -7,7 +7,8 @@
  * Java code can run within the SageTV process
  * Java client can auto discover the running sage server for transparent access
  * Complete access to the Sage API via Rest services
- * Rest API can pass ui context.
+ * Rest API can pass ui context
+ * Java API now supports ui context
 
 If you are looking for the Rest API documentation, then read the install documentation from this page and then go to [http://code.google.com/p/customsagetv/wiki/XmlRPCQuickStart Rest Services Quickstart Guide] .
 
@@ -19,16 +20,13 @@ SageTV documents their [http://download.sage.tv/api/ API] but unfortunately, the
 
 = Why create another API? =
 
-It begs the question as to why I'd create another API, if there are already available.  I guess the question could be answered by asking another question; Why create a second API where there was already one available?
-
-The answer is simple.  I needed it to do more, and something different, than the existing apis. 
+I needed it to do more, and something different, that the existing APIs did not support. 
 
 I wanted to be able to access the SageTV api remotely.  I tried to find the generator that Greg used to see if maybe I could modify it, but unfortunately the source wasn't released (or I couldn't find it).
 
 I wanted the API to reflect what SageTV had documented.  In other words, I wasn't looking to create wrapper objects, etc, I just wanted to be able to use the API as SageTV had documented it.
 
 This new api achieves all of this.
-
 
 = What makes it really different? =
 I took a 3 tier approach to this API.  Despite the 3 teirs, there isn't that much to it.  The first tier consists of a set of Static Classes and Methods that is auto generated from the SageTV javadoc.  This in itself is exactly what Greg had done.
@@ -94,9 +92,6 @@ The goal is to export the API as a set of xml and JSON services in addition to t
 Autogenerating a set of typesafe json wrapper would be fairly trivial.
 
 Maybe this will be merged with Greg's API??  I do like the rcp ability and the thin wrapper approach, but I also agree with a comment that Greg stated... Maybe 1 extra api is enough ;)
-
-= Limitations =
-  * The Java RPC does allow for a context (it's comming...)
 
 = Technical Details =
 The RPC server uses and existing Servlet engine and a UDP server.  The client, if it's not specifically configured with a RemoteSageAPIProvider will querry the server for it's address using udp.  It sends a message on the group 228.5.6.7 on the port 9998.  The RPC server sends back it's rpcJava url to the client.
