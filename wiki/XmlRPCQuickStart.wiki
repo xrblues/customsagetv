@@ -73,6 +73,12 @@ Where the *MediaFile* argument is passed as the Array Reference and the Index fr
 
 While the concept of the arrayRef is not ideal, it does serve 2 purposes.  The first is that it prevent an entire large object array from being serialized and sent across the network, which could be time consuming, especially if you only need to access a few elements.  The second, is that the SageAPI is setup this way.  In other words, Sage does not expose their object, but rather they expose services that can act on those objects.  The arrayRef mimics this behaviour.
 
+== Alternate Format for Calling REST Services ==
+
+ http://server:8080/sagex/rpcXml/SageAPI?command=SageCommand&1=Arg1&2=Arg2&context=CONTEXT
+
+Comands is passed using the 'command' paramters, and arguments are passed using sequentially numbers name value pairs.
+
 = Extras =
 This package also includes a servlet for requesting thumbnails and mediafiles.  
 
