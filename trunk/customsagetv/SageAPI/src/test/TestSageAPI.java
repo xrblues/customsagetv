@@ -63,6 +63,7 @@ public class TestSageAPI {
 		for (String ui : uiContexts) {
 			System.out.println("Context: " + ui);
 			WidgetAPI.setUIContext(ui);
+			System.out.printf("Current STV File: %s\n", WidgetAPI.GetCurrentSTVFile());
 		}
 		System.out.printf("Current STV File: %s\n", WidgetAPI.GetCurrentSTVFile());
 		
@@ -72,6 +73,13 @@ public class TestSageAPI {
 		System.in.read();
 		
 		WidgetAPI.LaunchMenuWidget(currentMenu);
+		
+		// simple call to tell us how much video we have..
+		
+		System.out.println("Total Video Duration: " + Global.GetTotalVideoDuration() / 3600);
+
+		WidgetAPI.setUIContext(null);
+	    
 		
 		System.out.println("Were Done.");
 	}

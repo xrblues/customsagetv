@@ -35,8 +35,8 @@ public class XMLRPCHandler extends AbstractRPCHandler implements SageHandler {
 		// 3 - command
 		// 4+ - args
 
-		if (args.length<4) {
-			throw new ServletException("xmlRpc missing Api and/or Command!");
+		if (args.length<3) {
+			throw new ServletException("xmlRpc missing Api!");
 		}
 		
 		// xml rpc commands come in the form
@@ -45,6 +45,7 @@ public class XMLRPCHandler extends AbstractRPCHandler implements SageHandler {
 		// /API/Command?1=Arg1&2=Arg2&3=Arg3&context=123
 		String context = req.getParameter("context");
 		List<String> argsList = new ArrayList<String>();
+		String command = req.getParameter("command");
 		if (args.length > 4) {
 			// extra args or context
 			for (int i = 4; i < args.length; i++) {
@@ -67,7 +68,7 @@ public class XMLRPCHandler extends AbstractRPCHandler implements SageHandler {
 
 		PrintWriter pw = resp.getWriter();
 		resp.setContentType("text/xml");
-		pw.print(handleRPCCall(args[2], args[3], context, argsList.toArray(new String[argsList.size()])));
+		pw.print(handleRPCCall(args[2], (command==null) ? args[3] : command, context, argsList.toArray(new String[argsList.size()])));
 		pw.flush();
 	}
 	
