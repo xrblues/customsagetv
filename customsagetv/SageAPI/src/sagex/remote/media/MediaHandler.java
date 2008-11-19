@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.net.URI;
 
 import javax.imageio.ImageIO;
@@ -18,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import sage.media.image.RawImage;
 import sagex.api.MediaFileAPI;
 import sagex.api.Utility;
 import sagex.remote.SagexServlet.SageHandler;

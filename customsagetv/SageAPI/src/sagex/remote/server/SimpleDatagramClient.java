@@ -38,4 +38,10 @@ public class SimpleDatagramClient<T2> {
 
 		return reply;
 	}
+	
+	public static ServerInfo findRemoteServer(long timeout) throws Exception {
+		SimpleDatagramClient<ServerInfo> client = new SimpleDatagramClient<ServerInfo>();
+		ServerInfo info = client.send("where are you?", DatagramServer.MULTICAST_GROUP, DatagramServer.MULTICAST_PORT, timeout);
+		return info;
+	}
 }

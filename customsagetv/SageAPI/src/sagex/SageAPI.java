@@ -1,8 +1,9 @@
 package sagex;
 
 import sagex.remote.EmbeddedSageAPIProvider;
-import sagex.remote.SageAPIRemote;
+import sagex.remote.rmi.RMISageAPI;
 import sagex.remote.server.ServerInfo;
+import sagex.remote.server.SimpleDatagramClient;
 
 public class SageAPI {
 	private static ISageAPIProvider provider = null;
@@ -14,8 +15,8 @@ public class SageAPI {
 			// to find the provider to use
 			try {
 				System.out.println("SageAPI Provider is not set, will try to find the server...");
-				ServerInfo info = SageAPIRemote.findRemoteServer(5000);
-				setProvider(new SageAPIRemote(info.baseServerUrl));
+				ServerInfo info = SimpleDatagramClient.findRemoteServer(5000);
+				setProvider(new RMISageAPI(info.host, info.port));
 			} catch (Throwable t) {
 				setProvider(new EmbeddedSageAPIProvider());
 			}
