@@ -3,7 +3,6 @@ package sagex.remote;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import sagex.SageAPI;
 

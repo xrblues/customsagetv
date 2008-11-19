@@ -7,7 +7,6 @@ package sagex.remote.factory.request;
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
-import java.util.Map;
 import sagex.remote.RemoteRequest;
 public class SageRPCRequestFactory {
    public static RemoteRequest createRequest(String context, String api, String command, String[] parameters) {

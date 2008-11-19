@@ -2,7 +2,6 @@ package test;
 
 import java.io.File;
 
-import sagex.SageAPI;
 import sagex.api.Configuration;
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
@@ -67,14 +66,29 @@ public class TestSageAPI {
 		}
 		System.out.printf("Current STV File: %s\n", WidgetAPI.GetCurrentSTVFile());
 		
-		Object currentMenu = WidgetAPI.GetCurrentMenuWidget();
+		//Object currentMenu = WidgetAPI.GetCurrentMenuWidget();
 		
-		System.out.println("Press any key; Current Widget name: " + WidgetAPI.GetWidgetName(currentMenu));
-		System.in.read();
+		//System.out.println("Press any key; Current Widget name: " + WidgetAPI.GetWidgetName(currentMenu));
+		//System.in.read();
 		
-		WidgetAPI.LaunchMenuWidget(currentMenu);
-		
+		//WidgetAPI.LaunchMenuWidget(currentMenu);
 		// simple call to tell us how much video we have..
+
+		
+		Global.SageCommand("Pause");
+		Thread.currentThread().sleep(500);
+		Global.SageCommand("Play");
+		Thread.currentThread().sleep(500);
+
+		Global.SageCommand("Skip Fwd #2");
+		Thread.currentThread().sleep(500);
+		Global.SageCommand("Skip Fwd #2");
+		Thread.currentThread().sleep(500);
+		Global.SageCommand("Skip Fwd #2");
+		Thread.currentThread().sleep(500);
+		Global.SageCommand("Skip Fwd #2");
+		Thread.currentThread().sleep(500);
+		
 		
 		System.out.println("Total Video Duration: " + Global.GetTotalVideoDuration() / 3600);
 

@@ -6,6 +6,9 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 public class DatagramServer {
+	public static final String MULTICAST_GROUP = "228.5.6.7";
+	public static final int MULTICAST_PORT = 9998;
+
 	private int port = 9998;
 	private MulticastSocket socket;
 	private boolean running = false;

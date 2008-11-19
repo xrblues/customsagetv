@@ -1,5 +1,6 @@
 package test;
 
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +12,8 @@ public class TestRegex {
 		testSageNetworkEncoder("GET_FILE_SIZE a|b|c|d|e");
 		testSageNetworkEncoder("NOOP\r\n");
 		testSageNetworkEncoder("NOOP");
+		
+		System.out.println(URLEncoder.encode("Skip Fwd #2"));
 	}
 
 	private static void testSageNetworkEncoder(String s) {
