@@ -97,7 +97,7 @@ The goal is to export the API as a set of xml and JSON services in addition to t
 
 Autogenerating a set of typesafe json wrapper would be fairly trivial.
 
-Maybe this will be merged with Greg's API??  I do like the rcp ability and the thin wrapper approach, but I also agree with a comment that Greg stated... Maybe 1 extra api is enough ;)
+Maybe this will be merged with Greg's API??  I do like the rpc ability and the thin wrapper approach, but I also agree with a comment that Greg stated... Maybe 1 extra api is enough ;)
 
 = Technical Details =
 The RPC server uses and existing Servlet engine and a UDP server.  The client, if it's not specifically configured with a RemoteSageAPIProvider will querry the server for it's address using udp.  It sends a message on the group 228.5.6.7 on the port 9998.  The RPC server sends back it's rpcJava url to the client.
