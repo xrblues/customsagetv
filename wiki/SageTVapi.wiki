@@ -3,7 +3,7 @@
 
 = Feature Set =
  * Complete access to the Sage API from Java
- * Java code can run remotely and access the Sage Server (Java RPC)
+ * Java code can run remotely and access the Sage Server (Java RPC over RMI and HTTP)
  * Java code can run within the SageTV process
  * Java client can auto discover the running sage server for transparent access
  * Complete access to the Sage API via Rest services
@@ -82,6 +82,11 @@ In your client code, you simply need to invoke the SageTV api and it should find
 		}
 }}}
 
+==== Installation for Jetty Server ====
+
+ * Install the sagex-api jar file into the sage/JARs directory
+ * Install this [http://code.google.com/p/customsagetv/source/browse/trunk/customsagetv/SageAPI/jetty/contexts/sagex.xml jetty context file] into the sage/jetty/contexts directory
+ * restart sage
 
 === StubSageAPIProvider ===
 This is simply a testing stub.  It does nothing.  It can't be used for anything, but it does allow for some offline testing.
