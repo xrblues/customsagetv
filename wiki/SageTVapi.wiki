@@ -84,8 +84,8 @@ In your client code, you simply need to invoke the SageTV api and it should find
 
 ==== Installation for Jetty Server ====
 
- * Install the sagex-api jar file into the sage/JARs directory
- * Install this [http://code.google.com/p/customsagetv/source/browse/trunk/customsagetv/SageAPI/jetty/contexts/sagex.xml jetty context file] into the sage/jetty/contexts directory
+ * Install the sagex-api-VERSION.jar file into the SAGE_HOME/JARs directory
+ * Install this [http://code.google.com/p/customsagetv/source/browse/trunk/customsagetv/SageAPI/jetty/contexts/sagex.xml jetty context file] into the SAGE_HOME/jetty/contexts directory
  * restart sage
 
 === StubSageAPIProvider ===
