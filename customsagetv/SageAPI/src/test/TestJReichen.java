@@ -4,6 +4,7 @@ import sagex.api.Database;
 
 public class TestJReichen {
 	public static void main(String args[]) {
+		System.setProperty("sagex.SageAPI.remoteUrl", "http://mediaserver:8081/sagex/rpcJava");
 		System.out.println("get titles");
 		String[] titles = null;
 		titles = (String[]) sagex.SageAPI.call("GetAllTitles", null);

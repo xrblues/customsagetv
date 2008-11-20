@@ -1,6 +1,10 @@
 package sagex;
 
+import java.net.URI;
+
 import sagex.remote.EmbeddedSageAPIProvider;
+import sagex.remote.javarpc.JavaRPCHandler;
+import sagex.remote.javarpc.SageAPIRemote;
 import sagex.remote.rmi.RMISageAPI;
 import sagex.remote.server.ServerInfo;
 import sagex.remote.server.SimpleDatagramClient;
@@ -15,8 +19,20 @@ public class SageAPI {
 			// to find the provider to use
 			try {
 				System.out.println("SageAPI Provider is not set, will try to find the server...");
-				ServerInfo info = SimpleDatagramClient.findRemoteServer(5000);
-				setProvider(new RMISageAPI(info.host, info.port));
+				
+				// check if the sagex.SageAPI.remoteUrl is set
+				String remoteUrl = System.getProperty("sagex.SageAPI.remoteUrl");
+				if (remoteUrl==null) {
+					ServerInfo info = SimpleDatagramClient.findRemoteServer(5000);
+					setProvider(new RMISageAPI(info.host, info.port));
+				} else {
+					URI u = new URI(remoteUrl);
+					if ("rmi".equals(u.getScheme())) {
+						setProvider(new RMISageAPI(u.getHost(), u.getPort()));
+					} else {
+						setProvider(new SageAPIRemote(remoteUrl));
+					}
+				}
 			} catch (Throwable t) {
 				setProvider(new EmbeddedSageAPIProvider());
 			}

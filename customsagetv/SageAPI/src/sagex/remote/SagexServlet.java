@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import sagex.api.Global;
+import sagex.remote.javarpc.JavaRPCHandler;
 import sagex.remote.media.MediaHandler;
 import sagex.remote.rmi.SageRemoteCommandServer;
 import sagex.remote.server.DatagramListener;
@@ -71,7 +72,7 @@ public class SagexServlet extends HttpServlet {
 
 		// register our known handlers
 		sageHandlers.put(XMLRPCHandler.SAGE_RPC_PATH, new XMLRPCHandler());
-		//sageHandlers.put(JavaRPCHandler.SAGE_RPC_PATH, new JavaRPCHandler());
+		sageHandlers.put(JavaRPCHandler.SAGE_RPC_PATH, new JavaRPCHandler());
 		sageHandlers.put(MediaHandler.SERVLET_PATH, new MediaHandler());
 
 		System.out.println("Registered Handlers.");
@@ -79,7 +80,10 @@ public class SagexServlet extends HttpServlet {
 		final ServerInfo sinfo = new ServerInfo();
 		sinfo.host = Global.GetServerAddress();
 		sinfo.port = 1098;
-		System.out.println("RMI Server: "+ sinfo.host + ":" + sinfo.port);
+		sinfo.url = "rmi://"+sinfo.host + ":" + sinfo.port;
+
+		System.out.println("RMI Server: "+ sinfo.url);
+		
 		SageRemoteCommandServer.startServer(sinfo);
 		udpServer = new DatagramServer(DatagramServer.MULTICAST_GROUP, DatagramServer.MULTICAST_PORT, new DatagramListener() {
 			public byte[] onDatagramPacketReceived(DatagramPacket packet) {

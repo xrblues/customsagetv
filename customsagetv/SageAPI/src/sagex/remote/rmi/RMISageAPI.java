@@ -62,6 +62,6 @@ public class RMISageAPI implements ISageAPIProvider {
 	}
 	
 	public String toString() {
-		return String.format("RMISageAPI(%s,%s)",host,port);
+		return String.format("rmi://%s:%s",host,port);
 	}
 }
