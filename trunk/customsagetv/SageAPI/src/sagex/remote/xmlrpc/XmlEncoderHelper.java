@@ -2,7 +2,9 @@ package sagex.remote.xmlrpc;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Vector;
 
+import sage.v;
 import sagex.remote.RemoteObjectRef;
 import sagex.remote.RemoteRequest;
 import sagex.remote.RemoteResponse;
@@ -30,6 +32,8 @@ public class XmlEncoderHelper {
 	}
 
 	public static void encodeXmlData(Object data, PrintWriter writer) {
+		if (data==null) return;
+		
 		if (data instanceof RemoteObjectRef) {
 			RemoteObjectRef ref = (RemoteObjectRef) data;
 			writer.printf("<objectRef ref=\"%s\"/>\n", ref.getId());
@@ -44,8 +48,15 @@ public class XmlEncoderHelper {
 				}
 				writer.println("</array>");
 			}
-		} else {
+		} else if (data instanceof Vector) {
 			// you need to handle vectors and collections...
+			Vector vect = (Vector) data;
+			writer.printf("<array size=\"%s\">\n", vect.size());
+			for (int i = 0; i < vect.size(); i++) {
+				writer.printf("<value index=\"%s\">%s</value>\n", i, vect.get(i));
+			}
+			writer.println("</array>");
+		} else {
 			writer.printf("<value>%s</value>\n", data);
 		}
 	}
