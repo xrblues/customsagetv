@@ -3,7 +3,6 @@ package sagex;
 import java.net.URI;
 
 import sagex.remote.EmbeddedSageAPIProvider;
-import sagex.remote.javarpc.JavaRPCHandler;
 import sagex.remote.javarpc.SageAPIRemote;
 import sagex.remote.rmi.RMISageAPI;
 import sagex.remote.server.ServerInfo;

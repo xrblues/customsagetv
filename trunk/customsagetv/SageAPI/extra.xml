@@ -5,7 +5,7 @@
 	<property name="target" value="target"/>
 	<property name="name" value="sagex.api"/>
 	<property name="version" value="6.4.8"/>
-	<property name="jarname" value="${name}-${version}-5.jar"/>
+	<property name="jarname" value="${name}-${version}-6.jar"/>
 
 	<path id="SageAPI.classpath">
         <pathelement location="bin"/>
@@ -15,12 +15,7 @@
         <pathelement location="libs/Sage.jar"/>
     </path>
 	
-	<target name="package" depends="init,makeJar,makeJetty">
-	</target>
-
-	<target name="makeJetty">
-		<property name="sage" value="${target}/sage"/>
-		<mkdir dir="${sage}"/>
+	<target name="package" depends="init,makeJar">
 	</target>
 
 	<target name="makeJar">

@@ -32,21 +32,20 @@ public class XmlEncoderHelper {
 	public static void encodeXmlData(Object data, PrintWriter writer) {
 		if (data instanceof RemoteObjectRef) {
 			RemoteObjectRef ref = (RemoteObjectRef) data;
-			if (ref.isArray()) {
-				writer.printf("<arrayRef ref=\"%s\" size=\"%s\"/>\n", ref.getId(), ref.getArraySize());
-			} else {
-				writer.printf("<objectRef ref=\"%s\"/>\n", ref.getId());
-			}
+			writer.printf("<objectRef ref=\"%s\"/>\n", ref.getId());
 		} else if (data.getClass().isArray()) {
 			Object arr[] = (Object[]) data;
-			writer.printf("<array size=\"%s\">\n", arr.length);
-			for (int i = 0; i < arr.length; i++) {
-				writer.printf("<value index=\"%s\">%s</value>\n", i, arr[i]);
+			if (RemoteObjectRef.class.isAssignableFrom(arr.getClass().getComponentType())) {
+				writer.printf("<arrayRef ref=\"%s\" size=\"%s\"/>\n", ((RemoteObjectRef)arr[0]).getId(), arr.length);
+			} else {
+				writer.printf("<array size=\"%s\">\n", arr.length);
+				for (int i = 0; i < arr.length; i++) {
+					writer.printf("<value index=\"%s\">%s</value>\n", i, arr[i]);
+				}
+				writer.println("</array>");
 			}
-			writer.println("</array>");
 		} else {
 			// you need to handle vectors and collections...
-
 			writer.printf("<value>%s</value>\n", data);
 		}
 	}

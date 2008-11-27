@@ -52,15 +52,10 @@ public class RequestHelper {
 				// array index object ref
 				String id = str.substring(0, p);
 				int idx = Integer.parseInt(str.substring(p + 1));
-				RemoteObjectRef r = new RemoteObjectRef();
-				r.setId(id);
-				r.setIndex(idx);
-				return r;
+				return new RemoteObjectRef(id, idx);
 			} else {
 				// object ref
-				RemoteObjectRef r = new RemoteObjectRef();
-				r.setId(str);
-				return r;
+				return new RemoteObjectRef(str);
 			}
 		}
 		return null;
