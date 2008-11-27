@@ -4,7 +4,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import sagex.ISageAPIProvider;
-import sagex.remote.RemoteObjectRef;
 import sagex.remote.RemoteRequest;
 import sagex.remote.RemoteResponse;
 
@@ -36,21 +35,7 @@ public class RMISageAPI implements ISageAPIProvider {
 
 			// now check from remote object references... specificlly array
 			// ones, and turn those into real arrays...
-			Object rdata = resp.getData();
-			if (rdata instanceof RemoteObjectRef && ((RemoteObjectRef) rdata).isArray()) {
-				// we are dealing a complex remote array reference
-				// we need to convert into a local array copy so the local api
-				// can deal with it
-				RemoteObjectRef ref = ((RemoteObjectRef) rdata);
-				replyData = new Object[ref.getArraySize()];
-				for (int i = 0; i < ref.getArraySize(); i++) {
-					((Object[]) replyData)[i] = new RemoteObjectRef(ref, i);
-				}
-			} else {
-				// assume the data type was normal, ie not a Sage object of any
-				// type
-				replyData = rdata;
-			}
+			replyData = resp.getData();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

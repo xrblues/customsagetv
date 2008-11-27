@@ -41,4 +41,8 @@ public class RemoteRequest implements Serializable {
 	public String getContext() {
 		return context;
 	}
+	
+	public String toString() {
+		return String.format("Command: %s; Context: %s", command, context);
+	}
 }

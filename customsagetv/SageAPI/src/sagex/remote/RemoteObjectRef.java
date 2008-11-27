@@ -14,13 +14,10 @@ import java.io.Serializable;
  * 
  */
 public class RemoteObjectRef implements Serializable {
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = 2L;
 	private String id;
-
 	private int index = -1;
-	private int arraySize;
-	private boolean isarray;
+	private transient Object[] objectArray;
 
 	/**
 	 * created a standard remote object reference
@@ -34,10 +31,9 @@ public class RemoteObjectRef implements Serializable {
 	 * 
 	 * @param arrayLen
 	 */
-	public RemoteObjectRef(int arrayLen) {
+	public RemoteObjectRef(Object[] array) {
 		this.id = String.valueOf(hashCode());
-		this.arraySize = arrayLen;
-		this.isarray = true;
+		this.objectArray = array;
 	}
 
 	/**
@@ -50,15 +46,28 @@ public class RemoteObjectRef implements Serializable {
 	 */
 	public RemoteObjectRef(RemoteObjectRef r, int index) {
 		this.id = r.getId();
-		this.arraySize = r.getArraySize();
-		this.isarray = false;
+		this.index = index;
+	}
+	
+	/**
+	 * Creates a remote object reference to a remote array item
+	 * 
+	 * @param id
+	 * @param index
+	 */
+	public RemoteObjectRef(String id, int index) {
+		this.id = id;
 		this.index = index;
 	}
 
-	public int getArraySize() {
-		return arraySize;
+	/**
+	 * Create a remote object reference to a remote object
+	 * @param id
+	 */
+	public RemoteObjectRef(String id) {
+		this.id=id;
 	}
-
+	
 	public String getId() {
 		return id;
 	}
@@ -71,14 +80,6 @@ public class RemoteObjectRef implements Serializable {
 		return index;
 	}
 
-	public boolean isArray() {
-		return isarray;
-	}
-
-	public void setIndex(int idx) {
-		this.index = idx;
-	}
-
 	public String toString() {
 		String v;
 		if (index != -1) {
@@ -87,5 +88,17 @@ public class RemoteObjectRef implements Serializable {
 			v = getId();
 		}
 		return "RemoteObjectRef[" + v + "];";
+	}
+
+	/**
+	 * Returns a RemoteObjectReference  array, if this object was instanciated using an object array;
+	 * @return
+	 */
+	public RemoteObjectRef[] getRemoteObjectReferenceArray() {
+		RemoteObjectRef[] arr = new RemoteObjectRef[objectArray.length];
+		for (int i=0;i<arr.length;i++) {
+			arr[i] = new RemoteObjectRef(this, i);
+		}
+		return arr;
 	}
 }

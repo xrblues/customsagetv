@@ -74,7 +74,7 @@ public class TestSageAPI {
 		//WidgetAPI.LaunchMenuWidget(currentMenu);
 		// simple call to tell us how much video we have..
 
-		
+		/**
 		Global.SageCommand("Pause");
 		Thread.currentThread().sleep(500);
 		Global.SageCommand("Play");
@@ -88,7 +88,7 @@ public class TestSageAPI {
 		Thread.currentThread().sleep(500);
 		Global.SageCommand("Skip Fwd #2");
 		Thread.currentThread().sleep(500);
-		
+		*/
 		
 		System.out.println("Total Video Duration: " + Global.GetTotalVideoDuration() / 3600);
 

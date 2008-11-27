@@ -31,18 +31,32 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 
 	public void handleRPCCall(RemoteRequest request, RemoteResponse response) {
 		try {
-			// convert object references in the request to sage references...
+			// convert object references in the request into real sage references...
 			Object oArr[] = request.getParameters();
 			if (oArr != null && oArr.length > 0) {
 				for (int i = 0; i < oArr.length; i++) {
 					Object o = oArr[i];
-					if (o instanceof RemoteObjectRef) {
+					if (o==null) continue;
+					if (o.getClass().isArray() && RemoteObjectRef.class.isAssignableFrom(o.getClass().getComponentType())) {
+						System.out.println("Converting Remote Object Reference Array into a Sage Array.");
+						// check if the incomming object parameter is an array of RemoteObjectReferences
+						// if so, then convert the array, into a real array
+						Object oo[] = (Object[])o;
+						if (oo.length>0) {
+							// arrays are stored under the same ref id as each of the children
+							oArr[i] = getReference((RemoteObjectRef) oo[0]);
+						} else {
+							// empty object array;
+							oArr[i] = new Object[0];
+						}
+					} else if (o instanceof RemoteObjectRef) {
+						System.out.println("Converting Remote Object Reference into a Sage Reference.");
 						RemoteObjectRef ref = (RemoteObjectRef) o;
 						// replace this reference with the real thing...
 						Object oref = getReference(ref);
 						// if out reference in an array, then we need to get the
 						// indexed element and not the array.
-						if (oref.getClass().isArray()) {
+						if (oref.getClass().isArray() && ref.getIndex()!=-1) {
 							oArr[i] = ((Object[]) oref)[ref.getIndex()];
 						} else {
 							oArr[i] = oref;
@@ -69,10 +83,12 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 						// we can send back primitives and serialiable arrays
 						finalReply = oreply;
 					} else {
-						// non primitive / array - convert to an object
-						// reference
-						replyRef = new RemoteObjectRef(((Object[]) oreply).length);
-						finalReply = replyRef;
+						System.out.println("Converting Sage Object Array into a Remote Object Reference Array.");
+						// non primitive / array - convert to an object reference
+						replyRef = new RemoteObjectRef(((Object[]) oreply));
+						
+						// our reply should be an array of remote object references
+						finalReply = replyRef.getRemoteObjectReferenceArray();
 					}
 				} else {
 					// standard objects/etc
@@ -80,13 +96,15 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 						// serializiable stuff... ok with that.
 						finalReply = oreply;
 					} else {
-						// non primitive / non serializable objects - conver to
+						System.out.println("Converting Sage Object into a Remote Object Reference.");
+						// non primitive / non serializable objects - convert to
 						// object reference
 						replyRef = new RemoteObjectRef();
 						finalReply = replyRef;
 					}
 				}
 			}
+			
 			// if an object reference was created, then store it
 			if (replyRef != null) {
 				setReference(replyRef, oreply);
@@ -95,9 +113,10 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 			// send back the data
 			response.setData(finalReply);
 		} catch (Throwable t) {
+			System.out.printf("----------- Sage Handling of a Remote Command Failed: %s ---------\n", request);
+			t.printStackTrace(System.out);
 			response.setError(404, "Command Failed: " + (request != null ? request.getCommand() : ""), t);
 		}
-
 	}
 
 	public Object getReference(RemoteObjectRef ref) {

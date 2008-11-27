@@ -9,12 +9,8 @@ import java.net.URLConnection;
 
 import sagex.ISageAPIProvider;
 import sagex.remote.MarshalUtils;
-import sagex.remote.RemoteObjectRef;
 import sagex.remote.RemoteRequest;
 import sagex.remote.RemoteResponse;
-import sagex.remote.SagexServlet;
-import sagex.remote.server.ServerInfo;
-import sagex.remote.server.SimpleDatagramClient;
 
 public class SageAPIRemote implements ISageAPIProvider {
 	private String rpcUrl = null;
@@ -71,21 +67,7 @@ public class SageAPIRemote implements ISageAPIProvider {
 
 			// now check from remote object references... specificlly array
 			// ones, and turn those into real arrays...
-			Object rdata = resp.getData();
-			if (rdata instanceof RemoteObjectRef && ((RemoteObjectRef) rdata).isArray()) {
-				// we are dealing a complex remote array reference
-				// we need to convert into a local array copy so the local api
-				// can deal with it
-				RemoteObjectRef ref = ((RemoteObjectRef) rdata);
-				replyData = new Object[ref.getArraySize()];
-				for (int i = 0; i < ref.getArraySize(); i++) {
-					((Object[]) replyData)[i] = new RemoteObjectRef(ref, i);
-				}
-			} else {
-				// assume the data type was normal, ie not a Sage object of any
-				// type
-				replyData = rdata;
-			}
+			replyData = resp.getData();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Failed to call command: " + name, e);
