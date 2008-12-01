@@ -1,4 +1,5 @@
 #summary JSON RPC Guide for Sage Services
+#labels Featured
 
 = Introduction =
 
