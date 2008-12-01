@@ -1,0 +1,29 @@
+<html>
+	<head>
+		<script src="jquery-1.2.6.min.js"></script>
+		<script>
+			function listRecordings() {
+				var ajaxUrl = "http://mediaserver:8081/sagex/rpcJson";
+				
+				// call the GetMediaFiles/T to return all recorded shows
+				$.getJSON(ajaxUrl + "/MediaFileAPI/GetMediaFiles/T?jsoncallback=?", function(data) {
+					// update the recorded shows indicator
+					$("#itemCount").text(data.body.arrayRef.size);
+					
+					// for each recorded show, get its title
+					for (var i=0;i<data.body.arrayRef.size;i++) {
+						$.getJSON(ajaxUrl + "/MediaFileAPI/GetMediaTitle/"+data.body.arrayRef.ref + ":" + i + "?jsoncallback=?", function(title) {
+							$("#recordings").append("<li>"+ title.body.value +"</li>");
+						});
+					}
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<a href="#listtitle" onclick="listRecordings()">List Recorded Shows</a>
+		<div><label>Recording Count: </label><span id="itemCount">?</span></div>
+		<ul id="recordings">
+		</ul>
+	</body>
+</html>

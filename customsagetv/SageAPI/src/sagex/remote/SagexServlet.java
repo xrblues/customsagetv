@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import sagex.api.Global;
 import sagex.remote.javarpc.JavaRPCHandler;
+import sagex.remote.jsonrpc.JsonRPCHandler;
 import sagex.remote.media.MediaHandler;
 import sagex.remote.rmi.SageRemoteCommandServer;
 import sagex.remote.server.DatagramListener;
@@ -73,6 +74,7 @@ public class SagexServlet extends HttpServlet {
 		// register our known handlers
 		sageHandlers.put(XMLRPCHandler.SAGE_RPC_PATH, new XMLRPCHandler());
 		sageHandlers.put(JavaRPCHandler.SAGE_RPC_PATH, new JavaRPCHandler());
+        sageHandlers.put(JsonRPCHandler.SAGE_RPC_PATH, new JsonRPCHandler());
 		sageHandlers.put(MediaHandler.SERVLET_PATH, new MediaHandler());
 
 		System.out.println("Registered Handlers.");
