@@ -9,7 +9,7 @@ public class TestJReichen {
 	}
 	
 	public static void test1(String args[]) {
-		System.setProperty("sagex.SageAPI.remoteUrl", "http://mediaserver:8081/sagex/rpcJava");
+		//System.setProperty("sagex.SageAPI.remoteUrl", "http://mediaserver:8081/sagex/rpcJava");
 		System.out.println("get titles");
 		String[] titles = null;
 		titles = Database.GetAllTitles();

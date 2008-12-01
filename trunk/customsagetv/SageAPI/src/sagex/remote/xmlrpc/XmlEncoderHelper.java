@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Vector;
 
-import sage.v;
 import sagex.remote.RemoteObjectRef;
 import sagex.remote.RemoteRequest;
 import sagex.remote.RemoteResponse;
