@@ -3,7 +3,7 @@
 
 = Introduction =
 
-As of 6.4.8-7, and thanks to jriechen, the api also contains a JSON/JSONP repsonse to a REST style request.
+As of 6.4.8-7, and thanks to jreichen, the api also contains a JSON/JSONP repsonse to a REST style request.
 
 Please read the [http://code.google.com/p/customsagetv/wiki/XmlRPCQuickStart Xml Guide], before continuing, because It will explain how to make REST calls to the SageTV Server.
 
