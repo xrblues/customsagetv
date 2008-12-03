@@ -7,7 +7,7 @@ As of 6.4.8-7, and thanks to jreichen, the api also contains a JSON/JSONP repson
 
 Please read the [http://code.google.com/p/customsagetv/wiki/XmlRPCQuickStart Xml Guide], before continuing, because It will explain how to make REST calls to the SageTV Server.
 
-The only change in making a REST call for a JSON/JSONP response, is that the url changes so that instead of sagex/xmlRpc/ you use sagex/jsonRpc/
+The only change in making a REST call for a JSON/JSONP response, is that the url changes so that instead of *sagex/xmlRpc/* you use *sagex/jsonRpc/*
 
 The response comming back will will either be a JSON or [http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/ JSONP] response depending on whether or not you pass a jsoncallback url parameter.  If you pass a jsoncallback url parameter, then the response comming back will be a JSONP repsonse.  [http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/ JSONP] is used to do cross domain mash ups.
 
