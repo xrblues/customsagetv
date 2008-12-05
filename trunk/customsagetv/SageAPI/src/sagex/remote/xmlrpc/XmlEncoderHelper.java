@@ -61,6 +61,7 @@ public class XmlEncoderHelper {
 	}
 
 	public static void writeHeader(RemoteResponse response, PrintWriter writer) {
+		writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		writer.println("<response>");
 		writer.println("<header>");
 		if (response.hasError()) {
