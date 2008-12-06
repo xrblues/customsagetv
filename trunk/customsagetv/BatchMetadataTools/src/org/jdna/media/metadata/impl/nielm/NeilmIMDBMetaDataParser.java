@@ -8,7 +8,7 @@ import net.sf.sageplugins.sageimdb.Role;
 
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.VideoMetaData;
+import org.jdna.media.metadata.MediaMetadata;
 
 public class NeilmIMDBMetaDataParser {
 	private ImdbWebBackend db = null;
@@ -20,8 +20,8 @@ public class NeilmIMDBMetaDataParser {
 		this.db = db;
 	}
 	
-	public VideoMetaData getMetaData() {
-		VideoMetaData md = new VideoMetaData();
+	public MediaMetadata getMetaData() {
+		MediaMetadata md = new MediaMetadata();
 		md.setActors(getActors());
 		md.setGenres(data.getGenres());
 		md.setMPAARating(data.getMPAArating());

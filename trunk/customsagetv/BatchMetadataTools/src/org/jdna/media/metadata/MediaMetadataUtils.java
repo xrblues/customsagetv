@@ -3,7 +3,9 @@ package org.jdna.media.metadata;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,9 +16,9 @@ import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.impl.CDStackingModel;
 
-public class VideoMetaDataUtils{
+public class MediaMetadataUtils{
 	
-	private static final Logger log = Logger.getLogger(VideoMetaDataUtils.class);
+	private static final Logger log = Logger.getLogger(MediaMetadataUtils.class);
 	
 	/**
 	 * Using a URL Connection, it will write the URL to 
@@ -24,7 +26,14 @@ public class VideoMetaDataUtils{
 	 * @param out
 	 */
 	public static void writeImageFromUrl(String url, File out) throws IOException {
-		BufferedImage img = ImageIO.read(new URL(url));
+		URL u = new URL(url);
+		URLConnection conn = u.openConnection();
+		if (conn instanceof HttpURLConnection) {
+			HttpURLConnection uconn = (HttpURLConnection) conn;
+			conn.setRequestProperty("User-Agent", ConfigurationManager.getInstance().getUrlConfiguration().getHttpUserAgent());
+		}
+		
+		BufferedImage img = ImageIO.read(conn.getInputStream());
 		ImageIO.write(img, "jpg", out);
 	}
 	
@@ -40,7 +49,7 @@ public class VideoMetaDataUtils{
 	 * </pre>
 	 */
 	public static String cleanSearchCriteria(String s, boolean removeYear) {
-		String wordTokens[] = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.VideoMetaDataUtils.cleanSearchCriteria.wordTokens", "dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv").split(",");
+		String wordTokens[] = ConfigurationManager.getInstance().getMetadataConfiguration().getWordsToClean().split(",");
 
 		s = CDStackingModel.INSTANCE.getStackedTitle(s);
 		log.debug("Cleaning Search Criteria: " + s);

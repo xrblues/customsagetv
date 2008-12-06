@@ -17,8 +17,8 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.jdna.configuration.ConfigurationManager;
-import org.jdna.media.metadata.IVideoSearchResult;
-import org.jdna.media.metadata.VideoSearchResult;
+import org.jdna.media.metadata.IMediaSearchResult;
+import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.url.CookieHandler;
 
 public class MovieIndex {
@@ -73,7 +73,7 @@ public class MovieIndex {
 	}
 	
 	private File getIndexDir() {
-		String sdir = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdprof.MovieIndex.indexDir", "cache/index");
+		String sdir = ConfigurationManager.getInstance().getDVDProfilerConfiguration().getIndexDir();
 		File dir = new File(sdir);
 		if (!dir.exists()) {
 			log.debug("Creating Lucene Index Dir: " + dir.getAbsolutePath());
@@ -97,29 +97,29 @@ public class MovieIndex {
 	}
 	
 	
-	public List<IVideoSearchResult> searchTitle(String title, CookieHandler handler) throws Exception {
+	public List<IMediaSearchResult> searchTitle(String title, CookieHandler handler) throws Exception {
 		if (searcher==null) openIndex();
 		
 		Query query = parser.parse(title);
 		Hits hits = searcher.search(query);
 		
 		int l = hits.length();
-		List<IVideoSearchResult> results = new ArrayList<IVideoSearchResult>(l);
+		List<IMediaSearchResult> results = new ArrayList<IMediaSearchResult>(l);
 		
 		for (int i=0;i<l;i++) {
 			Document d = hits.doc(i);
-			int type=IVideoSearchResult.RESULT_TYPE_UNKNOWN;
+			int type=IMediaSearchResult.RESULT_TYPE_UNKNOWN;
 			if (hits.score(i)>0.99) {
-				type = IVideoSearchResult.RESULT_TYPE_EXACT_MATCH;
+				type = IMediaSearchResult.RESULT_TYPE_EXACT_MATCH;
 			} else if(hits.score(i)>0.9) {
-				type = IVideoSearchResult.RESULT_TYPE_POPULAR_MATCH;
+				type = IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH;
 			}
 			
 			String name = d.get("title");
 			String date = d.get("release");
 			String url = d.get("url");
 			
-			results.add(new VideoSearchResult(DVDProfMetaDataProvider.PROVIDER_ID, url, name, date, type));
+			results.add(new MediaSearchResult(DVDProfMetaDataProvider.PROVIDER_ID, url, name, date, type));
 		}
 		
 		

@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
-import org.jdna.media.metadata.IVideoMetaData;
-import org.jdna.media.metadata.IVideoMetaDataProvider;
-import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataProvider;
+import org.jdna.media.metadata.IMediaSearchResult;
 
 /**
  * Abstract way of interacting with a display device.  Using this, the same tool can use difference "Screens" in order to enable the same tool to work in different mods.
@@ -28,12 +28,12 @@ public interface IMetaDataUpdaterScreen {
 	 *
 	 */
 	public class MovieEntry {
-		public MovieEntry(IMediaFile mediaFile, IVideoMetaData md) {
+		public MovieEntry(IMediaFile mediaFile, IMediaMetadata md) {
 			this.file=mediaFile;
 			this.metadata=md;
 		}
 		public IMediaFile file;
-		public IVideoMetaData metadata;
+		public IMediaMetadata metadata;
 	}
 	
 
@@ -87,14 +87,14 @@ public interface IMetaDataUpdaterScreen {
 	 * @param r
 	 * @param md
 	 */
-	public void notifyUpdatedFile(IMediaResource r, IVideoMetaData md);
+	public void notifyUpdatedFile(IMediaResource r, IMediaMetadata md);
 	
 	/**
 	 * Notify the screen that the file required manual intervention in order to be updated.
 	 * @param r
 	 * @param md
 	 */
-	public void notifyManualUpdate(IMediaResource r, IVideoMetaData md);
+	public void notifyManualUpdate(IMediaResource r, IMediaMetadata md);
 	
 	/**
 	 * Render a screen showing the curent list of installed metadata providers.
@@ -102,7 +102,7 @@ public interface IMetaDataUpdaterScreen {
 	 * @param providers List of providers
 	 * @param defaultProvider id of the default provider being used.
 	 */
-	public void renderProviders(List<IVideoMetaDataProvider> providers, String defaultProvider);
+	public void renderProviders(List<IMediaMetadataProvider> providers, String defaultProvider);
 	
 	/**
 	 * Render a screen showing a list of known movies that the tool would find.
@@ -118,12 +118,12 @@ public interface IMetaDataUpdaterScreen {
 	 * @param results List of IVideoSearchResult objects
 	 * @param max maximum # of results to show
 	 */
-	public void renderResults(String title, List<IVideoSearchResult> results, int max);
+	public void renderResults(String title, List<IMediaSearchResult> results, int max);
 	
 	/**
 	 * Once process is done, renderStats() will be called to render information to the user about the processing.
 	 */
 	public void renderStats();
 	
-	public void showMetadata(IMediaFile mf, IVideoMetaData md);
+	public void showMetadata(IMediaFile mf, IMediaMetadata md);
 }

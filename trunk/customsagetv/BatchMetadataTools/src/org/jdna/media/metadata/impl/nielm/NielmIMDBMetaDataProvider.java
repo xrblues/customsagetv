@@ -14,14 +14,14 @@ import net.sf.sageplugins.sageimdb.ImdbWebObjectRef;
 import net.sf.sageplugins.sageimdb.Role;
 
 import org.apache.log4j.Logger;
+import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataProvider;
+import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
-import org.jdna.media.metadata.IVideoMetaData;
-import org.jdna.media.metadata.IVideoMetaDataProvider;
-import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.ProviderInfo;
-import org.jdna.media.metadata.VideoSearchResult;
 
-public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
+public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
 	private static final Logger log  = Logger.getLogger(NielmIMDBMetaDataProvider.class);
 	
 	private static final String PROVIDER_THUMNAIL_URL = "http://i.media-imdb.com/images/nb15/logo2.gif";
@@ -37,16 +37,16 @@ public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
 		db = new ImdbWebBackend();
 	}
 	
-	public List<IVideoSearchResult> search(int type, String arg) throws Exception {
-		List<IVideoSearchResult> results = new ArrayList<IVideoSearchResult>();
+	public List<IMediaSearchResult> search(int type, String arg) throws Exception {
+		List<IMediaSearchResult> results = new ArrayList<IMediaSearchResult>();
 		
-		if (type==IVideoMetaDataProvider.SEARCH_TITLE) {
+		if (type==IMediaMetadataProvider.SEARCH_TITLE) {
 			try {
 				Vector<Role> list = db.searchTitle(arg);
 				for (Role r: list) {
-					VideoSearchResult vsr = new VideoSearchResult();
+					MediaSearchResult vsr = new MediaSearchResult();
 					updateTitleAndYear(vsr, r);
-					vsr.setResultType(IVideoSearchResult.RESULT_TYPE_UNKNOWN);
+					vsr.setResultType(IMediaSearchResult.RESULT_TYPE_UNKNOWN);
 					vsr.setProviderId(NielmIMDBMetaDataProvider.PROVIDER_ID);
 					DbObjectRef objRef = r.getName();
 					if (objRef instanceof ImdbWebObjectRef) {
@@ -68,7 +68,7 @@ public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
 		return results;
 	}
 
-	private void updateTitleAndYear(VideoSearchResult vsr, Role r) {
+	private void updateTitleAndYear(MediaSearchResult vsr, Role r) {
 		String buf = r.getName().getName();
 		String title, year;
 		// Nielm's titles are 'Title (Year)'
@@ -97,7 +97,7 @@ public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
 	    return PROVIDER_ID;	
 	}
 
-	public IVideoMetaData getMetaData(String providerDataUrl) throws IOException {
+	public IMediaMetadata getMetaData(String providerDataUrl) throws IOException {
 		ImdbWebObjectRef objRef = new ImdbWebObjectRef(DbObjectRef.DB_TYPE_TITLE, "IMDB Url", providerDataUrl);
 		DbTitleObject title;
 		try {
@@ -109,7 +109,7 @@ public class NielmIMDBMetaDataProvider implements IVideoMetaDataProvider {
 		}
 	}
 
-	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
+	public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
 		return getMetaData(result.getId());
 	}
 

@@ -61,7 +61,7 @@ public class URLSaxParser extends AbstractSaxHandler {
 		log.info("Parsing Url: " + url);
 		IUrl urlFacade = UrlFactory.newUrl(url);
 		try {
-			InputStream is = urlFacade.getInputStream(cookieHandler);
+			InputStream is = urlFacade.getInputStream(cookieHandler, false);
 			if (urlFacade.hasMoved()) {
 				isRedirecting = true;
 				redirectUrl = urlFacade.getMovedUrl().toExternalForm();

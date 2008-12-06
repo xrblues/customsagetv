@@ -1,6 +1,6 @@
 package org.jdna.media.metadata;
 
-public interface IVideoSearchResult {
+public interface IMediaSearchResult {
 	public static final int RESULT_TYPE_UNKNOWN = 0;
 	public static final int RESULT_TYPE_EXACT_MATCH = 1;
 	public static final int RESULT_TYPE_PARTIAL_MATCH = 2;

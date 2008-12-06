@@ -1,9 +1,27 @@
 package org.jdna.configuration;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
+import org.jdna.media.impl.MediaConfiguration;
+import org.jdna.media.metadata.MetadataConfiguration;
+import org.jdna.media.metadata.impl.dvdprof.DVDProfilerConfiguration;
+import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
+import org.jdna.media.metadata.impl.sage.SageMetadataConfiguration;
+import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
+import org.jdna.persistence.IPersistence;
+import org.jdna.persistence.PropertiesPersistence;
+import org.jdna.url.UrlConfiguration;
 
 
 /**
@@ -21,63 +39,142 @@ public class ConfigurationManager {
 	private static ConfigurationManager instance;
 	
 	public static ConfigurationManager getInstance() {
-		if (instance == null) instance=new ConfigurationManager(null);
+		if (instance == null) instance=new ConfigurationManager();
 		return instance;
 	}
 	
-	public IConfigurationProvider config = null;
+	private File configFile;
+	private Properties props;
+	private IPersistence persistence;
+
+	// all classes that we manage should be listed here
+	// so that we can load and save the configurations
+	private Class[] configurationClasses = new Class[] {
+		UrlConfiguration.class,
+		MetadataUpdaterConfiguration.class,
+		MediaConfiguration.class,
+		MetadataConfiguration.class,
+		DVDProfilerConfiguration.class,
+		DVDProfilerLocalConfiguration.class,
+		SageMetadataConfiguration.class
+	};
 	
-	public ConfigurationManager(IConfigurationProvider conf) {
-		if (conf==null) {
-			// use a default.
-			log.error("Configuration Manager is being initialized WITHOUT a valid properties set.");
-			conf = new PropertiesConfigurationProvider(null, new Properties());
+	private Map<Class, Object> loaded = new HashMap<Class, Object>();
+	
+	public ConfigurationManager() {
+		load();
+	}
+	
+	private void load() {
+		String cFile = System.getProperty("metadata.properties", "metadata.properties");
+		configFile = new File(cFile);
+		props = new Properties();
+		if (configFile.exists()) {
+			try {
+				props.load(new FileInputStream(configFile));
+			} catch (Exception e) {
+				log.error("Failed to load custom properties from: " + cFile);
+			}
 		} else {
-			log.info("Configuration manager is setting a new Configuration Provider");
+			log.warn("Configuration: " + cFile + " does not exist.  Using defaults.");
 		}
-		setProvider(conf);
-	}
-	
-	/**
-	 * Sets the provider for this instance
-	 * 
-	 * @param conf
-	 */
-	public void setProvider(IConfigurationProvider conf) {
-		log.info("Setting Configuration Provider: " + conf.getName());
-		this.config = conf;
-	}
-	
-	/**
-	 * Gets a named configuration item.
-	 * 
-	 * @param path configuration path in the configuration manager
-	 * @param key configuration key
-	 * @param def default value if the current key does not exist
-	 * 
-	 * @return
-	 */
-	public String getProperty(String key, String def) {
-		String v = config.getProperty(key);
-		return (v==null) ? def : v;
-	}
-	
-	/**
-	 * Convenience getProperty() that uses null as the default value when a property does not exist.
-	 * 
-	 * @param path
-	 * @param key
-	 * @return
-	 */
-	public String getProperty(String key) {
-		return getProperty(key, null);
+		persistence = new PropertiesPersistence(props);
 	}
 
-	public IConfigurationProvider getProvider() {
-		return config;
+	private synchronized void save() throws IOException {
+		log.debug("Writing configuration to persistent store.");
+		FileWriter fw = new FileWriter(configFile);
+		
+		// use our own store, so that we can sort the keys for readability
+		SortedSet s= new TreeSet();
+		for (Enumeration e=props.propertyNames();e.hasMoreElements();) {
+			s.add(e.nextElement());
+		}
+
+		for (Object o : s) {
+			fw.write(o.toString());
+			fw.write("=");
+			fw.write(props.getProperty(o.toString()));
+			fw.write("\n");
+		}
+		
+		fw.flush();
+		fw.close();
+		
+		// remove loaded objects, so that they get recreated.
+		loaded.clear();
 	}
 	
-	public void save() throws IOException {
-		config.save();
+	public UrlConfiguration getUrlConfiguration() {
+		return load(UrlConfiguration.class);
+	}
+	
+	public MetadataUpdaterConfiguration getMetadataUpdaterConfiguration() {
+		return load(MetadataUpdaterConfiguration.class);
+	}
+	
+	public MediaConfiguration getMediaConfiguration() {
+		return load(MediaConfiguration.class);
+	}
+	
+	public MetadataConfiguration getMetadataConfiguration() {
+		return load(MetadataConfiguration.class);
+	}
+	
+	public DVDProfilerConfiguration getDVDProfilerConfiguration() {
+		return load(DVDProfilerConfiguration.class);
+	}
+	
+	public DVDProfilerLocalConfiguration getDVDProfilerLocalConfiguration() {
+		return load(DVDProfilerLocalConfiguration.class);
+	}
+
+	public SageMetadataConfiguration getSageMetadataConfiguration() {
+		return load(SageMetadataConfiguration.class);
+	}
+	
+	protected <T> T load(Class<T> objectType) {
+		T o = (T) loaded.get(objectType);
+		if (o==null) {
+			try {
+				o = persistence.load(objectType);
+				loaded.put(objectType, o);
+			} catch (Exception e) {
+				log.error("Failed to Load: " + objectType.getName());
+				o = null;
+			}
+		}
+		return o;
+	}
+	
+	/**
+	 * Use only in rare cases.  No Checks are done on the properties, so there is much room for error.
+	 * 
+	 * @param prop
+	 * @param value
+	 */
+	public void setProperty(String prop, String value) {
+		log.warn("Setting Override Property: " + prop + ": " + value);
+		props.setProperty(prop, value);
+		
+		// remove any loaded objects, so that they get created with the new values when needed.
+		loaded.clear();
+	}
+	
+	/**
+	 * Load all configurations and then dump their values.
+	 * 
+	 * @param pw
+	 */
+	public void dumpProperties(PrintWriter pw) {
+		for (int i=0;i<configurationClasses.length;i++) {
+			try {
+				((PropertiesPersistence)persistence).dumpValues(load(configurationClasses[i]), pw);
+				pw.println("");
+			} catch (Exception e) {
+				pw.println("Failed to dump properties for: " + configurationClasses[i]);
+				e.printStackTrace(pw);
+			}
+		}
 	}
 }

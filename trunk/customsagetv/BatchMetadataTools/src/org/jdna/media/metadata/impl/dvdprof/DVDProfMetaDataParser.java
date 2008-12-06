@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.VideoMetaData;
+import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.url.CookieHandler;
 import org.jdna.url.URLSaxParser;
 import org.jdna.url.UrlUtil;
@@ -49,7 +49,7 @@ public class DVDProfMetaDataParser extends URLSaxParser {
 	private List<CastMember> writers = new ArrayList<CastMember>();
 	private List<CastMember> otherCast = new ArrayList<CastMember>();
 
-	private VideoMetaData metadata = new VideoMetaData();
+	private MediaMetadata metadata = new MediaMetadata();
 	private String baseUrl;
 	private String charbuf;
 	
@@ -213,7 +213,7 @@ public class DVDProfMetaDataParser extends URLSaxParser {
 		}
 	}
 	
-	public VideoMetaData getMetaData() {
+	public MediaMetadata getMetaData() {
 		metadata.setGenres(genres.toArray(new String[genres.size()]));
 		metadata.setActors(actors.toArray(new CastMember[actors.size()]));
 		metadata.setDirectors(directors.toArray(new CastMember[directors.size()]));

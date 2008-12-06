@@ -2,7 +2,7 @@ package test;
 
 import java.io.IOException;
 
-import org.jdna.media.metadata.IVideoMetaData;
+import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.impl.imdb.IMDBMovieMetaDataParser;
 import org.xml.sax.SAXException;
 
@@ -17,7 +17,7 @@ public class TestMetaDataParser extends TestIMDBParser {
 		IMDBMovieMetaDataParser p =new IMDBMovieMetaDataParser(arg);
 		try {
 			p.parse();
-			IVideoMetaData md = p.getMetatData();
+			IMediaMetadata md = p.getMetatData();
 			TestUtils.dumpMetaData(md);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

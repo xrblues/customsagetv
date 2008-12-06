@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.impl.CDStackingModel;
 import org.jdna.media.impl.MediaFile;
-import org.jdna.media.metadata.VideoMetaDataUtils;
+import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.metadataupdater.MetadataUpdater;
 
 public class TestRegexp {
@@ -90,17 +90,15 @@ public class TestRegexp {
 		return sb.toString();
 	}
 
-
-
 	private static void testCleanTitle(String s) {
-		System.out.printf("Title: %s; Cleaned: %s\n", s, VideoMetaDataUtils.cleanSearchCriteria(s, true));
+		System.out.printf("Title: %s; Cleaned: %s\n", s, MediaMetadataUtils.cleanSearchCriteria(s, true));
 	}
 
 	public static void testStack(String s) {
-		MediaFile mf = new MediaFile(null, new File(s));
+		MediaFile mf = new MediaFile(new File(s).toURI());
 		System.out.printf("String: %s; Name; %s, Basename: %s; Stacked: %s\n",s , mf.getTitle(), mf.getBasename(), CDStackingModel.INSTANCE.getStackedTitle(mf));
 		
-		Pattern p = Pattern.compile(ConfigurationManager.getInstance().getProperty(CDStackingModel.class.getName(), "StackingRegex"), Pattern.CASE_INSENSITIVE);
+		Pattern p = Pattern.compile(ConfigurationManager.getInstance().getMediaConfiguration().getStackingModelRegex(), Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(mf.getTitle());
 		if (m.find()) {
 			System.out.printf("Regex: %s; Start Char: %s; Data: %s\n", p.pattern(), m.start(), mf.getTitle().substring(0,m.start()));

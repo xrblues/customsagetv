@@ -1,5 +1,5 @@
 package org.jdna.media;
 
-public interface IResourceVisitor {
+public interface IMediaResourceVisitor {
 	public void visit(IMediaResource resource);
 }

@@ -3,7 +3,7 @@ package org.jdna.media.metadata;
 import java.io.Serializable;
 
 
-public class VideoMetaData implements IVideoMetaData, Serializable {
+public class MediaMetadata implements IMediaMetadata, Serializable {
 	private static final long serialVersionUID = 1;
 	
 	private String[] genres;
@@ -25,10 +25,10 @@ public class VideoMetaData implements IVideoMetaData, Serializable {
 	private boolean updated;
 	private boolean thumbnailUpdated;
 
-	public VideoMetaData() {
+	public MediaMetadata() {
 	}
 	
-	public VideoMetaData(IVideoMetaData md) {
+	public MediaMetadata(IMediaMetadata md) {
 		setGenres(md.getGenres());
 
 		ICastMember[] mdCM = md.getActors();
@@ -68,7 +68,7 @@ public class VideoMetaData implements IVideoMetaData, Serializable {
 		setRuntime(md.getRuntime());
 		setThumbnailUrl(md.getThumbnailUrl());
 		setTitle(md.getTitle());
-		setUpdated(md.isUpdated());
+		//setUpdated(md.isUpdated());
 		setUserRating(md.getUserRating());
 		setYear(md.getYear());
 	}

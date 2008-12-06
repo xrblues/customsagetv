@@ -4,15 +4,15 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
+import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataProvider;
+import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
-import org.jdna.media.metadata.IVideoMetaData;
-import org.jdna.media.metadata.IVideoMetaDataProvider;
-import org.jdna.media.metadata.IVideoSearchResult;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.url.CachedUrl;
 import org.jdna.url.CookieHandler;
 
-public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
+public class DVDProfMetaDataProvider implements IMediaMetadataProvider {
 	private static final Logger log = Logger.getLogger(DVDProfMetaDataProvider.class);
 
 	public static final String PROVIDER_ID = "dvdprofiler";
@@ -37,10 +37,10 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 		return PROVIDER_ID;
 	}
 
-	public IVideoMetaData getMetaData(String providerDataUrl) throws Exception {
+	public IMediaMetadata getMetaData(String providerDataUrl) throws Exception {
 		if (!initialized) initialize();
 
-		IVideoMetaData metadata = null;
+		IMediaMetadata metadata = null;
 		try {
 			metadata = new DVDProfMetaDataParser(providerDataUrl, cookieHandler).getMetaData();
 		} catch (Exception e) {
@@ -55,7 +55,7 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 		return PROVIDER_NAME;
 	}
 
-	public List<IVideoSearchResult> search(int searchType, String arg)	throws Exception {
+	public List<IMediaSearchResult> search(int searchType, String arg)	throws Exception {
 		if (!initialized) initialize();
 		
 		if (shouldRebuildIndexes()) {
@@ -76,7 +76,7 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 	private void initialize() throws Exception {
 		initialized=true;
 		
-		String urls = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.profileUrls", null);
+		String urls = ConfigurationManager.getInstance().getDVDProfilerConfiguration().getProfileUrls();
 		if (urls == null) {
 			throw new Exception("No Profile Urls specified.  Please add some urls to your configuration: " + this.getClass().getName() + ".profileUrls");
 		} else {
@@ -85,7 +85,7 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 			
 		}
 		
-		rebuildIndex = Boolean.parseBoolean(ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.forceRebuild", "false"));
+		rebuildIndex = ConfigurationManager.getInstance().getDVDProfilerConfiguration().isForceRebuild();
 	}
 
 	private void rebuildIndexes() throws Exception {
@@ -93,7 +93,7 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 
 		MovieIndex.getInstance().clean();
 		
-		String urls = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.profileUrls", null);
+		String urls = ConfigurationManager.getInstance().getDVDProfilerConfiguration().getProfileUrls();
 		if (urls == null) {
 			log.error("No Profile Urls specified.  Please add some urls to your configuration: " + this.getClass().getName() + ".profileUrls");
 		} else {
@@ -129,7 +129,7 @@ public class DVDProfMetaDataProvider implements IVideoMetaDataProvider {
 		return MovieIndex.getInstance().isNew() || rebuildIndex;
 	}
 
-	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
+	public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
 		return getMetaData(result.getId());
 	}
 

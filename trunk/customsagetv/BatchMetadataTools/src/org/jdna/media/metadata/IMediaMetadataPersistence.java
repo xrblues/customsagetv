@@ -2,9 +2,9 @@ package org.jdna.media.metadata;
 
 import java.io.IOException;
 
-import org.jdna.media.IMediaFile;
+import org.jdna.media.IMediaResource;
 
-public interface IVideoMetaDataPersistence {
+public interface IMediaMetadataPersistence {
 	/**
 	 * should return the short id of this persistence engine
 	 * @return
@@ -24,7 +24,7 @@ public interface IVideoMetaDataPersistence {
 	 * @param mediaFile file to which this metadata attached
 	 * @throws IOException if it connot be saved
 	 */
-	public void storeMetaData(IVideoMetaData md, IMediaFile mediaFile) throws Exception;
+	public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, boolean overwriteThumbnail) throws IOException;
 	
 	/**
 	 * loads the saved IVideoMetaData associated with the given media file.  This method must return null if there is no metadata.
@@ -32,5 +32,5 @@ public interface IVideoMetaDataPersistence {
 	 * @param mediaFile mediaFile with possible metadata 
 	 * @return IVideoMetaData if it exists, or null, if no matedata exists.
 	 */
-	public IVideoMetaData loadMetaData(IMediaFile mediaFile);
+	public IMediaMetadata loadMetaData(IMediaResource mediaFile);
 }

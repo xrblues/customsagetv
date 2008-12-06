@@ -30,7 +30,7 @@ public class CookieHandler implements ICookieHandler {
 			Url u = new Url(cookieUrl);
 			try {
 				// this should call us, with the main cookie fetching url, so that we get populated.
-				u.getInputStream(this);
+				u.getInputStream(this, false);
 			} catch (IOException e) {
 				// don't care
 			}

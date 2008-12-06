@@ -22,6 +22,7 @@ public class CachedUrl extends Url implements IUrl {
 	private File propFile = null;
 	private Properties props = null;
 	public File urlCacheDir = null; 
+	private boolean followRedirects = false;
 
 	public CachedUrl(String url) throws IOException {
 		super(url);
@@ -69,7 +70,7 @@ public class CachedUrl extends Url implements IUrl {
 	}
 	
 	private boolean isExpired(File cachedFile) {
-		long secs = Long.parseLong(ConfigurationManager.getInstance().getProperty("org.jdna.url.CachedUrl.expireSeconds", String.valueOf(60*60*24)));
+		long secs = ConfigurationManager.getInstance().getUrlConfiguration().getCacheExpiryInSeconds();
 		long diff = (System.currentTimeMillis()/1000) - cachedFile.lastModified();
 		if (diff>secs) {
 			return true;
@@ -79,7 +80,7 @@ public class CachedUrl extends Url implements IUrl {
 
 	private File getCacheDir() {
 		if (urlCacheDir==null) {
-			urlCacheDir = new File(ConfigurationManager.getInstance().getProperty("org.jdna.url.CachedUrl.cacheDir", "cache/url/"));
+			urlCacheDir = new File(ConfigurationManager.getInstance().getUrlConfiguration().getCacheDir());
 			if (!urlCacheDir.exists()) urlCacheDir.mkdirs();
 		}
 		return urlCacheDir;
@@ -136,8 +137,9 @@ public class CachedUrl extends Url implements IUrl {
 		sendCookies(u, c, handler);
 		if (c instanceof HttpURLConnection) {
 			HttpURLConnection conn = (HttpURLConnection) c;
-			conn.setInstanceFollowRedirects(false);
-			conn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008072820 Firefox/3.0.1");
+			conn.setInstanceFollowRedirects(followRedirects);
+			log.debug("User Agent: " + System.getProperty("http.agent"));
+			conn.setRequestProperty("User-Agent", ConfigurationManager.getInstance().getUrlConfiguration().getHttpUserAgent());
 			InputStream is = conn.getInputStream();
 			int rc = conn.getResponseCode();
 			if (rc == HttpURLConnection.HTTP_MOVED_PERM
@@ -176,7 +178,9 @@ public class CachedUrl extends Url implements IUrl {
 	}
 
 	@Override
-	public InputStream getInputStream(ICookieHandler handler) throws IOException {
+	public InputStream getInputStream(ICookieHandler handler, boolean followRedirects) throws IOException {
+		this.followRedirects=followRedirects;
+		
 		URL u = getUrl(handler);
 		
 		return u.openStream();
@@ -189,8 +193,7 @@ public class CachedUrl extends Url implements IUrl {
 	public static void remove(String dataUrl) {
 		try {
 			CachedUrl cu = new CachedUrl(dataUrl);
-			//TODO uncomment 
-			//cu.remove();
+			cu.remove();
 		} catch (IOException e) {
 			log.error("Unabled to remove cached data url: " + dataUrl);
 		}

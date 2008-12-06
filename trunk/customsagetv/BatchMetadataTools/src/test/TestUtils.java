@@ -1,27 +1,27 @@
 package test;
 
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.IVideoMetaData;
-import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaSearchResult;
 
 public class TestUtils {
-	public static void dumpResults(java.util.List<IVideoSearchResult> results) {
+	public static void dumpResults(java.util.List<IMediaSearchResult> results) {
 		System.out.println("Begin Dumping Results");
-		for (IVideoSearchResult r : results) {
+		for (IMediaSearchResult r : results) {
 			dumpResult(r);
 		}
 		System.out.println("End Dumping Results");
 	}
 
-	public static void dumpResult(IVideoSearchResult r) {
+	public static void dumpResult(IMediaSearchResult r) {
 		System.out.printf("ResultClass: %s\n", r.getClass().getName());
 		System.out.printf("      Title: %s\n", r.getTitle());
 		System.out.printf("       Year: %s\n", r.getYear());
-		System.out.printf("      Match: %s\n------------------------------------\n", IVideoSearchResult.SEARCH_TYPE_NAMES[r.getResultType()]);
+		System.out.printf("      Match: %s\n------------------------------------\n", IMediaSearchResult.SEARCH_TYPE_NAMES[r.getResultType()]);
 	}
 
 	
-	public static void dumpMetaData(IVideoMetaData md) {
+	public static void dumpMetaData(IMediaMetadata md) {
 		System.out.println("MetaData Begin");
 		System.out.printf("     Title: %s\n", md.getTitle());
 		System.out.printf("      Year: %s\n", md.getYear());

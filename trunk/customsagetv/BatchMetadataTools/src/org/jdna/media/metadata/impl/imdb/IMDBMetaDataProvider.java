@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataProvider;
+import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
-import org.jdna.media.metadata.IVideoMetaData;
-import org.jdna.media.metadata.IVideoMetaDataProvider;
-import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.ProviderInfo;
-import org.jdna.media.metadata.VideoSearchResult;
 import org.xml.sax.SAXException;
 
-public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
+public class IMDBMetaDataProvider implements IMediaMetadataProvider {
 	private static final Logger log = Logger.getLogger(IMDBMetaDataProvider.class);
 	
 	public static final String IMDB_FIND_URL = "http://www.imdb.com/find?s=tt&q={0}&x=0&y=0";
@@ -39,9 +39,9 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 		return PROVIDER_NAME;
 	}
 
-	public List<IVideoSearchResult> search(int searchType, String arg) throws Exception {
-		List<IVideoSearchResult> results=null;
-		if (searchType==IVideoMetaDataProvider.SEARCH_TITLE) {
+	public List<IMediaSearchResult> search(int searchType, String arg) throws Exception {
+		List<IMediaSearchResult> results=null;
+		if (searchType==IMediaMetadataProvider.SEARCH_TITLE) {
 			String eArg = URLEncoder.encode(arg);
 			String url = MessageFormat.format(IMDB_FIND_URL, eArg);
 			log.debug("IMDB Search Url: " + url);
@@ -51,6 +51,7 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 			try {
 				parser.parse();
 				if (parser.getFollowRedirects()==false && parser.isRedirecting()) {
+					log.debug("Returing Single Result for Search: " + arg);
 					return returnSingleResult(parser.getRedirectUrl());
 				}
 				if (parser.hasError()) {
@@ -69,15 +70,16 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 		return results;
 	}
 
-	private List<IVideoSearchResult> returnSingleResult(String redirectUrl) throws IOException {
-		List<IVideoSearchResult> result = new ArrayList<IVideoSearchResult>();
+	private List<IMediaSearchResult> returnSingleResult(String redirectUrl) throws IOException {
+		List<IMediaSearchResult> result = new ArrayList<IMediaSearchResult>();
 		
-		IVideoMetaData md = getMetaData(redirectUrl);
-		VideoSearchResult vsr = new VideoSearchResult();
+		IMediaMetadata md = getMetaData(redirectUrl);
+		MediaSearchResult vsr = new MediaSearchResult();
+		vsr.setProviderId(PROVIDER_ID);
 		vsr.setId(md.getProviderDataUrl());
 		vsr.setTitle(md.getTitle());
 		vsr.setYear(md.getYear());
-		vsr.setResultType(IVideoSearchResult.RESULT_TYPE_EXACT_MATCH);
+		vsr.setResultType(IMediaSearchResult.RESULT_TYPE_EXACT_MATCH);
 		
 		// the IMDBMovieMetaData implements the IVideoSearchResult interface
 		result.add(vsr);
@@ -85,7 +87,7 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 		return result;
 	}
 
-	public IVideoMetaData getMetaData(String providerDataUrl) throws IOException {
+	public IMediaMetadata getMetaData(String providerDataUrl) throws IOException {
 		try {
 			String url = providerDataUrl;
 			IMDBMovieMetaDataParser parser = new IMDBMovieMetaDataParser(url);
@@ -98,7 +100,7 @@ public class IMDBMetaDataProvider implements IVideoMetaDataProvider {
 		}
 	}
 
-	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
+	public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
 		return getMetaData(result.getId());
 	}
 
