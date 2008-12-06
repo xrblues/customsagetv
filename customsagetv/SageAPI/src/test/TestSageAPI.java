@@ -2,6 +2,7 @@ package test;
 
 import java.io.File;
 
+import sagex.SageAPI;
 import sagex.api.Configuration;
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
@@ -23,6 +24,7 @@ public class TestSageAPI {
 
 		// what os is the remote server running...
 		System.out.println("Remote Sage OS: " + Global.GetOS());
+		System.out.println("Remote Sage Http Server: " + SageAPI.getProviderProperties().getProperty("server") + ":" + SageAPI.getProviderProperties().getProperty("http.port"));
 
 		// lets find all sage servers on the network (ie, what the extenders do
 		// when they start up)

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Properties;
 
 import sagex.remote.AbstractRPCHandler;
 import sagex.remote.RemoteRequest;
@@ -28,15 +29,15 @@ public class SageRemoteCommandServer implements SageRemoteCommand, Serializable 
 		return response;
 	}
 	
-	public static void startServer(ServerInfo sinfo) {
-		System.setProperty("java.rmi.server.hostname", sinfo.host);
+	public static void startServer(Properties sinfo) {
+		System.setProperty("java.rmi.server.hostname", sinfo.getProperty("server"));
 		try {
 			System.out.println("Starting Sage RMI Server...");
 		    SageRemoteCommandServer obj = getInstance();
 		    SageRemoteCommand stub = (SageRemoteCommand) UnicastRemoteObject.exportObject(obj, 0);
 
 		    // Bind the remote object's stub in the registry
-		    Registry registry = LocateRegistry.createRegistry(sinfo.port);
+		    Registry registry = LocateRegistry.createRegistry(Integer.parseInt(sinfo.getProperty("rmi.port")));
 		    registry.rebind(SERVER_BINDING, stub);
 
 		    System.err.println("Sage Java RMI Server ready");
