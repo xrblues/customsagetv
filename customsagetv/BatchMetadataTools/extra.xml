@@ -4,7 +4,7 @@
 	
 	<property name="target" value="target"/>
 	<property name="name" value="metadata-updater"/>
-	<property name="version" value="1.5"/>
+	<property name="version" value="1.8"/>
 	<property name="jarname" value="${name}-${version}.jar"/>
 	<property name="launcher" value="MetadataTool"/>
 	
@@ -14,7 +14,6 @@
 			<fileset dir="docs">
 			</fileset>
 		</copy>
-		<copy file="src/configurationmanager.properties" tofile="${target}/metadataupdater.properties.sample"></copy>
 		<zip destfile="${name}-${version}.zip">
 			<fileset dir="${target}"></fileset>
 		</zip>

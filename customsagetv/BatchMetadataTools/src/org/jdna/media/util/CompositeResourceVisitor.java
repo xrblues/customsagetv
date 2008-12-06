@@ -1,7 +1,7 @@
 package org.jdna.media.util;
 
 import org.jdna.media.IMediaResource;
-import org.jdna.media.IResourceVisitor;
+import org.jdna.media.IMediaResourceVisitor;
 
 /**
  * Resource Visitor that can chain other resource visitors.  If you need to execute more visitors per item, then 
@@ -10,11 +10,11 @@ import org.jdna.media.IResourceVisitor;
  * @author seans
  *
  */
-public class CompositeResourceVisitor implements IResourceVisitor {
-	private IResourceVisitor rv1;
-	private IResourceVisitor rv2;
+public class CompositeResourceVisitor implements IMediaResourceVisitor {
+	private IMediaResourceVisitor rv1;
+	private IMediaResourceVisitor rv2;
 	
-	public CompositeResourceVisitor(IResourceVisitor v1, IResourceVisitor v2) {
+	public CompositeResourceVisitor(IMediaResourceVisitor v1, IMediaResourceVisitor v2) {
 		this.rv1=v1;
 		this.rv2=v2;
 	}

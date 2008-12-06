@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.VideoMetaData;
+import org.jdna.media.metadata.MediaMetadata;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -26,7 +26,7 @@ public class LocalDVDProfParser {
 	private List<String> genres = new ArrayList<String>();
 	private List<CastMember> writers = new ArrayList<CastMember>();
 	
-	private VideoMetaData metadata;
+	private MediaMetadata metadata;
 	
 	public LocalDVDProfParser(String id) throws Exception {
 		this.id=id;
@@ -35,8 +35,8 @@ public class LocalDVDProfParser {
 		this.node = dvdFile.findMovieById(id);
 	}
 	
-	public VideoMetaData getMetaData() {
-		metadata = new VideoMetaData();
+	public MediaMetadata getMetaData() {
+		metadata = new MediaMetadata();
 		metadata.setActors(getActors().toArray(new CastMember[actors.size()]));
 		metadata.setAspectRatio(getAspectRatio());
 		metadata.setCompany(getCompany());

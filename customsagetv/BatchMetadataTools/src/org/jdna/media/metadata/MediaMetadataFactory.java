@@ -7,27 +7,27 @@ import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 
-public class VideoMetaDataFactory {
+public class MediaMetadataFactory {
 	
-	private static VideoMetaDataFactory instance = null;
-	private static final Logger log = Logger.getLogger(VideoMetaDataFactory.class);
+	private static MediaMetadataFactory instance = null;
+	private static final Logger log = Logger.getLogger(MediaMetadataFactory.class);
 
-	public static VideoMetaDataFactory getInstance() {
+	public static MediaMetadataFactory getInstance() {
 		if (instance == null)
-			instance = new VideoMetaDataFactory();
+			instance = new MediaMetadataFactory();
 		return instance;
 	}
 
-	private List<IVideoMetaDataProvider> metadataProviders = new ArrayList<IVideoMetaDataProvider>();
+	private List<IMediaMetadataProvider> metadataProviders = new ArrayList<IMediaMetadataProvider>();
 	private List<ICoverProvider> coverProviders = new ArrayList<ICoverProvider>();
 	
-	private IVideoMetaDataPersistence persistence;
+	private IMediaMetadataPersistence persistence;
 
-	public VideoMetaDataFactory() {
+	public MediaMetadataFactory() {
 		try {
 			// create the default persistence...
-			String cl = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.VideoMetaDataFactory.PersistenceClass", "org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence");
-			persistence = (IVideoMetaDataPersistence) Class.forName(cl).newInstance();
+			String cl = ConfigurationManager.getInstance().getMetadataConfiguration().getPersistenceClass();
+			persistence = (IMediaMetadataPersistence) Class.forName(cl).newInstance();
 			log.info("Using Default Persistence Engine: " + cl);
 		} catch (Exception e) {
 			log.error("Failed to create the default persistence engine.");
@@ -35,13 +35,12 @@ public class VideoMetaDataFactory {
 
 		// create the default provider list
 		try {
-			String providers = ConfigurationManager.getInstance().getProperty("VideoMetaData.MetadataProviders",
-					"org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider,org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider,org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider,org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider");
+			String providers = ConfigurationManager.getInstance().getMetadataConfiguration().getMediaMetadataProviders();
 			String mdps[] = providers.split(",");
 			for (String p : mdps) {
 				p = p.trim();
 				try {
-					Class<IVideoMetaDataProvider> cl = (Class<IVideoMetaDataProvider>) Class.forName(p);
+					Class<IMediaMetadataProvider> cl = (Class<IMediaMetadataProvider>) Class.forName(p);
 					addMetaDataProvider(cl.newInstance());
 				} catch (Throwable e) {
 					log.error("Failed to register new Metadata Provider: " + p, e);
@@ -58,27 +57,27 @@ public class VideoMetaDataFactory {
 
 	}
 
-	public List<IVideoMetaDataProvider> getMetaDataProviders() {
+	public List<IMediaMetadataProvider> getMetaDataProviders() {
 		return metadataProviders;
 	}
 
-	public void addMetaDataProvider(IVideoMetaDataProvider provider) {
+	public void addMetaDataProvider(IMediaMetadataProvider provider) {
 		log.info("Adding MetaDataProvider: " + provider.getInfo().getName());
 		metadataProviders.add(provider);
 	}
 
-	public void removeMetaDataProvider(IVideoMetaDataProvider provider) {
+	public void removeMetaDataProvider(IMediaMetadataProvider provider) {
 		metadataProviders.remove(provider);
 	}
 
-	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
-		IVideoMetaDataProvider provider = getProvider(result.getProviderId());
+	public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
+		IMediaMetadataProvider provider = getProvider(result.getProviderId());
 		return provider.getMetaData(result);
 	}
 	
-	public List<IVideoSearchResult> search(String providerId, int searchType, String arg) throws Exception {
+	public List<IMediaSearchResult> search(String providerId, int searchType, String arg) throws Exception {
 		log.info("Searching: providerId: " + providerId + "; searchType: " + searchType + "; query: " + arg);
-		IVideoMetaDataProvider provider = getProvider(providerId);
+		IMediaMetadataProvider provider = getProvider(providerId);
 		if (provider == null) {
 			log.error("Failed to find metadata provider: " + providerId);
 			throw new Exception("Unknown Provider: " + providerId);
@@ -86,15 +85,15 @@ public class VideoMetaDataFactory {
 		return provider.search(searchType, arg);
 	}
 
-	public List<IVideoSearchResult> search(int searchType, String arg) throws Exception {
+	public List<IMediaSearchResult> search(int searchType, String arg) throws Exception {
 		if (metadataProviders.size() == 0)
 			throw new Exception("No Providers Installed!");
 		return metadataProviders.get(0).search(searchType, arg);
 	}
 
-	public IVideoMetaDataProvider getProvider(String providerId) {
-		IVideoMetaDataProvider provider = null;
-		for (IVideoMetaDataProvider p : metadataProviders) {
+	public IMediaMetadataProvider getProvider(String providerId) {
+		IMediaMetadataProvider provider = null;
+		for (IMediaMetadataProvider p : metadataProviders) {
 			if (providerId.equals(p.getInfo().getId())) {
 				provider = p;
 				break;
@@ -103,7 +102,7 @@ public class VideoMetaDataFactory {
 		return provider;
 	}
 
-	public IVideoMetaDataPersistence getDefaultPeristence() {
+	public IMediaMetadataPersistence getDefaultPeristence() {
 		return persistence;
 	}
 	

@@ -29,8 +29,8 @@ public class TestCommandLine {
 		cl.process();
 		
 		System.out.println("Named Args------------");
-		for (String k : cl.getArgSet()) {
-			System.out.printf("Arg: %20s = %s\n", k, cl.getArg(k));
+		for (CommandLine.Arg arg : cl.getProcessedArgs()) {
+			System.out.printf("Arg: %20s = %s\n", arg.name, arg.value);
 		}
 		
 		System.out.println("Extra Args------------");

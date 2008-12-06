@@ -17,11 +17,11 @@ public class MovieResourceFilter implements IMediaResourceFilter {
 	private Pattern dirExcludePattern = null;
 	
 	public MovieResourceFilter() {
-		String pat = ConfigurationManager.getInstance().getProperty("org.jdna.media.impl.MovieResourceFilter.VideoExtensionRegex", "avi|mpg|divx|mkv|wmv|mov|xvid");
+		String pat = ConfigurationManager.getInstance().getMediaConfiguration().getVideoExtensionsRegex();
 		log.debug("Using Movie Filter Regex: " + pat);
 		filePattern = Pattern.compile(pat,Pattern.CASE_INSENSITIVE);
 		
-		pat = ConfigurationManager.getInstance().getProperty("org.jdna.media.impl.MovieResourceFilter.ExcludeDirRegex",null);
+		pat = ConfigurationManager.getInstance().getMediaConfiguration().getExcludeVideoDirsRegex();
 		if (pat==null) {
 			log.debug("Not Using any Directory Exclude Filters.");
 		} else {
@@ -34,7 +34,7 @@ public class MovieResourceFilter implements IMediaResourceFilter {
 	public boolean accept(IMediaResource resource) {
 		if (resource == null) return false;
 
-		if (resource instanceof IMediaFolder) {
+		if (resource.getType() == IMediaFolder.TYPE_FOLDER) {
 			if (dirExcludePattern==null) {
 				// keep it
 				return true;
@@ -44,11 +44,17 @@ public class MovieResourceFilter implements IMediaResourceFilter {
 				return !m.matches();
 			}
 		} else {
-			String ext = resource.getExtension();
-			if (ext == null) return false;
-			
-			Matcher m = filePattern.matcher(ext);
-			return m.matches();
+			// if this is a DVD Media Item, then keep it
+			if (resource.getContentType() == IMediaResource.CONTENT_TYPE_DVD) {
+				return true;
+			} else {
+				// otherwise, check the ext to see if this a movie
+				String ext = resource.getExtension();
+				if (ext == null) return false;
+				
+				Matcher m = filePattern.matcher(ext);
+				return m.matches();
+			}
 		}
 	}
 

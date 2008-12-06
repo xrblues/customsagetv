@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
+import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataProvider;
+import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
-import org.jdna.media.metadata.IVideoMetaData;
-import org.jdna.media.metadata.IVideoMetaDataProvider;
-import org.jdna.media.metadata.IVideoSearchResult;
 import org.jdna.media.metadata.ProviderInfo;
 
-public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
+public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
 	private static final Logger log = Logger.getLogger(LocalDVDProfMetaDataProvider.class);
 
 	public static final String PROVIDER_ID = "dvdprofiler_local";
@@ -44,7 +44,7 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 		return PROVIDER_ID;
 	}
 
-	public IVideoMetaData getMetaData(String providerDataUrl) throws Exception {
+	public IMediaMetadata getMetaData(String providerDataUrl) throws Exception {
 		if (!initialized) initialize();
 		return new LocalDVDProfParser(providerDataUrl).getMetaData();
 	}
@@ -53,7 +53,7 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 		return PROVIDER_NAME;
 	}
 
-	public List<IVideoSearchResult> search(int searchType, String arg)	throws Exception {
+	public List<IMediaSearchResult> search(int searchType, String arg)	throws Exception {
 		if (!initialized) initialize();
 		
 		if (shouldRebuildIndexes()) {
@@ -76,11 +76,11 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 
 		
 		
-		String indexDir = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.indexDir", "cache/indexDVDProfLocal/");
+		String indexDir = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getIndexDir();
 		LocalMovieIndex.getInstance().setIndexDir(indexDir);
 
 		
-		String imageDir = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.imageDir", null);
+		String imageDir = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getImageDir();
 		if (imageDir==null) {
 			throw new Exception(String.format("Missing imageDir.  Please Set: %s.imageDir", this.getClass().getName()));
 		}
@@ -89,7 +89,7 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 			throw new Exception("Imagedir does not exist: " + imageDir);
 		}
 		
-		String xml = ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.xmlFile", null);
+		String xml = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getXmlFile();
 		if (xml==null) {
 			throw new Exception(String.format("Missing xml.  Please Set: %s.xmlFile", this.getClass().getName()));
 		}
@@ -100,7 +100,7 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 		}
 		
 		xmlFileTool = new DVDProfXmlFile(xmlFile);
-		rebuildIndex = Boolean.parseBoolean(ConfigurationManager.getInstance().getProperty("org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.forceRebuild", "false"));
+		rebuildIndex = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().isForceRebuild();
 	}
 
 	private void rebuildIndexes() throws Exception {
@@ -126,7 +126,7 @@ public class LocalDVDProfMetaDataProvider implements IVideoMetaDataProvider {
 		return imageDir;
 	}
 
-	public IVideoMetaData getMetaData(IVideoSearchResult result) throws Exception {
+	public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
 		return getMetaData(result.getId());
 	}
 

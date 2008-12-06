@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.VideoMetaData;
+import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -30,7 +30,7 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 	private static final Object CAST_MATCH = "Cast";
 	
 	
-	private VideoMetaData metadata = null;
+	private MediaMetadata metadata = null;
 	private List<String> genres;
 	private List<CastMember> cast = new ArrayList<CastMember>();
 	
@@ -70,12 +70,12 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 	
 	public IMDBMovieMetaDataParser(String url) {
 		super(url);
-		metadata = new VideoMetaData();
+		metadata = new MediaMetadata();
 		metadata.setProviderDataUrl(url);
 		metadata.setProviderId(IMDBMetaDataProvider.PROVIDER_ID);
 	}
 	
-	public VideoMetaData getMetatData() {
+	public MediaMetadata getMetatData() {
 		return metadata;
 	}
 

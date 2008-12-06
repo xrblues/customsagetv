@@ -2,7 +2,7 @@ package org.jdna.media.metadata;
 
 import java.io.Serializable;
 
-public class VideoSearchResult implements IVideoSearchResult, Serializable {
+public class MediaSearchResult implements IMediaSearchResult, Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String providerId, id, title, year;
@@ -10,15 +10,15 @@ public class VideoSearchResult implements IVideoSearchResult, Serializable {
 	private transient Object data;
 	
 	
-	public VideoSearchResult() {
+	public MediaSearchResult() {
 	}
 	
-	public VideoSearchResult(String providerId, int resultType) {
+	public MediaSearchResult(String providerId, int resultType) {
 		this.providerId=providerId;
 		this.resultType=resultType;
 	}
 
-	public VideoSearchResult(String providerId, String id, String title, String year, int resultType) {
+	public MediaSearchResult(String providerId, String id, String title, String year, int resultType) {
 		super();
 		this.providerId = providerId;
 		this.id = id;

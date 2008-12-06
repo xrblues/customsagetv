@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -26,8 +25,17 @@ public class CommandLine {
 	 */
 	public static final String EXTRA_ARGS_CLA = "EXTRAARGS";
 
+	public class Arg {
+		public Arg(String name, Object value) {
+			this.name=name;
+			this.value=value;
+		}
+		public String name;
+		public Object value;
+	}
+	
 	private String args[];
-	private Map<String, Object> map;
+	private List<Arg> argList = new ArrayList<Arg>();
 	private List<String> extra;
 
 	private String commandTitle;
@@ -51,7 +59,7 @@ public class CommandLine {
 	}
 
 	/**
-	 * return all args that were passed on the commandline.
+	 * return all raw args that were passed on the commandline.
 	 * @return
 	 */
 	public String[] getArgs() {
@@ -59,31 +67,39 @@ public class CommandLine {
 	}
 
 	/**
+	 * Returns the list of processed args from the commandline
+	 * 
+	 * @return
+	 */
+	public List<Arg> getProcessedArgs() {
+		return argList;
+	}
+	
+	/**
 	 * Gets a named arg.  Args are passed as --NAME=VALUE, so calling getArg("NAME") would return value
+	 * 
+	 * Don't use for args that may be passed multiple times
 	 * 
 	 * @param name Named commandline arg
 	 * 
 	 * @return value or null if the arg does not exist.
 	 */
 	public Object getArg(String name) {
-		return map.get(name);
+		for (Arg a : argList) {
+			if (a.name.equals(name)) {
+				return a.value;
+			}
+		}
+		return null;
 	}
 
-	/**
-	 * Returns a set of all of the named args passed on the commandline.
-	 * @return
-	 */
-	public Set<String> getArgSet() {
-		return map.keySet();
-	}
-	
 	/**
 	 * Convenience method for getting a string arg
 	 * @param name
 	 * @return
 	 */
-	public Object getStringArg(String name) {
-		return map.get(name);
+	public String getStringArg(String name) {
+		return (String) getArg(name);
 	}
 	
 	/**
@@ -93,7 +109,7 @@ public class CommandLine {
 	 * @return
 	 */
 	public boolean getBooleanArg(String arg) {
-		return (Boolean) map.get(arg);
+		return (Boolean) getArg(arg);
 	}
 
 	/**
@@ -103,7 +119,7 @@ public class CommandLine {
 	 * @return
 	 */
 	public boolean hasArg(String name) {
-		return map.get(name)!=null;
+		return getArg(name)!=null;
 	}
 
 	/**
@@ -122,13 +138,12 @@ public class CommandLine {
 	 */
 	public void process() throws Exception {
 		extra = new ArrayList<String>();
-		map = new HashMap<String, Object>();
 		for (String a : args) {
 			if (a.startsWith("--")) {
 				a = a.substring(2);
 				int pos = a.indexOf("=");
 				if (pos == -1) {
-					map.put(a, Boolean.TRUE);
+					argList.add(new Arg(a, Boolean.TRUE));
 				} else {
 					String n = a.substring(0, pos);
 					Object v = a.substring(pos + 1);
@@ -138,7 +153,7 @@ public class CommandLine {
 						v = Boolean.FALSE;
 					}
 					log.debug("Adding Mapped Arg: ["+n+"]=[]"+v);
-					map.put(n, v);
+					argList.add(new Arg(n, v));
 				}
 			} else if (a.startsWith("-")) {
 				log
@@ -176,13 +191,13 @@ public class CommandLine {
 		}
 		
 		// now for each method, see if there is an arg to apply
-		for (String key : map.keySet()) {
-			Method m = names.get(key.toLowerCase());
+		for (Arg arg : argList) {
+			Method m = names.get(arg.name.toLowerCase());
 			if (m==null) {
-				log.warn("appyTo(): Object does not contain a method for: " + key);
+				log.warn("appyTo(): Object does not contain a method for: " + arg);
 			} else {
 				try {
-					m.invoke(0, map.get(key));
+					m.invoke(0, arg.value);
 				} catch (Exception e) {
 					log.error("Failed to apply command line to the passed object: " + o.getClass().getName(), e);
 					throw e;
@@ -232,17 +247,22 @@ public class CommandLine {
 					}
 				}
 				
-				Object val = map.get(cla.name());
-				if (val==null && cla.required()) throw new Exception("Missing Required Arg: " + cla.name());
-				if (val!=null) {
-					try {
-						m.invoke(o, val);
-					} catch (Exception e) {
-						System.out.printf("Failed while applying arg: %s (%s) to method: %s\n", cla.name(), val, m.getName());
-						throw e;
+				// execute the method for each passed arg that matches
+				for (Arg arg : argList) {
+					if (arg.name.equals(cla.name())) {
+						Object val = arg.value;
+						if (val==null && cla.required()) throw new Exception("Missing Required Arg: " + cla.name());
+						if (val!=null) {
+							try {
+								m.invoke(o, val);
+							} catch (Exception e) {
+								System.out.printf("Failed while applying arg: %s (%s) to method: %s\n", cla.name(), val, m.getName());
+								throw e;
+							}
+						} else {
+							log.warn("Missing potential arg: " + cla.name());
+						}
 					}
-				} else {
-					log.warn("Missing potential arg: " + cla.name());
 				}
 			}
 		}

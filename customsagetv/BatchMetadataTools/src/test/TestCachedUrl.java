@@ -12,5 +12,6 @@ public class TestCachedUrl {
 
 		IUrl u = UrlFactory.newUrl("http://www.google.ca/");
 		System.out.printf("Url: %s; Moved: %s\n ", u.getUrl(), u.hasMoved());
+		
 	}
 }

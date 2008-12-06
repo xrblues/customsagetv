@@ -7,5 +7,7 @@
 	<classpathentry kind="lib" path="libs/htmlparser.jar"/>
 	<classpathentry kind="lib" path="libs/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="libs/lucene-core-2.3.2.jar"/>
+	<classpathentry kind="lib" path="libs/commons-vfs-20070823.jar"/>
+	<classpathentry kind="lib" path="libs/sagex.api-6.4.8-8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

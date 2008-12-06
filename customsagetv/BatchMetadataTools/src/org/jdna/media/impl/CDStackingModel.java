@@ -19,15 +19,11 @@ import org.jdna.media.IMediaStackModel;
  */
 public class CDStackingModel implements IMediaStackModel {
 	private static final Logger log = Logger.getLogger(CDStackingModel.class);
-	
 	public static final CDStackingModel INSTANCE = new CDStackingModel();
-	
-	// basic regexp that is used to stack the cd/dvd file names
-	// TODO: make it so that this regexp can be put into a user setting
 	private Pattern pattern = null;
 	
 	public CDStackingModel() {
-		String pat = ConfigurationManager.getInstance().getProperty("org.jdna.media.impl.CDStackingModel.StackingRegex", "[ _\\\\.-]+(cd|dvd|part)[ _\\\\.-]*([0-9a-d]+)");
+		String pat = ConfigurationManager.getInstance().getMediaConfiguration().getStackingModelRegex();
 		log.debug("CD Stacking Regex: " + pat);
 		pattern = Pattern.compile(pat,Pattern.CASE_INSENSITIVE);
 	}

@@ -16,8 +16,8 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
-import org.jdna.media.metadata.IVideoSearchResult;
-import org.jdna.media.metadata.VideoSearchResult;
+import org.jdna.media.metadata.IMediaSearchResult;
+import org.jdna.media.metadata.MediaSearchResult;
 import org.w3c.dom.Element;
 
 public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
@@ -91,29 +91,29 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
 	}
 	
 	
-	public List<IVideoSearchResult> searchTitle(String title) throws Exception {
+	public List<IMediaSearchResult> searchTitle(String title) throws Exception {
 		if (searcher==null) openIndex();
 		
 		Query query = parser.parse(title);
 		Hits hits = searcher.search(query);
 		
 		int l = hits.length();
-		List<IVideoSearchResult> results = new ArrayList<IVideoSearchResult>(l);
+		List<IMediaSearchResult> results = new ArrayList<IMediaSearchResult>(l);
 		
 		for (int i=0;i<l;i++) {
 			Document d = hits.doc(i);
-			int type=IVideoSearchResult.RESULT_TYPE_UNKNOWN;
+			int type=IMediaSearchResult.RESULT_TYPE_UNKNOWN;
 			if (hits.score(i)>0.99) {
-				type = IVideoSearchResult.RESULT_TYPE_EXACT_MATCH;
+				type = IMediaSearchResult.RESULT_TYPE_EXACT_MATCH;
 			} else if(hits.score(i)>0.9) {
-				type = IVideoSearchResult.RESULT_TYPE_POPULAR_MATCH;
+				type = IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH;
 			}
 			
 			String name = d.get("title");
 			String date = d.get("release");
 			String id = d.get("id");
 			
-			results.add(new VideoSearchResult(LocalDVDProfMetaDataProvider.PROVIDER_ID, id, name, date, type));
+			results.add(new MediaSearchResult(LocalDVDProfMetaDataProvider.PROVIDER_ID, id, name, date, type));
 		}
 		
 		return results;

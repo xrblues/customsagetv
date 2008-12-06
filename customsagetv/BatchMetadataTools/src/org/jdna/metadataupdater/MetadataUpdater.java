@@ -2,8 +2,11 @@ package org.jdna.metadataupdater;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.jdna.cmdline.CommandLine;
@@ -13,33 +16,28 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
+import org.jdna.media.MediaResourceFactory;
 import org.jdna.media.impl.CDStackingModel;
+import org.jdna.media.impl.DVDMediaItem;
 import org.jdna.media.impl.MediaFile;
 import org.jdna.media.impl.MediaFolder;
 import org.jdna.media.impl.MovieResourceFilter;
-import org.jdna.media.metadata.IVideoMetaData;
-import org.jdna.media.metadata.IVideoMetaDataProvider;
-import org.jdna.media.metadata.IVideoSearchResult;
-import org.jdna.media.metadata.VideoMetaDataFactory;
-import org.jdna.media.metadata.VideoMetaDataUtils;
+import org.jdna.media.impl.URIAdapter;
+import org.jdna.media.impl.URIAdapterFactory;
+import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataProvider;
+import org.jdna.media.metadata.IMediaSearchResult;
+import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.metadataupdater.IMetaDataUpdaterScreen.MovieEntry;
+
+import sagex.api.Global;
 
 /**
  * This is an engine that will process one of more directories and files and
  * attempt to find metadata for each entry. The engine can operate in several
  * modes including automatic, stacked, etc.
- * 
- * The engine requires a IMetaDataUpdaterScreen in order to function. The
- * provides a mechanism for rendering information to a user and getting
- * feedback.
- * 
- * Typical usage would be something like <code>
- * MetadataUpdater mdu = new MetadataUpdater();
- * mdu.setFiles(...);
- * mud.process();
- * </code>
- * 
  * 
  * @author seans
  * 
@@ -48,8 +46,6 @@ import org.jdna.metadataupdater.IMetaDataUpdaterScreen.MovieEntry;
 public class MetadataUpdater {
 	
 	public static final Logger log = Logger.getLogger(MetadataUpdater.class);
-	private static final String RESOURCE_PROPS = "/org/jdna/metadataupdater/metadataupdater.properties";
-
 	/**
 	 * This method only needs to be called from the command line. All other
 	 * processes should use the MetadataUpdater directly and NOT call the main()
@@ -61,8 +57,16 @@ public class MetadataUpdater {
 	 */
 	public static void main(String args[]) throws Exception {
 		try {
+
+			String title = "Batch MetaData Tools (" + Version.VERSION + ")";
+			System.out.println(title);
+
+			// init the configuration before we process, since some command line vars can 
+			// override default configuration settings
+			initConfiguration();
+			
 			// process the command line
-			CommandLine cl = new CommandLine("Batch MetaData Tools (" + Version.VERSION + ")", "java MetadataTool", args);
+			CommandLine cl = new CommandLine(title, "java MetadataTool", args);
 			cl.process();
 
 			// apply the command line args to this instance.
@@ -100,6 +104,8 @@ public class MetadataUpdater {
 	private boolean offline = false;
 	private String provider = IMDBMetaDataProvider.PROVIDER_ID;
 	private boolean showInfo = false;
+	private boolean showProperties = false;
+	private boolean refreshSageTV = false;
 
 	// output device for this process
 	private IMetaDataUpdaterScreen screen = null;
@@ -117,19 +123,36 @@ public class MetadataUpdater {
 	 *             if processing fails for some unknown reason.
 	 */
 	public void process() throws Exception {
-		initConfiguration();
+		if (showProperties) {
+			PrintWriter pw = new PrintWriter(System.out);
+			ConfigurationManager.getInstance().dumpProperties(pw);
+			pw.flush();
+			pw.close();
+			System.out.flush();
+			return;
+		}
+		
 		initScreen();
 
 		log.info("Version: " + Version.VERSION);
 
 		if (listProvders) {
-			screen.renderProviders(VideoMetaDataFactory.getInstance().getMetaDataProviders(), provider);
+			screen.renderProviders(MediaMetadataFactory.getInstance().getMetaDataProviders(), provider);
 			return;
 		}
 
 		if (files == null || files.length == 0) {
-			screen.error("Must Pass at least 1 file or directory!");
-			return;
+			if (refreshSageTV) {
+				try {
+					screen.message("Notifying Sage to Refresh Imported Media");
+					Global.RunLibraryImportScan(false);
+				} catch (Throwable t) {
+					// that didn't work
+				}
+			} else {
+				screen.error("Must Pass at least 1 file or directory!");
+				return;
+			}
 		}
 
 		if (listMovies) {
@@ -148,16 +171,21 @@ public class MetadataUpdater {
 			}
 
 			if (file.isFile() || isOfflineEnabled()) {
-				mf = new MediaFolder(null, file.getParentFile());
 				if (isOfflineEnabled()) {
-					log.debug("Offline Media File Created: " + mf.getLocationUri());
+					log.debug("Offline Media File Created: " + file.toURI().toString());
 				}
-				IMediaFile mfNew = new MediaFile(mf, file);
+				IMediaFile mfNew = new MediaFile(file.toURI());
 				mfNew.touch();
 				processMediaFile(mfNew);
 			} else {
-				mf = new MediaFolder(null, file);
-				processMediaFolder(mf);
+				URIAdapter ua = URIAdapterFactory.getAdapter(file.toURI());
+				if (DVDMediaItem.isDVD(ua)) {
+					IMediaFile dvdFile = (IMediaFile) MediaResourceFactory.getInstance().createResource(ua);
+					processMediaFile(dvdFile);
+				} else {
+					mf = new MediaFolder(ua);
+					processMediaFolder(mf);
+				}
 			}
 		}
 
@@ -166,6 +194,15 @@ public class MetadataUpdater {
 		} else {
 			// render the completion stats
 			screen.renderStats();
+		}
+		
+		if (refreshSageTV) {
+			try {
+				screen.message("Notifying Sage to Refresh Imported Media");
+				Global.RunLibraryImportScan(false);
+			} catch (Throwable t) {
+				// that didn't work
+			}
 		}
 
 		// exit
@@ -183,7 +220,7 @@ public class MetadataUpdater {
 			log.info("Processing Media File: " + mediaFile.getLocationUri());
 
 			// load existing metadata, and check if it needs updating...
-			IVideoMetaData md = VideoMetaDataFactory.getInstance().getDefaultPeristence().loadMetaData(mediaFile);
+			IMediaMetadata md = mediaFile.getMetadata();
 
 			if (showInfo) {
 				screen.showMetadata(mediaFile, md);
@@ -197,7 +234,7 @@ public class MetadataUpdater {
 
 			if (force || md == null) {
 				fetchMetaData(mediaFile);
-			} else if (update && md.isUpdated()) {
+			} else if (update) {
 				refreshMetaData(mediaFile, md);
 			} else {
 				log.debug("Nothing to do perhaps pass --force or --update for file: " + mediaFile.getLocationUri());
@@ -223,29 +260,32 @@ public class MetadataUpdater {
 			if (abort)
 				break;
 
-			if (mr instanceof IMediaFile) {
+			if (mr.getType() == IMediaFile.TYPE_FILE) {
 				processMediaFile((IMediaFile) mr);
-			} else if (mr instanceof IMediaFolder) {
-				if (recurse)
+			} else if (mr.getType() == IMediaFolder.TYPE_FOLDER) {
+				if (recurse) {
 					processMediaFolder((IMediaFolder) mr);
+				} else {
+					log.debug("Skipping Directory (recurse disabled): " + mr.getLocationUri());
+				}
 			} else {
 				log.error("Unknown Media Resourse for: " + mr.getLocationUri() + "; " + mr.getClass().getName());
 			}
 		}
 	}
 
-	private void refreshMetaData(IMediaFile file, IVideoMetaData md) throws Exception {
+	private void refreshMetaData(IMediaFile file, IMediaMetadata md) throws Exception {
 		log.debug("Refreshing MetaData for: " + file.getLocationUri());
 		// if we have a dataProviderUrl and id, then refresh the metadata, or
 		// if we only have title, then call the searchMetaData() using the title
 		// from the existing metadata
 		if (md.getProviderDataUrl() != null && md.getProviderId() != null) {
-			IVideoMetaDataProvider provider = VideoMetaDataFactory.getInstance().getProvider(md.getProviderId());
+			IMediaMetadataProvider provider = MediaMetadataFactory.getInstance().getProvider(md.getProviderId());
 			if (provider == null) {
 				throw new Exception("Provider Not Registered: " + md.getProviderId());
 			}
 
-			IVideoMetaData updated = provider.getMetaData(md.getProviderDataUrl());
+			IMediaMetadata updated = provider.getMetaData(md.getProviderDataUrl());
 			exportMetaData(updated, file);
 		} else {
 			log.debug("Skipping: " + file.getLocationUri() + "; MetaData does not contain providerId or providerDataUrl");
@@ -255,33 +295,33 @@ public class MetadataUpdater {
 	}
 
 	private void fetchMetaData(IMediaFile file) throws Exception {
-		String name = VideoMetaDataUtils.cleanSearchCriteria(file.getTitle(), false);
+		String name = MediaMetadataUtils.cleanSearchCriteria(file.getTitle(), false);
 		fetchMetaData(file, name);
 	}
 
-	private List<IVideoSearchResult> getSearchResultsForTitle(String name) throws Exception {
-		List<IVideoSearchResult> results = VideoMetaDataFactory.getInstance().search(provider, IVideoMetaDataProvider.SEARCH_TITLE, name);
+	private List<IMediaSearchResult> getSearchResultsForTitle(String name) throws Exception {
+		List<IMediaSearchResult> results = MediaMetadataFactory.getInstance().search(provider, IMediaMetadataProvider.SEARCH_TITLE, name);
 		log.debug(String.format("Searched for: %s; Good: %s", name, isGoodSearch(results)));
 		return results;
 	}
 
-	private boolean isGoodSearch(List<IVideoSearchResult> results) {
-		return (results.size() > 0 && (results.get(0).getResultType() == IVideoSearchResult.RESULT_TYPE_POPULAR_MATCH || results.get(0).getResultType() == IVideoSearchResult.RESULT_TYPE_EXACT_MATCH));
+	private boolean isGoodSearch(List<IMediaSearchResult> results) {
+		return (results.size() > 0 && (results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH || results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_EXACT_MATCH));
 	}
 
 	private void fetchMetaData(IMediaFile file, String name) throws Exception {
 
-		List<IVideoSearchResult> results = getSearchResultsForTitle(name);
+		List<IMediaSearchResult> results = getSearchResultsForTitle(name);
 		if (!isGoodSearch(results)) {
 			log.debug("Not very sucessful with the search for: " + name);
 			if (aggressive) {
 				String oldName = name;
-				String newName = VideoMetaDataUtils.cleanSearchCriteria(name, true);
+				String newName = MediaMetadataUtils.cleanSearchCriteria(name, true);
 				if (!oldName.equals(newName)) {
 					log.debug("We'll try again using: " + newName);
 
 				}
-				List<IVideoSearchResult> newResults = getSearchResultsForTitle(newName);
+				List<IMediaSearchResult> newResults = getSearchResultsForTitle(newName);
 				if (isGoodSearch(newResults)) {
 					log.debug("Our other search returned better results.. We'll use these.");
 					results = newResults;
@@ -290,7 +330,7 @@ public class MetadataUpdater {
 		}
 
 		if (auto && isGoodSearch(results)) {
-			exportMetaData(VideoMetaDataFactory.getInstance().getMetaData(results.get(0)), file);
+			exportMetaData(MediaMetadataFactory.getInstance().getMetaData(results.get(0)), file);
 			return;
 		}
 
@@ -317,8 +357,8 @@ public class MetadataUpdater {
 					log.warn("Debug: Failed to parse: " + data + " as a number, using it again as a search.");
 					fetchMetaData(file, data);
 				}
-				IVideoSearchResult sr = results.get(n);
-				IVideoMetaData md = VideoMetaDataFactory.getInstance().getMetaData(sr);
+				IMediaSearchResult sr = results.get(n);
+				IMediaMetadata md = MediaMetadataFactory.getInstance().getMetaData(sr);
 				exportMetaData(md, file);
 				screen.notifyManualUpdate(file, md);
 			} catch (RuntimeException e) {
@@ -328,8 +368,8 @@ public class MetadataUpdater {
 		}
 	}
 
-	private void exportMetaData(IVideoMetaData md, IMediaFile mediaFile) throws Exception {
-		VideoMetaDataFactory.getInstance().getDefaultPeristence().storeMetaData(md, mediaFile);
+	private void exportMetaData(IMediaMetadata md, IMediaFile mediaFile) throws Exception {
+		mediaFile.updateMetadata(md, ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwriteThumbnails());
 		screen.notifyUpdatedFile(mediaFile, md);
 	}
 
@@ -341,15 +381,12 @@ public class MetadataUpdater {
 	 * @throws IOException
 	 */
 	public static void initConfiguration() throws IOException {
-		// tell the configuration manager where to load additionsl properties
-		System.setProperty("configurationmanager.properties", "metadataupdater.properties");
-
 		log.debug("Attempting to load metadataupdater from default locations....");
-		ConfigurationManager cm = ConfigurationManager.getInstance();
+		ConfigurationManager.getInstance();
 	}
 
 	private void initScreen() throws Exception {
-		String scr = ConfigurationManager.getInstance().getProperty("org.jdna.metadataupdater.MetadataUpdater.ScreenClass", "org.jdna.metadataupdater.ConsoleScreen");
+		String scr = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getScreenClass();
 		screen = (IMetaDataUpdaterScreen) Class.forName(scr).newInstance();
 		log.info("Using Screen Engine: " + scr);
 	}
@@ -399,14 +436,13 @@ public class MetadataUpdater {
 	@CommandLineArg(name = "forceThumbnail", description = "Force download/overwrite of thumbnails. (default false)")
 	public void setForceThumbnailOverwrite(boolean b) {
 		// this is a hack, for now...
-		System.setProperty("org.jdna.media.metadata.impl.sage.SageVideoMetaData.overwriteThumbnail", "true");
+		ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setOverwriteThumbnails(true);
 	}
 
 	@CommandLineArg(name = "reindex", description = "Tells Metadata providers that require indexing (ie, DVD Profiler) to rebuild it's index. (default false)")
 	public void setReindex(boolean b) {
-		// this is a hack, for now...
-		System.setProperty("org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.forceRebuild", "true");
-		System.setProperty("org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.forceRebuild", "true");
+		ConfigurationManager.getInstance().getDVDProfilerConfiguration().setForceRebuild(true);
+		ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().setForceRebuild(true);
 	}
 
 	/**
@@ -507,6 +543,47 @@ public class MetadataUpdater {
 	@CommandLineArg(name = "metadata", description = "Show metadata for movie. (default false)")
 	public void setShowMetadata(boolean b) {
 		this.showInfo = b;
+	}
+
+	/**
+	 * Dump Current Configuration Properties
+	 * 
+	 * @param s
+	 */
+	@CommandLineArg(name = "showProperties", description = "Show the current configuration. (default false)")
+	public void setShowProperties(boolean b) {
+		this.showProperties = b;
+	}
+
+	/**
+	 * Set a configuration property
+	 * 
+	 * @param s
+	 */
+	@CommandLineArg(name = "setProperty", description = "Sets a Property (--setProperty=name:value) (use --showProperties to get property list)")
+	public void setPropertu(String propAndVal) {
+		Pattern p = Pattern.compile("([^:]+):(.*)");
+		Matcher m = p.matcher(propAndVal);
+		if (m.find()) {
+			String n = m.group(1);
+			String v = m.group(2);
+			if (n==null || v==null) {
+				throw new RuntimeException("Malformed Property: " + propAndVal);
+			}
+			ConfigurationManager.getInstance().setProperty(n, v);
+		} else {
+			throw new RuntimeException("Invalid Property: " + propAndVal);
+		}
+	}
+
+	/**
+	 * Notify SageTV to refresh it's media
+	 * 
+	 * @param s
+	 */
+	@CommandLineArg(name = "refreshSageTV", description = "Notify SageTV to refresh it's Media Library. (default false)")
+	public void setRefreshSageTV(boolean b) {
+		this.refreshSageTV = b;
 	}
 
 	/**

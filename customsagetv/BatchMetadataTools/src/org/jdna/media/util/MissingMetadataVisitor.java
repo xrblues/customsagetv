@@ -5,9 +5,8 @@ import java.util.List;
 
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
-import org.jdna.media.IResourceVisitor;
-import org.jdna.media.metadata.IVideoMetaData;
-import org.jdna.media.metadata.IVideoMetaDataPersistence;
+import org.jdna.media.IMediaResourceVisitor;
+import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.util.Strings;
 
 /**
@@ -16,9 +15,8 @@ import org.jdna.util.Strings;
  * @author seans
  *
  */
-public class MissingMetadataVisitor implements IResourceVisitor {
-	private IResourceVisitor visitor;
-	private IVideoMetaDataPersistence persistence;
+public class MissingMetadataVisitor implements IMediaResourceVisitor {
+	private IMediaResourceVisitor visitor;
 	private List<IMediaResource> missing;
 	
 	/**
@@ -26,31 +24,34 @@ public class MissingMetadataVisitor implements IResourceVisitor {
 	 * @param persistence Where to load the metadata (required)
 	 * @param visitor visitor to receive the missing metadata resources (optional)
 	 */
-	public MissingMetadataVisitor(IVideoMetaDataPersistence persistence, IResourceVisitor visitor) {
-		this.persistence = persistence;
+	public MissingMetadataVisitor(IMediaResourceVisitor visitor) {
 		this.visitor = visitor;
 		missing = new ArrayList<IMediaResource>();
 	}
 
-	public MissingMetadataVisitor(IVideoMetaDataPersistence persistence) {
-		this(persistence,null);
+	public MissingMetadataVisitor() {
+		this(null);
 	}
 	
 	public void visit(IMediaResource resource) {
-		if (resource instanceof IMediaFile) {
-			//System.out.println("Checking: " + resource.getTitle());
-			IVideoMetaData md = persistence.loadMetaData((IMediaFile) resource);
-			//  )
-			//System.out.printf("IsNull: %s %s\n", (md==null), resource.getLocationUri());
-			if (md==null || Strings.isEmpty(md.getTitle()) || Strings.isEmpty(md.getThumbnailUrl())) {
-				missing.add(resource);
-				if (visitor!=null) visitor.visit(resource);
-			} // else skip
-		} // else skip
+		if (isMissingMetadata(resource)) {
+			missing.add(resource);
+			if (visitor!=null) visitor.visit(resource);
+		}
 	}
 	
 	public List<IMediaResource> getMissingMetadata() {
 		return missing;
 	}
 
+	public static boolean isMissingMetadata(IMediaResource resource) {
+		if (resource.getType() == IMediaFile.TYPE_FILE) {
+			IMediaMetadata md = resource.getMetadata();
+			if (md==null || Strings.isEmpty(md.getTitle()) || Strings.isEmpty(md.getThumbnailUrl())) {
+				return true;
+			} // else skip
+		} // else skip
+		return false;
+	}
+	
 }

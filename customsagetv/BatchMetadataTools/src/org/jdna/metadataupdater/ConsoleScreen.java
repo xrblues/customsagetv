@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.IVideoMetaData;
-import org.jdna.media.metadata.IVideoMetaDataProvider;
-import org.jdna.media.metadata.IVideoSearchResult;
+import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataProvider;
+import org.jdna.media.metadata.IMediaSearchResult;
 
 /**
  * IMetaDataUpdaterScreen implemenation that uses a standard text based console.
@@ -61,17 +61,17 @@ public class ConsoleScreen implements IMetaDataUpdaterScreen {
 		return resp;
 	}
 
-	public void renderResults(String title, List<IVideoSearchResult> results, int max) {
+	public void renderResults(String title, List<IMediaSearchResult> results, int max) {
 		System.out.printf("\n\n%s\n",title);
 		int l = results.size();
 		l = Math.min(l, max);
 		for (int i=0;i<l;i++) {
-			IVideoSearchResult sr = results.get(i);
-			System.out.printf("%02d (%s) - %s [%s]\n", i, IVideoSearchResult.SEARCH_TYPE_NAMES_CHAR[sr.getResultType()], sr.getTitle(), sr.getYear());			
+			IMediaSearchResult sr = results.get(i);
+			System.out.printf("%02d (%s) - %s [%s]\n", i, IMediaSearchResult.SEARCH_TYPE_NAMES_CHAR[sr.getResultType()], sr.getTitle(), sr.getYear());			
 		}
 		System.out.print("LEGEND: ");
-		for (int i=0;i<IVideoSearchResult.SEARCH_TYPE_NAMES_CHAR.length;i++) {
-			System.out.printf("%s %s; ", IVideoSearchResult.SEARCH_TYPE_NAMES_CHAR[i], IVideoSearchResult.SEARCH_TYPE_NAMES[i]);
+		for (int i=0;i<IMediaSearchResult.SEARCH_TYPE_NAMES_CHAR.length;i++) {
+			System.out.printf("%s %s; ", IMediaSearchResult.SEARCH_TYPE_NAMES_CHAR[i], IMediaSearchResult.SEARCH_TYPE_NAMES[i]);
 		}
 		System.out.println("");
 	}
@@ -96,9 +96,9 @@ public class ConsoleScreen implements IMetaDataUpdaterScreen {
 		
 	}
 
-	public void renderProviders(List<IVideoMetaDataProvider> providers, String defaultProvider) {
+	public void renderProviders(List<IMediaMetadataProvider> providers, String defaultProvider) {
 		System.out.println("\n\nInstalled Metadata Providers (*=default");
-		for (IVideoMetaDataProvider p : providers) {
+		for (IMediaMetadataProvider p : providers) {
 			System.out.printf("%1s %-20s %s\n", (p.getInfo().getId().equals(defaultProvider)?"*":""), p.getInfo().getId(), p.getInfo().getName());
 		}
 	}
@@ -106,10 +106,10 @@ public class ConsoleScreen implements IMetaDataUpdaterScreen {
 	public void renderKnownMovies(List<MovieEntry> allMovies) {
 		System.out.printf("\nListing Movies\nU = MetaData Updated/Newer; - = Missing MetaData; + = Has MetaData\n");
 		for (MovieEntry me : allMovies) {
-			IVideoMetaData md = me.metadata;
+			IMediaMetadata md = me.metadata;
 			IMediaFile mediaFile = me.file;
 			String code = ((md==null) ? "-" : "+");
-			if (md!=null && md.isUpdated()) code="U";
+			if (md!=null) code="U";
 			System.out.printf("%s %-40s (%s)\n" , code, mediaFile.getTitle(), mediaFile.getLocationUri());
 		}
 	}
@@ -128,11 +128,11 @@ public class ConsoleScreen implements IMetaDataUpdaterScreen {
 		processed++;
 	}
 
-	public void notifyManualUpdate(IMediaResource r, IVideoMetaData md) {
+	public void notifyManualUpdate(IMediaResource r, IMediaMetadata md) {
 		manual++;
 	}
 
-	public void notifyUpdatedFile(IMediaResource r, IVideoMetaData md) {
+	public void notifyUpdatedFile(IMediaResource r, IMediaMetadata md) {
 		updated++;
 		if (md==null) {
 			System.out.println("Updated: " + r.getTitle());
@@ -141,7 +141,7 @@ public class ConsoleScreen implements IMetaDataUpdaterScreen {
 		}
 	}
 
-	public void showMetadata(IMediaFile mf, IVideoMetaData md) {
+	public void showMetadata(IMediaFile mf, IMediaMetadata md) {
 		col2("Movie:", mf.getName());
 		col2("Title:", md.getTitle());
 		col2("Plot:", md.getPlot());

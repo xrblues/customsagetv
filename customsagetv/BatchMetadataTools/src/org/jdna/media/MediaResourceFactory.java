@@ -1,13 +1,20 @@
 package org.jdna.media;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.jdna.media.impl.DVDMediaItem;
 import org.jdna.media.impl.MediaFile;
 import org.jdna.media.impl.MediaFolder;
+import org.jdna.media.impl.URIAdapter;
+import org.jdna.media.impl.URIAdapterFactory;
+import org.jdna.media.impl.VirtualMediaFolder;
 
 public class MediaResourceFactory {
+	private static final Logger log = Logger.getLogger(MediaResourceFactory.class);
 	public static MediaResourceFactory instance;
 	
 	public static MediaResourceFactory getInstance() {
@@ -18,35 +25,57 @@ public class MediaResourceFactory {
 	public MediaResourceFactory() {
 	}
 	
-	//public IMediaResource createResource(String uri) throws IOException {
-	//	return createResource(new String[] {uri});
-	//}
+	public IMediaResource createResource(URI uri) throws IOException {
+		return createResource(URIAdapterFactory.getAdapter(uri));
+	}
+
+	public IMediaResource createResource(String uri) throws IOException {
+		return createResource(URIAdapterFactory.getAdapter(uri));
+	}
 	
-	/**
-	 * creates a MediaResource based on the give uri.  If an array of uris are passed in, then the resulting MediaResource is a "Stacked" resource.
-	 * @param uri
-	 * @return
-	 * @throws IOException
-	 */
-	public IMediaResource createResource(String... uri) throws IOException {
-		URI u = null;
-			u = URI.create(uri[0]);
-		
-		if ("file".equals(u.getScheme()) || u.getScheme()==null || u.getScheme().length()==0) {
-			File f = new File(u);
-			if (f.isDirectory()) {
-				return new MediaFolder(null, f);
+	public IMediaResource createResource(URIAdapter uriAdapter) throws IOException {
+		if (uriAdapter.isDirectory()) {
+			if (DVDMediaItem.isDVD(uriAdapter)) {
+				return new DVDMediaItem(uriAdapter);
 			} else {
-				MediaFile mf = new MediaFile(null, f);
-				if (uri.length>1) {
-					for (int i=1;i<uri.length;i++) {
-						mf.addStackedTitle(createResource(uri[i]));
-					}
-				}
-				return mf;
+				return new MediaFolder(uriAdapter);
 			}
 		} else {
-			throw new IOException("Can't Handle Scheme: " + u.getScheme());
+			return new MediaFile(uriAdapter);
+		}
+	}
+	
+	public IMediaFolder createVirtualFolder(String folderName, List<IMediaResource> items) {
+		try {
+			return new VirtualMediaFolder(folderName, items);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			log.error("Failed to create virtual folder",e);
+			return null;
+		}
+	}
+	
+	/**
+	 * Checks the following resource has stacked items.  If so, then it will stack them, otherwise
+	 * it returns the original resource.
+	 * 
+	 * This is an expensive operation
+	 * 
+	 * @param mediaFile
+	 * @return
+	 */
+	public IMediaFile getStackedResource(IMediaFile item) {
+		try {
+			IMediaFolder parent = (IMediaFolder) item.getParent();
+			IMediaFile newItem = (IMediaFile) parent.getResource(item.getName());
+			if (newItem!=null) {
+				return newItem;
+			} else {
+				return item;
+			}
+		} catch (Exception e) {
+			log.error("Failed to find resourse in it's parent.  Not sure why.", e);
+			return item;
 		}
 	}
 }

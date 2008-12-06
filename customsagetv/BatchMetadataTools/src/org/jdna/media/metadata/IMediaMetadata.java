@@ -1,7 +1,7 @@
 package org.jdna.media.metadata;
 
 
-public interface IVideoMetaData {
+public interface IMediaMetadata {
 	public String getTitle();
 	public void setTitle(String title);
 	
@@ -49,10 +49,4 @@ public interface IVideoMetaData {
 	
 	public String getMPAARating();
 	public void setMPAARating(String rating);
-	
-	public boolean isUpdated();
-	public void setUpdated(boolean updated);
-	
-	public boolean isThumbnailUpdated();
-	public void setThumbnailUpdated(boolean b);
 }
