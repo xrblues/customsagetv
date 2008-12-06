@@ -106,6 +106,10 @@ then run
 # java -jar MetadataTool.jar --update YOUR_MOVIE_FILE_OR_DIR
 }}}
 
+As of version 1.8, there is a new option --refreshSageTV.  You can use this option to tell SageTV to refresh its imported media.  You can do this as  separate command, or just add it to the command line parameters of a full scan.  Once the scan is done, it will use the [http://code.google.com/p/customsagetv/wiki/SageTVapi SageTV Remote APIs] to notify SageTV to refresh its imported media.
+
+In order to use --refreshSageTV, you must have the [http://code.google.com/p/customsagetv/wiki/SageTVapi Remote APIs] installed on the SageTV server.
+
 = Advanced Topics =
 
 == Architecture Overview ==
@@ -276,4 +280,3 @@ If you need to change the value of a property for a single use, then you can use
 }}}
 
 If you run the output of the above command, you should see that the value of /sageMetadata/genreLevels is now set to 2.  This is not a permanent change, but only for the current session.  If you want to make a property permanant, put it in the metadata.properties.
-
