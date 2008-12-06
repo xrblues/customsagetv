@@ -1,5 +1,5 @@
 #summary Batch Metadata Import Tool for SageTV
-#labels Phase-Deploy,Featured,Phase-Requirements
+#labels Phase-Design,Featured,Phase-Requirements
 
 = Introduction =
 
@@ -24,12 +24,14 @@ Java 5 or later
 == Usage ==
 {{{
  # java -jar MetadataTool.jar
- Usage:org.jdna.metadataupdater.MetadataUpdater OPTIONS ...
+Batch MetaData Tools (1.8)
+Import/Update Movie MetaData from a MetaData Provider.
 
- OPTIONS: (* are required)
- OPTIONS: (* are required)
+Usage:java MetadataTool OPTIONS ...
+
+OPTIONS: (* are required)
   --recurse              Recursively process sub directories. (default false)
-  --auto                 Automatically update meta data if there are exact matches, 1  match, or popular matches.  Otherwise will skip/prompt. (default true)
+  --auto                 Automatically update meta data if there are exact matches, 1 match, or popular matches.  Otherwise will skip/prompt. (default true)
   --force                Force download of metadata, even if metadata exists and has not been updated. Does not overwrite thumbnails. (default false)
   --forceThumbnail       Force download/overwrite of thumbnails. (default false)
   --reindex              Tells Metadata providers that require indexing (ie, DVD Profiler) to rebuild it's index. (default false)
@@ -41,6 +43,10 @@ Java 5 or later
   --agressive            If the first search doesn't return clean results, then try additional searches. (default true)
   --offline              if true, then the passed file(s) will be treated as offline files. (default false)
   --provider             Set the metadata provider. (default imdb)
+  --metadata             Show metadata for movie. (default false)
+  --showProperties       Show the current configuration. (default false)
+  --setProperty          Sets a Property (--setProperty=name:value) (use --showProperties to get property list)
+  --refreshSageTV        Notify SageTV to refresh it's Media Library. (default false)
 }}}
 
 == Usage Overview ==
@@ -112,91 +118,162 @@ The other note about plugability is the fact that even the "Screen" is pluggable
 See [FrameworkOverview Framework Overview] for more information on the Metadata Tools framework.
 
 == Properties ==
-The tool comes with a base set of properties. You can override these properties by putting another property file, called metadataupdater.properties, in your current working directory.
+
+NOTE: As of 1.8 the properties format and keys have changed.  You will need to verify your properties before you rerun the tool.
+
+As of 1.8, the properties filename changed from metadataupdater.properties to just metadata.properties.  This was done, to force users that had customized the metadata tool, to update to the new format.
+
+You can get a list of supported properties, by running the command
+{{{
+# java -jar MetadataTool --showProperties
+}}}
+
+It should produce the following results.  Keep in mind, that if  you have a custom metadata.properties, then it's values will be reflected in the output.  You can use --showProperties to verify that your properties are being taken into account
 
 {{{
 
-# NOTE when you enter a regex in a prop file you need to escape it even more
-# ie, \s+ should become \\s+
+Batch MetaData Tools (1.8)
+#       Begin: urlconfiguration
+# Description: Configures Properties regarding how URLs are handled.
 
-# tokens of words that we want to remove from the filename
-# These are stop tokens, in that once a token is reached, then any token after that point is discarded.
-# This is used to clean up titles before seaching.  Never use words like the,in, etc
-org.jdna.media.metadata.VideoMetaDataUtils.cleanSearchCriteria.wordTokens=dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv
+# Description: Cache Directory where cached URLs are stored
+#        Type: java.lang.String
+/urlconfiguration/cacheDir=cache/url/
 
-# Regular Expression for deciding how to stack/group cds
-org.jdna.media.impl.CDStackingModel.StackingRegex=[ _\\.-]+(cd|dvd|part)[ _\\.-]*([0-9a-d]+)
+# Description: How long, in seconds, URLs remain in the cache
+#        Type: int
+/urlconfiguration/cacheExpiryInSeconds=86400
 
-# Regular Expression for determining a Video File
-org.jdna.media.impl.MovieResourceFilter.VideoExtensionRegex=avi|mpg|divx|mkv|wmv|mov|xvid
+# Description: URL Factory class name for creating new Url objects
+#        Type: java.lang.String
+/urlconfiguration/urlFactoryClass=org.jdna.url.CachedUrlFactory
 
-# Regular Expression for directories to skip...
-org.jdna.media.impl.MovieResourceFilter.ExcludeDirRegex=Looney\\s+Tunes
-
-# Sage Properties
-# Mask Applied to the description when writing the description setting in sage.
-# Combination of Any Sage Property from the Property File that you want to use as the display Description.  For example, if you wanted the user rating
-# to be displayed in the description, then use
-# ${Description}\n${_UserRating}
-org.jdna.media.metadata.impl.sage.SageVideoMetaData.descriptionMask=${Description}\nUser Rating: ${_userRating}\n
-
-# Title Mask
-# Can be used to insert the Year into the title, 
-# eg, ${Title} (${Year})
-org.jdna.media.metadata.impl.sage.SageVideoMetaData.titleMask=${Title}
-
-# Title Mask (Multi CD)#
-# For Multi Disc Movies, this will put the Disc # in the Movie Title (So that Sage will Show it)
-org.jdna.media.metadata.impl.sage.SageVideoMetaData.titleMaskMultiCd=${Title} Disc ${_disc}
-
-# How each Actor will be written.  This mask will be applied to each actor, and then appeneded into a single line for the properties file.
-# {0} - Actor Name
-# {1} - Actor Role
-org.jdna.media.metadata.impl.sage.SageVideoMetaData.actorMask={0} -- {1};\n
-
-# Set to true|false to enable/disable thumbnail downloading
-org.jdna.media.metadata.impl.sage.SageVideoMetaData.downloadThumbnail=true
-
-# Set to true|false to enable/disable single or multiple genre entries per line
-org.jdna.media.metadata.impl.sage.SageVideoMetaData.singleGenreField=false
-
-# if set to true, then it will write the thumbnail toe TS_VIDEO/folder.jpg, otherwise it will write it as the same name as the dir,
-# at the dir level (default)
-org.jdna.media.metadata.impl.sage.SageVideoMetaData.thumbnailInTS_VIDEO=false
-
-# Set to true to overwrite existing thumbnails
-org.jdna.media.metadata.impl.sage.SageVideoMetaData.overwriteThumbnail=false
-
-# Knownn Metadata Providers
-org.jdna.metadataupdater.MetadataUpdater.MetadataProviders=org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider,org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider,org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider,org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider
-
-# Persistence Engine for reading/writing metadata
-org.jdna.metadataupdater.MetadataUpdater.PersistenceClass=org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence
-
-# Screen to use for UI interaction
-org.jdna.metadataupdater.MetadataUpdater.ScreenClass=org.jdna.metadataupdater.ConsoleScreen
-
-# Enable Url Caching
-org.jdna.url.UrlFactory.factoryClass=org.jdna.url.CachedUrlFactory
-
-# DVD Profiler Remote Url
-# Comma Separated List of profile urls to index
-# org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.profileUrls=http://www.intervocative.com/dvdcollection.aspx/Rephaim
-
-# Set to true when you want to force an index rebuild
-# org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider.forceRebuild=false
-
-# DVD Profiler Local 
-# Set the image dir location
-#org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.imageDir=testing/DVDProfiler/DVD\ Profiler/Images/
-
-# the xml file to use
-#org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.xmlFile=testing/DVDProfiler/Collection.xml
-
-# Pass hint to rebuild it's indexes
-# normally passed on the command line as -Dorg.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.forceRebuild=true
-# org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider.forceRebuild=false
+# Description: HTTP User Agent that is sent with each hew http request
+#        Type: java.lang.String
+/urlconfiguration/httpUserAgent=Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008072820 Firefox/3.0.1
+# End: urlconfiguration
 
 
+#       Begin: metadataUpdater
+# Description: Configuration for Main Metadata Updater
+
+# Description: Screen class name that is used for drawing and responding to events
+#        Type: java.lang.String
+/metadataUpdater/screenClass=org.jdna.metadataupdater.ConsoleScreen
+
+# Description: Set to true, if you want to overwrite existing thumbnails
+#        Type: boolean
+/metadataUpdater/overwriteThumbnails=false
+# End: metadataUpdater
+
+
+#       Begin: media
+# Description: Configuration for Media items
+
+# Description: Stacking Model regex (taken from xbmc group)
+#        Type: java.lang.String
+/media/stackingModelRegex=[ _\\.-]+(cd|dvd|part)[ _\\.-]*([0-9a-d]+)
+
+# Description: If true, then the thumbnail will be written to the VIDEO_TS folder.  Otherwise, it gets written to the normal DVD location
+#        Type: boolean
+/media/useTSFolderForThumbnail=false
+
+# Description: Regular expression for the file extensions that are recognized
+#        Type: java.lang.String
+/media/videoExtensionsRegex=avi|mpg|divx|mkv|wmv|mov|xvid
+
+# Description: Regular expression for the directory names to ignore
+#        Type: java.lang.String
+/media/excludeVideoDirsRegex=
+# End: media
+
+
+#       Begin: metadata
+# Description: Configuration for Metadata
+
+# Description: Default class name for storing metadata
+#        Type: java.lang.String
+/metadata/persistenceClass=org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence
+
+# Description: Comma separated list of known metadata providers (ie, can be used for searching for metadata)
+#        Type: java.lang.String
+/metadata/videoMetadataProviders=org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider,org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider,org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider,org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider
+
+# Description: Comma separated list of words that will be removed from a title when doing a search
+#        Type: java.lang.String
+/metadata/wordsToClean=dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv
+# End: metadata
+
+
+#       Begin: dvdprofiler
+# Description: Configuration for the DVD Profiler Provider that uses urls as it's datasource
+
+# Description: Comma separated list of DVD Profiler Profile urls to use when searching for movies
+#        Type: java.lang.String
+/dvdprofiler/profileUrls=
+
+# Description: Set this to true to rebuild the indexed urls
+#        Type: boolean
+/dvdprofiler/forceRebuild=false
+
+# Description: Directory where the indexed DVD Profiler data will be stored
+#        Type: java.lang.String
+/dvdprofiler/indexDir=cache/index
+# End: dvdprofiler
+
+
+#       Begin: dvdprofilerLocal
+# Description: Configuration for the Local DVD Profiler provider (ie, uses local DVD Profiler, not Urls)
+
+# Description: Set this to true to force the local dvd profiler index to be rebuilt
+#        Type: boolean
+/dvdprofilerLocal/forceRebuild=false
+
+# Description: Directory where the local dvd profiler data will be indexed
+#        Type: java.lang.String
+/dvdprofilerLocal/indexDir=cache/indexDVDProfLocal/
+
+# Description: Local DVD Profiler image directory
+#        Type: java.lang.String
+/dvdprofilerLocal/imageDir=
+
+# Description: Local DVD Profiler xml file
+#        Type: java.lang.String
+/dvdprofilerLocal/xmlFile=
+# End: dvdprofilerLocal
+
+
+#       Begin: sageMetadata
+# Description: Configuration for the SageTV Metadata Persistence
+
+# Description: How each Actor will be written.  This mask will be applied to each actor, and then appeneded into a single line for the properties file. {0} - Actor Name, {1} - Actor Role
+#        Type: java.lang.String
+/sageMetadata/actorMask={0} -- {1};\n
+
+# Description: Description Mask (note ${PROP_FIELD_NAME} field names are looked up in the property file)
+#        Type: java.lang.String
+/sageMetadata/descriptionMask=${Description}\nUser Rating: ${_userRating}\n
+
+# Description: Title to use for multi volume vidoes (_disc is disc # 1,2,3,etc)
+#        Type: java.lang.String
+/sageMetadata/multiCDTitleMask=${Title} Disc ${_disc}
+
+# Description: Title to use for single volume vidoes
+#        Type: java.lang.String
+/sageMetadata/titleMask=${Title}
+
+# Description: Number genre levels to write.  -1 means all levels.
+#        Type: int
+/sageMetadata/genreLevels=1
+# End: sageMetadata
 
 }}}
+
+If you need to change the value of a property for a single use, then you can use the --setProperty option.
+
+{{{
+# java -jar MetadataTool.jar --setProperty=/sageMetadata/genreLevels:2 --showProperties
+}}}
+
+If you run the output of the above command, you should see that the value of /sageMetadata/genreLevels is now set to 2.  This is not a permanent change, but only for the current session.  If you want to make a property permanant, put it in the metadata.properties.
+
