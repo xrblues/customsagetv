@@ -1,10 +1,15 @@
 <?xml version="1.0"  encoding="ISO-8859-1"?>
 <!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
 <Configure class="org.mortbay.jetty.servlet.Context">
+  <!-- set our servlet in the root context -->
   <Set name="contextPath">/</Set>
   <Call name="addServlet">
     <Arg>sagex.remote.SagexServlet</Arg>
     <Arg>/sagex/*</Arg>
   </Call>
-</Configure>
 
+  <!-- initialize the services -->
+  <Call id="sagex" class="sagex.remote.SagexServlet" name="initServices">
+     <Arg>jetty</Arg>
+  </Call>
+</Configure>

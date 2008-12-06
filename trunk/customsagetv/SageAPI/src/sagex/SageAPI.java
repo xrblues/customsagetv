@@ -1,15 +1,16 @@
 package sagex;
 
 import java.net.URI;
+import java.util.Properties;
 
 import sagex.remote.EmbeddedSageAPIProvider;
 import sagex.remote.javarpc.SageAPIRemote;
 import sagex.remote.rmi.RMISageAPI;
-import sagex.remote.server.ServerInfo;
 import sagex.remote.server.SimpleDatagramClient;
 
 public class SageAPI {
 	private static ISageAPIProvider provider = null;
+	private static Properties providerProperties = null;
 	
 	private static ThreadLocal<String> uiContext = new ThreadLocal<String>();
 
@@ -22,18 +23,23 @@ public class SageAPI {
 				// check if the sagex.SageAPI.remoteUrl is set
 				String remoteUrl = System.getProperty("sagex.SageAPI.remoteUrl");
 				if (remoteUrl==null) {
-					ServerInfo info = SimpleDatagramClient.findRemoteServer(5000);
-					setProvider(new RMISageAPI(info.host, info.port));
+					Properties info = SimpleDatagramClient.findRemoteServer(5000);
+					providerProperties = info;
+					setProvider(new RMISageAPI(info.getProperty("server"), Integer.parseInt(info.getProperty("rmi.port"))));
 				} else {
 					URI u = new URI(remoteUrl);
 					if ("rmi".equals(u.getScheme())) {
 						setProvider(new RMISageAPI(u.getHost(), u.getPort()));
 					} else {
+						providerProperties = new Properties();
+						providerProperties.put("server", u.getHost());
+						providerProperties.put("http.port", u.getPort());
 						setProvider(new SageAPIRemote(remoteUrl));
 					}
 				}
 			} catch (Throwable t) {
-				setProvider(new EmbeddedSageAPIProvider());
+				t.printStackTrace();
+				throw new RuntimeException(t);
 			}
 		}
 		return provider;
@@ -75,5 +81,31 @@ public class SageAPI {
 	 */
 	public static String getUIContext() {
 		return uiContext.get();
+	}
+	
+	/**
+	 * returns true if the provider instance is a remote API instance.
+	 * 
+	 * @return
+	 */
+	public static boolean isRemote() {
+		return (provider == null || !(provider instanceof EmbeddedSageAPIProvider));
+	}
+	
+	/**
+	 * Returns the provider properties.  Can be null.
+	 * @return
+	 */
+	public static Properties getProviderProperties() {
+		return providerProperties;
+	}
+	
+	/**
+	 * Sets the properties for a properties.  This is normally set automatically when a provider
+	 * is created and set.
+	 * @param props
+	 */
+	public static void setProviderProperties(Properties props) {
+		providerProperties = props;
 	}
 }
