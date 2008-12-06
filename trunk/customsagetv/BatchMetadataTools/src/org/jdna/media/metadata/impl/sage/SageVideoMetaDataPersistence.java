@@ -114,7 +114,6 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 		// been set.
 		// this prevents us from frivously updating a custom set thumbnail url
 		if (overwriteThumbnail || props.getProperty(_THUMBNAIL_URL) == null || props.getProperty(_THUMBNAIL_URL).trim().length()>0) {
-			System.out.println("Setting Thumbnail Url: " + md.getThumbnailUrl());
 			props.put(_THUMBNAIL_URL, encodeString(md.getThumbnailUrl()));
 		}
 		props.put(_RELEASE_DATE, encodeString(md.getReleaseDate()));

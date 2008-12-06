@@ -356,6 +356,7 @@ public class MetadataUpdater {
 				} catch (Exception e) {
 					log.warn("Debug: Failed to parse: " + data + " as a number, using it again as a search.");
 					fetchMetaData(file, data);
+					return;
 				}
 				IMediaSearchResult sr = results.get(n);
 				IMediaMetadata md = MediaMetadataFactory.getInstance().getMetaData(sr);
