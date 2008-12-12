@@ -10,6 +10,7 @@ This tool will scan a given file/directory and create/update the required SageTV
 For details about each provider, check out the links below
  * [IMDBProvider IMDB Provider]
  * [DVDProfilerProvider DVD Profiler Provider]
+ * [The Movie DB Provider]
 
  NOTE: This tool by default will scan and process multi cd movies, and it will only fetch the metadata once, but it will write it out for each cd, since that is how SageTV requires it. This is also known as cd stacking or grouping.
 
