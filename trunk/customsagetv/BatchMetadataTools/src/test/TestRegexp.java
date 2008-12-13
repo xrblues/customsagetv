@@ -44,8 +44,18 @@ public class TestRegexp {
 		testVOB("test1.VOB1");
 		
 		testActor("Kim Basinger as Stephanie");
+		
+		
+		testIMDBSizeUrl("http://ia.media-imdb.com/images/M/MV5BNDE5NjQzMDkzOF5BMl5BanBnXkFtZTcwODI3ODI3MQ@@._V1._SX100_SY140_.jpg", "10000");
 	}
 	
+	private static void testIMDBSizeUrl(String url, String size) {
+		System.out.println(" Url: " + url);
+		System.out.println("Size: " + size);
+		url  = url.replaceFirst("\\_SX[0-9]+\\_SY[0-9]+\\_", "_SX"+size + "_SY" + size + "_");
+		System.out.println(" Url: " + url);
+	}
+
 	private static void testActor(String string) {
 		System.out.println("\n");
 		Pattern p = Pattern.compile("(.*)\\s+as\\s+(.*)");

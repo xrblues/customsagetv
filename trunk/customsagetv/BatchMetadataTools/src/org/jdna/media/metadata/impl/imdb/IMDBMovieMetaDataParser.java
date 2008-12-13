@@ -3,6 +3,8 @@ package org.jdna.media.metadata.impl.imdb;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.MediaMetadata;
@@ -17,6 +19,8 @@ import org.xml.sax.SAXException;
  *
  */
 public class IMDBMovieMetaDataParser extends URLSaxParser {
+	private static final Logger log = Logger.getLogger(IMDBMovieMetaDataParser.class);
+	
 	public static final String USER_RATING_MATCH = "User Rating:";
 	private static final String DIRECTOR_MATCH = "Director:";
 	private static final String WRITER_MATCH = "Writers";
@@ -304,8 +308,15 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 		
 		if (state==POSTER && isTag("IMG", localName)) {
 			// we now have the image for the poster
-			metadata.setThumbnailUrl(atts.getValue("src"));
-			
+			String u = atts.getValue("src");
+			if (u!=null) {
+				IMDBConfiguration conf = ConfigurationManager.getInstance().getIMDBConfiguration();
+				if (conf.getForcedIMDBImageSize()>0) {
+					log.debug("Forcing IMDB Thumbnail Size: " + conf.getForcedIMDBImageSize());
+					u=u.replaceFirst("\\_SX[0-9]+\\_SY[0-9]+\\_", "_SX"+conf.getForcedIMDBImageSize() + "_SY" + conf.getForcedIMDBImageSize() + "_");
+				}
+			}
+			metadata.setThumbnailUrl(u);
 			// reset state
 			state = LOOKING;
 			return;
