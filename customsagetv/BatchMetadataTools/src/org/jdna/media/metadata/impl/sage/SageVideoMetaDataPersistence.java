@@ -264,7 +264,7 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 	}
 
 	private String encodeString(String s) {
-		return (s == null) ? "" : s;
+		return (s == null) ? "" : s.trim();
 	}
 
 	private String encodeWriters(ICastMember[] writers) {

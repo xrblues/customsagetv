@@ -97,7 +97,8 @@ public class IMDBSearchResultParser extends URLSaxParser {
 		
 		if ("a".equals(elName) && state!=STARTING) {
 			String href = atts.getValue("href");
-			if (href!=null && href.indexOf("/title/")!=-1 && atts.getValue("onclick")==null) {
+			log.debug("Starting, found an A tag: href: " + href);
+			if (href!=null && href.indexOf("/title/")!=-1) {
 				aState = TITLE_READ_TITLE;
 				
 				// create the IVIdeoResult
@@ -154,6 +155,7 @@ public class IMDBSearchResultParser extends URLSaxParser {
 			aState = TITLE_DONE;
 			
 			// add the result.
+			log.debug("Adding Result: " + curResult.getTitle());
 			results.add(curResult);
 			curResult=null;
 		} 

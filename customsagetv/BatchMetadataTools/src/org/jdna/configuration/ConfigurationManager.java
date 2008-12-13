@@ -17,6 +17,7 @@ import org.jdna.media.impl.MediaConfiguration;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.impl.dvdprof.DVDProfilerConfiguration;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
+import org.jdna.media.metadata.impl.imdb.IMDBConfiguration;
 import org.jdna.media.metadata.impl.sage.SageMetadataConfiguration;
 import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.persistence.IPersistence;
@@ -56,7 +57,8 @@ public class ConfigurationManager {
 		MetadataConfiguration.class,
 		DVDProfilerConfiguration.class,
 		DVDProfilerLocalConfiguration.class,
-		SageMetadataConfiguration.class
+		SageMetadataConfiguration.class,
+		IMDBConfiguration.class
 	};
 	
 	private Map<Class, Object> loaded = new HashMap<Class, Object>();
@@ -131,6 +133,10 @@ public class ConfigurationManager {
 
 	public SageMetadataConfiguration getSageMetadataConfiguration() {
 		return load(SageMetadataConfiguration.class);
+	}
+
+	public IMDBConfiguration getIMDBConfiguration() {
+		return load(IMDBConfiguration.class);
 	}
 	
 	protected <T> T load(Class<T> objectType) {
