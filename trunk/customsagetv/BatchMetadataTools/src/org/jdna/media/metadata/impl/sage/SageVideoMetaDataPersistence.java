@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -263,11 +265,11 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 		return localThumbFile;
 	}
 
-	private String encodeString(String s) {
+	private static String encodeString(String s) {
 		return (s == null) ? "" : s.trim();
 	}
 
-	private String encodeWriters(ICastMember[] writers) {
+	private static String encodeWriters(ICastMember[] writers) {
 		if (writers == null)
 			return "";
 		StringBuffer sb = new StringBuffer();
@@ -277,7 +279,7 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 		return sb.toString();
 	}
 
-	private String encodeDirectors(ICastMember[] directors) {
+	private static String encodeDirectors(ICastMember[] directors) {
 		if (directors == null)
 			return "";
 
@@ -288,7 +290,7 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 		return sb.toString();
 	}
 
-	private String encodeActors(ICastMember[] actors, String mask) {
+	private static String encodeActors(ICastMember[] actors, String mask) {
 		if (actors == null)
 			return "";
 
@@ -302,13 +304,13 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 		return sb.toString();
 	}
 
-	private String encodeDescription(IMediaMetadata md, String mask, Properties props) {
+	private static String encodeDescription(IMediaMetadata md, String mask, Properties props) {
 		if (mask == null)
 			mask = "${Description}";
 		return MediaMetadataUtils.format(mask, props);
 	}
 
-	private String encodeGenres(String[] genres) {
+	private static String encodeGenres(String[] genres) {
 		if (genres == null)
 			return "";
 
@@ -360,7 +362,6 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 			log.info("No Metadata for file: " + propFile.getAbsolutePath());
 			return null;
 		}
-
 	}
 
 	private String[] deserializeStrings(String s) {
@@ -414,5 +415,21 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 			log.error("Failed to get local thumbnail file to media file!", e);
 			return null;
 		}
+	}
+	
+	public static Map<String, String> metadataToSageTVMap(IMediaMetadata md) {
+		Map<String, String> props = new HashMap<String, String>();
+		// Sage recognized properties
+		props.put(TITLE, encodeString(md.getTitle()));
+		props.put(YEAR, encodeString(md.getYear()));
+		props.put(GENRE, encodeString(encodeGenres(md.getGenres())));
+		props.put(RATED, encodeString(md.getMPAARating()));
+		props.put(RUNNING_TIME, encodeString(md.getRuntime()));
+		props.put(ACTOR, encodeString(encodeActors(md.getActors(), ConfigurationManager.getInstance().getSageMetadataConfiguration().getActorMask())));
+		props.put(WRITER, encodeString(encodeWriters(md.getWriters())));
+		props.put(DIRECTOR, encodeString(encodeDirectors(md.getDirectors())));
+		props.put(DESCRIPTION, encodeString(md.getPlot()));
+		props.put(DESCRIPTION, encodeString(md.getPlot()));
+		return props;
 	}
 }

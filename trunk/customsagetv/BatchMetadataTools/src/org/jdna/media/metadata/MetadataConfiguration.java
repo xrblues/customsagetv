@@ -20,6 +20,9 @@ public class MetadataConfiguration {
 	@Field(description="Comma separated list of words that will be removed from a title when doing a search")
 	private String wordsToClean = "dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv";
 	
+	@Field(description="Default provider id to use")
+	private String defaultProviderId=IMDBMetaDataProvider.PROVIDER_ID;
+	
 	public MetadataConfiguration() {
 	}
 
@@ -46,5 +49,12 @@ public class MetadataConfiguration {
 	public void setWordsToClean(String wordsToClean) {
 		this.wordsToClean = wordsToClean;
 	}
-	
+
+	public String getDefaultProviderId() {
+		return defaultProviderId;
+	}
+
+	public void setDefaultProviderId(String defaultProviderId) {
+		this.defaultProviderId = defaultProviderId;
+	}
 }

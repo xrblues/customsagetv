@@ -39,7 +39,7 @@
 	
 	
 	<target name="copyJars">
-		<copydir dest="${target}/libs" src="libs"></copydir>
+		<copydir dest="${target}/libs" src="libs" excludes="Sage*.jar"></copydir>
 	</target>
 
 	<target name="makeJar">
