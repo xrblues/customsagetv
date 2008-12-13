@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="gwt-package" name="MovieMetadataUpdater">
+<project basedir="." default="all" name="MovieMetadataUpdater">
     <property environment="env"/>
 	
 	<property name="target" value="target"/>
@@ -9,13 +9,15 @@
 	<property name="launcher" value="MetadataTool"/>
 	
 	
+	<target name="all" depends="gwt-package,plugin-package"/>
+	
 	<target name="package" depends="init,copyJars,makeJar,makeLaunch">
-		<copy  toDir="${target}">
+		<copy  toDir="${target}/tool">
 			<fileset dir="docs">
 			</fileset>
 		</copy>
-		<zip destfile="${name}-${version}.zip">
-			<fileset dir="${target}"></fileset>
+		<zip destfile="${target}/${name}-${version}.zip">
+			<fileset dir="${target}/tool"></fileset>
 		</zip>
 	</target>
 	
@@ -36,21 +38,38 @@
 			<fileset dir="${target}/gwt/"/>
 		</jar>
 	</target>
+
+	<target name="plugin-package" depends="package">
+		<mkdir dir="${target}/sage"/>
+		<mkdir dir="${target}/sage/JARs"/>
+		
+		<copy toDir="${target}/sage/JARs">
+			<fileset dir="libs" excludes="Sage.*,nielm*,"/>
+		</copy>
+		
+		<copy toDir="${target}/sage/JARs">
+			<fileset file="${target}/tool/libs/${jarname}"/>
+		</copy>
+
+		<echo file="${target}/sage/Sage.properties.metadataupdater">mediafile_metadata_parser_plugins=org.jdna.sage.MetadataUpdaterPlugin</echo>
+
+		<zip destfile="${target}/${name}-plugin-${version}.zip" basedir="${target}/sage"/>
+	</target>
 	
 	
 	<target name="copyJars">
-		<copydir dest="${target}/libs" src="libs" excludes="Sage*.jar"></copydir>
+		<copydir dest="${target}/tool/libs" src="libs" excludes="Sage*.jar"></copydir>
 	</target>
 
 	<target name="makeJar">
-		<jar destfile="${target}/libs/${jarname}">
+		<jar destfile="${target}/tool/libs/${jarname}">
 			<fileset dir="bin"></fileset>
 		</jar>
 	</target>
 
 	<target name="makeLaunch">
 		<echo file="${target}/${launcher}.mf">Main-Class: ${launcher}</echo>
-		<jar destfile="${target}/${launcher}.jar" manifest="${target}/${launcher}.mf">
+		<jar destfile="${target}/tool/${launcher}.jar" manifest="${target}/${launcher}.mf">
 			<fileset file="bin/${launcher}.class"/>
 		</jar>
 		<delete file="${target}/${launcher}.mf"></delete>
@@ -63,6 +82,7 @@
             <fileset dir="src" excludes="**/*.launch, **/*.java"/>
         </copy>
     </target>
+	
     <target name="clean">
         <delete dir="target"/>
     </target>
