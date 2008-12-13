@@ -305,7 +305,7 @@ public class MetadataUpdater {
 		return results;
 	}
 
-	private boolean isGoodSearch(List<IMediaSearchResult> results) {
+	public static boolean isGoodSearch(List<IMediaSearchResult> results) {
 		return (results.size() > 0 && (results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH || results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_EXACT_MATCH));
 	}
 
