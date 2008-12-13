@@ -38,7 +38,9 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
 				}
 
 				mr.updateMetadata(MediaMetadataFactory.getInstance().getMetaData(results.get(0)), true);
-				return SageVideoMetaDataPersistence.metadataToSageTVMap(mr.getMetadata());
+				Object props = SageVideoMetaDataPersistence.metadataToSageTVMap(mr.getMetadata());
+				System.out.println("Metadata Imported for: " + file.getAbsolutePath());
+				return props;
 			} else {
 				System.out.println("Ignoring Media: " + file.getAbsolutePath() + "; It already has metadata.");
 			}
