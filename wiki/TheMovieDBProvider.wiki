@@ -1,0 +1,19 @@
+#summary Overview of the themoviedb.com Provider
+
+
+= Introduction =
+This provider will search the themoviedb.com for movies using the api provided by themoviedb.com.  This provider uses an api_key that has been provided to this project.
+
+= Details =
+
+To use this provider, simply pass the --provider=themoviedb.com to the java command line.
+
+{{{
+java -jar MetadataTool.jar --provider=themoviedb.com
+}}}
+
+If you want to convert your collection from imdb to themoviedb.com, then you can use the following command.
+
+{{{
+java -jar MetadataTool.jar --provider=themoviedb.com --force --forceThumbnail MOVIE_DIR
+}}}
