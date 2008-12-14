@@ -68,7 +68,11 @@ fieldsFromSearchProvider is a semi-colon separated list of fields, that you want
 
 If a fieldsFromSearchProvider configuration is configured, then details for a given item fetched from both the search provider and the detail provider.  The information is then merged such that all null information in the detail provider is filled by the information from the search provider, in addition to the fields listed.
 
+When specifying fields, do not use quotes, and no not use spaces before or after a semi-colon.
+
 == Supported Field Names for fieldsFromSearchProvider ==
+The following fields Names are supported.
+
 {{{
 	public static final String WRITER = "Writer";
 	public static final String DIRECTOR = "Director";
