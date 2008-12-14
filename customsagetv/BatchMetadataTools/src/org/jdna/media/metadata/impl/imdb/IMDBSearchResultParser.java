@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 public class IMDBSearchResultParser extends URLSaxParser {
 	private static final Logger log = Logger.getLogger(IMDBSearchResultParser.class);
 
-	private static final String TITLE_URL = "http://www.imdb.com/title/%s/"; 
+	public static final String TITLE_URL = "http://www.imdb.com/title/%s/"; 
 	
 	private static String POPULAR_TITLE_MATCH="Popular Titles";
 	private static String PARTIAL_TITLE_MATCH="Titles (Approx Matches)";
@@ -71,16 +71,18 @@ public class IMDBSearchResultParser extends URLSaxParser {
 		return results;
 	}
 
-	private String parseTitleId(String href) {
+	public static String parseTitleId(String href) {
 		if (href==null) return null;
 		String parts[] = href.split("/");
-		int l = parts.length;
-		for (int i=0;i<l;i++) {
-			if ("title".equals(parts[i])) {
-				return parts[i+1];
+		if (parts!=null && parts.length>0) {
+			int l = parts.length;
+			for (int i=0;i<l;i++) {
+				if ("title".equals(parts[i])) {
+					return parts[i+1];
+				}
 			}
 		}
-		return null;
+		return href;
 	}
 
 
@@ -105,7 +107,10 @@ public class IMDBSearchResultParser extends URLSaxParser {
 				curResult = new MediaSearchResult(IMDBMetaDataProvider.PROVIDER_ID, state);
 				
 				// set the imdb title url
-				curResult.setId(String.format(TITLE_URL,parseTitleId(href)));
+				String imdbId = parseTitleId(href);
+				log.debug("Setting IMDB ID: " + imdbId + " from href: " + href);
+				curResult.setIMDBId(imdbId);
+				curResult.setId(String.format(TITLE_URL,imdbId));
 			}
 		}
 	}

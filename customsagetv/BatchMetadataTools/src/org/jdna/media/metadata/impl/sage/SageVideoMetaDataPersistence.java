@@ -115,7 +115,7 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 		// we only copy/update the thumbnail url IF the update thumbnail has
 		// been set.
 		// this prevents us from frivously updating a custom set thumbnail url
-		if (overwriteThumbnail || props.getProperty(_THUMBNAIL_URL) == null || props.getProperty(_THUMBNAIL_URL).trim().length()>0) {
+		if ((overwriteThumbnail || props.getProperty(_THUMBNAIL_URL) == null) && (md.getThumbnailUrl()!=null && md.getThumbnailUrl().trim().length()>0)) {
 			props.put(_THUMBNAIL_URL, encodeString(md.getThumbnailUrl()));
 		}
 		props.put(_RELEASE_DATE, encodeString(md.getReleaseDate()));
@@ -230,7 +230,7 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 	private String save(Properties props, IMediaFile mf, IMediaMetadata md, String localThumbFile, boolean overwriteThumbnail) {
 		File partFile = getPropertyFile(mf);
 		try {
-			log.debug("Saving Sage video metadata properties: " + partFile.getAbsolutePath());
+			log.debug("Saving Sage video metadata properties: " + partFile.getAbsolutePath() + "; Overwrite Thumbnail: " + overwriteThumbnail);
 
 			// update local values for this instance
 			File thumbFile = getThumbnailFile(mf);

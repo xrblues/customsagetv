@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class MediaSearchResult implements IMediaSearchResult, Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private String providerId, id, title, year;
+	private String providerId, id, IMDBId, title, year;
 	private int resultType;
 	private transient Object data;
 	
@@ -70,5 +70,11 @@ public class MediaSearchResult implements IMediaSearchResult, Serializable {
 		this.data = data;
 	}
 
+	public String getIMDBId() {
+		return IMDBId;
+	}
 
+	public void setIMDBId(String id) {
+		IMDBId = id;
+	}
 }

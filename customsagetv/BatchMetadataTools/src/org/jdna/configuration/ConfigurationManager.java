@@ -5,8 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.SortedSet;
@@ -15,10 +17,13 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 import org.jdna.media.impl.MediaConfiguration;
 import org.jdna.media.metadata.MetadataConfiguration;
+import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
 import org.jdna.media.metadata.impl.dvdprof.DVDProfilerConfiguration;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBConfiguration;
+import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.sage.SageMetadataConfiguration;
+import org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider;
 import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.persistence.IPersistence;
 import org.jdna.persistence.PropertiesPersistence;
@@ -58,7 +63,8 @@ public class ConfigurationManager {
 		DVDProfilerConfiguration.class,
 		DVDProfilerLocalConfiguration.class,
 		SageMetadataConfiguration.class,
-		IMDBConfiguration.class
+		IMDBConfiguration.class,
+		CompositeMetadataConfiguration.class
 	};
 	
 	private Map<Class, Object> loaded = new HashMap<Class, Object>();
@@ -135,6 +141,34 @@ public class ConfigurationManager {
 		return load(SageMetadataConfiguration.class);
 	}
 
+	public List<CompositeMetadataConfiguration> getCompositeMetadataConfiguration() {
+		try {
+			List <CompositeMetadataConfiguration> l = (List<CompositeMetadataConfiguration>) loaded.get(CompositeMetadataConfiguration.class);
+			if (l==null) {
+				l = persistence.loadAll(CompositeMetadataConfiguration.class);
+				if (l!=null) {
+					loaded.put(CompositeMetadataConfiguration.class, l);
+				}
+			}
+			if (l==null || l.size()==0) {
+				// add in the sample CompositeProvider
+				CompositeMetadataConfiguration c = new CompositeMetadataConfiguration();
+				c.setId("sample");
+				c.setName("Sample Composite Provider");
+				c.setDescription("This is a sample Composite Provider that will disappear as soon as you create one");
+				c.setSearchProviderId(IMDBMetaDataProvider.PROVIDER_ID);
+				c.setDetailProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
+				c.setFieldsFromSearchProvider("Genre");
+				l = new ArrayList<CompositeMetadataConfiguration>();
+				l.add(c);
+			}
+			return l;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public IMDBConfiguration getIMDBConfiguration() {
 		return load(IMDBConfiguration.class);
 	}
@@ -175,7 +209,14 @@ public class ConfigurationManager {
 	public void dumpProperties(PrintWriter pw) {
 		for (int i=0;i<configurationClasses.length;i++) {
 			try {
-				((PropertiesPersistence)persistence).dumpValues(load(configurationClasses[i]), pw);
+				if (configurationClasses[i].equals(CompositeMetadataConfiguration.class)) {
+					List l = getCompositeMetadataConfiguration();
+					for (Object o : l) {
+						((PropertiesPersistence)persistence).dumpValues(o, pw);
+					}
+				} else {
+					((PropertiesPersistence)persistence).dumpValues(load(configurationClasses[i]), pw);
+				}
 				pw.println("");
 			} catch (Exception e) {
 				pw.println("Failed to dump properties for: " + configurationClasses[i]);

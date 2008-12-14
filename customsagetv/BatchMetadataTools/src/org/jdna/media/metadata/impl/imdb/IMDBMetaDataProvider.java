@@ -80,6 +80,7 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
 		vsr.setTitle(md.getTitle());
 		vsr.setYear(md.getYear());
 		vsr.setResultType(IMediaSearchResult.RESULT_TYPE_EXACT_MATCH);
+		vsr.setIMDBId(IMDBSearchResultParser.parseTitleId(redirectUrl));
 		
 		// the IMDBMovieMetaData implements the IVideoSearchResult interface
 		result.add(vsr);
@@ -106,5 +107,9 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
 
 	public IProviderInfo getInfo() {
 		return info;
+	}
+
+	public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
+		return getMetaData(String.format(IMDBSearchResultParser.TITLE_URL, imdbId));
 	}
 }

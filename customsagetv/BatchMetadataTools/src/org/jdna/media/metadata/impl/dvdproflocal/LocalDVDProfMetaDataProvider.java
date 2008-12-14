@@ -133,4 +133,8 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
 	public IProviderInfo getInfo() {
 		return info;
 	}
+	
+	public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
+		throw new UnsupportedOperationException("DVDProfiler Doesn't Know how to handle IMDB ids");
+	}
 }

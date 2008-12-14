@@ -21,12 +21,15 @@ import org.w3c.dom.NodeList;
 public class TheMovieDBItemParser {
 	private static final Logger log = Logger.getLogger(TheMovieDBItemParser.class);
 	public static final String ITEM_URL = "http://api.themoviedb.org/2.0/Movie.getInfo?id=%s&api_key=";
+	public static final String IMDB_ITEM_URL = "http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=%s&api_key=";
 	
 	private String url;
 	private MediaMetadata md=null;
 	private Map<String, String> covers = new HashMap<String, String>();
 	private DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	private List<ICastMember> cast = new ArrayList<ICastMember>();
+	
+	private String theMovieDBID;
 	
 	public TheMovieDBItemParser(String providerDataUrl) {
 		this.url=providerDataUrl;
@@ -39,6 +42,7 @@ public class TheMovieDBItemParser {
 				DocumentBuilder parser = factory.newDocumentBuilder();
 				Document doc = parser.parse(url+TheMovieDBMetadataProvider.getApiKey());
 				
+				
 				md = new MediaMetadata();
 				NodeList nl = doc.getElementsByTagName("movie");
 				if (nl==null || nl.getLength()==0) {
@@ -50,6 +54,7 @@ public class TheMovieDBItemParser {
 				}
 				
 				Element movie = (Element) nl.item(0);
+				theMovieDBID = getElementValue(movie, "id");
 				md.setActors(getActors(movie));
 				md.setAspectRatio(null);
 				md.setCompany(null);
@@ -183,5 +188,9 @@ public class TheMovieDBItemParser {
 			return n.getTextContent().trim();
 		}
 		return null;
+	}
+
+	public String getTheMovieDBID() {
+		return theMovieDBID;
 	}
 }

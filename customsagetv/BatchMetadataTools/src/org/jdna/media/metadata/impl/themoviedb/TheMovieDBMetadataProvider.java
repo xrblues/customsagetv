@@ -45,4 +45,15 @@ public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
 		if (key==null) key = "d4ad46ee51d364386b6cf3b580fb5d8c";
 		return key;
 	}
+	
+	public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
+		// sort of convoluted, but we need to get the imdbid info, then get the real movidedb id
+		// to get the full details
+		TheMovieDBItemParser p = new TheMovieDBItemParser(String.format(TheMovieDBItemParser.IMDB_ITEM_URL, imdbId));
+		if (p.getMetadata()!=null) {
+			return getMetaData(String.format(TheMovieDBItemParser.ITEM_URL, p.getTheMovieDBID()));
+		} else {
+			throw new Exception("Failed to get metadata by imdb for imdbid: " + imdbId);
+		}
+	}
 }
