@@ -1,0 +1,88 @@
+#summary Composite Provider is a way to customize 2 providers to act as one
+
+= Introduction =
+
+A Composite Provider is made up of 2 providers; A search provider, and a Details provider.
+
+When you build a composite provider, it will search with the search provider and fetch details with a second provider.  No coding is required, but you do need to configure your provider in the metadata.properties
+
+= Properties =
+
+You can list all properties of the metadata tool, by using --showProperties.  When you do, you can see that properties that are required to configure your own Composite Provider.  By default, if you have not configured a Composite Provider, then a "sample" one will be created and shown.
+
+{{{
+#       Begin: compositeMetadataProviders
+# Description: Configuration for a Composite Metadata Provider
+
+# Description: Provider Name
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/name=Sample Composite Provider
+
+# Description: Provider Description
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/description=This is a sample Composite Provider that will disappear as soon as you create one
+
+# Description: Optional Icon Url for the provider
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/iconUrl=
+
+# Description: Provider ID to use when searching
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/searchProviderId=imdb
+
+# Description: Provider ID to use when getting details
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/detailProviderId=themoviedb.com
+
+# Description: Semi-Colon separated fields to use from the search provider.  ie, if you want to use the Genre field from the search provider details, then put Genre in this setting
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/fieldsFromSearchProvider=Genre
+# End: compositeMetadataProviders
+}}}
+
+
+The properties without all the comments, look like this
+
+{{{
+/compositeMetadataProviders/sample/name=Sample Composite Provider
+/compositeMetadataProviders/sample/description=This is a sample Composite Provider that /compositeMetadataProviders/sample/iconUrl=
+/compositeMetadataProviders/sample/searchProviderId=imdb
+/compositeMetadataProviders/sample/detailProviderId=themoviedb.com
+/compositeMetadataProviders/sample/fieldsFromSearchProvider=Genre
+}}}
+
+When you create your own custom Composite Provider, you need to chosse a unique ID for your provider.  In my case, I chose, 'sample'.  The ID should be alphanumeric only.
+
+If you wanted to create your own provider, you would copy the configuration listed above, and change all occurances of 'sample' to your ID.
+
+Then Change the name, description, etc to match what you want to call and describe your provider.
+
+The iconUrl is optional, and will be used someday to reference an online image that represents a metadata plugin. (if a UI tool is every built)
+
+searchProviderId is the Provider ID of the Metadata Provider that will handle searches.
+
+detailProviderId is the Provider ID of the Metadata Provider that will handle the detailed lookups, based on an IMDB id.
+
+fieldsFromSearchProvider is a semi-colon separated list of fields, that you want to use from the search provider and they will overwrite whatever is returned from the detail provider.  ie, if you wan the Title and Genre information to come from the search provider then your would put Title;Genre in that field.  This field is optional, but it is useful for anyone that wished to merge details from both the search provider and the detail provider.
+
+If a fieldsFromSearchProvider configuration is configured, then details for a given item fetched from both the search provider and the detail provider.  The information is then merged such that all null information in the detail provider is filled by the information from the search provider, in addition to the fields listed.
+
+= Testing =
+This feature is considered experiemental.  Before batch processing your entire collection, please test your provider on a few items.
+
+After you configure your Composite Provider, you can test that it is recognized by issuing the --listProvers command
+{{{
+# java -jar MetadataTool.jar --listProviders
+}}}
+
+If your provider is listed, then that is a good sign.  It means you've configured it correctly.  It does not mean that it will work :)
+
+= More than 1 Composite Provider =
+You can configure any number of Composite Providers.  You simply give each one a unique key.
+
+= Using your Provider =
+Once you have configured a provider, you can select your provider by passing the --provider=PROVIDER_ID command
+
+{{{
+# java -jar MetadataTool.jar --provider=sample
+}}}
