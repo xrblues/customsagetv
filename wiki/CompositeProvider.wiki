@@ -45,7 +45,8 @@ The properties without all the comments, look like this
 
 {{{
 /compositeMetadataProviders/sample/name=Sample Composite Provider
-/compositeMetadataProviders/sample/description=This is a sample Composite Provider that /compositeMetadataProviders/sample/iconUrl=
+/compositeMetadataProviders/sample/description=This is a sample Composite Provider
+/compositeMetadataProviders/sample/iconUrl=
 /compositeMetadataProviders/sample/searchProviderId=imdb
 /compositeMetadataProviders/sample/detailProviderId=themoviedb.com
 /compositeMetadataProviders/sample/fieldsFromSearchProvider=Genre
