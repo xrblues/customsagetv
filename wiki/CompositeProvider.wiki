@@ -68,6 +68,21 @@ fieldsFromSearchProvider is a semi-colon separated list of fields, that you want
 
 If a fieldsFromSearchProvider configuration is configured, then details for a given item fetched from both the search provider and the detail provider.  The information is then merged such that all null information in the detail provider is filled by the information from the search provider, in addition to the fields listed.
 
+== Supported Field Names for fieldsFromSearchProvider ==
+{{{
+	public static final String WRITER = "Writer";
+	public static final String DIRECTOR = "Director";
+	public static final String ACTOR = "Actor";
+	public static final String DESCRIPTION = "Description";
+	public static final String RUNNING_TIME = "RunningTime";
+	public static final String TITLE = "Title";
+	public static final String YEAR = "Year";
+	public static final String GENRE = "Genre";
+	public static final String RATED = "Rated";
+}}}
+
+
+
 = Testing =
 This feature is considered experiemental.  Before batch processing your entire collection, please test your provider on a few items.
 
