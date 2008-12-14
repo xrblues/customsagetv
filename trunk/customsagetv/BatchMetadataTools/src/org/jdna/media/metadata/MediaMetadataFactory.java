@@ -70,11 +70,6 @@ public class MediaMetadataFactory {
 		metadataProviders.remove(provider);
 	}
 
-	public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-		IMediaMetadataProvider provider = getProvider(result.getProviderId());
-		return provider.getMetaData(result);
-	}
-	
 	public List<IMediaSearchResult> search(String providerId, int searchType, String arg) throws Exception {
 		log.info("Searching: providerId: " + providerId + "; searchType: " + searchType + "; query: " + arg);
 		IMediaMetadataProvider provider = getProvider(providerId);

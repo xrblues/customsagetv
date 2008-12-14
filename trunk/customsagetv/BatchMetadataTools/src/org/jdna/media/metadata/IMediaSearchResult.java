@@ -32,6 +32,12 @@ public interface IMediaSearchResult {
 	 * @return
 	 */
 	public String getId();
+
+	/**
+	 * If the search result can determine the IMDB id, then it should return it here, if not, then return null.
+	 * @return
+	 */
+	public String getIMDBId();
 	
 	public String getTitle();
 	public String getYear();

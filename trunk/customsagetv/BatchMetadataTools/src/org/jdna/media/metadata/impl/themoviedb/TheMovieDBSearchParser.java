@@ -62,6 +62,7 @@ public class TheMovieDBSearchParser {
 		sr.setTitle(getElementValue(item, "title"));
 		sr.setYear(getElementValue(item, "release"));
 		sr.setId(getElementValue(item, "id"));
+		sr.setIMDBId(getElementValue(item, "imdb"));
 		
 		results.add(sr);
 	}

@@ -29,6 +29,8 @@ import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MediaMetadataUtils;
+import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
+import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.metadataupdater.IMetaDataUpdaterScreen.MovieEntry;
 
@@ -330,7 +332,7 @@ public class MetadataUpdater {
 		}
 
 		if (auto && isGoodSearch(results)) {
-			exportMetaData(MediaMetadataFactory.getInstance().getMetaData(results.get(0)), file);
+			exportMetaData(MediaMetadataFactory.getInstance().getProvider(provider).getMetaData(results.get(0)), file);
 			return;
 		}
 
@@ -359,7 +361,7 @@ public class MetadataUpdater {
 					return;
 				}
 				IMediaSearchResult sr = results.get(n);
-				IMediaMetadata md = MediaMetadataFactory.getInstance().getMetaData(sr);
+				IMediaMetadata md = MediaMetadataFactory.getInstance().getProvider(provider).getMetaData(sr);
 				exportMetaData(md, file);
 				screen.notifyManualUpdate(file, md);
 			} catch (RuntimeException e) {
@@ -384,6 +386,12 @@ public class MetadataUpdater {
 	public static void initConfiguration() throws IOException {
 		log.debug("Attempting to load metadataupdater from default locations....");
 		ConfigurationManager.getInstance();
+		
+		List<CompositeMetadataConfiguration> otherProviders = ConfigurationManager.getInstance().getCompositeMetadataConfiguration();
+		for (CompositeMetadataConfiguration c : otherProviders) {
+			CompositeMetadataProvider p = new CompositeMetadataProvider(c);
+			MediaMetadataFactory.getInstance().addMetaDataProvider(p);
+		}
 	}
 
 	private void initScreen() throws Exception {

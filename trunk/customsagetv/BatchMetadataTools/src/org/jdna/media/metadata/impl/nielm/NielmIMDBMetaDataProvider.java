@@ -20,6 +20,7 @@ import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.ProviderInfo;
+import org.jdna.media.metadata.impl.imdb.IMDBSearchResultParser;
 
 public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
 	private static final Logger log  = Logger.getLogger(NielmIMDBMetaDataProvider.class);
@@ -53,6 +54,7 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
 						// set the imdb url as the ID for this result.
 						// that will enable us to find it later
 						vsr.setId(((ImdbWebObjectRef) objRef).getImdbRef());
+						vsr.setIMDBId(IMDBSearchResultParser.parseTitleId(((ImdbWebObjectRef) objRef).getImdbRef()));
 					} else {
 						log.error("Imdb Search result was incorrect type: " + objRef.getClass().getName());
 					}
@@ -116,5 +118,8 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
 	public IProviderInfo getInfo() {
 		return info;
 	}
-
+	
+	public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
+		return getMetaData(String.format(IMDBSearchResultParser.TITLE_URL, imdbId));
+	}
 }

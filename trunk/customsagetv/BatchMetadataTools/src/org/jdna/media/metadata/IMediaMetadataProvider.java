@@ -7,5 +7,6 @@ public interface IMediaMetadataProvider {
 	public IProviderInfo getInfo();
 	public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception;
 	public IMediaMetadata getMetaData(String providerDataUrl) throws Exception;
+	public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException;
 	public List<IMediaSearchResult> search(int searchType, String arg) throws Exception;
 }
