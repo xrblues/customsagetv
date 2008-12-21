@@ -23,3 +23,6 @@ If you have an existing metadata.properties, then copy that file to the sagetv s
 Start SageTV, add a new movie, and then tell SageTV to refresh.  If your movie was automatically found, then it should appear with the appropriate thumbnail and properties.
 
 Good luck, and you can post any comments/problems to the SageTV thread for the [http://forums.sagetv.com/forums/showthread.php?t=34301 Batch Metadata Tools].
+
+= Configuration =
+To configure this plugin see the [http://code.google.com/p/customsagetv/wiki/BatchMetadataImporter Configuration Options for the Batch Metadata Tools].
