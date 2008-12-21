@@ -1,18 +1,11 @@
 package org.jdna.metadataupdater;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
-import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 
 /**
  * IMetaDataUpdaterScreen implemenation that uses a standard text based console.
@@ -22,7 +15,7 @@ import org.jdna.media.metadata.IMediaSearchResult;
  * @author seans
  *
  */
-public class ConsoleScreen implements IMetaDataUpdaterScreen {
+public class ConsoleScreen {
 	private static final Logger log = Logger.getLogger(ConsoleScreen.class);
 	
 	private class Failed {
@@ -40,41 +33,6 @@ public class ConsoleScreen implements IMetaDataUpdaterScreen {
 	private List<Failed> failed = new ArrayList<Failed>();
 	private int manual = 0;
 	
-	public void error(String message) {
-		System.out.printf("** Error: %s **\n", message);
-	}
-
-	public void message(String message) {
-		System.out.printf("%s\n", message);
-	}
-
-	public String prompt(String message, String defValue, String promptId) {
-		System.out.printf("\n%s\n> ", message);
-		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
-		String resp = defValue;
-		try {
-			resp = r.readLine();
-		} catch (IOException e) {
-			log.error("Failed to get input, using default: " + defValue, e);
-		}
-		
-		return resp;
-	}
-
-	public void renderResults(String title, List<IMediaSearchResult> results, int max) {
-		System.out.printf("\n\n%s\n",title);
-		int l = results.size();
-		l = Math.min(l, max);
-		for (int i=0;i<l;i++) {
-			IMediaSearchResult sr = results.get(i);
-			System.out.printf("%02d (%s) - %s [%s]\n", i, IMediaSearchResult.SEARCH_TYPE_NAMES_CHAR[sr.getResultType()], sr.getTitle(), sr.getYear());			
-		}
-		System.out.print("LEGEND: ");
-		for (int i=0;i<IMediaSearchResult.SEARCH_TYPE_NAMES_CHAR.length;i++) {
-			System.out.printf("%s %s; ", IMediaSearchResult.SEARCH_TYPE_NAMES_CHAR[i], IMediaSearchResult.SEARCH_TYPE_NAMES[i]);
-		}
-		System.out.println("");
-	}
 
 	public void renderStats() {
 		System.out.println("\n\nMetaData Stats...");
@@ -94,24 +52,6 @@ public class ConsoleScreen implements IMetaDataUpdaterScreen {
 			System.out.println("\nBe sure to go into SageTV and select\n'Media Center -> Videos -> Options -> Advanced Options -> Refresh Imported Media'\nTo Ensure that your metadata and images get refreshed.\n");
 		}
 		
-	}
-
-	public void renderProviders(List<IMediaMetadataProvider> providers, String defaultProvider) {
-		System.out.println("\n\nInstalled Metadata Providers (*=default");
-		for (IMediaMetadataProvider p : providers) {
-			System.out.printf("%1s %-20s %s\n", (p.getInfo().getId().equals(defaultProvider)?"*":""), p.getInfo().getId(), p.getInfo().getName());
-		}
-	}
-
-	public void renderKnownMovies(List<MovieEntry> allMovies) {
-		System.out.printf("\nListing Movies\nU = MetaData Updated/Newer; - = Missing MetaData; + = Has MetaData\n");
-		for (MovieEntry me : allMovies) {
-			IMediaMetadata md = me.metadata;
-			IMediaFile mediaFile = me.file;
-			String code = ((md==null) ? "-" : "+");
-			if (md!=null) code="U";
-			System.out.printf("%s %-40s (%s)\n" , code, mediaFile.getTitle(), mediaFile.getLocationUri());
-		}
 	}
 
 	public void nofifySkippedFile(IMediaResource r) {
@@ -139,56 +79,5 @@ public class ConsoleScreen implements IMetaDataUpdaterScreen {
 		} else {
 			System.out.printf("%10s: %-30s (%s)\n","Updated", md.getTitle(), r.getName());
 		}
-	}
-
-	public void showMetadata(IMediaFile mf, IMediaMetadata md) {
-		col2("Movie:", mf.getName());
-		col2("Title:", md.getTitle());
-		col2("Plot:", md.getPlot());
-		col2("Genres:", toGenreString(md.getGenres()));
-		col2("MPAA Rating:", md.getMPAARating());
-		col2("User Rating:", md.getUserRating());
-		col2("Company:", md.getCompany());
-		col2("Year:", md.getYear());
-		col2("Release Date:", md.getReleaseDate());
-		col2("Runtime:", md.getRuntime());
-		col2("Aspect Ratio:", md.getAspectRatio());
-		col2("Provider Url:", md.getProviderDataUrl());
-		col2("Provider Id:", md.getProviderId());
-		col2("ThumbnailUrl:", md.getThumbnailUrl());
-		col2("Directors:", toSimpleCastString(md.getDirectors()));
-		col2("Writers:", toSimpleCastString(md.getWriters()));
-		if (md.getActors()!=null) {
-			col2("Actors:", "-----------");
-			for (ICastMember cm : md.getActors()) {
-				col2(cm.getName()+":", cm.getPart());
-			}
-		} else {
-			col2("Actors:", "-- NONE --");
-		}
-		
-
-	}
-	
-	private String toSimpleCastString(ICastMember[] cast) {
-		if (cast==null) return "-- NONE --";
-		StringBuffer sb = new StringBuffer();
-		for (ICastMember cm : cast) {
-			sb.append(cm.getName()).append(" / ");
-		}
-		return sb.toString();
-	}
-
-	private String toGenreString(String[] genres) {
-		if (genres==null) return "-- NONE --";
-		StringBuffer sb = new StringBuffer();
-		for (String s : genres) {
-			sb.append(s).append(" / ");
-		}
-		return sb.toString();
-	}
-
-	private void col2(String c1, String c2) {
-		System.out.printf("%25s %s\n", c1, c2);
 	}
 }

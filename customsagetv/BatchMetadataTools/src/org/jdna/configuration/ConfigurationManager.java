@@ -224,4 +224,9 @@ public class ConfigurationManager {
 			}
 		}
 	}
+	
+	public String getConfigFileLocation() {
+		if (configFile==null)  return null;
+		return configFile.getAbsolutePath();
+	}
 }

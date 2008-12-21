@@ -13,26 +13,21 @@ import org.jdna.cmdline.CommandLine;
 import org.jdna.cmdline.CommandLineArg;
 import org.jdna.cmdline.CommandLineProcess;
 import org.jdna.configuration.ConfigurationManager;
-import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
+import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.MediaResourceFactory;
-import org.jdna.media.impl.CDStackingModel;
-import org.jdna.media.impl.DVDMediaItem;
-import org.jdna.media.impl.MediaFile;
-import org.jdna.media.impl.MediaFolder;
-import org.jdna.media.impl.MovieResourceFilter;
-import org.jdna.media.impl.URIAdapter;
-import org.jdna.media.impl.URIAdapterFactory;
-import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
-import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
-import org.jdna.metadataupdater.IMetaDataUpdaterScreen.MovieEntry;
+import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
+import org.jdna.media.util.CollectorResourceVisitor;
+import org.jdna.media.util.CompositeResourceVisitor;
+import org.jdna.media.util.CountResourceVisitor;
+import org.jdna.media.util.MissingMetadataVisitor;
+import org.jdna.media.util.RefreshMetadataVisitor;
 
 import sagex.api.Global;
 
@@ -95,27 +90,18 @@ public class MetadataUpdater {
 
 	private String[] files;
 	private boolean recurse = false;
-	private boolean auto = true;
 	private boolean force = false;
 	private int displaySize = 10;
-	private boolean stack = true;
 	private boolean listMovies = false;
 	private boolean listProvders = false;
-	private boolean update = false;
+	private boolean refresh = false;
 	private boolean aggressive = true;
 	private boolean offline = false;
-	private String provider = IMDBMetaDataProvider.PROVIDER_ID;
-	private boolean showInfo = false;
+	private boolean showMetadata = false;
 	private boolean showProperties = false;
 	private boolean refreshSageTV = false;
-
-	// output device for this process
-	private IMetaDataUpdaterScreen screen = null;
-
-	// stateful variables for this process
-	private boolean abort = false;
-
-	private List<MovieEntry> allMovies = new ArrayList<MovieEntry>();
+	private boolean prompt = true;
+	private String provider = IMDBMetaDataProvider.PROVIDER_ID;
 
 	/**
 	 * This is the entry into the tool. This will process() all files/dirs that
@@ -125,6 +111,7 @@ public class MetadataUpdater {
 	 *             if processing fails for some unknown reason.
 	 */
 	public void process() throws Exception {
+		// dump our properties
 		if (showProperties) {
 			PrintWriter pw = new PrintWriter(System.out);
 			ConfigurationManager.getInstance().dumpProperties(pw);
@@ -134,246 +121,114 @@ public class MetadataUpdater {
 			return;
 		}
 		
-		initScreen();
-
-		log.info("Version: " + Version.VERSION);
-
+		// show the known metadata providers
 		if (listProvders) {
-			screen.renderProviders(MediaMetadataFactory.getInstance().getMetaDataProviders(), provider);
+			renderProviders(MediaMetadataFactory.getInstance().getMetaDataProviders(), provider);
 			return;
-		}
-
-		if (files == null || files.length == 0) {
-			if (refreshSageTV) {
-				try {
-					screen.message("Notifying Sage to Refresh Imported Media");
-					Global.RunLibraryImportScan(false);
-				} catch (Throwable t) {
-					// that didn't work
-				}
-			} else {
-				screen.error("Must Pass at least 1 file or directory!");
-				return;
-			}
-		}
-
-		if (listMovies) {
-			screen.message("Listing Movies... This make take some time depending on the size of your collection.");
-		}
-
-		MediaFolder mf = null;
-
-		for (String f : files) {
-			if (abort)
-				return;
-
-			File file = new File(f);
-			if (!file.exists() && offline == false) {
-				screen.error("File Not Found: " + file.getAbsolutePath() + "\nConsider adding --offline=true if you want to create an offline video.");
-			}
-
-			if (file.isFile() || isOfflineEnabled()) {
-				if (isOfflineEnabled()) {
-					log.debug("Offline Media File Created: " + file.toURI().toString());
-				}
-				IMediaFile mfNew = new MediaFile(file.toURI());
-				mfNew.touch();
-				processMediaFile(mfNew);
-			} else {
-				URIAdapter ua = URIAdapterFactory.getAdapter(file.toURI());
-				if (DVDMediaItem.isDVD(ua)) {
-					IMediaFile dvdFile = (IMediaFile) MediaResourceFactory.getInstance().createResource(ua);
-					processMediaFile(dvdFile);
-				} else {
-					mf = new MediaFolder(ua);
-					processMediaFolder(mf);
-				}
-			}
-		}
-
-		if (listMovies) {
-			screen.renderKnownMovies(allMovies);
-		} else {
-			// render the completion stats
-			screen.renderStats();
 		}
 		
+		// get the parent folder for processing
+		IMediaFolder parentFolder = null;
+		List<IMediaResource> resources = new ArrayList<IMediaResource>();
+		for (String f : files) {
+			File file = new File(f);
+			if (!file.exists() && offline == false) {
+				System.out.println("File Not Found: " + file.getAbsolutePath() + "\nConsider adding --offline=true if you want to create an offline video.");
+			} else {
+				resources.add(MediaResourceFactory.getInstance().createResource(file.toURI()));
+			}
+		}
+		
+		// put all the videos/folders in a virtual top level folder for processing
+		if (resources.size()==1 && resources.get(0).getType()==IMediaFolder.TYPE_FOLDER) {
+			parentFolder = (IMediaFolder) resources.get(0);
+		} else {
+			parentFolder = MediaResourceFactory.getInstance().createVirtualFolder("Videos", resources);
+		}
+		
+		// if there are no parent folders to process, the just do nothing...
+		if (parentFolder.members().size()==0) {
+			System.out.println("No Files to process.");
+		} else {
+			// check if we are just listing movies
+			if (listMovies) {
+				parentFolder.accept(new ListMovieVisitor(false), recurse);
+				return;
+			}
+			
+			// we are showing info for these...
+			if (showMetadata) {
+				parentFolder.accept(new ListMovieVisitor(true), recurse);
+				return;
+			}
+
+			
+			// update/refresh existing metadata
+			boolean overwriteThumbnails = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwriteThumbnails();
+			CollectorResourceVisitor handled = new CollectorResourceVisitor();
+			CollectorResourceVisitor skipped = new CollectorResourceVisitor();
+			if (refresh) {
+				parentFolder.accept(new RefreshMetadataVisitor(overwriteThumbnails, handled, skipped));
+				return;
+			}
+			
+			// update refresh/missing metadate (unless force is used, and if so, then do all)
+			IMediaResourceVisitor updated = new IMediaResourceVisitor() {
+				public void visit(IMediaResource resource) {
+					System.out.printf("Updated: %s; %s\n", resource.getMetadata().getTitle(), resource.getLocationUri() );
+				}
+			};
+			CollectorResourceVisitor notfound = new CollectorResourceVisitor();
+			CountResourceVisitor updatedCount = new CountResourceVisitor();
+			CountResourceVisitor skippedCount = new CountResourceVisitor();
+			AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, aggressive, overwriteThumbnails, new CompositeResourceVisitor(updated, updatedCount), notfound);
+			IMediaResourceVisitor up2dateVisitor = new IMediaResourceVisitor() {
+				public void visit(IMediaResource resource) {
+					System.out.println("Skipping: " + resource.getLocationUri());
+				}
+			};
+			if (force) {
+				// do all videos... no matter what
+				parentFolder.accept(autoUpdater, recurse);
+			} else {
+				// do only vidoes that are missing metadat
+				parentFolder.accept(new MissingMetadataVisitor(autoUpdater, new CompositeResourceVisitor(up2dateVisitor, skippedCount)), recurse);
+			}
+
+			// lastly, if the user wants, let's prompt for any that could not be found.
+			if (prompt && notfound.getCollection().size()>0) {
+				// now process all the files that autoupdater could not process automatically
+				IMediaFolder mf = MediaResourceFactory.getInstance().createVirtualFolder("manualUpdate", notfound.getCollection());
+				mf.accept(new ManualConsoleSearchMetadataVisitor(provider, aggressive, overwriteThumbnails, updated, skipped), false);
+			} else if (notfound.getCollection().size()>0) {
+				// dump out the skipped entries that were not updated
+				System.out.println("\nThe Following Media Entries could not be updated.");
+				for (IMediaResource r : notfound.getCollection()) {
+					System.out.println(r.getLocationUri());
+				}
+			}
+			
+			// Render stats
+			System.out.println("\n\nMetaData Stats...");
+			System.out.printf("Auto Update: %d; Auto Skip: %d; Require Attention:%d; Manual Skipped: %d; \n\n", updatedCount.getCount(), skippedCount.getCount(), notfound.getCollection().size(), skipped.getCollection().size());
+		}
+
+		// check if we need to refresh sage tv
 		if (refreshSageTV) {
 			try {
-				screen.message("Notifying Sage to Refresh Imported Media");
+				System.out.println("Notifying Sage to Refresh Imported Media");
 				Global.RunLibraryImportScan(false);
 			} catch (Throwable t) {
-				// that didn't work
-			}
-		}
-
-		// exit
-		quit();
-	}
-
-	private void processMediaFile(IMediaFile mediaFile) {
-		try {
-			if (abort)
-				return;
-
-			// notify that we are processing a file
-			screen.notifyProcessingFile(mediaFile);
-
-			log.info("Processing Media File: " + mediaFile.getLocationUri());
-
-			// load existing metadata, and check if it needs updating...
-			IMediaMetadata md = mediaFile.getMetadata();
-
-			if (showInfo) {
-				screen.showMetadata(mediaFile, md);
-			}
-
-			if (listMovies) {
-				MovieEntry me = new MovieEntry(mediaFile, md);
-				allMovies.add(me);
-				return;
-			}
-
-			if (force || md == null) {
-				fetchMetaData(mediaFile);
-			} else if (update) {
-				refreshMetaData(mediaFile, md);
-			} else {
-				log.debug("Nothing to do perhaps pass --force or --update for file: " + mediaFile.getLocationUri());
-				screen.nofifySkippedFile(mediaFile);
-			}
-
-		} catch (Exception e) {
-			log.error("Failed to process media file: " + mediaFile.getLocationUri(), e);
-			screen.notifyFailedFile(mediaFile, e);
-		}
-	}
-
-	private void processMediaFolder(IMediaFolder mf) {
-		// apply the stacking model and file to this folder
-		mf.setFilter(MovieResourceFilter.INSTANCE);
-		if (stack) {
-			mf.setStackingModel(CDStackingModel.INSTANCE);
-		}
-
-		List<IMediaResource> l = mf.members();
-
-		for (IMediaResource mr : l) {
-			if (abort)
-				break;
-
-			if (mr.getType() == IMediaFile.TYPE_FILE) {
-				processMediaFile((IMediaFile) mr);
-			} else if (mr.getType() == IMediaFolder.TYPE_FOLDER) {
-				if (recurse) {
-					processMediaFolder((IMediaFolder) mr);
-				} else {
-					log.debug("Skipping Directory (recurse disabled): " + mr.getLocationUri());
-				}
-			} else {
-				log.error("Unknown Media Resourse for: " + mr.getLocationUri() + "; " + mr.getClass().getName());
 			}
 		}
 	}
 
-	private void refreshMetaData(IMediaFile file, IMediaMetadata md) throws Exception {
-		log.debug("Refreshing MetaData for: " + file.getLocationUri());
-		// if we have a dataProviderUrl and id, then refresh the metadata, or
-		// if we only have title, then call the searchMetaData() using the title
-		// from the existing metadata
-		if (md.getProviderDataUrl() != null && md.getProviderId() != null) {
-			IMediaMetadataProvider provider = MediaMetadataFactory.getInstance().getProvider(md.getProviderId());
-			if (provider == null) {
-				throw new Exception("Provider Not Registered: " + md.getProviderId());
-			}
-
-			IMediaMetadata updated = provider.getMetaData(md.getProviderDataUrl());
-			exportMetaData(updated, file);
-		} else {
-			log.debug("Skipping: " + file.getLocationUri() + "; MetaData does not contain providerId or providerDataUrl");
-			// TODO: refresh based on metadata title
-			screen.nofifySkippedFile(file);
+	
+	public void renderProviders(List<IMediaMetadataProvider> providers, String defaultProvider) {
+		System.out.println("\n\nInstalled Metadata Providers (*=default");
+		for (IMediaMetadataProvider p : providers) {
+			System.out.printf("%1s %-20s %s\n", (p.getInfo().getId().equals(defaultProvider)?"*":""), p.getInfo().getId(), p.getInfo().getName());
 		}
-	}
-
-	private void fetchMetaData(IMediaFile file) throws Exception {
-		String name = MediaMetadataUtils.cleanSearchCriteria(file.getTitle(), false);
-		fetchMetaData(file, name);
-	}
-
-	private List<IMediaSearchResult> getSearchResultsForTitle(String name) throws Exception {
-		List<IMediaSearchResult> results = MediaMetadataFactory.getInstance().search(provider, IMediaMetadataProvider.SEARCH_TITLE, name);
-		log.debug(String.format("Searched for: %s; Good: %s", name, isGoodSearch(results)));
-		return results;
-	}
-
-	public static boolean isGoodSearch(List<IMediaSearchResult> results) {
-		return (results.size() > 0 && (results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH || results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_EXACT_MATCH));
-	}
-
-	private void fetchMetaData(IMediaFile file, String name) throws Exception {
-
-		List<IMediaSearchResult> results = getSearchResultsForTitle(name);
-		if (!isGoodSearch(results)) {
-			log.debug("Not very sucessful with the search for: " + name);
-			if (aggressive) {
-				String oldName = name;
-				String newName = MediaMetadataUtils.cleanSearchCriteria(name, true);
-				if (!oldName.equals(newName)) {
-					log.debug("We'll try again using: " + newName);
-
-				}
-				List<IMediaSearchResult> newResults = getSearchResultsForTitle(newName);
-				if (isGoodSearch(newResults)) {
-					log.debug("Our other search returned better results.. We'll use these.");
-					results = newResults;
-				}
-			}
-		}
-
-		if (auto && isGoodSearch(results)) {
-			exportMetaData(MediaMetadataFactory.getInstance().getProvider(provider).getMetaData(results.get(0)), file);
-			return;
-		}
-
-		// Let's prompt for results
-		// draw the screen, and let the input handler decide what to do next
-		screen.renderResults("Search Results: " + name, results, displaySize);
-
-		String data = screen.prompt("[q=quit, n=next (default), ##=use result ##, TITLE=Search TITLE]", "n", "search_results");
-
-		if ("q".equalsIgnoreCase(data)) {
-			screen.nofifySkippedFile(file);
-			quit();
-		} else if ("n".equalsIgnoreCase(data)) {
-			screen.nofifySkippedFile(file);
-		} else if (data.startsWith("s:")) {
-			String buf = data.replaceFirst("s:", "");
-			fetchMetaData(file, buf);
-		} else {
-			int n = 0;
-			try {
-				try {
-					n = Integer.parseInt(data);
-				} catch (Exception e) {
-					log.warn("Debug: Failed to parse: " + data + " as a number, using it again as a search.");
-					fetchMetaData(file, data);
-					return;
-				}
-				IMediaSearchResult sr = results.get(n);
-				IMediaMetadata md = MediaMetadataFactory.getInstance().getProvider(provider).getMetaData(sr);
-				exportMetaData(md, file);
-				screen.notifyManualUpdate(file, md);
-			} catch (RuntimeException e) {
-				log.error("Failed while fetching metadata for movie: " + name, e);
-				screen.error("Failed to get/export Metadata for movie: " + name);
-			}
-		}
-	}
-
-	private void exportMetaData(IMediaMetadata md, IMediaFile mediaFile) throws Exception {
-		mediaFile.updateMetadata(md, ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwriteThumbnails());
-		screen.notifyUpdatedFile(mediaFile, md);
 	}
 
 	/**
@@ -394,12 +249,6 @@ public class MetadataUpdater {
 		}
 	}
 
-	private void initScreen() throws Exception {
-		String scr = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getScreenClass();
-		screen = (IMetaDataUpdaterScreen) Class.forName(scr).newInstance();
-		log.info("Using Screen Engine: " + scr);
-	}
-
 	/**
 	 * set the files/dirs to process.
 	 * 
@@ -418,17 +267,6 @@ public class MetadataUpdater {
 	@CommandLineArg(name = "recurse", description = "Recursively process sub directories. (default false)")
 	public void setRecurse(boolean b) {
 		this.recurse = b;
-	}
-
-	/**
-	 * enable/disable automatic updating. if set to false, then it prompt() for
-	 * each movie entry.
-	 * 
-	 * @param b
-	 */
-	@CommandLineArg(name = "auto", description = "Automatically update meta data if there are exact matches, 1 match, or popular matches.  Otherwise will skip/prompt. (default true)")
-	public void setAutomaticUpdate(boolean b) {
-		this.auto = b;
 	}
 
 	/**
@@ -465,21 +303,6 @@ public class MetadataUpdater {
 	}
 
 	/**
-	 * if true, then a movie entry can consist of multiple parts. Useful where
-	 * you have movies split across multiple cd images. if movies are stacked,
-	 * then metadata is fetched once, which leads to better efficency.
-	 * Persistence engines should account for stacked media and write the
-	 * metadata for each part of the stacked entry, as the Sage Persistence
-	 * engine does.
-	 * 
-	 * @param b
-	 */
-	@CommandLineArg(name = "stack", description = "Stack/Group multi cd movies. (default true)")
-	public void setStack(boolean b) {
-		this.stack = b;
-	}
-
-	/**
 	 * Just list the movies that it would find given the setFiles(...)
 	 * 
 	 * @param b
@@ -500,14 +323,13 @@ public class MetadataUpdater {
 	}
 
 	/**
-	 * if true, then it will attempt to refresh metadata for any entries where
-	 * the metadata is newer than the file.
+	 * if true, then it will attempt to refresh metadata for entries that already have metadata by using the providerDataUrl for the media file.
 	 * 
 	 * @param b
 	 */
 	@CommandLineArg(name = "update", description = "Update Missing AND Updated Metadata. (default false)")
 	public void setUpdate(boolean b) {
-		this.update = b;
+		this.refresh = b;
 	}
 
 	/**
@@ -551,7 +373,7 @@ public class MetadataUpdater {
 	 */
 	@CommandLineArg(name = "metadata", description = "Show metadata for movie. (default false)")
 	public void setShowMetadata(boolean b) {
-		this.showInfo = b;
+		this.showMetadata = b;
 	}
 
 	/**
@@ -562,6 +384,16 @@ public class MetadataUpdater {
 	@CommandLineArg(name = "showProperties", description = "Show the current configuration. (default false)")
 	public void setShowProperties(boolean b) {
 		this.showProperties = b;
+	}
+
+	/**
+	 * Dump Current Configuration Properties
+	 * 
+	 * @param s
+	 */
+	@CommandLineArg(name = "prompt", description = "When a media file cannot be updated, then prompt to enter a title to search on. (default true)")
+	public void setPrompt(boolean b) {
+		this.prompt = b;
 	}
 
 	/**
@@ -595,47 +427,7 @@ public class MetadataUpdater {
 		this.refreshSageTV = b;
 	}
 
-	/**
-	 * TODO: Handle quit in a better way.
-	 */
-	private void quit() {
-		abort = true;
-	}
-
 	public String[] getFiles() {
 		return files;
 	}
-
-	public boolean isRecurseEnabled() {
-		return recurse;
-	}
-
-	public boolean isAutoEnabled() {
-		return auto;
-	}
-
-	public boolean isForceEnabled() {
-		return force;
-	}
-
-	public int getDisplaySize() {
-		return displaySize;
-	}
-
-	public boolean isStackEnabled() {
-		return stack;
-	}
-
-	public boolean isUpdateEnabled() {
-		return update;
-	}
-
-	public boolean isAggressiveEnabled() {
-		return aggressive;
-	}
-
-	public boolean isOfflineEnabled() {
-		return offline;
-	}
-
 }
