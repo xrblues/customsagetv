@@ -3,7 +3,7 @@
 
 = Introduction =
 
-This is a command line tool to create SageTV metadata properties from external providers.
+This is a command line tool to create SageTV metadata properties from external providers.  There is also a [http://code.google.com/p/customsagetv/wiki/SageTVMetadataPlugin SageTV MediaFileMetadata Plugin] based on this project.
 
 This tool will scan a given file/directory and create/update the required SageTV properties/jpg files so that SageTV can refresh its metadata with what is in the updated properties.
 
