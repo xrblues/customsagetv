@@ -3,9 +3,9 @@
 
 = Introduction =
 
-This is a commandline tool to create SageTV metadata properties from external providers.
+This is a command line tool to create SageTV metadata properties from external providers.
 
-This tool will scan a given file/directory and create/update the required SageTV properties/jpg so that SageTV can refresh its metadata with what is in the updated properties.
+This tool will scan a given file/directory and create/update the required SageTV properties/jpg files so that SageTV can refresh its metadata with what is in the updated properties.
 
 For details about each provider, check out the links below
  * [IMDBProvider IMDB Provider]
@@ -13,12 +13,12 @@ For details about each provider, check out the links below
  * [TheMovieDBProvider themoviedb.com Provider]
  * [CompositeProvider] Composite (build your own) Provider]
 
- NOTE: This tool by default will scan and process multi cd movies, and it will only fetch the metadata once, but it will write it out for each cd, since that is how SageTV requires it. This is also known as cd stacking or grouping.
+ NOTE: This tool by will scan and process multi cd movies, and it will only fetch the metadata once, but it will write it out for each cd, since that is how SageTV requires it. This is also known as cd stacking or grouping.
 
- NOTE: Once you run the tool on your movies, you'll need to tell SageTV to refresh it's metadata by going into the Options menu, in the Videos View, and tell Sage to refresh/rescan media.
+ NOTE: Once you run the tool on your movies, you'll need to tell SageTV to refresh it's metadata by going into the Options menu, in the Videos View, and tell Sage to refresh/rescan media.  Or, if you have the SageTV Remote APIs installed, you can pass the --refreshSage command option and it will tell sage to refresh.
 
 = Installation =
-Download the zip and extract into a new directory.
+Download the zip and extract into a new directory.  If you extract into an existing directory, then make sure you clean the libs directories and ensure that there are no duplicate jars with different versions.  The cleanest way to upgrade is always to extract to a new directory, and then migrate your properties from your previous install into the new directory.
 
 == Requirements == 
 Java 5 or later
@@ -26,19 +26,17 @@ Java 5 or later
 == Usage ==
 {{{
  # java -jar MetadataTool.jar
-Batch MetaData Tools (1.8)
+Batch MetaData Tools (1.13)
 Import/Update Movie MetaData from a MetaData Provider.
 
 Usage:java MetadataTool OPTIONS ...
 
 OPTIONS: (* are required)
   --recurse              Recursively process sub directories. (default false)
-  --auto                 Automatically update meta data if there are exact matches, 1 match, or popular matches.  Otherwise will skip/prompt. (default true)
   --force                Force download of metadata, even if metadata exists and has not been updated. Does not overwrite thumbnails. (default false)
   --forceThumbnail       Force download/overwrite of thumbnails. (default false)
   --reindex              Tells Metadata providers that require indexing (ie, DVD Profiler) to rebuild it's index. (default false)
   --displaySize          # of search results to display on the screen. (default 10)
-  --stack                Stack/Group multi cd movies. (default true)
   --listMovies           Just list the movies it would find. (default false)
   --listProviders        Just list the installed metadata providers. (default false)
   --update               Update Missing AND Updated Metadata. (default false)
@@ -47,6 +45,7 @@ OPTIONS: (* are required)
   --provider             Set the metadata provider. (default imdb)
   --metadata             Show metadata for movie. (default false)
   --showProperties       Show the current configuration. (default false)
+  --prompt               When a media file cannot be updated, then prompt to enter a title to search on. (default true)
   --setProperty          Sets a Property (--setProperty=name:value) (use --showProperties to get property list)
   --refreshSageTV        Notify SageTV to refresh it's Media Library. (default false)
 }}}
@@ -66,16 +65,10 @@ Next, try to scan your Movie directory without changing anything....
 # java -jar MetadataTool.jar --listMovies YOUR_MOVIE_DIR
 }}}
 
-This should provide you with a list of Movies that it found. If you are expecting to see multiple entries for each movie because you have multi cd movies, then you may be surprised to see (hopefully) that you only see one movie entry per multi cd movie. You can change this by using the *--stack* option.
+This should provide you with a list of Movies that it found. If you are expecting to see multiple entries for each movie because you have multi cd movies, then you may be surprised to see (hopefully) that you only see one movie entry per multi cd movie.
 
-{{{
-# java -jar MetadataTool.jar --stack=false --listMovies YOUR_MOVIE_DIR
-}}}
-
-This will show the same list as before, but it will not attempt to stack/group multi cd movies.
-
-Now you are ready to do some real work. For testing, perhaps copy a handfull of movies to working directory and start there, until you feel comfortable with the tool.
-To create the Sage Metadata and Thumbnails using the default options...
+Now you are ready to do some real work. For testing, perhaps copy a handful of movies to working directory and start there, until you feel comfortable with the tool.
+To create the Sage metadata and thumbnails using the default options...
 {{{
 # java -jar MetadataTool.jar YOUR_MOVIE_DIR
 }}}
@@ -89,12 +82,6 @@ The default options will automatically select what it feels is the best choice a
 Once all movies are scanned, it will display a summary at the end.
 
 If you need/want to process subdirectories, then pass the *--recurse* switch so that the processor will follow subdirectories.
-
-If you find that the tool made an incorrect selection, you can either call the tool on the file directory, passing the *--auto=false* flag with the *--force* flag and it will re do the search only for that file. Keep in mind that if you pass a single file, stacking does not work.
-
-{{{
-# java -jar MetadataTool.jar --auto=false --force YOUR_MOVIE_FILE
-}}}
 
 Another way to update a video metadata is to edit the .property or create a new one, and set the *_providerId=imdb* and the *_providerDataUrl=IMDB_URL*, and then run the command using *--update*
 eg, (edit properties)
@@ -119,12 +106,9 @@ The basic architecture is that the inputs and outputs are all pluggable. In othe
 
 The same is true for metadata persistence. The default and only one provided is for Sage metadata properties. But you can write your own if you implement the IVideoMetaDataPersistence interface.
 
-The other note about plugability is the fact that even the "Screen" is pluggable. I implemented a ConsoleScreen, so that that the tool could be interfaced to the command line, but somone could create a Sage UI Screen implementation that enabled the engine to work directly from within Sage (hint hint). The same is true if someone wanted to write a Web Screen so that it could be web enabled. To create a new Screeen, implement the IMetaDataUpdaterScreen interface.
-
 See [FrameworkOverview Framework Overview] for more information on the Metadata Tools framework.
 
 == Properties ==
-
 NOTE: As of 1.8 the properties format and keys have changed.  You will need to verify your properties before you rerun the tool.
 
 As of 1.8, the properties filename changed from metadataupdater.properties to just metadata.properties.  This was done, to force users that had customized the metadata tool, to update to the new format.
