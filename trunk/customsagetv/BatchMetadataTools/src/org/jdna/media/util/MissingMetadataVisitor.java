@@ -1,8 +1,5 @@
 package org.jdna.media.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
@@ -16,34 +13,38 @@ import org.jdna.util.Strings;
  *
  */
 public class MissingMetadataVisitor implements IMediaResourceVisitor {
-	private IMediaResourceVisitor visitor;
-	private List<IMediaResource> missing;
+	private IMediaResourceVisitor missingVisitor;
+	private IMediaResourceVisitor skippedVisitor;
+	
+	public MissingMetadataVisitor(IMediaResourceVisitor missingVisitor) {
+		this(missingVisitor,null);
+	}
 	
 	/**
 	 * 
 	 * @param persistence Where to load the metadata (required)
-	 * @param visitor visitor to receive the missing metadata resources (optional)
+	 * @param missingVisitor visitor to receive the missing metadata resources (optional)
+	 * @param skippedVisitor visitor to receive the skipped metadata resources (optional)
 	 */
-	public MissingMetadataVisitor(IMediaResourceVisitor visitor) {
-		this.visitor = visitor;
-		missing = new ArrayList<IMediaResource>();
+	public MissingMetadataVisitor(IMediaResourceVisitor missingVisitor, IMediaResourceVisitor skippedVisitor) {
+		this.missingVisitor = missingVisitor;
+		this.skippedVisitor = skippedVisitor;
 	}
 
 	public MissingMetadataVisitor() {
-		this(null);
+		this(null,null);
 	}
 	
 	public void visit(IMediaResource resource) {
-		if (isMissingMetadata(resource)) {
-			missing.add(resource);
-			if (visitor!=null) visitor.visit(resource);
+		if (resource.getType()==IMediaFile.TYPE_FILE) {
+			if (isMissingMetadata(resource)) {
+				if (missingVisitor!=null) missingVisitor.visit(resource);
+			} else {
+				if (skippedVisitor!=null) skippedVisitor.visit(resource);
+			}
 		}
 	}
 	
-	public List<IMediaResource> getMissingMetadata() {
-		return missing;
-	}
-
 	public static boolean isMissingMetadata(IMediaResource resource) {
 		if (resource.getType() == IMediaFile.TYPE_FILE) {
 			IMediaMetadata md = resource.getMetadata();
@@ -53,5 +54,12 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
 		} // else skip
 		return false;
 	}
-	
+
+	protected IMediaResourceVisitor getMissingVisitor() {
+		return missingVisitor;
+	}
+
+	protected IMediaResourceVisitor getSkippedVisitor() {
+		return skippedVisitor;
+	}
 }

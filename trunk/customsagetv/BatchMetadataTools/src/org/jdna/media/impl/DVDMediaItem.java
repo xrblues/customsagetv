@@ -1,5 +1,6 @@
 package org.jdna.media.impl;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -116,6 +117,9 @@ public class DVDMediaItem extends AbstractMediaResource implements IMediaFile {
 		}
 	}
 
+	/**
+	 * No way to tell if a dvd is watched
+	 */
 	public boolean isWatched() {
 		if (!isStacked()) {
 			return AiringAPI.IsWatched(getSageAiring());
@@ -130,8 +134,12 @@ public class DVDMediaItem extends AbstractMediaResource implements IMediaFile {
 		}
 	}
 	
+	/**
+	 * SetWatched not supported on DVD (sage doesn't track this)
+	 */
 	public void setWatched(boolean watched) {
 		if (!isStacked()) {
+			System.out.println("Setting Watched for non stacked item: " + getLocationUri() + ";  " + watched);
 			if (watched) {
 				AiringAPI.SetWatched(getSageAiring());
 			} else {
@@ -151,12 +159,32 @@ public class DVDMediaItem extends AbstractMediaResource implements IMediaFile {
 	}
 	
 	protected Object getSageMediaFile() {
-		if (sageMediaFile==null) sageMediaFile=MediaFileAPI.GetMediaFileForFilePath(getResourceAsFile());
+		if (sageMediaFile==null) {
+			File f = getResourceAsFile();
+			File tsFile = new File(f, "VIDEO_TS");
+			if (tsFile.exists() && tsFile.isDirectory()) {
+				f = tsFile;
+			}
+			sageMediaFile=MediaFileAPI.GetMediaFileForFilePath(f);
+			if (sageMediaFile==null) {
+				System.out.println("Unabled to get Sage MediaFile for paths; " + getLocationUri() + "; " + f.getAbsolutePath());
+			} else {
+				System.out.println("Is MediaFile: " + MediaFileAPI.IsLibraryFile(sageMediaFile) + "; for " + f.getAbsolutePath());
+			}
+		}
 		return sageMediaFile;
 	}
 	
 	protected Object getSageAiring() {
-		if (sageAiring==null) sageAiring = MediaFileAPI.GetMediaFileAiring(getSageMediaFile());
+		if (sageAiring==null) {
+			sageAiring = MediaFileAPI.GetMediaFileAiring(getSageMediaFile());
+			if (sageAiring==null) {
+				System.out.println("Unable to find a Sage Airing for: " + getLocationUri());
+			} else {
+				System.out.println("Found Sage Airing for: " + getLocationUri());
+			}
+		}
+		
 		return sageAiring;
 	}
 	
