@@ -26,6 +26,7 @@ import sagex.remote.rmi.SageRemoteCommandServer;
 import sagex.remote.server.DatagramListener;
 import sagex.remote.server.DatagramServer;
 import sagex.remote.xmlrpc.XMLRPCHandler;
+import sagex.remote.xmlxbmc.XMLXBMCHandler;
 
 public class SagexServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -107,6 +108,7 @@ public class SagexServlet extends HttpServlet {
 		sageHandlers.put(JavaRPCHandler.SAGE_RPC_PATH, new JavaRPCHandler());
 		sageHandlers.put(JsonRPCHandler.SAGE_RPC_PATH, new JsonRPCHandler());
 		sageHandlers.put(MediaHandler.SERVLET_PATH, new MediaHandler());
+		sageHandlers.put(XMLXBMCHandler.SAGE_RPC_PATH, new XMLXBMCHandler());
 
 		System.out.println("Registered Handlers.");
 
