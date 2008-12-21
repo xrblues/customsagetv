@@ -1,4 +1,4 @@
-package sagex.remote.xmlrpc;
+package sagex.remote.xmlxbmc;
 
 import sagex.remote.RemoteObjectRef;
 import sagex.remote.RemoteRequest;

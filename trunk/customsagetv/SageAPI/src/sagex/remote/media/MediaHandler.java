@@ -107,7 +107,6 @@ public class MediaHandler implements SageHandler {
 		}
 	}
 	
-	// This one writes an image, but the colorspace is off... not sure why...
 	private void writeImage(String mediaFileId, HttpServletResponse resp) throws Exception {
 		try {
 			// get the media file that we are going to be using
@@ -123,6 +122,9 @@ public class MediaHandler implements SageHandler {
 					}
 					if (!thFile.exists()) {
 						thFile = new File(file, "VIDEO_TS/folder.jpg");
+					}
+					if (!thFile.exists()) {
+						thFile = new File(file, "folder.jpg");
 					}
 				} else {
 					String name = file.getName();
@@ -149,12 +151,26 @@ public class MediaHandler implements SageHandler {
 			copyStream(new FileInputStream(thFile), os);
 			os.flush();
 		} catch (Exception e) {
+			e.printStackTrace();
 			resp.sendError(404, "Image Not Found: " + mediaFileId);
 		}
 	}
 
 	private void writeImageForFile(String fileUri, HttpServletResponse resp) throws Exception {
-	   Object sageMediaFile = MediaFileAPI.GetMediaFileForFilePath(new File(new URI(fileUri)));
+	   // check for dvd folders
+	   File f = new File(new URI(fileUri));
+	   if (f.isDirectory()) {
+		   File ts = new File(f, "VIDEO_TS");
+		   if (ts.exists() && ts.isDirectory()) {
+			   f = ts;
+		   }
+	   }
+	   
+	   Object sageMediaFile = MediaFileAPI.GetMediaFileForFilePath(f);
+	   if (sageMediaFile==null) {
+		   throw new Exception("No Sage MediaFile for uri: " + fileUri + "; Unable to get thumbnail.");
+	   }
+	   
 	   writeImage(String.valueOf(MediaFileAPI.GetMediaFileID(sageMediaFile)), resp);
 	}
 
@@ -177,9 +193,9 @@ public class MediaHandler implements SageHandler {
 		}
 	}
 	
-	// this one return negative image, which is wrong, and I don't know why??
 	private void writeSageImage(String mediaFileId, HttpServletResponse resp) throws Exception {
 		// get the media file that we are going to be using
+		// TODO: Maybe cache this for performance reasons
 		Object sagefile = MediaFileAPI.GetMediaFileForID(Integer.parseInt(mediaFileId));
 		Object sageImage = MediaFileAPI.GetThumbnail(sagefile);
 		BufferedImage img =Utility.GetImageAsBufferedImage(sageImage);
