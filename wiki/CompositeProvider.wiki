@@ -71,18 +71,40 @@ If a fieldsFromSearchProvider configuration is configured, then details for a gi
 When specifying fields, do not use quotes, and no not use spaces before or after a semi-colon.
 
 == Supported Field Names for fieldsFromSearchProvider ==
-The following fields Names are supported.
+The following fields Names are supported.  For complete list pass --showSupportedMetadata to the command.
 
 {{{
-	public static final String WRITER = "Writer";
-	public static final String DIRECTOR = "Director";
-	public static final String ACTOR = "Actor";
-	public static final String DESCRIPTION = "Description";
-	public static final String RUNNING_TIME = "RunningTime";
-	public static final String TITLE = "Title";
-	public static final String YEAR = "Year";
-	public static final String GENRE = "Genre";
-	public static final String RATED = "Rated";
+# java -jar MetadataTools --showSupportedMetadata
+Batch MetaData Tools (1.15)
+Supported Metadata Fields
+               Album : 
+         AlbumArtist : 
+              Artist : 
+         AspectRatio : 
+       BackgroundArt : 
+      CastMemberList : 
+             Comment : 
+             Company : 
+            Composer : 
+         Description : 
+            Duration : 
+             Episode : 
+           GenreList : 
+            Language : 
+          MPAARating : 
+MPAARatingDescription : 
+        MediaArtList : 
+           PosterArt : 
+     ProviderDataUrl : 
+          ProviderId : 
+         ReleaseDate : 
+         RunningTime : 
+              Season : 
+               Title : 
+         TotalTracks : 
+               Track : 
+          UserRating : 
+                Year : 
 }}}
 
 
