@@ -16,201 +16,198 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.util.IOUtils;
 
 public class CachedUrl extends Url implements IUrl {
-	
-	private static final Logger log = Logger.getLogger(CachedUrl.class);
 
-	private File propFile = null;
-	private Properties props = null;
-	public File urlCacheDir = null; 
-	private boolean followRedirects = false;
+    private static final Logger log             = Logger.getLogger(CachedUrl.class);
 
-	public CachedUrl(String url) throws IOException {
-		super(url);
-		
-		String cachedFileName = getCachedFileName(url);
-		propFile = new File(getCacheDir(), cachedFileName + ".properties");
-		props = new Properties();
-		if (propFile.exists()) {
-			log.debug("Reloading existing cached url: " + propFile.getAbsolutePath());
-			props.load(new FileInputStream(propFile));
-			File f = getCachedFile(); 
-			if (f.exists() && isExpired(f)) {
-				log.debug("Expiring Cached Url File: " + f.getAbsolutePath());
-				f.delete();
-			}
-		} else {
-			File f = propFile.getParentFile();
-			f.mkdirs();
-			log.debug("Creating a new cached url for: " + url);
-			props.setProperty("url", url);
-			props.setProperty("file", createCachedFile());
-		}
-		
-		// sanity check
-		if (!url.equals(props.getProperty("url"))) {
-			throw new IOException("Caching is messed up.  The Cached url does not match the one passed! " + props.getProperty("url") + " != " + url);
-		}
-	}
+    private File                propFile        = null;
+    private Properties          props           = null;
+    public File                 urlCacheDir     = null;
+    private boolean             followRedirects = false;
 
-	private String getCachedFileName(String url) {
-		try {
-			URL u = new URL(url);
-			String path = u.getPath();
-			String q = u.getQuery();
-			if (q==null) {
-				return path;
-			} else {
-				String name = q.replaceAll("[^a-zA-Z0-9]+", "_");
-				return path + "_" + name;
-			}
-		} catch (MalformedURLException e) {
-			log.error("Failed to create cached filename for url: " + url, e);
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private boolean isExpired(File cachedFile) {
-		long secs = ConfigurationManager.getInstance().getUrlConfiguration().getCacheExpiryInSeconds();
-		long diff = (System.currentTimeMillis()/1000) - cachedFile.lastModified();
-		if (diff>secs) {
-			return true;
-		}
-		return false;
-	}
+    public CachedUrl(String url) throws IOException {
+        super(url);
 
-	private File getCacheDir() {
-		if (urlCacheDir==null) {
-			urlCacheDir = new File(ConfigurationManager.getInstance().getUrlConfiguration().getCacheDir());
-			if (!urlCacheDir.exists()) urlCacheDir.mkdirs();
-		}
-		return urlCacheDir;
-	}
+        String cachedFileName = getCachedFileName(url);
+        propFile = new File(getCacheDir(), cachedFileName + ".properties");
+        props = new Properties();
+        if (propFile.exists()) {
+            log.debug("Reloading existing cached url: " + propFile.getAbsolutePath());
+            props.load(new FileInputStream(propFile));
+            File f = getCachedFile();
+            if (f.exists() && isExpired(f)) {
+                log.debug("Expiring Cached Url File: " + f.getAbsolutePath());
+                f.delete();
+            }
+        } else {
+            File f = propFile.getParentFile();
+            f.mkdirs();
+            log.debug("Creating a new cached url for: " + url);
+            props.setProperty("url", url);
+            props.setProperty("file", createCachedFile());
+        }
 
-	private String createCachedFile() throws IOException {
-		File f = File.createTempFile(propFile.getName(), ".cache", propFile
-				.getParentFile());
-		
-		// we just want the name
-		f.delete();
-		
-		return f.getCanonicalPath();
-	}
+        // sanity check
+        if (!url.equals(props.getProperty("url"))) {
+            throw new IOException("Caching is messed up.  The Cached url does not match the one passed! " + props.getProperty("url") + " != " + url);
+        }
+    }
 
-	public URL getOriginalUrl() throws IOException {
-		return new URL(props.getProperty("url"));
-	}
+    private String getCachedFileName(String url) {
+        try {
+            URL u = new URL(url);
+            String path = u.getPath();
+            String q = u.getQuery();
+            if (q == null) {
+                return path;
+            } else {
+                String name = q.replaceAll("[^a-zA-Z0-9]+", "_");
+                return path + "_" + name;
+            }
+        } catch (MalformedURLException e) {
+            log.error("Failed to create cached filename for url: " + url, e);
+            throw new RuntimeException(e);
+        }
+    }
 
-	public File getPropertyFile() {
-		return propFile;
-	}
+    private boolean isExpired(File cachedFile) {
+        long secs = ConfigurationManager.getInstance().getUrlConfiguration().getCacheExpiryInSeconds();
+        long diff = (System.currentTimeMillis() / 1000) - cachedFile.lastModified();
+        if (diff > secs) {
+            return true;
+        }
+        return false;
+    }
 
-	public File getCachedFile() {
-		return new File(props.getProperty("file"));
-	}
+    private File getCacheDir() {
+        if (urlCacheDir == null) {
+            urlCacheDir = new File(ConfigurationManager.getInstance().getUrlConfiguration().getCacheDir());
+            if (!urlCacheDir.exists()) urlCacheDir.mkdirs();
+        }
+        return urlCacheDir;
+    }
 
-	public boolean hasMoved() {
-		return Boolean.parseBoolean(props.getProperty("moved", "false"));
-	}
+    private String createCachedFile() throws IOException {
+        File f = File.createTempFile(propFile.getName(), ".cache", propFile.getParentFile());
 
-	public URL getMovedUrl() throws IOException {
-		return new URL(props.getProperty("movedUrl"));
-	}
+        // we just want the name
+        f.delete();
 
-	public URL getUrl() throws IOException {
-		return getUrl(null);
-	}
-	
-	public URL getUrl(ICookieHandler handler) throws IOException {
-		File f = getCachedFile();
-		if (!f.exists()) {
-			cache(handler);
-		} else {
-			log.debug("Cached File exists: " + f.getAbsolutePath() + " so we'll just use it.");
-		}
-		return f.toURI().toURL();
-	}
+        return f.getCanonicalPath();
+    }
 
-	public void cache(ICookieHandler handler) throws IOException {
-		log.debug("Caching Url: " + getOriginalUrl().toExternalForm());
-		URL u = getOriginalUrl();
-		URLConnection c = u.openConnection();
-		sendCookies(u, c, handler);
-		if (c instanceof HttpURLConnection) {
-			HttpURLConnection conn = (HttpURLConnection) c;
-			conn.setInstanceFollowRedirects(followRedirects);
-			log.debug("User Agent: " + System.getProperty("http.agent"));
-			conn.setRequestProperty("User-Agent", ConfigurationManager.getInstance().getUrlConfiguration().getHttpUserAgent());
-			InputStream is = conn.getInputStream();
-			int rc = conn.getResponseCode();
-			if (rc == HttpURLConnection.HTTP_MOVED_PERM
-					|| rc == HttpURLConnection.HTTP_MOVED_TEMP) {
-				props.setProperty("moved", "true");
-				String redirectUrl = conn.getHeaderField("Location");
-				if (redirectUrl != null) {
-					int p = redirectUrl.indexOf('?');
-					if (p != -1) {
-						redirectUrl = redirectUrl.substring(0, p);
-					}
-					props.setProperty("movedUrl", redirectUrl);
-				}
-				File f = getCachedFile();
-				IOUtils.copyStream(is, new FileOutputStream(f));
-				log.debug("Url " + u.toExternalForm() +" Cached To: " + f.getAbsolutePath());
-				log.debug(String.format("Url: %s moved to %s", u.toExternalForm(), redirectUrl));
-			} else if (rc == HttpURLConnection.HTTP_OK) {
-				handleCookies(u, c, handler);
-				File f = getCachedFile();
-				IOUtils.copyStream(is, new FileOutputStream(f));
-				log.debug("Url " + u.toExternalForm() +" Cached To: " + f.getAbsolutePath());
-			} else {
-				throw new IOException("Http Response Code: " + rc
-						+ "; Message: " + conn.getResponseMessage());
-			}
-		} else {
-			// do nothing... we can't cache local urls
-			log.warn("Cannot Cache Url Connection Type; "
-					+ c.getClass().getName() );
-			
-			
-		}
-		props.store(new FileOutputStream(getPropertyFile()), "Cached Url Properties");
-		log.debug("Properties for cached url are now stored: " + getPropertyFile().getAbsolutePath());
-	}
+    public URL getOriginalUrl() throws IOException {
+        return new URL(props.getProperty("url"));
+    }
 
-	@Override
-	public InputStream getInputStream(ICookieHandler handler, boolean followRedirects) throws IOException {
-		this.followRedirects=followRedirects;
-		
-		URL u = getUrl(handler);
-		
-		return u.openStream();
-	}
+    public File getPropertyFile() {
+        return propFile;
+    }
 
-	/**
-	 * Will remove a url from the cache, in the event that url caching is enabled.
-	 * @param dataUrl
-	 */
-	public static void remove(String dataUrl) {
-		try {
-			CachedUrl cu = new CachedUrl(dataUrl);
-			cu.remove();
-		} catch (IOException e) {
-			log.error("Unabled to remove cached data url: " + dataUrl);
-		}
-		
-	}
+    public File getCachedFile() {
+        return new File(props.getProperty("file"));
+    }
 
-	private void remove() {
-		try {
-			log.debug("Removing Cached Url: " + this.getOriginalUrl().toExternalForm());
-			if (props!=null) {
-				File f =getCachedFile();
-				if (f.exists()) {
-					log.debug("Removing Cached File: " + f.getAbsolutePath());
-					f.delete();
-				}
-			}
-		} catch (IOException e) {
-		}
-	}
+    public boolean hasMoved() {
+        return Boolean.parseBoolean(props.getProperty("moved", "false"));
+    }
+
+    public URL getMovedUrl() throws IOException {
+        return new URL(props.getProperty("movedUrl"));
+    }
+
+    public URL getUrl() throws IOException {
+        return getUrl(null);
+    }
+
+    public URL getUrl(ICookieHandler handler) throws IOException {
+        File f = getCachedFile();
+        if (!f.exists()) {
+            cache(handler);
+        } else {
+            log.debug("Cached File exists: " + f.getAbsolutePath() + " so we'll just use it.");
+        }
+        return f.toURI().toURL();
+    }
+
+    public void cache(ICookieHandler handler) throws IOException {
+        log.debug("Caching Url: " + getOriginalUrl().toExternalForm());
+        URL u = getOriginalUrl();
+        URLConnection c = u.openConnection();
+        sendCookies(u, c, handler);
+        if (c instanceof HttpURLConnection) {
+            HttpURLConnection conn = (HttpURLConnection) c;
+            conn.setInstanceFollowRedirects(followRedirects);
+            log.debug("User Agent: " + System.getProperty("http.agent"));
+            conn.setRequestProperty("User-Agent", ConfigurationManager.getInstance().getUrlConfiguration().getHttpUserAgent());
+            InputStream is = conn.getInputStream();
+            int rc = conn.getResponseCode();
+            if (rc == HttpURLConnection.HTTP_MOVED_PERM || rc == HttpURLConnection.HTTP_MOVED_TEMP) {
+                props.setProperty("moved", "true");
+                String redirectUrl = conn.getHeaderField("Location");
+                if (redirectUrl != null) {
+                    int p = redirectUrl.indexOf('?');
+                    if (p != -1) {
+                        redirectUrl = redirectUrl.substring(0, p);
+                    }
+                    props.setProperty("movedUrl", redirectUrl);
+                }
+                File f = getCachedFile();
+                IOUtils.copyStream(is, new FileOutputStream(f));
+                log.debug("Url " + u.toExternalForm() + " Cached To: " + f.getAbsolutePath());
+                log.debug(String.format("Url: %s moved to %s", u.toExternalForm(), redirectUrl));
+            } else if (rc == HttpURLConnection.HTTP_OK) {
+                handleCookies(u, c, handler);
+                File f = getCachedFile();
+                IOUtils.copyStream(is, new FileOutputStream(f));
+                log.debug("Url " + u.toExternalForm() + " Cached To: " + f.getAbsolutePath());
+            } else {
+                throw new IOException("Http Response Code: " + rc + "; Message: " + conn.getResponseMessage());
+            }
+        } else {
+            // do nothing... we can't cache local urls
+            log.warn("Cannot Cache Url Connection Type; " + c.getClass().getName());
+
+        }
+        props.store(new FileOutputStream(getPropertyFile()), "Cached Url Properties");
+        log.debug("Properties for cached url are now stored: " + getPropertyFile().getAbsolutePath());
+    }
+
+    @Override
+    public InputStream getInputStream(ICookieHandler handler, boolean followRedirects) throws IOException {
+        this.followRedirects = followRedirects;
+
+        URL u = getUrl(handler);
+
+        return u.openStream();
+    }
+
+    /**
+     * Will remove a url from the cache, in the event that url caching is
+     * enabled.
+     * 
+     * @param dataUrl
+     */
+    public static void remove(String dataUrl) {
+        try {
+            CachedUrl cu = new CachedUrl(dataUrl);
+            cu.remove();
+        } catch (IOException e) {
+            log.error("Unabled to remove cached data url: " + dataUrl);
+        }
+
+    }
+
+    private void remove() {
+        try {
+            log.debug("Removing Cached Url: " + this.getOriginalUrl().toExternalForm());
+            if (props != null) {
+                File f = getCachedFile();
+                if (f.exists()) {
+                    log.debug("Removing Cached File: " + f.getAbsolutePath());
+                    f.delete();
+                }
+            }
+        } catch (IOException e) {
+        }
+    }
 }

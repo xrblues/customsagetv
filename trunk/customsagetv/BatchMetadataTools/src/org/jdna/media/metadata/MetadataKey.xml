@@ -1,0 +1,70 @@
+<enums>
+	<enum id="Title" constant="TITLE"/>
+	<enum id="Album" constant="ALBUM"/>
+	<enum id="Artist" constant="ARTIST"/>
+	<enum id="AlbumArtist" constant="ALBUM_ARTIST"/>
+	<enum id="Composer" constant="COMPOSER"/>
+	<enum id="Track" constant="TRACK"/>
+	<enum id="TotalTracks" constant="TOTAL_TRACKS"/>
+	<enum id="Year" constant="YEAR"/>
+	<enum id="Comment" constant="COMMENT"/>
+	<enum id="GenreList" constant="GENRE_LIST"/>
+	<enum id="Language" constant="LANGUAGE"/>
+	<enum id="MPAARating" constant="MPAA_RATING"/>
+	<enum id="MPAARatingDescription" constant="MPAA_RATING_DESCRIPTION"/>
+	<enum id="UserRating" constant="USER_RATING"/>
+	<enum id="RunningTime" constant="RUNNING_TIME"/>
+	<enum id="Duration" constant="DURATION"/>
+	<enum id="Description" constant="DESCRIPTION"/>
+	<enum id="CastMemberList" constant="CAST_MEMBER_LIST"/>
+	<enum id="PosterArt" constant="POSTER_ART"/>
+	<enum id="BackgroundArt" constant="BACKGROUND_ART"/>
+	<enum id="MediaArtList" constant="MEDIA_ART_LIST"/>
+	
+	<enum id="AspectRatio" constant="ASPECT_RATIO"/>
+	<enum id="Company" constant="COMPANY"/>
+
+	<enum id="ProviderId" constant="PROVIDER_ID"/>
+	<enum id="ProviderDataUrl" constant="PROVIDER_DATA_URL"/>
+	<enum id="ReleaseDate" constant="RELEASE_DATE"/>
+	
+	<enum id="Episode" constant="TV_EPISODE"/>
+	<enum id="Season" constant="TV_SEASON"/>
+	
+	<!-- Role Type Constants -->
+	<!-- 
+	<enum id="Actor" constant="">
+	</enum>
+	<enum id="LeadActor" constant="">
+	</enum>
+	<enum id="SupportingActor" constant="">
+	</enum>
+	<enum id="Actress" constant="">
+	</enum>
+	<enum id="LeadActress" constant="">
+	</enum>
+	<enum id="SupportingActress" constant="">
+	</enum>
+	<enum id="Guest" constant="">
+	</enum>
+	<enum id="GuestStar" constant="">
+	</enum>
+	<enum id="Director" constant="">
+	</enum>
+	<enum id="Producer" constant="">
+	</enum>
+	<enum id="Writer" constant="">
+	</enum>
+	<enum id="Choreographer" constant="">
+	</enum>
+	<enum id="SportFigure" constant="">
+	</enum>
+	<enum id="Coach" constant="">
+	</enum>
+	<enum id="Host" constant="">
+	</enum>
+	<enum id="ExecutiveProducer" constant="">
+	</enum>
+	-->
+	
+</enums>

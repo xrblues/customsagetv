@@ -4,7 +4,7 @@
 	
 	<property name="target" value="target"/>
 	<property name="name" value="metadata-updater"/>
-	<property name="version" value="1.12"/>
+	<property name="version" value="1.15"/>
 	<property name="jarname" value="${name}-${version}.jar"/>
 	<property name="launcher" value="MetadataTool"/>
 	
@@ -86,4 +86,8 @@
     <target name="clean">
         <delete dir="target"/>
     </target>
+	
+	<target name="generate-constants">
+		<xslt style="src/org/jdna/media/metadata/MetadataKey.xsl" in="src/org/jdna/media/metadata/MetadataKey.xml" out="src/org/jdna/media/metadata/MetadataKey.java"></xslt>
+	</target>
 </project>

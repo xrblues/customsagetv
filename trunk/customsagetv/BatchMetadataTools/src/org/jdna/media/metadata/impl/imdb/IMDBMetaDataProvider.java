@@ -16,100 +16,99 @@ import org.jdna.media.metadata.ProviderInfo;
 import org.xml.sax.SAXException;
 
 public class IMDBMetaDataProvider implements IMediaMetadataProvider {
-	private static final Logger log = Logger.getLogger(IMDBMetaDataProvider.class);
-	
-	public static final String IMDB_FIND_URL = "http://www.imdb.com/find?s=tt&q={0}&x=0&y=0";
-	public static final String PROVIDER_ID = "imdb";
-	public static final String PROVIDER_NAME = "IMDB Provider (Stuckless)";
-	public static final String PROVIDER_ICON_URL = "http://i.media-imdb.com/images/nb15/logo2.gif";
-	private static final String PROVIDER_DESC = "IMDB Provider that provides very resonable results, AND exact match searches.";
-	
-	private static IProviderInfo info = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_ICON_URL);
+    private static final Logger  log               = Logger.getLogger(IMDBMetaDataProvider.class);
 
-	
-	public String getIconUrl() {
-		return PROVIDER_ICON_URL;
-	}
+    public static final String   IMDB_FIND_URL     = "http://www.imdb.com/find?s=tt&q={0}&x=0&y=0";
+    public static final String   PROVIDER_ID       = "imdb";
+    public static final String   PROVIDER_NAME     = "IMDB Provider (Stuckless)";
+    public static final String   PROVIDER_ICON_URL = "http://i.media-imdb.com/images/nb15/logo2.gif";
+    private static final String  PROVIDER_DESC     = "IMDB Provider that provides very resonable results, AND exact match searches.";
 
-	public String getId() {
-		return PROVIDER_ID;
-	}
+    private static IProviderInfo info              = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_ICON_URL);
 
-	public String getName() {
-		return PROVIDER_NAME;
-	}
+    public String getIconUrl() {
+        return PROVIDER_ICON_URL;
+    }
 
-	public List<IMediaSearchResult> search(int searchType, String arg) throws Exception {
-		List<IMediaSearchResult> results=null;
-		if (searchType==IMediaMetadataProvider.SEARCH_TITLE) {
-			String eArg = URLEncoder.encode(arg);
-			String url = MessageFormat.format(IMDB_FIND_URL, eArg);
-			log.debug("IMDB Search Url: " + url);
-			IMDBSearchResultParser parser = new IMDBSearchResultParser(url);
-			// don't follow the redirected urls
-			parser.setFollowRedirects(false);
-			try {
-				parser.parse();
-				if (parser.getFollowRedirects()==false && parser.isRedirecting()) {
-					log.debug("Returing Single Result for Search: " + arg);
-					return returnSingleResult(parser.getRedirectUrl());
-				}
-				if (parser.hasError()) {
-					throw new IOException("Failed to Parse the IMDB url correctly");
-				}
-				results = parser.getResults();
-			} catch (IOException e) {
-				log.error("Error Performing Search: " + arg, e);
-			} catch (SAXException e) {
-				log.error("Error Parsing Search: " + arg, e);
-			}
-		} else {
-			log.error("Search Type no Supported: " + searchType);
-			throw new Exception("Seach Type Not Supported: " + searchType);
-		}
-		return results;
-	}
+    public String getId() {
+        return PROVIDER_ID;
+    }
 
-	private List<IMediaSearchResult> returnSingleResult(String redirectUrl) throws IOException {
-		List<IMediaSearchResult> result = new ArrayList<IMediaSearchResult>();
-		
-		IMediaMetadata md = getMetaData(redirectUrl);
-		MediaSearchResult vsr = new MediaSearchResult();
-		vsr.setProviderId(PROVIDER_ID);
-		vsr.setId(md.getProviderDataUrl());
-		vsr.setTitle(md.getTitle());
-		vsr.setYear(md.getYear());
-		vsr.setResultType(IMediaSearchResult.RESULT_TYPE_EXACT_MATCH);
-		vsr.setIMDBId(IMDBSearchResultParser.parseTitleId(redirectUrl));
-		
-		// the IMDBMovieMetaData implements the IVideoSearchResult interface
-		result.add(vsr);
-		
-		return result;
-	}
+    public String getName() {
+        return PROVIDER_NAME;
+    }
 
-	public IMediaMetadata getMetaData(String providerDataUrl) throws IOException {
-		try {
-			String url = providerDataUrl;
-			IMDBMovieMetaDataParser parser = new IMDBMovieMetaDataParser(url);
-			parser.parse();
-			if (parser.hasError()) throw new IOException("Failed to Parse MetaData for url: " + url);
-			return parser.getMetatData();
-		} catch (SAXException e) {
-			log.error("Failed to getMetaData for url: " + providerDataUrl);
-			throw new IOException("Failed to parse providerDataUrl: " + providerDataUrl, e);
-		}
-	}
+    public List<IMediaSearchResult> search(int searchType, String arg) throws Exception {
+        List<IMediaSearchResult> results = null;
+        if (searchType == IMediaMetadataProvider.SEARCH_TITLE) {
+            String eArg = URLEncoder.encode(arg);
+            String url = MessageFormat.format(IMDB_FIND_URL, eArg);
+            log.debug("IMDB Search Url: " + url);
+            IMDBSearchResultParser parser = new IMDBSearchResultParser(url);
+            // don't follow the redirected urls
+            parser.setFollowRedirects(false);
+            try {
+                parser.parse();
+                if (parser.getFollowRedirects() == false && parser.isRedirecting()) {
+                    log.debug("Returing Single Result for Search: " + arg);
+                    return returnSingleResult(parser.getRedirectUrl());
+                }
+                if (parser.hasError()) {
+                    throw new IOException("Failed to Parse the IMDB url correctly");
+                }
+                results = parser.getResults();
+            } catch (IOException e) {
+                log.error("Error Performing Search: " + arg, e);
+            } catch (SAXException e) {
+                log.error("Error Parsing Search: " + arg, e);
+            }
+        } else {
+            log.error("Search Type no Supported: " + searchType);
+            throw new Exception("Seach Type Not Supported: " + searchType);
+        }
+        return results;
+    }
 
-	public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-		return getMetaData(result.getId());
-	}
+    private List<IMediaSearchResult> returnSingleResult(String redirectUrl) throws IOException {
+        List<IMediaSearchResult> result = new ArrayList<IMediaSearchResult>();
 
-	public IProviderInfo getInfo() {
-		return info;
-	}
+        IMediaMetadata md = getMetaData(redirectUrl);
+        MediaSearchResult vsr = new MediaSearchResult();
+        vsr.setProviderId(PROVIDER_ID);
+        vsr.setId(md.getProviderDataUrl());
+        vsr.setTitle(md.getTitle());
+        vsr.setYear(md.getYear());
+        vsr.setResultType(IMediaSearchResult.RESULT_TYPE_EXACT_MATCH);
+        vsr.setIMDBId(IMDBSearchResultParser.parseTitleId(redirectUrl));
 
-	public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
-		return getMetaData(String.format(IMDBSearchResultParser.TITLE_URL, imdbId));
-	}
+        // the IMDBMovieMetaData implements the IVideoSearchResult interface
+        result.add(vsr);
+
+        return result;
+    }
+
+    public IMediaMetadata getMetaData(String providerDataUrl) throws IOException {
+        try {
+            String url = providerDataUrl;
+            IMDBMovieMetaDataParser parser = new IMDBMovieMetaDataParser(url);
+            parser.parse();
+            if (parser.hasError()) throw new IOException("Failed to Parse MetaData for url: " + url);
+            return parser.getMetatData();
+        } catch (SAXException e) {
+            log.error("Failed to getMetaData for url: " + providerDataUrl);
+            throw new IOException("Failed to parse providerDataUrl: " + providerDataUrl, e);
+        }
+    }
+
+    public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
+        return getMetaData(result.getId());
+    }
+
+    public IProviderInfo getInfo() {
+        return info;
+    }
+
+    public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
+        return getMetaData(String.format(IMDBSearchResultParser.TITLE_URL, imdbId));
+    }
 }
