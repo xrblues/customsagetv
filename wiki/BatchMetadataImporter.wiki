@@ -13,6 +13,42 @@ For details about each provider, check out the links below
  * [TheMovieDBProvider themoviedb.com Provider]
  * [CompositeProvider] Composite (build your own) Provider]
 
+The current provider list
+{{{
+* imdb                
+   - IMDB Provider (Stuckless)
+   - IMDB Provider that provides very resonable results, AND exact match searches.
+
+  nielm_imdb          
+   - IMDB Provider (Nielm)
+   - IMDB Provider that provides very detailed results, but no exact match searches.
+
+  dvdprofiler         
+   - Url DVD Profiler Provider
+   - DVD Profiler Provider using remote Url (Stuckless).
+
+  dvdprofiler_local   
+   - Local DVD Profiler Provider
+   - DVD Profiler Provider using local xml and images (Stuckless).
+
+  themoviedb.com      
+   - themoviedb.com
+   - Provider that uses themoviedb as metadata and coverart source.
+
+  imdb-2              
+   - Composite Stuckless/Nielm IMDB Provider
+   - Composite Provider that uses the default IMDB provider for searching, and Neil's IMDB provider for details.  This useful if you want better plot descriptions.
+
+  themoviedb.com-2    
+   - Composite Stuckless IMDB/TheMovieDB Provider
+   - Composite Provider that uses the default IMDB provider for searching, and themoviedb.com for details.  This provider can provide decent results for posters and backdrop coverart.
+
+  sample              
+   - Sample Composite Provider
+   - This is a sample Composite Provider that will disappear as soon as you create one
+
+}}}
+
  NOTE: This tool by will scan and process multi cd movies, and it will only fetch the metadata once, but it will write it out for each cd, since that is how SageTV requires it. This is also known as cd stacking or grouping.
 
  NOTE: Once you run the tool on your movies, you'll need to tell SageTV to refresh it's metadata by going into the Options menu, in the Videos View, and tell Sage to refresh/rescan media.  Or, if you have the SageTV Remote APIs installed, you can pass the --refreshSage command option and it will tell sage to refresh.
