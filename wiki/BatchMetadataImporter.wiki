@@ -26,28 +26,34 @@ Java 5 or later
 == Usage ==
 {{{
  # java -jar MetadataTool.jar
-Batch MetaData Tools (1.13)
+Batch MetaData Tools (1.15)
 Import/Update Movie MetaData from a MetaData Provider.
 
 Usage:java MetadataTool OPTIONS ...
 
 OPTIONS: (* are required)
-  --recurse              Recursively process sub directories. (default false)
-  --force                Force download of metadata, even if metadata exists and has not been updated. Does not overwrite thumbnails. (default false)
-  --forceThumbnail       Force download/overwrite of thumbnails. (default false)
-  --reindex              Tells Metadata providers that require indexing (ie, DVD Profiler) to rebuild it's index. (default false)
+  --agressive            If the first search doesn't return clean results, then try additional searches. (default true)
+  --auto                 Automatically choose best search result. [if false, it will force you to choose for each item] (default true)
+  --backdropsNever       Set to true if you DON'T want to download backdrops. (default false)
+  --backdropsOnly        Using the specified provider, ONLY find/fetch the backdrop image.
   --displaySize          # of search results to display on the screen. (default 10)
+  --force                Force download of metadata, even if metadata exists and has not been updated. Does not overwrite thumbnails. (default false)
+  --forceBackdrop        Force download/overwrite of backdrop images. (default false)
+  --forceThumbnail       Force download/overwrite of thumbnails. (default false)
   --listMovies           Just list the movies it would find. (default false)
   --listProviders        Just list the installed metadata providers. (default false)
-  --update               Update Missing AND Updated Metadata. (default false)
-  --agressive            If the first search doesn't return clean results, then try additional searches. (default true)
-  --offline              if true, then the passed file(s) will be treated as offline files. (default false)
-  --provider             Set the metadata provider. (default imdb)
   --metadata             Show metadata for movie. (default false)
-  --showProperties       Show the current configuration. (default false)
+  --offline              if true, then the passed file(s) will be treated as offline files. (default false)
   --prompt               When a media file cannot be updated, then prompt to enter a title to search on. (default true)
-  --setProperty          Sets a Property (--setProperty=name:value) (use --showProperties to get property list)
+  --provider             Set the metadata provider. (default imdb)
+  --recurse              Recursively process sub directories. (default false)
   --refreshSageTV        Notify SageTV to refresh it's Media Library. (default false)
+  --reindex              Tells Metadata providers that require indexing (ie, DVD Profiler) to rebuild it's index. (default false)
+  --setProperty          Sets a Property (--setProperty=name:value) (use --showProperties to get property list)
+  --showProperties       Show the current configuration. (default false)
+  --showSupportedMetadata Show the supported metadata properties. (default false)
+  --thumbnailMaxWidth    Will scale down large thumbnail to the specified with. -1 mean no scaling. (default -1)
+  --update               Update Missing AND Updated Metadata. (default false)
 }}}
 
 == Usage Overview ==
@@ -122,7 +128,7 @@ It should produce the following results.  Keep in mind, that if  you have a cust
 
 {{{
 
-Batch MetaData Tools (1.8)
+Batch MetaData Tools (1.15)
 #       Begin: urlconfiguration
 # Description: Configures Properties regarding how URLs are handled.
 
@@ -147,13 +153,13 @@ Batch MetaData Tools (1.8)
 #       Begin: metadataUpdater
 # Description: Configuration for Main Metadata Updater
 
-# Description: Screen class name that is used for drawing and responding to events
-#        Type: java.lang.String
-/metadataUpdater/screenClass=org.jdna.metadataupdater.ConsoleScreen
-
 # Description: Set to true, if you want to overwrite existing thumbnails
 #        Type: boolean
 /metadataUpdater/overwriteThumbnails=false
+
+# Description: Set to true, if you want to overwrite existing backdrop images
+#        Type: boolean
+/metadataUpdater/overwriteBackdrops=false
 # End: metadataUpdater
 
 
@@ -187,11 +193,15 @@ Batch MetaData Tools (1.8)
 
 # Description: Comma separated list of known metadata providers (ie, can be used for searching for metadata)
 #        Type: java.lang.String
-/metadata/videoMetadataProviders=org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider,org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider,org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider,org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider
+/metadata/videoMetadataProviders=org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider,org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider,org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider,org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider,org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider
 
 # Description: Comma separated list of words that will be removed from a title when doing a search
 #        Type: java.lang.String
 /metadata/wordsToClean=dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv
+
+# Description: Default provider id to use
+#        Type: java.lang.String
+/metadata/defaultProviderId=imdb
 # End: metadata
 
 
@@ -255,7 +265,55 @@ Batch MetaData Tools (1.8)
 # Description: Number genre levels to write.  -1 means all levels.
 #        Type: int
 /sageMetadata/genreLevels=1
+
+# Description: Scale the poster to the specified Max width.  -1 no scaling.
+#        Type: int
+/sageMetadata/posterScalingWidth=-1
+
+# Description: Set to true if you do not want to download backdrops.
+#        Type: boolean
+/sageMetadata/ignoreBackdrop=false
 # End: sageMetadata
+
+
+#       Begin: imdb
+# Description: Configuration for IMDB Metadata Parser
+
+# Description: Preferred height or width of an imdb thumbnail
+#        Type: int
+/imdb/forcedIMDBImageSize=0
+# End: imdb
+
+
+#       Begin: compositeMetadataProviders
+# Description: Configuration for a Composite Metadata Provider
+
+# Description: Provider Name
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/name=Sample Composite Provider
+
+# Description: Provider Description
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/description=This is a sample Composite Provider that will disappear as soon as you create one
+
+# Description: Optional Icon Url for the provider
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/iconUrl=
+
+# Description: Provider ID to use when searching
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/searchProviderId=imdb
+
+# Description: Provider ID to use when getting details
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/detailProviderId=themoviedb.com
+
+# Description: Semi-Colon separated fields to use from the search provider.  ie, if you want to use the Genre field from the search provider details, then put Genre in this setting
+#        Type: java.lang.String
+/compositeMetadataProviders/sample/fieldsFromSearchProvider=Genre
+# End: compositeMetadataProviders
+
+
 
 }}}
 
