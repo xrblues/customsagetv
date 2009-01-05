@@ -9,6 +9,6 @@
 	<classpathentry kind="lib" path="libs/lucene-core-2.3.2.jar"/>
 	<classpathentry kind="lib" path="libs/commons-vfs-20070823.jar"/>
 	<classpathentry kind="lib" path="libs/Sage.jar"/>
-	<classpathentry kind="lib" path="libs/sagex.api-6.4.8-10.jar"/>
+	<classpathentry kind="lib" path="libs/sagex.api-6.4.8-11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

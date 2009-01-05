@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,12 +19,14 @@ import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.MediaResourceFactory;
+import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
-import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
+import org.jdna.media.util.BackdropDownloaderVisitor;
 import org.jdna.media.util.CollectorResourceVisitor;
 import org.jdna.media.util.CompositeResourceVisitor;
 import org.jdna.media.util.CountResourceVisitor;
@@ -41,393 +45,512 @@ import sagex.api.Global;
  */
 @CommandLineProcess(acceptExtraArgs = true, description = "Import/Update Movie MetaData from a MetaData Provider.")
 public class MetadataUpdater {
-	
-	public static final Logger log = Logger.getLogger(MetadataUpdater.class);
-	/**
-	 * This method only needs to be called from the command line. All other
-	 * processes should use the MetadataUpdater directly and NOT call the main()
-	 * method.
-	 * 
-	 * @param args
-	 *            command line args
-	 * @throws Exception
-	 */
-	public static void main(String args[]) throws Exception {
-		try {
 
-			String title = "Batch MetaData Tools (" + Version.VERSION + ")";
-			System.out.println(title);
+    public static final Logger log = Logger.getLogger(MetadataUpdater.class);
 
-			// init the configuration before we process, since some command line vars can 
-			// override default configuration settings
-			initConfiguration();
-			
-			// process the command line
-			CommandLine cl = new CommandLine(title, "java MetadataTool", args);
-			cl.process();
+    /**
+     * This method only needs to be called from the command line. All other
+     * processes should use the MetadataUpdater directly and NOT call the main()
+     * method.
+     * 
+     * @param args
+     *            command line args
+     * @throws Exception
+     */
+    public static void main(String args[]) throws Exception {
+        try {
 
-			// apply the command line args to this instance.
-			MetadataUpdater mdu = new MetadataUpdater();
-			try {
-				cl.applyToAnnotated(mdu);
+            String title = "Batch MetaData Tools (" + Version.VERSION + ")";
+            System.out.println(title);
 
-				// check for help
-				if (cl.hasArg("help") || !cl.hasArgs()) {
-					cl.help(mdu);
-					return;
-				}
-			} catch (Exception e) {
-				cl.help(mdu, e);
-				return;
-			}
+            // init the configuration before we process, since some command line
+            // vars can
+            // override default configuration settings
+            initConfiguration();
 
-			mdu.process();
-		} catch (Exception e) {
-			log.error("Failed to process Video MetaData!", e);
-			System.out.println("Processing Failed, see log for details.");
-		}
-	}
+            // process the command line
+            CommandLine cl = new CommandLine(title, "java MetadataTool", args);
+            cl.process();
 
-	private String[] files;
-	private boolean recurse = false;
-	private boolean force = false;
-	private int displaySize = 10;
-	private boolean listMovies = false;
-	private boolean listProvders = false;
-	private boolean refresh = false;
-	private boolean aggressive = true;
-	private boolean offline = false;
-	private boolean showMetadata = false;
-	private boolean showProperties = false;
-	private boolean refreshSageTV = false;
-	private boolean prompt = true;
-	private String provider = IMDBMetaDataProvider.PROVIDER_ID;
+            // apply the command line args to this instance.
+            MetadataUpdater mdu = new MetadataUpdater();
+            try {
+                cl.applyToAnnotated(mdu);
 
-	/**
-	 * This is the entry into the tool. This will process() all files/dirs that
-	 * are passed.
-	 * 
-	 * @throws Exception
-	 *             if processing fails for some unknown reason.
-	 */
-	public void process() throws Exception {
-		// dump our properties
-		if (showProperties) {
-			PrintWriter pw = new PrintWriter(System.out);
-			ConfigurationManager.getInstance().dumpProperties(pw);
-			pw.flush();
-			pw.close();
-			System.out.flush();
-			return;
-		}
-		
-		// show the known metadata providers
-		if (listProvders) {
-			renderProviders(MediaMetadataFactory.getInstance().getMetaDataProviders(), provider);
-			return;
-		}
-		
-		// get the parent folder for processing
-		IMediaFolder parentFolder = null;
-		List<IMediaResource> resources = new ArrayList<IMediaResource>();
-		for (String f : files) {
-			File file = new File(f);
-			if (!file.exists() && offline == false) {
-				System.out.println("File Not Found: " + file.getAbsolutePath() + "\nConsider adding --offline=true if you want to create an offline video.");
-			} else {
-				resources.add(MediaResourceFactory.getInstance().createResource(file.toURI()));
-			}
-		}
-		
-		// put all the videos/folders in a virtual top level folder for processing
-		if (resources.size()==1 && resources.get(0).getType()==IMediaFolder.TYPE_FOLDER) {
-			parentFolder = (IMediaFolder) resources.get(0);
-		} else {
-			parentFolder = MediaResourceFactory.getInstance().createVirtualFolder("Videos", resources);
-		}
-		
-		// if there are no parent folders to process, the just do nothing...
-		if (parentFolder.members().size()==0) {
-			System.out.println("No Files to process.");
-		} else {
-			// check if we are just listing movies
-			if (listMovies) {
-				parentFolder.accept(new ListMovieVisitor(false), recurse);
-				return;
-			}
-			
-			// we are showing info for these...
-			if (showMetadata) {
-				parentFolder.accept(new ListMovieVisitor(true), recurse);
-				return;
-			}
+                // check for help
+                if (cl.hasArg("help") || !cl.hasArgs()) {
+                    cl.help(mdu);
+                    return;
+                }
+            } catch (Exception e) {
+                cl.help(mdu, e);
+                return;
+            }
 
-			
-			// update/refresh existing metadata
-			boolean overwriteThumbnails = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwriteThumbnails();
-			CollectorResourceVisitor handled = new CollectorResourceVisitor();
-			CollectorResourceVisitor skipped = new CollectorResourceVisitor();
-			if (refresh) {
-				parentFolder.accept(new RefreshMetadataVisitor(overwriteThumbnails, handled, skipped));
-				return;
-			}
-			
-			// update refresh/missing metadate (unless force is used, and if so, then do all)
-			IMediaResourceVisitor updated = new IMediaResourceVisitor() {
-				public void visit(IMediaResource resource) {
-					System.out.printf("Updated: %s; %s\n", resource.getMetadata().getTitle(), resource.getLocationUri() );
-				}
-			};
-			CollectorResourceVisitor notfound = new CollectorResourceVisitor();
-			CountResourceVisitor updatedCount = new CountResourceVisitor();
-			CountResourceVisitor skippedCount = new CountResourceVisitor();
-			AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, aggressive, overwriteThumbnails, new CompositeResourceVisitor(updated, updatedCount), notfound);
-			IMediaResourceVisitor up2dateVisitor = new IMediaResourceVisitor() {
-				public void visit(IMediaResource resource) {
-					System.out.println("Skipping: " + resource.getLocationUri());
-				}
-			};
-			if (force) {
-				// do all videos... no matter what
-				parentFolder.accept(autoUpdater, recurse);
-			} else {
-				// do only vidoes that are missing metadat
-				parentFolder.accept(new MissingMetadataVisitor(autoUpdater, new CompositeResourceVisitor(up2dateVisitor, skippedCount)), recurse);
-			}
+            mdu.process();
+        } catch (Exception e) {
+            log.error("Failed to process Video MetaData!", e);
+            System.out.println("Processing Failed, see log for details.");
+        }
+    }
 
-			// lastly, if the user wants, let's prompt for any that could not be found.
-			if (prompt && notfound.getCollection().size()>0) {
-				// now process all the files that autoupdater could not process automatically
-				IMediaFolder mf = MediaResourceFactory.getInstance().createVirtualFolder("manualUpdate", notfound.getCollection());
-				mf.accept(new ManualConsoleSearchMetadataVisitor(provider, aggressive, overwriteThumbnails, updated, skipped), false);
-			} else if (notfound.getCollection().size()>0) {
-				// dump out the skipped entries that were not updated
-				System.out.println("\nThe Following Media Entries could not be updated.");
-				for (IMediaResource r : notfound.getCollection()) {
-					System.out.println(r.getLocationUri());
-				}
-			}
-			
-			// Render stats
-			System.out.println("\n\nMetaData Stats...");
-			System.out.printf("Auto Update: %d; Auto Skip: %d; Require Attention:%d; Manual Skipped: %d; \n\n", updatedCount.getCount(), skippedCount.getCount(), notfound.getCollection().size(), skipped.getCollection().size());
-		}
+    private String[] files;
+    private boolean  recurse        = false;
+    private boolean  force          = false;
+    private int      displaySize    = 10;
+    private boolean  listMovies     = false;
+    private boolean  listProvders   = false;
+    private boolean  refresh        = false;
+    private boolean  aggressive     = true;
+    private boolean  offline        = false;
+    private boolean  showMetadata   = false;
+    private boolean  showProperties = false;
+    private boolean  refreshSageTV  = false;
+    private boolean  prompt         = true;
+    private boolean  auto           = true;
+    private String   provider       = null;
+    private boolean showSupportedMetadata = false;
+    private boolean backdropsOnly = false;
+    
+    /**
+     * This is the entry into the tool. This will process() all files/dirs that
+     * are passed.
+     * 
+     * @throws Exception
+     *             if processing fails for some unknown reason.
+     */
+    public void process() throws Exception {
+        if (provider==null) {
+            provider = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
+        }
+        
+        if (!auto) {
+            System.out.println("** Automatic Updating Disabled ***");
+        }
+        
+        // dump our properties
+        if (showProperties) {
+            PrintWriter pw = new PrintWriter(System.out);
+            ConfigurationManager.getInstance().dumpProperties(pw);
+            pw.flush();
+            pw.close();
+            System.out.flush();
+            return;
+        }
+        
+        if (showSupportedMetadata) {
+            System.out.println("Supported Metadata Fields");
+            MetadataKey values[] = Arrays.copyOf(MetadataKey.values(), MetadataKey.values().length);
+            Arrays.sort(values, new Comparator<MetadataKey>() {
+                public int compare(MetadataKey o1, MetadataKey o2) {
+                    return o1.getId().compareTo(o2.getId());
+                }
+            });
+            for (MetadataKey k : values) {
+                System.out.printf("%20s : %s\n", k.getId(), k.getDescription());
+            }
+            return;
+        }
 
-		// check if we need to refresh sage tv
-		if (refreshSageTV) {
-			try {
-				System.out.println("Notifying Sage to Refresh Imported Media");
-				Global.RunLibraryImportScan(false);
-			} catch (Throwable t) {
-			}
-		}
-	}
+        // show the known metadata providers
+        if (listProvders) {
+            renderProviders(MediaMetadataFactory.getInstance().getMetaDataProviders(), provider);
+            return;
+        }
 
-	
-	public void renderProviders(List<IMediaMetadataProvider> providers, String defaultProvider) {
-		System.out.println("\n\nInstalled Metadata Providers (*=default");
-		for (IMediaMetadataProvider p : providers) {
-			System.out.printf("%1s %-20s %s\n", (p.getInfo().getId().equals(defaultProvider)?"*":""), p.getInfo().getId(), p.getInfo().getName());
-		}
-	}
+        // get the parent folder for processing
+        IMediaFolder parentFolder = null;
+        List<IMediaResource> resources = new ArrayList<IMediaResource>();
+        for (String f : files) {
+            File file = new File(f);
+            if (!file.exists() && offline == false) {
+                System.out.println("File Not Found: " + file.getAbsolutePath() + "\nConsider adding --offline=true if you want to create an offline video.");
+            } else {
+                resources.add(MediaResourceFactory.getInstance().createResource(file.toURI()));
+            }
+        }
 
-	/**
-	 * Attempts to load the configuration properties from the following
-	 * locations.... -Dmetadataupdater.properties=file or
-	 * ./metedataupdater.properties
-	 * 
-	 * @throws IOException
-	 */
-	public static void initConfiguration() throws IOException {
-		log.debug("Attempting to load metadataupdater from default locations....");
-		ConfigurationManager.getInstance();
-		
-		List<CompositeMetadataConfiguration> otherProviders = ConfigurationManager.getInstance().getCompositeMetadataConfiguration();
-		for (CompositeMetadataConfiguration c : otherProviders) {
-			CompositeMetadataProvider p = new CompositeMetadataProvider(c);
-			MediaMetadataFactory.getInstance().addMetaDataProvider(p);
-		}
-	}
+        // put all the videos/folders in a virtual top level folder for
+        // processing
+        if (resources.size() == 1 && resources.get(0).getType() == IMediaFolder.TYPE_FOLDER) {
+            parentFolder = (IMediaFolder) resources.get(0);
+        } else {
+            parentFolder = MediaResourceFactory.getInstance().createVirtualFolder("Videos", resources);
+        }
 
-	/**
-	 * set the files/dirs to process.
-	 * 
-	 * @param files
-	 */
-	@CommandLineArg(name = "EXTRAARGS", description = "Internal Arg that collects files passed on the command line. do not set.")
-	public void setFiles(String files[]) {
-		this.files = files;
-	}
+        // if there are no parent folders to process, the just do nothing...
+        if (parentFolder.members().size() == 0) {
+            System.out.println("No Files to process.");
+        } else {
+            // check if we are just listing movies
+            if (listMovies) {
+                parentFolder.accept(new ListMovieVisitor(false), recurse);
+                return;
+            }
 
-	/**
-	 * enable/disable directory recursion
-	 * 
-	 * @param b
-	 */
-	@CommandLineArg(name = "recurse", description = "Recursively process sub directories. (default false)")
-	public void setRecurse(boolean b) {
-		this.recurse = b;
-	}
+            // we are showing info for these...
+            if (showMetadata) {
+                parentFolder.accept(new ListMovieVisitor(true), recurse);
+                return;
+            }
+            
+            // check if we are just doing backdrops
+            if (backdropsOnly) {
+                processBackdrops(parentFolder);
+                return;
+            }
 
-	/**
-	 * if set to true, it will ignore exising metadata and fetch new information
-	 * even it doesn't need to.
-	 * 
-	 * @param b
-	 */
-	@CommandLineArg(name = "force", description = "Force download of metadata, even if metadata exists and has not been updated. Does not overwrite thumbnails. (default false)")
-	public void setFetchAlways(boolean b) {
-		this.force = b;
-	}
+            // Set Persistence options
+            boolean overwriteThumbnails = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwriteThumbnails();
+            boolean overwriteBackdrops = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwriteBackdrops();
+            long persistenceOptions = 0;
+            if (overwriteThumbnails) persistenceOptions = persistenceOptions + IMediaMetadataPersistence.OPTION_OVERWRITE_POSTER;
+            if (overwriteBackdrops) persistenceOptions = persistenceOptions + IMediaMetadataPersistence.OPTION_OVERWRITE_BACKGROUND;
 
-	@CommandLineArg(name = "forceThumbnail", description = "Force download/overwrite of thumbnails. (default false)")
-	public void setForceThumbnailOverwrite(boolean b) {
-		// this is a hack, for now...
-		ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setOverwriteThumbnails(true);
-	}
+            // collectors and counters for automatic updating
+            CollectorResourceVisitor autoHandled = new CollectorResourceVisitor();
+            CollectorResourceVisitor autoSkipped = new CollectorResourceVisitor();
+            if (refresh) {
+                parentFolder.accept(new RefreshMetadataVisitor(persistenceOptions, autoHandled, autoSkipped));
+                return;
+            }
 
-	@CommandLineArg(name = "reindex", description = "Tells Metadata providers that require indexing (ie, DVD Profiler) to rebuild it's index. (default false)")
-	public void setReindex(boolean b) {
-		ConfigurationManager.getInstance().getDVDProfilerConfiguration().setForceRebuild(true);
-		ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().setForceRebuild(true);
-	}
+            IMediaResourceVisitor updatedDisplay = new IMediaResourceVisitor() {
+                public void visit(IMediaResource resource) {
+                    System.out.printf("Updated: %s; %s\n", resource.getMetadata().getTitle(), resource.getLocationUri());
+                }
+            };
 
-	/**
-	 * used by the renderResult() to limit the # of results to show.
-	 * 
-	 * @param size
-	 */
-	@CommandLineArg(name = "displaySize", description = "# of search results to display on the screen. (default 10)")
-	public void setDisplaySize(String size) {
-		this.displaySize = Integer.parseInt(size);
-	}
+            IMediaResourceVisitor up2dateDisplay = new IMediaResourceVisitor() {
+                public void visit(IMediaResource resource) {
+                    System.out.println("Skipping: " + resource.getLocationUri());
+                }
+            };
+            
+            CollectorResourceVisitor autoNotFound = new CollectorResourceVisitor();
+            CountResourceVisitor autoUpdatedCount = new CountResourceVisitor();
+            CountResourceVisitor autoSkippedCount = new CountResourceVisitor();
+            CompositeResourceVisitor autoUpdated  = new CompositeResourceVisitor(updatedDisplay, autoUpdatedCount);
+            
+            // Main visitor for automatic updating
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, aggressive, persistenceOptions, autoUpdated, autoNotFound);
+            
+            // collectors and counters for manual updating
+            CountResourceVisitor manualUpdatedCount = new CountResourceVisitor();
+            CountResourceVisitor manualSkippedCount = new CountResourceVisitor();
+            CompositeResourceVisitor manualUpdated  = new CompositeResourceVisitor(updatedDisplay, manualUpdatedCount);
+            
+            // Main visitor for manual interactive searching
+            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(provider, aggressive, persistenceOptions, manualUpdated, manualSkippedCount, displaySize);
 
-	/**
-	 * Just list the movies that it would find given the setFiles(...)
-	 * 
-	 * @param b
-	 */
-	@CommandLineArg(name = "listMovies", description = "Just list the movies it would find. (default false)")
-	public void setListMovies(boolean b) {
-		this.listMovies = b;
-	}
+            // Main visitor that only does files that a missing metadata
+            MissingMetadataVisitor missingMetadata = new MissingMetadataVisitor(auto ? autoUpdater : manualUpdater, new CompositeResourceVisitor(up2dateDisplay, auto ? autoSkippedCount : manualSkippedCount));
+            
+            if (force) {
+                // do all videos... no matter what
+                parentFolder.accept(auto ? autoUpdater : manualUpdater, recurse);
+            } else {
+                // do only vidoes that are missing metadat
+                parentFolder.accept(missingMetadata, recurse);
+            }
 
-	/**
-	 * List the know metadata provides that are installed.
-	 * 
-	 * @param b
-	 */
-	@CommandLineArg(name = "listProviders", description = "Just list the installed metadata providers. (default false)")
-	public void setListProviders(boolean b) {
-		this.listProvders = b;
-	}
+            // lastly, if the user wants, let's prompt for any that could not be
+            // found.
+            if (auto && prompt && autoNotFound.getCollection().size() > 0) {
+                // now process all the files that autoupdater could not process
+                // automatically
+                IMediaFolder mf = MediaResourceFactory.getInstance().createVirtualFolder("manualUpdate", autoNotFound.getCollection());
+                mf.accept(manualUpdater, false);
+            } else if (autoNotFound.getCollection().size() > 0) {
+                // dump out the skipped entries that were not automatically updated
+                System.out.println("\nThe Following Media Entries could not be updated.");
+                for (IMediaResource r : autoNotFound.getCollection()) {
+                    System.out.println(r.getLocationUri());
+                }
+            }
 
-	/**
-	 * if true, then it will attempt to refresh metadata for entries that already have metadata by using the providerDataUrl for the media file.
-	 * 
-	 * @param b
-	 */
-	@CommandLineArg(name = "update", description = "Update Missing AND Updated Metadata. (default false)")
-	public void setUpdate(boolean b) {
-		this.refresh = b;
-	}
+            // Render stats
+            System.out.println("\n\nMetaData Stats...");
+            System.out.printf("Auto Updated: %d; Auto Skiped: %d; Manual Updated:%d; Manual Skipped: %d; \n\n", autoUpdatedCount.getCount(), autoSkippedCount.getCount(), manualUpdatedCount.getCount(), manualSkippedCount.getCount());
+        }
 
-	/**
-	 * enable/disable agressive searching. Agressive searching leads to more
-	 * searches because the engine will attempt to seach multiple times to find
-	 * the best match.
-	 * 
-	 * @param b
-	 */
-	@CommandLineArg(name = "agressive", description = "If the first search doesn't return clean results, then try additional searches. (default true)")
-	public void setAggressive(boolean b) {
-		this.aggressive = b;
-	}
+        // check if we need to refresh sage tv
+        if (refreshSageTV) {
+            try {
+                System.out.println("Notifying Sage to Refresh Imported Media");
+                Global.RunLibraryImportScan(false);
+            } catch (Throwable t) {
+            }
+        }
+    }
 
-	/**
-	 * enable/disable offline video support. Offline videos are empty video
-	 * files with metadata and thumbnails. A user would create these if the
-	 * video did exist in his/her collection but they are currently offline.
-	 * 
-	 * @param b
-	 */
-	@CommandLineArg(name = "offline", description = "if true, then the passed file(s) will be treated as offline files. (default false)")
-	public void setOffline(boolean b) {
-		this.offline = b;
-	}
+    private void processBackdrops(IMediaFolder parent) {
+        IMediaResourceVisitor skipped = new IMediaResourceVisitor() {
+            public void visit(IMediaResource resource) {
+                System.out.println("Skipping Backdrop for: " + resource.getLocationUri());
+            }
+        };
+        IMediaResourceVisitor handled = new IMediaResourceVisitor() {
+            public void visit(IMediaResource resource) {
+                System.out.println("Downloaded Backdrop for: " + resource.getLocationUri());
+            }
+        };
+        
+        BackdropDownloaderVisitor vis = new BackdropDownloaderVisitor(provider, handled, skipped);
+        parent.accept(vis, recurse);
+    }
 
-	/**
-	 * Set a new default metadata provider.
-	 * 
-	 * @param s
-	 */
-	@CommandLineArg(name = "provider", description = "Set the metadata provider. (default imdb)")
-	public void setMetadataProvicer(String s) {
-		this.provider = s;
-	}
+    public void renderProviders(List<IMediaMetadataProvider> providers, String defaultProvider) {
+        System.out.println("\n\nInstalled Metadata Providers (*=default");
+        for (IMediaMetadataProvider p : providers) {
+            System.out.printf("%1s %-20s\n", (p.getInfo().getId().equals(defaultProvider) ? "*" : ""), p.getInfo().getId());
+            System.out.println("   - " +  p.getInfo().getName());
+            System.out.println("   - " + p.getInfo().getDescription() + "\n");
+        }
+    }
 
-	/**
-	 * Show Metadata Information for a given movie
-	 * 
-	 * @param s
-	 */
-	@CommandLineArg(name = "metadata", description = "Show metadata for movie. (default false)")
-	public void setShowMetadata(boolean b) {
-		this.showMetadata = b;
-	}
+    /**
+     * Attempts to load the configuration properties from the following
+     * locations.... -Dmetadataupdater.properties=file or
+     * ./metedataupdater.properties
+     * 
+     * @throws IOException
+     */
+    public static void initConfiguration() throws IOException {
+        log.debug("Attempting to load metadataupdater from default locations....");
+        ConfigurationManager.getInstance();
 
-	/**
-	 * Dump Current Configuration Properties
-	 * 
-	 * @param s
-	 */
-	@CommandLineArg(name = "showProperties", description = "Show the current configuration. (default false)")
-	public void setShowProperties(boolean b) {
-		this.showProperties = b;
-	}
+        List<CompositeMetadataConfiguration> otherProviders = ConfigurationManager.getInstance().getCompositeMetadataConfiguration();
+        for (CompositeMetadataConfiguration c : otherProviders) {
+            CompositeMetadataProvider p = new CompositeMetadataProvider(c);
+            MediaMetadataFactory.getInstance().addMetaDataProvider(p);
+        }
+    }
 
-	/**
-	 * Dump Current Configuration Properties
-	 * 
-	 * @param s
-	 */
-	@CommandLineArg(name = "prompt", description = "When a media file cannot be updated, then prompt to enter a title to search on. (default true)")
-	public void setPrompt(boolean b) {
-		this.prompt = b;
-	}
+    /**
+     * set the files/dirs to process.
+     * 
+     * @param files
+     */
+    @CommandLineArg(name = "EXTRAARGS", description = "Internal Arg that collects files passed on the command line. do not set.")
+    public void setFiles(String files[]) {
+        this.files = files;
+    }
 
-	/**
-	 * Set a configuration property
-	 * 
-	 * @param s
-	 */
-	@CommandLineArg(name = "setProperty", description = "Sets a Property (--setProperty=name:value) (use --showProperties to get property list)")
-	public void setPropertu(String propAndVal) {
-		Pattern p = Pattern.compile("([^:]+):(.*)");
-		Matcher m = p.matcher(propAndVal);
-		if (m.find()) {
-			String n = m.group(1);
-			String v = m.group(2);
-			if (n==null || v==null) {
-				throw new RuntimeException("Malformed Property: " + propAndVal);
-			}
-			ConfigurationManager.getInstance().setProperty(n, v);
-		} else {
-			throw new RuntimeException("Invalid Property: " + propAndVal);
-		}
-	}
+    /**
+     * enable/disable directory recursion
+     * 
+     * @param b
+     */
+    @CommandLineArg(name = "recurse", description = "Recursively process sub directories. (default false)")
+    public void setRecurse(boolean b) {
+        this.recurse = b;
+    }
 
-	/**
-	 * Notify SageTV to refresh it's media
-	 * 
-	 * @param s
-	 */
-	@CommandLineArg(name = "refreshSageTV", description = "Notify SageTV to refresh it's Media Library. (default false)")
-	public void setRefreshSageTV(boolean b) {
-		this.refreshSageTV = b;
-	}
+    /**
+     * if set to true, it will ignore exising metadata and fetch new information
+     * even it doesn't need to.
+     * 
+     * @param b
+     */
+    @CommandLineArg(name = "force", description = "Force download of metadata, even if metadata exists and has not been updated. Does not overwrite thumbnails. (default false)")
+    public void setFetchAlways(boolean b) {
+        this.force = b;
+    }
 
-	public String[] getFiles() {
-		return files;
-	}
+    @CommandLineArg(name = "backdropsNever", description = "Set to true if you DON'T want to download backdrops. (default false)")
+    public void setBackdropsNever(boolean b) {
+        ConfigurationManager.getInstance().getSageMetadataConfiguration().setIgnoreBackdrop(b);
+    }
+
+    @CommandLineArg(name = "forceThumbnail", description = "Force download/overwrite of thumbnails. (default false)")
+    public void setForceThumbnailOverwrite(boolean b) {
+        ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setOverwriteThumbnails(true);
+    }
+
+    @CommandLineArg(name = "forceBackdrop", description = "Force download/overwrite of backdrop images. (default false)")
+    public void setForceBackdropOverwrite(boolean b) {
+        ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setOverwriteBackdrops(true);
+    }
+
+    @CommandLineArg(name = "thumbnailMaxWidth", description = "Will scale down large thumbnail to the specified with. -1 mean no scaling. (default -1)")
+    public void setThumbnailMaxWidth(String width) {
+        ConfigurationManager.getInstance().getSageMetadataConfiguration().setPosterScalingWidth(Integer.parseInt(width));
+    }
+
+    @CommandLineArg(name = "reindex", description = "Tells Metadata providers that require indexing (ie, DVD Profiler) to rebuild it's index. (default false)")
+    public void setReindex(boolean b) {
+        ConfigurationManager.getInstance().getDVDProfilerConfiguration().setForceRebuild(true);
+        ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().setForceRebuild(true);
+    }
+
+    /**
+     * used by the renderResult() to limit the # of results to show.
+     * 
+     * @param size
+     */
+    @CommandLineArg(name = "displaySize", description = "# of search results to display on the screen. (default 10)")
+    public void setDisplaySize(String size) {
+        this.displaySize = Integer.parseInt(size);
+    }
+
+    /**
+     * Just list the movies that it would find given the setFiles(...)
+     * 
+     * @param b
+     */
+    @CommandLineArg(name = "listMovies", description = "Just list the movies it would find. (default false)")
+    public void setListMovies(boolean b) {
+        this.listMovies = b;
+    }
+
+    /**
+     * List the know metadata provides that are installed.
+     * 
+     * @param b
+     */
+    @CommandLineArg(name = "listProviders", description = "Just list the installed metadata providers. (default false)")
+    public void setListProviders(boolean b) {
+        this.listProvders = b;
+    }
+
+    /**
+     * if true, then it will attempt to refresh metadata for entries that
+     * already have metadata by using the providerDataUrl for the media file.
+     * 
+     * @param b
+     */
+    @CommandLineArg(name = "update", description = "Update Missing AND Updated Metadata. (default false)")
+    public void setUpdate(boolean b) {
+        this.refresh = b;
+    }
+
+    /**
+     * enable/disable agressive searching. Agressive searching leads to more
+     * searches because the engine will attempt to seach multiple times to find
+     * the best match.
+     * 
+     * @param b
+     */
+    @CommandLineArg(name = "agressive", description = "If the first search doesn't return clean results, then try additional searches. (default true)")
+    public void setAggressive(boolean b) {
+        this.aggressive = b;
+    }
+
+    /**
+     * enable/disable offline video support. Offline videos are empty video
+     * files with metadata and thumbnails. A user would create these if the
+     * video did exist in his/her collection but they are currently offline.
+     * 
+     * @param b
+     */
+    @CommandLineArg(name = "offline", description = "if true, then the passed file(s) will be treated as offline files. (default false)")
+    public void setOffline(boolean b) {
+        this.offline = b;
+    }
+
+    /**
+     * Set a new default metadata provider.
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "provider", description = "Set the metadata provider. (default imdb)")
+    public void setMetadataProvicer(String s) {
+        this.provider = s;
+    }
+
+    /**
+     * Show Metadata Information for a given movie
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "metadata", description = "Show metadata for movie. (default false)")
+    public void setShowMetadata(boolean b) {
+        this.showMetadata = b;
+    }
+
+    /**
+     * Show Metadata Properties supported by this application.
+     * 
+     * @param 
+     */
+    @CommandLineArg(name = "showSupportedMetadata", description = "Show the supported metadata properties. (default false)")
+    public void setShowMetadataProperties(boolean b) {
+        this.showSupportedMetadata = b;
+    }
+
+    /**
+     * Dump Current Configuration Properties
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "showProperties", description = "Show the current configuration. (default false)")
+    public void setShowProperties(boolean b) {
+        this.showProperties = b;
+    }
+
+    /**
+     * Dump Current Configuration Properties
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "prompt", description = "When a media file cannot be updated, then prompt to enter a title to search on. (default true)")
+    public void setPrompt(boolean b) {
+        this.prompt = b;
+    }
+
+    /**
+     * Force each item to be manually selected and updated.
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "auto", description = "Automatically choose best search result. [if false, it will force you to choose for each item] (default true)")
+    public void setAutomaticUpdate(boolean b) {
+        this.auto = b;
+    }
+
+    /**
+     * Only do backdrops
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "backdropsOnly", description = "Using the specified provider, ONLY find/fetch the backdrop image.")
+    public void setBackdropsOnly(boolean b) {
+        this.backdropsOnly=b;
+    }
+
+    /**
+     * Set a configuration property
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "setProperty", description = "Sets a Property (--setProperty=name:value) (use --showProperties to get property list)")
+    public void setPropertu(String propAndVal) {
+        Pattern p = Pattern.compile("([^:]+):(.*)");
+        Matcher m = p.matcher(propAndVal);
+        if (m.find()) {
+            String n = m.group(1);
+            String v = m.group(2);
+            if (n == null || v == null) {
+                throw new RuntimeException("Malformed Property: " + propAndVal);
+            }
+            ConfigurationManager.getInstance().setProperty(n, v);
+        } else {
+            throw new RuntimeException("Invalid Property: " + propAndVal);
+        }
+    }
+
+    /**
+     * Notify SageTV to refresh it's media
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "refreshSageTV", description = "Notify SageTV to refresh it's Media Library. (default false)")
+    public void setRefreshSageTV(boolean b) {
+        this.refreshSageTV = b;
+    }
+
+    public String[] getFiles() {
+        return files;
+    }
 }

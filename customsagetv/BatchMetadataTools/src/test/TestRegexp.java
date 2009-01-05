@@ -14,104 +14,117 @@ import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.metadataupdater.MetadataUpdater;
 
 public class TestRegexp {
-	public static void main(String args[]) throws IOException {
-		MetadataUpdater.initConfiguration();
-		
-		String reg = "avi|mpg|divx|mkv";
-		String s = "avi";
-		
-		Pattern p = Pattern.compile(reg);
-		Matcher m = p.matcher(s);
-		
-		System.out.printf("S: %s; R: %s; Found: %s\n", s, reg, m.matches());
-		
-		testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.1.avi");
-		testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.cd1.avi");
-		testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.dvd1.avi");
-		testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.part1.avi");
-		testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.cd.1.avi");
-		testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.cd.2.avi");
-		
-		testCleanTitle("Running.Scared.PROPER.DVDRip.XviD-DoNE.cd.2.avi");
-		
-		Map map = new HashMap();
-		map.put("Description","Description Test 1");
-		map.put("_UserRating", "10/10");
-		String mask = "${Description} -- ${_UserRating}!";
-		System.out.printf("Orig: %s; New: %s\n", mask, testRegexParamParse(mask, map));
-		
-		testVOB("test1.VOB");
-		testVOB("test1.VOB1");
-		
-		testActor("Kim Basinger as Stephanie");
-		
-		
-		testIMDBSizeUrl("http://ia.media-imdb.com/images/M/MV5BNDE5NjQzMDkzOF5BMl5BanBnXkFtZTcwODI3ODI3MQ@@._V1._SX100_SY140_.jpg", "10000");
-	}
-	
-	private static void testIMDBSizeUrl(String url, String size) {
-		System.out.println(" Url: " + url);
-		System.out.println("Size: " + size);
-		url  = url.replaceFirst("\\_SX[0-9]+\\_SY[0-9]+\\_", "_SX"+size + "_SY" + size + "_");
-		System.out.println(" Url: " + url);
-	}
+    public static void main(String args[]) throws IOException {
+        MetadataUpdater.initConfiguration();
 
-	private static void testActor(String string) {
-		System.out.println("\n");
-		Pattern p = Pattern.compile("(.*)\\s+as\\s+(.*)");
-		Matcher m =p.matcher(string);
-		if (m.find()) {
-			for (int i=0;i<=m.groupCount();i++) {
-				System.out.printf("[%s]; %s\n", i, m.group(i));
-			}
-		} else {
-			System.out.println("No Match! " + string + "; " + p.pattern());
-		}
-	}
+        String reg = "avi|mpg|divx|mkv";
+        String s = "avi";
 
-	private static void testVOB(String name) {
-		Pattern p = Pattern.compile("\\.vob$|\\.ifo$|\\.bup$",Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(name);
-		System.out.printf("%s; %s; matched: %s", name, p.pattern(), m.find());
-	}
+        Pattern p = Pattern.compile(reg);
+        Matcher m = p.matcher(s);
 
-	private static String testRegexParamParse(String s, Map map) {
-		Pattern p = Pattern.compile("(\\$\\{[_\\.a-zA-Z]+\\})");
-		Matcher m = p.matcher(s);
-		StringBuffer sb = new StringBuffer();
-		
-		int lastStart = 0;
-		while (m.find()) {
-			String token = m.group(0);
-			sb.append(s.substring(lastStart, m.start()));
-			lastStart=m.end();
-			String key = token.substring(2,token.length()-1);
-			String val = (String) map.get(key);
-			if (val!=null) {
-				sb.append(val);
-			}
-			//for (int i=0;i<m.groupCount();i++) {
-			//	System.out.printf("Group#: %d; GroupText: %s; Start: %d; End: %d\n", i, m.group(i), m.start(), m.end());
-			//}
-		}
-		
-		sb.append(s.substring(lastStart));
-		
-		return sb.toString();
-	}
+        System.out.printf("S: %s; R: %s; Found: %s\n", s, reg, m.matches());
 
-	private static void testCleanTitle(String s) {
-		System.out.printf("Title: %s; Cleaned: %s\n", s, MediaMetadataUtils.cleanSearchCriteria(s, true));
-	}
+        testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.1.avi");
+        testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.cd1.avi");
+        testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.dvd1.avi");
+        testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.part1.avi");
+        testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.cd.1.avi");
+        testStack("Watched/Running.Scared.PROPER.DVDRip.XviD-DoNE.cd.2.avi");
 
-	public static void testStack(String s) {
-		MediaFile mf = new MediaFile(new File(s).toURI());
-		System.out.printf("String: %s; Name; %s, Basename: %s; Stacked: %s\n",s , mf.getTitle(), mf.getBasename(), CDStackingModel.INSTANCE.getStackedTitle(mf));
-		
-		Pattern p = Pattern.compile(ConfigurationManager.getInstance().getMediaConfiguration().getStackingModelRegex(), Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(mf.getTitle());
-		if (m.find()) {
-			System.out.printf("Regex: %s; Start Char: %s; Data: %s\n", p.pattern(), m.start(), mf.getTitle().substring(0,m.start()));
-		}
-	}
+        testCleanTitle("Running.Scared.PROPER.DVDRip.XviD-DoNE.cd.2.avi");
+
+        Map map = new HashMap();
+        map.put("Description", "Description Test 1");
+        map.put("_UserRating", "10/10");
+        String mask = "${Description} -- ${_UserRating}!";
+        System.out.printf("Orig: %s; New: %s\n", mask, testRegexParamParse(mask, map));
+
+        testVOB("test1.VOB");
+        testVOB("test1.VOB1");
+
+        testActor("Kim Basinger as Stephanie");
+
+        testIMDBSizeUrl("http://ia.media-imdb.com/images/M/MV5BNDE5NjQzMDkzOF5BMl5BanBnXkFtZTcwODI3ODI3MQ@@._V1._SX100_SY140_.jpg", "10000");
+
+        testRatingParser("Rated PG-13 for intense sequences of sci-fi action violence, brief sexual humor, and language.");
+    }
+
+    private static void testRatingParser(String str) {
+        Pattern p = Pattern.compile("Rated\\s+([^ ]+).*");
+        Matcher m = p.matcher(str);
+        System.out.println("MPAA Description: " + str);
+        if (m.find()) {
+            System.out.println("MPAA Rating: " + m.group(1));
+        } else {
+            System.out.println("MPAA Rating Not Found in: " + str);
+        }
+    }
+
+    private static void testIMDBSizeUrl(String url, String size) {
+        System.out.println(" Url: " + url);
+        System.out.println("Size: " + size);
+        url = url.replaceFirst("\\_SX[0-9]+\\_SY[0-9]+\\_", "_SX" + size + "_SY" + size + "_");
+        System.out.println(" Url: " + url);
+    }
+
+    private static void testActor(String string) {
+        System.out.println("\n");
+        Pattern p = Pattern.compile("(.*)\\s+as\\s+(.*)");
+        Matcher m = p.matcher(string);
+        if (m.find()) {
+            for (int i = 0; i <= m.groupCount(); i++) {
+                System.out.printf("[%s]; %s\n", i, m.group(i));
+            }
+        } else {
+            System.out.println("No Match! " + string + "; " + p.pattern());
+        }
+    }
+
+    private static void testVOB(String name) {
+        Pattern p = Pattern.compile("\\.vob$|\\.ifo$|\\.bup$", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(name);
+        System.out.printf("%s; %s; matched: %s", name, p.pattern(), m.find());
+    }
+
+    private static String testRegexParamParse(String s, Map map) {
+        Pattern p = Pattern.compile("(\\$\\{[_\\.a-zA-Z]+\\})");
+        Matcher m = p.matcher(s);
+        StringBuffer sb = new StringBuffer();
+
+        int lastStart = 0;
+        while (m.find()) {
+            String token = m.group(0);
+            sb.append(s.substring(lastStart, m.start()));
+            lastStart = m.end();
+            String key = token.substring(2, token.length() - 1);
+            String val = (String) map.get(key);
+            if (val != null) {
+                sb.append(val);
+            }
+            // for (int i=0;i<m.groupCount();i++) {
+            // System.out.printf("Group#: %d; GroupText: %s; Start: %d; End:
+            // %d\n", i, m.group(i), m.start(), m.end());
+            // }
+        }
+
+        sb.append(s.substring(lastStart));
+
+        return sb.toString();
+    }
+
+    private static void testCleanTitle(String s) {
+        System.out.printf("Title: %s; Cleaned: %s\n", s, MediaMetadataUtils.cleanSearchCriteria(s, true));
+    }
+
+    public static void testStack(String s) {
+        MediaFile mf = new MediaFile(new File(s).toURI());
+        System.out.printf("String: %s; Name; %s, Basename: %s; Stacked: %s\n", s, mf.getTitle(), mf.getBasename(), CDStackingModel.INSTANCE.getStackedTitle(mf));
+
+        Pattern p = Pattern.compile(ConfigurationManager.getInstance().getMediaConfiguration().getStackingModelRegex(), Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(mf.getTitle());
+        if (m.find()) {
+            System.out.printf("Regex: %s; Start Char: %s; Data: %s\n", p.pattern(), m.start(), mf.getTitle().substring(0, m.start()));
+        }
+    }
 }

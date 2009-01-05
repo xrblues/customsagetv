@@ -3,54 +3,53 @@ package org.jdna.media.metadata.impl.dvdproflocal;
 import org.jdna.persistence.annotations.Field;
 import org.jdna.persistence.annotations.Table;
 
-@Table(name="dvdprofilerLocal", requiresKey=false, description="Configuration for the Local DVD Profiler provider (ie, uses local DVD Profiler, not Urls)")
+@Table(name = "dvdprofilerLocal", requiresKey = false, description = "Configuration for the Local DVD Profiler provider (ie, uses local DVD Profiler, not Urls)")
 public class DVDProfilerLocalConfiguration {
-	@Field(description="Set this to true to force the local dvd profiler index to be rebuilt")
-	private boolean forceRebuild = false;
-	
-	@Field(description="Directory where the local dvd profiler data will be indexed")
-	private String indexDir = "cache/indexDVDProfLocal/";
-	
-	@Field(description="Local DVD Profiler image directory")
-	private String imageDir;
-	
-	@Field(description="Local DVD Profiler xml file")
-	private String xmlFile;
-	
-	public DVDProfilerLocalConfiguration() {
-	}
+    @Field(description = "Set this to true to force the local dvd profiler index to be rebuilt")
+    private boolean forceRebuild = false;
 
-	public boolean isForceRebuild() {
-		return forceRebuild;
-	}
+    @Field(description = "Directory where the local dvd profiler data will be indexed")
+    private String  indexDir     = "cache/indexDVDProfLocal/";
 
-	public void setForceRebuild(boolean forceRebuild) {
-		this.forceRebuild = forceRebuild;
-	}
+    @Field(description = "Local DVD Profiler image directory")
+    private String  imageDir;
 
-	public String getIndexDir() {
-		return indexDir;
-	}
+    @Field(description = "Local DVD Profiler xml file")
+    private String  xmlFile;
 
-	public void setIndexDir(String indexDir) {
-		this.indexDir = indexDir;
-	}
+    public DVDProfilerLocalConfiguration() {
+    }
 
-	public String getImageDir() {
-		return imageDir;
-	}
+    public boolean isForceRebuild() {
+        return forceRebuild;
+    }
 
-	public void setImageDir(String imageDir) {
-		this.imageDir = imageDir;
-	}
+    public void setForceRebuild(boolean forceRebuild) {
+        this.forceRebuild = forceRebuild;
+    }
 
-	public String getXmlFile() {
-		return xmlFile;
-	}
+    public String getIndexDir() {
+        return indexDir;
+    }
 
-	public void setXmlFile(String xmlFile) {
-		this.xmlFile = xmlFile;
-	}
-	
+    public void setIndexDir(String indexDir) {
+        this.indexDir = indexDir;
+    }
+
+    public String getImageDir() {
+        return imageDir;
+    }
+
+    public void setImageDir(String imageDir) {
+        this.imageDir = imageDir;
+    }
+
+    public String getXmlFile() {
+        return xmlFile;
+    }
+
+    public void setXmlFile(String xmlFile) {
+        this.xmlFile = xmlFile;
+    }
 
 }

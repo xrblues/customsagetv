@@ -3,42 +3,42 @@ package org.jdna.media.metadata.impl.dvdprof;
 import org.jdna.persistence.annotations.Field;
 import org.jdna.persistence.annotations.Table;
 
-@Table(name="dvdprofiler",requiresKey=false, description="Configuration for the DVD Profiler Provider that uses urls as it's datasource")
+@Table(name = "dvdprofiler", requiresKey = false, description = "Configuration for the DVD Profiler Provider that uses urls as it's datasource")
 public class DVDProfilerConfiguration {
-	@Field(description="Comma separated list of DVD Profiler Profile urls to use when searching for movies")
-	private String profileUrls ;
-	
-	@Field(description="Set this to true to rebuild the indexed urls")
-	private boolean forceRebuild = false;
-	
-	@Field(description="Directory where the indexed DVD Profiler data will be stored")
-	private String indexDir = "cache/index";
-	
-	public DVDProfilerConfiguration() {
-	}
+    @Field(description = "Comma separated list of DVD Profiler Profile urls to use when searching for movies")
+    private String  profileUrls;
 
-	public String getProfileUrls() {
-		return profileUrls;
-	}
+    @Field(description = "Set this to true to rebuild the indexed urls")
+    private boolean forceRebuild = false;
 
-	public void setProfileUrls(String profileUrls) {
-		this.profileUrls = profileUrls;
-	}
+    @Field(description = "Directory where the indexed DVD Profiler data will be stored")
+    private String  indexDir     = "cache/index";
 
-	public boolean isForceRebuild() {
-		return forceRebuild;
-	}
+    public DVDProfilerConfiguration() {
+    }
 
-	public void setForceRebuild(boolean forceRebuild) {
-		this.forceRebuild = forceRebuild;
-	}
+    public String getProfileUrls() {
+        return profileUrls;
+    }
 
-	public String getIndexDir() {
-		return indexDir;
-	}
+    public void setProfileUrls(String profileUrls) {
+        this.profileUrls = profileUrls;
+    }
 
-	public void setIndexDir(String indexDir) {
-		this.indexDir = indexDir;
-	}
-	
+    public boolean isForceRebuild() {
+        return forceRebuild;
+    }
+
+    public void setForceRebuild(boolean forceRebuild) {
+        this.forceRebuild = forceRebuild;
+    }
+
+    public String getIndexDir() {
+        return indexDir;
+    }
+
+    public void setIndexDir(String indexDir) {
+        this.indexDir = indexDir;
+    }
+
 }

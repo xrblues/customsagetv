@@ -12,96 +12,102 @@ import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MediaMetadataUtils;
 
 public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
-	private static final Logger log = Logger.getLogger(AutomaticUpdateMetadataVisitor.class);
-	
-	private IMediaResourceVisitor updatedHandler;
-	private IMediaMetadataProvider provider;
+    private static final Logger    log = Logger.getLogger(AutomaticUpdateMetadataVisitor.class);
 
-	private IMediaResourceVisitor notFoundHandler;
-	private boolean agressiveSearching;
-	private boolean overwriteThumbnails;
+    private IMediaResourceVisitor  updatedHandler;
+    private IMediaMetadataProvider provider;
 
-	public AutomaticUpdateMetadataVisitor(String providerId, boolean aggressive, boolean overwriteThumbs, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
-		this.provider = MediaMetadataFactory.getInstance().getProvider(providerId);
-		this.agressiveSearching=aggressive;
-		this.updatedHandler = updatedVisitor;
-		this.notFoundHandler=notFoundHandler;
-		this.overwriteThumbnails=overwriteThumbs;
-	}
-	
-	/**
-	 * 
-	 */
-	public void visit(IMediaResource resource) {
-		if (resource.getType()==IMediaFile.TYPE_FILE) {
-			try {
-				fetchMetaData((IMediaFile) resource);
-			} catch (Exception e){
-				log.error("Failed to find/update metadata for resource: " + resource.getLocationUri(), e);
-				notFoundHandler.visit(resource);
-			}
-		}
-	}
-	
-	protected void fetchMetaData(IMediaFile file) throws Exception {
-		String name = MediaMetadataUtils.cleanSearchCriteria(file.getTitle(), false);
-		fetchMetaData(file, name);
-	}
+    private IMediaResourceVisitor  notFoundHandler;
+    private boolean                agressiveSearching;
+    private boolean                overwriteThumbnails;
 
-	protected List<IMediaSearchResult> getSearchResultsForTitle(String name) throws Exception {
-		List<IMediaSearchResult> results = provider.search(IMediaMetadataProvider.SEARCH_TITLE, name);
-		log.debug(String.format("Searched for: %s; Good: %s", name, isGoodSearch(results)));
-		return results;
-	}
+    private long persistenceOptions;
 
-	public static boolean isGoodSearch(List<IMediaSearchResult> results) {
-		return (results.size() > 0 && (results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH || results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_EXACT_MATCH));
-	}
+    public AutomaticUpdateMetadataVisitor(String providerId, boolean aggressive, long persistenceOptions, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
+        this.provider = MediaMetadataFactory.getInstance().getProvider(providerId);
+        this.agressiveSearching = aggressive;
+        this.updatedHandler = updatedVisitor;
+        this.notFoundHandler = notFoundHandler;
+        this.persistenceOptions = persistenceOptions;
+    }
 
-	protected void fetchMetaData(IMediaFile file, String name) throws Exception {
-		List<IMediaSearchResult> results = getSearchResultsForTitle(name);
-		if (!isGoodSearch(results)) {
-			log.debug("Not very sucessful with the search for: " + name);
-			if (agressiveSearching) {
-				String oldName = name;
-				String newName = MediaMetadataUtils.cleanSearchCriteria(name, true);
-				if (!oldName.equals(newName)) {
-					log.debug("We'll try again using: " + newName);
+    /**
+     * 
+     */
+    public void visit(IMediaResource resource) {
+        if (resource.getType() == IMediaFile.TYPE_FILE) {
+            try {
+                fetchMetaData((IMediaFile) resource);
+            } catch (Exception e) {
+                log.error("Failed to find/update metadata for resource: " + resource.getLocationUri(), e);
+                notFoundHandler.visit(resource);
+            }
+        }
+    }
 
-				}
-				List<IMediaSearchResult> newResults = getSearchResultsForTitle(newName);
-				if (isGoodSearch(newResults)) {
-					log.debug("Our other search returned better results.. We'll use these.");
-					results = newResults;
-				}
-			}
-		}
+    protected void fetchMetaData(IMediaFile file) throws Exception {
+        String name = MediaMetadataUtils.cleanSearchCriteria(file.getTitle(), false);
+        fetchMetaData(file, name);
+    }
 
-		if (isGoodSearch(results)) {
-			file.updateMetadata(provider.getMetaData(results.get(0)), overwriteThumbnails);
-			if (updatedHandler!=null) updatedHandler.visit(file);
-		} else {
-			handleNotFoundResults(file, name, results);
-		}
-	}
+    protected List<IMediaSearchResult> getSearchResultsForTitle(String name) throws Exception {
+        List<IMediaSearchResult> results = provider.search(IMediaMetadataProvider.SEARCH_TITLE, name);
+        log.debug(String.format("Searched for: %s; Good: %s", name, isGoodSearch(results)));
+        return results;
+    }
 
-	protected void handleNotFoundResults(IMediaFile file, String title, List<IMediaSearchResult> results) {
-		if (notFoundHandler!=null) notFoundHandler.visit(file);
-	}
-	
-	protected IMediaResourceVisitor getNotFoundVisitor() {
-		return notFoundHandler;
-	}
-	
-	protected IMediaResourceVisitor getUpdatedVisitor() {
-		return updatedHandler;
-	}
+    public static boolean isGoodSearch(List<IMediaSearchResult> results) {
+        return (results.size() > 0 && (results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH || results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_EXACT_MATCH));
+    }
 
-	protected boolean isOverwriteThumbnailsEnabled() {
-		return overwriteThumbnails;
-	}
+    protected void fetchMetaData(IMediaFile file, String name) throws Exception {
+        List<IMediaSearchResult> results = getSearchResultsForTitle(name);
+        if (!isGoodSearch(results)) {
+            log.debug("Not very sucessful with the search for: " + name);
+            if (agressiveSearching) {
+                String oldName = name;
+                String newName = MediaMetadataUtils.cleanSearchCriteria(name, true);
+                if (!oldName.equals(newName)) {
+                    log.debug("We'll try again using: " + newName);
 
-	protected IMediaMetadataProvider getProvider() {
-		return provider;
-	}
+                }
+                List<IMediaSearchResult> newResults = getSearchResultsForTitle(newName);
+                if (isGoodSearch(newResults)) {
+                    log.debug("Our other search returned better results.. We'll use these.");
+                    results = newResults;
+                }
+            }
+        }
+
+        if (isGoodSearch(results)) {
+            file.updateMetadata(provider.getMetaData(results.get(0)), persistenceOptions);
+            if (updatedHandler != null) updatedHandler.visit(file);
+        } else {
+            handleNotFoundResults(file, name, results);
+        }
+    }
+
+    protected void handleNotFoundResults(IMediaFile file, String title, List<IMediaSearchResult> results) {
+        if (notFoundHandler != null) notFoundHandler.visit(file);
+    }
+
+    protected IMediaResourceVisitor getNotFoundVisitor() {
+        return notFoundHandler;
+    }
+
+    protected IMediaResourceVisitor getUpdatedVisitor() {
+        return updatedHandler;
+    }
+
+    protected boolean isOverwriteThumbnailsEnabled() {
+        return overwriteThumbnails;
+    }
+
+    protected IMediaMetadataProvider getProvider() {
+        return provider;
+    }
+
+    public long getPersistenceOptions() {
+        return persistenceOptions;
+    }
 }
