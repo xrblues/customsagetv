@@ -52,6 +52,12 @@ There are 2 remote Api providers instaled by default.  The default one is an RMI
 
 The second provider is a Http Provider.  This provider has some issues when running in Neil's web server.  (It's a limitation of the underlying server, not Neil's code).  In Jetty this Http provider works ok.
 
+Here is a list of current http enabled providers
+ * /sagex/rpcJava - Serialized Java Communications
+ * /sagex/rpcXml - Default xml provider.  Returns results as xml.
+ * /sagex/rpcXbmc - Another Xml providers that returns more verbose xml results
+ * /sagex/rpcJson - Json/JsonP provider that returns results as in JSON format
+
 ==== Installation for Niel's Web Server ====
 To install this Provider....
   * Install [http://forums.sagetv.com/forums/downloads.php?do=file&id=26 Nielm's Webserver Plugin]
