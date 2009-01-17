@@ -7,7 +7,6 @@ import sagex.api.Configuration;
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
 import sagex.api.WidgetAPI;
-import sagex.remote.javarpc.SageAPIRemote;
 
 /**
  * To enable the remote sage api, you need to add
