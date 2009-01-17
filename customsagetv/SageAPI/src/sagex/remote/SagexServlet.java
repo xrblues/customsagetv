@@ -50,7 +50,7 @@ public class SagexServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		System.out.println("Handling remote request.");
+		System.out.println("Handling remote request: " + req.getPathInfo());
 		try {
 			// /command/arg1/arg2/.../
 			// 0 -

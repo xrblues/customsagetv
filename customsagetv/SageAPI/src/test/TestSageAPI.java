@@ -7,6 +7,7 @@ import sagex.api.Configuration;
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
 import sagex.api.WidgetAPI;
+import sagex.remote.javarpc.SageAPIRemote;
 
 /**
  * To enable the remote sage api, you need to add
@@ -20,7 +21,8 @@ import sagex.api.WidgetAPI;
 public class TestSageAPI {
 	public static void main(String args[]) throws Exception {
 		// we can explicitly set the remote server, or let it figure it out...
-		// SageAPI.setProvider(new SageAPIRemote("http://mediaserver:8080/sagex/rpcJava"));
+		//SageAPI.setProvider(new SageAPIRemote("http://mediaserver:8081/sagex/rpcJava"));
+	    System.setProperty("sagex.SageAPI.remoteUrl", "http://mediaserver:8081/sagex/rpcJava");
 
 		// what os is the remote server running...
 		System.out.println("Remote Sage OS: " + Global.GetOS());
