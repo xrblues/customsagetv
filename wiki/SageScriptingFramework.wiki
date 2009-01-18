@@ -27,7 +27,9 @@ To Run your scripts, you should put your script in the scripts directory, and th
 }}}
 
 For example, to run the testSage.js script, you would use..
+{{{
 # java -jar ssf.jar scripts/testSage.js
+}}}
 
 You must be in the root folder of the extracted Sage Scripting Framework folder when you execute your scripts.
 
