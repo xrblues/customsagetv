@@ -3,7 +3,7 @@
 
 = Introduction =
 
-This project started because I needed an excuse to try out the new Scripting Engine that ships with Java6.  Java6 now includes a Javascript engine that can be used to add scripting your java applications.  Not everyone is a Java programmer :)
+This project started because I needed an excuse to try out the new [http://java.sun.com/developer/technicalArticles/J2SE/Desktop/scripting/ Scripting Engine] that ships with Java6.  Java6 now includes a Javascript engine that can be used to add scripting your java applications.  Not everyone is a Java programmer :)
 
 The Sage Scripting Framework, is a simple scripting framework, that relies on Java6 and it's built in Scripting Engine.  I've also included python and groovy engines as well.  So, out of the gate, you can start writing scripts for SageTV using Javascript, Python, or Groovy.
 
