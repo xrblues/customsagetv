@@ -1,4 +1,4 @@
-#summary Batch Metadata Import Tool for SageTV
+#summary Batch Metadata Tools for SageTV
 #labels Phase-Design,Featured,Phase-Requirements
 
 = Introduction =
@@ -12,9 +12,11 @@ For details about each provider, check out the links below
  * [DVDProfilerProvider DVD Profiler Provider]
  * [TheMovieDBProvider themoviedb.com Provider]
  * [CompositeProvider] Composite (build your own) Provider]
+ * [XbmcScraperProvider] Provider that uses the Xbmc Scraper Format
 
 The current provider list
 {{{
+Installed Metadata Providers (*=default)
 * imdb                
    - IMDB Provider (Stuckless)
    - IMDB Provider that provides very resonable results, AND exact match searches.
@@ -31,22 +33,21 @@ The current provider list
    - Local DVD Profiler Provider
    - DVD Profiler Provider using local xml and images (Stuckless).
 
-  themoviedb.com      
-   - themoviedb.com
+  themoviedb.org      
+   - themoviedb.org
    - Provider that uses themoviedb as metadata and coverart source.
 
   imdb-2              
    - Composite Stuckless/Nielm IMDB Provider
    - Composite Provider that uses the default IMDB provider for searching, and Neil's IMDB provider for details.  This useful if you want better plot descriptions.
 
-  themoviedb.com-2    
+  themoviedb.org-2    
    - Composite Stuckless IMDB/TheMovieDB Provider
    - Composite Provider that uses the default IMDB provider for searching, and themoviedb.com for details.  This provider can provide decent results for posters and backdrop coverart.
 
-  sample              
-   - Sample Composite Provider
-   - This is a sample Composite Provider that will disappear as soon as you create one
-
+  imdb.xml            
+   - IMDb (XBMC Scraper)
+   - /home/seans/DevelopmentProjects/workspaces/sage/MovieMetadataUpdater/target/tool/scrapers/xbmc/video/imdb.xml
 }}}
 
  NOTE: This tool by will scan and process multi cd movies, and it will only fetch the metadata once, but it will write it out for each cd, since that is how SageTV requires it. This is also known as cd stacking or grouping.
