@@ -21,7 +21,7 @@ public class TestSageAPI {
 	public static void main(String args[]) throws Exception {
 		// we can explicitly set the remote server, or let it figure it out...
 		//SageAPI.setProvider(new SageAPIRemote("http://mediaserver:8081/sagex/rpcJava"));
-	    System.setProperty("sagex.SageAPI.remoteUrl", "http://mediaserver:8081/sagex/rpcJava");
+	    //System.setProperty("sagex.SageAPI.remoteUrl", "http://mediaserver:8081/sagex/rpcJava");
 
 		// what os is the remote server running...
 		System.out.println("Remote Sage OS: " + Global.GetOS());
@@ -38,7 +38,7 @@ public class TestSageAPI {
 		}
 
 		// Simply media file test....
-		Object files[] = MediaFileAPI.GetMediaFiles();
+		Object files[] = MediaFileAPI.GetMediaFiles("T");
 		if (files != null) {
 			System.out.println("Got Files: " + files.length);
 			Object mf = files[10];
