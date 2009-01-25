@@ -1,5 +1,7 @@
 package sagex.remote.xmlrpc;
 
+import java.io.File;
+
 import sagex.api.AiringAPI;
 import sagex.api.ChannelAPI;
 import sagex.api.MediaFileAPI;
@@ -50,6 +52,8 @@ public class RequestHelper {
 			}
 		} else if (typeClass.equals(String.class)) {
 			return str;
+		} else  if (File.class.equals(typeClass)) {
+		    return new File(str);
 		} else {
 			if (str.startsWith("channel")){
 				String cargs[] = str.split(":");
