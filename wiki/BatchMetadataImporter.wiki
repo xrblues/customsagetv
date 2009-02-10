@@ -16,7 +16,6 @@ For details about each provider, check out the links below
 
 The current provider list
 {{{
-Installed Metadata Providers (*=default)
 * imdb                
    - IMDB Provider (Stuckless)
    - IMDB Provider that provides very resonable results, AND exact match searches.
@@ -47,7 +46,11 @@ Installed Metadata Providers (*=default)
 
   imdb.xml            
    - IMDb (XBMC Scraper)
-   - /home/seans/DevelopmentProjects/workspaces/sage/MovieMetadataUpdater/target/tool/scrapers/xbmc/video/imdb.xml
+   - scrapers/xbmc/video/imdb.xml
+
+  tvdb.xml            
+   - TheTVDB.com (XBMC Scraper)
+   - scrapers/xbmc/video/tvdb.xml
 }}}
 
  NOTE: This tool by will scan and process multi cd movies, and it will only fetch the metadata once, but it will write it out for each cd, since that is how SageTV requires it. This is also known as cd stacking or grouping.
