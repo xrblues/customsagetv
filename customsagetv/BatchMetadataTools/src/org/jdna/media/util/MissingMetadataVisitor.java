@@ -1,10 +1,12 @@
 package org.jdna.media.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
+import org.jdna.media.impl.URIAdapter;
+import org.jdna.media.impl.URIAdapterFactory;
 import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.util.Strings;
 
 /**
  * Resource Visitor that collects ONLY resources that contain missing metadata.
@@ -50,10 +52,20 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
 
     public static boolean isMissingMetadata(IMediaResource resource) {
         if (resource.getType() == IMediaFile.TYPE_FILE) {
-            IMediaMetadata md = resource.getMetadata();
-            if (md == null || Strings.isEmpty(md.getTitle()) || md.getPoster() == null) {
+            try {
+                // if the physical files does not exists, then it's missing metadata
+                URIAdapter ua  = URIAdapterFactory.getAdapter(resource.getLocalPosterUri());
+                if (!ua.exists()) {
+                    return true;
+                }
+                
+                IMediaMetadata md = resource.getMetadata();
+                if (md == null || StringUtils.isEmpty(md.getTitle()) || md.getPoster() == null) {
+                    return true;
+                } // else skip
+            } catch (Exception e) {
                 return true;
-            } // else skip
+            }
         } // else skip
         return false;
     }

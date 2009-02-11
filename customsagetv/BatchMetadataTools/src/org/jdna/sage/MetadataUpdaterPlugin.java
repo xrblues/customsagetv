@@ -1,6 +1,8 @@
 package org.jdna.sage;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaResource;
@@ -12,6 +14,8 @@ import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 import org.jdna.media.util.NullResourceVisitor;
+import org.jdna.metadataupdater.Version;
+import org.jdna.util.LoggerConfiguration;
 
 import sage.MediaFileMetadataParser;
 
@@ -39,6 +43,25 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
     public Object extractMetadata(File file, String arg) {
         // lazy load the static references, and only load them once
         if (filter == null) {
+            LoggerConfiguration.configure();
+            
+            System.out.println("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
+            System.out.println("   BMT Version:  " + Version.VERSION);
+            System.out.println("  Java Version:  " + System.getProperty("java.version"));
+            System.out.println("Java Classpath:  " + System.getProperty("java.class.path"));
+            
+            String classpath = System.getProperty("java.class.path");
+            Pattern p = Pattern.compile("metadata-updater-([0-9\\.]+).jar");
+            Matcher m = p.matcher(classpath);
+            if (m.find()) {
+                if (m.find()) {
+                    System.out.println("You have more than 1 metadata updater log in the classpath.  Clean it up, and restart.");
+                } else {
+                    System.out.println("Only found 1 metadata-updater jar in the classpath, which is good.");
+                }
+            }
+            System.out.println("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
+            
             String providerId = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
             System.out.println("** Batch Metadata Plugin; Using ProviderId: " + providerId);
             System.out.println("** Configuration for Metadata Plugin: " + ConfigurationManager.getInstance().getConfigFileLocation());
@@ -63,9 +86,13 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                         Object props = SageVideoMetaDataPersistence.metadataToSageTVMap(mr.getMetadata());
                         System.out.println("Metadata Imported for: " + file.getAbsolutePath());
                         return props;
+                    } else {
+                        System.out.println("Unable to Fetch Metadata for Medai: " + file.getAbsolutePath());
                     }
                 } else {
-                    System.out.println("Ignoring Media: " + file.getAbsolutePath() + "; It already has metadata.");
+                    System.out.println("Media: " + file.getAbsolutePath() + "; It already has metadata, returning existing metadata.");
+                    Object props = SageVideoMetaDataPersistence.metadataToSageTVMap(mr.getMetadata());
+                    return props;
                 }
             }
         } catch (Exception e) {

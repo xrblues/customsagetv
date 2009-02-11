@@ -7,28 +7,31 @@ import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.ProviderInfo;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchQuery.Type;
 
 public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
-    public static final String   PROVIDER_ID = "themoviedb.com";
-    private static IProviderInfo info        = new ProviderInfo(PROVIDER_ID, "themoviedb.com", "Provider that uses themoviedb as metadata and coverart source.", "http://www.themoviedb.org/images/tmdb/header-logo.png");
+    public static final String   PROVIDER_ID = "themoviedb.org";
+    private static IProviderInfo info        = new ProviderInfo(PROVIDER_ID, "themoviedb.org", "Provider that uses themoviedb as metadata and coverart source.", "http://www.themoviedb.org/images/tmdb/header-logo.png");
+    private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
 
     public IProviderInfo getInfo() {
         return info;
     }
 
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return getMetaData(String.format(TheMovieDBItemParser.ITEM_URL, result.getId()));
+        return getMetaData(String.format(TheMovieDBItemParser.ITEM_URL, result.getUrl()));
     }
 
     public IMediaMetadata getMetaData(String providerDataUrl) throws Exception {
         return new TheMovieDBItemParser(providerDataUrl).getMetadata();
     }
 
-    public List<IMediaSearchResult> search(int searchType, String arg) throws Exception {
-        if (searchType == IMediaMetadataProvider.SEARCH_TITLE) {
-            return new TheMovieDBSearchParser(searchType, arg).getResults();
+    public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
+        if (query.getType() ==  SearchQuery.Type.MOVIE) {
+            return new TheMovieDBSearchParser(query).getResults();
         } else {
-            throw new Exception("Unsupported Search Type: " + searchType);
+            throw new Exception("Unsupported Search Type: " + query.getType());
         }
     }
 
@@ -55,5 +58,9 @@ public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
         } else {
             throw new Exception("Failed to get metadata by imdb for imdbid: " + imdbId);
         }
+    }
+
+    public Type[] getSupportedSearchTypes() {
+        return supportedSearchTypes;
     }
 }

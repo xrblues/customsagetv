@@ -10,6 +10,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.util.Scoring;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -23,8 +25,8 @@ public class TheMovieDBSearchParser {
     private String                              url;
     private List<IMediaSearchResult>            results    = new ArrayList<IMediaSearchResult>();
 
-    public TheMovieDBSearchParser(int searchType, String arg) {
-        this.url = String.format(SEARCH_URL, URLEncoder.encode(arg), TheMovieDBMetadataProvider.getApiKey());
+    public TheMovieDBSearchParser(SearchQuery query) {
+        this.url = String.format(SEARCH_URL, URLEncoder.encode(query.get(SearchQuery.Field.TITLE)), TheMovieDBMetadataProvider.getApiKey());
     }
 
     public List<IMediaSearchResult> getResults() {
@@ -51,18 +53,11 @@ public class TheMovieDBSearchParser {
     private void addMovie(Element item) {
         MediaSearchResult sr = new MediaSearchResult();
         sr.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
-
-        float score = getScore(item);
-        if (score >= 1.0) {
-            sr.setResultType(IMediaSearchResult.RESULT_TYPE_EXACT_MATCH);
-        } else {
-            sr.setResultType(IMediaSearchResult.RESULT_TYPE_PARTIAL_MATCH);
-        }
-
+        sr.setResultType(Scoring.getInstance().getTypeForScore(getScore(item)));
         sr.setTitle(getElementValue(item, "title"));
         sr.setYear(getElementValue(item, "release"));
-        sr.setId(getElementValue(item, "id"));
-        sr.setIMDBId(getElementValue(item, "imdb"));
+        sr.setUrl(getElementValue(item, "id"));
+        sr.setImdbId(getElementValue(item, "imdb"));
 
         results.add(sr);
     }

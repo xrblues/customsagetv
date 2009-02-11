@@ -10,6 +10,8 @@ import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaSearchResult;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchResultType;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 
 public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataVisitor {
@@ -26,37 +28,43 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
         this.displaySize = displaySize;
     }
 
-    protected void fetchMetaData(IMediaFile file, String name) throws Exception {
+    protected void fetchMetaData(IMediaFile file, SearchQuery query) throws Exception {
         // in manual mode, it always passes off to the show list
-        handleNotFoundResults(file, name, getSearchResultsForTitle(name));
+        handleNotFoundResults(file, query, getSearchResultsForTitle(query));
     }
     
     @Override
-    protected void handleNotFoundResults(IMediaFile file, String title, List<IMediaSearchResult> results) {
+    protected void handleNotFoundResults(IMediaFile file, SearchQuery query, List<IMediaSearchResult> results) {
         // Let's prompt for results
         // draw the screen, and let the input handler decide what to do next
-        renderResults("Search Results: " + title, results, displaySize);
+        log.debug("Showing Results for: " + query);
+        renderResults("Search Results: " + query.get(SearchQuery.Field.TITLE), results, displaySize);
 
         String data = prompt("[q=quit, n=next (default), ##=use result ##, TITLE=Search TITLE]", "n", "search_results");
 
         try {
             if ("q".equalsIgnoreCase(data)) {
+                log.info("User selected 'q'.  Aboring.");
                 throw new RuntimeException("Aborting at user request.");
             } else if ("n".equalsIgnoreCase(data)) {
+                log.info("User Selected 'n'. Moving next item.");
                 getNotFoundVisitor().visit(file);
             } else if (data.startsWith("s:")) {
                 String buf = data.replaceFirst("s:", "");
-                fetchMetaData(file, buf);
+                log.info("User Changed Search Text: " + buf);
+                fetchMetaData(file, SearchQuery.copy(query).set(SearchQuery.Field.TITLE, buf));
             } else {
                 int n = 0;
                 try {
                     n = Integer.parseInt(data);
+                    log.info("User selected item: " + n + "; (User's Choice: " + data +")");
                 } catch (Exception e) {
                     log.warn("Debug: Failed to parse: " + data + " as a number, using it again as a search.");
-                    fetchMetaData(file, data);
+                    fetchMetaData(file, SearchQuery.copy(query).set(SearchQuery.Field.TITLE, data));
                     return;
                 }
                 IMediaSearchResult sr = results.get(n);
+                log.debug("User's Selected Title: " + sr.getTitle());
                 IMediaMetadata md = getProvider().getMetaData(sr);
                 file.updateMetadata(md, getPersistenceOptions());
                 if (getUpdatedVisitor() != null) getUpdatedVisitor().visit(file);
@@ -91,11 +99,11 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
         l = Math.min(l, max);
         for (int i = 0; i < l; i++) {
             IMediaSearchResult sr = results.get(i);
-            System.out.printf("%02d (%s) - %s [%s]\n", i, IMediaSearchResult.SEARCH_TYPE_NAMES_CHAR[sr.getResultType()], sr.getTitle(), sr.getYear());
+            System.out.printf("%02d (%s) - %s [%s]\n", i, sr.getResultType().symbol(), sr.getTitle(), sr.getYear());
         }
         System.out.print("LEGEND: ");
-        for (int i = 0; i < IMediaSearchResult.SEARCH_TYPE_NAMES_CHAR.length; i++) {
-            System.out.printf("%s %s; ", IMediaSearchResult.SEARCH_TYPE_NAMES_CHAR[i], IMediaSearchResult.SEARCH_TYPE_NAMES[i]);
+        for (SearchResultType srt : SearchResultType.values()) {
+            System.out.printf("%s %s; ", srt.symbol(), srt.label());
         }
         System.out.println("");
     }

@@ -9,6 +9,13 @@
 	<classpathentry kind="lib" path="libs/lucene-core-2.3.2.jar"/>
 	<classpathentry kind="lib" path="libs/commons-vfs-20070823.jar"/>
 	<classpathentry kind="lib" path="libs/Sage.jar"/>
-	<classpathentry kind="lib" path="libs/sagex.api-6.4.8-11.jar"/>
+	<classpathentry kind="lib" path="libs/sagex.api-6.4.8-12.jar"/>
+	<classpathentry kind="lib" path="libs/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="libs/commons-io-1.4.jar"/>
+	<classpathentry kind="lib" path="libs/miglayout-3.6.3-swing.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/home/seans/apps/miglayout/miglayout-3.6.3-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

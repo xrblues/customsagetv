@@ -2,8 +2,8 @@ package test;
 
 import java.util.List;
 
-import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
+import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider;
 import org.jdna.metadataupdater.MetadataUpdater;
 
@@ -12,7 +12,7 @@ public class TestDVDProfiler {
         MetadataUpdater.initConfiguration();
 
         DVDProfMetaDataProvider prov = new DVDProfMetaDataProvider();
-        List<IMediaSearchResult> results = prov.search(IMediaMetadataProvider.SEARCH_TITLE, "Sharkboy");
+        List<IMediaSearchResult> results = prov.search(new SearchQuery("Sharkboy"));
         // List<IVideoSearchResult> results = prov.search(prov.SEARCH_TITLE,
         // "Everyone's Hero");
         // List<IVideoSearchResult> results = prov.search(prov.SEARCH_TITLE, "8

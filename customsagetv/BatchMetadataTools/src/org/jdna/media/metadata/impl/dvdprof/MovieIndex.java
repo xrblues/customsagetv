@@ -19,6 +19,8 @@ import org.apache.lucene.search.Searcher;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.SearchResultType;
+import org.jdna.media.util.Scoring;
 import org.jdna.url.CookieHandler;
 
 public class MovieIndex {
@@ -107,17 +109,10 @@ public class MovieIndex {
 
         for (int i = 0; i < l; i++) {
             Document d = hits.doc(i);
-            int type = IMediaSearchResult.RESULT_TYPE_UNKNOWN;
-            if (hits.score(i) > 0.99) {
-                type = IMediaSearchResult.RESULT_TYPE_EXACT_MATCH;
-            } else if (hits.score(i) > 0.9) {
-                type = IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH;
-            }
-
+            SearchResultType type = Scoring.getInstance().getTypeForScore(hits.score(i));
             String name = d.get("title");
             String date = d.get("release");
             String url = d.get("url");
-
             results.add(new MediaSearchResult(DVDProfMetaDataProvider.PROVIDER_ID, url, name, date, type));
         }
 

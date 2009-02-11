@@ -1,6 +1,6 @@
 package test;
 
-import org.jdna.media.metadata.IMediaMetadataProvider;
+import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 
 public class TestIMDBProvider extends TestIMDBParser {
@@ -12,7 +12,7 @@ public class TestIMDBProvider extends TestIMDBParser {
     public void go(String arg) {
         IMDBMetaDataProvider finder = new IMDBMetaDataProvider();
         try {
-            TestUtils.dumpResults(finder.search(IMediaMetadataProvider.SEARCH_TITLE, arg));
+            TestUtils.dumpResults(finder.search(new SearchQuery(arg)));
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

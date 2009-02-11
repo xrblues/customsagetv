@@ -10,8 +10,12 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.htmlparser.filters.IsEqualFilter;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
@@ -46,6 +50,10 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
     public static final String  _RATED_DESCRIPTION = "_ratedDescription";
     public static final String  _BACKDROP_URL      = "_backdropUrl";
     
+    public static final String  _SEASON            = "_season";
+    public static final String  _EPISODE           = "_episode";
+    public static final String  _SHOW_TITLE        = "_showTitle";
+    
     public static final String  WRITER             = "Writer";
     public static final String  DIRECTOR           = "Director";
     public static final String  ACTOR              = "Actor";
@@ -55,7 +63,16 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
     public static final String  YEAR               = "Year";
     public static final String  GENRE              = "Genre";
     public static final String  RATED              = "Rated";
-
+    
+    /* These properties are added and used only the for the El processing, they are removed before a save if done */
+    private static final String _FILENAME = "_fileName";
+    private static final String _FILEURI = "_fileUri";
+    
+    /* List of properties that we do not want to store */
+    private static final String IGNORE_PROPS[] = new String[] {
+        _FILENAME, _FILEURI
+    };
+    
     public SageVideoMetaDataPersistence() {
     }
 
@@ -110,6 +127,10 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
             props = new Properties();
         }
 
+        // add the filename and file uri
+        props.put(_FILENAME, mediaFile.getName());
+        props.put(_FILEURI, mediaFile.getLocationUri());
+        
         // Store other props and serializedProps
         props.put(_COMPANY, encodeString(md.get(MetadataKey.COMPANY)));
         props.put(_PROVIDER_DATA_URL, encodeString(md.getProviderDataUrl()));
@@ -122,16 +143,22 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
         if (overwriteThumbnail || 
                 ((props.getProperty(_POSTER_URL) == null || props.getProperty(_POSTER_URL).trim().length()==0)  
                 && md.getPoster() != null 
-                && md.getPoster().getDownloadUrl().trim().length() > 0)) {
-            props.put(_POSTER_URL, encodeString(md.getPoster().getDownloadUrl()));
+                && !StringUtils.isEmpty(md.getPoster().getDownloadUrl()))) {
+
+            if (md.getPoster()!=null && !StringUtils.isEmpty(md.getPoster().getDownloadUrl())) {
+                props.put(_POSTER_URL, encodeString(md.getPoster().getDownloadUrl()));
+            }
         }
         
         // check for backdrop 
         if (overwriteBackground || 
                 ((props.getProperty(_BACKDROP_URL) == null && 
                 md.getBackground() != null && 
-                md.getBackground().getDownloadUrl().trim().length() > 0))) {
-            props.put(_BACKDROP_URL, encodeString(md.getBackground().getDownloadUrl()));
+                !StringUtils.isEmpty(md.getBackground().getDownloadUrl())))) {
+            
+            if (md.getBackground()!=null && !StringUtils.isEmpty(md.getBackground().getDownloadUrl())) {
+                props.put(_BACKDROP_URL, encodeString(md.getBackground().getDownloadUrl()));
+            }
         }
         
         props.put(_RELEASE_DATE, encodeString(md.getReleaseDate()));
@@ -144,7 +171,7 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
         props.put(_SER_DESCRIPTION, encodeString(md.getDescription()));
 
         // Sage recognized properties
-        props.put(TITLE, encodeString(md.getTitle()));
+        props.put(TITLE, rewriteTitle(encodeString(md.getTitle())));
         props.put(YEAR, encodeString(md.getYear()));
         props.put(GENRE, encodeString(encodeGenres(md.getGenres())));
         props.put(RATED, encodeString(md.get(MetadataKey.MPAA_RATING)));
@@ -155,12 +182,41 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
         props.put(DIRECTOR, encodeString(encodeDirectors(md.getCastMembers(ICastMember.DIRECTOR))));
         props.put(DESCRIPTION, encodeString(md.getDescription()));
 
+        // tv stuff
+        if (!StringUtils.isEmpty(encodeString((md.get(MetadataKey.TV_SEASON))))) {
+            log.debug("Writing TV Properties ");
+            props.put(_SEASON, zeroPad(encodeString((md.get(MetadataKey.TV_SEASON))),2));
+            props.put(_EPISODE, zeroPad(encodeString((md.get(MetadataKey.TV_EPISODE))),2));
+            props.put(_SHOW_TITLE, encodeString((md.get(MetadataKey.TV_SHOW_TITLE))));
+        }
+        
         // lastly encode the description, to ensure that all other props are
         // set.
         props.put(DESCRIPTION, encodeDescription(md, cm.getSageMetadataConfiguration().getDescriptionMask(), props));
 
         // do the actual save
         save((IMediaFile) mediaFile, md, props, options);
+    }
+
+    private Object zeroPad(String encodeString, int padding) {
+        try {
+            int v = Integer.parseInt(encodeString);
+            String format="%0" + padding + "d";
+            return String.format(format, v);
+        } catch (Exception e) {
+            return encodeString;
+        }
+    }
+
+    private String rewriteTitle(String title) {
+        if (title==null) title="";
+        if (ConfigurationManager.getInstance().getSageMetadataConfiguration().isRewriteTitle()) {
+            Pattern p = Pattern.compile(ConfigurationManager.getInstance().getSageMetadataConfiguration().getRewriteTitleRegex(), Pattern.CASE_INSENSITIVE);
+            Matcher m = p.matcher(title);
+            return m.replaceFirst("$2, $1");
+        } else {
+            return title;
+        }
     }
 
     private String serializeCast(ICastMember[] members) {
@@ -209,7 +265,7 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
                     // Update the title with the title mask before saving multi
                     // part movies
                     // store the title
-                    props.setProperty(TITLE, props.getProperty(_SER_TITLE));
+                    props.setProperty(TITLE, rewriteTitle(props.getProperty(_SER_TITLE)));
                     // set the disc # in the props
                     props.setProperty(_DISC, String.valueOf(i++));
                     // update it using the mask
@@ -223,13 +279,18 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
             }
         } else {
             // store the title
-            props.setProperty(TITLE, props.getProperty(_SER_TITLE));
+            props.setProperty(TITLE, rewriteTitle(props.getProperty(_SER_TITLE)));
             // update it using the mask
-            props.setProperty(TITLE, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTitleMask(), props));
+            if (!StringUtils.isEmpty(props.getProperty(_SEASON))) {
+                // assume TV
+                props.setProperty(TITLE, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTvTitleMask(), props));
+            } else {
+                props.setProperty(TITLE, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTitleMask(), props));
+            }
             save(props, mediaFileParent, md, null, overwriteThumbnail);
         }
         
-        if (!ConfigurationManager.getInstance().getSageMetadataConfiguration().isIgnoreBackdrop()) {
+        if (!ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isIgnoreBackdrops()) {
             // now lets deal with the backdrop file
             IMediaArt backdrop = md.getBackground();
             if (backdrop!=null) {
@@ -253,6 +314,11 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 
             // update local values for this instance
             File thumbFile = getThumbnailFile(mf);
+            
+            // remove props that we don't want to store
+            for (String k : IGNORE_PROPS) {
+                props.remove(k);
+            }
             props.store(new FileOutputStream(partFile), "Sage Video Metadata for " + mf.getLocationUri());
 
             // now download and save the thumbnail, if it does not exist
@@ -265,7 +331,7 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
                             localThumbFile = ma.getDownloadUrl();
                         }
                     }
-                    int scale = ConfigurationManager.getInstance().getSageMetadataConfiguration().getPosterScalingWidth();
+                    int scale = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getPosterImageWidth();
                     if (scale==-1) { 
                         MediaMetadataUtils.writeImageFromUrl(localThumbFile, thumbFile);
                     } else {
@@ -327,7 +393,11 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 
         StringBuffer sb = new StringBuffer();
         for (ICastMember c : actors) {
-            sb.append(MessageFormat.format(mask, c.getName(), c.getPart()));
+            String part = c.getPart();
+            if (StringUtils.isEmpty(part)) {
+                part="";
+            }
+            sb.append(MessageFormat.format(mask, c.getName(), part));
         }
         return sb.toString();
     }
@@ -371,6 +441,11 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
                 md.setProviderId(props.getProperty(_PROVIDER_ID));
                 md.setReleaseDate(props.getProperty(_RELEASE_DATE));
                 md.setRuntime(props.getProperty(RUNNING_TIME));
+
+                // some tv stuff
+                md.set(MetadataKey.TV_SEASON, props.getProperty(_SEASON));
+                md.set(MetadataKey.TV_EPISODE, props.getProperty(_EPISODE));
+                md.set(MetadataKey.TV_SHOW_TITLE, props.getProperty(_SHOW_TITLE));
                 
                 String img = props.getProperty(_POSTER_URL);
                 if (img!=null && img.length()>0) {

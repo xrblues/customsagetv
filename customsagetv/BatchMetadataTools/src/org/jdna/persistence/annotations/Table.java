@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 @Target(value = java.lang.annotation.ElementType.TYPE)
 public @interface Table {
     String name();
+    String label();
 
     boolean requiresKey() default true;
 

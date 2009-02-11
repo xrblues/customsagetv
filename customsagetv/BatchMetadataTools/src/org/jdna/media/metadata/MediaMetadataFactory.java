@@ -1,15 +1,24 @@
 package org.jdna.media.metadata;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
+import org.jdna.media.metadata.impl.composite.MetadataProviderContainer;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider;
+import org.jdna.media.metadata.impl.xbmc.XbmcMetadataProvider;
+import org.jdna.media.metadata.impl.xbmc.XbmcScraper;
+import org.jdna.media.metadata.impl.xbmc.XbmcScraperParser;
 
 public class MediaMetadataFactory {
 
@@ -91,6 +100,33 @@ public class MediaMetadataFactory {
 
             addMetaDataProvider(new CompositeMetadataProvider(cmc));
         }
+        
+        // now let's find all the xbmc scrapers and add them as well...
+        
+        File videos = new File("scrapers/xbmc/video");
+        if (videos.exists()) {
+            File[] files = videos.listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    if (name.endsWith(".xml")) return true;
+                    return false;
+                }
+            });
+            
+            for (File f : files) {
+                try {
+                    XbmcScraperParser parser = new XbmcScraperParser();
+                    XbmcScraper scraper = parser.parseScraper(f);
+                    if (scraper.isVideoScraper()) {
+                        XbmcMetadataProvider p = new XbmcMetadataProvider(scraper);
+                        addMetaDataProvider(p);
+                    } else {
+                        log.warn("Ignoring Xbmc Scraper: " + f.getAbsolutePath() + "; not a video scraper; Content: " + scraper.getContent());
+                    }
+                } catch (Exception e) {
+                    log.error("Failed to create Xbmc Scraper: " + f.getAbsolutePath(), e);
+                }
+            }
+        }
     }
 
     public List<IMediaMetadataProvider> getMetaDataProviders() {
@@ -106,22 +142,35 @@ public class MediaMetadataFactory {
         metadataProviders.remove(provider);
     }
 
-    public List<IMediaSearchResult> search(String providerId, int searchType, String arg) throws Exception {
-        log.info("Searching: providerId: " + providerId + "; searchType: " + searchType + "; query: " + arg);
+    public List<IMediaSearchResult> search(String providerId, SearchQuery query) throws Exception {
+        log.info("Searching: providerId: " + providerId + "; Query: " + query);
         IMediaMetadataProvider provider = getProvider(providerId);
         if (provider == null) {
             log.error("Failed to find metadata provider: " + providerId);
             throw new Exception("Unknown Provider: " + providerId);
         }
-        return provider.search(searchType, arg);
+        return provider.search(query);
     }
 
-    public List<IMediaSearchResult> search(int searchType, String arg) throws Exception {
+    public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
         if (metadataProviders.size() == 0) throw new Exception("No Providers Installed!");
-        return metadataProviders.get(0).search(searchType, arg);
+        return metadataProviders.get(0).search(query);
     }
 
     public IMediaMetadataProvider getProvider(String providerId) {
+        if (!StringUtils.isEmpty(providerId) && providerId.contains(",")) {
+            MetadataProviderContainer container = new MetadataProviderContainer(providerId);
+            log.debug("Multiple Provider Ids were passed; " + providerId + "; Creating a MetadataProviderContainer for them...");
+            Pattern p = Pattern.compile("([^,]+)");
+            Matcher m = p.matcher(providerId);
+            while (m.find()) {
+                String id = m.group(1).trim();
+                container.add(getProvider(id));
+            }
+            return container;
+        }
+        
+        // just a normal single id provider
         IMediaMetadataProvider provider = null;
         for (IMediaMetadataProvider p : metadataProviders) {
             if (providerId.equals(p.getInfo().getId())) {
@@ -129,6 +178,8 @@ public class MediaMetadataFactory {
                 break;
             }
         }
+        
+        if (provider==null) throw new RuntimeException("Unknown Provider: " + providerId);
         return provider;
     }
 
@@ -147,6 +198,20 @@ public class MediaMetadataFactory {
 
     public void removeCoverProvider(ICoverProvider provider) {
         metadataProviders.remove(provider);
+    }
+    
+    public boolean canProviderAcceptQuery(IMediaMetadataProvider provider, SearchQuery query) {
+       boolean accept =false;
+       
+       for (SearchQuery.Type t : provider.getSupportedSearchTypes()) {
+           if (t == query.getType()) return true;
+       }
+       
+       return accept;
+    }
+    
+    public boolean isGoodSearch(List<IMediaSearchResult> results) {
+        return results!=null && (results.size() > 0 && (results.get(0).getResultType() == SearchResultType.POPULAR || results.get(0).getResultType() == SearchResultType.EXACT));
     }
 
 }

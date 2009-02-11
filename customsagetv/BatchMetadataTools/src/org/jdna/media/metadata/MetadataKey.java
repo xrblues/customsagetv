@@ -35,8 +35,8 @@ public enum MetadataKey {
     PROVIDER_DATA_URL("ProviderDataUrl", ""),
     RELEASE_DATE("ReleaseDate", ""),
     TV_EPISODE("Episode", ""),
-    TV_SEASON("Season", "")
-
+    TV_SEASON("Season", ""), 
+    TV_SHOW_TITLE("ShowTitle", "");
     ;
 
     private String id, desc;

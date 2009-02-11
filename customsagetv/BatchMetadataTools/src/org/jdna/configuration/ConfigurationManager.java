@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -13,6 +15,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.jdna.media.impl.MediaConfiguration;
@@ -24,9 +28,11 @@ import org.jdna.media.metadata.impl.imdb.IMDBConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.sage.SageMetadataConfiguration;
 import org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider;
+import org.jdna.media.metadata.impl.xbmc.XbmcScraperConfiguration;
 import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.persistence.IPersistence;
 import org.jdna.persistence.PropertiesPersistence;
+import org.jdna.persistence.annotations.Table;
 import org.jdna.url.UrlConfiguration;
 
 /**
@@ -89,8 +95,12 @@ public class ConfigurationManager {
         persistence = new PropertiesPersistence(props);
     }
 
-    private synchronized void save() throws IOException {
-        log.debug("Writing configuration to persistent store.");
+    public synchronized void updated(Object o) throws Exception {
+        persistence.save(o);
+    }
+
+    public synchronized void save() throws IOException {
+        log.debug("Writing configuration to persistent store: " + configFile.getAbsolutePath());
         FileWriter fw = new FileWriter(configFile);
 
         // use our own store, so that we can sort the keys for readability
@@ -99,13 +109,16 @@ public class ConfigurationManager {
             s.add(e.nextElement());
         }
 
+        int i=0;
         for (Object o : s) {
             fw.write(o.toString());
             fw.write("=");
             fw.write(props.getProperty(o.toString()));
             fw.write("\n");
+            i++;
         }
 
+        log.debug("Wrote " + i + " configuration entries.");
         fw.flush();
         fw.close();
 
@@ -198,11 +211,67 @@ public class ConfigurationManager {
         log.warn("Setting Override Property: " + prop + ": " + value);
         props.setProperty(prop, value);
 
-        // remove any loaded objects, so that they get created with the new
-        // values when needed.
-        loaded.clear();
+        // find the class annotation
+        // find the field annoation
+        // set the field property
+        
+        Pattern p = Pattern.compile("/([^/]+)/(.*)");
+        Matcher m = p.matcher(prop);
+        if (!m.find()) throw new RuntimeException("Invalid Property: " + prop);
+        
+        Class cl = null;
+        for (Class<?> c : configurationClasses) {
+            Table t = c.getAnnotation(Table.class);
+            if (t.name().equals(m.group(1))) {
+                cl = c;
+                break;
+            }
+        }
+        
+        if (cl==null) throw new RuntimeException("Invalid Property! No matching configuration object for: " + prop);
+        
+        Object o = load(cl);
+        if (o==null) throw new RuntimeException("Invalid Property! Unable to create configuration object for: " + prop);
+        
+        try {
+            invoke(o, getField(o, m.group(2)), value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    
+    private static Field getField(Object o, String field) {
+        Field f=null;
+        try {
+            f = o.getClass().getDeclaredField(field);
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid Field: " + field);
+        }
+        return f;
+    }
+   
+    private static void invoke(Object o, Field f, String value) throws Exception {
+        f.setAccessible(true);
+        Class<?> clType = f.getType();
+        if (clType.equals(String.class)) {
+            f.set(o, value);
+        } else if (clType.equals(Integer.class) || clType.equals(int.class)) {
+            f.set(o, Integer.parseInt(value));
+        } else if (clType.equals(Float.class) || clType.equals(float.class)) {
+            f.set(o, Float.parseFloat(value));
+        } else if (clType.equals(Double.class) || clType.equals(double.class)) {
+            f.set(o, Double.parseDouble(value));
+        } else if (clType.equals(Long.class) || clType.equals(long.class)) {
+            f.set(o, Long.parseLong(value));
+        } else if (clType.equals(Boolean.class) || clType.equals(boolean.class)) {
+            f.set(o, Boolean.parseBoolean(value));
+        } else {
+            throw new Exception("Unsupport Type: " + clType.getName());
+        }
+    }
+
+    
     /**
      * Load all configurations and then dump their values.
      * 
@@ -230,5 +299,14 @@ public class ConfigurationManager {
     public String getConfigFileLocation() {
         if (configFile == null) return null;
         return configFile.getAbsolutePath();
+    }
+
+    public XbmcScraperConfiguration getScraperConfiguration(String id) {
+        try {
+            return persistence.load(XbmcScraperConfiguration.class, id);
+        } catch (Exception e) {
+            log.error("Failed to create configuration for: " + id, e);
+        }
+        return null;
     }
 }

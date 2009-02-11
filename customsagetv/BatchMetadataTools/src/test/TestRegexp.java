@@ -48,6 +48,79 @@ public class TestRegexp {
         testIMDBSizeUrl("http://ia.media-imdb.com/images/M/MV5BNDE5NjQzMDkzOF5BMl5BanBnXkFtZTcwODI3ODI3MQ@@._V1._SX100_SY140_.jpg", "10000");
 
         testRatingParser("Rated PG-13 for intense sequences of sci-fi action violence, brief sexual humor, and language.");
+        
+        testRegexp("<div id=\"director-info\" class=\"info\">\n" + 
+        		"<h5>Director:</h5>\n" + 
+        		"<a href=\"/name/nm0751080/\">Chuck Russell</a><br/>\n" + 
+        		"</div>\n" + 
+        		"\n" + 
+        		"<div class=\"info\">\n" + 
+        		"", "Director.*?</h5>(.*?)</div>");
+        
+        testRegexp("<h5>Writers <a href=\"/wga\">(WGA)</a>:</h5>\n" + 
+        		"<a href=\"/name/nm0814085/\">Stephen Sommers</a> (story) and<br/><a href=\"/name/nm0355054/\">Jonathan Hales</a> (story) ...<br/><a class=\"tn15more\" href=\"fullcredits#writers\">more</a>\n" + 
+        		"</div>\n" + 
+        		"\n" + 
+        		"<div class=\"info\">\n" + 
+        		"", "Writers.*?:</h5>(.*?)</div>");
+        
+        testRegexp("<Data>\n" + 
+        		"<Series>\n" + 
+        		"<seriesid>79349</seriesid>\n" + 
+        		"<language>en</language>\n" + 
+        		"<SeriesName>Dexter</SeriesName>\n" + 
+        		"<banner>graphical/79349-g6.jpg</banner>\n" + 
+        		"<Overview>Based on Jeff Lindsay\'s novel \"Darkly Dreaming Dexter,\" this new crime thriller tells the story of a strange man named Dexter Morgan. Once an abused and abandoned child, Dexter is now a successful forensics pathologist...but lurking just beneath his charismatic personality is a terrible truth. Dexter has corralled his innate homicidal urges into a closely guarded second career: He hunts down and brutally murders those vicious criminals who have managed to avoid the clutches of the law.</Overview>\n" + 
+        		"<FirstAired>2006-10-01</FirstAired>\n" + 
+        		"<IMDB_ID>tt0773262</IMDB_ID>\n" + 
+        		"<zap2it_id>SH859795</zap2it_id>\n" + 
+        		"<id>79349</id>\n" + 
+        		"</Series>\n" + 
+        		"</Data>\n" + 
+        		"", "<seriesid>([0-9]*)</seriesid>[^<]*<language>([^<]*)</language>[^<]*<SeriesName>([^<]*)</SeriesName>");
+        
+        testRegexp("http://imdb.com/tt/tt1232?x=y&1=2;;;;season=1&episode=2", "(.*);;;;(.*)");
+        testRegexp("season=1&episode=2", "&?([^=]+)=([^&$]+)");
+        testRegexp("p1,p2", "([^,]+)");
+        testRegexp("p1", "([^,]+)");
+        
+        String regexp = "^(in\\s+the|in\\s+a|i\\s+am|in|the|a|an|i|am)\\s+(.*)";
+        testReplaceRegexp("The Big Chill", regexp, "$2, $1");
+        testReplaceRegexp("An Inconvenient Truth", regexp, "$2, $1");
+        testReplaceRegexp("I Am Legend", regexp, "$2, $1");
+        testReplaceRegexp("I Robot", regexp, "$2, $1");
+        testReplaceRegexp("What The Pick", regexp, "$2, $1");
+        testReplaceRegexp("Another Time", regexp, "$2, $1");
+        testReplaceRegexp("In A Time Capsule", regexp, "$2, $1");
+    }
+
+    private static void testReplaceRegexp(String in, String search, String replace) {
+        System.out.println("");
+        System.out.println("     In: " + in);
+        System.out.println(" Search: " + search);
+        System.out.println("Replace: " + replace);
+        String result = null;
+        Pattern p = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(in);
+        result = m.replaceFirst(replace);
+        System.out.println(" Result: " + result);
+    }
+
+    private static void testRegexp(String string, String string2) {
+        System.out.println("Looging for: " + string2 + " in " + string);
+        Pattern p = Pattern.compile(string2, Pattern.MULTILINE + Pattern.CASE_INSENSITIVE + Pattern.DOTALL);
+        Matcher m = p.matcher(string);
+        boolean found = false;
+        while (m.find()) {
+            found=true;
+            System.out.println("Found it.");
+            for (int i=0;i<=m.groupCount();i++) {
+                System.out.printf("[%s]: %s\n",i , m.group(i));
+            }
+        }
+        if (!found) {
+            System.out.println("Not Found!!");
+        }
     }
 
     private static void testRatingParser(String str) {

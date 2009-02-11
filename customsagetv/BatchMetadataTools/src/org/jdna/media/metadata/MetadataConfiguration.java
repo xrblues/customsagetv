@@ -8,19 +8,18 @@ import org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider;
 import org.jdna.persistence.annotations.Field;
 import org.jdna.persistence.annotations.Table;
 
-@Table(name = "metadata", requiresKey = false, description = "Configuration for Metadata")
+@Table(label="Metadata Configuration", name = "metadata", requiresKey = false, description = "Configuration for Metadata")
 public class MetadataConfiguration {
-
-    @Field(description = "Default class name for storing metadata")
+    @Field(label="Persistence Classname", description = "Default class name for storing metadata")
     private String persistenceClass       = org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence.class.getName();
 
-    @Field(description = "Comma separated list of known metadata providers (ie, can be used for searching for metadata)")
+    @Field(label="Registered Providers", description = "Comma separated list of known metadata providers (ie, can be used for searching for metadata)")
     private String videoMetadataProviders = IMDBMetaDataProvider.class.getName() + "," + NielmIMDBMetaDataProvider.class.getName() + "," + DVDProfMetaDataProvider.class.getName() + "," + LocalDVDProfMetaDataProvider.class.getName() + "," + TheMovieDBMetadataProvider.class.getName();
 
-    @Field(description = "Comma separated list of words that will be removed from a title when doing a search")
+    @Field(label="Ignore Words in Title", description = "Comma separated list of words that will be removed from a title when doing a search")
     private String wordsToClean           = "dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv";
 
-    @Field(description = "Default provider id to use")
+    @Field(label="Metadata Provider(s)", description = "Default provider id to use (comma separate, if more than 1)")
     private String defaultProviderId      = IMDBMetaDataProvider.PROVIDER_ID;
 
     public MetadataConfiguration() {

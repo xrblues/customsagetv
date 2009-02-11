@@ -5,7 +5,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -165,13 +167,32 @@ public class PropertiesPersistence implements IPersistence {
             }
 
             propKey = path + key + "/" + (c.name().equals(org.jdna.persistence.annotations.Field.USE_FIELD_NAME) ? f.getName() : c.name());
-            String propVal = getProperty(propKey, null);
-
-            // don't bother with empty props
-            if (propVal == null || propVal.trim().length() == 0) continue;
-
-            // convert types
-            f.set(o, parseType(f.getType(), propVal));
+            if (c.map()) {
+                log.debug("Attempting to load a map for: " + propKey);
+                String[] keys = getUniqueKeys(Pattern.compile(propKey + "/(.*)"));
+                if (keys!=null) {
+                    Map<String, String> m = new HashMap<String, String>();
+                    for (String k : keys) {
+                        String pk = propKey + "/" + k;
+                        log.debug("Attempting to load value for map entry: " + pk);
+                        String propVal = getProperty(pk, null);
+                        log.debug("Got a value: " + propVal);
+                        if (propVal == null || propVal.trim().length() == 0) continue;
+                        m.put(k, propVal);
+                    }
+                    f.set(o, m);
+                } else {
+                    log.debug("No Map Keys for: " + propKey);
+                }
+            } else {
+                String propVal = getProperty(propKey, null);
+    
+                // don't bother with empty props
+                if (propVal == null || propVal.trim().length() == 0) continue;
+    
+                // convert types
+                f.set(o, parseType(f.getType(), propVal));
+            }
         }
 
         return o;
