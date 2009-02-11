@@ -32,6 +32,8 @@ import org.jdna.media.util.CompositeResourceVisitor;
 import org.jdna.media.util.CountResourceVisitor;
 import org.jdna.media.util.MissingMetadataVisitor;
 import org.jdna.media.util.RefreshMetadataVisitor;
+import org.jdna.metadataupdater.gui.BatchMetadataToolsGUI;
+import org.jdna.util.LoggerConfiguration;
 
 import sagex.api.Global;
 
@@ -48,6 +50,8 @@ public class MetadataUpdater {
 
     public static final Logger log = Logger.getLogger(MetadataUpdater.class);
 
+    private static MetadataUpdaterConfiguration config = null;
+    
     /**
      * This method only needs to be called from the command line. All other
      * processes should use the MetadataUpdater directly and NOT call the main()
@@ -58,6 +62,8 @@ public class MetadataUpdater {
      * @throws Exception
      */
     public static void main(String args[]) throws Exception {
+        LoggerConfiguration.configure();
+        
         try {
 
             String title = "Batch MetaData Tools (" + Version.VERSION + ")";
@@ -67,6 +73,8 @@ public class MetadataUpdater {
             // vars can
             // override default configuration settings
             initConfiguration();
+            
+            logMetadataEnvironment();
 
             // process the command line
             CommandLine cl = new CommandLine(title, "java MetadataTool", args);
@@ -78,7 +86,7 @@ public class MetadataUpdater {
                 cl.applyToAnnotated(mdu);
 
                 // check for help
-                if (cl.hasArg("help") || !cl.hasArgs()) {
+                if (cl.hasArg("help") || args==null || args.length==0) {
                     cl.help(mdu);
                     return;
                 }
@@ -94,23 +102,34 @@ public class MetadataUpdater {
         }
     }
 
+    public static void logMetadataEnvironment() {
+        log.debug("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
+        log.debug("   BMT Version:  " + Version.VERSION);
+        log.debug("  Java Version:  " + System.getProperty("java.version"));
+        log.debug("Java Classpath:  " + System.getProperty("java.class.path"));
+        
+        String classpath = System.getProperty("java.class.path");
+        Pattern p = Pattern.compile("metadata-updater-([0-9\\.]+).jar");
+        Matcher m = p.matcher(classpath);
+        if (m.find()) {
+            if (m.find()) {
+                log.error("You have more than 1 metadata updater log in the classpath.  Clean it up, and restart.");
+            } else {
+                log.debug("Only found 1 metadata-updater jar in the classpath, which is good.");
+            }
+        }
+        log.debug("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
+    }
+
     private String[] files;
-    private boolean  recurse        = false;
-    private boolean  force          = false;
-    private int      displaySize    = 10;
     private boolean  listMovies     = false;
     private boolean  listProvders   = false;
-    private boolean  refresh        = false;
-    private boolean  aggressive     = true;
     private boolean  offline        = false;
     private boolean  showMetadata   = false;
     private boolean  showProperties = false;
-    private boolean  refreshSageTV  = false;
     private boolean  prompt         = true;
-    private boolean  auto           = true;
-    private String   provider       = null;
     private boolean showSupportedMetadata = false;
-    private boolean backdropsOnly = false;
+    private boolean gui = false;
     
     /**
      * This is the entry into the tool. This will process() all files/dirs that
@@ -120,11 +139,10 @@ public class MetadataUpdater {
      *             if processing fails for some unknown reason.
      */
     public void process() throws Exception {
-        if (provider==null) {
-            provider = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
-        }
+        String provider = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
+        log.debug("Using Providers: " + provider);
         
-        if (!auto) {
+        if (!config.isAutomaticUpdate()) {
             System.out.println("** Automatic Updating Disabled ***");
         }
         
@@ -178,24 +196,29 @@ public class MetadataUpdater {
             parentFolder = MediaResourceFactory.getInstance().createVirtualFolder("Videos", resources);
         }
 
+        if (gui==true) {
+           BatchMetadataToolsGUI.runApp(this); 
+           return; 
+        }
+        
         // if there are no parent folders to process, the just do nothing...
         if (parentFolder.members().size() == 0) {
             System.out.println("No Files to process.");
         } else {
             // check if we are just listing movies
             if (listMovies) {
-                parentFolder.accept(new ListMovieVisitor(false), recurse);
+                parentFolder.accept(new ListMovieVisitor(false), config.isRecurseFolders());
                 return;
             }
 
             // we are showing info for these...
             if (showMetadata) {
-                parentFolder.accept(new ListMovieVisitor(true), recurse);
+                parentFolder.accept(new ListMovieVisitor(true), config.isRecurseFolders());
                 return;
             }
             
             // check if we are just doing backdrops
-            if (backdropsOnly) {
+            if (config.isOnlyProcessBackdrops()) {
                 processBackdrops(parentFolder);
                 return;
             }
@@ -210,7 +233,7 @@ public class MetadataUpdater {
             // collectors and counters for automatic updating
             CollectorResourceVisitor autoHandled = new CollectorResourceVisitor();
             CollectorResourceVisitor autoSkipped = new CollectorResourceVisitor();
-            if (refresh) {
+            if (!config.isProcessMissingMetadataOnly()) {
                 parentFolder.accept(new RefreshMetadataVisitor(persistenceOptions, autoHandled, autoSkipped));
                 return;
             }
@@ -233,7 +256,7 @@ public class MetadataUpdater {
             CompositeResourceVisitor autoUpdated  = new CompositeResourceVisitor(updatedDisplay, autoUpdatedCount);
             
             // Main visitor for automatic updating
-            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, aggressive, persistenceOptions, autoUpdated, autoNotFound);
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, config.isAggressiveSearches(), persistenceOptions, autoUpdated, autoNotFound);
             
             // collectors and counters for manual updating
             CountResourceVisitor manualUpdatedCount = new CountResourceVisitor();
@@ -241,22 +264,22 @@ public class MetadataUpdater {
             CompositeResourceVisitor manualUpdated  = new CompositeResourceVisitor(updatedDisplay, manualUpdatedCount);
             
             // Main visitor for manual interactive searching
-            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(provider, aggressive, persistenceOptions, manualUpdated, manualSkippedCount, displaySize);
+            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(provider, config.isAggressiveSearches(), persistenceOptions, manualUpdated, manualSkippedCount, config.getSearchResultDisplaySize());
 
             // Main visitor that only does files that a missing metadata
-            MissingMetadataVisitor missingMetadata = new MissingMetadataVisitor(auto ? autoUpdater : manualUpdater, new CompositeResourceVisitor(up2dateDisplay, auto ? autoSkippedCount : manualSkippedCount));
+            MissingMetadataVisitor missingMetadata = new MissingMetadataVisitor(config.isAutomaticUpdate() ? autoUpdater : manualUpdater, new CompositeResourceVisitor(up2dateDisplay, config.isAutomaticUpdate() ? autoSkippedCount : manualSkippedCount));
             
-            if (force) {
+            if (config.isOverwriteProperties()) {
                 // do all videos... no matter what
-                parentFolder.accept(auto ? autoUpdater : manualUpdater, recurse);
+                parentFolder.accept(config.isAutomaticUpdate() ? autoUpdater : manualUpdater, config.isRecurseFolders());
             } else {
                 // do only vidoes that are missing metadat
-                parentFolder.accept(missingMetadata, recurse);
+                parentFolder.accept(missingMetadata, config.isRecurseFolders());
             }
 
             // lastly, if the user wants, let's prompt for any that could not be
             // found.
-            if (auto && prompt && autoNotFound.getCollection().size() > 0) {
+            if (config.isAutomaticUpdate() && prompt && autoNotFound.getCollection().size() > 0) {
                 // now process all the files that autoupdater could not process
                 // automatically
                 IMediaFolder mf = MediaResourceFactory.getInstance().createVirtualFolder("manualUpdate", autoNotFound.getCollection());
@@ -271,11 +294,11 @@ public class MetadataUpdater {
 
             // Render stats
             System.out.println("\n\nMetaData Stats...");
-            System.out.printf("Auto Updated: %d; Auto Skiped: %d; Manual Updated:%d; Manual Skipped: %d; \n\n", autoUpdatedCount.getCount(), autoSkippedCount.getCount(), manualUpdatedCount.getCount(), manualSkippedCount.getCount());
+            System.out.printf("Auto Updated: %d; Auto Skipped: %d; Manual Updated:%d; Manual Skipped: %d; \n\n", autoUpdatedCount.getCount(), autoSkippedCount.getCount(), manualUpdatedCount.getCount(), manualSkippedCount.getCount());
         }
 
         // check if we need to refresh sage tv
-        if (refreshSageTV) {
+        if (config.isRefreshSageTV()) {
             try {
                 System.out.println("Notifying Sage to Refresh Imported Media");
                 Global.RunLibraryImportScan(false);
@@ -296,8 +319,8 @@ public class MetadataUpdater {
             }
         };
         
-        BackdropDownloaderVisitor vis = new BackdropDownloaderVisitor(provider, handled, skipped);
-        parent.accept(vis, recurse);
+        BackdropDownloaderVisitor vis = new BackdropDownloaderVisitor(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId(), handled, skipped);
+        parent.accept(vis, config.isRecurseFolders());
     }
 
     public void renderProviders(List<IMediaMetadataProvider> providers, String defaultProvider) {
@@ -325,6 +348,8 @@ public class MetadataUpdater {
             CompositeMetadataProvider p = new CompositeMetadataProvider(c);
             MediaMetadataFactory.getInstance().addMetaDataProvider(p);
         }
+        
+        config = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration();
     }
 
     /**
@@ -344,7 +369,7 @@ public class MetadataUpdater {
      */
     @CommandLineArg(name = "recurse", description = "Recursively process sub directories. (default false)")
     public void setRecurse(boolean b) {
-        this.recurse = b;
+        config.setRecurseFolders(b);
     }
 
     /**
@@ -355,33 +380,32 @@ public class MetadataUpdater {
      */
     @CommandLineArg(name = "force", description = "Force download of metadata, even if metadata exists and has not been updated. Does not overwrite thumbnails. (default false)")
     public void setFetchAlways(boolean b) {
-        this.force = b;
+        config.setOverwriteProperties(true);
     }
 
     @CommandLineArg(name = "backdropsNever", description = "Set to true if you DON'T want to download backdrops. (default false)")
     public void setBackdropsNever(boolean b) {
-        ConfigurationManager.getInstance().getSageMetadataConfiguration().setIgnoreBackdrop(b);
+        config.setIgnoreBackdrops(b);
     }
 
     @CommandLineArg(name = "forceThumbnail", description = "Force download/overwrite of thumbnails. (default false)")
     public void setForceThumbnailOverwrite(boolean b) {
-        ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setOverwriteThumbnails(true);
+        config.setOverwriteThumbnails(true);
     }
 
     @CommandLineArg(name = "forceBackdrop", description = "Force download/overwrite of backdrop images. (default false)")
     public void setForceBackdropOverwrite(boolean b) {
-        ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setOverwriteBackdrops(true);
+        config.setOverwriteBackdrops(true);
     }
 
     @CommandLineArg(name = "thumbnailMaxWidth", description = "Will scale down large thumbnail to the specified with. -1 mean no scaling. (default -1)")
     public void setThumbnailMaxWidth(String width) {
-        ConfigurationManager.getInstance().getSageMetadataConfiguration().setPosterScalingWidth(Integer.parseInt(width));
+        config.setPosterImageWidth(Integer.parseInt(width));
     }
 
     @CommandLineArg(name = "reindex", description = "Tells Metadata providers that require indexing (ie, DVD Profiler) to rebuild it's index. (default false)")
     public void setReindex(boolean b) {
-        ConfigurationManager.getInstance().getDVDProfilerConfiguration().setForceRebuild(true);
-        ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().setForceRebuild(true);
+        config.setRefreshIndexes(b);
     }
 
     /**
@@ -390,8 +414,8 @@ public class MetadataUpdater {
      * @param size
      */
     @CommandLineArg(name = "displaySize", description = "# of search results to display on the screen. (default 10)")
-    public void setDisplaySize(String size) {
-        this.displaySize = Integer.parseInt(size);
+    public void setDisplaySize(int size) {
+        config.setSearchResultDisplaySize(size);
     }
 
     /**
@@ -422,7 +446,7 @@ public class MetadataUpdater {
      */
     @CommandLineArg(name = "update", description = "Update Missing AND Updated Metadata. (default false)")
     public void setUpdate(boolean b) {
-        this.refresh = b;
+        config.setProcessMissingMetadataOnly(!b);
     }
 
     /**
@@ -434,7 +458,7 @@ public class MetadataUpdater {
      */
     @CommandLineArg(name = "agressive", description = "If the first search doesn't return clean results, then try additional searches. (default true)")
     public void setAggressive(boolean b) {
-        this.aggressive = b;
+        config.setAggressiveSearches(b);
     }
 
     /**
@@ -456,7 +480,9 @@ public class MetadataUpdater {
      */
     @CommandLineArg(name = "provider", description = "Set the metadata provider. (default imdb)")
     public void setMetadataProvicer(String s) {
-        this.provider = s;
+        log.info("Setting the default provider: " + s);
+        ConfigurationManager.getInstance().getMetadataConfiguration().setDefaultProviderId(s);
+        log.debug("Default Provider Set: " + ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId());
     }
 
     /**
@@ -506,7 +532,7 @@ public class MetadataUpdater {
      */
     @CommandLineArg(name = "auto", description = "Automatically choose best search result. [if false, it will force you to choose for each item] (default true)")
     public void setAutomaticUpdate(boolean b) {
-        this.auto = b;
+        config.setAutomaticUpdate(b);
     }
 
     /**
@@ -516,7 +542,7 @@ public class MetadataUpdater {
      */
     @CommandLineArg(name = "backdropsOnly", description = "Using the specified provider, ONLY find/fetch the backdrop image.")
     public void setBackdropsOnly(boolean b) {
-        this.backdropsOnly=b;
+        config.setOnlyProcessBackdrops(b);
     }
 
     /**
@@ -547,7 +573,17 @@ public class MetadataUpdater {
      */
     @CommandLineArg(name = "refreshSageTV", description = "Notify SageTV to refresh it's Media Library. (default false)")
     public void setRefreshSageTV(boolean b) {
-        this.refreshSageTV = b;
+        config.setRefreshSageTV(b);
+    }
+
+    /**
+     * Notify SageTV to refresh it's media
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "gui", description = "Enable/Disable gui (default true)")
+    public void setEnableGUI(boolean b) {
+        this.gui = b;
     }
 
     public String[] getFiles() {

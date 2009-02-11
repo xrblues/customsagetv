@@ -12,6 +12,9 @@ public @interface Field {
     boolean key() default false;
 
     String name() default USE_FIELD_NAME;
+    String label();
 
     String description() default "";
+    
+    boolean map() default false;
 }

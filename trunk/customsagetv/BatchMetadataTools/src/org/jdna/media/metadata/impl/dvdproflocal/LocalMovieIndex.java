@@ -18,6 +18,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.SearchResultType;
+import org.jdna.media.util.Scoring;
 import org.w3c.dom.Element;
 
 public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
@@ -101,13 +103,7 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
 
         for (int i = 0; i < l; i++) {
             Document d = hits.doc(i);
-            int type = IMediaSearchResult.RESULT_TYPE_UNKNOWN;
-            if (hits.score(i) > 0.99) {
-                type = IMediaSearchResult.RESULT_TYPE_EXACT_MATCH;
-            } else if (hits.score(i) > 0.9) {
-                type = IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH;
-            }
-
+            SearchResultType type = Scoring.getInstance().getTypeForScore(hits.score(i));
             String name = d.get("title");
             String date = d.get("release");
             String id = d.get("id");

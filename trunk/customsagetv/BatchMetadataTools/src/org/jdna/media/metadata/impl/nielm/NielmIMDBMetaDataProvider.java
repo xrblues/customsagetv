@@ -20,7 +20,10 @@ import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.ProviderInfo;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchQuery.Type;
 import org.jdna.media.metadata.impl.imdb.IMDBSearchResultParser;
+import org.jdna.media.util.Scoring;
 
 public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
     private static final Logger  log                   = Logger.getLogger(NielmIMDBMetaDataProvider.class);
@@ -33,28 +36,30 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
     private static IProviderInfo info                  = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_THUMNAIL_URL);
 
     private ImdbWebBackend       db                    = null;
+    private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
 
     public NielmIMDBMetaDataProvider() {
         db = new ImdbWebBackend();
     }
 
-    public List<IMediaSearchResult> search(int type, String arg) throws Exception {
+    public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
         List<IMediaSearchResult> results = new ArrayList<IMediaSearchResult>();
 
-        if (type == IMediaMetadataProvider.SEARCH_TITLE) {
+        if (query.getType() == SearchQuery.Type.MOVIE) {
             try {
+                String arg = query.get(SearchQuery.Field.TITLE);
                 Vector<Role> list = db.searchTitle(arg);
                 for (Role r : list) {
                     MediaSearchResult vsr = new MediaSearchResult();
                     updateTitleAndYear(vsr, r);
-                    vsr.setResultType(IMediaSearchResult.RESULT_TYPE_UNKNOWN);
+                    vsr.setResultType(Scoring.getInstance().getType(arg, vsr.getTitle()));
                     vsr.setProviderId(NielmIMDBMetaDataProvider.PROVIDER_ID);
                     DbObjectRef objRef = r.getName();
                     if (objRef instanceof ImdbWebObjectRef) {
                         // set the imdb url as the ID for this result.
                         // that will enable us to find it later
-                        vsr.setId(((ImdbWebObjectRef) objRef).getImdbRef());
-                        vsr.setIMDBId(IMDBSearchResultParser.parseTitleId(((ImdbWebObjectRef) objRef).getImdbRef()));
+                        vsr.setUrl(((ImdbWebObjectRef) objRef).getImdbRef());
+                        vsr.setImdbId(IMDBSearchResultParser.parseTitleId(((ImdbWebObjectRef) objRef).getImdbRef()));
                     } else {
                         log.error("Imdb Search result was incorrect type: " + objRef.getClass().getName());
                     }
@@ -111,7 +116,7 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return getMetaData(result.getId());
+        return getMetaData(result.getUrl());
     }
 
     public IProviderInfo getInfo() {
@@ -120,5 +125,9 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
 
     public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
         return getMetaData(String.format(IMDBSearchResultParser.TITLE_URL, imdbId));
+    }
+
+    public Type[] getSupportedSearchTypes() {
+        return supportedSearchTypes;
     }
 }

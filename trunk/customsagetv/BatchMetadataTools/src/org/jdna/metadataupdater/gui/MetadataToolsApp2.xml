@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<frame title="Batch Metadata Tools ${VERSION}" layout="[][grow][]">
+	<menubar>
+		<menu name="File">
+			<menuItem name="Exit"/>
+		</menu>
+	</menubar>
+	
+	<label value="Folder to Scan"/>
+	<textInput layout="growx"/>
+	<button label="..." action="${selectFolderAction()}" layout="wrap"/>
+</frame>

@@ -10,6 +10,8 @@ import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MediaMetadataUtils;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchQueryFactory;
 
 public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     private static final Logger    log = Logger.getLogger(AutomaticUpdateMetadataVisitor.class);
@@ -46,48 +48,47 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     }
 
     protected void fetchMetaData(IMediaFile file) throws Exception {
-        String name = MediaMetadataUtils.cleanSearchCriteria(file.getTitle(), false);
-        fetchMetaData(file, name);
+        SearchQuery query = SearchQueryFactory.getInstance().createQuery(file);
+        fetchMetaData(file, query);
     }
 
-    protected List<IMediaSearchResult> getSearchResultsForTitle(String name) throws Exception {
-        List<IMediaSearchResult> results = provider.search(IMediaMetadataProvider.SEARCH_TITLE, name);
-        log.debug(String.format("Searched for: %s; Good: %s", name, isGoodSearch(results)));
+    protected List<IMediaSearchResult> getSearchResultsForTitle(SearchQuery query) throws Exception {
+        List<IMediaSearchResult> results = provider.search(query);
+        log.debug(String.format("Searched for: %s; Good: %s", query, MediaMetadataFactory.getInstance().isGoodSearch(results)));
         return results;
     }
 
-    public static boolean isGoodSearch(List<IMediaSearchResult> results) {
-        return (results.size() > 0 && (results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH || results.get(0).getResultType() == IMediaSearchResult.RESULT_TYPE_EXACT_MATCH));
-    }
 
-    protected void fetchMetaData(IMediaFile file, String name) throws Exception {
-        List<IMediaSearchResult> results = getSearchResultsForTitle(name);
-        if (!isGoodSearch(results)) {
-            log.debug("Not very sucessful with the search for: " + name);
+    protected void fetchMetaData(IMediaFile file, SearchQuery query) throws Exception {
+        List<IMediaSearchResult> results = getSearchResultsForTitle(query);
+        if (!MediaMetadataFactory.getInstance().isGoodSearch(results)) {
+            log.debug("Not very sucessful with the search for: " + query);
             if (agressiveSearching) {
-                String oldName = name;
-                String newName = MediaMetadataUtils.cleanSearchCriteria(name, true);
+                String oldName = query.get(SearchQuery.Field.TITLE);
+                String newName = MediaMetadataUtils.cleanSearchCriteria(oldName, true);
                 if (!oldName.equals(newName)) {
                     log.debug("We'll try again using: " + newName);
 
                 }
-                List<IMediaSearchResult> newResults = getSearchResultsForTitle(newName);
-                if (isGoodSearch(newResults)) {
+                SearchQuery newQuery = new SearchQuery(query);
+                newQuery.set(SearchQuery.Field.TITLE, newName);
+                List<IMediaSearchResult> newResults = getSearchResultsForTitle(newQuery);
+                if (MediaMetadataFactory.getInstance().isGoodSearch(newResults)) {
                     log.debug("Our other search returned better results.. We'll use these.");
                     results = newResults;
                 }
             }
         }
 
-        if (isGoodSearch(results)) {
+        if (MediaMetadataFactory.getInstance().isGoodSearch(results)) {
             file.updateMetadata(provider.getMetaData(results.get(0)), persistenceOptions);
             if (updatedHandler != null) updatedHandler.visit(file);
         } else {
-            handleNotFoundResults(file, name, results);
+            handleNotFoundResults(file, query, results);
         }
     }
 
-    protected void handleNotFoundResults(IMediaFile file, String title, List<IMediaSearchResult> results) {
+    protected void handleNotFoundResults(IMediaFile file, SearchQuery query, List<IMediaSearchResult> results) {
         if (notFoundHandler != null) notFoundHandler.visit(file);
     }
 

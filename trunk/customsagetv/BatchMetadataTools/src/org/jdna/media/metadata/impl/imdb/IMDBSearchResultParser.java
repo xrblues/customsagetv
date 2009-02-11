@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.SearchResultType;
 import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -36,9 +37,9 @@ public class IMDBSearchResultParser extends URLSaxParser {
     private static String                  EXACT_TITLE_MATCH   = "Titles (Exact Matches)";
     private static String                  END_OF_LIST_MATCH   = "Suggestions For Improving Your Results";
 
-    private static final int               POPULAR_MATCHES     = IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH;
-    private static final int               EXACT_MATCHES       = IMediaSearchResult.RESULT_TYPE_EXACT_MATCH;
-    private static final int               PARTIAL_MATCHES     = IMediaSearchResult.RESULT_TYPE_PARTIAL_MATCH;
+    private static final int               POPULAR_MATCHES     = SearchResultType.POPULAR.id();
+    private static final int               EXACT_MATCHES       = SearchResultType.EXACT.id();
+    private static final int               PARTIAL_MATCHES     = SearchResultType.PARTIAL.id();
     private static final int               STARTING            = 88;
     private static final int               ENDED               = 99;
     private int                            state               = STARTING;
@@ -56,10 +57,10 @@ public class IMDBSearchResultParser extends URLSaxParser {
     private Comparator<IMediaSearchResult> sorter              = new Comparator<IMediaSearchResult>() {
 
                                                                    public int compare(IMediaSearchResult o1, IMediaSearchResult o2) {
-                                                                       if (o1.getResultType() == IMediaSearchResult.RESULT_TYPE_EXACT_MATCH) return -1;
-                                                                       if (o2.getResultType() == IMediaSearchResult.RESULT_TYPE_EXACT_MATCH) return -1;
-                                                                       if (o1.getResultType() == IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH) return -1;
-                                                                       if (o2.getResultType() == IMediaSearchResult.RESULT_TYPE_POPULAR_MATCH) return -1;
+                                                                       if (o1.getResultType() == SearchResultType.EXACT) return -1;
+                                                                       if (o2.getResultType() == SearchResultType.EXACT) return -1;
+                                                                       if (o1.getResultType() == SearchResultType.POPULAR) return -1;
+                                                                       if (o2.getResultType() == SearchResultType.POPULAR) return -1;
                                                                        return 0;
                                                                    }
 
@@ -105,13 +106,13 @@ public class IMDBSearchResultParser extends URLSaxParser {
                 aState = TITLE_READ_TITLE;
 
                 // create the IVIdeoResult
-                curResult = new MediaSearchResult(IMDBMetaDataProvider.PROVIDER_ID, state);
+                curResult = new MediaSearchResult(IMDBMetaDataProvider.PROVIDER_ID, SearchResultType.byId(state));
 
                 // set the imdb title url
                 String imdbId = parseTitleId(href);
                 log.debug("Setting IMDB ID: " + imdbId + " from href: " + href);
-                curResult.setIMDBId(imdbId);
-                curResult.setId(String.format(TITLE_URL, imdbId));
+                curResult.setImdbId(imdbId);
+                curResult.setUrl(String.format(TITLE_URL, imdbId));
             }
         }
     }

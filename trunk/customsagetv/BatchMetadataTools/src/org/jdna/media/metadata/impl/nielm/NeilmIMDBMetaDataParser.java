@@ -57,10 +57,12 @@ public class NeilmIMDBMetaDataParser {
         } catch (Exception e) {
             log.warn("Failed to call getDuration() in NielmIMDBParser.");
         }
-        MediaArt ma = new MediaArt();
-        ma.setType(IMediaArt.POSTER);
-        ma.setDownloadUrl(data.getImageURL().toExternalForm());
-        md.addMediaArt(ma);
+        if (data.getImageURL()!=null) {
+            MediaArt ma = new MediaArt();
+            ma.setType(IMediaArt.POSTER);
+            ma.setDownloadUrl(data.getImageURL().toExternalForm());
+            md.addMediaArt(ma);
+        }
         md.setTitle(data.getName());
         md.setUserRating(data.getRating());
         md.setYear(data.getYear());

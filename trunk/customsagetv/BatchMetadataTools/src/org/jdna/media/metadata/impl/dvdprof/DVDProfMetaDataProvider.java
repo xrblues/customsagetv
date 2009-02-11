@@ -9,6 +9,8 @@ import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.ProviderInfo;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchQuery.Type;
 import org.jdna.url.CachedUrl;
 import org.jdna.url.CookieHandler;
 
@@ -25,6 +27,8 @@ public class DVDProfMetaDataProvider implements IMediaMetadataProvider {
     private CookieHandler        cookieHandler;
     private boolean              rebuildIndex      = false;
     private boolean              initialized       = false;
+
+    private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
 
     public DVDProfMetaDataProvider() throws Exception {
     }
@@ -56,7 +60,7 @@ public class DVDProfMetaDataProvider implements IMediaMetadataProvider {
         return PROVIDER_NAME;
     }
 
-    public List<IMediaSearchResult> search(int searchType, String arg) throws Exception {
+    public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
         if (!initialized) initialize();
 
         if (shouldRebuildIndexes()) {
@@ -68,9 +72,9 @@ public class DVDProfMetaDataProvider implements IMediaMetadataProvider {
         }
 
         try {
-            return MovieIndex.getInstance().searchTitle(arg, cookieHandler);
+            return MovieIndex.getInstance().searchTitle(query.get(SearchQuery.Field.TITLE), cookieHandler);
         } catch (Exception e) {
-            throw new Exception("Failed to find: " + arg, e);
+            throw new Exception("Failed to find: " + query.get(SearchQuery.Field.TITLE), e);
         }
     }
 
@@ -86,7 +90,7 @@ public class DVDProfMetaDataProvider implements IMediaMetadataProvider {
 
         }
 
-        rebuildIndex = ConfigurationManager.getInstance().getDVDProfilerConfiguration().isForceRebuild();
+        rebuildIndex = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isRefreshIndexes();
     }
 
     private void rebuildIndexes() throws Exception {
@@ -131,7 +135,7 @@ public class DVDProfMetaDataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return getMetaData(result.getId());
+        return getMetaData(result.getUrl());
     }
 
     public IProviderInfo getInfo() {
@@ -140,5 +144,9 @@ public class DVDProfMetaDataProvider implements IMediaMetadataProvider {
 
     public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
         throw new UnsupportedOperationException("DVDProfiler Doesn't Know how to handle IMDB ids");
+    }
+
+    public Type[] getSupportedSearchTypes() {
+        return supportedSearchTypes ;
     }
 }

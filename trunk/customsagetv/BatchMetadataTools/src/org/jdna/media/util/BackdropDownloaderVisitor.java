@@ -14,6 +14,8 @@ import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchQueryFactory;
 
 public class BackdropDownloaderVisitor implements IMediaResourceVisitor {
     public static final Logger log = Logger.getLogger(BackdropDownloaderVisitor.class);
@@ -52,10 +54,17 @@ public class BackdropDownloaderVisitor implements IMediaResourceVisitor {
                 }
                 
                 // nothing left to do, but search
-                List<IMediaSearchResult> results = provider.search(IMediaMetadataProvider.SEARCH_TITLE, md.getTitle());
-                if (AutomaticUpdateMetadataVisitor.isGoodSearch(results)) {
+                SearchQuery query = SearchQueryFactory.getInstance().createQuery(resource);
+                query.set(SearchQuery.Field.TITLE, md.getTitle());
+                List<IMediaSearchResult> results = provider.search(query);
+                if (MediaMetadataFactory.getInstance().isGoodSearch(results)) {
                     IMediaMetadata backdrop = provider.getMetaData(results.get(0));
-                    updateBackground(resource, md, backdrop.getBackground());
+                    if (backdrop!=null) { 
+                        updateBackground(resource, md, backdrop.getBackground());
+                    } else {
+                        log.warn("Search Result for "+resource.getLocationUri()+" didn't return anything useful. Skipping.");
+                        skipped.visit(resource);
+                    }
                     return;
                 } else {
                     skipped.visit(resource);

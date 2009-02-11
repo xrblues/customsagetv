@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 public class MediaMetadata implements IMediaMetadata, Serializable {
     private static final long        serialVersionUID = 1;
 
@@ -184,6 +186,8 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
     }
 
     public void addGenre(String genre) {
+        if (StringUtils.isEmpty(genre)) return;
+        
         // TODO: Not very efficient
         String genres[] = getGenres();
         if (genres == null) {
@@ -196,6 +200,8 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
     }
 
     public void addCastMember(ICastMember cm) {
+        if (containsCastMember(cm)) return;
+        
         // TODO: Not very efficient
         ICastMember cast[] = getCastMembers(ICastMember.ALL);
         if (cast == null) {
@@ -205,6 +211,21 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
             cast[cast.length - 1] = cm;
         }
         setCastMembers(cast);
+    }
+
+    public boolean containsCastMember(ICastMember cm) {
+        boolean found = false;
+        ICastMember castMembers[] = (ICastMember[]) get(MetadataKey.CAST_MEMBER_LIST);
+        if (castMembers!=null) {
+            for (ICastMember m : castMembers) {
+                if (m.getType() == cm.getType() && m.getName()==cm.getName()) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        
+        return found;
     }
 
     public void addMediaArt(IMediaArt ma) {

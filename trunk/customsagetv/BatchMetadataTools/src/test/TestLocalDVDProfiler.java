@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
+import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfXmlFile;
 import org.jdna.media.metadata.impl.dvdproflocal.IDVDProfMovieNodeVisitor;
 import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
@@ -29,7 +30,7 @@ public class TestLocalDVDProfiler {
         MetadataUpdater.initConfiguration();
 
         IMediaMetadataProvider prov = new LocalDVDProfMetaDataProvider();
-        List<IMediaSearchResult> results = prov.search(IMediaMetadataProvider.SEARCH_TITLE, "Batman Begins");
+        List<IMediaSearchResult> results = prov.search(new SearchQuery("Batman Begins"));
 
         TestUtils.dumpResults(results);
 

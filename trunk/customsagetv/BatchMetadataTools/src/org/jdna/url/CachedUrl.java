@@ -11,9 +11,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
-import org.jdna.util.IOUtils;
 
 public class CachedUrl extends Url implements IUrl {
 
@@ -152,13 +152,13 @@ public class CachedUrl extends Url implements IUrl {
                     props.setProperty("movedUrl", redirectUrl);
                 }
                 File f = getCachedFile();
-                IOUtils.copyStream(is, new FileOutputStream(f));
+                IOUtils.copy(is, new FileOutputStream(f));
                 log.debug("Url " + u.toExternalForm() + " Cached To: " + f.getAbsolutePath());
                 log.debug(String.format("Url: %s moved to %s", u.toExternalForm(), redirectUrl));
             } else if (rc == HttpURLConnection.HTTP_OK) {
                 handleCookies(u, c, handler);
                 File f = getCachedFile();
-                IOUtils.copyStream(is, new FileOutputStream(f));
+                IOUtils.copy(is, new FileOutputStream(f));
                 log.debug("Url " + u.toExternalForm() + " Cached To: " + f.getAbsolutePath());
             } else {
                 throw new IOException("Http Response Code: " + rc + "; Message: " + conn.getResponseMessage());

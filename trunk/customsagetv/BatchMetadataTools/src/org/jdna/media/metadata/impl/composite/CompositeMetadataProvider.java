@@ -11,6 +11,8 @@ import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.ProviderInfo;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchQuery.Type;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 
 public class CompositeMetadataProvider implements IMediaMetadataProvider {
@@ -47,8 +49,8 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
     private IMediaMetadata searchDetailsByTitle(String title) {
         try {
             log.debug("Searching the details provider: " + detailsProviderId + " for movie title: " + title);
-            List<IMediaSearchResult> results = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).search(IMediaMetadataProvider.SEARCH_TITLE, title);
-            if (AutomaticUpdateMetadataVisitor.isGoodSearch(results)) {
+            List<IMediaSearchResult> results = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).search(new SearchQuery(title));
+            if (MediaMetadataFactory.getInstance().isGoodSearch(results)) {
                 return MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaData(results.get(0));
             }
         } catch (Exception e) {
@@ -63,9 +65,9 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         return mergeDetails(details, searcher);
     }
 
-    public List<IMediaSearchResult> search(int searchType, String arg) throws Exception {
+    public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
         log.debug("Searching using composite provider: " + getInfo().getId());
-        return MediaMetadataFactory.getInstance().getProvider(searcherProviderId).search(searchType, arg);
+        return MediaMetadataFactory.getInstance().getProvider(searcherProviderId).search(query);
     }
 
     private IMediaMetadata mergeDetails(IMediaMetadata details, IMediaMetadata searcher) {
@@ -116,5 +118,9 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         } else {
             return false;
         }
+    }
+
+    public Type[] getSupportedSearchTypes() {
+        return MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getSupportedSearchTypes();
     }
 }

@@ -5,22 +5,21 @@ import java.io.Serializable;
 public class MediaSearchResult implements IMediaSearchResult, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String            providerId, id, IMDBId, title, year;
-    private int               resultType;
-    private transient Object  data;
+    private String            providerId, url, title, year, imdbId;
+    private SearchResultType  resultType = SearchResultType.UNKNOWN;
 
     public MediaSearchResult() {
     }
 
-    public MediaSearchResult(String providerId, int resultType) {
+    public MediaSearchResult(String providerId, SearchResultType resultType) {
         this.providerId = providerId;
         this.resultType = resultType;
     }
 
-    public MediaSearchResult(String providerId, String id, String title, String year, int resultType) {
+    public MediaSearchResult(String providerId, String url, String title, String year, SearchResultType resultType) {
         super();
         this.providerId = providerId;
-        this.id = id;
+        this.url = url;
         this.title = title;
         this.year = year;
         this.resultType = resultType;
@@ -32,14 +31,6 @@ public class MediaSearchResult implements IMediaSearchResult, Serializable {
 
     public void setProviderId(String providerId) {
         this.providerId = providerId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -58,33 +49,27 @@ public class MediaSearchResult implements IMediaSearchResult, Serializable {
         this.year = year;
     }
 
-    public int getResultType() {
+    public SearchResultType getResultType() {
         return resultType;
     }
 
-    public void setResultType(int resultType) {
+    public void setResultType(SearchResultType resultType) {
         this.resultType = resultType;
     }
 
-    /**
-     * An arbitrary piece of data that will have meaning to the provider that
-     * created this result.
-     * 
-     * @return
-     */
-    public Object getData() {
-        return data;
+    public String getUrl() {
+        return url;
+    }
+    
+    public void setUrl(String url) {
+        this.url=url;
     }
 
-    public void setData(Object data) {
-        this.data = data;
+    public String getImdbId() {
+        return imdbId;
     }
 
-    public String getIMDBId() {
-        return IMDBId;
-    }
-
-    public void setIMDBId(String id) {
-        IMDBId = id;
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
     }
 }

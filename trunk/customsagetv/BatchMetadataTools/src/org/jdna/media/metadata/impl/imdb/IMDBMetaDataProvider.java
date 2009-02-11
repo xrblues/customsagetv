@@ -13,6 +13,9 @@ import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.ProviderInfo;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchResultType;
+import org.jdna.media.metadata.SearchQuery.Type;
 import org.xml.sax.SAXException;
 
 public class IMDBMetaDataProvider implements IMediaMetadataProvider {
@@ -25,6 +28,7 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
     private static final String  PROVIDER_DESC     = "IMDB Provider that provides very resonable results, AND exact match searches.";
 
     private static IProviderInfo info              = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_ICON_URL);
+    private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
 
     public String getIconUrl() {
         return PROVIDER_ICON_URL;
@@ -38,9 +42,11 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
         return PROVIDER_NAME;
     }
 
-    public List<IMediaSearchResult> search(int searchType, String arg) throws Exception {
+    public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
         List<IMediaSearchResult> results = null;
-        if (searchType == IMediaMetadataProvider.SEARCH_TITLE) {
+        log.debug("Search Query: " + query);
+        if (query.getType() == SearchQuery.Type.MOVIE) {
+            String arg = query.get(SearchQuery.Field.TITLE);
             String eArg = URLEncoder.encode(arg);
             String url = MessageFormat.format(IMDB_FIND_URL, eArg);
             log.debug("IMDB Search Url: " + url);
@@ -63,8 +69,8 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
                 log.error("Error Parsing Search: " + arg, e);
             }
         } else {
-            log.error("Search Type no Supported: " + searchType);
-            throw new Exception("Seach Type Not Supported: " + searchType);
+            log.error("Search Type no Supported: " + query.getType());
+            throw new Exception("Seach Type Not Supported: " + query.getType());
         }
         return results;
     }
@@ -75,11 +81,11 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
         IMediaMetadata md = getMetaData(redirectUrl);
         MediaSearchResult vsr = new MediaSearchResult();
         vsr.setProviderId(PROVIDER_ID);
-        vsr.setId(md.getProviderDataUrl());
+        vsr.setUrl(md.getProviderDataUrl());
         vsr.setTitle(md.getTitle());
         vsr.setYear(md.getYear());
-        vsr.setResultType(IMediaSearchResult.RESULT_TYPE_EXACT_MATCH);
-        vsr.setIMDBId(IMDBSearchResultParser.parseTitleId(redirectUrl));
+        vsr.setResultType(SearchResultType.EXACT);
+        vsr.setImdbId(IMDBSearchResultParser.parseTitleId(redirectUrl));
 
         // the IMDBMovieMetaData implements the IVideoSearchResult interface
         result.add(vsr);
@@ -101,7 +107,7 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return getMetaData(result.getId());
+        return getMetaData(result.getUrl());
     }
 
     public IProviderInfo getInfo() {
@@ -110,5 +116,9 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
 
     public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
         return getMetaData(String.format(IMDBSearchResultParser.TITLE_URL, imdbId));
+    }
+
+    public Type[] getSupportedSearchTypes() {
+        return supportedSearchTypes;
     }
 }
