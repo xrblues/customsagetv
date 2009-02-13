@@ -3,9 +3,11 @@
 
 = Introduction =
 
-This is a command line tool to create SageTV metadata properties from external providers.  There is also a [http://code.google.com/p/customsagetv/wiki/SageTVMetadataPlugin SageTV MediaFileMetadata Plugin] based on this project.
+Batch Metadata Tools (BMT) is a command line tool that will find and download metadata and images for your Movie and TV collection.  There is also a [http://code.google.com/p/customsagetv/wiki/SageTVMetadataPlugin SageTV MediaFileMetadata Plugin] based on this project that will automatically search and download metadata and images for new media as it's added to your SageTV library.
 
-This tool will scan a given file/directory and create/update the required SageTV properties/jpg files so that SageTV can refresh its metadata with what is in the updated properties.
+Metadata refers to the attributes of a media file.  ie, Title, Description, Plot, Release Date, MPAA Rating, etc.
+
+Metadata sources, ie, imdb, tvdb, etc, are called Metadata Providers or Providers for short.  BMT ships a few different providers.
 
 For details about each provider, check out the links below
  * [IMDBProvider IMDB Provider]
@@ -147,12 +149,8 @@ In order to use --refreshSageTV, you must have the [http://code.google.com/p/cus
 
 = Advanced Topics =
 
-== Architecture Overview ==
-The basic architecture is that the inputs and outputs are all pluggable. In other words, other providers can be written and plugged in, so that if you wrote a metadata service that worked with another site (ie DVD Profiler), you can plug it in. To do this, see the default properties at the end. To create a new Metadata provider, implement the IVideoMetaDataProvider interface and the IVideoMetaData interface.
-
-The same is true for metadata persistence. The default and only one provided is for Sage metadata properties. But you can write your own if you implement the IVideoMetaDataPersistence interface.
-
-See [FrameworkOverview Framework Overview] for more information on the Metadata Tools framework.
+== Xbmc Scrapers ==
+BMT has a Java implementation of the Scraper Tool that is used in Xbmc project for scraping metadata.  Hopefully over time this project can leverage the great work done by that team.  While every attempt was made to ensure that this Scraper implementation should work the same as the Xbmc one, you may still find some anomalies.  Currently, we are using the imdb.xml and the tvdb.xml scrapers, and they appear to work fine.
 
 == Properties ==
 NOTE: As of 1.8 the properties format and keys have changed.  You will need to verify your properties before you rerun the tool.
