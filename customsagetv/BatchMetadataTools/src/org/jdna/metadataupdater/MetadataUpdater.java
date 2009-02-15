@@ -414,8 +414,8 @@ public class MetadataUpdater {
      * @param size
      */
     @CommandLineArg(name = "displaySize", description = "# of search results to display on the screen. (default 10)")
-    public void setDisplaySize(int size) {
-        config.setSearchResultDisplaySize(size);
+    public void setDisplaySize(String size) {
+        config.setSearchResultDisplaySize(Integer.parseInt(size));
     }
 
     /**

@@ -325,6 +325,7 @@ public class CommandLine {
         }
         if (e != null) {
             System.out.printf("ERROR: %s\n", e.getMessage());
+            e.printStackTrace();
         }
         System.out.printf("\nUsage:");
         System.out.printf("%s OPTIONS %s\n", command, (clp.acceptExtraArgs() ? "..." : ""));

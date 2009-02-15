@@ -55,12 +55,9 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
             try {
                 // if the physical files does not exists, then it's missing metadata
                 URIAdapter ua  = URIAdapterFactory.getAdapter(resource.getLocalPosterUri());
-                if (!ua.exists()) {
-                    return true;
-                }
-                
                 IMediaMetadata md = resource.getMetadata();
-                if (md == null || StringUtils.isEmpty(md.getTitle()) || md.getPoster() == null) {
+                
+                if (md == null || StringUtils.isEmpty(md.getTitle()) || (md.getPoster() == null && !ua.exists()) ) {
                     return true;
                 } // else skip
             } catch (Exception e) {
