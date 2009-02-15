@@ -7,6 +7,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
@@ -53,6 +54,10 @@ public class TheMovieDBSearchParser {
     private void addMovie(Element item) {
         MediaSearchResult sr = new MediaSearchResult();
         sr.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
+        if (StringUtils.isEmpty(getElementValue(item, "title"))) {
+            log.warn("TheMovieDB Item didn't contain a title: " + item.getTextContent());
+            return;
+        }
         sr.setResultType(Scoring.getInstance().getTypeForScore(getScore(item)));
         sr.setTitle(getElementValue(item, "title"));
         sr.setYear(getElementValue(item, "release"));
