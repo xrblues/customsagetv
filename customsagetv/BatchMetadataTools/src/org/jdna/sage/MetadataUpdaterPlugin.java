@@ -42,43 +42,48 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
      */
     public Object extractMetadata(File file, String arg) {
         // lazy load the static references, and only load them once
-        if (filter == null) {
-            LoggerConfiguration.configure();
-            
-            System.out.println("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
-            System.out.println("   BMT Version:  " + Version.VERSION);
-            System.out.println("  Java Version:  " + System.getProperty("java.version"));
-            System.out.println("Java Classpath:  " + System.getProperty("java.class.path"));
-            
-            String classpath = System.getProperty("java.class.path");
-            Pattern p = Pattern.compile("metadata-updater-([0-9\\.]+).jar");
-            Matcher m = p.matcher(classpath);
-            if (m.find()) {
+        try {
+            if (filter == null) {
+                LoggerConfiguration.configure();
+                
+                System.out.println("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
+                System.out.println("   BMT Version:  " + Version.VERSION);
+                System.out.println("  Java Version:  " + System.getProperty("java.version"));
+                System.out.println("Java Classpath:  " + System.getProperty("java.class.path"));
+                
+                String classpath = System.getProperty("java.class.path");
+                Pattern p = Pattern.compile("metadata-updater-([0-9\\.]+).jar");
+                Matcher m = p.matcher(classpath);
                 if (m.find()) {
-                    System.out.println("You have more than 1 metadata updater log in the classpath.  Clean it up, and restart.");
-                } else {
-                    System.out.println("Only found 1 metadata-updater jar in the classpath, which is good.");
+                    if (m.find()) {
+                        System.out.println("You have more than 1 metadata updater log in the classpath.  Clean it up, and restart.");
+                    } else {
+                        System.out.println("Only found 1 metadata-updater jar in the classpath, which is good.");
+                    }
                 }
+                System.out.println("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
+                
+                String providerId = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
+                System.out.println("** Batch Metadata Plugin; Using ProviderId: " + providerId);
+                System.out.println("** Configuration for Metadata Plugin: " + ConfigurationManager.getInstance().getConfigFileLocation());
+    
+                updater = new AutomaticUpdateMetadataVisitor(providerId, true, IMediaMetadataPersistence.OPTION_OVERWRITE_POSTER | IMediaMetadataPersistence.OPTION_OVERWRITE_BACKGROUND, new NullResourceVisitor(), new IMediaResourceVisitor() {
+                    public void visit(IMediaResource resource) {
+                        System.out.println("Could not automatically update: " + resource.getLocationUri());
+                    }
+                });
+                filter = MovieResourceFilter.INSTANCE;
             }
-            System.out.println("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
-            
-            String providerId = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
-            System.out.println("** Batch Metadata Plugin; Using ProviderId: " + providerId);
-            System.out.println("** Configuration for Metadata Plugin: " + ConfigurationManager.getInstance().getConfigFileLocation());
-
-            updater = new AutomaticUpdateMetadataVisitor(providerId, true, IMediaMetadataPersistence.OPTION_OVERWRITE_POSTER | IMediaMetadataPersistence.OPTION_OVERWRITE_BACKGROUND, new NullResourceVisitor(), new IMediaResourceVisitor() {
-                public void visit(IMediaResource resource) {
-                    System.out.println("Could not automatically update: " + resource.getLocationUri());
-                }
-            });
-            filter = MovieResourceFilter.INSTANCE;
+        } catch (Throwable e) {
+            System.out.println("BMT: Error!!!");
+            e.printStackTrace();
         }
 
         // do the work....
         try {
-            System.out.println("BatchMetadataTools; Handling File: " + file.getAbsolutePath() + "; arg: " + arg);
             IMediaResource mr = MediaResourceFactory.getInstance().createResource(file.toURI());
             if (filter.accept(mr)) {
+                System.out.println("BatchMetadataTools; Handling File: " + file.getAbsolutePath() + "; arg: " + arg);
                 IMediaMetadata md = mr.getMetadata();
                 if (md == null) {
                     updater.visit(mr);
@@ -94,6 +99,8 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                     Object props = SageVideoMetaDataPersistence.metadataToSageTVMap(mr.getMetadata());
                     return props;
                 }
+            } else {
+                System.out.println("BatchMetadataTools: Skipping File: " + file.getAbsolutePath());
             }
         } catch (Exception e) {
             e.printStackTrace();
