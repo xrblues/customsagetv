@@ -9,7 +9,6 @@ import java.util.Properties;
 import sagex.remote.AbstractRPCHandler;
 import sagex.remote.RemoteRequest;
 import sagex.remote.RemoteResponse;
-import sagex.remote.server.ServerInfo;
 
 public class SageRemoteCommandServer implements SageRemoteCommand, Serializable {
 	private static final long serialVersionUID = 5L;

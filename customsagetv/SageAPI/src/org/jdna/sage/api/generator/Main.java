@@ -14,6 +14,8 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.configuration.PropertiesConfigurationProvider;
 import org.jdna.sage.api.generator.MethodParser.SageMethod;
 
+import sagex.api.AlbumAPI;
+
 @CommandLineProcess(acceptExtraArgs = false, description = "Generates a Typed Sage API from the SageTV JavaDoc.")
 public class Main {
 	private static final Logger log = Logger.getLogger(Main.class);
@@ -21,6 +23,18 @@ public class Main {
 	public class ClassMetadata {
 		public String name;
 		public List<SageMethod> methods;
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public List<SageMethod> getMethods() {
+            return methods;
+        }
+        public void setMethods(List<SageMethod> methods) {
+            this.methods = methods;
+        }
 	}
 
 	public static void main(String args[]) {
@@ -98,6 +112,7 @@ public class Main {
 				md.name = name;
 				allMetaData.add(md);
 
+				// generate the Tag Files
 				SageTagFileAPIGenerator stag = new SageTagFileAPIGenerator(new File(tagsDir), packageName, name, methods);
 				stag.generate();
 
@@ -109,6 +124,10 @@ public class Main {
 		// now generate files requiring ALL metedata
 		SageRPCRequestFactoryGenerator gen = new SageRPCRequestFactoryGenerator(new File(srcDir), requestFactoryPackage, "SageRPCRequestFactory", allMetaData);
 		gen.generate();
+		
+		// generate the JSON Lookup API
+        JSONApiLookupGenerator json = new JSONApiLookupGenerator(new File(srcDir), "sagex.remote.api", "JSONApiLookup", allMetaData);
+        json.generate();
 
 	}
 

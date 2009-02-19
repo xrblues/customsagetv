@@ -17,6 +17,18 @@ public class MethodParser extends URLSaxParser {
 	public class MethodParam {
 		String dataType;
 		String varName;
+        public String getDataType() {
+            return dataType;
+        }
+        public void setDataType(String dataType) {
+            this.dataType = dataType;
+        }
+        public String getVarName() {
+            return varName;
+        }
+        public void setVarName(String varName) {
+            this.varName = varName;
+        }
 	}
 
 	public class SageMethod {
@@ -24,6 +36,30 @@ public class MethodParser extends URLSaxParser {
 		public String returnType;
 		public String name;
 		public List<MethodParam> args = new ArrayList<MethodParam>();
+        public String getComment() {
+            return comment;
+        }
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
+        public String getReturnType() {
+            return returnType;
+        }
+        public void setReturnType(String returnType) {
+            this.returnType = returnType;
+        }
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public List<MethodParam> getArgs() {
+            return args;
+        }
+        public void setArgs(List<MethodParam> args) {
+            this.args = args;
+        }
 	}
 
 	private static final int READING = -1;

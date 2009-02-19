@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdna.sage.api.generator.Main.ClassMetadata;
+import org.jdna.sage.api.generator.MethodParser.SageMethod;
 
 public class SageRPCRequestFactoryGenerator {
 	private static final Logger log = Logger.getLogger(SageRPCRequestFactoryGenerator.class);
@@ -49,17 +50,34 @@ public class SageRPCRequestFactoryGenerator {
 
 		pw.println("\nimport java.util.Map;");
 		pw.println("import sagex.remote.RemoteRequest;");
+        pw.println("import java.util.Map;");
+        pw.println("import java.util.HashMap;");
+		
+		
 
 		pw.printf("public class %s {\n", className);
+        pw.println("private static Map<String,String> commands = new HashMap<String,String>();");
+        pw.println("static {");
+        for (ClassMetadata cm : allClasses) {
+            for (SageMethod m : cm.methods) {
+                pw.printf("   commands.put(\"%s\",\"%s\");\n", m.name, cm.name);
+            }
+        }
+        pw.println("}\n\n");
 		pw.println("   public static RemoteRequest createRequest(String context, String api, String command, String[] parameters) {");
+		pw.println("      if (api==null) {");
+		pw.println("         api=commands.get(command);");
+        pw.println("         if (api==null) throw new RuntimeException(\"Unknown Sage Command: \"+command);");
+		pw.println("      }");
 		for (ClassMetadata cm : allClasses) {
 			pw.printf("      if (\"%s\".equals(api)) {\n", cm.name);
 			pw.printf("         return %sFactory.createRequest(context, command, parameters);\n", cm.name);
 			pw.println("      }");
 		}
-		pw.printf("      throw new RuntimeException(\"Invalid %s Command: \"+command);\n", className);
+		pw.printf("      throw new RuntimeException(\"Unknown Sage Command: \"+command + \" for Api: \" + api);\n");
 		pw.println("   }\n\n");
-		pw.println("}");
+		
+        pw.println("}\n\n");
 
 		pw.close();
 		pw.flush();
