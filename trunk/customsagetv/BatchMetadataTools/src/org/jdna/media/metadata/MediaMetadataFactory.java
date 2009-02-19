@@ -179,7 +179,9 @@ public class MediaMetadataFactory {
             }
         }
         
-        if (provider==null) throw new RuntimeException("Unknown Provider: " + providerId);
+        if (provider==null) {
+            log.warn("Mising or Unknown Provider: " + providerId);
+        }
         return provider;
     }
 
