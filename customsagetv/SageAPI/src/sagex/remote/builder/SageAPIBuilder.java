@@ -11,6 +11,7 @@ import java.util.Map;
 
 import sagex.api.AiringAPI;
 import sagex.api.AlbumAPI;
+import sagex.api.ChannelAPI;
 import sagex.api.FavoriteAPI;
 import sagex.api.MediaFileAPI;
 import sagex.api.ShowAPI;
@@ -49,13 +50,15 @@ public class SageAPIBuilder {
             buildAlbum(parent, handler);
         } else if(FavoriteAPI.IsFavoriteObject(parent)) {
             buildFavorite(parent, handler);
+        } else if(ChannelAPI.IsChannelObject(parent)) {
+            buildChannel(parent, handler);
         } else {
             handler.handleError("Unknown Object Type: " + parent.getClass().getName(), new Exception("Unknown Object Type: " + parent.getClass().getName()));
         }
     }
 
     private void buildSimpleData(String name, Object data, BuilderHandler handler) {
-        handler.handleField(name, data);
+        handler.handleField(makeName(name), data);
     }
 
     public void buildFile(String name, File parent, BuilderHandler handler) {
@@ -64,6 +67,10 @@ public class SageAPIBuilder {
         } catch (IOException e) {
             buildSimpleData(name, parent.getAbsolutePath(), handler);
         }
+    }
+
+    public void buildChannel(Object parent, BuilderHandler handler) throws Exception {
+        buildObject("Channel", ChannelAPI.class, parent, handler, null);
     }
 
     public void buildFavorite(Object parent, BuilderHandler handler) throws Exception {
@@ -88,7 +95,7 @@ public class SageAPIBuilder {
 
     public void buildObject(String objectName, Class staticObjectClass, Object parent, BuilderHandler handler, String[] ignoreMethods) throws Exception {
         Method methods[] = getMethods(staticObjectClass, ignoreMethods);
-        handler.beginObject(objectName);
+        handler.beginObject(makeName(objectName));
         for (Method m : methods) {
             try {
                 Object result = m.invoke(null, parent);
@@ -97,7 +104,7 @@ public class SageAPIBuilder {
                 handler.handleError("Failed while Calling "+objectName+" Method: " + m.getName(), e);
             }
         }
-        handler.endObject(objectName);
+        handler.endObject(makeName(objectName));
     }
     
 
@@ -146,18 +153,23 @@ public class SageAPIBuilder {
     }
 
     public void buildArray(String name, Object[] parent, BuilderHandler handler) throws Exception {
-        handler.beginArray(name, parent.length);
+        handler.beginArray(makeName(name), parent.length);
         for (Object o : parent) {
             build(name, o, handler, true);
         }
-        handler.endArray(name);
+        handler.endArray(makeName(name));
     }
 
     public void buildCollection(String name, Collection parent, BuilderHandler handler) throws Exception {
-        handler.beginArray(name, parent.size());
+        handler.beginArray(makeName(name), parent.size());
         for (Object o : parent) {
             build(name, o, handler, true);
         }
-        handler.endArray(name);
+        handler.endArray(makeName(name));
+    }
+    
+    public String makeName(String name) {
+        if (name!=null) name=name.replaceFirst("^Get", "");
+        return name;
     }
 }
