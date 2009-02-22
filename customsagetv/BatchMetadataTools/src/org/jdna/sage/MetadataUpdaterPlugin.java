@@ -83,7 +83,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
         try {
             IMediaResource mr = MediaResourceFactory.getInstance().createResource(file.toURI());
             if (filter.accept(mr)) {
-                System.out.println("BatchMetadataTools; Handling File: " + file.getAbsolutePath() + "; arg: " + arg);
+                System.out.println("BatchMetadataTools "+ Version.VERSION +"; Handling File: " + file.getAbsolutePath() + "; arg: " + arg);
                 IMediaMetadata md = mr.getMetadata();
                 if (md == null) {
                     updater.visit(mr);
