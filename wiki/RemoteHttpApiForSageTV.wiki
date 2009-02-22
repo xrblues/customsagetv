@@ -1,0 +1,132 @@
+#summary Xml and JSON Api Overview (2.0)
+#labels Featured,Phase-Implementation
+
+= Introduction =
+
+As of 6.5.9, a new api handler was introduced that is meant to supercede the previous xml and json handlers.
+
+The new api handler, /sagex/api, supports 3 encoder formats, Xml, Json/JsonP, and Niel's Xml Format from his Webserver Project.
+
+The orginal json/xml apis returned only references to sage objects which resulted in a large number of calls in order to completely access a sage object remotely.  The new api uses a serialization approach so that complete objects are returned in xml or json.
+
+= Details =
+
+The /sagex/api handler has documentation built into the handler.  If you call this handler from a browser without any arguments, it will return a page that shows the basic usage and the api documentation.  Using this api page you can search the api as well.
+
+The basic format of the new api is as follows
+
+{{{
+http://server/sagex/api?c=SAGE_COMMD&1=arg1&2=arg2....&start=#&size=#&context=UI_CONTEXT&encoder=xml|json|nielm&jsoncallback=CALLBACK_FUNCTION
+}}}
+
+== Command Arguments ==
+=== c or command ===
+The c or command argument is used to specify the Sage Command.  The command can be either just the command, such as *GetMediaFiles* or it can contain the API class as well, such as *MediaFileAPI.GetMediaFiles*.
+
+When calling a command, you pass the command arguments by using numbers, starting at 1 for the first argument.
+
+For exmaple, the following command requests all MediaFiles for type TV.
+{{{
+/sagex/api?c=GetMediaFiles&1=T
+}}}
+
+=== context ===
+for commands that require a ui context, then pass the context using this arg.
+
+=== start and size ===
+For commands that return arrays, you can pass the *start* argument to only return elements starting at the *start* position.  Start is used in conjunction with the *size* argument.
+
+*start* and *size* can be used to implement paging.  For example if your *size* is 50, then you can make repeated calls to the Command changing the *start* argument, by incrementing it by the *size*.
+
+for, example if you want to page through the list of media files, you could do something like
+{{{
+/sagex/api?c=GetMediaFiles&start=0&size=50
+/sagex/api?c=GetMediaFiles&start=50&size=50
+/sagex/api?c=GetMediaFiles&start=100&size=50
+/sagex/api?c=GetMediaFiles&start=150&size=50
+}}}
+
+The default size is 50.  A default size is implemented because all objects are serialized.  If you were to call GetMediaFiles with size=99999, then you'd run out of memory on the server.  For this reason a size cap is installed by default.
+
+If you pass a size that is greater than the size of the array, then only the # of items in the array is returned.  So passing size=99999 will only return the # of item in the array, and not fill the rest with empty items.
+
+=== encoder ====
+There are 3 encoders, xml, json, and nielm.
+
+==== xml ====
+Xml is the default encoder.  It is an Xml structure that mimics the Sage Object structure.  The root node of of the Xml call is <Result>.  If the result is an array, then a *size* attribute will indicate the number of elements in the array.
+
+Sample Xml
+{{{
+<Result size="33">
+<MediaFile>    
+    <MediaFileFormatDescription><![CDATA[MPEG2-PS[MPEG2-Video 1:1 720p@29.97fps, MP2/384Kbps@48kHz Stereo]]]></MediaFileFormatDescription>
+    <Airing>    
+    <IsWatched>false</IsWatched>
+    <RecordingName><![CDATA[]]></RecordingName>
+    <AiringChannelName><![CDATA[TOONC]]></AiringChannelName>
+    <AiringChannelNumber><![CDATA[554]]></AiringChannelNumber>
+    <AiringDuration>1800000</AiringDuration>
+    <AiringStartTime>1222201800000</AiringStartTime>
+
+    <AiringEndTime>1222203600000</AiringEndTime>
+<Show>    <IsShowEPGDataUnique>true</IsShowEPGDataUnique>
+    <ShowMisc><![CDATA[]]></ShowMisc>
+    <ShowCategory><![CDATA[Children]]></ShowCategory>
+    <ShowSubCategory><![CDATA[Animated]]></ShowSubCategory>
+    <ShowDescription><![CDATA[Kaz learns that the Creatures of Perim have cracked the Chaotic Code and are getting ready to invade Earth.]]></ShowDescription>
+    <ShowEpisode><![CDATA[Chaotic Crisis]]></ShowEpisode>
+    <ShowExpandedRatings><![CDATA[]]></ShowExpandedRatings>
+
+    <ShowParentalRating><![CDATA[]]></ShowParentalRating>
+    <ShowRated><![CDATA[]]></ShowRated>
+    <ShowDuration>0</ShowDuration>
+    <ShowTitle><![CDATA[Chaotic]]></ShowTitle>
+    <ShowYear><![CDATA[]]></ShowYear>
+    <ShowExternalID><![CDATA[EP8664930037]]></ShowExternalID>
+    <OriginalAiringDate>1203206400000</OriginalAiringDate>
+    <PeopleInShow><![CDATA[]]></PeopleInShow>
+
+<PeopleListInShow size="0"></PeopleListInShow><RolesInShow size="0"></RolesInShow>    <IsShowObject>true</IsShowObject>
+    <IsShowFirstRun>false</IsShowFirstRun>
+    <IsShowReRun>false</IsShowReRun>
+    <ShowLanguage><![CDATA[]]></ShowLanguage>
+</Show>
+....
+}}}
+
+==== json and jsoncallback ====
+The json reply directly mimics the default xml reply in that it returns the sage object structure, except that it uses json syntax instead of xml.
+
+
+Sample Json Reply
+{{{
+{"Result":[{"Airing":{"ParentalRating":"","RealWatchedStartTime":1222637089663,"AiringID":1528709,"AiringChannelNumber":"554","ScheduleDuration":1800000,"AiringChannelName":"TOONC","TrackNumber":0,"ScheduleEndTime":1222203600000,"AiringRatings":[],"IsNotManualOrFavorite":true,"RealWatchedEndTime":1222637117879,"WatchedEndTime":1222201855624,"IsAiringHDTV":false,"IsWatched":false,"ExtraAiringDetails":"Closed Captioned, Stereo","AiringDuration":1800000,"IsWatchedCompletely":false,"ScheduleStartTime":1222201800000,"LatestWatchedTime":1222201858624,"IsFavorite":false,"RecordingName":"","IsAiringObject":true,"IsManualRecord":false,"Show":{"PeopleListInShow":[],"ShowSubCategory":"Animated","ShowRated":"","ShowExternalID":"EP8664930037","ShowCategory":"Children","IsShowObject":true,"ShowTitle":"Chaotic","ShowYear":"","IsShowFirstRun":false,"ShowEpisode":"Chaotic Crisis","IsShowEPGDataUnique":true,"ShowExpandedRatings":"","OriginalAiringDate":1203206400000,"ShowDuration":0,"ShowParentalRating":"","ShowLanguage":"","RolesInShow":[],"ShowMisc":"","ShowDescription":"Kaz learns that the Creatures of Perim have cracked the Chaotic Code and are getting ready to invade Earth.","IsShowReRun":false,"PeopleInShow":""},"WatchedStartTime":1222201800001,"ScheduleRecordingRecurrence":"","AiringEndTime":1222203600000,"RecordingQuality":"","WatchedDuration":55623,"IsDontLike":false,"AiringStartTime":1222201800000,"AiringTitle":"Chaotic"},"FileEndTime":1222203594660,"IsPictureFile":false,"IsLocalFile":true,"ParentDirectory":"/var/media/tv","IsCompleteRecording":true,"SegmentFiles":["/var/media/tv/Chaotic-ChaoticCrisis-1528709-0.mpg"],"MediaFileID":1563351,"MediaFileEncoding":"video0 Fair-H.264","MediaFileFormatDescription":"MPEG2-PS[MPEG2-Video 1:1 720p@29.97fps, MP2/384Kbps@48kHz..........
+}}}
+
+If you need to call the Sage from another domain, then you can use the jsonp syntax and pass a *jsoncallback* function.  If you pass the jsoncallback argument, you do not need to set the encoder to json, since it will be implied.  Using the jsoncallback means the rather than getting a standard json reply, then reply will be javascript that will call you jsoncallback funtion passing the json data into it as a parameter. 
+
+
+==== nielm =====
+The nielm encoder will return the results using the SageXmlWriter tools that neil wrote for the Sage Web Server.  Note that not all SageCommands can be used with this encoder.  ie, if you were to call the GetOS command with encoder=nielm, then the command will be executed, but the reply will be an error stating that the encoder cannot handler a "string".  So, only use this encoder,if you know the return will be a Sage Object or a Sage Object Collection.  ie, GetMediaFiles will be fine, but not GetOS.
+
+= Samples =
+Get a List of Media Files
+{{{
+/sagex/api?c=GetMediaFiles
+}}}
+
+Refresh the Sage Media Library
+{{{
+/sages/api?c=RunLibraryImportScan&1=true
+}}}
+
+Return the same result as json
+{{{
+/sages/api?c=RunLibraryImportScan&1=true&encoder=json
+}}}
+
+Return the TV media files (first 10) in Niel's format
+{{{
+/sagex/api?c=GetMediaFiles&size=10&encoder=nielm
+}}}
