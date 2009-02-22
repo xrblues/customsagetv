@@ -61,6 +61,10 @@ public class SimpleJSONBuilder implements BuilderHandler {
     }
 
     public void handleError(String string, Exception e) throws Exception {
+        //beginObject("error");
+        //handleField("field", string);
+        //handleField("message", e.getMessage());
+        //endObject("error");
         throw new Exception(string, e);
     }
 
