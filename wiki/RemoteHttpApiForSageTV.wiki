@@ -3,6 +3,8 @@
 
 = Introduction =
 
+If you haven't done so, install the remote api services using the documentation on [http://code.google.com/p/customsagetv/wiki/SageTVapi this page].
+
 As of 6.5.9, a new api handler was introduced that is meant to supercede the previous xml and json handlers.
 
 The new api handler, /sagex/api, supports 3 encoder formats, Xml, Json/JsonP, and Niel's Xml Format from his Webserver Project.
