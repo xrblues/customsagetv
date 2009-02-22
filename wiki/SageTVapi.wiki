@@ -10,7 +10,7 @@
  * Rest API can pass ui context
  * Java API now supports ui context
 
-If you are looking for the Rest API documentation, then read the install documentation from this page and then go to [http://code.google.com/p/customsagetv/wiki/XmlRPCQuickStart Rest Services Quickstart Guide] .
+If you are looking for the Rest API documentation, then read the install documentation from this page and then go to [http://code.google.com/p/customsagetv/wiki/XmlRPCQuickStart Rest Services Quickstart Guide]. Or Check out the [http://code.google.com/p/customsagetv/wiki/RemoteHttpApiForSageTV newer Api format]
 
 = Background =
 
