@@ -527,19 +527,27 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
 
     public File getBackdropFile(IMediaFile mediaFile, Properties props) {
         try {
-        	String backdropLocation =ConfigurationManager.getInstance().getSageMetadataConfiguration().getAlternateBackdropLocation(); 
-        	String safeRegex =ConfigurationManager.getInstance().getSageMetadataConfiguration().getSafeTitleReplaceRegex(); 
-        	
-        	if (backdropLocation != null && backdropLocation != "") {
-        		String safeTitle = props.getProperty(TITLE);
-        		safeTitle = safeTitle.replaceAll(safeRegex, "");
-        		String titleBackdropLocation = backdropLocation + safeTitle + ".jpg";
-        		
-        		return new File(titleBackdropLocation);
-        		//return new File(new URI(mediaFile.getLocalBackdropUri()));
-        	} else {
-        		return new File(new URI(mediaFile.getLocalBackdropUri()));
-        	}
+            String backdropLocation =ConfigurationManager.getInstance().getSageMetadataConfiguration().getAlternateBackdropLocation();
+            String safeRegex =ConfigurationManager.getInstance().getSageMetadataConfiguration().getSafeTitleReplaceRegex();
+           
+            if (backdropLocation != null && backdropLocation != "") {
+                //get the title that Sage will use and remove any characters that are invalid in a filename
+                String safeTitle = props.getProperty(TITLE).replaceAll(safeRegex, "");
+
+                //check that the root backdrop folder exists, if it doesn't create it (this shouldn't ever happen, but let's be safe)
+                File rootBackdrops = new File(backdropLocation);
+                if(!rootBackdrops.exists())
+                    rootBackdrops.mkdirs();
+               
+                //since we're only dealing with movies (for now), check that the movies folder exists, and create it if it doesn't
+                File movieBackdrops = new File(rootBackdrops.getAbsolutePath() + File.separator + "Movies");
+                if(!movieBackdrops.exists())
+                    movieBackdrops.mkdirs();
+               
+                return new File(movieBackdrops.getAbsolutePath() + File.separator + safeTitle + ".jpg");
+            } else {
+                return new File(new URI(mediaFile.getLocalBackdropUri()));
+            }
         } catch (URISyntaxException e) {
             log.error("Failed to get local backdrop file to media file!", e);
             return null;
