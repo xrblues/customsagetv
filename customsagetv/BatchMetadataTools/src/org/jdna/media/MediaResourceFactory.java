@@ -35,11 +35,11 @@ public class MediaResourceFactory {
 
     public IMediaResource createResource(URIAdapter uriAdapter) throws IOException {
         if (uriAdapter.isDirectory()) {
-            if (DVDMediaItem.isDVD(uriAdapter)) {
-                return new DVDMediaItem(uriAdapter);
-            } else if("video_ts".equalsIgnoreCase(uriAdapter.getName())) {
+        	if("video_ts".equalsIgnoreCase(uriAdapter.getName())) {
                 // NOTE: this is added because Sage will pass the DVD as VIDEO_TS
                 return new DVDMediaItem(uriAdapter.getParentUri());
+            } else if (DVDMediaItem.isDVD(uriAdapter)) {
+                return new DVDMediaItem(uriAdapter);
             } else {
                 return new MediaFolder(uriAdapter);
             }
