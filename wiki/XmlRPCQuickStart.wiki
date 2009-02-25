@@ -1,5 +1,4 @@
 #summary Rest Services for SageTV
-#labels Featured
 
 Before you begin, ensure that you have installed the latest sages-api jar on the SageTV server.
 
