@@ -66,8 +66,15 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
     }
 
     public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
-        log.debug("Searching using composite provider: " + getInfo().getId());
-        return MediaMetadataFactory.getInstance().getProvider(searcherProviderId).search(query);
+    	String providerId = getInfo().getId();
+        log.debug("Searching using composite provider: " + providerId);
+        List<IMediaSearchResult> results = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).search(query);
+        
+        for (int i =0; i< results.size(); i++) {
+        	results.get(i).setProviderId(providerId);
+        }
+        
+        return results;
     }
 
     private IMediaMetadata mergeDetails(IMediaMetadata details, IMediaMetadata searcher) {
