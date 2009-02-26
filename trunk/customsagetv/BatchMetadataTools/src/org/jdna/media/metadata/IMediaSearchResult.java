@@ -8,6 +8,8 @@ public interface IMediaSearchResult {
      */
     public String getProviderId();
     
+    public void setProviderId(String providerId);
+    
     public String getTitle();
 
     public String getYear();
