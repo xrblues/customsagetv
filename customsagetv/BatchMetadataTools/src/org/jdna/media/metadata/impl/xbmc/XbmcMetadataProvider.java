@@ -164,61 +164,69 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         } else {
             int findEpisode = NumberUtils.toInt(args.get("episode"));
             int findSeason = NumberUtils.toInt(args.get("season"));
+            int findDisc = NumberUtils.toInt(args.get("disc"));
+            
             XbmcUrl url = new XbmcUrl(episodeUrl);
             // Call get Episode List
             XbmcMovieProcessor processor = new XbmcMovieProcessor(scraper);
-            String epListXml = processor.getEpisodeList(url);
-
-            log.debug("******** BEGIN EPISODE LIST XML ***********");
-            log.debug(epListXml);
-            log.debug("******** END EPISODE LIST XML ***********");
-
-            Document epListDoc = parseXmlString(epListXml);
-
-            NodeList nl = epListDoc.getElementsByTagName("episode");
-            int s = nl.getLength();
-            int season, ep;
-            String id = null;
-            String epUrl = null;
-            for (int i = 0; i < s; i++) {
-                Element el = (Element) nl.item(i);
-                season = DOMUtils.getElementIntValue(el, "season");
-                ep = DOMUtils.getElementIntValue(el, "epnum");
-                if (season == findSeason && ep == findEpisode) {
-                    id = DOMUtils.getElementValue(el, "id");
-                    epUrl = DOMUtils.getElementValue(el, "url");
-                    break;
-                }
+	            
+            if(findEpisode > 0){ 
+	            String epListXml = processor.getEpisodeList(url);
+	
+	            log.debug("******** BEGIN EPISODE LIST XML ***********");
+	            log.debug(epListXml);
+	            log.debug("******** END EPISODE LIST XML ***********");
+	
+	            Document epListDoc = parseXmlString(epListXml);
+	
+	            NodeList nl = epListDoc.getElementsByTagName("episode");
+	            int s = nl.getLength();
+	            int season, ep;
+	            String id = null;
+	            String epUrl = null;
+	            for (int i = 0; i < s; i++) {
+	                Element el = (Element) nl.item(i);
+	                season = DOMUtils.getElementIntValue(el, "season");
+	                ep = DOMUtils.getElementIntValue(el, "epnum");
+	                if (season == findSeason && ep == findEpisode) {
+	                    id = DOMUtils.getElementValue(el, "id");
+	                    epUrl = DOMUtils.getElementValue(el, "url");
+	                    break;
+	                }
+	            }
+	
+	            if (id == null) {
+	                throw new Exception("Could Not Find Seaons and Episode for: " + findSeason + "x" + findEpisode);
+	            }
+	
+	            log.debug("We have an episdoe id for season and episode... fetching details...");
+	
+	            processor = new XbmcMovieProcessor(scraper);
+	            xmlDetails = processor.getEpisodeDetails(new XbmcUrl(epUrl), id);
+	
+	            log.debug("******** BEGIN EPISODE DETAILS XML ***********");
+	            log.debug(xmlDetails);
+	            log.debug("******** END EPISODE DETAILS XML ***********");
+	
+	            // update again, using the episode specific data
+	            xml = parseXmlString(xmlDetails);
+	            Element el = xml.getDocumentElement();
+	            addMetadata(md, el);
+	
+	            // add/update tv specific stuff
+	            String plot = DOMUtils.getElementValue(el, "plot");
+	            if (!StringUtils.isEmpty(plot)) {
+	                md.setDescription(plot);
+	            }
+		            
+	            md.set(MetadataKey.TV_EPISODE, String.valueOf(findEpisode));
+	            md.set(MetadataKey.RELEASE_DATE, DOMUtils.getElementValue(el, "aired"));
+	            md.set(MetadataKey.TV_SHOW_TITLE, DOMUtils.getElementValue(el, "title"));
+            }else if(findDisc > 0){
+            	md.set(MetadataKey.DVD_DISC, String.format("%1$02d", findDisc));
             }
-
-            if (id == null) {
-                throw new Exception("Could Not Find Seaons and Episode for: " + findSeason + "x" + findEpisode);
-            }
-
-            log.debug("We have an episdoe id for season and episode... fetching details...");
-
-            processor = new XbmcMovieProcessor(scraper);
-            xmlDetails = processor.getEpisodeDetails(new XbmcUrl(epUrl), id);
-
-            log.debug("******** BEGIN EPISODE DETAILS XML ***********");
-            log.debug(xmlDetails);
-            log.debug("******** END EPISODE DETAILS XML ***********");
-
-            // update again, using the episode specific data
-            xml = parseXmlString(xmlDetails);
-            Element el = xml.getDocumentElement();
-            addMetadata(md, el);
-
-            // add/update tv specific stuff
-            String plot = DOMUtils.getElementValue(el, "plot");
-            if (!StringUtils.isEmpty(plot)) {
-                md.setDescription(plot);
-            }
-
+            
             md.set(MetadataKey.TV_SEASON, String.valueOf(findSeason));
-            md.set(MetadataKey.TV_EPISODE, String.valueOf(findEpisode));
-            md.set(MetadataKey.RELEASE_DATE, DOMUtils.getElementValue(el, "aired"));
-            md.set(MetadataKey.TV_SHOW_TITLE, DOMUtils.getElementValue(el, "title"));
         }
 
     }
@@ -229,7 +237,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         for (int i = 0; i < nl.getLength(); i++) {
             Element fanart = (Element) nl.item(i);
             String url = fanart.getAttribute("url");
-            processMediaArt(md, IMediaArt.BACKGROUND, "Backdrop Fanart", fanart.getElementsByTagName("thumb"), url);
+            processMediaArt(md, IMediaArt.BACKGROUND, "Backdrop Fanart", url);
         }
 
         nl = details.getElementsByTagName("thumbs");
@@ -296,13 +304,17 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
                 baseUrl = baseUrl.trim();
                 image = baseUrl + image;
             }
+            processMediaArt(md, type, label, image);
+        }
+    }
+    
+    private void processMediaArt(MediaMetadata md, int type, String label, String image) {        
             MediaArt ma = new MediaArt();
             ma.setDownloadUrl(image);
             ma.setLabel(label);
             ma.setProviderId(getInfo().getId());
             ma.setType(type);
             md.addMediaArt(ma);
-        }
     }
 
     private void processUrlElement(MediaMetadata md, Element el) {
@@ -452,6 +464,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         } else if (query.getType() == SearchQuery.Type.TV) {
             args.put("season", query.get(SearchQuery.Field.SEASON));
             args.put("episode", query.get(SearchQuery.Field.EPISODE));
+            args.put("disc", query.get(SearchQuery.Field.DISC));
         } else {
         }
 

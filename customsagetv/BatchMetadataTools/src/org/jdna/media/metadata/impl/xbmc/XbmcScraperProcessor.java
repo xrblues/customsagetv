@@ -110,18 +110,23 @@ public class XbmcScraperProcessor {
     
     public String executeFunction(String function, String input[]) {
         ScraperFunction func = scraper.getFunction(function);
-        log.debug("** BEGIN Function: " + func.getName() + "; Dest: " + func.getDest() + "; ClearBuffers: " + func.isClearBuffers());
-
-        //if (func.isClearBuffers()) {
-        //    clearBuffers();
-        //}
-
-        setBuffers(input);
-
-        executeRegexps(func.getRegExps());
-
-        log.debug("** END Function: " + func.getName() + "; Dest: " + func.getDest() + "; ClearBuffers: " + func.isClearBuffers());
-        return getBuffer(func.getDest());
+        if(func != null){
+	        log.debug("** BEGIN Function: " + func.getName() + "; Dest: " + func.getDest() + "; ClearBuffers: " + func.isClearBuffers());
+	
+	        //if (func.isClearBuffers()) {
+	        //    clearBuffers();
+	        //}
+	
+	        setBuffers(input);
+	
+	        executeRegexps(func.getRegExps());
+	
+	        log.debug("** END Function: " + func.getName() + "; Dest: " + func.getDest() + "; ClearBuffers: " + func.isClearBuffers());
+	        return getBuffer(func.getDest());
+        } else {
+        	log.debug("** Could not locate Function: " + function + " in the scraper " + scraper.getId());
+        	return "";
+        }
     }
 
     private void executeRegexps(RegExp[] regExps) {
