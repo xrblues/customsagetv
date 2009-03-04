@@ -36,7 +36,8 @@ public enum MetadataKey {
     RELEASE_DATE("ReleaseDate", ""),
     TV_EPISODE("Episode", ""),
     TV_SEASON("Season", ""), 
-    TV_SHOW_TITLE("ShowTitle", "");
+    TV_SHOW_TITLE("ShowTitle", ""), 
+    DVD_DISC("Disc", "");
     ;
 
     private String id, desc;

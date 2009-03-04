@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SearchQuery {
-    public enum Field { TITLE, SHOW, SEASON, EPISODE };
+    public enum Field { TITLE, SHOW, SEASON, EPISODE, DISC };
     public enum Type { TV, MOVIE, MUSIC };
     
     private Map<Field, String> fields = new HashMap<Field, String>();

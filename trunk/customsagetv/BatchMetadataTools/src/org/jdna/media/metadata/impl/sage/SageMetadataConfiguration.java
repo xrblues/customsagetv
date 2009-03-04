@@ -23,6 +23,9 @@ public class SageMetadataConfiguration {
     @Field(label="TV Title Mask", description="Title mask to use for TV Files")
     private String tvTitleMask = "${Title} - s${_season}e${_episode} - ${_showTitle}";
     
+    @Field(label="TV DVD Title Mask", description="Title mask to use for TV on Dvd")
+    private String tvDvdTitleMask = "${Title} - S${_season}D${_disc}";
+    
     @Field(label="Rewrite Titles", description="Rewrite titles so that 'A Big Adventure' becomes 'Big Adventure, A'")
     private boolean rewriteTitle = false;
     
@@ -84,6 +87,14 @@ public class SageMetadataConfiguration {
 
     public void setTvTitleMask(String tvTitleMask) {
         this.tvTitleMask = tvTitleMask;
+    }
+    
+    public String getTvDvdTitleMask() {
+        return tvDvdTitleMask;
+    }
+
+    public void setTvDvdTitleMask(String tvDvdTitleMask) {
+        this.tvDvdTitleMask = tvDvdTitleMask;
     }
 
     public boolean isRewriteTitle() {

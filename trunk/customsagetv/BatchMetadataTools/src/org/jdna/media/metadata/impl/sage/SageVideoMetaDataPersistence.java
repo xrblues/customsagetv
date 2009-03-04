@@ -188,6 +188,7 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
             props.put(_SEASON, zeroPad(encodeString((md.get(MetadataKey.TV_SEASON))),2));
             props.put(_EPISODE, zeroPad(encodeString((md.get(MetadataKey.TV_EPISODE))),2));
             props.put(_SHOW_TITLE, encodeString((md.get(MetadataKey.TV_SHOW_TITLE))));
+            props.put(_DISC, encodeString((md.get(MetadataKey.DVD_DISC))));
         }
         
         // lastly encode the description, to ensure that all other props are
@@ -283,7 +284,11 @@ public class SageVideoMetaDataPersistence implements IMediaMetadataPersistence {
             // update it using the mask
             if (!StringUtils.isEmpty(props.getProperty(_SEASON))) {
                 // assume TV
-                props.setProperty(TITLE, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTvTitleMask(), props));
+            	if (!StringUtils.isEmpty(props.getProperty(_EPISODE))) {
+            		props.setProperty(TITLE, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTvTitleMask(), props));
+            	} else {
+            		props.setProperty(TITLE, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTvDvdTitleMask(), props));
+            	}
             } else {
                 props.setProperty(TITLE, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTitleMask(), props));
             }

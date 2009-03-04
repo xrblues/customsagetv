@@ -41,7 +41,12 @@ public class FileNameUtils {
         for (XbmcScraper x : scrapers) {
             XbmcScraperProcessor proc = new XbmcScraperProcessor(x);
             String ep = proc.executeFunction("GetEpisode", args);
-            if (StringUtils.isEmpty(ep)) continue;
+            String dp = "";
+            
+            if (StringUtils.isEmpty(ep)) {
+            	dp = proc.executeFunction("GetDisc", args);
+            	if (StringUtils.isEmpty(dp)) continue;
+            }
             
             String season = proc.executeFunction("GetSeason", args);
             if (StringUtils.isEmpty(season)) continue;
@@ -54,6 +59,7 @@ public class FileNameUtils {
             q.set(SearchQuery.Field.TITLE, MediaMetadataUtils.cleanSearchCriteria(title,false));
             q.set(SearchQuery.Field.SEASON, season);
             q.set(SearchQuery.Field.EPISODE, ep);
+            q.set(SearchQuery.Field.DISC, dp);
             break;
         }
         return q;

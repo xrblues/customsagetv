@@ -25,7 +25,7 @@ public class ParserUtils {
     }
 
     private static String parseTitleWithLanguage(String title) {
-        Pattern p = Pattern.compile("(.*)\\s+\\(?([a-z]{2,4}+)\\)?.*");
+        Pattern p = Pattern.compile("([^(]+)\\s*\\([a-z]{2,4}\\)");
         Matcher m = p.matcher(title);
         if (m.find()) {
             return m.group(1);
