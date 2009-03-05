@@ -6,26 +6,11 @@ public class MediaSearchResult implements IMediaSearchResult, Serializable {
     private static final long serialVersionUID = 1L;
 
     private String            providerId, url, title, year, imdbId;
-    //private SearchResultType  resultType = SearchResultType.UNKNOWN;
     private float			score;
     
     public MediaSearchResult() {
     	
     }
-    
-//    public MediaSearchResult(String providerId, SearchResultType resultType) {
-//        this.providerId = providerId;
-//        this.resultType = resultType;
-//    }
-//
-//    public MediaSearchResult(String providerId, String url, String title, String year, SearchResultType resultType) {
-//        super();
-//        this.providerId = providerId;
-//        this.url = url;
-//        this.title = title;
-//        this.year = year;
-//        this.resultType = resultType;
-//    }
     
     public MediaSearchResult(String providerId, float score) {
         this.providerId = providerId;
@@ -64,14 +49,6 @@ public class MediaSearchResult implements IMediaSearchResult, Serializable {
     public void setYear(String year) {
         this.year = year;
     }
-
-    /*public SearchResultType getResultType() {
-        return resultType;
-    }
-
-    public void setResultType(SearchResultType resultType) {
-        this.resultType = resultType;
-    }*/
     
     public float getScore(){
     	return score;

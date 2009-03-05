@@ -57,11 +57,7 @@ public class IMDBSearchResultParser extends URLSaxParser {
     private Comparator<IMediaSearchResult> sorter              = new Comparator<IMediaSearchResult>() {
 
                                                                    public int compare(IMediaSearchResult o1, IMediaSearchResult o2) {
-                                                                       /*if (o1.getResultType() == SearchResultType.EXACT) return -1;
-                                                                       if (o2.getResultType() == SearchResultType.EXACT) return -1;
-                                                                       if (o1.getResultType() == SearchResultType.POPULAR) return -1;
-                                                                       if (o2.getResultType() == SearchResultType.POPULAR) return -1;*/
-                                                                	   if(o1.getScore() > o2.getScore()) return -1;
+                                                                       if(o1.getScore() > o2.getScore()) return -1;
                                                                 	   if(o1.getScore() < o2.getScore()) return 1;
                                                                        return 0;
                                                                    }
@@ -110,7 +106,7 @@ public class IMDBSearchResultParser extends URLSaxParser {
                 aState = TITLE_READ_TITLE;
 
                 // create the IVIdeoResult
-                curResult = new MediaSearchResult(IMDBMetaDataProvider.PROVIDER_ID, 0.0f);//SearchResultType.byId(state));
+                curResult = new MediaSearchResult(IMDBMetaDataProvider.PROVIDER_ID, 0.0f);
 
                 // set the imdb title url
                 String imdbId = parseTitleId(href);

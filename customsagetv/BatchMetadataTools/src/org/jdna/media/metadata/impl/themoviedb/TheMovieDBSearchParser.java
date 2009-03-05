@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.SearchQuery;
-//import org.jdna.media.util.Scoring;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -87,7 +86,6 @@ public class TheMovieDBSearchParser {
             return;
         }
         
-        //sr.setResultType(Scoring.getInstance().getTypeForScore(getScore(item)));
         sr.setScore(getScore(item));
         sr.setTitle(getElementValue(item, "title"));
         sr.setYear(getElementValue(item, "release"));
