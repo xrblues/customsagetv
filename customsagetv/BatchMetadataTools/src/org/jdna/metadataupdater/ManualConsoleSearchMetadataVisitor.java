@@ -11,7 +11,7 @@ import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchResultType;
+//import org.jdna.media.metadata.SearchResultType;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 
 public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataVisitor {
@@ -99,12 +99,12 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
         l = Math.min(l, max);
         for (int i = 0; i < l; i++) {
             IMediaSearchResult sr = results.get(i);
-            System.out.printf("%02d (%s) - %s [%s]\n", i, sr.getResultType().symbol(), sr.getTitle(), sr.getYear());
+            System.out.printf("%02d (%02f) - %s [%s]\n", i, sr.getScore(), sr.getTitle(), sr.getYear());
         }
-        System.out.print("LEGEND: ");
+        /*System.out.print("LEGEND: ");
         for (SearchResultType srt : SearchResultType.values()) {
             System.out.printf("%s %s; ", srt.symbol(), srt.label());
-        }
+        }*/
         System.out.println("");
     }
 }

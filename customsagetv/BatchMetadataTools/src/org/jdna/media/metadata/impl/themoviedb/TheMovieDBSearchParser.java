@@ -2,7 +2,11 @@ package org.jdna.media.metadata.impl.themoviedb;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,7 +16,7 @@ import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.util.Scoring;
+//import org.jdna.media.util.Scoring;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -25,9 +29,33 @@ public class TheMovieDBSearchParser {
 
     private String                              url;
     private List<IMediaSearchResult>            results    = new ArrayList<IMediaSearchResult>();
+    //private SearchQuery 						query;
+    private List<String> 						words 	   = new ArrayList<String>();
+    private String								searchTitle;
+    private Comparator<IMediaSearchResult> sorter              = new Comparator<IMediaSearchResult>() {
 
+        public int compare(IMediaSearchResult o1, IMediaSearchResult o2) {
+     	   if(o1.getScore() > o2.getScore()) return -1;
+     	   if(o1.getScore() < o2.getScore()) return 1;
+            return 0;
+        }
+
+    };
+    
     public TheMovieDBSearchParser(SearchQuery query) {
-        this.url = String.format(SEARCH_URL, URLEncoder.encode(query.get(SearchQuery.Field.TITLE)), TheMovieDBMetadataProvider.getApiKey());
+        searchTitle = query.get(SearchQuery.Field.TITLE);
+        this.url = String.format(SEARCH_URL, URLEncoder.encode(searchTitle), TheMovieDBMetadataProvider.getApiKey());
+
+        Pattern p = Pattern.compile("([^\\s]+)\\s?");
+        Matcher m;
+        
+        m = p.matcher(searchTitle);
+	    if(m.find()){
+		   for(int i=0; i<m.groupCount(); i++)
+		   {
+				 words.add(m.group(i));    			
+		   }
+	    }
     }
 
     public List<IMediaSearchResult> getResults() {
@@ -44,7 +72,7 @@ public class TheMovieDBSearchParser {
             for (int i = 0; i < len; i++) {
                 addMovie((Element) nl.item(i));
             }
-
+            Collections.sort(results, sorter);
         } catch (Exception e) {
             log.error("Failed to parse/search using url: " + url, e);
         }
@@ -58,7 +86,9 @@ public class TheMovieDBSearchParser {
             log.warn("TheMovieDB Item didn't contain a title: " + item.getTextContent());
             return;
         }
-        sr.setResultType(Scoring.getInstance().getTypeForScore(getScore(item)));
+        
+        //sr.setResultType(Scoring.getInstance().getTypeForScore(getScore(item)));
+        sr.setScore(getScore(item));
         sr.setTitle(getElementValue(item, "title"));
         sr.setYear(getElementValue(item, "release"));
         sr.setUrl(getElementValue(item, "id"));
@@ -69,9 +99,11 @@ public class TheMovieDBSearchParser {
 
     private float getScore(Element item) {
         try {
-            return Float.parseFloat(getElementValue(item, "score"));
+        	String matchTitle = getElementValue(item, "title");
+        	
+        	return (float)org.jdna.util.Similarity.getInstance().compareStrings(searchTitle,matchTitle);
         } catch (Exception e) {
-            return 0.0f;
+            return (float)0.0f;
         }
     }
 

@@ -47,7 +47,7 @@ public class CachedUrl extends Url implements IUrl {
         }
 
         // sanity check
-        if (!url.equals(props.getProperty("url"))) {
+        if (!url.toLowerCase().equals(props.getProperty("url").toLowerCase())) {
             throw new IOException("Caching is messed up.  The Cached url does not match the one passed! " + props.getProperty("url") + " != " + url);
         }
     }

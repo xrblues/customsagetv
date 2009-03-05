@@ -213,7 +213,9 @@ public class MediaMetadataFactory {
     }
     
     public boolean isGoodSearch(List<IMediaSearchResult> results) {
-        return results!=null && (results.size() > 0 && (results.get(0).getResultType() == SearchResultType.POPULAR || results.get(0).getResultType() == SearchResultType.EXACT));
+    	float goodScore = ConfigurationManager.getInstance().getMetadataConfiguration().getGoodScoreThreshold();
+    	return results!=null && (results.size() > 0 && results.get(0).getScore() >= goodScore);
+        //return results!=null && (results.size() > 0 && (results.get(0).getResultType() == SearchResultType.POPULAR || results.get(0).getResultType() == SearchResultType.EXACT));
     }
 
 }

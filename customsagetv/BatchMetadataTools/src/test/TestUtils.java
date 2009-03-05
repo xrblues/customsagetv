@@ -18,7 +18,7 @@ public class TestUtils {
         System.out.printf("ResultClass: %s\n", r.getClass().getName());
         System.out.printf("      Title: %s\n", r.getTitle());
         System.out.printf("       Year: %s\n", r.getYear());
-        System.out.printf("      Match: %s\n------------------------------------\n", r.getResultType().label());
+        System.out.printf("      Match: %02f\n------------------------------------\n", r.getScore());
     }
 
     public static void dumpMetaData(IMediaMetadata md) {

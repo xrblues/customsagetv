@@ -14,7 +14,9 @@ public interface IMediaSearchResult {
 
     public String getYear();
 
-    public SearchResultType getResultType();
+    //public SearchResultType getResultType();
+    
+    public float getScore();
 
     /**
      * Returns a Url that is understood by the provider, in order to fetch the complete details for a given search result
