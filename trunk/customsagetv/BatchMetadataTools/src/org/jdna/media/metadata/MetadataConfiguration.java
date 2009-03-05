@@ -21,6 +21,10 @@ public class MetadataConfiguration {
 
     @Field(label="Metadata Provider(s)", description = "Default provider id to use (comma separate, if more than 1)")
     private String defaultProviderId      = IMDBMetaDataProvider.PROVIDER_ID;
+    
+    @Field(label="Good Score Threshold", description = "Score which must be exceeded to consider a result a good match")
+    private float goodScoreThreshold = 0.9f;
+
 
     public MetadataConfiguration() {
     }
@@ -55,5 +59,13 @@ public class MetadataConfiguration {
 
     public void setDefaultProviderId(String defaultProviderId) {
         this.defaultProviderId = defaultProviderId;
+    }
+    
+    public float getGoodScoreThreshold(){
+    	return goodScoreThreshold;
+    }
+    
+    public void setGoodScoreThreshold(float goodScoreThreshold){
+    	this.goodScoreThreshold = goodScoreThreshold;
     }
 }
