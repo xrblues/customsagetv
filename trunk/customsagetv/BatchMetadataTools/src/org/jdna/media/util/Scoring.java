@@ -1,6 +1,5 @@
 package org.jdna.media.util;
 
-//import org.jdna.media.metadata.SearchResultType;
 import org.jdna.util.Similarity;
 
 /*public class Scoring {

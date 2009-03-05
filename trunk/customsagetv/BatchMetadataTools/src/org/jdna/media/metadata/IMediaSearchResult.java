@@ -13,8 +13,6 @@ public interface IMediaSearchResult {
     public String getTitle();
 
     public String getYear();
-
-    //public SearchResultType getResultType();
     
     public float getScore();
 

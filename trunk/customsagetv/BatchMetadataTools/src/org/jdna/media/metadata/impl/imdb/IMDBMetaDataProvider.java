@@ -14,7 +14,6 @@ import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
-//import org.jdna.media.metadata.SearchResultType;
 import org.jdna.media.metadata.SearchQuery.Type;
 import org.xml.sax.SAXException;
 
@@ -85,7 +84,6 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
         vsr.setUrl(md.getProviderDataUrl());
         vsr.setTitle(md.getTitle());
         vsr.setYear(md.getYear());
-        //vsr.setResultType(SearchResultType.EXACT);
         vsr.setScore(1.0f);
         vsr.setImdbId(IMDBSearchResultParser.parseTitleId(redirectUrl));
 
