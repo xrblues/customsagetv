@@ -1,74 +1,154 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- WARNING: Eclipse auto-generated file.
-              Any modifications will be overwritten.
-              To include a user specific buildfile here, simply create one in the same
-              directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. -->
-<project basedir="." default="build" name="MovieMetadataUpdater">
-    <property environment="env"/>
-    <property name="SageAPI.location" value="../SageAPI"/>
-    <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.5"/>
-    <property name="source" value="1.5"/>
-    <path id="MovieMetadataUpdater.classpath">
-        <pathelement location="bin"/>
-        <pathelement location="libs/nielm_sageimdb.jar"/>
-        <pathelement location="libs/nielm_sageutls.jar"/>
-        <pathelement location="libs/htmlparser.jar"/>
-        <pathelement location="libs/log4j-1.2.15.jar"/>
-        <pathelement location="libs/lucene-core-2.3.2.jar"/>
-    </path>
-    <target name="init">
-        <mkdir dir="bin"/>
-        <copy includeemptydirs="false" todir="bin">
-            <fileset dir="src" excludes="**/*.launch, **/*.java"/>
-        </copy>
-    </target>
-    <target name="clean">
-        <delete dir="bin"/>
-    </target>
-    <target depends="clean" name="cleanall"/>
-    <target depends="build-subprojects,build-project" name="build"/>
-    <target name="build-subprojects"/>
-    <target depends="init" name="build-project">
-        <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
-            <src path="src"/>
-            <classpath refid="MovieMetadataUpdater.classpath"/>
-        </javac>
-    </target>
-    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
-        <ant antfile="${SageAPI.location}/build.xml" inheritAll="false" target="clean"/>
-        <ant antfile="${SageAPI.location}/build.xml" inheritAll="false" target="build"/>
-    </target>
-    <target name="TestCachedUrl">
-        <java classname="test.TestCachedUrl" failonerror="true" fork="yes">
-            <classpath refid="MovieMetadataUpdater.classpath"/>
-        </java>
-    </target>
-    <target name="TestRegexp">
-        <java classname="test.TestRegexp" failonerror="true" fork="yes">
-            <classpath refid="MovieMetadataUpdater.classpath"/>
-        </java>
-    </target>
-    <target name="TestCoverSearch">
-        <java classname="test.TestCoverSearch" failonerror="true" fork="yes">
-            <classpath refid="MovieMetadataUpdater.classpath"/>
-        </java>
-    </target>
-    <target name="TestResourceVisitor">
-        <java classname="test.TestResourceVisitor" failonerror="true" fork="yes">
-            <classpath refid="MovieMetadataUpdater.classpath"/>
-        </java>
-    </target>
-    <target name="TestMisc">
-        <java classname="test.TestMisc" failonerror="true" fork="yes">
-            <classpath refid="MovieMetadataUpdater.classpath"/>
-        </java>
-    </target>
-    <target name="TestDVDProfiler">
-        <java classname="test.TestDVDProfiler" failonerror="true" fork="yes">
-            <classpath refid="MovieMetadataUpdater.classpath"/>
-        </java>
-    </target>
+<project basedir="." default="package" name="MovieMetadataUpdater">
+	<property environment="env" />
+	<property name="target" value="1.5" />
+	<property name="source" value="1.5" />
+
+	<property name="targetDir" value="target" />
+	<property name="name" value="metadata-updater" />
+	<property name="version" value="1.23" />
+	<property name="jarname" value="${name}-${version}.jar" />
+	<property name="launcher" value="MetadataTool" />
+	<property name="mainClass" value="org.jdna.metadataupdater.MetadataUpdater" />
+
+	<target name="all" depends="package" />
+	<target name="package" depends="package-tool,package-plugin"/>
+
+	<target name="package-tool" depends="init,copyJars,makeJar,makeLaunch">
+		<copy toDir="${targetDir}/tool">
+			<fileset dir="docs">
+			</fileset>
+		</copy>
+		<copy toDir="${targetDir}/tool/scrapers">
+			<fileset dir="scrapers">
+			</fileset>
+		</copy>
+		<zip destfile="${targetDir}/${name}-${version}.zip">
+			<fileset dir="${targetDir}/tool">
+			</fileset>
+		</zip>
+	</target>
+
+	<target name="package-gwt" depends="package-tool">
+		<copy toDir="${targetDir}/gwt/">
+			<fileset dir="bin" excludes="**/*.properties,/test/*,*.class" />
+		</copy>
+
+		<copy toDir="${targetDir}/gwt/org/jdna/media/super/">
+			<fileset dir="src" includes="org/jdna/media/**/I*.java,org/jdna/media/metadata/VideoMetaData.java,org/jdna/media/metadata/CastMember.java,org/jdna/media/metadata/ProviderInfo.java,org/jdna/media/metadata/VideoSearchResult.java,org/jdna/media/metadata/CoverResult.java">
+				<exclude name="**/impl/**" />
+			</fileset>
+		</copy>
+
+		<copy file="gwt/MediaApi.gwt.xml" todir="${targetDir}/gwt/org/jdna/media/" />
+
+		<jar destfile="${targetDir}/gwt-${jarname}">
+			<fileset dir="${targetDir}/gwt/" />
+		</jar>
+	</target>
+
+	<target name="package-plugin" depends="package-tool">
+		<mkdir dir="${targetDir}/sage" />
+		<mkdir dir="${targetDir}/sage/JARs" />
+
+		<copy toDir="${targetDir}/sage/JARs">
+			<fileset dir="libs" excludes="Sage.*,nielm*,miglayout*" />
+		</copy>
+
+		<copy toDir="${targetDir}/sage/JARs">
+			<fileset file="${targetDir}/tool/libs/${jarname}" />
+		</copy>
+
+		<copy toDir="${targetDir}/sage/scrapers">
+			<fileset dir="scrapers">
+			</fileset>
+		</copy>
+
+		<echo file="${targetDir}/sage/Sage.properties.metadataupdater">mediafile_metadata_parser_plugins=org.jdna.sage.MetadataUpdaterPlugin</echo>
+
+		<zip destfile="${targetDir}/${name}-plugin-${version}.zip" basedir="${targetDir}/sage" />
+	</target>
+
+	<target name="copyJars">
+		<copydir dest="${targetDir}/tool/libs" src="libs" excludes="Sage*.jar">
+		</copydir>
+	</target>
+	
+	<target name="buildVersion">
+		<echo file="src/org/jdna/metadataupdater/Version.java">
+			package org.jdna.metadataupdater;
+
+			public class Version {
+			    public static final String VERSION = "${version}";
+			}
+		</echo>
+	</target>
+	
+	<path id="ApplicationClasspath">
+		<pathelement location="bin" />
+		<fileset dir="libs" includes="*.jar"/>
+	</path>
+	
+	<target name="build" depends="buildVersion">
+		<javac source="${source}" target="${target}" classpathref="ApplicationClasspath" srcdir="src" destdir="bin">
+		</javac>
+	</target>
+
+	<target name="makeJar" depends="build">
+		<jar destfile="${targetDir}/tool/libs/${jarname}">
+			<fileset dir="bin">
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="makeLaunch">
+		<!-- build the classpath for the entries that we want -->
+		<path id="project.classpath">
+			<fileset dir="${targetDir}/tool/libs" includes="*.jar">
+			</fileset>
+		</path>
+
+		<!-- Convert project class path to string property -->
+		<pathconvert property="mf.classpath" pathsep=" ">
+			<path refid="project.classpath" />
+			<chainedmapper>
+				<flattenmapper />
+				<regexpmapper from="(.*)" to="libs/\1" />
+			</chainedmapper>
+		</pathconvert>
+
+
+		<jar destfile="${targetDir}/tool/${launcher}.jar" whenempty="create">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Specification-Title" value="Batch Metadata Tools" />
+				<attribute name="Specification-Version" value="${version}" />
+				<attribute name="Specification-Vendor" value="jdna.org" />
+				<attribute name="Implementation-Title" value="Batch Metadata Tools" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Vendor" value="jdna.org" />
+				<attribute name="Main-Class" value="${mainClass}" />
+				<attribute name="Class-Path" value="${mf.classpath}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="init">
+		<delete dir="bin" failonerror="false"/>
+		<delete dir="${targetDir}" failonerror="false"/>
+		<mkdir dir="${targetDir}" />
+		<mkdir dir="bin"/>
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src" excludes="**/*.launch, **/*.java" />
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="${targetDir}" />
+	</target>
+
+	<target name="generate-constants">
+		<xslt style="src/org/jdna/media/metadata/MetadataKey.xsl" in="src/org/jdna/media/metadata/MetadataKey.xml" out="src/org/jdna/media/metadata/MetadataKey.java">
+		</xslt>
+	</target>
 </project>
