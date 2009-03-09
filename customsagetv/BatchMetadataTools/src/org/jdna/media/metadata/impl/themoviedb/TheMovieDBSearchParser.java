@@ -90,7 +90,7 @@ public class TheMovieDBSearchParser {
         sr.setTitle(getElementValue(item, "title"));
         sr.setYear(getElementValue(item, "release"));
         sr.setUrl(getElementValue(item, "id"));
-        sr.setImdbId(getElementValue(item, "imdb"));
+        sr.setUniqueId(getElementValue(item, "imdb"));
 
         results.add(sr);
     }

@@ -58,7 +58,7 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
                         // set the imdb url as the ID for this result.
                         // that will enable us to find it later
                         vsr.setUrl(((ImdbWebObjectRef) objRef).getImdbRef());
-                        vsr.setImdbId(IMDBSearchResultParser.parseTitleId(((ImdbWebObjectRef) objRef).getImdbRef()));
+                        vsr.setUniqueId(IMDBSearchResultParser.parseTitleId(((ImdbWebObjectRef) objRef).getImdbRef()));
                     } else {
                         log.error("Imdb Search result was incorrect type: " + objRef.getClass().getName());
                     }
@@ -129,4 +129,10 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
     public Type[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
+
+	public IMediaMetadata getMetaDataFromCompositeId(String compositeId)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

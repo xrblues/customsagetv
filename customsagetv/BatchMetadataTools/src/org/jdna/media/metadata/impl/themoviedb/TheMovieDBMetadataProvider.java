@@ -1,7 +1,9 @@
 package org.jdna.media.metadata.impl.themoviedb;
 
 import java.util.List;
+import java.util.Scanner;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
@@ -20,7 +22,7 @@ public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return getMetaData(String.format(TheMovieDBItemParser.ITEM_URL, result.getUrl()));
+    	return getMetaData(String.format(TheMovieDBItemParser.ITEM_URL, result.getUrl()));  
     }
 
     public IMediaMetadata getMetaData(String providerDataUrl) throws Exception {
@@ -48,16 +50,23 @@ public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
         return key;
     }
 
-    public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
+    public IMediaMetadata getMetaDataFromCompositeId(String compositeId) throws Exception, UnsupportedOperationException {
         // sort of convoluted, but we need to get the imdbid info, then get the
         // real movidedb id
         // to get the full details
-        TheMovieDBItemParser p = new TheMovieDBItemParser(String.format(TheMovieDBItemParser.IMDB_ITEM_URL, imdbId));
-        if (p.getMetadata() != null) {
-            return getMetaData(String.format(TheMovieDBItemParser.ITEM_URL, p.getTheMovieDBID()));
-        } else {
-            throw new Exception("Failed to get metadata by imdb for imdbid: " + imdbId);
+    	if (compositeId.startsWith("tt")){
+	        TheMovieDBItemParser p = new TheMovieDBItemParser(String.format(TheMovieDBItemParser.IMDB_ITEM_URL, compositeId));
+	        if (p.getMetadata() != null) {
+	            return getMetaData(String.format(TheMovieDBItemParser.ITEM_URL, p.getTheMovieDBID()));
+	        } else {
+	            throw new Exception("Failed to get metadata by imdb for compositeId: " + compositeId);
+	        }
+        } else if (StringUtils.isNumeric(compositeId)){
+        	//assume it's a tvdb id
+        	return getMetaData(compositeId);
         }
+    	else
+    		return null;
     }
 
     public Type[] getSupportedSearchTypes() {

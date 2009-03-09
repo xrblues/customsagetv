@@ -111,7 +111,7 @@ public class IMDBSearchResultParser extends URLSaxParser {
                 // set the imdb title url
                 String imdbId = parseTitleId(href);
                 log.debug("Setting IMDB ID: " + imdbId + " from href: " + href);
-                curResult.setImdbId(imdbId);
+                curResult.setUniqueId(imdbId);
                 curResult.setUrl(String.format(TITLE_URL, imdbId));
             }
         }

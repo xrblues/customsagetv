@@ -480,4 +480,10 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
     public Type[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
+
+	public IMediaMetadata getMetaDataFromCompositeId(String compositeId)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

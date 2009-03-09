@@ -85,7 +85,7 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
         vsr.setTitle(md.getTitle());
         vsr.setYear(md.getYear());
         vsr.setScore(1.0f);
-        vsr.setImdbId(IMDBSearchResultParser.parseTitleId(redirectUrl));
+        vsr.setUniqueId(IMDBSearchResultParser.parseTitleId(redirectUrl));
 
         // the IMDBMovieMetaData implements the IVideoSearchResult interface
         result.add(vsr);
@@ -121,4 +121,12 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
     public Type[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
+
+	public IMediaMetadata getMetaDataFromCompositeId(String compositeId)
+			throws Exception {
+		if (compositeId.startsWith("tt"))
+			return getMetaDataByIMDBId(compositeId);
+		else
+			return null;
+	}
 }
