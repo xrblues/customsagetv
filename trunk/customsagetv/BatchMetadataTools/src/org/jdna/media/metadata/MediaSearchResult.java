@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class MediaSearchResult implements IMediaSearchResult, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String            providerId, url, title, year, imdbId;
+    private String            providerId, url, title, year, uniqueId;
     private float			score;
     
     public MediaSearchResult() {
@@ -66,11 +66,11 @@ public class MediaSearchResult implements IMediaSearchResult, Serializable {
         this.url=url;
     }
 
-    public String getImdbId() {
-        return imdbId;
+    public String getUniqueId() {
+        return uniqueId;
     }
 
-    public void setImdbId(String imdbId) {
-        this.imdbId = imdbId;
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
 }

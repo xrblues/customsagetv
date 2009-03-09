@@ -22,4 +22,6 @@ public interface IMediaSearchResult {
      * @return
      */
     public String getUrl();
+    
+    public String getUniqueId();
 }

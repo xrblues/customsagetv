@@ -88,4 +88,10 @@ public class MetadataProviderContainer implements IMediaMetadataProvider {
     public Type[] getSupportedSearchTypes() {
         return Type.values();
     }
+
+	public IMediaMetadata getMetaDataFromCompositeId(String compositeId)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
