@@ -12,6 +12,7 @@ import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
@@ -75,58 +76,48 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
         return results;
     }
 
-    private List<IMediaSearchResult> returnSingleResult(String redirectUrl) throws IOException {
+    private List<IMediaSearchResult> returnSingleResult(String redirectUrl) throws Exception {
         List<IMediaSearchResult> result = new ArrayList<IMediaSearchResult>();
 
-        IMediaMetadata md = getMetaData(redirectUrl);
+        IMediaMetadata md = getMetaDataByUrl(redirectUrl);
         MediaSearchResult vsr = new MediaSearchResult();
         vsr.setProviderId(PROVIDER_ID);
         vsr.setUrl(md.getProviderDataUrl());
-        vsr.setTitle(md.getTitle());
+        vsr.setTitle(md.getMediaTitle());
         vsr.setYear(md.getYear());
         vsr.setScore(1.0f);
-        vsr.setUniqueId(IMDBSearchResultParser.parseTitleId(redirectUrl));
+        vsr.setMetadataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, IMDBUtils.parseIMDBID(redirectUrl)));
 
-        // the IMDBMovieMetaData implements the IVideoSearchResult interface
         result.add(vsr);
 
         return result;
     }
 
-    public IMediaMetadata getMetaData(String providerDataUrl) throws IOException {
-        try {
-            String url = providerDataUrl;
-            IMDBMovieMetaDataParser parser = new IMDBMovieMetaDataParser(url);
-            parser.parse();
-            if (parser.hasError()) throw new IOException("Failed to Parse MetaData for url: " + url);
-            return parser.getMetatData();
-        } catch (SAXException e) {
-            log.error("Failed to getMetaData for url: " + providerDataUrl);
-            throw new IOException("Failed to parse providerDataUrl: " + providerDataUrl, e);
-        }
-    }
-
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return getMetaData(result.getUrl());
+        return getMetaDataByUrl(result.getUrl());
     }
 
     public IProviderInfo getInfo() {
         return info;
     }
 
-    public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
-        return getMetaData(String.format(IMDBSearchResultParser.TITLE_URL, imdbId));
-    }
-
     public Type[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
 
-	public IMediaMetadata getMetaDataFromCompositeId(String compositeId)
-			throws Exception {
-		if (compositeId.startsWith("tt"))
-			return getMetaDataByIMDBId(compositeId);
-		else
-			return null;
-	}
+    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
+        return getMetaDataByUrl(String.format(IMDBSearchResultParser.TITLE_URL, id));
+    }
+
+    public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
+        try {
+            IMDBMovieMetaDataParser parser = new IMDBMovieMetaDataParser(url);
+            parser.parse();
+            if (parser.hasError()) throw new IOException("Failed to Parse MetaData for url: " + url);
+            return parser.getMetatData();
+        } catch (SAXException e) {
+            log.error("Failed to getMetaData for url: " + url);
+            throw new IOException("Failed to parse providerDataUrl: " + url, e);
+        }
+    }
 }

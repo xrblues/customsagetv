@@ -1,6 +1,5 @@
 package org.jdna.media.util;
 
-import org.jdna.util.Similarity;
 
 /*public class Scoring {
     private static  Scoring instance = new Scoring();

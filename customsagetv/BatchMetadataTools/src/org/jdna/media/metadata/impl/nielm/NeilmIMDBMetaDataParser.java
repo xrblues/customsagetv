@@ -9,11 +9,15 @@ import net.sf.sageplugins.sageimdb.Role;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBMovieMetaDataParser;
+import org.jdna.media.metadata.impl.imdb.IMDBUtils;
+
+import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
 
 public class NeilmIMDBMetaDataParser {
     private static final Logger log         = Logger.getLogger(NeilmIMDBMetaDataParser.class);
@@ -36,11 +40,11 @@ public class NeilmIMDBMetaDataParser {
                 MetadataKey.MPAA_RATING,
                 MetadataKey.MPAA_RATING_DESCRIPTION,
                 MetadataKey.POSTER_ART,
-                MetadataKey.PROVIDER_DATA_URL,
-                MetadataKey.PROVIDER_ID,
+                MetadataKey.MEDIA_PROVIDER_DATA_ID,
+                MetadataKey.METADATA_PROVIDER_DATA_URL,
                 MetadataKey.RELEASE_DATE,
                 MetadataKey.RUNNING_TIME,
-                MetadataKey.TITLE,
+                MetadataKey.MEDIA_TITLE,
                 MetadataKey.USER_RATING,
                 MetadataKey.YEAR });
 
@@ -49,8 +53,6 @@ public class NeilmIMDBMetaDataParser {
         md.setMPAARating(data.getMPAArating());
         md.set(MetadataKey.MPAA_RATING_DESCRIPTION, IMDBMovieMetaDataParser.parseMPAARating(data.getMPAArating()));
         md.setDescription(data.getSummaries());
-        md.setProviderId(NielmIMDBMetaDataProvider.PROVIDER_ID);
-        md.setProviderDataUrl(data.getImdbUrl());
         md.setReleaseDate(data.getAiringDate());
         try {
             md.setRuntime(String.valueOf(data.getDuration()));
@@ -59,13 +61,17 @@ public class NeilmIMDBMetaDataParser {
         }
         if (data.getImageURL()!=null) {
             MediaArt ma = new MediaArt();
-            ma.setType(IMediaArt.POSTER);
+            ma.setType(MediaArtifactType.POSTER);
             ma.setDownloadUrl(data.getImageURL().toExternalForm());
             md.addMediaArt(ma);
         }
-        md.setTitle(data.getName());
+        md.setMediaTitle(data.getName());
         md.setUserRating(data.getRating());
         md.setYear(data.getYear());
+
+        md.setProviderId(NielmIMDBMetaDataProvider.PROVIDER_ID);
+        md.setProviderDataUrl(data.getImdbUrl());
+        md.setProviderDataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, IMDBUtils.parseIMDBID(data.getImdbUrl())));
         return md;
     }
 

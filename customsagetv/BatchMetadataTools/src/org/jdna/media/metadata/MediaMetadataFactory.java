@@ -51,11 +51,13 @@ public class MediaMetadataFactory {
             String mdps[] = providers.split(",");
             for (String p : mdps) {
                 p = p.trim();
-                try {
-                    Class<IMediaMetadataProvider> cl = (Class<IMediaMetadataProvider>) Class.forName(p);
-                    addMetaDataProvider(cl.newInstance());
-                } catch (Throwable e) {
-                    log.error("Failed to register new Metadata Provider: " + p, e);
+                if (!StringUtils.isEmpty(p)) {
+                    try {
+                        Class<IMediaMetadataProvider> cl = (Class<IMediaMetadataProvider>) Class.forName(p);
+                        addMetaDataProvider(cl.newInstance());
+                    } catch (Throwable e) {
+                        log.error("Failed to register new Metadata Provider: " + p, e);
+                    }
                 }
             }
         } catch (Exception e) {

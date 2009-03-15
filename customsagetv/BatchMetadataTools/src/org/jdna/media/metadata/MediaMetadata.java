@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
+
 public class MediaMetadata implements IMediaMetadata, Serializable {
     private static final long        serialVersionUID = 1;
 
@@ -65,12 +67,12 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         set(MetadataKey.MPAA_RATING, rating);
     }
 
-    public String getProviderDataUrl() {
-        return (String) get(MetadataKey.PROVIDER_DATA_URL);
+    public MetadataID getProviderDataId() {
+        return (MetadataID) get(MetadataKey.MEDIA_PROVIDER_DATA_ID);
     }
 
-    public void setProviderDataUrl(String providerDataUrl) {
-        set(MetadataKey.PROVIDER_DATA_URL, providerDataUrl);
+    public void setProviderDataId(MetadataID providerDataId) {
+        set(MetadataKey.MEDIA_PROVIDER_DATA_ID, providerDataId);
     }
 
     public String getReleaseDate() {
@@ -89,12 +91,12 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         set(MetadataKey.RUNNING_TIME, runtime);
     }
 
-    public String getTitle() {
-        return (String) get(MetadataKey.TITLE);
+    public String getMediaTitle() {
+        return (String) get(MetadataKey.MEDIA_TITLE);
     }
 
-    public void setTitle(String title) {
-        set(MetadataKey.TITLE, title);
+    public void setMediaTitle(String title) {
+        set(MetadataKey.MEDIA_TITLE, title);
     }
 
     public String getUserRating() {
@@ -113,14 +115,6 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         set(MetadataKey.YEAR, year);
     }
 
-    public String getProviderId() {
-        return (String) get(MetadataKey.PROVIDER_ID);
-    }
-
-    public void setProviderId(String providerId) {
-        set(MetadataKey.PROVIDER_ID, providerId);
-    }
-
     public ICastMember[] getCastMembers(int type) {
         ICastMember castMembers[] = (ICastMember[]) get(MetadataKey.CAST_MEMBER_LIST);
         if (castMembers == null || type == ICastMember.ALL) return castMembers;
@@ -133,9 +127,9 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         return l.toArray(new ICastMember[l.size()]);
     }
 
-    public IMediaArt[] getMediaArt(int type) {
+    public IMediaArt[] getMediaArt(MediaArtifactType type) {
         IMediaArt mediaArt[] = (IMediaArt[]) get(MetadataKey.MEDIA_ART_LIST);
-        if (mediaArt == null || type == IMediaArt.ALL) return mediaArt;
+        if (mediaArt == null || type == null) return mediaArt;
 
         // TODO: Cache this information
         List<IMediaArt> l = new ArrayList<IMediaArt>(mediaArt.length);
@@ -157,7 +151,7 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         IMediaArt poster = (IMediaArt) get(MetadataKey.POSTER_ART);
         // if there isn't a specific poster set, the use the first one
         if (poster == null) {
-            IMediaArt[] posters = getMediaArt(IMediaArt.POSTER);
+            IMediaArt[] posters = getMediaArt(MediaArtifactType.POSTER);
             if (posters == null || posters.length==0) return null;
             setPoster(posters[0]);
             poster=posters[0];
@@ -173,7 +167,7 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         IMediaArt background = (IMediaArt) get(MetadataKey.BACKGROUND_ART);
         // if there isn't a background set, then use the first one
         if (background == null) {
-            IMediaArt[] posters = getMediaArt(IMediaArt.BACKGROUND);
+            IMediaArt[] posters = getMediaArt(MediaArtifactType.BACKGROUND);
             if (posters == null || posters.length==0) return null;
             setBackground(posters[0]);
             background = posters[0];
@@ -230,7 +224,7 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
 
     public void addMediaArt(IMediaArt ma) {
         // TODO: Not very efficient
-        IMediaArt art[] = getMediaArt(IMediaArt.ALL);
+        IMediaArt art[] = getMediaArt(null);
         if (art == null) {
             art = new IMediaArt[] { ma };
         } else {
@@ -264,5 +258,37 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
 
     public void setSupportedKeys(MetadataKey[] keys) {
         this.supportedKeys = keys;
+    }
+
+    public IMediaArt getBanner() {
+        IMediaArt banner = (IMediaArt) get(MetadataKey.BANNER_ART);
+        // if there isn't a background set, then use the first one
+        if (banner == null) {
+            IMediaArt[] posters = getMediaArt(MediaArtifactType.BANNER);
+            if (posters == null || posters.length==0) return null;
+            setBanner(posters[0]);
+            banner = posters[0];
+        }
+        return banner;
+    }
+
+    public void setBanner(IMediaArt poster) {
+        set(MetadataKey.BANNER_ART, poster);
+    }
+
+    public String getProviderDataUrl() {
+        return (String) get(MetadataKey.METADATA_PROVIDER_DATA_URL);
+    }
+
+    public String getProviderId() {
+        return (String) get(MetadataKey.METADATA_PROVIDER_ID);
+    }
+
+    public void setProviderDataUrl(String url) {
+        set(MetadataKey.METADATA_PROVIDER_DATA_URL, url);
+    }
+
+    public void setProviderId(String id) {
+        set(MetadataKey.METADATA_PROVIDER_ID, id);
     }
 }

@@ -12,7 +12,7 @@ public class TestMetadataProvider {
         
         IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(id);
         System.out.println("Using Provider: " + prov.getInfo().getId());
-        IMediaMetadata md = prov.getMetaData(url);
+        IMediaMetadata md = prov.getMetaDataByUrl(url);
         ListMovieVisitor.printMetadata(md, "Movie", url);
     }
 }

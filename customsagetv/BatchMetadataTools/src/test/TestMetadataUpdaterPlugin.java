@@ -3,7 +3,6 @@ package test;
 import java.io.File;
 import java.io.IOException;
 
-import org.jdna.media.IMediaResource;
 import org.jdna.sage.MetadataUpdaterPlugin;
 
 

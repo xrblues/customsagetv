@@ -19,10 +19,13 @@ import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
+import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBSearchResultParser;
+import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 
 public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
     private static final Logger  log                   = Logger.getLogger(NielmIMDBMetaDataProvider.class);
@@ -58,7 +61,7 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
                         // set the imdb url as the ID for this result.
                         // that will enable us to find it later
                         vsr.setUrl(((ImdbWebObjectRef) objRef).getImdbRef());
-                        vsr.setUniqueId(IMDBSearchResultParser.parseTitleId(((ImdbWebObjectRef) objRef).getImdbRef()));
+                        vsr.setMetadataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID,IMDBUtils.parseIMDBID(((ImdbWebObjectRef) objRef).getImdbRef())));
                     } else {
                         log.error("Imdb Search result was incorrect type: " + objRef.getClass().getName());
                     }
@@ -102,37 +105,31 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
         return PROVIDER_ID;
     }
 
-    public IMediaMetadata getMetaData(String providerDataUrl) throws IOException {
-        ImdbWebObjectRef objRef = new ImdbWebObjectRef(DbObjectRef.DB_TYPE_TITLE, "IMDB Url", providerDataUrl);
-        DbTitleObject title;
-        try {
-            title = (DbTitleObject) objRef.getDbObject(db);
-            return new NeilmIMDBMetaDataParser(db, title).getMetaData();
-        } catch (Exception e) {
-            log.error("IMDB Lookup Failed:" + providerDataUrl, e);
-            throw new IOException(e);
-        }
-    }
-
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return getMetaData(result.getUrl());
+        return getMetaDataByUrl(result.getUrl());
     }
 
     public IProviderInfo getInfo() {
         return info;
     }
 
-    public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
-        return getMetaData(String.format(IMDBSearchResultParser.TITLE_URL, imdbId));
-    }
-
     public Type[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
 
-	public IMediaMetadata getMetaDataFromCompositeId(String compositeId)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
+        return getMetaDataByUrl(String.format(IMDBSearchResultParser.TITLE_URL, id));
+    }
+
+    public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
+        ImdbWebObjectRef objRef = new ImdbWebObjectRef(DbObjectRef.DB_TYPE_TITLE, "IMDB Url", url);
+        DbTitleObject title;
+        try {
+            title = (DbTitleObject) objRef.getDbObject(db);
+            return new NeilmIMDBMetaDataParser(db, title).getMetaData();
+        } catch (Exception e) {
+            log.error("IMDB Lookup Failed:" + url, e);
+            throw new IOException(e);
+        }
+    }
 }

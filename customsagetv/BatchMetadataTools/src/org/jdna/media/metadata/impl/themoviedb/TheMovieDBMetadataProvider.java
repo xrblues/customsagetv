@@ -1,16 +1,16 @@
 package org.jdna.media.metadata.impl.themoviedb;
 
 import java.util.List;
-import java.util.Scanner;
 
-import org.apache.commons.lang.StringUtils;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
+import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 
 public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
     public static final String   PROVIDER_ID = "themoviedb.org";
@@ -22,11 +22,7 @@ public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-    	return getMetaData(String.format(TheMovieDBItemParser.ITEM_URL, result.getUrl()));  
-    }
-
-    public IMediaMetadata getMetaData(String providerDataUrl) throws Exception {
-        return new TheMovieDBItemParser(providerDataUrl).getMetadata();
+    	return getMetaDataByUrl(result.getUrl());  
     }
 
     public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
@@ -50,26 +46,25 @@ public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
         return key;
     }
 
-    public IMediaMetadata getMetaDataFromCompositeId(String compositeId) throws Exception, UnsupportedOperationException {
-        // sort of convoluted, but we need to get the imdbid info, then get the
-        // real movidedb id
-        // to get the full details
-    	if (compositeId.startsWith("tt")){
-	        TheMovieDBItemParser p = new TheMovieDBItemParser(String.format(TheMovieDBItemParser.IMDB_ITEM_URL, compositeId));
-	        if (p.getMetadata() != null) {
-	            return getMetaData(String.format(TheMovieDBItemParser.ITEM_URL, p.getTheMovieDBID()));
-	        } else {
-	            throw new Exception("Failed to get metadata by imdb for compositeId: " + compositeId);
-	        }
-        } else if (StringUtils.isNumeric(compositeId)){
-        	//assume it's a tvdb id
-        	return getMetaData(compositeId);
-        }
-    	else
-    		return null;
-    }
-
     public Type[] getSupportedSearchTypes() {
         return supportedSearchTypes;
+    }
+
+    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
+        if (IMDBMetaDataProvider.PROVIDER_ID.equals(id.getKey())) {
+            // imdb lookup
+            TheMovieDBItemParser p = new TheMovieDBItemParser(String.format(TheMovieDBItemParser.IMDB_ITEM_URL, id.getId()));
+            if (p.getMetadata() != null) {
+                return getMetaDataByUrl(String.format(TheMovieDBItemParser.ITEM_URL, p.getTheMovieDBID()));
+            }
+        } else if ("themoviedb".equals(id.getKey())) {
+            // normal moviedb lookup
+            getMetaDataByUrl(String.format(TheMovieDBItemParser.ITEM_URL, id.getId()));
+        }
+        throw new Exception("Failed to get metadata by Id: " + id);
+    }
+
+    public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
+        return new TheMovieDBItemParser(url).getMetadata();
     }
 }

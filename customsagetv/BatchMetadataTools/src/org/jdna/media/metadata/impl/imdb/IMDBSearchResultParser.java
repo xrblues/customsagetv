@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.SearchResultType;
 import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
@@ -75,20 +76,6 @@ public class IMDBSearchResultParser extends URLSaxParser {
         return results;
     }
 
-    public static String parseTitleId(String href) {
-        if (href == null) return null;
-        String parts[] = href.split("/");
-        if (parts != null && parts.length > 0) {
-            int l = parts.length;
-            for (int i = 0; i < l; i++) {
-                if ("title".equals(parts[i])) {
-                    return parts[i + 1];
-                }
-            }
-        }
-        return href;
-    }
-
     @Override
     public void startElement(String uri, String localName, String name, Attributes atts) throws SAXException {
         if (state == ENDED) return;
@@ -109,9 +96,9 @@ public class IMDBSearchResultParser extends URLSaxParser {
                 curResult = new MediaSearchResult(IMDBMetaDataProvider.PROVIDER_ID, 0.0f);
 
                 // set the imdb title url
-                String imdbId = parseTitleId(href);
+                String imdbId = IMDBUtils.parseIMDBID(href);
                 log.debug("Setting IMDB ID: " + imdbId + " from href: " + href);
-                curResult.setUniqueId(imdbId);
+                curResult.setMetadataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, imdbId));
                 curResult.setUrl(String.format(TITLE_URL, imdbId));
             }
         }

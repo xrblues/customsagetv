@@ -17,7 +17,6 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
@@ -25,16 +24,21 @@ import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
+import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBMovieMetaDataParser;
+import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 import org.jdna.util.DOMUtils;
 import org.jdna.util.ParserUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
 
 public class XbmcMetadataProvider implements IMediaMetadataProvider {
     private static final Logger                 log                  = Logger.getLogger(XbmcMetadataProvider.class);
@@ -101,13 +105,19 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return getMetaData(result.getUrl());
+        return getMetaDataByUrl(result.getUrl());
     }
 
     private IMediaMetadata getMetaData(String providerDataUrl, XbmcUrl url, Map<String, String> extraArgs) throws Exception {
         MediaMetadata md = new MediaMetadata();
-        updateMDValue(md, MetadataKey.PROVIDER_DATA_URL, providerDataUrl);
-        updateMDValue(md, MetadataKey.PROVIDER_ID, getInfo().getId());
+        updateMDValue(md, MetadataKey.METADATA_PROVIDER_DATA_URL, providerDataUrl);
+        updateMDValue(md, MetadataKey.METADATA_PROVIDER_ID, getInfo().getId());
+
+        // we can't make a valid MEDIA_PROVIDER_ID using the xbmc scrapers
+        String imdbId = IMDBUtils.parseIMDBID(providerDataUrl);
+        if (imdbId!=null) {
+            md.set(MetadataKey.MEDIA_PROVIDER_DATA_ID, new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, imdbId));
+        }
 
         XbmcMovieProcessor processor = new XbmcMovieProcessor(scraper);
         String xmlDetails = processor.getDetails(url, (extraArgs != null) ? extraArgs.get("id") : null);
@@ -218,14 +228,14 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
 	                md.setDescription(plot);
 	            }
 		            
-	            md.set(MetadataKey.TV_EPISODE, String.valueOf(findEpisode));
+	            md.set(MetadataKey.EPISODE, String.valueOf(findEpisode));
 	            md.set(MetadataKey.RELEASE_DATE, DOMUtils.getElementValue(el, "aired"));
-	            md.set(MetadataKey.TV_SHOW_TITLE, DOMUtils.getElementValue(el, "title"));
+	            md.set(MetadataKey.EPISODE_TITLE, DOMUtils.getElementValue(el, "title"));
             }else if(findDisc > 0){
             	md.set(MetadataKey.DVD_DISC, String.format("%1$02d", findDisc));
             }
             
-            md.set(MetadataKey.TV_SEASON, String.valueOf(findSeason));
+            md.set(MetadataKey.SEASON, String.valueOf(findSeason));
         }
 
     }
@@ -236,13 +246,13 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         for (int i = 0; i < nl.getLength(); i++) {
             Element fanart = (Element) nl.item(i);
             String url = fanart.getAttribute("url");
-            processMediaArt(md, IMediaArt.BACKGROUND, "Backdrop Fanart", url);
+            processMediaArt(md, MediaArtifactType.BACKGROUND, "Backgrounds", fanart.getElementsByTagName("thumb"), url);
         }
 
         nl = details.getElementsByTagName("thumbs");
         for (int i = 0; i < nl.getLength(); i++) {
             Element fanart = (Element) nl.item(i);
-            processMediaArt(md, IMediaArt.POSTER, "Poster", fanart.getElementsByTagName("thumb"), null);
+            processMediaArt(md, MediaArtifactType.POSTER, "Poster", fanart.getElementsByTagName("thumb"), null);
         }
 
         nl = details.getElementsByTagName("actor");
@@ -289,12 +299,12 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
 
         updateMDValue(md, MetadataKey.RELEASE_DATE, DOMUtils.getElementValue(details, "year"));
         updateMDValue(md, MetadataKey.RUNNING_TIME, DOMUtils.getElementValue(details, "runtime"));
-        updateMDValue(md, MetadataKey.TITLE, DOMUtils.getElementValue(details, "title"));
+        updateMDValue(md, MetadataKey.MEDIA_TITLE, DOMUtils.getElementValue(details, "title"));
         updateMDValue(md, MetadataKey.USER_RATING, DOMUtils.getElementValue(details, "rating"));
         updateMDValue(md, MetadataKey.YEAR, DOMUtils.getElementValue(details, "year"));
     }
 
-    private void processMediaArt(MediaMetadata md, int type, String label, NodeList els, String baseUrl) {
+    private void processMediaArt(MediaMetadata md, MediaArtifactType type, String label, NodeList els, String baseUrl) {
         for (int i = 0; i < els.getLength(); i++) {
             Element e = (Element) els.item(i);
             String image = e.getTextContent();
@@ -307,28 +317,13 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         }
     }
     
-    private void processMediaArt(MediaMetadata md, int type, String label, String image) {        
+    private void processMediaArt(MediaMetadata md, MediaArtifactType type, String label, String image) {        
             MediaArt ma = new MediaArt();
             ma.setDownloadUrl(image);
             ma.setLabel(label);
             ma.setProviderId(getInfo().getId());
             ma.setType(type);
             md.addMediaArt(ma);
-    }
-
-    private void processUrlElement(MediaMetadata md, Element el) {
-        // hack, but not sure how to deal with this...
-        // we need to see if the returned result is a <url> and if so, then
-        // process that url for functions...
-        try {
-            if (!StringUtils.isEmpty(el.getAttribute("function"))) {
-                log.info("** BEGIN Processing Function: " + el.getAttribute("function") + " with url: " + el.getTextContent());
-                processXmlContent(new XbmcUrl(el, scraper).getTextContent(), md);
-                log.info("** END Processing Function: " + el.getAttribute("function") + " with url: " + el.getTextContent());
-            }
-        } catch (Exception e) {
-            log.error("Failed to process sub url: " + el, e);
-        }
     }
 
     /**
@@ -342,12 +337,6 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         if (md.get(key) == null && !StringUtils.isEmpty(value)) {
             md.set(key, value);
         }
-    }
-
-    public IMediaMetadata getMetaData(String providerDataUrl) throws Exception {
-        log.debug("Xbmc: ProviderDataUrl: " + providerDataUrl);
-        Map<String, String> args = parseUrlArgs(providerDataUrl);
-        return getMetaData(providerDataUrl, new XbmcUrl(args.get("_providerDataUrl")), args);
     }
 
     /**
@@ -419,7 +408,11 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         XbmcMovieProcessor processor = new XbmcMovieProcessor(scraper);
         XbmcUrl url = processor.getSearchUrl(title, year);
         String xmlString = processor.getSearchReulsts(url);
-
+        
+        log.debug("========= BEGIN XBMC Scraper Search Xml Results: Url: " + url);
+        log.debug(xmlString);
+        log.debug("========= End XBMC Scraper Search Xml Results: Url: " + url);
+        
         Document xml = parseXmlString(xmlString);
 
         NodeList nl = xml.getElementsByTagName("entity");
@@ -432,8 +425,21 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
                 XbmcUrl u = new XbmcUrl((Element) urlList.item(0));
 
                 MediaSearchResult sr = new MediaSearchResult();
-                sr.setUrl(createDetailUrl(u.toExternalForm(), query, DOMUtils.getElementValue(el, "id")));
+                String id = DOMUtils.getElementValue(el, "id");
+                sr.setUrl(createDetailUrl(u.toExternalForm(), query, id));
                 sr.setProviderId(getInfo().getId());
+                
+                MetadataID mid = null;
+                if (u.toExternalForm().indexOf("imdb")!=-1) {
+                    mid = new MetadataID("imdb", id);
+                } else if (u.toExternalForm().indexOf("thetvdb.com")!=-1) {
+                    mid = new MetadataID("tvdb", id);
+                }
+                
+                if (mid!=null) {
+                    sr.setMetadataId(mid);
+                }
+                
                 String v[] = ParserUtils.parseTitle(t);
                 sr.setTitle(v[0]);
                 sr.setYear(v[1]);
@@ -481,9 +487,13 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         return supportedSearchTypes;
     }
 
-	public IMediaMetadata getMetaDataFromCompositeId(String compositeId)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
+        throw new Exception("getMetadataById() not supported: " + id);
+    }
+
+    public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
+        log.debug("Xbmc: ProviderDataUrl: " + url);
+        Map<String, String> args = parseUrlArgs(url);
+        return getMetaData(url, new XbmcUrl(args.get("_providerDataUrl")), args);
+    }
 }

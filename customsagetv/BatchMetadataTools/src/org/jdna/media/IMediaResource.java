@@ -58,8 +58,9 @@ public interface IMediaResource extends Comparable<IMediaResource> {
      * Convenience Method for saving/storing the metadata for a given resource.
      * 
      * @param metadata
-     * @param options Option from IMetadataPersistence
+     * @param overwrite if true, then existing metadata/images will be replaced
+     * 
      * @throws IOException
      */
-    public void updateMetadata(IMediaMetadata metadata, long options) throws IOException;
+    public void updateMetadata(IMediaMetadata metadata, boolean overwrite) throws IOException;
 }

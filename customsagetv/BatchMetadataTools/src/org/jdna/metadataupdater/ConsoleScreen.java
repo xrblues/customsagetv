@@ -77,7 +77,7 @@ public class ConsoleScreen {
         if (md == null) {
             System.out.println("Updated: " + r.getTitle());
         } else {
-            System.out.printf("%10s: %-30s (%s)\n", "Updated", md.getTitle(), r.getName());
+            System.out.printf("%10s: %-30s (%s)\n", "Updated", md.getMediaTitle(), r.getName());
         }
     }
 }

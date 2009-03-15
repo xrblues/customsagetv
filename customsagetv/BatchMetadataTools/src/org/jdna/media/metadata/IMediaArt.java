@@ -1,14 +1,11 @@
 package org.jdna.media.metadata;
 
-public interface IMediaArt {
-    public static final int BACKGROUND = 0;
-    public static final int POSTER     = 1;
-    public static final int OTHER      = 99;
-    public static final int ALL        = 999;
+import sagex.phoenix.fanart.FanartUtil;
 
+public interface IMediaArt {
     public String getProviderId();
 
-    public int getType();
+    public FanartUtil.MediaArtifactType getType();
 
     public String getDownloadUrl();
 

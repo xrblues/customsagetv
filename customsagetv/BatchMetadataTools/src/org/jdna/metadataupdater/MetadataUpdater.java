@@ -19,7 +19,6 @@ import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.MediaResourceFactory;
-import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataKey;
@@ -96,6 +95,7 @@ public class MetadataUpdater {
             }
 
             mdu.process();
+            
         } catch (Exception e) {
             log.error("Failed to process Video MetaData!", e);
             System.out.println("Processing Failed, see log for details.");
@@ -217,30 +217,25 @@ public class MetadataUpdater {
                 return;
             }
             
-            // check if we are just doing backdrops
-            if (config.isOnlyProcessBackdrops()) {
-                processBackdrops(parentFolder);
-                return;
-            }
-
-            // Set Persistence options
-            boolean overwriteThumbnails = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwriteThumbnails();
-            boolean overwriteBackdrops = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwriteBackdrops();
-            long persistenceOptions = 0;
-            if (overwriteThumbnails) persistenceOptions = persistenceOptions + IMediaMetadataPersistence.OPTION_OVERWRITE_POSTER;
-            if (overwriteBackdrops) persistenceOptions = persistenceOptions + IMediaMetadataPersistence.OPTION_OVERWRITE_BACKGROUND;
+            //TODO: check if we are just doing fanart only
+            
+            boolean overwrite = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwrite();
 
             // collectors and counters for automatic updating
             CollectorResourceVisitor autoHandled = new CollectorResourceVisitor();
             CollectorResourceVisitor autoSkipped = new CollectorResourceVisitor();
             if (!config.isProcessMissingMetadataOnly()) {
-                parentFolder.accept(new RefreshMetadataVisitor(persistenceOptions, autoHandled, autoSkipped));
+                parentFolder.accept(new RefreshMetadataVisitor(overwrite, autoHandled, autoSkipped));
                 return;
             }
 
             IMediaResourceVisitor updatedDisplay = new IMediaResourceVisitor() {
                 public void visit(IMediaResource resource) {
-                    System.out.printf("Updated: %s; %s\n", resource.getMetadata().getTitle(), resource.getLocationUri());
+                    if (resource.getMetadata()==null) {
+                        System.out.printf("No Metadata for: %s\n", resource.getLocationUri());
+                    } else {
+                        System.out.printf("Updated: %s; %s\n", resource.getMetadata().getMediaTitle(), resource.getLocationUri());
+                    }
                 }
             };
 
@@ -256,7 +251,7 @@ public class MetadataUpdater {
             CompositeResourceVisitor autoUpdated  = new CompositeResourceVisitor(updatedDisplay, autoUpdatedCount);
             
             // Main visitor for automatic updating
-            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, config.isAggressiveSearches(), persistenceOptions, autoUpdated, autoNotFound);
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, overwrite, autoUpdated, autoNotFound);
             
             // collectors and counters for manual updating
             CountResourceVisitor manualUpdatedCount = new CountResourceVisitor();
@@ -264,12 +259,12 @@ public class MetadataUpdater {
             CompositeResourceVisitor manualUpdated  = new CompositeResourceVisitor(updatedDisplay, manualUpdatedCount);
             
             // Main visitor for manual interactive searching
-            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(provider, config.isAggressiveSearches(), persistenceOptions, manualUpdated, manualSkippedCount, config.getSearchResultDisplaySize());
+            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(provider, overwrite, manualUpdated, manualSkippedCount, config.getSearchResultDisplaySize());
 
             // Main visitor that only does files that a missing metadata
             MissingMetadataVisitor missingMetadata = new MissingMetadataVisitor(config.isAutomaticUpdate() ? autoUpdater : manualUpdater, new CompositeResourceVisitor(up2dateDisplay, config.isAutomaticUpdate() ? autoSkippedCount : manualSkippedCount));
             
-            if (config.isOverwriteProperties()) {
+            if (overwrite) {
                 // do all videos... no matter what
                 parentFolder.accept(config.isAutomaticUpdate() ? autoUpdater : manualUpdater, config.isRecurseFolders());
             } else {
@@ -292,6 +287,10 @@ public class MetadataUpdater {
                 }
             }
 
+            if (config.isRememberSelectedSearches()) {
+                ConfigurationManager.getInstance().saveTitleMappings();
+            }
+            
             // Render stats
             System.out.println("\n\nMetaData Stats...");
             System.out.printf("Auto Updated: %d; Auto Skipped: %d; Manual Updated:%d; Manual Skipped: %d; \n\n", autoUpdatedCount.getCount(), autoSkippedCount.getCount(), manualUpdatedCount.getCount(), manualSkippedCount.getCount());
@@ -319,7 +318,7 @@ public class MetadataUpdater {
             }
         };
         
-        BackdropDownloaderVisitor vis = new BackdropDownloaderVisitor(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId(), handled, skipped);
+        BackdropDownloaderVisitor vis = new BackdropDownloaderVisitor(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId(), config.isOverwrite(), handled, skipped);
         parent.accept(vis, config.isRecurseFolders());
     }
 
@@ -378,24 +377,22 @@ public class MetadataUpdater {
      * 
      * @param b
      */
-    @CommandLineArg(name = "force", description = "Force download of metadata, even if metadata exists and has not been updated. Does not overwrite thumbnails. (default false)")
-    public void setFetchAlways(boolean b) {
-        config.setOverwriteProperties(true);
+    @CommandLineArg(name = "overwrite", description = "Overwrite metadata and images. (default false)")
+    public void setOverwrite(boolean b) {
+        config.setOverwrite(b);
     }
 
-    @CommandLineArg(name = "backdropsNever", description = "Set to true if you DON'T want to download backdrops. (default false)")
-    public void setBackdropsNever(boolean b) {
-        config.setIgnoreBackdrops(b);
+    @CommandLineArg(name = "fanartEnabled", description = "Enable fanart support (backgrounds, banners, extra posters, etc). (default true)")
+    public void setEnableFanart(boolean b) {
+        config.setFanartEnabled(b);
     }
 
-    @CommandLineArg(name = "forceThumbnail", description = "Force download/overwrite of thumbnails. (default false)")
-    public void setForceThumbnailOverwrite(boolean b) {
-        config.setOverwriteThumbnails(true);
-    }
-
-    @CommandLineArg(name = "forceBackdrop", description = "Force download/overwrite of backdrop images. (default false)")
-    public void setForceBackdropOverwrite(boolean b) {
-        config.setOverwriteBackdrops(true);
+    @CommandLineArg(name = "fanartFolder", description = "Central Fanart Folder location")
+    public void setForceThumbnailOverwrite(String folder) {
+        config.setFanartEnabled(true);
+        config.setCentralFanartFolder(folder);
+        
+        log.debug("Central Fanart Enabled; Using Folder: " + config.getFanartCentralFolder());
     }
 
     @CommandLineArg(name = "thumbnailMaxWidth", description = "Will scale down large thumbnail to the specified with. -1 mean no scaling. (default -1)")
@@ -447,18 +444,6 @@ public class MetadataUpdater {
     @CommandLineArg(name = "update", description = "Update Missing AND Updated Metadata. (default false)")
     public void setUpdate(boolean b) {
         config.setProcessMissingMetadataOnly(!b);
-    }
-
-    /**
-     * enable/disable agressive searching. Agressive searching leads to more
-     * searches because the engine will attempt to seach multiple times to find
-     * the best match.
-     * 
-     * @param b
-     */
-    @CommandLineArg(name = "agressive", description = "If the first search doesn't return clean results, then try additional searches. (default true)")
-    public void setAggressive(boolean b) {
-        config.setAggressiveSearches(b);
     }
 
     /**
@@ -533,16 +518,6 @@ public class MetadataUpdater {
     @CommandLineArg(name = "auto", description = "Automatically choose best search result. [if false, it will force you to choose for each item] (default true)")
     public void setAutomaticUpdate(boolean b) {
         config.setAutomaticUpdate(b);
-    }
-
-    /**
-     * Only do backdrops
-     * 
-     * @param s
-     */
-    @CommandLineArg(name = "backdropsOnly", description = "Using the specified provider, ONLY find/fetch the backdrop image.")
-    public void setBackdropsOnly(boolean b) {
-        config.setOnlyProcessBackdrops(b);
     }
 
     /**

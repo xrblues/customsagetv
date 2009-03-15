@@ -6,7 +6,7 @@
 
 	<property name="targetDir" value="target" />
 	<property name="name" value="metadata-updater" />
-	<property name="version" value="1.23" />
+	<property name="version" value="2.0" />
 	<property name="jarname" value="${name}-${version}.jar" />
 	<property name="launcher" value="MetadataTool" />
 	<property name="mainClass" value="org.jdna.metadataupdater.MetadataUpdater" />
@@ -15,6 +15,9 @@
 	<target name="package" depends="package-tool,package-plugin"/>
 
 	<target name="package-tool" depends="init,copyJars,makeJar,makeLaunch">
+		<copy toDir="${targetDir}/tool">
+			<fileset dir="resources/props"/>
+		</copy>
 		<copy toDir="${targetDir}/tool">
 			<fileset dir="docs">
 			</fileset>
@@ -90,7 +93,7 @@
 	</path>
 	
 	<target name="build" depends="buildVersion">
-		<javac source="${source}" target="${target}" classpathref="ApplicationClasspath" srcdir="src" destdir="bin">
+		<javac debug="true" source="${source}" target="${target}" classpathref="ApplicationClasspath" srcdir="src" destdir="bin">
 		</javac>
 	</target>
 

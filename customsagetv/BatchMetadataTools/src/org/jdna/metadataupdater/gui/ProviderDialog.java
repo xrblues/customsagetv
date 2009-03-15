@@ -5,18 +5,17 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.apache.commons.lang.StringUtils;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
-
-import net.miginfocom.swing.MigLayout;
 
 public class ProviderDialog extends JDialog {
     List<String> providerIds=new ArrayList<String>();

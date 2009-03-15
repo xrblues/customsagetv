@@ -9,6 +9,7 @@ import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
@@ -35,10 +36,6 @@ public class MetadataProviderContainer implements IMediaMetadataProvider {
 
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
         return MediaMetadataFactory.getInstance().getProvider(result.getProviderId()).getMetaData(result);
-    }
-
-    public IMediaMetadata getMetaData(String providerDataUrl) throws Exception {
-        throw new Exception("getMetaData(url) is not supported for a container.");
     }
 
     public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
@@ -89,9 +86,11 @@ public class MetadataProviderContainer implements IMediaMetadataProvider {
         return Type.values();
     }
 
-	public IMediaMetadata getMetaDataFromCompositeId(String compositeId)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
+        throw new Exception("getMetaDataById(id) is not supported for a container.");
+    }
+
+    public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
+        throw new Exception("getMetaDataByUrl(url) is not supported for a container.");
+    }
 }

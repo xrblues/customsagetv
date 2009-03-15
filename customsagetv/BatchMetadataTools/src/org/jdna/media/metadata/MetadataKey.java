@@ -8,7 +8,7 @@ package org.jdna.media.metadata;
  */
 
 public enum MetadataKey {
-    TITLE("Title", ""),
+    MEDIA_TITLE("MediaTitle", ""),
     ALBUM("Album", ""),
     ARTIST("Artist", ""),
     ALBUM_ARTIST("AlbumArtist", ""),
@@ -28,18 +28,21 @@ public enum MetadataKey {
     CAST_MEMBER_LIST("CastMemberList", ""),
     POSTER_ART("PosterArt", ""),
     BACKGROUND_ART("BackgroundArt", ""),
+    BANNER_ART("BannerArt",""),
     MEDIA_ART_LIST("MediaArtList", ""),
     ASPECT_RATIO("AspectRatio", ""),
     COMPANY("Company", ""),
-    PROVIDER_ID("ProviderId", ""),
-    PROVIDER_DATA_URL("ProviderDataUrl", ""),
-    RELEASE_DATE("ReleaseDate", ""),
-    TV_EPISODE("Episode", ""),
-    TV_SEASON("Season", ""), 
-    TV_SHOW_TITLE("ShowTitle", ""), 
-    DVD_DISC("Disc", "");
-    ;
-
+    MEDIA_PROVIDER_DATA_ID("MediaProviderDataID", ""),
+    RELEASE_DATE("OriginalAirDate", ""),
+    EPISODE("EpisodeNumber", ""),
+    EPISODE_TITLE("EpisodeTitle",""),
+    SEASON("SeasonNumber", ""), 
+    MEDIA_TYPE("MediaType",""),
+    DVD_DISC("Disc", ""), 
+    METADATA_PROVIDER_ID("MetadataProviderId", ""),
+    METADATA_PROVIDER_DATA_URL("MetadataProviderDataUrl", ""),
+    DISPLAY_TITLE("Title","");
+    
     private String id, desc;
 
     MetadataKey(String id, String desc) {

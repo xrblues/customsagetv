@@ -23,7 +23,7 @@ public class TestUtils {
 
     public static void dumpMetaData(IMediaMetadata md) {
         System.out.println("MetaData Begin");
-        System.out.printf("     Title: %s\n", md.getTitle());
+        System.out.printf("     Title: %s\n", md.getMediaTitle());
         System.out.printf("      Year: %s\n", md.getYear());
         if (md.getPoster() != null) {
             System.out.printf("    Poster: %s\n", md.getPoster().getDownloadUrl());

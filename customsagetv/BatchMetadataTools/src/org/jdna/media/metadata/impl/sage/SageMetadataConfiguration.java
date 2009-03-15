@@ -9,34 +9,28 @@ public class SageMetadataConfiguration {
     private String actorMask        = "{0} -- {1};\n";
 
     @Field(label="Description Mask", description = "Description Mask (note ${PROP_FIELD_NAME} field names are looked up in the property file)")
-    private String descriptionMask  = "${Description}\nUser Rating: ${_userRating}\n";
+    private String descriptionMask  = "${"+SageProperty.DESCRIPTION.sageKey+"}\nUser Rating: ${"+SageProperty.USER_RATING.sageKey+"}\n";
 
     @Field(label="Multi CD Title Mask", description = "Title to use for multi volume vidoes (_disc is disc # 1,2,3,etc)")
-    private String multiCDTitleMask = "${Title} Disc ${_disc}";
+    private String multiCDTitleMask = "${"+SageProperty.MEDIA_TITLE.sageKey+"} Disc ${"+SageProperty.DISC.sageKey+"}";
 
     @Field(label="Single CD Title Mask", description = "Title to use for single volume vidoes")
-    private String titleMask        = "${Title}";
+    private String titleMask        = "${"+SageProperty.MEDIA_TITLE.sageKey+"}";
 
     @Field(label="Genre Levels", description = "Number genre levels to write.  -1 means all levels.")
     private int    genreLevels      = 1;
     
     @Field(label="TV Title Mask", description="Title mask to use for TV Files")
-    private String tvTitleMask = "${Title} - s${_season}e${_episode} - ${_showTitle}";
+    private String tvTitleMask = "${"+SageProperty.MEDIA_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}E${"+SageProperty.EPISODE_NUMBER.sageKey+"} - ${"+SageProperty.EPISODE_TITLE.sageKey+"}";
     
     @Field(label="TV DVD Title Mask", description="Title mask to use for TV on Dvd")
-    private String tvDvdTitleMask = "${Title} - S${_season}D${_disc}";
+    private String tvDvdTitleMask = "${"+SageProperty.MEDIA_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}D${"+SageProperty.DISC.sageKey+"}";
     
     @Field(label="Rewrite Titles", description="Rewrite titles so that 'A Big Adventure' becomes 'Big Adventure, A'")
     private boolean rewriteTitle = false;
     
     @Field(label="Rewrite Title Regexp", description="A Search/Replace Regex containing 2 groups that will rewrite the title")
     private String rewriteTitleRegex = "^(in\\s+the|in\\s+a|i\\s+am|in|the|a|an|i|am)\\s+(.*)";
-    
-    @Field(label="Alternate Backdrop Location", description = "Location to save backdrops, if blank default location is used")
-    private String alternateBackdropLocation = null;
-    
-    @Field(label="Safe Title Regex", description = "Regex used to replace characters from the title when writing backdrop")
-    private String safeTitleReplaceRegex = ":|/|\\\\|\\*|\\?|<|>|\\|";
     
     public String getActorMask() {
         return actorMask;
@@ -111,21 +105,5 @@ public class SageMetadataConfiguration {
 
     public void setRewriteTitleRegex(String rewriteTitleRegex) {
         this.rewriteTitleRegex = rewriteTitleRegex;
-    }
-    
-    public String getAlternateBackdropLocation() {
-        return alternateBackdropLocation;
-    }
-
-    public void setAlternateBackdropLocation(String alternateBackdropLocation) {
-        this.alternateBackdropLocation = alternateBackdropLocation;
-    }
-    
-    public String getSafeTitleReplaceRegex() {
-        return safeTitleReplaceRegex;
-    }
-
-    public void setSafeTitleReplaceRegex(String alternateBackdropLocation) {
-        this.safeTitleReplaceRegex = alternateBackdropLocation;
     }
 }

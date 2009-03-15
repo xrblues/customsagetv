@@ -23,5 +23,5 @@ public interface IMediaSearchResult {
      */
     public String getUrl();
     
-    public String getUniqueId();
+    public MetadataID getMetadataId();
 }

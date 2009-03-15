@@ -10,7 +10,6 @@ import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
 
 import org.jdna.media.IMediaResource;
-import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MediaMetadataUtils;
 
 public class FindMetadataDialog extends JDialog {

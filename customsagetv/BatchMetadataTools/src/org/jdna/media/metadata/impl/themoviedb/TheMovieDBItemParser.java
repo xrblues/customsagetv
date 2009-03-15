@@ -2,22 +2,27 @@ package org.jdna.media.metadata.impl.themoviedb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
 
 public class TheMovieDBItemParser {
     private static final Logger    log           = Logger.getLogger(TheMovieDBItemParser.class);
@@ -40,20 +45,22 @@ public class TheMovieDBItemParser {
             try {
                 // parse and fill
                 DocumentBuilder parser = factory.newDocumentBuilder();
+                log.debug("Parsing TheMovieDB url: " + url + TheMovieDBMetadataProvider.getApiKey());
                 Document doc = parser.parse(url + TheMovieDBMetadataProvider.getApiKey());
-
+                
                 md = new MediaMetadata(new MetadataKey[] {
                         MetadataKey.CAST_MEMBER_LIST,
                         MetadataKey.GENRE_LIST,
                         MetadataKey.DESCRIPTION,
-                        MetadataKey.PROVIDER_DATA_URL,
-                        MetadataKey.PROVIDER_ID,
+                        MetadataKey.MEDIA_PROVIDER_DATA_ID,
+                        MetadataKey.METADATA_PROVIDER_ID,
+                        MetadataKey.METADATA_PROVIDER_DATA_URL,
                         MetadataKey.RELEASE_DATE,
                         MetadataKey.RUNNING_TIME,
                         MetadataKey.MEDIA_ART_LIST,
                         MetadataKey.POSTER_ART,
                         MetadataKey.BACKGROUND_ART,
-                        MetadataKey.TITLE,
+                        MetadataKey.MEDIA_TITLE,
                         MetadataKey.USER_RATING,
                         MetadataKey.YEAR });
 
@@ -74,15 +81,21 @@ public class TheMovieDBItemParser {
                 }
                 md.setGenres(getGenres(movie));
                 md.setDescription(getElementValue(movie, "short_overview"));
-                md.setProviderDataUrl(url);
-                md.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
                 md.setReleaseDate(getElementValue(movie, "release"));
                 md.setRuntime(convertTimeToMillissecondsForSage(getElementValue(movie, "runtime")));
                 addPosters(md, movie);
                 addBackgrounds(md, movie);
-                md.setTitle(getElementValue(movie, "title"));
+                addBanners(md, movie);
+                md.setMediaTitle(getElementValue(movie, "title"));
+                if (StringUtils.isEmpty(md.getMediaTitle())) {
+                    throw new RuntimeException("The MovieDB Result didn't contain a title. Url: " + url + TheMovieDBMetadataProvider.getApiKey());
+                }
                 md.setUserRating(getElementValue(movie, "rating"));
                 md.setYear(parseYear(md.getReleaseDate()));
+
+                md.setProviderDataUrl(url);
+                md.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
+                md.setProviderDataId(new MetadataID("themoviedb", theMovieDBID));
             } catch (Exception e) {
                 log.error("Failed while parsing: " + url, e);
                 md = null;
@@ -128,16 +141,35 @@ public class TheMovieDBItemParser {
         return l.toArray(new String[l.size()]);
     }
 
+    private void addBanners(MediaMetadata md, Element movie) {
+        NodeList nl = movie.getElementsByTagName("banner");
+        for (int i = 0; i < nl.getLength(); i++) {
+            Element e = (Element) nl.item(i);
+            String maUrl = e.getTextContent().trim();
+            if (isValidMediaArt(maUrl)) {
+                MediaArt ma = new MediaArt();
+                ma.setType(MediaArtifactType.BANNER);
+                ma.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
+                ma.setDownloadUrl(maUrl);
+                ma.setLabel(e.getAttribute("size"));
+                md.addMediaArt(ma);
+            }
+        }
+    }
+
     private void addPosters(MediaMetadata md, Element movie) {
         NodeList nl = movie.getElementsByTagName("poster");
         for (int i = 0; i < nl.getLength(); i++) {
             Element e = (Element) nl.item(i);
-            MediaArt ma = new MediaArt();
-            ma.setType(IMediaArt.POSTER);
-            ma.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
-            ma.setDownloadUrl(e.getTextContent().trim());
-            ma.setLabel(e.getAttribute("size"));
-            md.addMediaArt(ma);
+            String maUrl = e.getTextContent().trim();
+            if (isValidMediaArt(maUrl)) {
+                MediaArt ma = new MediaArt();
+                ma.setType(MediaArtifactType.POSTER);
+                ma.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
+                ma.setDownloadUrl(maUrl);
+                ma.setLabel(e.getAttribute("size"));
+                md.addMediaArt(ma);
+            }
         }
     }
 
@@ -145,15 +177,26 @@ public class TheMovieDBItemParser {
         NodeList nl = movie.getElementsByTagName("backdrop");
         for (int i = 0; i < nl.getLength(); i++) {
             Element e = (Element) nl.item(i);
-            MediaArt ma = new MediaArt();
-            ma.setType(IMediaArt.BACKGROUND);
-            ma.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
-            ma.setDownloadUrl(e.getTextContent().trim());
-            ma.setLabel(e.getAttribute("size"));
-            md.addMediaArt(ma);
+            
+            String maUrl = e.getTextContent().trim();
+            if (isValidMediaArt(maUrl)) {
+                MediaArt ma = new MediaArt();
+                ma.setType(MediaArtifactType.BACKGROUND);
+                ma.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
+                ma.setDownloadUrl(maUrl);
+                ma.setLabel(e.getAttribute("size"));
+                md.addMediaArt(ma);
+            }
         }
     }
-
+    
+    public boolean isValidMediaArt(String name) {
+        if (name==null) return false;
+        Pattern p = Pattern.compile("(_thumb|_mid|_poster|_cover).jpg$", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(name);
+        return !m.find();
+    }
+    
     private String parseYear(String releaseDate) {
         try {
             return releaseDate.substring(0, releaseDate.indexOf("-"));

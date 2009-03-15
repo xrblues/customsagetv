@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.SearchQuery;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -89,8 +90,11 @@ public class TheMovieDBSearchParser {
         sr.setScore(getScore(item));
         sr.setTitle(getElementValue(item, "title"));
         sr.setYear(getElementValue(item, "release"));
-        sr.setUrl(getElementValue(item, "id"));
-        sr.setUniqueId(getElementValue(item, "imdb"));
+        String id = getElementValue(item, "id");
+        sr.setUrl(String.format(TheMovieDBItemParser.ITEM_URL, id));
+        sr.setMetadataId(new MetadataID("themoviedb", id));
+        // TODO: once MetadataID contains a map of ids, add the imdb to it
+        //sr.setMetadataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, getElementValue(item, "imdb")));
 
         results.add(sr);
     }
