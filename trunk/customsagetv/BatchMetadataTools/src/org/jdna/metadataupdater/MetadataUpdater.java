@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.cmdline.CommandLine;
 import org.jdna.cmdline.CommandLineArg;
@@ -231,11 +232,10 @@ public class MetadataUpdater {
 
             IMediaResourceVisitor updatedDisplay = new IMediaResourceVisitor() {
                 public void visit(IMediaResource resource) {
-                    if (resource.getMetadata()==null) {
-                        System.out.printf("No Metadata for: %s\n", resource.getLocationUri());
-                    } else {
-                        System.out.printf("Updated: %s; %s\n", resource.getMetadata().getMediaTitle(), resource.getLocationUri());
+                    if (resource.getMetadata().getMediaTitle()==null) {
+                        
                     }
+                    System.out.printf("Updated: %s; %s\n", resource.getMetadata().getMediaTitle(), resource.getLocationUri());
                 }
             };
 

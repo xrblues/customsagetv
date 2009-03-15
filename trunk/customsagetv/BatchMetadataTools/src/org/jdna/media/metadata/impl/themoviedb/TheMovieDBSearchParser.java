@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
@@ -29,8 +31,6 @@ public class TheMovieDBSearchParser {
 
     private String                              url;
     private List<IMediaSearchResult>            results    = new ArrayList<IMediaSearchResult>();
-    //private SearchQuery 						query;
-    private List<String> 						words 	   = new ArrayList<String>();
     private String								searchTitle;
     private Comparator<IMediaSearchResult> sorter              = new Comparator<IMediaSearchResult>() {
 
@@ -42,20 +42,21 @@ public class TheMovieDBSearchParser {
 
     };
     
+    private class ScoredTitle {
+        String title;
+        float score;
+        
+        public ScoredTitle(String title, float score) {
+            this.title=title;
+            this.score=score;
+        }
+    }
+    
     public TheMovieDBSearchParser(SearchQuery query) {
         searchTitle = query.get(SearchQuery.Field.TITLE);
         this.url = String.format(SEARCH_URL, URLEncoder.encode(searchTitle), TheMovieDBMetadataProvider.getApiKey());
 
-        Pattern p = Pattern.compile("([^\\s]+)\\s?");
-        Matcher m;
-        
-        m = p.matcher(searchTitle);
-	    if(m.find()){
-		   for(int i=0; i<m.groupCount(); i++)
-		   {
-				 words.add(m.group(i));    			
-		   }
-	    }
+        log.debug("TheMovieDB SearchQuery Url: " + url);
     }
 
     public List<IMediaSearchResult> getResults() {
@@ -87,18 +88,64 @@ public class TheMovieDBSearchParser {
             return;
         }
         
-        sr.setScore(getScore(item));
+        String title = getElementValue(item, "title");
         sr.setTitle(getElementValue(item, "title"));
+        sr.setScore(getScore(title));
+
+        // add alternate title scoring...
+        if (ConfigurationManager.getInstance().getMetadataConfiguration().isScoreAlternateTitles()) {
+            log.debug("Looking for alternate Titles");
+            List<ScoredTitle> scoredTitles = new LinkedList<ScoredTitle>();
+            NodeList nl = item.getElementsByTagName("alternative_title");
+            if (nl!=null && nl.getLength()>0) {
+                for (int i=0;i<nl.getLength();i++) {
+                    Element el = (Element) nl.item(i);
+                    String altTitle = el.getTextContent();
+                    if (!StringUtils.isEmpty(altTitle)) {
+                        altTitle = altTitle.trim();
+                        ScoredTitle st = new ScoredTitle(altTitle, getScore(altTitle));
+                        scoredTitles.add(st);
+                        log.debug("Adding Alternate Title: " + st.title + "; score: " + st.score);
+                    }
+                }
+            }
+            
+            if (scoredTitles.size()>0) {
+                ScoredTitle curTitle = new ScoredTitle(sr.getTitle(), sr.getScore());
+                for (ScoredTitle st : scoredTitles) {
+                    if (st.score > curTitle.score) {
+                        curTitle = st;
+                    }
+                }
+                
+                if (curTitle.score>sr.getScore()) {
+                    log.debug("Using Alternate Title Score: " + curTitle.score + "; Title: " + curTitle.title);
+                    sr.setScore(curTitle.score);
+                    sr.setTitle(sr.getTitle() + " (aka " + curTitle.title + ") ");
+                }
+            }
+        }
+        
         sr.setYear(getElementValue(item, "release"));
         String id = getElementValue(item, "id");
         sr.setUrl(String.format(TheMovieDBItemParser.ITEM_URL, id));
         sr.setMetadataId(new MetadataID("themoviedb", id));
+        
         // TODO: once MetadataID contains a map of ids, add the imdb to it
         //sr.setMetadataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, getElementValue(item, "imdb")));
 
         results.add(sr);
     }
 
+    private float getScore(String title) {
+        if (title==null) return 0.0f;
+        try {
+            return (float)org.jdna.util.Similarity.getInstance().compareStrings(searchTitle,title);
+        } catch (Exception e) {
+            return 0.0f;
+        }
+    }
+    
     private float getScore(Element item) {
         try {
         	String matchTitle = getElementValue(item, "title");

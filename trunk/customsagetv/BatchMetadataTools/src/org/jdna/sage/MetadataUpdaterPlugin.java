@@ -81,6 +81,13 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
 
         // do the work....
         try {
+            // sync our settings with the sage stv settings for central fanart...
+            ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setFanartEnabled(phoenix.api.IsFanartEnabled());
+            if (phoenix.api.IsFanartEnabled()) {
+                ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
+            }
+
+            // now do the lookups
             IMediaResource mr = MediaResourceFactory.getInstance().createResource(file.toURI());
             if (filter.accept(mr)) {
                 System.out.println("BatchMetadataTools "+ Version.VERSION +"; Handling File: " + file.getAbsolutePath() + "; arg: " + arg);

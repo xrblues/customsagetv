@@ -19,11 +19,13 @@ public class MetadataConfiguration {
     private String wordsToClean           = "dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv";
 
     @Field(label="Metadata Provider(s)", description = "Default provider id to use (comma separate, if more than 1)")
-    private String defaultProviderId      = "themoviedb.org-2,imdb.xml,imdb,tvdb.xml";
+    private String defaultProviderId      = "themoviedb.org,themoviedb.org-2,imdb.xml,imdb,tvdb.xml";
     
     @Field(label="Good Score Threshold", description = "Score which must be exceeded to consider a result a good match")
     private float goodScoreThreshold = 0.9f;
 
+    @Field(label="Score Alternate Titles", description = "If true, then providers will check alternate titles for matches.")
+    private boolean scoreAlternateTitles = true;
 
     public MetadataConfiguration() {
     }
@@ -66,5 +68,13 @@ public class MetadataConfiguration {
     
     public void setGoodScoreThreshold(float goodScoreThreshold){
     	this.goodScoreThreshold = goodScoreThreshold;
+    }
+
+    public boolean isScoreAlternateTitles() {
+        return scoreAlternateTitles;
+    }
+
+    public void setScoreAlternateTitles(boolean scoreAlternateTitles) {
+        this.scoreAlternateTitles = scoreAlternateTitles;
     }
 }
