@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,6 +24,9 @@ public class MediaMetadataUtils {
     private static final Logger log = Logger.getLogger(MediaMetadataUtils.class);
 
     public static void writeImageFromUrl(String url, File out) throws IOException {
+        // make the directory, if it doesn't exist.
+        out.getParentFile().mkdirs();
+        
         URL u = new URL(url);
         URLConnection conn = u.openConnection();
         if (conn instanceof HttpURLConnection) {
@@ -35,6 +39,9 @@ public class MediaMetadataUtils {
     }
 
     public static void writeImageFromUrl(String url, File out, int scaleWidth) throws IOException {
+        // make the directory, if it doesn't exist.
+        out.getParentFile().mkdirs();
+        
         URL u = new URL(url);
         URLConnection conn = u.openConnection();
         if (conn instanceof HttpURLConnection) {
@@ -144,7 +151,7 @@ public class MediaMetadataUtils {
      *            Map of Named Paramters
      * @return
      */
-    public static String format(String s, Properties props) {
+    public static String format(String s, Map props) {
         log.debug("Formatting: " + s);
         Pattern p = Pattern.compile("(\\$\\{[_\\.a-zA-Z]+\\})");
         Matcher m = p.matcher(s);
@@ -156,7 +163,8 @@ public class MediaMetadataUtils {
             sb.append(s.substring(lastStart, m.start()));
             lastStart = m.end();
             String key = token.substring(2, token.length() - 1);
-            String val = props.getProperty(key, "");
+            String val = (String)props.get(key);
+            if (val==null) val="";
             sb.append(val);
         }
 

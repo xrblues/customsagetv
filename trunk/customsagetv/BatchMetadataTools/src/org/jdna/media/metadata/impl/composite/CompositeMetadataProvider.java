@@ -1,7 +1,6 @@
 package org.jdna.media.metadata.impl.composite;
 
 import java.util.List;
-import javax.naming.directory.SearchResult;
 
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadata;
@@ -10,11 +9,11 @@ import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
-import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 
 public class CompositeMetadataProvider implements IMediaMetadataProvider {
     private static final Logger            log          = Logger.getLogger(CompositeMetadataProvider.class);
@@ -49,9 +48,10 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
     
     private IMediaMetadata searchDetailsByResult(IMediaSearchResult result) {
         try {
-            log.debug("Searching the details provider: " + detailsProviderId + " for movie title: " + result.getTitle());
-            IMediaMetadata detail = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaDataFromCompositeId(result.getUniqueId());
+            log.debug("Searching the details provider: " + detailsProviderId + " for movie id: " + result.getMetadataId());
+            IMediaMetadata detail = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaDataById(result.getMetadataId());
             if (detail == null) {
+                log.debug("Searching the details provider: " + detailsProviderId + " for movie title: " + result.getTitle());
 	            List<IMediaSearchResult> results = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).search(new SearchQuery(result.getTitle()));
 	            if (MediaMetadataFactory.getInstance().isGoodSearch(results)) {
 	                return MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaData(results.get(0));
@@ -75,12 +75,6 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
             log.error("Failed to find an Exact Match for " + title + " using provider: " + detailsProviderId);
         }
         return null;
-    }
-
-    public IMediaMetadata getMetaData(String providerDataUrl) throws Exception {
-        IMediaMetadata searcher = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaData(providerDataUrl);
-        IMediaMetadata details = searchDetailsByTitle(searcher.getTitle()); 
-        return mergeDetails(details, searcher);
     }
 
     public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
@@ -129,8 +123,7 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         
         // set us to be the provider
         md.setProviderDataUrl(searcher.getProviderDataUrl());
-        md.setProviderId(getInfo().getId());
-
+        md.setProviderDataId(searcher.getProviderDataId());
         return md;
     }
     
@@ -149,9 +142,21 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         return MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getSupportedSearchTypes();
     }
 
-	public IMediaMetadata getMetaDataFromCompositeId(String compositeId)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
+        throw new Exception("Search by MetadataID not supported.");
+    }
+
+    public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
+        IMediaMetadata searcher = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaDataByUrl(url);
+        IMediaMetadata details = null;
+        try {
+            if (searcher.getProviderDataId()!=null) {
+                details = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaDataById(searcher.getProviderDataId());
+            }
+        } catch (Exception e) {
+            log.error("Failed to find details using searcher's metadataid: " + searcher.getProviderDataId() + " will try using title search",e);
+        }
+        details = searchDetailsByTitle(searcher.getMediaTitle()); 
+        return mergeDetails(details, searcher);
+    }
 }

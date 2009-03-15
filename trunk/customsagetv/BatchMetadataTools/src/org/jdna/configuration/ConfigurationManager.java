@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -18,11 +17,12 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.impl.MediaConfiguration;
 import org.jdna.media.metadata.MetadataConfiguration;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
-import org.jdna.media.metadata.impl.dvdprof.DVDProfilerConfiguration;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
@@ -34,6 +34,7 @@ import org.jdna.persistence.IPersistence;
 import org.jdna.persistence.PropertiesPersistence;
 import org.jdna.persistence.annotations.Table;
 import org.jdna.url.UrlConfiguration;
+import org.jdna.util.SortedProperties;
 
 /**
  * ConfigurationManager provides an Abstract way to access grouped
@@ -59,6 +60,10 @@ public class ConfigurationManager {
     private File               configFile;
     private Properties         props;
     private IPersistence       persistence;
+    
+    
+    private File titleMapPropsFile;
+    private Properties titleMapProps;
 
     // all classes that we manage should be listed here
     // so that we can load and save the configurations
@@ -67,7 +72,6 @@ public class ConfigurationManager {
             MetadataUpdaterConfiguration.class,
             MediaConfiguration.class,
             MetadataConfiguration.class,
-            DVDProfilerConfiguration.class,
             DVDProfilerLocalConfiguration.class,
             SageMetadataConfiguration.class,
             IMDBConfiguration.class,
@@ -82,7 +86,8 @@ public class ConfigurationManager {
     private void load() {
         String cFile = System.getProperty("metadata.properties", "metadata.properties");
         configFile = new File(cFile);
-        props = new Properties();
+        log.debug("Loading: " + configFile.getAbsolutePath());
+        props = new SortedProperties();
         if (configFile.exists()) {
             try {
                 props.load(new FileInputStream(configFile));
@@ -93,6 +98,20 @@ public class ConfigurationManager {
             log.warn("Configuration: " + cFile + " does not exist.  Using defaults.");
         }
         persistence = new PropertiesPersistence(props);
+        
+        // now load the tvfilename props, if they exist
+        titleMapProps = new SortedProperties();
+        titleMapPropsFile = new File("metadata-titles.properties");
+        log.debug("Loading: " + titleMapPropsFile.getAbsolutePath());
+        if (titleMapPropsFile.exists()) {
+            try {
+                titleMapProps.load(new FileInputStream(titleMapPropsFile));
+            } catch (Exception e) {
+                log.error("Failed to load title mappings from: " + titleMapPropsFile.getAbsolutePath());
+            }
+        } else {
+            log.info("No titles map configured: " + titleMapPropsFile.getAbsolutePath());
+        }
     }
 
     public synchronized void updated(Object o) throws Exception {
@@ -101,29 +120,40 @@ public class ConfigurationManager {
 
     public synchronized void save() throws IOException {
         log.debug("Writing configuration to persistent store: " + configFile.getAbsolutePath());
+        
         FileWriter fw = new FileWriter(configFile);
-
-        // use our own store, so that we can sort the keys for readability
-        SortedSet s = new TreeSet();
-        for (Enumeration e = props.propertyNames(); e.hasMoreElements();) {
-            s.add(e.nextElement());
-        }
-
-        int i=0;
-        for (Object o : s) {
-            fw.write(o.toString());
-            fw.write("=");
-            fw.write(props.getProperty(o.toString()));
-            fw.write("\n");
-            i++;
-        }
-
-        log.debug("Wrote " + i + " configuration entries.");
+        props.store(fw, "Configuration Properties");
         fw.flush();
         fw.close();
 
         // remove loaded objects, so that they get recreated.
         loaded.clear();
+    }
+
+    public synchronized void saveTitleMappings() throws IOException {
+        log.debug("Writing Title mappings: " + titleMapPropsFile.getAbsolutePath());
+        
+        FileWriter fw = new FileWriter(titleMapPropsFile);
+        titleMapProps.store(fw, "Title to MediaProviderDataID mappings");
+        fw.flush();
+        fw.close();
+    }
+    
+    public MetadataID getMetadataIdForTitle(String title) {
+        log.debug("Looking for MetadataID for title: " + title);
+        if (title==null) return null;
+        String mid = titleMapProps.getProperty(title);
+        if (!StringUtils.isEmpty(mid)) {
+            log.debug("Found MetadataID + " + mid + " for title: " + title);
+            return new MetadataID(mid);
+        }
+        log.debug("No MetadataID configured for title: " + title);
+        return null;
+    }
+    
+    public void setMetadataIdForTitle(String title, MetadataID id) {
+        if (id==null||title==null) return;
+        titleMapProps.setProperty(title, id.toIDString());
     }
 
     public UrlConfiguration getUrlConfiguration() {
@@ -140,10 +170,6 @@ public class ConfigurationManager {
 
     public MetadataConfiguration getMetadataConfiguration() {
         return load(MetadataConfiguration.class);
-    }
-
-    public DVDProfilerConfiguration getDVDProfilerConfiguration() {
-        return load(DVDProfilerConfiguration.class);
     }
 
     public DVDProfilerLocalConfiguration getDVDProfilerLocalConfiguration() {
@@ -309,4 +335,6 @@ public class ConfigurationManager {
         }
         return null;
     }
+    
+    
 }

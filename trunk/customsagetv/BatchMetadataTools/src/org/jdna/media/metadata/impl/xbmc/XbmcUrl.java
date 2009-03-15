@@ -154,5 +154,7 @@ public class XbmcUrl {
         return IOUtils.toString(getInputStream());
     }
     
-    
+    public String toString() {
+        return "XbmcUrl["+url+"]";
+    }
 }

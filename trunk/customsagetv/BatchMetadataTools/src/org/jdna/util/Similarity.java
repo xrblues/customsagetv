@@ -3,7 +3,6 @@ package org.jdna.util;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
-import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 
 /**
  * String Similarity taken from: http://www.catalysoft.com/articles/StrikeAMatch.html

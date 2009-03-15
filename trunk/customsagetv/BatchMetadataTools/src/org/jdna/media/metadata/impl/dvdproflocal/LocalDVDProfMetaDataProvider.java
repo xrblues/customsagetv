@@ -9,6 +9,7 @@ import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
@@ -16,7 +17,7 @@ import org.jdna.media.metadata.SearchQuery.Type;
 public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     private static final Logger                 log               = Logger.getLogger(LocalDVDProfMetaDataProvider.class);
 
-    public static final String                  PROVIDER_ID       = "dvdprofiler_local";
+    public static final String                  PROVIDER_ID       = "dvdprofiler";
     public static final String                  PROVIDER_NAME     = "Local DVD Profiler Provider";
     public static final String                  PROVIDER_ICON_URL = "http://www.invelos.com/images/Logo.png";
     private static final String                 PROVIDER_DESC     = "DVD Profiler Provider using local xml and images (Stuckless).";
@@ -48,11 +49,6 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
 
     public String getId() {
         return PROVIDER_ID;
-    }
-
-    public IMediaMetadata getMetaData(String providerDataUrl) throws Exception {
-        if (!initialized) initialize();
-        return new LocalDVDProfParser(providerDataUrl).getMetaData();
     }
 
     public String getName() {
@@ -131,15 +127,11 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return getMetaData(result.getUrl());
+        return getMetaDataByUrl(result.getUrl());
     }
 
     public IProviderInfo getInfo() {
         return info;
-    }
-
-    public IMediaMetadata getMetaDataByIMDBId(String imdbId) throws Exception, UnsupportedOperationException {
-        throw new UnsupportedOperationException("DVDProfiler Doesn't Know how to handle IMDB ids");
     }
 
     public Type[] getSupportedSearchTypes() {
@@ -151,4 +143,14 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
+        if (!initialized) initialize();
+        return new LocalDVDProfParser(id.getId()).getMetaData();
+    }
+
+    public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
+        if (!initialized) initialize();
+        return new LocalDVDProfParser(url).getMetaData();
+    }
 }

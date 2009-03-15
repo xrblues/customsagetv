@@ -10,8 +10,6 @@ import java.lang.reflect.Method;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 
-import org.jdna.media.IMediaResource;
-
 public class SwingBindingUtils {
     public static JCheckBox createCheckBox(String label, final Object bindObject, final String bindSetMethod, final String bindGetMethod) {
         JCheckBox c = null;

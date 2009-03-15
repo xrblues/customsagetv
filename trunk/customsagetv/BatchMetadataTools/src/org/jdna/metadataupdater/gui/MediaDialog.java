@@ -38,7 +38,7 @@ public class MediaDialog extends JDialog {
         JPanel panel = new JPanel(new MigLayout("","[][grow][]"));
         JLabel l = new JLabel("Title");
         panel.add(l);
-        title=SwingBindingUtils.createTextBox(md, MetadataKey.TITLE);
+        title=SwingBindingUtils.createTextBox(md, MetadataKey.MEDIA_TITLE);
         panel.add(title, "growx");
         
         JButton search  = new JButton("Search");

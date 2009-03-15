@@ -1,9 +1,11 @@
 package org.jdna.media.metadata;
 
+import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
+
 public class MediaArt implements IMediaArt {
     private String downloadUrl;
     private String providerId;
-    private int    type;
+    private MediaArtifactType type;
     private String label;
 
     public MediaArt() {
@@ -35,11 +37,11 @@ public class MediaArt implements IMediaArt {
         this.providerId = providerId;
     }
 
-    public int getType() {
+    public MediaArtifactType getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(MediaArtifactType type) {
         this.type = type;
     }
 

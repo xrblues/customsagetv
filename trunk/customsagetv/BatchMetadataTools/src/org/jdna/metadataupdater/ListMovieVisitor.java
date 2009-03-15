@@ -8,6 +8,8 @@ import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.MetadataKey;
 
+import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
+
 public class ListMovieVisitor implements IMediaResourceVisitor {
     private boolean verbose = false;
 
@@ -39,7 +41,7 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
         } else {
             col2("--- BEGIN:", name);
             col2("Movie:", name);
-            col2("Title:", md.getTitle());
+            col2("Title:", md.getMediaTitle());
             col2("Plot:", md.getDescription());
             col2("Genres:", toGenreString(md.getGenres()));
             col2("MPAA Rating:", (String) md.get(MetadataKey.MPAA_RATING));
@@ -50,23 +52,32 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
             col2("Release Date:", md.getReleaseDate());
             col2("Runtime:", md.getRuntime());
             col2("Aspect Ratio:", (String) md.get(MetadataKey.ASPECT_RATIO));
+            col2("Provider DataId:", (md.getProviderDataId()==null?"Not Set":md.getProviderDataId().toIDString()));
             col2("Provider Url:", md.getProviderDataUrl());
             col2("Provider Id:", md.getProviderId());
-            if (md.getMediaArt(IMediaArt.POSTER) != null) {
-                IMediaArt maArr[] = md.getMediaArt(IMediaArt.POSTER);
+            if (md.getMediaArt(MediaArtifactType.POSTER) != null) {
+                IMediaArt maArr[] = md.getMediaArt(MediaArtifactType.POSTER);
                 for (int i=0;i<maArr.length;i++) {
                     col2(String.format("Poster %s:", i+1), maArr[i].getDownloadUrl());
                 }
             } else {
                 col2("Poster:", "No Poster");
             }
-            if (md.getMediaArt(IMediaArt.BACKGROUND) != null) {
-                IMediaArt maArr[] = md.getMediaArt(IMediaArt.BACKGROUND);
+            if (md.getMediaArt(MediaArtifactType.BACKGROUND) != null) {
+                IMediaArt maArr[] = md.getMediaArt(MediaArtifactType.BACKGROUND);
                 for (int i=0;i<maArr.length;i++) {
                     col2(String.format("Background %s:", i+1), maArr[i].getDownloadUrl());
                 }
             } else {
                 col2("Background:", "No Background");
+            }
+            if (md.getMediaArt(MediaArtifactType.BANNER) != null) {
+                IMediaArt maArr[] = md.getMediaArt(MediaArtifactType.BANNER);
+                for (int i=0;i<maArr.length;i++) {
+                    col2(String.format("Banner %s:", i+1), maArr[i].getDownloadUrl());
+                }
+            } else {
+                col2("Banner:", "No Banner");
             }
             col2("Directors:", toSimpleCastString(md.getCastMembers(ICastMember.DIRECTOR)));
             col2("Writers:", toSimpleCastString(md.getCastMembers(ICastMember.WRITER)));

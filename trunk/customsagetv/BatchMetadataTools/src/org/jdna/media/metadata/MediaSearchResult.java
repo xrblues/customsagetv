@@ -3,9 +3,10 @@ package org.jdna.media.metadata;
 import java.io.Serializable;
 
 public class MediaSearchResult implements IMediaSearchResult, Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
-    private String            providerId, url, title, year, uniqueId;
+    private String            providerId, url, title, year;
+    private MetadataID metadataId;
     private float			score;
     
     public MediaSearchResult() {
@@ -66,11 +67,11 @@ public class MediaSearchResult implements IMediaSearchResult, Serializable {
         this.url=url;
     }
 
-    public String getUniqueId() {
-        return uniqueId;
+    public MetadataID getMetadataId() {
+        return metadataId;
     }
 
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
+    public void setMetadataId(MetadataID id) {
+        this.metadataId = id;
     }
 }

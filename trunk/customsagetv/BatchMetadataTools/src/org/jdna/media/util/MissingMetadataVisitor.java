@@ -57,7 +57,7 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
                 URIAdapter ua  = URIAdapterFactory.getAdapter(resource.getLocalPosterUri());
                 IMediaMetadata md = resource.getMetadata();
                 
-                if (md == null || StringUtils.isEmpty(md.getTitle()) || (md.getPoster() == null && !ua.exists()) ) {
+                if (md == null || StringUtils.isEmpty(md.getMediaTitle()) || (md.getPoster() == null && !ua.exists()) ) {
                     return true;
                 } // else skip
             } catch (Exception e) {

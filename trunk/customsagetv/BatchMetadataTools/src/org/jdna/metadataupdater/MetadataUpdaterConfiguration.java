@@ -5,14 +5,8 @@ import org.jdna.persistence.annotations.Table;
 
 @Table(label="Application Configuration", name = "metadataUpdater", requiresKey = false, description = "Configuration for Main Metadata Updater")
 public class MetadataUpdaterConfiguration {
-    @Field(label="Overwrite Metadata", description = "Set to true, if you want to overwrite existing property files")
-    private boolean overwriteProperties = false;
-    
-    @Field(label="Overwrite Posters", description = "Set to true, if you want to overwrite existing thumbnails")
-    private boolean overwriteThumbnails = false;
-
-    @Field(label="Overwrite Backdrops", description = "Set to true, if you want to overwrite existing backdrop images")
-    private boolean overwriteBackdrops = false;
+    @Field(label="Overwrite", description = "If true, then it will overwrite properties and images")
+    private boolean overwrite = false;
     
     @Field(label="Media Folder", description = "Default Folder to Scan (GUI Only)")
     private String guiFolderToScan = null;
@@ -20,20 +14,11 @@ public class MetadataUpdaterConfiguration {
     @Field(label="Display Results Size", description = "Number of results to display in the search results")
     private int searchResultDisplaySize = 10;
 
-    @Field(label="Agressive Searching", description="Will attempt multiple searches if necessary")
-    private boolean aggressiveSearches = true;
-    
     @Field(label="Refresh SageTV", description="Once Scanning is Complete, notify SageTV of the changes.")
     private boolean refreshSageTV = false;
     
     @Field(label="Automatic Update", description="Automatically update by auto selecting 'best' search result.")
     private boolean automaticUpdate = true;
-    
-    @Field(label="Backdrops Only", description="Only Find/Process Backdrops.  (ie, don't search and update metadata/posters)")
-    private boolean onlyProcessBackdrops = false;
-
-    @Field(label="Ignore Backdrops", description="Ignore processing for backdrops")
-    private boolean ignoreBackdrops = false;
     
     @Field(label="Process Sub-Folders", description="Recursively process sub folders")
     private boolean recurseFolders = false;
@@ -47,12 +32,21 @@ public class MetadataUpdaterConfiguration {
     @Field(label="Refresh Indexes", description="Pass hint to Providers that maintain their own indexes, to reindex their content")
     private boolean refreshIndexes = false;
     
-    public boolean isOverwriteProperties() {
-        return overwriteProperties;
+    @Field(label="Fanart Enabled", description="Enable Fanart downloading")
+    private boolean fanartEnabled = true;
+    
+    @Field(label="Central Fanart Folder", description="Location of the central fanart folder")
+    private String fanartCentralFolder = null;
+    
+    @Field(label="Remember Selected Searches", description="Remember a search result when you select it form a list, for use in later searches.")
+    private boolean rememberSelectedSearches = true;
+    
+    public String getFanartCentralFolder() {
+        return fanartCentralFolder;
     }
 
-    public void setOverwriteProperties(boolean overwriteProperties) {
-        this.overwriteProperties = overwriteProperties;
+    public void setCentralFanartFolder(String centralFanartFolder) {
+        this.fanartCentralFolder = centralFanartFolder;
     }
 
     public int getSearchResultDisplaySize() {
@@ -61,14 +55,6 @@ public class MetadataUpdaterConfiguration {
 
     public void setSearchResultDisplaySize(int searchResultDisplaySize) {
         this.searchResultDisplaySize = searchResultDisplaySize;
-    }
-
-    public boolean isAggressiveSearches() {
-        return aggressiveSearches;
-    }
-
-    public void setAggressiveSearches(boolean aggressiveSearches) {
-        this.aggressiveSearches = aggressiveSearches;
     }
 
     public boolean isRefreshSageTV() {
@@ -87,14 +73,6 @@ public class MetadataUpdaterConfiguration {
         this.automaticUpdate = automaticUpdate;
     }
 
-    public boolean isOnlyProcessBackdrops() {
-        return onlyProcessBackdrops;
-    }
-
-    public void setOnlyProcessBackdrops(boolean onlyProcessBackdrops) {
-        this.onlyProcessBackdrops = onlyProcessBackdrops;
-    }
-
     public String getGuiFolderToScan() {
         return guiFolderToScan;
     }
@@ -106,20 +84,12 @@ public class MetadataUpdaterConfiguration {
     public MetadataUpdaterConfiguration() {
     }
 
-    public void setOverwriteThumbnails(boolean b) {
-        this.overwriteThumbnails = b;
+    public void setOverwrite(boolean b) {
+        this.overwrite = b;
     }
 
-    public boolean isOverwriteThumbnails() {
-        return overwriteThumbnails;
-    }
-
-    public boolean isOverwriteBackdrops() {
-        return overwriteBackdrops;
-    }
-
-    public void setOverwriteBackdrops(boolean overwriteBackdrops) {
-        this.overwriteBackdrops = overwriteBackdrops;
+    public boolean isOverwrite() {
+        return overwrite;
     }
 
     public boolean isRecurseFolders() {
@@ -130,12 +100,12 @@ public class MetadataUpdaterConfiguration {
         this.recurseFolders = recurseFolders;
     }
 
-    public boolean isIgnoreBackdrops() {
-        return ignoreBackdrops;
+    public boolean isFanartEnabled() {
+        return fanartEnabled;
     }
 
-    public void setIgnoreBackdrops(boolean ignoreBackdrops) {
-        this.ignoreBackdrops = ignoreBackdrops;
+    public void setFanartEnabled(boolean fanartEnabled) {
+        this.fanartEnabled = fanartEnabled;
     }
 
     public boolean isProcessMissingMetadataOnly() {
@@ -162,4 +132,11 @@ public class MetadataUpdaterConfiguration {
         this.refreshIndexes = refreshIndexes;
     }
 
+    public boolean isRememberSelectedSearches() {
+        return rememberSelectedSearches;
+    }
+
+    public void setRememberSelectedSearches(boolean rememberSelectedSearches) {
+        this.rememberSelectedSearches = rememberSelectedSearches;
+    }
 }

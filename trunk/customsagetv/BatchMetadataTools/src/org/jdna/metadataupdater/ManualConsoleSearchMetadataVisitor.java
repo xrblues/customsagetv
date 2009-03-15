@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;
@@ -18,12 +19,12 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
 
     private int                 displaySize = 10;
 
-    public ManualConsoleSearchMetadataVisitor(String providerId, boolean aggressive, long options, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
-        super(providerId, aggressive, options, updatedVisitor, notFoundHandler);
+    public ManualConsoleSearchMetadataVisitor(String providerId, boolean overwrite, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
+        super(providerId, overwrite, updatedVisitor, notFoundHandler);
     }
 
-    public ManualConsoleSearchMetadataVisitor(String providerId, boolean aggressive, long options, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler, int displaySize) {
-        super(providerId, aggressive, options, updatedVisitor, notFoundHandler);
+    public ManualConsoleSearchMetadataVisitor(String providerId, boolean overwrite, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler, int displaySize) {
+        super(providerId, overwrite, updatedVisitor, notFoundHandler);
         this.displaySize = displaySize;
     }
 
@@ -64,8 +65,10 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
                 }
                 IMediaSearchResult sr = results.get(n);
                 log.debug("User's Selected Title: " + sr.getTitle());
+                // remember the selected title
+                ConfigurationManager.getInstance().setMetadataIdForTitle(query.get(SearchQuery.Field.TITLE), sr.getMetadataId());
                 IMediaMetadata md = getProvider().getMetaData(sr);
-                file.updateMetadata(md, getPersistenceOptions());
+                file.updateMetadata(md, isOverwriteEnabled());
                 if (getUpdatedVisitor() != null) getUpdatedVisitor().visit(file);
             }
         } catch (Exception e) {

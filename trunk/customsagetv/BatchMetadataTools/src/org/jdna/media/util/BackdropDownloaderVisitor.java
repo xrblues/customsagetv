@@ -10,7 +10,6 @@ import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
@@ -23,11 +22,13 @@ public class BackdropDownloaderVisitor implements IMediaResourceVisitor {
     private IMediaMetadataProvider provider;
     private IMediaResourceVisitor handled;
     private IMediaResourceVisitor skipped;
+    private boolean overwrite;
     
-    public BackdropDownloaderVisitor(String providerId, IMediaResourceVisitor handled, IMediaResourceVisitor skipped) {
+    public BackdropDownloaderVisitor(String providerId, boolean overwrite, IMediaResourceVisitor handled, IMediaResourceVisitor skipped) {
         provider = MediaMetadataFactory.getInstance().getProvider(providerId);
         this.handled = handled;
         this.skipped = skipped;
+        this.overwrite=overwrite;
     }
     
     public void visit(IMediaResource resource) {
@@ -55,7 +56,7 @@ public class BackdropDownloaderVisitor implements IMediaResourceVisitor {
                 
                 // nothing left to do, but search
                 SearchQuery query = SearchQueryFactory.getInstance().createQuery(resource);
-                query.set(SearchQuery.Field.TITLE, md.getTitle());
+                query.set(SearchQuery.Field.TITLE, md.getMediaTitle());
                 List<IMediaSearchResult> results = provider.search(query);
                 if (MediaMetadataFactory.getInstance().isGoodSearch(results)) {
                     IMediaMetadata backdrop = provider.getMetaData(results.get(0));
@@ -79,7 +80,7 @@ public class BackdropDownloaderVisitor implements IMediaResourceVisitor {
     private void updateBackground(IMediaResource resource, IMediaMetadata md, IMediaArt background) throws Exception {
         log.debug("Updating Background: " + background.getDownloadUrl() + " for resource: " + resource.getLocationUri());
         md.setBackground(background);
-        resource.updateMetadata(md, IMediaMetadataPersistence.OPTION_OVERWRITE_BACKGROUND);
+        resource.updateMetadata(md, overwrite);
         handled.visit(resource);
     }
 }

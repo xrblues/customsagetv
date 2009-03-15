@@ -1,5 +1,7 @@
 package org.jdna.media.metadata;
 
+import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
+
 public interface IMediaMetadata {
     /**
      * Gets a Metadata object value from the metadata store for the given key.
@@ -34,15 +36,15 @@ public interface IMediaMetadata {
      * appropriate keys
      */
 
-    public String getTitle();
+    public String getMediaTitle();
 
-    public void setTitle(String title);
+    public void setMediaTitle(String title);
 
     public String getYear();
 
     public void setYear(String year);
 
-    public IMediaArt[] getMediaArt(int type);
+    public IMediaArt[] getMediaArt(MediaArtifactType type);
 
     public void setMediaArt(IMediaArt[] art);
 
@@ -54,13 +56,9 @@ public interface IMediaMetadata {
 
     public void setBackground(IMediaArt poster);
 
-    public String getProviderId();
+    public IMediaArt getBanner();
 
-    public void setProviderId(String id);
-
-    public String getProviderDataUrl();
-
-    public void setProviderDataUrl(String url);
+    public void setBanner(IMediaArt poster);
 
     public String getDescription();
 
@@ -85,4 +83,13 @@ public interface IMediaMetadata {
     public String getRuntime();
 
     public void setRuntime(String runtime);
+
+    public void setProviderDataId(MetadataID id);
+    public MetadataID getProviderDataId();
+
+    public void setProviderDataUrl(String url);
+    public String getProviderDataUrl();
+
+    public void setProviderId(String id);
+    public String getProviderId();
 }

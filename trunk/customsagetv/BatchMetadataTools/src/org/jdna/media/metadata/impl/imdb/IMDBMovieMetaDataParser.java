@@ -7,13 +7,15 @@ import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+
+import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
 
 /**
  * State Machine parser that will crawl the Title Information page and extract
@@ -88,15 +90,16 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
                 MetadataKey.MPAA_RATING,
                 MetadataKey.MPAA_RATING_DESCRIPTION,
                 MetadataKey.POSTER_ART,
-                MetadataKey.PROVIDER_DATA_URL,
-                MetadataKey.PROVIDER_ID,
+                MetadataKey.MEDIA_PROVIDER_DATA_ID,
                 MetadataKey.RELEASE_DATE,
                 MetadataKey.RUNNING_TIME,
-                MetadataKey.TITLE,
+                MetadataKey.MEDIA_TITLE,
                 MetadataKey.USER_RATING,
                 MetadataKey.YEAR });
-        metadata.setProviderDataUrl(url);
+        
         metadata.setProviderId(IMDBMetaDataProvider.PROVIDER_ID);
+        metadata.setProviderDataUrl(url);
+        metadata.setProviderDataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID,IMDBUtils.parseIMDBID(url)));
     }
 
     public MediaMetadata getMetatData() {
@@ -119,10 +122,10 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
             // parse the title and year in the form "title (year)"
             int brac = charbuf.indexOf("(");
             if (brac != -1) {
-                metadata.setTitle(charbuf.substring(0, brac));
+                metadata.setMediaTitle(charbuf.substring(0, brac));
                 metadata.setYear(charbuf.substring(brac + 1, brac + 5));
             } else {
-                metadata.setTitle(charbuf);
+                metadata.setMediaTitle(charbuf);
                 metadata.setYear("Unknown");
             }
             // reset the state
@@ -317,7 +320,7 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
             }
             MediaArt ma = new MediaArt();
             ma.setProviderId(metadata.getProviderId());
-            ma.setType(IMediaArt.POSTER);
+            ma.setType(MediaArtifactType.POSTER);
             ma.setDownloadUrl(u);
             ma.setLabel(null);
             metadata.addMediaArt(ma);

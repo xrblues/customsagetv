@@ -12,10 +12,10 @@ public class RefreshMetadataVisitor implements IMediaResourceVisitor {
     private static final Logger   log = Logger.getLogger(RefreshMetadataVisitor.class);
     private IMediaResourceVisitor onUpdateVisitor;
     private IMediaResourceVisitor onSkipMediaResourceVisitor;
-    private long persistenceOptions;
+    private boolean overwrite;
 
-    public RefreshMetadataVisitor(long persistenceOptions, IMediaResourceVisitor onUpdateVisitor, IMediaResourceVisitor onSkipMediaResourceVisitor) {
-        this.persistenceOptions = persistenceOptions;
+    public RefreshMetadataVisitor(boolean overwrite, IMediaResourceVisitor onUpdateVisitor, IMediaResourceVisitor onSkipMediaResourceVisitor) {
+        this.overwrite = overwrite;
         this.onUpdateVisitor = onUpdateVisitor;
         this.onSkipMediaResourceVisitor = onSkipMediaResourceVisitor;
     }
@@ -31,15 +31,15 @@ public class RefreshMetadataVisitor implements IMediaResourceVisitor {
                 // from the existing metadata
                 IMediaMetadata md = resource.getMetadata();
 
-                if (md.getProviderDataUrl() != null && md.getProviderId() != null) {
+                if (md.getProviderDataId() != null) {
                     IMediaMetadataProvider provider = MediaMetadataFactory.getInstance().getProvider(md.getProviderId());
                     if (provider == null) {
-                        throw new Exception("Provider Not Registered: " + md.getProviderId());
+                        throw new Exception("Provider Not Registered: " + md.getProviderDataId());
                     }
 
                     log.debug("Refreshing: " + resource.getLocationUri());
-                    IMediaMetadata updated = provider.getMetaData(md.getProviderDataUrl());
-                    resource.updateMetadata(updated, persistenceOptions);
+                    IMediaMetadata updated = provider.getMetaDataByUrl(md.getProviderDataUrl());
+                    resource.updateMetadata(updated, overwrite);
 
                     onUpdateVisitor.visit(resource);
                 } else {

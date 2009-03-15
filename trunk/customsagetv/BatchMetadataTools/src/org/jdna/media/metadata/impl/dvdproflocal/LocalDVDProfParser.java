@@ -11,9 +11,12 @@ import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
 
 public class LocalDVDProfParser {
     private static final Logger          log         = Logger.getLogger(LocalDVDProfParser.class);
@@ -45,11 +48,12 @@ public class LocalDVDProfParser {
                 MetadataKey.MEDIA_ART_LIST,
                 MetadataKey.MPAA_RATING,
                 MetadataKey.POSTER_ART,
-                MetadataKey.PROVIDER_DATA_URL,
-                MetadataKey.PROVIDER_ID,
+                MetadataKey.MEDIA_PROVIDER_DATA_ID,
+                MetadataKey.METADATA_PROVIDER_ID,
+                MetadataKey.METADATA_PROVIDER_DATA_URL,
                 MetadataKey.RELEASE_DATE,
                 MetadataKey.RUNNING_TIME,
-                MetadataKey.TITLE,
+                MetadataKey.MEDIA_TITLE,
                 MetadataKey.USER_RATING,
                 MetadataKey.YEAR });
 
@@ -61,7 +65,6 @@ public class LocalDVDProfParser {
         metadata.setGenres(getGenres().toArray(new String[genres.size()]));
         metadata.setMPAARating(getMPAARating());
         metadata.setDescription(getPlot());
-        metadata.setProviderDataUrl(getProviderDataUrl());
         metadata.setReleaseDate(getReleaseDate());
         metadata.setRuntime(getRuntime());
 
@@ -69,14 +72,20 @@ public class LocalDVDProfParser {
         if (ma != null) {
             metadata.addMediaArt(ma);
         }
-        ma = getMediaArtImage("b");
-        if (ma != null) {
-            metadata.addMediaArt(ma);
-        }
+        
+        // if use back cover is enabled 
+        //ma = getMediaArtImage("b");
+        // if (ma != null) {
+        //     metadata.addMediaArt(ma);
+        // }
 
-        metadata.setTitle(getTitle());
+        metadata.setMediaTitle(getTitle());
         metadata.setUserRating(getUserRating());
         metadata.setYear(getYear());
+
+        metadata.setProviderId(LocalDVDProfMetaDataProvider.PROVIDER_ID);
+        metadata.setProviderDataId(new MetadataID(LocalDVDProfMetaDataProvider.PROVIDER_ID, getProviderUrl()));
+        metadata.setProviderDataUrl(id);
         return metadata;
     }
 
@@ -147,7 +156,7 @@ public class LocalDVDProfParser {
         return DVDProfXmlFile.getElementValue(node, "Overview");
     }
 
-    public String getProviderDataUrl() {
+    public String getProviderUrl() {
         return id;
     }
 
@@ -173,7 +182,7 @@ public class LocalDVDProfParser {
                 MediaArt ma = new MediaArt();
                 ma.setProviderId(getProviderId());
                 ma.setDownloadUrl(uri);
-                ma.setType(IMediaArt.POSTER);
+                ma.setType(MediaArtifactType.POSTER);
                 ma.setLabel("f".equals(type) ? "Front" : "Back");
                 return ma;
             } catch (MalformedURLException e) {

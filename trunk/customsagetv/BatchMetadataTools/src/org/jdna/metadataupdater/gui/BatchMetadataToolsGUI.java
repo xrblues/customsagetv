@@ -5,14 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +26,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -44,10 +35,8 @@ import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.MediaResourceFactory;
-import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
-import org.jdna.media.util.CompositeResourceVisitor;
 import org.jdna.media.util.MissingMetadataVisitor;
 import org.jdna.metadataupdater.MetadataUpdater;
 import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
@@ -80,11 +69,7 @@ public class BatchMetadataToolsGUI extends JFrame {
                 parentFolder = MediaResourceFactory.getInstance().createVirtualFolder("Videos", resources);
             }
 
-            boolean overwriteThumbnails = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwriteThumbnails();
-            boolean overwriteBackdrops = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwriteBackdrops();
-            long persistenceOptions = 0;
-            if (overwriteThumbnails) persistenceOptions = persistenceOptions + IMediaMetadataPersistence.OPTION_OVERWRITE_POSTER;
-            if (overwriteBackdrops) persistenceOptions = persistenceOptions + IMediaMetadataPersistence.OPTION_OVERWRITE_BACKGROUND;
+            boolean overwrite = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwrite();
 
             IMediaResourceVisitor updatedVisitor = new IMediaResourceVisitor() {
                 public void visit(IMediaResource resource) {
@@ -93,7 +78,7 @@ public class BatchMetadataToolsGUI extends JFrame {
             };
 
             // Main visitor for automatic updating
-            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId(), true, persistenceOptions, updatedVisitor, new IMediaResourceVisitor() {
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId(), overwrite, updatedVisitor, new IMediaResourceVisitor() {
                 public void visit(IMediaResource resource) {
                     missingTableModel.add(resource);
                 }
@@ -125,11 +110,8 @@ public class BatchMetadataToolsGUI extends JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable      missingMetadataTable;
     JCheckBox                       recurse;
-    JCheckBox                       overwriteProperties;
-    JCheckBox                       overwriteThumbs;
-    JCheckBox                       overwriteBackdrops;
+    JCheckBox                       overwrite;
     JCheckBox                       refreshSage;
-    JCheckBox                       aggressive;
     JCheckBox                       autoUpdate;
     JCheckBox                       processMissingOnly;
     // JCheckBox reindex = new JCheckBox("Force rebuild of indexes");
@@ -166,11 +148,8 @@ public class BatchMetadataToolsGUI extends JFrame {
 
         // init components
         recurse = SwingBindingUtils.createCheckBox("Recurse into sub directories", config, "setRecurseFolders", "isRecurseFolders");
-        overwriteProperties = SwingBindingUtils.createCheckBox("Overwrite exiting Property files", config, "setOverwriteProperties", "isOverwriteProperties");
-        overwriteThumbs = SwingBindingUtils.createCheckBox("Overwrite existing Thumbnails" , config, "setOverwriteThumbnails", "isOverwriteThumbnails");
-        overwriteBackdrops = SwingBindingUtils.createCheckBox("Overwrite existing Backdrops", config, "setOverwriteBackdrops", "isOverwriteBackdrops");
+        overwrite = SwingBindingUtils.createCheckBox("Overwrite existing metadata" , config, "setOverwrite", "isOverwrite");
         refreshSage = SwingBindingUtils.createCheckBox("Refresh SageTV after scan", config, "setRefreshSageTV", "isRefreshSageTV");
-        aggressive = SwingBindingUtils.createCheckBox("Aggressive Searching", config, "setAggressiveSearches", "isAggressiveSearches");
         autoUpdate = SwingBindingUtils.createCheckBox("Automatic Search and Update", config, "setAutomaticUpdate", "isAutomaticUpdate");
         reindex = SwingBindingUtils.createCheckBox("Force rebuild of indexes", config, "setRefreshIndexes", "isRefreshIndexes");
         processMissingOnly = SwingBindingUtils.createCheckBox("Only process files with no metadata", config, "setProcessMissingMetadataOnly", "isProcessMissingMetadataOnly");
@@ -221,10 +200,7 @@ public class BatchMetadataToolsGUI extends JFrame {
 
         options.add(recurse);
         options.add(autoUpdate);
-        options.add(aggressive);
-        options.add(overwriteProperties);
-        options.add(overwriteThumbs);
-        options.add(overwriteBackdrops);
+        options.add(overwrite);
         options.add(processMissingOnly);
         options.add(reindex);
         options.add(refreshSage);
@@ -338,7 +314,7 @@ public class BatchMetadataToolsGUI extends JFrame {
             mdProvider.setText(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId());
         }
 
-        overwriteThumbs.setSelected(ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwriteThumbnails());
+        overwrite.setSelected(ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwrite());
 
         if (StringUtils.isEmpty(folder.getText()) || StringUtils.isEmpty(mdProvider.getText())) {
             System.out.println("Disabling Button");

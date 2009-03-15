@@ -160,8 +160,8 @@ public abstract class AbstractMediaResource implements IMediaResource {
         return null;
     }
 
-    public void updateMetadata(IMediaMetadata metadata, long options) throws IOException {
-        MediaMetadataFactory.getInstance().getDefaultPeristence().storeMetaData(metadata, this, options);
+    public void updateMetadata(IMediaMetadata metadata, boolean overwrite) throws IOException {
+        MediaMetadataFactory.getInstance().getDefaultPeristence().storeMetaData(metadata, this, overwrite);
     }
 
     protected File getResourceAsFile() {
