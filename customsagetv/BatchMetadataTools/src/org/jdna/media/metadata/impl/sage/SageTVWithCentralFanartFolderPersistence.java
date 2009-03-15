@@ -515,7 +515,7 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
     public IMediaMetadata loadMetaData(IMediaResource mediaFile) {
         File propFile = getPropertyFile(mediaFile);
 
-        if (propFile == null || propFile.exists()) {
+        if (propFile == null || !propFile.exists()) {
             return null;
         }
 
@@ -566,18 +566,9 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
                     md.setMediaTitle(StringUtils.defaultIfEmpty(props.get(p.sageKey), props.get(SageProperty.MEDIA_TITLE.sageKey)));
                 } else if (p == SageProperty.DESCRIPTION) {
                     md.setDescription(StringUtils.defaultIfEmpty(props.get(SageProperty.SERIALIZED_DESCRIPTION.sageKey), props.get(p.sageKey)));
-                }
-
-                // should just be normal string data
-                Object o = md.get(p.metadataKey);
-                if (o == null) continue;
-                if (o instanceof String) {
-                    if (!StringUtils.isEmpty((String) o)) {
-                        props.put(p.sageKey, (String)o);
-                        md.set(p.metadataKey, props.get(p.sageKey));
-                    }
                 } else {
-                    log.error("Cannot Perist Metadata Key " + p.metadataKey + "; A special case is needed.");
+                    md.set(p.metadataKey, props.get(p.sageKey));
+                    log.debug("Setting: " + p.metadataKey + "; Value: " + props.get(p.sageKey));
                 }
             }
 
