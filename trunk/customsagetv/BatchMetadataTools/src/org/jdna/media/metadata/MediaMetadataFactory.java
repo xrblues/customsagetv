@@ -71,27 +71,11 @@ public class MediaMetadataFactory {
         
         // Now add in a couple of composite providers
         
-        // This provider uses the default imdb for saerching, and Neil's for details
-        if (getProvider(IMDBMetaDataProvider.PROVIDER_ID)!=null && getProvider(NielmIMDBMetaDataProvider.PROVIDER_ID)!=null) {
-            CompositeMetadataConfiguration cmc = new CompositeMetadataConfiguration();
-            cmc.setName("Composite Stuckless/Nielm IMDB Provider");
-            cmc.setDescription("Composite Provider that uses the default IMDB provider for searching, and Neil's IMDB provider for details.  This useful if you want better plot descriptions.");
-            cmc.setId(IMDBMetaDataProvider.PROVIDER_ID + "-2");
-            cmc.setSearchProviderId(IMDBMetaDataProvider.PROVIDER_ID);
-            cmc.setDetailProviderId(NielmIMDBMetaDataProvider.PROVIDER_ID);
-            cmc.setIconUrl(IMDBMetaDataProvider.PROVIDER_ICON_URL);
-            
-            // Take User Rating and Genre information from IMDB, if it exists.
-            cmc.setFieldsFromSearchProvider(MetadataKey.USER_RATING.getId() + ";" + MetadataKey.GENRE_LIST.getId());
-            
-            addMetaDataProvider(new CompositeMetadataProvider(cmc));
-        }
-        
         // This provider uses the imdb for searching and themoviedb.com for details
         if (getProvider(IMDBMetaDataProvider.PROVIDER_ID)!=null && getProvider(TheMovieDBMetadataProvider.PROVIDER_ID)!=null) {
             CompositeMetadataConfiguration cmc = new CompositeMetadataConfiguration();
-            cmc.setName("Composite Stuckless IMDB/TheMovieDB Provider");
-            cmc.setDescription("Composite Provider that uses the default IMDB provider for searching, and themoviedb.com for details.  This provider can provide decent results for posters and backdrop coverart.");
+            cmc.setName("IMDb/themoviedb.org");
+            cmc.setDescription("Metadata Provider that uses IMDb for searching, but themoviedb.org for metadata completion and fanart.");
             cmc.setId(TheMovieDBMetadataProvider.PROVIDER_ID + "-2");
             cmc.setSearchProviderId(IMDBMetaDataProvider.PROVIDER_ID);
             cmc.setDetailProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);

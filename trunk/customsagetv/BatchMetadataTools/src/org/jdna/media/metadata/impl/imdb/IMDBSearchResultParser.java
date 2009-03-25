@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
-import org.jdna.media.metadata.SearchResultType;
 import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -38,9 +37,9 @@ public class IMDBSearchResultParser extends URLSaxParser {
     private static String                  EXACT_TITLE_MATCH   = "Titles (Exact Matches)";
     private static String                  END_OF_LIST_MATCH   = "Suggestions For Improving Your Results";
 
-    private static final int               POPULAR_MATCHES     = SearchResultType.POPULAR.id();
-    private static final int               EXACT_MATCHES       = SearchResultType.EXACT.id();
-    private static final int               PARTIAL_MATCHES     = SearchResultType.PARTIAL.id();
+    private static final int               POPULAR_MATCHES     = 1;
+    private static final int               EXACT_MATCHES       = 2;
+    private static final int               PARTIAL_MATCHES     = 3;
     private static final int               STARTING            = 88;
     private static final int               ENDED               = 99;
     private int                            state               = STARTING;

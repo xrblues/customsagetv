@@ -18,13 +18,12 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     private static final Logger                 log               = Logger.getLogger(LocalDVDProfMetaDataProvider.class);
 
     public static final String                  PROVIDER_ID       = "dvdprofiler";
-    public static final String                  PROVIDER_NAME     = "Local DVD Profiler Provider";
+    public static final String                  PROVIDER_NAME     = "DVD Profiler";
     public static final String                  PROVIDER_ICON_URL = "http://www.invelos.com/images/Logo.png";
-    private static final String                 PROVIDER_DESC     = "DVD Profiler Provider using local xml and images (Stuckless).";
+    private static final String                 PROVIDER_DESC     = "DVD Profiler metadata provider using local xml and images (Stuckless).";
 
     private static IProviderInfo                info              = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_ICON_URL);
 
-    private boolean                             rebuildIndex      = false;
     private File                                xmlFile           = null;
     private File                                imageDir          = null;
     private DVDProfXmlFile                      xmlFileTool;
@@ -33,7 +32,6 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     private static LocalDVDProfMetaDataProvider instance          = null;
     
     private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
-
 
     public static final LocalDVDProfMetaDataProvider getInstance() {
         return instance;
@@ -75,47 +73,56 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     }
 
     private void initialize() throws Exception {
-        initialized = true;
-
         String indexDir = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getIndexDir();
         LocalMovieIndex.getInstance().setIndexDir(indexDir);
 
-        String imageDir = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getImageDir();
-        if (imageDir == null) {
-            throw new Exception(String.format("Missing imageDir.  Please Set: %s.imageDir", this.getClass().getName()));
-        }
-        this.imageDir = new File(imageDir);
-        if (!this.imageDir.exists()) {
-            throw new Exception("Imagedir does not exist: " + imageDir);
-        }
-
         String xml = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getXmlFile();
         if (xml == null) {
-            throw new Exception(String.format("Missing xml.  Please Set: %s.xmlFile", this.getClass().getName()));
+            throw new Exception(String.format("Missing xml.  Please Set Xml Property.", this.getClass().getName()));
         }
 
         xmlFile = new File(xml);
         if (!xmlFile.exists()) {
             throw new Exception("Missing Xml File: " + xmlFile.getAbsolutePath());
         }
+        
+        log.debug("DVD Profiler Xml: " + xmlFile.getAbsolutePath());
+
+        String strImageDir = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getImageDir();
+        if (strImageDir == null) {
+            log.warn("DVD Profiler Image dir is not set, will use a relative Images path.");
+            this.imageDir = new File(xmlFile.getParentFile(), "Images");
+        } else {
+            this.imageDir = new File(strImageDir);
+        }
+        
+        if (!this.imageDir.exists()) {
+            throw new Exception("Imagedir does not exist: " + strImageDir);
+        }
 
         xmlFileTool = new DVDProfXmlFile(xmlFile);
-        rebuildIndex = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isRefreshIndexes();
+        
+        initialized = true;
+    }
+    
+    private boolean isXmlModified() {
+        return xmlFile.lastModified() > ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getXmlFileLastModified();
     }
 
     private void rebuildIndexes() throws Exception {
-        log.debug("Rebuilding Indexes....");
+        log.debug("Rebuilding DVD Profiler Indexes....");
 
         LocalMovieIndex.getInstance().clean();
         LocalMovieIndex.getInstance().beginIndexing();
         xmlFileTool.visitMovies(LocalMovieIndex.getInstance());
         LocalMovieIndex.getInstance().endIndexing();
-
-        rebuildIndex = false;
+        
+        ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().setXmlFileLastModified(xmlFile.lastModified());
+        ConfigurationManager.getInstance().updated(ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration());
     }
 
     private boolean shouldRebuildIndexes() {
-        return LocalMovieIndex.getInstance().isNew() || rebuildIndex;
+        return LocalMovieIndex.getInstance().isNew() || isXmlModified();
     }
 
     public DVDProfXmlFile getDvdProfilerXmlFile() {

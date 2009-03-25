@@ -23,9 +23,9 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
 
     public static final String   IMDB_FIND_URL     = "http://www.imdb.com/find?s=tt&q={0}&x=0&y=0";
     public static final String   PROVIDER_ID       = "imdb";
-    public static final String   PROVIDER_NAME     = "IMDB Provider (Stuckless)";
+    public static final String   PROVIDER_NAME     = "IMDb";
     public static final String   PROVIDER_ICON_URL = "http://i.media-imdb.com/images/nb15/logo2.gif";
-    private static final String  PROVIDER_DESC     = "IMDB Provider that provides very resonable results, AND exact match searches.";
+    private static final String  PROVIDER_DESC     = "Fast, bare bones IMDb provider, no fanart, limited cast metadata";
 
     private static IProviderInfo info              = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_ICON_URL);
     private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};

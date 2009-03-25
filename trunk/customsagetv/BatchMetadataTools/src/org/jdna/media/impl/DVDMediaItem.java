@@ -35,6 +35,13 @@ public class DVDMediaItem extends AbstractMediaResource implements IMediaFile {
             if (ua.exists() && ua.isDirectory()) {
                 return true;
             }
+            
+            // check for bluray
+            ua = uri.createUriAdapter("BDMV");
+            if (ua.exists() && ua.isDirectory()) {
+                return true;
+            }
+
 
             if (deepDVDScanning) {
                 URI files[] = uri.listMembers();

@@ -31,9 +31,9 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
     private static final Logger  log                   = Logger.getLogger(NielmIMDBMetaDataProvider.class);
 
     private static final String  PROVIDER_THUMNAIL_URL = "http://i.media-imdb.com/images/nb15/logo2.gif";
-    public static final String   PROVIDER_NAME         = "IMDB Provider (Nielm)";
+    public static final String   PROVIDER_NAME         = "IMDb (Nielm)";
     public static final String   PROVIDER_ID           = "nielm_imdb";
-    private static final String  PROVIDER_DESC         = "IMDB Provider that provides very detailed results, but no exact match searches.";
+    private static final String  PROVIDER_DESC         = "IMDd provider using Nielm's IMDb api.";
 
     private static IProviderInfo info                  = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_THUMNAIL_URL);
 

@@ -78,7 +78,7 @@ public class BatchMetadataToolsGUI extends JFrame {
             };
 
             // Main visitor for automatic updating
-            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId(), overwrite, updatedVisitor, new IMediaResourceVisitor() {
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId(), overwrite,null, updatedVisitor, new IMediaResourceVisitor() {
                 public void visit(IMediaResource resource) {
                     missingTableModel.add(resource);
                 }

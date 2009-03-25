@@ -67,7 +67,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 System.out.println("** Batch Metadata Plugin; Using ProviderId: " + providerId);
                 System.out.println("** Configuration for Metadata Plugin: " + ConfigurationManager.getInstance().getConfigFileLocation());
     
-                updater = new AutomaticUpdateMetadataVisitor(providerId, ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwrite(), new NullResourceVisitor(), new IMediaResourceVisitor() {
+                updater = new AutomaticUpdateMetadataVisitor(providerId, ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwrite(), null, new NullResourceVisitor(), new IMediaResourceVisitor() {
                     public void visit(IMediaResource resource) {
                         System.out.println("Could not automatically update: " + resource.getLocationUri());
                     }

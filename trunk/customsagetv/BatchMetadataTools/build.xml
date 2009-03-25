@@ -53,6 +53,11 @@
 	<target name="package-plugin" depends="package-tool">
 		<mkdir dir="${targetDir}/sage" />
 		<mkdir dir="${targetDir}/sage/JARs" />
+		<mkdir dir="${targetDir}/sage/STVs/SageTV3/" />
+
+		<copy toDir="${targetDir}/sage/STVs/SageTV3">
+			<fileset dir="resources/stv" includes="*.stvi,*.xml"/>
+		</copy>
 
 		<copy toDir="${targetDir}/sage/JARs">
 			<fileset dir="libs" excludes="Sage.*,nielm*,miglayout*" />

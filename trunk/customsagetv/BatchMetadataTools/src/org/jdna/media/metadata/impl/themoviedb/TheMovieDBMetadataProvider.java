@@ -14,7 +14,7 @@ import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 
 public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
     public static final String   PROVIDER_ID = "themoviedb.org";
-    private static IProviderInfo info        = new ProviderInfo(PROVIDER_ID, "themoviedb.org", "Provider that uses themoviedb as metadata and coverart source.", "http://www.themoviedb.org/images/tmdb/header-logo.png");
+    private static IProviderInfo info        = new ProviderInfo(PROVIDER_ID, "themoviedb.org", "Provides Fanart and Metadata from themoviedb.org", "http://www.themoviedb.org/images/tmdb/header-logo.png");
     private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
 
     public IProviderInfo getInfo() {

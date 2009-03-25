@@ -18,6 +18,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.util.Similarity;
 import org.w3c.dom.Element;
 
 public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
@@ -104,7 +105,9 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
             String name = d.get("title");
             String date = d.get("release");
             String id = d.get("id");
-            float score = hits.score(i);
+            
+            //float score = hits.score(i);
+            float score = (float) Similarity.getInstance().compareStrings(title, name);
 
             results.add(new MediaSearchResult(LocalDVDProfMetaDataProvider.PROVIDER_ID, id, name, date, score));
         }

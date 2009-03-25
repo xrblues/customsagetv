@@ -7,13 +7,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,7 +89,7 @@ public class ConfigurationManager {
             try {
                 props.load(new FileInputStream(configFile));
             } catch (Exception e) {
-                log.error("Failed to load custom properties from: " + cFile);
+                log.error("Failed to load custom properties from: " + cFile, e);
             }
         } else {
             log.warn("Configuration: " + cFile + " does not exist.  Using defaults.");
@@ -107,7 +104,7 @@ public class ConfigurationManager {
             try {
                 titleMapProps.load(new FileInputStream(titleMapPropsFile));
             } catch (Exception e) {
-                log.error("Failed to load title mappings from: " + titleMapPropsFile.getAbsolutePath());
+                log.error("Failed to load title mappings from: " + titleMapPropsFile.getAbsolutePath(),e);
             }
         } else {
             log.info("No titles map configured: " + titleMapPropsFile.getAbsolutePath());
@@ -125,9 +122,6 @@ public class ConfigurationManager {
         props.store(fw, "Configuration Properties");
         fw.flush();
         fw.close();
-
-        // remove loaded objects, so that they get recreated.
-        loaded.clear();
     }
 
     public synchronized void saveTitleMappings() throws IOException {
@@ -219,7 +213,7 @@ public class ConfigurationManager {
                 o = persistence.load(objectType);
                 loaded.put(objectType, o);
             } catch (Exception e) {
-                log.error("Failed to Load: " + objectType.getName());
+                log.error("Failed to Load: " + objectType.getName(),e);
                 o = null;
             }
         }

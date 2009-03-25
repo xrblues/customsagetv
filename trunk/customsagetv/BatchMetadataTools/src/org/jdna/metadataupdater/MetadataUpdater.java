@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.cmdline.CommandLine;
 import org.jdna.cmdline.CommandLineArg;
@@ -23,6 +22,7 @@ import org.jdna.media.MediaResourceFactory;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
@@ -47,8 +47,10 @@ import sagex.api.Global;
  */
 @CommandLineProcess(acceptExtraArgs = true, description = "Import/Update Movie MetaData from a MetaData Provider.")
 public class MetadataUpdater {
-
-    public static final Logger log = Logger.getLogger(MetadataUpdater.class);
+    public static final Logger APPLOG = Logger.getLogger(MetadataUpdater.class.getName() + ".APPLOG");
+    
+    private static final Logger log = Logger.getLogger(MetadataUpdater.class);
+    
 
     private static MetadataUpdaterConfiguration config = null;
     
@@ -131,6 +133,8 @@ public class MetadataUpdater {
     private boolean  prompt         = true;
     private boolean showSupportedMetadata = false;
     private boolean gui = false;
+
+    private boolean tvSearch;
     
     /**
      * This is the entry into the tool. This will process() all files/dirs that
@@ -250,8 +254,14 @@ public class MetadataUpdater {
             CountResourceVisitor autoSkippedCount = new CountResourceVisitor();
             CompositeResourceVisitor autoUpdated  = new CompositeResourceVisitor(updatedDisplay, autoUpdatedCount);
             
+            SearchQuery.Type searchType=null;
+            if (isTVSearch()) {
+                log.debug("Forcing Search TV Search");
+                searchType=SearchQuery.Type.TV;
+            }
+            
             // Main visitor for automatic updating
-            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, overwrite, autoUpdated, autoNotFound);
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, overwrite, searchType, autoUpdated, autoNotFound);
             
             // collectors and counters for manual updating
             CountResourceVisitor manualUpdatedCount = new CountResourceVisitor();
@@ -259,7 +269,7 @@ public class MetadataUpdater {
             CompositeResourceVisitor manualUpdated  = new CompositeResourceVisitor(updatedDisplay, manualUpdatedCount);
             
             // Main visitor for manual interactive searching
-            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(provider, overwrite, manualUpdated, manualSkippedCount, config.getSearchResultDisplaySize());
+            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(provider, overwrite, searchType, manualUpdated, manualSkippedCount, config.getSearchResultDisplaySize());
 
             // Main visitor that only does files that a missing metadata
             MissingMetadataVisitor missingMetadata = new MissingMetadataVisitor(config.isAutomaticUpdate() ? autoUpdater : manualUpdater, new CompositeResourceVisitor(up2dateDisplay, config.isAutomaticUpdate() ? autoSkippedCount : manualSkippedCount));
@@ -290,6 +300,8 @@ public class MetadataUpdater {
             if (config.isRememberSelectedSearches()) {
                 ConfigurationManager.getInstance().saveTitleMappings();
             }
+            
+            ConfigurationManager.getInstance().save();
             
             // Render stats
             System.out.println("\n\nMetaData Stats...");
@@ -398,11 +410,6 @@ public class MetadataUpdater {
     @CommandLineArg(name = "thumbnailMaxWidth", description = "Will scale down large thumbnail to the specified with. -1 mean no scaling. (default -1)")
     public void setThumbnailMaxWidth(String width) {
         config.setPosterImageWidth(Integer.parseInt(width));
-    }
-
-    @CommandLineArg(name = "reindex", description = "Tells Metadata providers that require indexing (ie, DVD Profiler) to rebuild it's index. (default false)")
-    public void setReindex(boolean b) {
-        config.setRefreshIndexes(b);
     }
 
     /**
@@ -561,7 +568,35 @@ public class MetadataUpdater {
         this.gui = b;
     }
 
+    /**
+     * Force the SearchFactory to create TV search
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "tv", description = "Force a TV Search (default false)")
+    public void setTVSearch(boolean b) {
+        this.tvSearch = b;
+    }
+    
+    public boolean isTVSearch() {
+        return tvSearch;
+    }
+
     public String[] getFiles() {
         return files;
+    }
+
+    public static void exit(String string) {
+        System.out.println(string);
+        try {
+            if (ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isRememberSelectedSearches()) {
+                ConfigurationManager.getInstance().saveTitleMappings();
+            }
+            
+            ConfigurationManager.getInstance().save();
+        } catch (Exception e) {
+            log.error("Failed to save configuration before exit.", e);
+        }
+        System.exit(1);
     }
 }
