@@ -25,12 +25,14 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     private boolean                overwrite;
 
     private long                   persistenceOptions;
+    private SearchQuery.Type defaultSearchType;
 
-    public AutomaticUpdateMetadataVisitor(String providerId, boolean overwrite, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
+    public AutomaticUpdateMetadataVisitor(String providerId, boolean overwrite, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
         this.provider = MediaMetadataFactory.getInstance().getProvider(providerId);
         this.updatedHandler = updatedVisitor;
         this.notFoundHandler = notFoundHandler;
         this.overwrite = overwrite;
+        this.defaultSearchType=defaultSearchType;
     }
 
     /**
@@ -48,7 +50,12 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     }
 
     protected void fetchMetaData(IMediaFile file) throws Exception {
-        SearchQuery query = SearchQueryFactory.getInstance().createQuery(file);
+        SearchQuery query = null;
+        if (defaultSearchType!=null && defaultSearchType==SearchQuery.Type.TV) {
+            query = SearchQueryFactory.getInstance().createQuery(file, SearchQuery.Type.TV);
+        } else {
+            query = SearchQueryFactory.getInstance().createQuery(file);
+        }
         fetchMetaData(file, query);
     }
 

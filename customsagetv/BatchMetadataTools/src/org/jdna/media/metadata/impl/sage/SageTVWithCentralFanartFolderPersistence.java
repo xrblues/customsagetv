@@ -32,15 +32,13 @@ import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 import org.jdna.util.SortedProperties;
 
-import sagex.phoenix.fanart.FanartUtil;
 import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
-import sagex.phoenix.fanart.FanartUtil.MediaType;
 
 public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataPersistence {
     private static final Logger                                   log              = Logger.getLogger(SageTVWithCentralFanartFolderPersistence.class);
     private static final SageTVWithCentralFanartFolderPersistence instance         = new SageTVWithCentralFanartFolderPersistence();
-    private static final String                                   MOVIE_MEDIA_TYPE = "Movie";
-    private static final String                                   TV_MEDIA_TYPE    = "TV";
+    public static final String                                   MOVIE_MEDIA_TYPE = "Movie";
+    public static final String                                   TV_MEDIA_TYPE    = "TV";
 
     public SageTVWithCentralFanartFolderPersistence() {
         if (!SageProperty.isPropertySetValid()) {
@@ -86,17 +84,21 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
     }
 
     public Map<String, String> getMetadataProperties(IMediaResource mediaFile, IMediaMetadata md) throws IOException {
-        ConfigurationManager cm = ConfigurationManager.getInstance();
-
-        boolean overwrite = cm.getMetadataUpdaterConfiguration().isOverwrite();
-
         if (md.getMediaTitle() == null) throw new IOException("MetaData doesn't contain title.  Will not Save/Update.");
 
         if (mediaFile.getType() != IMediaFile.TYPE_FILE) {
             throw new IOException("Can only store metadata for IMedaiFile.TYPE_FILE objects.  Not a valid file: " + mediaFile.getLocationUri());
         }
+        
+        // set the media type, if it's not set
+        if (StringUtils.isEmpty((String) md.get(MetadataKey.MEDIA_TYPE))) {
+            if (StringUtils.isEmpty((String) md.get(MetadataKey.SEASON))) {
+                md.set(MetadataKey.MEDIA_TYPE, MOVIE_MEDIA_TYPE);
+            } else {
+                md.set(MetadataKey.MEDIA_TYPE, TV_MEDIA_TYPE);
+            }
+        }
 
-        // now copy this metadata...
         Map<String, String> props;
         try {
             props = loadProperties(mediaFile);
@@ -108,6 +110,16 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
         // add the filename and file uri
         props.put(SageProperty.FILENAME.sageKey, mediaFile.getName());
         props.put(SageProperty.FILEURI.sageKey, mediaFile.getLocationUri());
+        
+        props = getMetadataProperties(md, props);
+        return props;
+    }
+    
+    
+    public Map<String, String> getMetadataProperties(IMediaMetadata md, Map<String, String> props) throws IOException {
+        ConfigurationManager cm = ConfigurationManager.getInstance();
+
+        boolean overwrite = cm.getMetadataUpdaterConfiguration().isOverwrite();
 
         // set the media type, if it's not set
         if (StringUtils.isEmpty((String) md.get(MetadataKey.MEDIA_TYPE))) {
@@ -185,6 +197,7 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
         }
         return props;
     }
+
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, boolean overwrite) throws IOException {
         // do the actual save
@@ -293,128 +306,11 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
             saveSingle(props, mediaFileParent, md, overwrite);
         }
 
-        saveFanart(mediaFileParent, md, overwrite);
+        FanartStorage.downloadFanart(mediaFileParent, md, overwrite);
 
         mediaFileParent.touch();
     }
 
-    private void saveFanart(IMediaFile mediaFileParent, IMediaMetadata md, boolean overwrite) {
-        MediaArtifactType[] localArtTypes = null;
-        if (ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isFanartEnabled() && !StringUtils.isEmpty(ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder())) {
-            log.info("Using Central Fanart: " + ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder());
-            for (MediaArtifactType mt : MediaArtifactType.values()) {
-                saveCentralFanart(mediaFileParent, md, mt, overwrite);
-            }
-            localArtTypes = new MediaArtifactType[] {MediaArtifactType.POSTER};
-        } else if (ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isFanartEnabled()) {
-            log.info("Using Local Fanart; The central fanart folder is not set.");
-            localArtTypes = MediaArtifactType.values();
-        } else {
-            log.info("Fanart is not enabled.  Saving local thumbnails only.");
-            localArtTypes = new MediaArtifactType[] {MediaArtifactType.POSTER};
-        }
-        
-        // save any local artifacts
-        saveLocalFanartForTypes(mediaFileParent, md, overwrite, localArtTypes);
-    }
-    
-    private void saveLocalFanartForTypes(IMediaFile mediaFileParent, IMediaMetadata md, boolean overwrite, MediaArtifactType[] artTypes) {
-        if (mediaFileParent.isStacked()) {
-            for (IMediaResource mf : mediaFileParent.getParts()) {
-                for (MediaArtifactType mt : artTypes) {
-                    try {
-                        saveLocalFanart((IMediaFile)mf, md, mt, overwrite);
-                    } catch (Exception e) {
-                        log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocationUri(),e);
-                    }
-                }
-            }
-        } else {
-            for (MediaArtifactType mt : artTypes) {
-                try {
-                    saveLocalFanart(mediaFileParent, md, mt, overwrite);
-                } catch (Exception e) {
-                    log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocationUri(),e);
-                }
-            }
-        }
-    }
-
-    private void saveLocalFanart(IMediaFile mediaFileParent, IMediaMetadata md, MediaArtifactType mt, boolean overwrite) throws IOException {
-        try {
-            File mediaFile = new File(new URI(mediaFileParent.getLocationUri()));
-
-            // media type is not important for local fanart
-            File imageFile = FanartUtil.getLocalFanartForFile(mediaFile, MediaType.MOVIE, mt);
-            IMediaArt ma[] = md.getMediaArt(mt);
-            if (ma != null && ma.length > 0) {
-                downloadAndSaveFanart(ma[0], imageFile, overwrite, false);
-            }
-        } catch (URISyntaxException e) {
-            log.error("Failed to save media art: " + mt + " for file: " + mediaFileParent.getLocationUri(),e);
-        }
-    }
-
-    private void downloadAndSaveFanart(IMediaArt mediaArt, File imageFile, boolean overwrite, boolean useOriginalName) throws IOException {
-        if (mediaArt == null || mediaArt.getDownloadUrl() == null || imageFile == null) return;
-        
-        String url = mediaArt.getDownloadUrl();
-        if (useOriginalName) {
-            imageFile = new File(imageFile.getParentFile(), new File(url).getName());
-            log.debug("Using orginal image filename from url: " + imageFile.getAbsolutePath());
-        }
-        
-        if (!overwrite && imageFile.exists()) {
-            log.debug("Skipping writing of image file: " + imageFile.getAbsolutePath() + " since overwrite is disabled.");
-        } else {
-            MediaMetadataUtils.writeImageFromUrl(mediaArt.getDownloadUrl(), imageFile);
-        }
-    }
-
-    private void saveCentralFanart(IMediaFile mediaFileParent, IMediaMetadata md, MediaArtifactType mt, boolean overwrite) {
-        String centralFolder = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder();
-        if (centralFolder == null) {
-            throw new RuntimeException("Central Fanart Support is enabled, but no central folder location is set!");
-        }
-        MediaType mediaType = null;
-        Map<String, String> extraMD = new HashMap<String, String>();
-        if (isMovie(md)) {
-            mediaType = MediaType.MOVIE;
-        } else if (isTV(md)) {
-            mediaType = MediaType.TV;
-            extraMD.put(SageProperty.SEASON_NUMBER.sageKey, (String) md.get(MetadataKey.SEASON));
-        } else if (isMusic(md)) {
-            mediaType = MediaType.MUSIC;
-        } else {
-            log.error("Unsupported MediaFile Type: " + mediaFileParent.getLocationUri());
-            return;
-        }
-
-        File fanartFile = FanartUtil.getCentralFanartArtifact(mediaType, mt, md.getMediaTitle(), centralFolder, extraMD);
-        IMediaArt artwork[] = md.getMediaArt(mt);
-        if (artwork != null && artwork.length > 0) {
-            for (IMediaArt ma : artwork) {
-                try {
-                    downloadAndSaveFanart(ma, fanartFile, overwrite, true);
-                } catch (IOException e) {
-                    log.error("Failed to download Fanart: " + ma.getDownloadUrl() + " for file: " + mediaFileParent.getLocationUri(), e);
-                }
-            }
-        }
-    }
-
-    private boolean isMusic(IMediaMetadata md) {
-        // TODO Current Music is not supported.
-        return false;
-    }
-
-    private boolean isTV(IMediaMetadata md) {
-        return TV_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
-    }
-
-    private boolean isMovie(IMediaMetadata md) {
-        return md == null || MOVIE_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
-    }
 
     private void saveSingle(Map<String,String> allprops, IMediaFile mf, IMediaMetadata md, boolean overwrite) {
         File partFile = getPropertyFile(mf);
@@ -618,6 +514,16 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
         return cm;
     }
 
+    public static Map<String, String> getSageTVMetadataMap(IMediaMetadata md) {
+        Map<String, String> props = new HashMap<String, String>();
+        try {
+            return instance.getMetadataProperties(md, props);
+        } catch (IOException e) {
+            log.error("Unable to load metadata for: " + md.getMediaTitle(), e);
+        }
+        return null;
+    }
+    
     public static Map<String, String> getSageTVMetadataMap(IMediaFile mediaFile, IMediaMetadata md) {
         try {
             return instance.getMetadataProperties(mediaFile, md);

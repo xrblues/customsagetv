@@ -29,9 +29,6 @@ public class MetadataUpdaterConfiguration {
     @Field(label="Poster Image Width", description="Rescale Posters to this width")
     private int posterImageWidth=500;
     
-    @Field(label="Refresh Indexes", description="Pass hint to Providers that maintain their own indexes, to reindex their content")
-    private boolean refreshIndexes = false;
-    
     @Field(label="Fanart Enabled", description="Enable Fanart downloading")
     private boolean fanartEnabled = true;
     
@@ -122,14 +119,6 @@ public class MetadataUpdaterConfiguration {
 
     public void setPosterImageWidth(int posterImageWidth) {
         this.posterImageWidth = posterImageWidth;
-    }
-
-    public boolean isRefreshIndexes() {
-        return refreshIndexes;
-    }
-
-    public void setRefreshIndexes(boolean refreshIndexes) {
-        this.refreshIndexes = refreshIndexes;
     }
 
     public boolean isRememberSelectedSearches() {

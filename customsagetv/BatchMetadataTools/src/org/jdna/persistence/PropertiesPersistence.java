@@ -240,6 +240,8 @@ public class PropertiesPersistence implements IPersistence {
             return Boolean.parseBoolean(value);
         } else if (f.equals(long.class)) {
             return Long.parseLong(value);
+        } else if (f.equals(float.class)) {
+            return Float.parseFloat(value);
         } else {
             throw new Exception("Property Type: " + f.getName() + " is not supported for value: " + value);
         }

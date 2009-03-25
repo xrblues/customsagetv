@@ -1,6 +1,8 @@
 package org.jdna.media.metadata;
 
-public interface IProviderInfo {
+import sagex.phoenix.fanart.IMetadataProviderInfo;
+
+public interface IProviderInfo extends IMetadataProviderInfo {
     public String getId();
 
     public String getName();

@@ -19,12 +19,12 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
 
     private int                 displaySize = 10;
 
-    public ManualConsoleSearchMetadataVisitor(String providerId, boolean overwrite, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
-        super(providerId, overwrite, updatedVisitor, notFoundHandler);
+    public ManualConsoleSearchMetadataVisitor(String providerId, boolean overwrite, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
+        super(providerId, overwrite, defaultSearchType, updatedVisitor, notFoundHandler);
     }
 
-    public ManualConsoleSearchMetadataVisitor(String providerId, boolean overwrite, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler, int displaySize) {
-        super(providerId, overwrite, updatedVisitor, notFoundHandler);
+    public ManualConsoleSearchMetadataVisitor(String providerId, boolean overwrite, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler, int displaySize) {
+        super(providerId, overwrite, defaultSearchType, updatedVisitor, notFoundHandler);
         this.displaySize = displaySize;
     }
 
@@ -45,7 +45,7 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
         try {
             if ("q".equalsIgnoreCase(data)) {
                 log.info("User selected 'q'.  Aboring.");
-                throw new RuntimeException("Aborting at user request.");
+                MetadataUpdater.exit("User Exited.");
             } else if ("n".equalsIgnoreCase(data)) {
                 log.info("User Selected 'n'. Moving next item.");
                 getNotFoundVisitor().visit(file);

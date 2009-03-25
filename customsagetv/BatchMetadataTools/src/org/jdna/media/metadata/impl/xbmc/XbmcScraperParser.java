@@ -5,25 +5,31 @@ import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class XbmcScraperParser {
+    private static final Logger log = Logger.getLogger(XbmcScraperParser.class);
+    
     public XbmcScraper parseScraper(File scraperXml) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder parser = factory.newDocumentBuilder();
         Document xml = parser.parse(scraperXml);
         
         XbmcScraper scraper = new XbmcScraper(scraperXml.getName());
-        // since there is no other description, we'll just set the xml file as the desc
-        scraper.setDescription(scraperXml.getAbsolutePath());
         
         Element docEl = xml.getDocumentElement();
         scraper.setName(docEl.getAttribute("name"));
         scraper.setThumb(docEl.getAttribute("thumb"));
         scraper.setContent(docEl.getAttribute("content"));
+        scraper.setDescription(docEl.getAttribute("description"));
+        if (scraper.getDescription()==null) {
+            log.error("Scraper File is missing 'description' attribute: " + scraperXml.getAbsolutePath());
+            scraper.setDescription("Missing description attribute in file: " + scraperXml.getAbsolutePath());
+        }
         
         NodeList nl = docEl.getChildNodes();
         int len = nl.getLength();

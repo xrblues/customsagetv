@@ -1,5 +1,8 @@
 package org.jdna.media.metadata.impl.dvdproflocal;
 
+import java.io.File;
+
+import org.jdna.metadataupdater.MetadataUpdater;
 import org.jdna.persistence.annotations.Field;
 import org.jdna.persistence.annotations.Table;
 
@@ -13,6 +16,9 @@ public class DVDProfilerLocalConfiguration {
 
     @Field(label="DVD Profiler Xml", description = "Local DVD Profiler xml file")
     private String  xmlFile;
+
+    @Field(label="DVD Profiler Xml last modified date/time", description = "Data/Time the xml file was modified as a long value.  Should not be set directly.")
+    private long xmlFileLastModified;
 
     public DVDProfilerLocalConfiguration() {
     }
@@ -38,7 +44,20 @@ public class DVDProfilerLocalConfiguration {
     }
 
     public void setXmlFile(String xmlFile) {
+        File f = new File(xmlFile);
+        if (!f.exists()) {
+            throw new RuntimeException("DVD Profiler Xml does not exist: " + xmlFile);
+        }
+        
         this.xmlFile = xmlFile;
+    }
+
+    public long getXmlFileLastModified() {
+        return xmlFileLastModified;
+    }
+
+    public void setXmlFileLastModified(long xmlFileLastModified) {
+        this.xmlFileLastModified = xmlFileLastModified;
     }
 
 }
