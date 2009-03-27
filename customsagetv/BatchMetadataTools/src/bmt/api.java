@@ -29,6 +29,8 @@ public class api {
             }
             SageUtil.SetProperty("mediafile_metadata_parser_plugins", plugins + bmtClass);
         }
+        
+        
     }
 
     public static void RemoveBMTPlugin() {

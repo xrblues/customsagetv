@@ -14,48 +14,49 @@ import org.jdna.media.metadata.MetadataKey;
  * 
  */
 public enum SageProperty {
-    ALBUM("", MetadataKey.ALBUM),
-    ALBUM_ARTIST("", MetadataKey.ALBUM_ARTIST),
-    ARTIST("", MetadataKey.ARTIST),
-    ASPECT_RATION("x-AspectRatio", MetadataKey.ASPECT_RATIO),
-    FANART_BACKGROUND("x-Fanart-BackgroundUrl", MetadataKey.BACKGROUND_ART),
-    FANART_BANNER("x-Fanart-BannerUrl", MetadataKey.BANNER_ART),
-    SERIALIZED_CAST("x-ser-Cast", MetadataKey.CAST_MEMBER_LIST),
-    SERIALIZED_GENRES("x-ser-Genres", MetadataKey.GENRE_LIST),
-    SERIALIZED_DESCRIPTION("x-ser-Description", MetadataKey.DESCRIPTION),
-    COMMENT("", MetadataKey.COMMENT),
-    COMPANY("x-Company", MetadataKey.COMPANY),
-    COMPOSER("", MetadataKey.COMPOSER),
-    DESCRIPTION("Description", MetadataKey.DESCRIPTION),
-    DISPLAY_TITLE("Title", MetadataKey.DISPLAY_TITLE),
-    DURATION("", MetadataKey.DURATION),
-    DISC("x-Disc", MetadataKey.DVD_DISC),
-    GENRES("Genre", MetadataKey.GENRE_LIST),
-    LANGUAGE("", MetadataKey.LANGUAGE),
-    MEDIA_ART("", MetadataKey.MEDIA_ART_LIST),
-    PROVIDER_DATA_ID("MediaProviderDataID", MetadataKey.MEDIA_PROVIDER_DATA_ID),
-    MEDIA_TITLE("MediaTitle", MetadataKey.MEDIA_TITLE),
-    MEDIA_TYPE("MediaType", MetadataKey.MEDIA_TYPE),
-    METADATA_PROVIDER_ID("x-MetadataProviderId", MetadataKey.METADATA_PROVIDER_ID),
-    METADATA_PROVIDER_DATA_URL("x-MetadataProviderDataUrl", MetadataKey.METADATA_PROVIDER_DATA_URL),
-    MAPP_RATING("Rated", MetadataKey.MPAA_RATING),
-    MPAA_RATING_DESCRIPTION("x-MPAARatingDescription", MetadataKey.MPAA_RATING_DESCRIPTION),
-    FANART_POSTER("x-Fanart-PosterUrl", MetadataKey.POSTER_ART),
-    ORIGINAL_AIR_DATE("OriginalAirDate", MetadataKey.RELEASE_DATE),
-    RUNNING_TIME("RunningTime", MetadataKey.RUNNING_TIME),
-    TOTAL_TRACKS("", MetadataKey.TOTAL_TRACKS),
-    TRACK("", MetadataKey.TRACK),
-    EPISODE_TITLE("EpisodeTitle", MetadataKey.EPISODE_TITLE),
-    EPISODE_NUMBER("EpisodeNumber", MetadataKey.EPISODE),
-    SEASON_NUMBER("SeasonNumber", MetadataKey.SEASON),
-    USER_RATING("UserRating", MetadataKey.USER_RATING),
-    WRITERS("Writer", MetadataKey.CAST_MEMBER_LIST, ICastMember.WRITER),
-    DIRECTORS("Director", MetadataKey.CAST_MEMBER_LIST, ICastMember.DIRECTOR),
-    ACTORS("Actor", MetadataKey.CAST_MEMBER_LIST, ICastMember.ACTOR),
-    YEAR("Year", MetadataKey.YEAR),
-    FILENAME("x-FileName", null),
-    FILEURI("x-FileUri", null);
+    ALBUM("", MetadataKey.ALBUM, SagePropertyType.CORE),
+    ALBUM_ARTIST("", MetadataKey.ALBUM_ARTIST, SagePropertyType.CORE),
+    ARTIST("", MetadataKey.ARTIST, SagePropertyType.CORE),
+    ASPECT_RATION("x-AspectRatio", MetadataKey.ASPECT_RATIO, SagePropertyType.BMT),
+    FANART_BACKGROUND("x-Fanart-BackgroundUrl", MetadataKey.BACKGROUND_ART, SagePropertyType.BMT),
+    FANART_BANNER("x-Fanart-BannerUrl", MetadataKey.BANNER_ART, SagePropertyType.BMT),
+    SERIALIZED_CAST("x-ser-Cast", MetadataKey.CAST_MEMBER_LIST, SagePropertyType.BMT),
+    SERIALIZED_GENRES("x-ser-Genres", MetadataKey.GENRE_LIST, SagePropertyType.BMT),
+    SERIALIZED_DESCRIPTION("x-ser-Description", MetadataKey.DESCRIPTION, SagePropertyType.BMT),
+    COMMENT("", MetadataKey.COMMENT, SagePropertyType.CORE),
+    COMPANY("x-Company", MetadataKey.COMPANY, SagePropertyType.BMT),
+    COMPOSER("", MetadataKey.COMPOSER, SagePropertyType.CORE),
+    DESCRIPTION("Description", MetadataKey.DESCRIPTION, SagePropertyType.CORE),
+    DISPLAY_TITLE("Title", MetadataKey.DISPLAY_TITLE, SagePropertyType.CORE),
+    DURATION("", MetadataKey.DURATION, SagePropertyType.CORE),
+    GENRES("Genre", MetadataKey.GENRE_LIST, SagePropertyType.CORE),
+    LANGUAGE("", MetadataKey.LANGUAGE, SagePropertyType.CORE),
+    MEDIA_ART("", MetadataKey.MEDIA_ART_LIST, SagePropertyType.BMT),
+    PROVIDER_DATA_ID("MediaProviderDataID", MetadataKey.MEDIA_PROVIDER_DATA_ID, SagePropertyType.EXTENDENDED),
+    MEDIA_TITLE("MediaTitle", MetadataKey.MEDIA_TITLE, SagePropertyType.EXTENDENDED),
+    MEDIA_TYPE("MediaType", MetadataKey.MEDIA_TYPE, SagePropertyType.EXTENDENDED),
+    METADATA_PROVIDER_ID("x-MetadataProviderId", MetadataKey.METADATA_PROVIDER_ID, SagePropertyType.BMT),
+    METADATA_PROVIDER_DATA_URL("x-MetadataProviderDataUrl", MetadataKey.METADATA_PROVIDER_DATA_URL, SagePropertyType.BMT),
+    MAPP_RATING("Rated", MetadataKey.MPAA_RATING, SagePropertyType.CORE),
+    MPAA_RATING_DESCRIPTION("x-MPAARatingDescription", MetadataKey.MPAA_RATING_DESCRIPTION, SagePropertyType.BMT),
+    FANART_POSTER("x-Fanart-PosterUrl", MetadataKey.POSTER_ART, SagePropertyType.BMT),
+    ORIGINAL_AIR_DATE("OriginalAirDate", MetadataKey.RELEASE_DATE, SagePropertyType.EXTENDENDED),
+    RUNNING_TIME("RunningTime", MetadataKey.RUNNING_TIME, SagePropertyType.CORE),
+    TOTAL_TRACKS("", MetadataKey.TOTAL_TRACKS, SagePropertyType.CORE),
+    TRACK("", MetadataKey.TRACK, SagePropertyType.CORE),
+    EPISODE_TITLE("EpisodeTitle", MetadataKey.EPISODE_TITLE, SagePropertyType.EXTENDENDED),
+    EPISODE_NUMBER("EpisodeNumber", MetadataKey.EPISODE, SagePropertyType.EXTENDENDED),
+    SEASON_NUMBER("SeasonNumber", MetadataKey.SEASON, SagePropertyType.EXTENDENDED),
+    DISC("DiscNumber", MetadataKey.DVD_DISC, SagePropertyType.EXTENDENDED),
+    USER_RATING("UserRating", MetadataKey.USER_RATING, SagePropertyType.EXTENDENDED),
+    WRITERS("Writer", MetadataKey.CAST_MEMBER_LIST, SagePropertyType.CORE, ICastMember.WRITER),
+    DIRECTORS("Director", MetadataKey.CAST_MEMBER_LIST, SagePropertyType.CORE, ICastMember.DIRECTOR),
+    ACTORS("Actor", MetadataKey.CAST_MEMBER_LIST, SagePropertyType.CORE, ICastMember.ACTOR),
+    YEAR("Year", MetadataKey.YEAR, SagePropertyType.CORE),
+    FILENAME("x-FileName", null, SagePropertyType.BMT),
+    FILEURI("x-FileUri", null, SagePropertyType.BMT);
 
+    public SagePropertyType propertyType;
     public String      sageKey;
     public MetadataKey metadataKey;
     public Object      userData;
@@ -66,9 +67,10 @@ public enum SageProperty {
      * @param id
      * @param mdKey
      */
-    SageProperty(String id, MetadataKey mdKey) {
+    SageProperty(String id, MetadataKey mdKey, SagePropertyType type) {
         this.sageKey = id;
         this.metadataKey = mdKey;
+        this.propertyType=type;
     }
 
     /**
@@ -79,10 +81,21 @@ public enum SageProperty {
      * @param mdKey
      * @param userData
      */
-    SageProperty(String id, MetadataKey mdKey, Object userData) {
+    SageProperty(String id, MetadataKey mdKey, SagePropertyType type, Object userData) {
         this.sageKey = id;
         this.metadataKey = mdKey;
         this.userData = userData;
+        this.propertyType=type;
+    }
+
+    /**
+     * Creates an unnamed property.  These are basicaly placeholders, they will not be stored.
+     * 
+     * @param mdKey
+     */
+    SageProperty(MetadataKey mdKey) {
+        this.sageKey="";
+        this.metadataKey=mdKey;
     }
 
     /**
