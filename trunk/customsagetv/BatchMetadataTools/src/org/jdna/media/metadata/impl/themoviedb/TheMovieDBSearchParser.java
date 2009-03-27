@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,6 +28,7 @@ public class TheMovieDBSearchParser {
     private static final Logger                 log        = Logger.getLogger(TheMovieDBMetadataProvider.class);
     private static final String                 SEARCH_URL = "http://api.themoviedb.org/2.0/Movie.search?title=%s&api_key=%s";
     private static final DocumentBuilderFactory factory    = DocumentBuilderFactory.newInstance();
+    private static final Pattern yearPattern = Pattern.compile("([0-9]{4})");
 
     private String                              url;
     private List<IMediaSearchResult>            results    = new ArrayList<IMediaSearchResult>();
@@ -124,7 +127,7 @@ public class TheMovieDBSearchParser {
             }
         }
         
-        sr.setYear(getElementValue(item, "release"));
+        sr.setYear(parseYear(getElementValue(item, "release")));
         String id = getElementValue(item, "id");
         sr.setUrl(String.format(TheMovieDBItemParser.ITEM_URL, id));
         sr.setMetadataId(new MetadataID("themoviedb", id));
@@ -133,6 +136,15 @@ public class TheMovieDBSearchParser {
         //sr.setMetadataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, getElementValue(item, "imdb")));
 
         results.add(sr);
+    }
+
+    private String parseYear(String year) {
+        if (year==null) return null;
+        Matcher m = yearPattern.matcher(year);
+        if (m.find()) {
+            year = m.group(1);
+        }
+        return year;
     }
 
     private float getScore(String title) {
@@ -144,16 +156,6 @@ public class TheMovieDBSearchParser {
         }
     }
     
-    private float getScore(Element item) {
-        try {
-        	String matchTitle = getElementValue(item, "title");
-        	
-        	return (float)org.jdna.util.Similarity.getInstance().compareStrings(searchTitle,matchTitle);
-        } catch (Exception e) {
-            return (float)0.0f;
-        }
-    }
-
     public static String getElementValue(Element el, String tag) {
         NodeList nl = el.getElementsByTagName(tag);
         if (nl.getLength() > 0) {

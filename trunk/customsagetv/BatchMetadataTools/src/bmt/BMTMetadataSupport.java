@@ -12,6 +12,7 @@ import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.metadata.impl.sage.FanartStorage;
@@ -101,18 +102,26 @@ public class BMTMetadataSupport implements IMetadataSupport {
             IMediaMetadata md = prov.getMetaData((IMediaSearchResult) result);
 
             SimpleMediaFile mf = SageUtil.GetSimpleMediaFile(media);
+            
+            // TODO: Synchronize the Media Types
             if (mf.getMediaType()==MediaType.TV) {
+                md.set(MetadataKey.MEDIA_TYPE, SageTVWithCentralFanartFolderPersistence.TV_MEDIA_TYPE);
                 SageUtil.Log("Only Updating Fanart for: " + mf.getTitle());
                 FanartStorage.downloadFanart(mf.getTitle(), md, true);
+                return true;
             } else {
+                md.set(MetadataKey.MEDIA_TYPE, SageTVWithCentralFanartFolderPersistence.MOVIE_MEDIA_TYPE);
                 SageUtil.Log("Updating Fanart and Metadata for: " + mf.getTitle());
                 File file = SageUtil.GetFile(media);
                 if (file == null) {
                     SageUtil.Log("Unable to do a metadata lookup using object: " + media);
                     return false;
                 }
-                IMediaResource res = MediaResourceFactory.getInstance().createResource(file.toURI());
-                res.updateMetadata(md, true);
+                // TODO: Later when we have a better mechanism for updating existing sage items,
+                // we need to import the metadata as well.
+                FanartStorage.downloadFanart(mf.getTitle(), md, true);
+                //IMediaResource res = MediaResourceFactory.getInstance().createResource(file.toURI());
+                //res.updateMetadata(md, true);
                 return true;
             }
         } catch (Exception e) {
