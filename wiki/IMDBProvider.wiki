@@ -7,11 +7,9 @@ There are currently 2 IMDB Providers.  Both offer different levels of functional
  * Fast
  * Limited Actor List
  * Limited Plot Information
- * Works with --auto switch
 
 = Nielm's IMDB Provider (nielm_imdb) =
- * Does not support --auto switch
- * Fethes IMDB Title page and additional pages
+ * Fetches IMDB Title page and additional pages
  * A Little Slow (because of the extra page fetching)
  * Complete Actor List
  * Complete Plot Information
