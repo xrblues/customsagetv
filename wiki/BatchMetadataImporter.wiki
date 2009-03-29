@@ -3,9 +3,11 @@
 
 = Introduction =
 
-Batch Metadata Tools (BMT) is a command line tool that will find and download metadata and images for your Movie and TV collection.  There is also a [http://code.google.com/p/customsagetv/wiki/SageTVMetadataPlugin SageTV MediaFileMetadata Plugin] based on this project that will automatically search and download metadata and images for new media as it's added to your SageTV library.
+Batch Metadata Tools (BMT) is a command line tool that will find and download metadata and fanart for your Movie and TV collection.  There is also a [http://code.google.com/p/customsagetv/wiki/SageTVMetadataPlugin SageTV MediaFileMetadata Plugin] based on this project that will automatically search and download metadata and images for new media as it's added to your SageTV library.
 
 Metadata refers to the attributes of a media file.  ie, Title, Description, Plot, Release Date, MPAA Rating, etc.
+
+Fanart refers to images related to the media, such a banners, posters, and backgrounds.
 
 Metadata sources, ie, imdb, tvdb, etc, are called Metadata Providers or Providers for short.  BMT ships a few different providers.
 
@@ -38,10 +40,6 @@ The current provider list
    - themoviedb.org
    - Provider that uses themoviedb as metadata and coverart source.
 
-  imdb-2              
-   - Composite Stuckless/Nielm IMDB Provider
-   - Composite Provider that uses the default IMDB provider for searching, and Neil's IMDB provider for details.  This useful if you want better plot descriptions.
-
   themoviedb.org-2    
    - Composite Stuckless IMDB/TheMovieDB Provider
    - Composite Provider that uses the default IMDB provider for searching, and themoviedb.com for details.  This provider can provide decent results for posters and backdrop coverart.
@@ -55,46 +53,50 @@ The current provider list
    - scrapers/xbmc/video/tvdb.xml
 }}}
 
- NOTE: This tool by will scan and process multi cd movies, and it will only fetch the metadata once, but it will write it out for each cd, since that is how SageTV requires it. This is also known as cd stacking or grouping.
-
  NOTE: Once you run the tool on your movies, you'll need to tell SageTV to refresh it's metadata by going into the Options menu, in the Videos View, and tell Sage to refresh/rescan media.  Or, if you have the SageTV Remote APIs installed, you can pass the --refreshSage command option and it will tell sage to refresh.
 
-= Installation =
-Download the zip and extract into a new directory.  If you extract into an existing directory, then make sure you clean the libs directories and ensure that there are no duplicate jars with different versions.  The cleanest way to upgrade is always to extract to a new directory, and then migrate your properties from your previous install into the new directory.
+= Central Fanart =
+As for 2.0, several projects collaborated to come up with a unified way to store and retrieve fanart.  A set of APIs, called Phoenix APIs, were created to help developers deal with fanart locations in a conistent way.  BMT usese those fanart apis to ensure that it can download fanart to the correct locations.
+
+2.0 also added 2 new command line arguments --fanartEnabled and --fanartFolder.  If you set the fanart folder, then it will implicitly set the fanartEnabled to true.
 
 == Requirements == 
 Java 5 or later
 
+= Installation =
+Download the zip and extract into a new directory.  If you extract into an existing directory, then make sure you clean the libs directories and ensure that there are no duplicate jars with different versions.  The cleanest way to upgrade is always to extract to a new directory, and then migrate your properties from your previous install into the new directory.
+
+NOTE: As of 2.0 there metadata-updater.jar does not contain a version in it's filename.  This was done to make future upgrades fo the 2.x releases less painful.  But, if you do extract a 2.x release over a 1.x release, then you must clean out the jars area and remove the metadata-updater-VERSION.jar but leave the jar that does not contain a version.
+
 == Usage ==
 {{{
  # java -jar MetadataTool.jar
-Batch MetaData Tools (1.15)
+Batch MetaData Tools (2.0-beta9)
+Batch MetaData Tools (2.0-beta9)
 Import/Update Movie MetaData from a MetaData Provider.
 
 Usage:java MetadataTool OPTIONS ...
 
 OPTIONS: (* are required)
-  --agressive            If the first search doesn't return clean results, then try additional searches. (default true)
   --auto                 Automatically choose best search result. [if false, it will force you to choose for each item] (default true)
-  --backdropsNever       Set to true if you DON'T want to download backdrops. (default false)
-  --backdropsOnly        Using the specified provider, ONLY find/fetch the backdrop image.
   --displaySize          # of search results to display on the screen. (default 10)
-  --force                Force download of metadata, even if metadata exists and has not been updated. Does not overwrite thumbnails. (default false)
-  --forceBackdrop        Force download/overwrite of backdrop images. (default false)
-  --forceThumbnail       Force download/overwrite of thumbnails. (default false)
+  --fanartEnabled        Enable fanart support (backgrounds, banners, extra posters, etc). (default true)
+  --fanartFolder         Central Fanart Folder location
+  --gui                  Enable/Disable gui (default true)
   --listMovies           Just list the movies it would find. (default false)
   --listProviders        Just list the installed metadata providers. (default false)
   --metadata             Show metadata for movie. (default false)
   --offline              if true, then the passed file(s) will be treated as offline files. (default false)
+  --overwrite            Overwrite metadata and images. (default false)
   --prompt               When a media file cannot be updated, then prompt to enter a title to search on. (default true)
   --provider             Set the metadata provider. (default imdb)
   --recurse              Recursively process sub directories. (default false)
   --refreshSageTV        Notify SageTV to refresh it's Media Library. (default false)
-  --reindex              Tells Metadata providers that require indexing (ie, DVD Profiler) to rebuild it's index. (default false)
   --setProperty          Sets a Property (--setProperty=name:value) (use --showProperties to get property list)
   --showProperties       Show the current configuration. (default false)
   --showSupportedMetadata Show the supported metadata properties. (default false)
   --thumbnailMaxWidth    Will scale down large thumbnail to the specified with. -1 mean no scaling. (default -1)
+  --tv                   Force a TV Search (default false)
   --update               Update Missing AND Updated Metadata. (default false)
 }}}
 
@@ -131,27 +133,7 @@ Once all movies are scanned, it will display a summary at the end.
 
 If you need/want to process subdirectories, then pass the *--recurse* switch so that the processor will follow subdirectories.
 
-Another way to update a video metadata is to edit the .property or create a new one, and set the *_providerId=imdb* and the *_providerDataUrl=IMDB_URL*, and then run the command using *--update*
-eg, (edit properties)
-{{{
-_providerDataUrl=http\://www.imdb.com/title/tt0416236/
-_providerId=imdb
-}}}
-
-then run
-{{{
-# java -jar MetadataTool.jar --update YOUR_MOVIE_FILE_OR_DIR
-}}}
-
-As of version 1.8, there is a new option --refreshSageTV.  You can use this option to tell SageTV to refresh its imported media.  You can do this as  separate command, or just add it to the command line parameters of a full scan.  Once the scan is done, it will use the [http://code.google.com/p/customsagetv/wiki/SageTVapi SageTV Remote APIs] to notify SageTV to refresh its imported media.
-
-In order to use --refreshSageTV, you must have the [http://code.google.com/p/customsagetv/wiki/SageTVapi Remote APIs] installed on the SageTV server.
-
 = Advanced Topics =
-
-== Xbmc Scrapers ==
-BMT has a Java implementation of the Scraper Tool that is used in Xbmc project for scraping metadata.  Hopefully over time this project can leverage the great work done by that team.  While every attempt was made to ensure that this Scraper implementation should work the same as the Xbmc one, you may still find some anomalies.  Currently, we are using the imdb.xml and the tvdb.xml scrapers, and they appear to work fine.
-
 == Properties ==
 NOTE: As of 1.8 the properties format and keys have changed.  You will need to verify your properties before you rerun the tool.
 
@@ -165,8 +147,7 @@ You can get a list of supported properties, by running the command
 It should produce the following results.  Keep in mind, that if  you have a custom metadata.properties, then it's values will be reflected in the output.  You can use --showProperties to verify that your properties are being taken into account
 
 {{{
-
-Batch MetaData Tools (1.15)
+Batch MetaData Tools (2.0-beta9)
 #       Begin: urlconfiguration
 # Description: Configures Properties regarding how URLs are handled.
 
@@ -191,13 +172,49 @@ Batch MetaData Tools (1.15)
 #       Begin: metadataUpdater
 # Description: Configuration for Main Metadata Updater
 
-# Description: Set to true, if you want to overwrite existing thumbnails
+# Description: If true, then it will overwrite properties and images
 #        Type: boolean
-/metadataUpdater/overwriteThumbnails=false
+/metadataUpdater/overwrite=false
 
-# Description: Set to true, if you want to overwrite existing backdrop images
+# Description: Default Folder to Scan (GUI Only)
+#        Type: java.lang.String
+/metadataUpdater/guiFolderToScan=
+
+# Description: Number of results to display in the search results
+#        Type: int
+/metadataUpdater/searchResultDisplaySize=10
+
+# Description: Once Scanning is Complete, notify SageTV of the changes.
 #        Type: boolean
-/metadataUpdater/overwriteBackdrops=false
+/metadataUpdater/refreshSageTV=false
+
+# Description: Automatically update by auto selecting 'best' search result.
+#        Type: boolean
+/metadataUpdater/automaticUpdate=true
+
+# Description: Recursively process sub folders
+#        Type: boolean
+/metadataUpdater/recurseFolders=false
+
+# Description: Only process files that is missing metadata
+#        Type: boolean
+/metadataUpdater/processMissingMetadataOnly=true
+
+# Description: Rescale Posters to this width
+#        Type: int
+/metadataUpdater/posterImageWidth=500
+
+# Description: Enable Fanart downloading
+#        Type: boolean
+/metadataUpdater/fanartEnabled=true
+
+# Description: Location of the central fanart folder
+#        Type: java.lang.String
+/metadataUpdater/fanartCentralFolder=
+
+# Description: Remember a search result when you select it form a list, for use in later searches.
+#        Type: boolean
+/metadataUpdater/rememberSelectedSearches=true
 # End: metadataUpdater
 
 
@@ -206,7 +223,7 @@ Batch MetaData Tools (1.15)
 
 # Description: Stacking Model regex (taken from xbmc group)
 #        Type: java.lang.String
-/media/stackingModelRegex=[ _\\.-]+(cd|dvd|part)[ _\\.-]*([0-9a-d]+)
+/media/stackingModelRegex=[ _\\.-]+(cd|dvd|part|disc)[ _\\.-]*([0-9a-d]+)
 
 # Description: If true, then the thumbnail will be written to the VIDEO_TS folder.  Otherwise, it gets written to the normal DVD location
 #        Type: boolean
@@ -227,45 +244,32 @@ Batch MetaData Tools (1.15)
 
 # Description: Default class name for storing metadata
 #        Type: java.lang.String
-/metadata/persistenceClass=org.jdna.media.metadata.impl.sage.SageVideoMetaDataPersistence
+/metadata/persistenceClass=org.jdna.media.metadata.impl.sage.SageTVWithCentralFanartFolderPersistence
 
 # Description: Comma separated list of known metadata providers (ie, can be used for searching for metadata)
 #        Type: java.lang.String
-/metadata/videoMetadataProviders=org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider,org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider,org.jdna.media.metadata.impl.dvdprof.DVDProfMetaDataProvider,org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider,org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider
+/metadata/videoMetadataProviders=org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider,org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider,,org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider,org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider
 
 # Description: Comma separated list of words that will be removed from a title when doing a search
 #        Type: java.lang.String
 /metadata/wordsToClean=dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv
 
-# Description: Default provider id to use
+# Description: Default provider id to use (comma separate, if more than 1)
 #        Type: java.lang.String
-/metadata/defaultProviderId=imdb
-# End: metadata
+/metadata/defaultProviderId=tvdb.xml,themoviedb.org,themoviedb.org-2,imdb.xml,imdb
 
+# Description: Score which must be exceeded to consider a result a good match
+#        Type: float
+/metadata/goodScoreThreshold=0.9
 
-#       Begin: dvdprofiler
-# Description: Configuration for the DVD Profiler Provider that uses urls as it's datasource
-
-# Description: Comma separated list of DVD Profiler Profile urls to use when searching for movies
-#        Type: java.lang.String
-/dvdprofiler/profileUrls=
-
-# Description: Set this to true to rebuild the indexed urls
+# Description: If true, then providers will check alternate titles for matches.
 #        Type: boolean
-/dvdprofiler/forceRebuild=false
-
-# Description: Directory where the indexed DVD Profiler data will be stored
-#        Type: java.lang.String
-/dvdprofiler/indexDir=cache/index
-# End: dvdprofiler
+/metadata/scoreAlternateTitles=true
+# End: metadata
 
 
 #       Begin: dvdprofilerLocal
 # Description: Configuration for the Local DVD Profiler provider (ie, uses local DVD Profiler, not Urls)
-
-# Description: Set this to true to force the local dvd profiler index to be rebuilt
-#        Type: boolean
-/dvdprofilerLocal/forceRebuild=false
 
 # Description: Directory where the local dvd profiler data will be indexed
 #        Type: java.lang.String
@@ -278,6 +282,10 @@ Batch MetaData Tools (1.15)
 # Description: Local DVD Profiler xml file
 #        Type: java.lang.String
 /dvdprofilerLocal/xmlFile=
+
+# Description: Data/Time the xml file was modified as a long value.  Should not be set directly.
+#        Type: long
+/dvdprofilerLocal/xmlFileLastModified=0
 # End: dvdprofilerLocal
 
 
@@ -290,27 +298,35 @@ Batch MetaData Tools (1.15)
 
 # Description: Description Mask (note ${PROP_FIELD_NAME} field names are looked up in the property file)
 #        Type: java.lang.String
-/sageMetadata/descriptionMask=${Description}\nUser Rating: ${_userRating}\n
+/sageMetadata/descriptionMask=${Description}\nUser Rating: ${UserRating}\n
 
 # Description: Title to use for multi volume vidoes (_disc is disc # 1,2,3,etc)
 #        Type: java.lang.String
-/sageMetadata/multiCDTitleMask=${Title} Disc ${_disc}
+/sageMetadata/multiCDTitleMask=${MediaTitle} Disc ${DiscNumber}
 
 # Description: Title to use for single volume vidoes
 #        Type: java.lang.String
-/sageMetadata/titleMask=${Title}
+/sageMetadata/titleMask=${MediaTitle}
 
 # Description: Number genre levels to write.  -1 means all levels.
 #        Type: int
 /sageMetadata/genreLevels=1
 
-# Description: Scale the poster to the specified Max width.  -1 no scaling.
-#        Type: int
-/sageMetadata/posterScalingWidth=-1
+# Description: Title mask to use for TV Files
+#        Type: java.lang.String
+/sageMetadata/tvTitleMask=${MediaTitle} - S${SeasonNumber}E${EpisodeNumber} - ${EpisodeTitle}
 
-# Description: Set to true if you do not want to download backdrops.
+# Description: Title mask to use for TV on Dvd
+#        Type: java.lang.String
+/sageMetadata/tvDvdTitleMask=${MediaTitle} - S${SeasonNumber}D${DiscNumber}
+
+# Description: Rewrite titles so that 'A Big Adventure' becomes 'Big Adventure, A'
 #        Type: boolean
-/sageMetadata/ignoreBackdrop=false
+/sageMetadata/rewriteTitle=false
+
+# Description: A Search/Replace Regex containing 2 groups that will rewrite the title
+#        Type: java.lang.String
+/sageMetadata/rewriteTitleRegex=^(in\s+the|in\s+a|i\s+am|in|the|a|an|i|am)\s+(.*)
 # End: sageMetadata
 
 
@@ -319,7 +335,7 @@ Batch MetaData Tools (1.15)
 
 # Description: Preferred height or width of an imdb thumbnail
 #        Type: int
-/imdb/forcedIMDBImageSize=0
+/imdb/forcedIMDBImageSize=512
 # End: imdb
 
 
@@ -344,16 +360,14 @@ Batch MetaData Tools (1.15)
 
 # Description: Provider ID to use when getting details
 #        Type: java.lang.String
-/compositeMetadataProviders/sample/detailProviderId=themoviedb.com
+/compositeMetadataProviders/sample/detailProviderId=themoviedb.org
 
 # Description: Semi-Colon separated fields to use from the search provider.  ie, if you want to use the Genre field from the search provider details, then put Genre in this setting
 #        Type: java.lang.String
 /compositeMetadataProviders/sample/fieldsFromSearchProvider=Genre
 # End: compositeMetadataProviders
-
-
-
 }}}
+
 
 If you need to change the value of a property for a single use, then you can use the --setProperty option.
 
