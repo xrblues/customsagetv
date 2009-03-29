@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 3:56 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/UtilityFactory.html'>UtilityFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class UtilityFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -239,6 +241,15 @@ public class UtilityFactory {
    if (command.equals("GetLocalFilePathSize")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetLocalFilePathSize",parameters,java.io.File.class);
    }
+   if (command.equals("DeleteFilePath")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"DeleteFilePath",parameters,java.io.File.class);
+   }
+   if (command.equals("DeleteLocalFilePath")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"DeleteLocalFilePath",parameters,java.io.File.class);
+   }
+   if (command.equals("RenameFilePath")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"RenameFilePath",parameters,java.io.File.class,java.io.File.class);
+   }
    if (command.equals("AddToGrouping")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AddToGrouping",parameters,java.util.Map.class,java.lang.Object.class,java.lang.Object.class);
    }
@@ -289,6 +300,12 @@ public class UtilityFactory {
    }
    if (command.equals("AreCoreAnimationsEnabled")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AreCoreAnimationsEnabled",parameters,null);
+   }
+   if (command.equals("GetUIRefreshLock")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIRefreshLock",parameters,null);
+   }
+   if (command.equals("ReleaseUIRefreshLock")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"ReleaseUIRefreshLock",parameters,null);
    }
    if (command.equals("CalculateMD5Sum")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CalculateMD5Sum",parameters,java.io.File.class);

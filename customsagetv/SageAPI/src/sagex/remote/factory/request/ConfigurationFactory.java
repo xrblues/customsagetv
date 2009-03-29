@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 3:55 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ConfigurationFactory.html'>ConfigurationFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class ConfigurationFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -608,11 +610,17 @@ public class ConfigurationFactory {
    if (command.equals("HasDirectX9")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"HasDirectX9",parameters,null);
    }
+   if (command.equals("HasEVRSupport")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"HasEVRSupport",parameters,null);
+   }
    if (command.equals("IsVideoRendererOverlay")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsVideoRendererOverlay",parameters,null);
    }
    if (command.equals("IsVideoRendererVMR9")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsVideoRendererVMR9",parameters,null);
+   }
+   if (command.equals("IsVideoRendererEVR")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsVideoRendererEVR",parameters,null);
    }
    if (command.equals("IsVideoRendererDefault")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsVideoRendererDefault",parameters,null);
@@ -625,6 +633,9 @@ public class ConfigurationFactory {
    }
    if (command.equals("SetVideoRendererToVMR9")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetVideoRendererToVMR9",parameters,null);
+   }
+   if (command.equals("SetVideoRendererToEVR")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetVideoRendererToEVR",parameters,null);
    }
    if (command.equals("GetAudioRendererFilters")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAudioRendererFilters",parameters,null);

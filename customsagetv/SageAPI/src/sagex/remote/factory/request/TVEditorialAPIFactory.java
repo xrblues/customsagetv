@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 3:56 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/TVEditorialAPIFactory.html'>TVEditorialAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class TVEditorialAPIFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {

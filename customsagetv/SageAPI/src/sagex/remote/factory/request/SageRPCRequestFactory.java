@@ -2,15 +2,15 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 3:56 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
-import java.util.HashMap;
 import java.util.Map;
-
 import sagex.remote.RemoteRequest;
+import java.util.Map;
+import java.util.HashMap;
 public class SageRPCRequestFactory {
 private static Map<String,String> commands = new HashMap<String,String>();
 static {
@@ -355,12 +355,15 @@ static {
    commands.put("SetDscalerPlugin","Configuration");
    commands.put("GetDscalerPlugins","Configuration");
    commands.put("HasDirectX9","Configuration");
+   commands.put("HasEVRSupport","Configuration");
    commands.put("IsVideoRendererOverlay","Configuration");
    commands.put("IsVideoRendererVMR9","Configuration");
+   commands.put("IsVideoRendererEVR","Configuration");
    commands.put("IsVideoRendererDefault","Configuration");
    commands.put("SetVideoRendererToDefault","Configuration");
    commands.put("SetVideoRendererToOverlay","Configuration");
    commands.put("SetVideoRendererToVMR9","Configuration");
+   commands.put("SetVideoRendererToEVR","Configuration");
    commands.put("GetAudioRendererFilters","Configuration");
    commands.put("GetMixerAudioInputPaths","Configuration");
    commands.put("FilterByBoolMethod","Database");
@@ -406,6 +409,8 @@ static {
    commands.put("GetAllCategories","Database");
    commands.put("GetDatabaseLastModifiedTime","Database");
    commands.put("GetFilesWithImportPrefix","Database");
+   commands.put("GetMediaFilesWithImportPrefix","Database");
+   commands.put("IsDatabaseMemoryMaxed","Database");
    commands.put("IsFirstRunsAndReRuns","FavoriteAPI");
    commands.put("IsFirstRunsOnly","FavoriteAPI");
    commands.put("IsReRunsOnly","FavoriteAPI");
@@ -455,6 +460,7 @@ static {
    commands.put("GetFavoriteID","FavoriteAPI");
    commands.put("GetFavoriteForID","FavoriteAPI");
    commands.put("GetFavorites","FavoriteAPI");
+   commands.put("RemoveFavorite","FavoriteAPI");
    commands.put("AddFavorite","FavoriteAPI");
    commands.put("Refresh","Global");
    commands.put("RefreshArea","Global");
@@ -533,6 +539,8 @@ static {
    commands.put("StartCircularFileDownload","Global");
    commands.put("CancelFileDownload","Global");
    commands.put("GetFileDownloadStatus","Global");
+   commands.put("GetFileDownloadStreamTime","Global");
+   commands.put("IsFileDownloadProgressivePlay","Global");
    commands.put("SetRemoteEventEncryptionEnabled","Global");
    commands.put("ReloadSystemHooks","Global");
    commands.put("UpdateLocatorServer","Global");
@@ -546,6 +554,7 @@ static {
    commands.put("SetDisplayResolution","Global");
    commands.put("DiscoverSageTVServers","Global");
    commands.put("GetEmbeddedPanel","Global");
+   commands.put("SetEmbeddedPanelBounds","Global");
    commands.put("GetAvailableUpdate","Global");
    commands.put("DeployAvailableUpdate","Global");
    commands.put("GetLineupsForTvtv","Global");
@@ -562,9 +571,13 @@ static {
    commands.put("TvtvActivateTrial","Global");
    commands.put("TvtvDownloadStations","Global");
    commands.put("TvtvConfigureInput","Global");
+   commands.put("GetHotplugStorageMap","Global");
+   commands.put("IsDoingLibraryImportScan","Global");
+   commands.put("GetFailedNetworkMounts","Global");
    commands.put("GetMediaFiles","MediaFileAPI");
    commands.put("GetMediaFiles","MediaFileAPI");
    commands.put("AddMediaFile","MediaFileAPI");
+   commands.put("CreateTempMediaFile","MediaFileAPI");
    commands.put("SetMediaFileAiring","MediaFileAPI");
    commands.put("SetMediaFileShow","MediaFileAPI");
    commands.put("GetMediaFileForFilePath","MediaFileAPI");
@@ -572,6 +585,7 @@ static {
    commands.put("IsLibraryFile","MediaFileAPI");
    commands.put("IsCompleteRecording","MediaFileAPI");
    commands.put("IsDVD","MediaFileAPI");
+   commands.put("IsBluRay","MediaFileAPI");
    commands.put("IsDVDDrive","MediaFileAPI");
    commands.put("IsMusicFile","MediaFileAPI");
    commands.put("IsVideoFile","MediaFileAPI");
@@ -608,6 +622,7 @@ static {
    commands.put("GetMediaFileID","MediaFileAPI");
    commands.put("GetMediaFileForID","MediaFileAPI");
    commands.put("GetMediaFileFormatDescription","MediaFileAPI");
+   commands.put("GetMediaFileMetadata","MediaFileAPI");
    commands.put("RotatePictureFile","MediaFileAPI");
    commands.put("FlipPictureFile","MediaFileAPI");
    commands.put("CanAutorotatePictureFile","MediaFileAPI");
@@ -856,6 +871,9 @@ static {
    commands.put("GetLocalPathLastModifiedTime","Utility");
    commands.put("GetFilePathSize","Utility");
    commands.put("GetLocalFilePathSize","Utility");
+   commands.put("DeleteFilePath","Utility");
+   commands.put("DeleteLocalFilePath","Utility");
+   commands.put("RenameFilePath","Utility");
    commands.put("AddToGrouping","Utility");
    commands.put("SendNetworkCommand","Utility");
    commands.put("ScaleBufferedImage","Utility");
@@ -873,6 +891,8 @@ static {
    commands.put("AnimateDelayed","Utility");
    commands.put("SetCoreAnimationsEnabled","Utility");
    commands.put("AreCoreAnimationsEnabled","Utility");
+   commands.put("GetUIRefreshLock","Utility");
+   commands.put("ReleaseUIRefreshLock","Utility");
    commands.put("CalculateMD5Sum","Utility");
    commands.put("LoadSTVFile","WidgetAPI");
    commands.put("ImportSTVFile","WidgetAPI");

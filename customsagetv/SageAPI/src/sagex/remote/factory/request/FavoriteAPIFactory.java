@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 3:55 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPIFactory.html'>FavoriteAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class FavoriteAPIFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -157,6 +159,9 @@ public class FavoriteAPIFactory {
    }
    if (command.equals("GetFavorites")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFavorites",parameters,null);
+   }
+   if (command.equals("RemoveFavorite")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"RemoveFavorite",parameters,Object.class);
    }
    if (command.equals("AddFavorite")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AddFavorite",parameters,java.lang.String.class,boolean.class,boolean.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class);
