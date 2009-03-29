@@ -65,9 +65,10 @@
     </target>
 	
     <target name="cleanGeneratedAPI">
-        <delete dir="src/sagex/api/">
-        	<fileset includes="*.java"/>
+    	<!-- Causing too many issues...
+        <delete dir="src/sagex/api/" includes="*.java">
     	</delete>
+    	-->
     </target>
 	
 	<target name="generateSageAPI" depends="init">

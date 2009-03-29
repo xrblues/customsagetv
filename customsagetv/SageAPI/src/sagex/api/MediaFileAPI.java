@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 6:31 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaFileAPI.html'>MediaFileAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -22,6 +22,8 @@ Returns all of the MediaFile objects in the database
  The content it references must also match one of the media types specified in the MediaMask.
  There's also an additional supported type of 'L' which indicates files that pass IsLibraryFile()
 
+Parameters:
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 a list of all of the MediaFile objects in the database that match the mask
 Since:
@@ -43,6 +45,21 @@ the newly added MediaFile object
  */
 public static Object AddMediaFile (java.io.File File, java.lang.String NamePrefix) {
    return (Object) sagex.SageAPI.call("AddMediaFile", new Object[] {File,NamePrefix});
+}
+
+/**
+Creates a temporary MediaFile object which can be used for playback later. This will not be added into the database;
+ but any metadata that is attached to this MediaFile object will be put in the database until the next cleanup process occurs.
+
+Parameters:
+FilePath- the file path for the temporary MediaFile (can also be an smb:// URL)
+Returns:
+the newly created temporary MediaFile object or null if it can't properly resolve the path to a file
+Since:
+6.6
+ */
+public static Object CreateTempMediaFile (java.lang.String FilePath) {
+   return (Object) sagex.SageAPI.call("CreateTempMediaFile", new Object[] {FilePath});
 }
 
 /**
@@ -139,6 +156,20 @@ public static boolean IsDVD (Object MediaFile) {
 }
 
 /**
+Returns true if this MediaFile represents BluRay content.
+
+Parameters:
+MediaFile- the MediaFile object
+Returns:
+true if this MediaFile represents BluRay content, false otherwise
+Since:
+6.6
+ */
+public static boolean IsBluRay (Object MediaFile) {
+   return (Boolean) sagex.SageAPI.call("IsBluRay", new Object[] {MediaFile});
+}
+
+/**
 Returns true if this MediaFile represents the physical DVD drive in the system. Use this MediaFile to playback DVDs from an optical drive.
 
 Parameters:
@@ -163,12 +194,12 @@ public static boolean IsMusicFile (Object MediaFile) {
 }
 
 /**
-Returns true if this MediaFile's content is an audio/video or video file (this will be false for DVD content)
+Returns true if this MediaFile's content is an audio/video or video file (this will be false for DVD/BluRay content)
 
 Parameters:
 MediaFile- the MediaFile object
 Returns:
-true if this MediaFile's content is an audio/video or video file (this will be false for DVD content), false otherwise
+true if this MediaFile's content is an audio/video or video file (this will be false for DVD/BluRay content), false otherwise
  */
 public static boolean IsVideoFile (Object MediaFile) {
    return (Boolean) sagex.SageAPI.call("IsVideoFile", new Object[] {MediaFile});
@@ -597,6 +628,22 @@ Since:
  */
 public static java.lang.String GetMediaFileFormatDescription (Object MediaFile) {
    return (java.lang.String) sagex.SageAPI.call("GetMediaFileFormatDescription", new Object[] {MediaFile});
+}
+
+/**
+Returns a string for the corresponding metadata property in the MediaFile's format. These are set during format detection/import.
+ Only names set in the property "custom_metadata_properties" (which is a semicolon/comma delimited list) will be available.
+
+Parameters:
+MediaFile- the MediaFile object
+Name- the name of the property to get
+Returns:
+a string corresponding to the metadata property value, or the emptry string if it is undefined
+Since:
+6.6
+ */
+public static java.lang.String GetMediaFileMetadata (Object MediaFile, java.lang.String Name) {
+   return (java.lang.String) sagex.SageAPI.call("GetMediaFileMetadata", new Object[] {MediaFile,Name});
 }
 
 /**

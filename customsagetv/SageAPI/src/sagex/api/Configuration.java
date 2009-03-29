@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 6:31 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Configuration.html'>Configuration</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -2291,6 +2291,16 @@ public static boolean HasDirectX9 () {
 }
 
 /**
+Returns true if the system has support for the Enhanced Video Renderer (EVR) (Windows Only)
+
+Returns:
+true if the system has support for the Enhanced Video Renderer (EVR), false otherwise
+ */
+public static boolean HasEVRSupport () {
+   return (Boolean) sagex.SageAPI.call("HasEVRSupport", (Object[])null);
+}
+
+/**
 Returns true if the video renderer is configured to use the Overlay surface (Windows Only) Applies to all files except DVDs.
 
 Returns:
@@ -2310,6 +2320,20 @@ true if the video renderer is configured to use VMR9, false otherwise
  */
 public static boolean IsVideoRendererVMR9 () {
    return (Boolean) sagex.SageAPI.call("IsVideoRendererVMR9", (Object[])null);
+}
+
+/**
+Returns true if the video renderer is configured to use the Enhanced Video Renderer (Windows Only). This
+ will only work if accelerated rendering is enabled (3D acceleration). If it's not then Overlay will be used
+ as the video renderer instead of EVR. Applies to all files except DVDs.
+
+Returns:
+true if the video renderer is configured to use EVR, false otherwise
+Since:
+6.5
+ */
+public static boolean IsVideoRendererEVR () {
+   return (Boolean) sagex.SageAPI.call("IsVideoRendererEVR", (Object[])null);
 }
 
 /**
@@ -2345,6 +2369,18 @@ Sets the video renderer to use the Video Mixing Renderer 9 (Windows Only). This
  */
 public static void SetVideoRendererToVMR9 () {
     sagex.SageAPI.call("SetVideoRendererToVMR9", (Object[])null);
+}
+
+/**
+Sets the video renderer to use the Enhanced Video Renderer (Windows Only). This
+ will only work if accelerated rendering is enabled (3D acceleration). If it's not then Overlay will be used
+ as the video renderer instead of EVR. Applies to all files except DVDs.
+
+Since:
+6.5
+ */
+public static void SetVideoRendererToEVR () {
+    sagex.SageAPI.call("SetVideoRendererToEVR", (Object[])null);
 }
 
 /**

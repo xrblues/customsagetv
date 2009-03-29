@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 6:31 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -806,7 +806,7 @@ public static int StringLastIndexOf (java.lang.String FullString, java.lang.Stri
 }
 
 /**
-Returns the current working directory for the application
+Returns the current working directory for the application (if this is a client; it'll be the working directory of the server)
 
 Returns:
 the current working directory for the application
@@ -1011,6 +1011,49 @@ public static long GetLocalFilePathSize (java.io.File FilePath) {
 }
 
 /**
+Deletes the file/directory at the corresponding file path (directories must be empty first)
+
+Parameters:
+FilePath- the file path
+Returns:
+true if successful, false otherwise
+Since:
+6.3.9
+ */
+public static boolean DeleteFilePath (java.io.File FilePath) {
+   return (Boolean) sagex.SageAPI.call("DeleteFilePath", new Object[] {FilePath});
+}
+
+/**
+Deletes the file/directory at the corresponding local file path (directories must be empty first)
+
+Parameters:
+FilePath- the file path
+Returns:
+true if successful, false otherwise
+Since:
+6.4
+ */
+public static boolean DeleteLocalFilePath (java.io.File FilePath) {
+   return (Boolean) sagex.SageAPI.call("DeleteLocalFilePath", new Object[] {FilePath});
+}
+
+/**
+Renames a file/directory
+
+Parameters:
+OriginalFilePath- the file path to rename
+NewFilePath- the new name for the file path
+Returns:
+true if successful, false otherwise
+Since:
+6.3.9
+ */
+public static boolean RenameFilePath (java.io.File OriginalFilePath, java.io.File NewFilePath) {
+   return (Boolean) sagex.SageAPI.call("RenameFilePath", new Object[] {OriginalFilePath,NewFilePath});
+}
+
+/**
 Adds the specified value into the grouping using the specified key. Useful on results fromGroupByMethod()
 This works using a Map implementation that has Collections as the values and objects as the keys. So if two objects have the same key
  they will both still exist in the map by being in the Collection that corresponds to their key.
@@ -1097,7 +1140,7 @@ Guesses what media type the specified filename corresponds to. It does this base
 Parameters:
 Filename- the file path to test
 Returns:
-"M", "V", "P" or "D" for a music, video, picture or DVD file respectively; if it can't tell it returns "V"
+"M", "V", "P", "B" or "D" for a music, video, picture, BluRay or DVD file respectively; if it can't tell it returns "V"
 Since:
 6.4
  */
@@ -1322,6 +1365,37 @@ Since:
  */
 public static boolean AreCoreAnimationsEnabled () {
    return (Boolean) sagex.SageAPI.call("AreCoreAnimationsEnabled", (Object[])null);
+}
+
+/**
+Acquires the lock for this user interface system to prevent other updates from occuring. This can be used
+ at the start of an animation sequence before the refresh call is made to ensure that the animations will 
+ all occur on the same refresh cycle. The return value indicates if the lock was acquired. Do NOT release the lock
+ unless you acquired the lock. This lock is re-entrant and is thread-based. You must release it from the same
+ thread that acquired the lock. If this method return false, then you already have the lock.
+ IMPORTANT: It is of CRITICAL IMPORTANCE that ReleaseUIRefreshLock() is called after GetUIRefreshLock() if 
+ this method returns true or the user interface system will become completely locked up for this client. It's also
+ important to not release the lock unless you acquired it.
+
+Returns:
+true if the lock was acquired (which means it MUST be released), false if it was not
+Since:
+6.4
+ */
+public static boolean GetUIRefreshLock () {
+   return (Boolean) sagex.SageAPI.call("GetUIRefreshLock", (Object[])null);
+}
+
+/**
+Releases the lock for this user interface system to allow other updates to occur. This must ONLY be used
+ after GetUIRefreshLock() was called and ONLY if GetUIRefreshLock() actually returned true. This must also be called
+ from the same thread that called GetUIRefreshLock()
+
+Since:
+6.4
+ */
+public static boolean ReleaseUIRefreshLock () {
+   return (Boolean) sagex.SageAPI.call("ReleaseUIRefreshLock", (Object[])null);
 }
 
 /**

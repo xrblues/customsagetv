@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 6:31 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Database.html'>Database</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -245,7 +245,7 @@ Returns all Airings in the database that refer to content that includes the spec
 
 Parameters:
 SearchString- the name of the person to search for matching content on
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 an array of Airing objects that reference content that includes the specified person and matches the media mask
 Since:
@@ -275,7 +275,7 @@ Searches the descriptions and episode names of all of the content in the databas
 
 Parameters:
 SearchString- the string to search for
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 an array of Airings who's content has the specified search string in its description or episode name and matches the media mask
 Since:
@@ -305,7 +305,7 @@ Returns all Airings in the database that refer to content that has the specified
 
 Parameters:
 SearchString- the title of the content must match this exactly
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 an array of Airing objects that reference content with the specified title and matches the media mask
 Since:
@@ -334,7 +334,7 @@ Returns a list of all of the people in the database that include the search stri
 
 Parameters:
 SearchString- the string to search on
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 an array of Strings which represent all of the people in the database that matched the search that also have content that matches the MediaMask
 Since:
@@ -363,7 +363,7 @@ Returns a list of all of the titles in the database that include the search stri
 
 Parameters:
 SearchString- the string to search on
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 an array of Strings which represent all of the titles in the database that matched the search that also have content that matches the MediaMask
 Since:
@@ -393,7 +393,7 @@ Returns a list of all of the people in the database that match the passed in reg
 
 Parameters:
 RegexPattern- The compiled regular expression used for matching (if it's not compiled, then it will be converted to a compiled regular expression)
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 an array of Strings which represent all of the people in the database that matched the search that also have content that matches the MediaMask
 Since:
@@ -423,7 +423,7 @@ Returns a list of all of the titles in the database that match the passed in reg
 
 Parameters:
 RegexPattern- The compiled regular expression used for matching (if it's not compiled, then it will be converted to a compiled regular expression)
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 an array of Strings which represent all of the titles in the database that matched the search that also have content that matches the MediaMask
 Since:
@@ -505,7 +505,7 @@ Rated- if true then the rated fields will be searched, if false then they will n
 ExtendedRatings- if true then the extended ratings fields will be searched, if false then they will not be
 Year- if true then the year fields will be searched, if false then they will not be
 Misc- if true then the miscellaneous fields will be searched, if false then they will not be
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 an array of Airings which matches the search criteria
 Since:
@@ -559,7 +559,7 @@ Rated- if true then the rated fields will be searched, if false then they will n
 ExtendedRatings- if true then the extended ratings fields will be searched, if false then they will not be
 Year- if true then the year fields will be searched, if false then they will not be
 Misc- if true then the miscellaneous fields will be searched, if false then they will not be
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 an array of Airings which matches the search criteria
 Since:
@@ -609,7 +609,7 @@ Rated- if true then the rated fields will be searched, if false then they will n
 ExtendedRatings- if true then the extended ratings fields will be searched, if false then they will not be
 Year- if true then the year fields will be searched, if false then they will not be
 Misc- if true then the miscellaneous fields will be searched, if false then they will not be
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 an array of Airings which matches the search criteria
 Since:
@@ -646,7 +646,7 @@ Gets all of the titles that are in the database.
  The content it references must also match one of the media types specified in the MediaMask.
 
 Parameters:
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 a list of all of the titles that are in the database that also have content that matches the MediaMask
 Since:
@@ -671,7 +671,7 @@ Gets all of the people that are in the database.
  The content it references must also match one of the media types specified in the MediaMask.
 
 Parameters:
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 a list of all of the names of people in the database that also have content that matches the MediaMask
 Since:
@@ -696,7 +696,7 @@ Gets all of the categories that are in the database.
  The content it references must also match one of the media types specified in the MediaMask.
 
 Parameters:
-MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 all of the names of categories that are in the database that also have content that matches the MediaMask
 Since:
@@ -711,7 +711,7 @@ Returns the last modification time for objects that match anything in the specif
  for knowing when to clear caches that are used to optimize UI rendering.
 
 Parameters:
-MediaMask- string specifying what content types  (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types  (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 Returns:
 the last modification time of anything in the DB that matches anything in the specified MediaMask
 Since:
@@ -725,7 +725,25 @@ public static long GetDatabaseLastModifiedTime (java.lang.String MediaMask) {
 Returns a list of java.io.File objects w/ the specified MediaMask whos import prefix matches that of the argument
 
 Parameters:
-MediaMask- string specifying what content types  ('M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures)
+MediaMask- string specifying what content types  ('M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
+ImportPrefix- a string specifying a subpath that must match the start of the import files path relative to its import root
+IncludeFiles- if true, then MediaFile objects with a complete prefix match will be returned
+IncludeFolders- if true, then MediaFile objects with a partial prefix match will be returned
+GroupFolders- if true, then MediaFile objects with partial prefixes that match will be grouped by their next path section; extract the 'null' keyed value to get the list of the files
+Returns:
+a Vector or Map of java.io.File objects w/ the specified MediaMask whos import prefix matches that of the argument; a Map will be returned if GroupFolders is set to true
+Since:
+6.4
+ */
+public static java.lang.Object GetFilesWithImportPrefix (java.lang.String MediaMask, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
+   return (java.lang.Object) sagex.SageAPI.call("GetFilesWithImportPrefix", new Object[] {MediaMask,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
+}
+
+/**
+Returns a list or map of MediaFile objects w/ the specified MediaMask whos import prefix matches that of the argument
+
+Parameters:
+MediaMask- string specifying what content types  ('M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
 ImportPrefix- a string specifying a subpath that must match the start of the import files path relative to its import root
 IncludeFiles- if true, then MediaFile objects with a complete prefix match will be returned
 IncludeFolders- if true, then MediaFile objects with a partial prefix match will be returned
@@ -735,8 +753,20 @@ a Vector or Map of MediaFile objects w/ the specified MediaMask whos import pref
 Since:
 6.4
  */
-public static java.lang.Object GetFilesWithImportPrefix (java.lang.String MediaMask, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
-   return (java.lang.Object) sagex.SageAPI.call("GetFilesWithImportPrefix", new Object[] {MediaMask,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
+public static java.lang.Object GetMediaFilesWithImportPrefix (java.lang.String MediaMask, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
+   return (java.lang.Object) sagex.SageAPI.call("GetMediaFilesWithImportPrefix", new Object[] {MediaMask,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
+}
+
+/**
+Returns true if the database has maxed out its memory usage and cannot add more content
+
+Returns:
+true if the database has maxed out its memory usage and cannot add more content
+Since:
+6.5
+ */
+public static boolean IsDatabaseMemoryMaxed () {
+   return (Boolean) sagex.SageAPI.call("IsDatabaseMemoryMaxed", (Object[])null);
 }
 
 
