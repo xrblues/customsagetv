@@ -7,30 +7,12 @@
 	<property name="targetDir" value="target" />
 	<property name="name" value="metadata-updater" />
 	<property name="version" value="2.0" />
-	<property name="jarname" value="${name}-${version}.jar" />
+	<property name="jarname" value="${name}.jar" />
 	<property name="launcher" value="MetadataTool" />
 	<property name="mainClass" value="org.jdna.metadataupdater.MetadataUpdater" />
 
 	<target name="all" depends="package" />
-	<target name="package" depends="package-tool,package-plugin"/>
-
-	<target name="package-tool" depends="init,copyJars,makeJar,makeLaunch">
-		<copy toDir="${targetDir}/tool">
-			<fileset dir="resources/props"/>
-		</copy>
-		<copy toDir="${targetDir}/tool">
-			<fileset dir="docs">
-			</fileset>
-		</copy>
-		<copy toDir="${targetDir}/tool/scrapers">
-			<fileset dir="scrapers">
-			</fileset>
-		</copy>
-		<zip destfile="${targetDir}/${name}-${version}.zip">
-			<fileset dir="${targetDir}/tool">
-			</fileset>
-		</zip>
-	</target>
+	<target name="package" depends="package-tool"/>
 
 	<target name="package-gwt" depends="package-tool">
 		<copy toDir="${targetDir}/gwt/">
@@ -50,7 +32,7 @@
 		</jar>
 	</target>
 
-	<target name="package-plugin" depends="package-tool">
+	<target name="package-tool" depends="init,copyJars,makeJar,makeLaunch">
 		<mkdir dir="${targetDir}/sage" />
 		<mkdir dir="${targetDir}/sage/JARs" />
 		<mkdir dir="${targetDir}/sage/STVs/SageTV3/" />
@@ -60,11 +42,7 @@
 		</copy>
 
 		<copy toDir="${targetDir}/sage/JARs">
-			<fileset dir="libs" excludes="Sage.*,nielm*,miglayout*" />
-		</copy>
-
-		<copy toDir="${targetDir}/sage/JARs">
-			<fileset file="${targetDir}/tool/libs/${jarname}" />
+			<fileset dir="libs" excludes="Sage.*,nielm*" />
 		</copy>
 
 		<copy toDir="${targetDir}/sage/scrapers">
@@ -72,13 +50,19 @@
 			</fileset>
 		</copy>
 
-		<echo file="${targetDir}/sage/Sage.properties.metadataupdater">mediafile_metadata_parser_plugins=org.jdna.sage.MetadataUpdaterPlugin</echo>
+		<copy toDir="${targetDir}/sage">
+			<fileset dir="resources/props"/>
+		</copy>
+		<copy toDir="${targetDir}/sage">
+			<fileset dir="docs">
+			</fileset>
+		</copy>
 
 		<zip destfile="${targetDir}/${name}-plugin-${version}.zip" basedir="${targetDir}/sage" />
 	</target>
 
 	<target name="copyJars">
-		<copydir dest="${targetDir}/tool/libs" src="libs" excludes="Sage*.jar">
+		<copydir dest="${targetDir}/sage/JARs" src="libs" excludes="Sage*.jar,nielm*.jar">
 		</copydir>
 	</target>
 	
@@ -103,7 +87,7 @@
 	</target>
 
 	<target name="makeJar" depends="build">
-		<jar destfile="${targetDir}/tool/libs/${jarname}">
+		<jar destfile="${targetDir}/sage/JARs/${jarname}">
 			<fileset dir="bin">
 			</fileset>
 		</jar>
@@ -112,7 +96,7 @@
 	<target name="makeLaunch">
 		<!-- build the classpath for the entries that we want -->
 		<path id="project.classpath">
-			<fileset dir="${targetDir}/tool/libs" includes="*.jar">
+			<fileset dir="${targetDir}/sage/JARs" includes="*.jar">
 			</fileset>
 		</path>
 
@@ -121,12 +105,11 @@
 			<path refid="project.classpath" />
 			<chainedmapper>
 				<flattenmapper />
-				<regexpmapper from="(.*)" to="libs/\1" />
+				<regexpmapper from="(.*)" to="JARs/\1" />
 			</chainedmapper>
 		</pathconvert>
 
-
-		<jar destfile="${targetDir}/tool/${launcher}.jar" whenempty="create">
+		<jar destfile="${targetDir}/sage/${launcher}.jar" whenempty="create">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Specification-Title" value="Batch Metadata Tools" />

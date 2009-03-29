@@ -80,6 +80,11 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
         // make a new, empty document
         Document doc = new Document();
 
+        // ISSUE: 24 - remove html tags from the titles
+        if (name!=null) {
+            name=name.replaceAll("<[^>]+>", "");
+        }
+        
         // index titles
         doc.add(new Field("title", name, Field.Store.YES, Field.Index.TOKENIZED));
 

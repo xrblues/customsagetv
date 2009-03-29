@@ -1,6 +1,0 @@
-Batch Metadata Import Tool for SageTV
-
-Homepage: http://code.google.com/p/customsagetv/
-
-Usage: java -jar MetadataTool.jar --help
-

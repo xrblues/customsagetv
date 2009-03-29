@@ -4,43 +4,76 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.impl.sage.SageProperty;
+import org.jdna.media.metadata.impl.sage.SagePropertyType;
+import org.jdna.metadataupdater.Version;
 import org.jdna.util.LoggerConfiguration;
 
 import sagex.phoenix.fanart.SageUtil;
 
 public class api {
     static {
-        LoggerConfiguration.configure();
+        SageUtil.Log("Metadata Tools API: " + GetVersion() + "; Using Phoenix: " + phoenix.api.GetVersion());
+        LoggerConfiguration.configurePlugin();
+    }
+    
+    public static String GetVersion() {
+        return Version.VERSION;
     }
     
     public static void InstallBMTPlugin() {
+        SageUtil.Log("BMT Plugin is being installed.");
         String bmtClass=org.jdna.sage.MetadataUpdaterPlugin.class.getName();
-        String plugins = (String) SageUtil.GetProperty("mediafile_metadata_parser_plugins",null);
+        String plugins = (String) SageUtil.GetServerProperty("mediafile_metadata_parser_plugins",null);
+        
         if (!IsBMTPluginInstalled()) {
-            if (plugins==null) {
+            if (StringUtils.isEmpty(plugins)) {
                 plugins = "";
             } else {
                 plugins += ";";
             }
-            SageUtil.SetProperty("mediafile_metadata_parser_plugins", plugins + bmtClass);
+            SageUtil.SetServerProperty("mediafile_metadata_parser_plugins", plugins + bmtClass);
         }
         
+        SageUtil.Log("Installing the custom metadata fields....");
+
+        List<String> props = new LinkedList<String>();
+        String customPropsStr = (String)SageUtil.GetServerProperty("custom_metadata_properties", null);
+        if (!StringUtils.isEmpty(customPropsStr)) {
+            for (String s : customPropsStr.split(";")) {
+                props.add(s.trim());
+            }
+        }
         
+        // merge our extended props into the existing set
+        for (SageProperty sp : SageProperty.values()) {
+            if (sp.propertyType == SagePropertyType.EXTENDED) {
+                if (!props.contains(sp.sageKey)) {
+                    props.add(sp.sageKey);
+                }
+            }
+        }
+        
+        if (props.size()>0) {
+            SageUtil.SetServerProperty("custom_metadata_properties", new StrBuilder().appendWithSeparators(props, ";").toString());
+            SageUtil.Log("Set Custom Metadata Properties: " + (String)SageUtil.GetServerProperty("custom_metadata_properties", ""));
+        }
     }
 
     public static void RemoveBMTPlugin() {
         String bmtClass=org.jdna.sage.MetadataUpdaterPlugin.class.getName();
-        String plugins = (String) SageUtil.GetProperty("mediafile_metadata_parser_plugins",null);
+        String plugins = (String) SageUtil.GetServerProperty("mediafile_metadata_parser_plugins",null);
         if (IsBMTPluginInstalled()) {
             plugins = plugins.replaceAll(";"+bmtClass, "");
             plugins = plugins.replaceAll(bmtClass+";", "");
             plugins = plugins.replaceAll(bmtClass, "");
-            SageUtil.SetProperty("mediafile_metadata_parser_plugins", plugins);
+            SageUtil.SetServerProperty("mediafile_metadata_parser_plugins", plugins);
         }
     }
     
@@ -54,7 +87,7 @@ public class api {
     
     public static boolean IsBMTPluginInstalled() {
         String bmtClass=org.jdna.sage.MetadataUpdaterPlugin.class.getName();
-        String plugins = (String) SageUtil.GetProperty("mediafile_metadata_parser_plugins",null);
+        String plugins = (String) SageUtil.GetServerProperty("mediafile_metadata_parser_plugins",null);
         if (plugins==null) {
             return false;
         }

@@ -16,7 +16,7 @@
 			<attribute name="javadoc_location" value="jar:file:/home/seans/apps/miglayout/miglayout-3.6.3-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="libs/sagex.api-6.5.9-3.jar"/>
 	<classpathentry kind="lib" path="libs/phoenix.jar"/>
+	<classpathentry kind="lib" path="libs/sagex.api.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

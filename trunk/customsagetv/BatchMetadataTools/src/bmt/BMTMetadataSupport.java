@@ -34,6 +34,7 @@ import sagex.phoenix.fanart.FanartUtil.MediaType;
  */
 public class BMTMetadataSupport implements IMetadataSupport {
     public BMTMetadataSupport() {
+        SageUtil.Log("Using BMTMetadataSupport: " + bmt.api.GetVersion());
     }
 
     public void addActiveProvider(IMetadataProviderInfo pi) {

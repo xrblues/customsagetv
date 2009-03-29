@@ -19,7 +19,7 @@ public class MetadataConfiguration {
     private String wordsToClean           = "dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv";
 
     @Field(label="Metadata Provider(s)", description = "Default provider id to use (comma separate, if more than 1)")
-    private String defaultProviderId      = "themoviedb.org,themoviedb.org-2,imdb.xml,imdb,tvdb.xml";
+    private String defaultProviderId      = "tvdb.xml,themoviedb.org,themoviedb.org-2,imdb.xml,imdb";
     
     @Field(label="Good Score Threshold", description = "Score which must be exceeded to consider a result a good match")
     private float goodScoreThreshold = 0.9f;

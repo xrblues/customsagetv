@@ -35,6 +35,7 @@ import org.jdna.media.util.RefreshMetadataVisitor;
 import org.jdna.metadataupdater.gui.BatchMetadataToolsGUI;
 import org.jdna.util.LoggerConfiguration;
 
+import sagex.SageAPI;
 import sagex.api.Global;
 
 /**
@@ -108,20 +109,38 @@ public class MetadataUpdater {
     public static void logMetadataEnvironment() {
         log.debug("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
         log.debug("   BMT Version:  " + Version.VERSION);
+        log.debug(" Sagex Version:  " + sagex.api.Version.GetVersion());
         log.debug("  Java Version:  " + System.getProperty("java.version"));
         log.debug("Java Classpath:  " + System.getProperty("java.class.path"));
         
-        String classpath = System.getProperty("java.class.path");
-        Pattern p = Pattern.compile("metadata-updater-([0-9\\.]+).jar");
-        Matcher m = p.matcher(classpath);
-        if (m.find()) {
-            if (m.find()) {
-                log.error("You have more than 1 metadata updater log in the classpath.  Clean it up, and restart.");
-            } else {
-                log.debug("Only found 1 metadata-updater jar in the classpath, which is good.");
-            }
+        int removed=0;
+        String metadataPattern = "metadata-updater-([a-zA-Z0-9-_\\.]+).jar";
+        String sagexPattern = "sagex.api-([a-zA-Z0-9-_\\.]+).jar";
+        removed += cleanJars(new File("JARs"), metadataPattern);
+        removed += cleanJars(new File("libs"), metadataPattern);
+        removed += cleanJars(new File("JARs"), sagexPattern);
+        removed += cleanJars(new File("libs"), sagexPattern);
+        if (removed>0) {
+            System.out.println("System is being shutdown so that old jar libraries can be removed.");
+            System.exit(1);
         }
         log.debug("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
+    }
+    
+    public static int cleanJars(File libDir, String pattern) {
+        int removed = 0;
+        Pattern p = Pattern.compile(pattern);
+        if (libDir.exists()) {
+            for (File f : libDir.listFiles()) {
+                Matcher m = p.matcher(f.getName());
+                if (m.find()) {
+                    System.out.println("Removing Jar: " + f.getName());
+                    if (!f.delete()) f.deleteOnExit();
+                    removed++;
+                }
+            }
+        }
+        return removed;
     }
 
     private String[] files;
@@ -312,6 +331,7 @@ public class MetadataUpdater {
         if (config.isRefreshSageTV()) {
             try {
                 System.out.println("Notifying Sage to Refresh Imported Media");
+                SageAPI.setProvider(SageAPI.getRemoteProvider());
                 Global.RunLibraryImportScan(false);
             } catch (Throwable t) {
             }
@@ -405,11 +425,6 @@ public class MetadataUpdater {
         config.setCentralFanartFolder(folder);
         
         log.debug("Central Fanart Enabled; Using Folder: " + config.getFanartCentralFolder());
-    }
-
-    @CommandLineArg(name = "thumbnailMaxWidth", description = "Will scale down large thumbnail to the specified with. -1 mean no scaling. (default -1)")
-    public void setThumbnailMaxWidth(String width) {
-        config.setPosterImageWidth(Integer.parseInt(width));
     }
 
     /**
