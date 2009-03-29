@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 3:55 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/GlobalFactory.html'>GlobalFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class GlobalFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -242,6 +244,12 @@ public class GlobalFactory {
    if (command.equals("GetFileDownloadStatus")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFileDownloadStatus",parameters,null);
    }
+   if (command.equals("GetFileDownloadStreamTime")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFileDownloadStreamTime",parameters,null);
+   }
+   if (command.equals("IsFileDownloadProgressivePlay")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsFileDownloadProgressivePlay",parameters,null);
+   }
    if (command.equals("SetRemoteEventEncryptionEnabled")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetRemoteEventEncryptionEnabled",parameters,boolean.class);
    }
@@ -280,6 +288,9 @@ public class GlobalFactory {
    }
    if (command.equals("GetEmbeddedPanel")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetEmbeddedPanel",parameters,null);
+   }
+   if (command.equals("SetEmbeddedPanelBounds")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetEmbeddedPanelBounds",parameters,float.class,float.class,float.class,float.class);
    }
    if (command.equals("GetAvailableUpdate")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAvailableUpdate",parameters,null);
@@ -328,6 +339,15 @@ public class GlobalFactory {
    }
    if (command.equals("TvtvConfigureInput")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"TvtvConfigureInput",parameters,java.lang.String.class,java.lang.String.class,java.lang.String.class);
+   }
+   if (command.equals("GetHotplugStorageMap")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetHotplugStorageMap",parameters,null);
+   }
+   if (command.equals("IsDoingLibraryImportScan")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsDoingLibraryImportScan",parameters,null);
+   }
+   if (command.equals("GetFailedNetworkMounts")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFailedNetworkMounts",parameters,null);
    }
    throw new RuntimeException("Invalid GlobalFactory Command: "+command);
    }

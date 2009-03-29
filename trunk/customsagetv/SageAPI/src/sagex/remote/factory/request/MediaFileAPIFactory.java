@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 3:55 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaFileAPIFactory.html'>MediaFileAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class MediaFileAPIFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -30,6 +32,9 @@ public class MediaFileAPIFactory {
    if (command.equals("AddMediaFile")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AddMediaFile",parameters,java.io.File.class,java.lang.String.class);
    }
+   if (command.equals("CreateTempMediaFile")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CreateTempMediaFile",parameters,java.lang.String.class);
+   }
    if (command.equals("SetMediaFileAiring")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetMediaFileAiring",parameters,Object.class,Object.class);
    }
@@ -50,6 +55,9 @@ public class MediaFileAPIFactory {
    }
    if (command.equals("IsDVD")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsDVD",parameters,Object.class);
+   }
+   if (command.equals("IsBluRay")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsBluRay",parameters,Object.class);
    }
    if (command.equals("IsDVDDrive")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsDVDDrive",parameters,Object.class);
@@ -158,6 +166,9 @@ public class MediaFileAPIFactory {
    }
    if (command.equals("GetMediaFileFormatDescription")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMediaFileFormatDescription",parameters,Object.class);
+   }
+   if (command.equals("GetMediaFileMetadata")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMediaFileMetadata",parameters,Object.class,java.lang.String.class);
    }
    if (command.equals("RotatePictureFile")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"RotatePictureFile",parameters,Object.class,int.class);
