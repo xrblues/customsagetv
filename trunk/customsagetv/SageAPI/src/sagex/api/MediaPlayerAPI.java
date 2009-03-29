@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 6:31 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaPlayerAPI.html'>MediaPlayerAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -571,7 +571,7 @@ public static void DVDSubtitleToggle () {
 Sets the subtitle that should be displayed in the current DVD content. The names of the languages for the
  corresponding subtitles are obtained from a call toGetDVDAvailableSubpictures()
 .
- If no arguments are given to this function then the currently displayed subtitle will be cleared.
+ If no arguments are given to this function then the currently displayed subtitle will be changed to the next one
 
 Parameters:
 SubtitleNum- the 0-based index into the list of subtitles that should be displayed
@@ -584,7 +584,7 @@ public static void DVDSubtitleChange (int SubtitleNum) {
 Sets the audio language that should be used in the current DVD content. The names of the languages
  are obtained from a call toGetDVDAvailableLanguages()
 .
- If no arguments are given to this function then the current audio language will be cleared and set back to the default
+ If no arguments are given to this function then the current audio language will be changed to the next available language
 
 Parameters:
 AudioNum- the 0-based index into the list of audio languages that should be used
@@ -597,7 +597,7 @@ public static void DVDAudioChange (int AudioNum) {
 Sets the 'Angle' for playback of the current DVD content. The number of angels
  are obtained from a call toGetDVDNumberOfAngles()
 .
- If no arguments are given to this function then the current angle will be cleared and set back to the default
+ If no arguments are given to this function then the current angle will be changed to the next available angle
 
 Parameters:
 AngleNum- the 1-based index that indicates which angle should be used for playback

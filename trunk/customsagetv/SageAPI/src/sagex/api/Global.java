@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 6:31 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Global.html'>Global</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -616,7 +616,7 @@ Parameters:
 Channel- the Channel object that this recording should be performed on
 StartTime- the time the recording should begin
 StopTime- the time the recording should end
-Recurrence- the name of the recurrence to use; this can be either Once, Daily or Weekly 
+Recurrence- the name of the recurrence to use; this can be either Once, Daily, Weekly or Continuous (Continuous as of V6.6)
                (or a localized version of one of those); OR it can be a combination of any of the following strings to indicate specified 
                 days: Su, Mo, Tu, We, Th, Fr, Sa (for example, MoTuWe to do Mondays, Tuesdays and Wednesdays)
 Returns:
@@ -888,6 +888,34 @@ public static java.lang.Object GetFileDownloadStatus () {
 }
 
 /**
+Gets the current stream time of a previously invoked file download process. This is only valid
+ for when the file being downloaded is an FLV, MP3, MP4 or Quicktime file
+
+Returns:
+the stream time in milliseconds of the current download; or zero if it doesn't know
+Since:
+6.3
+ */
+public static long GetFileDownloadStreamTime () {
+   return (Long) sagex.SageAPI.call("GetFileDownloadStreamTime", (Object[])null);
+}
+
+/**
+Returns whether or not the current file being downloaded can be played back while being downloaded. This is only valid
+ for when the file being downloaded is an FLV, MP3, MP4 or Quicktime file. It will always be true for MP3 & FLV files; 
+ and for MP4/Quicktime files it'll be true if the sample section is before the movie data in the file. If this is true
+ and the download stream time is greater than zero; then it's OK to start progressive playback of downloaded media.
+
+Returns:
+true if the current file being downloaded can potentially be played back while being downloaded, false if it definitely cannot be
+Since:
+6.3
+ */
+public static boolean IsFileDownloadProgressivePlay () {
+   return (Boolean) sagex.SageAPI.call("IsFileDownloadProgressivePlay", (Object[])null);
+}
+
+/**
 This is used to enable/disable encryption on the event channel for the SageTV MiniClient. The MiniClient is used
  for the media extenders and for placeshifting. When using a non-local MiniClient connection, or if local MiniClient
  connections are configured to require authentication; the event channel between the two will start off in an encrypted
@@ -1053,6 +1081,21 @@ public static java.awt.Panel GetEmbeddedPanel () {
 }
 
 /**
+Sets the bounding region to be used for the embedded panel. These are floating point numbers relative to the total size of the UI.
+
+Parameters:
+x- the relative X position (0.0-1.0)
+y- the relative Y position (0.0-1.0)
+width- the relative width (0.0-1.0)
+height- the relative height (0.0-1.0)
+Since:
+6.4
+ */
+public static void SetEmbeddedPanelBounds (float x, float y, float width, float height) {
+    sagex.SageAPI.call("SetEmbeddedPanelBounds", new Object[] {x,y,width,height});
+}
+
+/**
 Implemented on Linux only
  */
 public static java.lang.String GetAvailableUpdate () {
@@ -1202,6 +1245,43 @@ Deprecated. Use TvtvConfigureUser
  */
 public static boolean TvtvConfigureInput (java.lang.String CaptureDeviceInput, java.lang.String Username, java.lang.String Password) {
    return (Boolean) sagex.SageAPI.call("TvtvConfigureInput", new Object[] {CaptureDeviceInput,Username,Password});
+}
+
+/**
+Returns a map of name->file for any hotplug storage devies on the system. The
+ names are user-presentable and the path is the java.io.File root which corresponds to the root of that device.
+
+Returns:
+a Map of name->file for hotplugged storage devices
+Since:
+6.4
+ */
+public static java.util.Map GetHotplugStorageMap () {
+   return (java.util.Map) sagex.SageAPI.call("GetHotplugStorageMap", (Object[])null);
+}
+
+/**
+Returns true if the server is currently scanning the import directories for new files
+
+Returns:
+true if the server is currently scanning the import directories for new files
+Since:
+6.6
+ */
+public static boolean IsDoingLibraryImportScan () {
+   return (Boolean) sagex.SageAPI.call("IsDoingLibraryImportScan", (Object[])null);
+}
+
+/**
+Returns a list of local directory paths (Strings) that did not mount properly as part of the library scanning process
+
+Returns:
+a list of local directory paths (Strings) that did not mount properly as part of the library scanning process
+Since:
+6.4
+ */
+public static java.util.Set GetFailedNetworkMounts () {
+   return (java.util.Set) sagex.SageAPI.call("GetFailedNetworkMounts", (Object[])null);
 }
 
 

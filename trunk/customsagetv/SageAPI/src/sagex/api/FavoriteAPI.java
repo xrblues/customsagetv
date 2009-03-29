@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 17/02/09 7:36 PM
+ * Generated Date/Time: 29/03/09 6:31 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPI.html'>FavoriteAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -622,6 +622,16 @@ public static Object[] GetFavorites () {
 }
 
 /**
+Removes a Favorite object from the database. Airings matching this Favorite will not necesarilly be automatically recorded anymore (intelligent recording may still record them)
+
+Parameters:
+Favorite- the Favorite object to remove
+ */
+public static void RemoveFavorite (Object Favorite) {
+    sagex.SageAPI.call("RemoveFavorite", new Object[] {Favorite});
+}
+
+/**
 Creates a new Favorite object in SageTV. Airings that match this Favorite will be recorded and saved into the SageTV Recordings.
 
 Parameters:
@@ -636,7 +646,7 @@ Rated- the rating that an Airing must match to be included in this Favorite, use
 Year- the year that an Airing must match to be included in this Favorite, use the empty string or null if year isn't a field that needs to match
 ParentalRating- the parental rating that an Airing must match to be included in this Favorite, use the empty string or null if parental rating isn't a field that needs to match
 Network- the network name that an Airing must be on to be included in this Favorite, use null or the empty string if network doesn't matter
-ChannelCallSign- the channel name that an Airing must be on to be included in this Favorite, use null or the empty string if channel doesn't matter; you may also use a semicolon or comma-delimited list of channel names for mult-channel favorites
+ChannelCallSign- the channel name that an Airing must be on to be included in this Favorite, use null or the empty string if channel doesn't matter; you may also use a semicolon or comma-delimited list of channel names for multi-channel favorites
 Timeslot- the timeslot that an Airing must be in to be included in this Favorite, use null or the empty string if timeslot doesn't matter.
          The timeslot should be in one of three formats: 1) Day Time, 2) Day, 3) Time. Where Day is a day of the week, and Time is an
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
