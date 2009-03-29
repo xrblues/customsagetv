@@ -142,7 +142,7 @@ Once all movies are scanned, it will display a summary at the end.
 
 If you need/want to process subdirectories, then pass the *--recurse* switch so that the processor will follow subdirectories.
 
-== How Do I... ==
+= How Do I... =
 === Force the command line tool to prompt me for each item? ===
 {{{
 # java -jar MetadataTool.jar --auto=false --prompt=true
