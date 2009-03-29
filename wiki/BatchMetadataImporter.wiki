@@ -60,7 +60,7 @@ As for 2.0, several projects collaborated to come up with a unified way to store
 
 2.0 also added 2 new command line arguments --fanartEnabled and --fanartFolder.  If you set the fanart folder, then it will implicitly set the fanartEnabled to true.
 
-== Requirements == 
+= Requirements = 
 Java 5 or later
 
 = Installation =
@@ -68,7 +68,7 @@ Download the zip and extract into a new directory.  If you extract into an exist
 
 NOTE: As of 2.0 there metadata-updater.jar does not contain a version in it's filename.  This was done to make future upgrades fo the 2.x releases less painful.  But, if you do extract a 2.x release over a 1.x release, then you must clean out the jars area and remove the metadata-updater-VERSION.jar but leave the jar that does not contain a version.
 
-== Usage ==
+= Usage =
 {{{
  # java -jar MetadataTool.jar
 Batch MetaData Tools (2.0-beta9)
