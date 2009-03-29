@@ -1,7 +1,5 @@
 #summary DVD Profiler Provider Information
 
-There are 2 DVD Profiler Plugins.  An internet one, and a local one.
-
 = DVD Profiler Local Provider (dvdprofiler) =
  * Requires local Collection.xml and images
  * Supports ONLY single location
