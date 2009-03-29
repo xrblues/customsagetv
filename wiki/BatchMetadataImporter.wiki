@@ -73,7 +73,51 @@ If you are running this from the commandline, then it will clean the jar area au
 
 Just so that it can clean your JARs area, by removing duplicate jars that will cause runtime issues.
 
-= Usage =
+== STV / Automated Metadata Fetching Installation ==
+
+Shutdown your Sage client/server process.
+
+Download the zip and unzip at the root of the SageTV server directory.
+
+Once you unzip, check the JARs directory, and remove any duplicate jar files that have different versions.  For example, if you see sagex.api-6.4.8-11.jar and sagex.api-6.4.8-9.jar, then remove the -9 version of the Jar file.  Having more than one version of jar file in the directory will be very troublesome.  Also make sure that you have only one copy of the metadata-updater.jar.  If you find that you have a metadata-updater-VERSION.jar then remove the versioned jar file.
+
+Restart your Sage client / server.
+
+=== Default STV ===
+Import the MetadataFanartTools-DefaultSTV.stvi into the default stv.  This will add a new Metadata/Fanart configuration option to the Detailed Setup menu.  From there you can enable the central fanart and set the central fanart location.  You can also enable the automated metadata lookup.  If you enable the automated metadata lookup, you will need to restart the server process for this change to be picked up by sage.
+
+You can also configure the metadata providers that you want to use for searching for new metadata/fanart.  By default it should come with pretty much everything enabled.
+
+=== SageMC ===
+In SageMC import the MetadataFanartTools-SageMC.xml.  This will add a Metadata/Fanart configuration section to the "Extras" section in the SageMC configuration screens.
+
+From there, like with the default stv, you can enable the automated lookups and configure which providers you want to use.
+
+=== Manual Installation ===
+
+The Sage.properties.metadataupdater is the property that you need to update/edit in the Sage.properties.
+
+To update the Sage.properties, *shut down SageTV*, then edit the Sage.properties.  Merge the property from the Sage.properties.metadataupdater into the core Sage.properties.
+
+{{{
+mediafile_metadata_parser_plugins=org.jdna.sage.MetadataUpdaterPlugin
+}}}
+
+If you have an existing metadata.properties, then copy that file to the sagetv server root directory (ie, same directory where Sage.properties exists)
+
+Start SageTV, add a new movie, and then tell SageTV to refresh.  If your movie was automatically found, then it should appear with the appropriate thumbnail and properties.
+
+Good luck, and you can post any comments/problems to the SageTV thread for the [http://forums.sagetv.com/forums/showthread.php?t=34301 Batch Metadata Tools].
+
+= On Demand Lookups within a SageTV Application =
+If you've imported the MetadataFanartTools stvi/xml for the default stv/sagemc, then you will also get the option when you have selected a video, to search/download fanart for that particular item.
+
+In the default stv, this menu can be found by selecting a video and bringing up it's options menu.  In the options menu, there will now be a "Metadata/Fanart" button.  You can use to update the item's fanart.
+
+In the future, once Sage support setting metadata elements, this same process will be used to update the metadata as well as the fanart for an item.
+
+
+= Commandline Usage =
 {{{
  # java -jar MetadataTool.jar
 Batch MetaData Tools (2.0)
@@ -109,7 +153,7 @@ The 2.0 release is a major rewrite of some parts of the BMT code.  Because of th
 
 A small change to the DVD Profiler providers were made.  There used to be 2 DVD Profiler providers... now there is 1, and it's provider id is, dvdprofiler.  Basically the remote url dvd profiler provider was removed.  Also the DVD Profiler provider will autodetect changes to it's Collection.xml and rebuild the indexes as necessary.  As a result, the --reindex command line argument was removed.
 
-== Usage Overview ==
+== Commandline Usage Overview ==
 Before you get started, you may have to execute the command once without any arguments to see the help screen.
 
 Once that works, try
