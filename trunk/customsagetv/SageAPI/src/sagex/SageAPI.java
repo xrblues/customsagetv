@@ -9,40 +9,52 @@ import sagex.remote.rmi.RMISageAPI;
 import sagex.remote.server.SimpleDatagramClient;
 
 public class SageAPI {
+    private static ISageAPIProvider remoteProvider = null;
 	private static ISageAPIProvider provider = null;
-	private static Properties providerProperties = null;
+	private static Properties remoteProviderProperties = null;
 	
 	private static ThreadLocal<String> uiContext = new ThreadLocal<String>();
 
 	public static ISageAPIProvider getProvider() {
 		if (provider == null) {
-			// to find the provider to use
-			try {
-				System.out.println("SageAPI Provider is not set, will try to find the server...");
-				
-				// check if the sagex.SageAPI.remoteUrl is set
-				String remoteUrl = System.getProperty("sagex.SageAPI.remoteUrl");
-				if (remoteUrl==null) {
-					Properties info = SimpleDatagramClient.findRemoteServer(5000);
-					providerProperties = info;
-					setProvider(new RMISageAPI(info.getProperty("server"), Integer.parseInt(info.getProperty("rmi.port"))));
-				} else {
-					URI u = new URI(remoteUrl);
-					if ("rmi".equals(u.getScheme())) {
-						setProvider(new RMISageAPI(u.getHost(), u.getPort()));
-					} else {
-						providerProperties = new Properties();
-						providerProperties.put("server", u.getHost());
-						providerProperties.put("http.port", u.getPort());
-						setProvider(new SageAPIRemote(remoteUrl));
-					}
-				}
-			} catch (Throwable t) {
-				t.printStackTrace();
-				throw new RuntimeException(t);
-			}
+		    try {
+		        setProvider(new EmbeddedSageAPIProvider());
+		    } catch (Exception e) {
+		        setProvider(getRemoteProvider());
+		    }
 		}
 		return provider;
+	}
+	
+	public static ISageAPIProvider getRemoteProvider() {
+	    if (remoteProvider==null) {
+            // to find the provider to use
+            try {
+                System.out.println("SageAPI Provider is not set, will try to find the server...");
+                
+                // check if the sagex.SageAPI.remoteUrl is set
+                String remoteUrl = System.getProperty("sagex.SageAPI.remoteUrl");
+                if (remoteUrl==null) {
+                    Properties info = SimpleDatagramClient.findRemoteServer(5000);
+                    remoteProviderProperties = info;
+                    remoteProvider = (new RMISageAPI(info.getProperty("server"), Integer.parseInt(info.getProperty("rmi.port"))));
+                } else {
+                    URI u = new URI(remoteUrl);
+                    if ("rmi".equals(u.getScheme())) {
+                        remoteProvider = (new RMISageAPI(u.getHost(), u.getPort()));
+                    } else {
+                        remoteProviderProperties = new Properties();
+                        remoteProviderProperties.put("server", u.getHost());
+                        remoteProviderProperties.put("http.port", u.getPort());
+                        remoteProvider = (new SageAPIRemote(remoteUrl));
+                    }
+                }
+            } catch (Throwable t) {
+                t.printStackTrace();
+                throw new RuntimeException(t);
+            }
+	    }
+	    return remoteProvider;
 	}
 
 	public static void setProvider(ISageAPIProvider provider) {
@@ -97,7 +109,7 @@ public class SageAPI {
 	 * @return
 	 */
 	public static Properties getProviderProperties() {
-		return providerProperties;
+		return remoteProviderProperties;
 	}
 	
 	/**
@@ -106,6 +118,6 @@ public class SageAPI {
 	 * @param props
 	 */
 	public static void setProviderProperties(Properties props) {
-		providerProperties = props;
+		remoteProviderProperties = props;
 	}
 }
