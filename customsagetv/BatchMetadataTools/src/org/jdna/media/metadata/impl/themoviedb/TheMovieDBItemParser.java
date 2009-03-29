@@ -118,6 +118,7 @@ public class TheMovieDBItemParser {
                 cm.setType(ICastMember.WRITER);
             } else if ("actor".equals(role)) {
                 cm.setType(ICastMember.ACTOR);
+                cm.setPart(getElementValue(e, "role"));
             } else {
                 cm.setType(ICastMember.OTHER);
                 cm.setPart(role);

@@ -26,9 +26,6 @@ public class MetadataUpdaterConfiguration {
     @Field(label="Process Missing Metadata Only", description="Only process files that is missing metadata")
     private boolean processMissingMetadataOnly = true;
     
-    @Field(label="Poster Image Width", description="Rescale Posters to this width")
-    private int posterImageWidth=500;
-    
     @Field(label="Fanart Enabled", description="Enable Fanart downloading")
     private boolean fanartEnabled = true;
     
@@ -111,14 +108,6 @@ public class MetadataUpdaterConfiguration {
 
     public void setProcessMissingMetadataOnly(boolean b) {
         this.processMissingMetadataOnly = b;
-    }
-
-    public int getPosterImageWidth() {
-        return posterImageWidth;
-    }
-
-    public void setPosterImageWidth(int posterImageWidth) {
-        this.posterImageWidth = posterImageWidth;
     }
 
     public boolean isRememberSelectedSearches() {

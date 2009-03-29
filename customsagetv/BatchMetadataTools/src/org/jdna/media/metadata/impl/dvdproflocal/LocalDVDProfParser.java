@@ -193,7 +193,11 @@ public class LocalDVDProfParser {
     }
 
     public String getTitle() {
-        return DVDProfXmlFile.getElementValue(node, "Title");
+        String title =  DVDProfXmlFile.getElementValue(node, "Title");
+        if (title!=null) {
+            title = title.replaceAll("<[^>]+>", "");
+        }
+        return title;
     }
 
     public String getUserRating() {

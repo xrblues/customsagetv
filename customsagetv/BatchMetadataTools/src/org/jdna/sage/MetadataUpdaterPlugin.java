@@ -44,22 +44,20 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
         // lazy load the static references, and only load them once
         try {
             if (filter == null) {
-                LoggerConfiguration.configure();
+                LoggerConfiguration.configurePlugin();
                 
                 System.out.println("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
-                System.out.println("   BMT Version:  " + Version.VERSION);
-                System.out.println("  Java Version:  " + System.getProperty("java.version"));
-                System.out.println("Java Classpath:  " + System.getProperty("java.class.path"));
+                System.out.println("    BMT Version:  " + Version.VERSION);
+                System.out.println("Phoenix Version:  " + phoenix.api.GetVersion());
+                System.out.println("  Sagex Version:  " + sagex.api.Version.GetVersion());
+                System.out.println("   Java Version:  " + System.getProperty("java.version"));
+                System.out.println(" Java Classpath:  " + System.getProperty("java.class.path"));
                 
                 String classpath = System.getProperty("java.class.path");
                 Pattern p = Pattern.compile("metadata-updater-([0-9\\.]+).jar");
                 Matcher m = p.matcher(classpath);
                 if (m.find()) {
-                    if (m.find()) {
-                        System.out.println("You have more than 1 metadata updater log in the classpath.  Clean it up, and restart.");
-                    } else {
-                        System.out.println("Only found 1 metadata-updater jar in the classpath, which is good.");
-                    }
+                    System.out.println("You should not be running a VERSIONED metadata-updater.jar.  Please remove all versioned jarfiles starting with metadata-updater-*");
                 }
                 System.out.println("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
                 

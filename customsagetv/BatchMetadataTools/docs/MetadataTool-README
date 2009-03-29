@@ -1,0 +1,9 @@
+Metadata Tools for SageTV
+
+Homepage: http://code.google.com/p/customsagetv/
+
+Usage: java -jar MetadataTool.jar --help
+
+The Metadata Tools Plugin can be installed by import either the MetadataFanartTools-DefaultSTV.stvi
+or the MetadataFanartTools-SageMC.xml, depending on your environment.
+
