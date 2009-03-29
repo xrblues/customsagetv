@@ -1,14 +1,31 @@
-#summary SageTV Metadata Plugin
+#summary SageTV Metadata Tools Plugin
 #labels Featured,Phase-Deploy
 
 = Introduction =
 
-This is an experimental plugin that is utilizes SageTV's MediaFileMetadataParser plugin interface.  When installed, it will do a metadata lookup each time a new media file is added to your library. 
+The Metadata Tools Plugins is a simple STVi plugin that adds automated metadata/fanart discovery to the default stv and sagemc.  It also adds some on-demand features to both the default stv and sagemc.
 
 = Installation =
-Download the zip and unzip at the root of the SageTV server directory.  When you unzip, it should put some jars in the JARs directory, and it should create a file call Sage.properties.metadataupdater.
 
-Once you unzip, check the JARs directory, and remove any duplicate jar files that have different versions.  For example, if you see sagex.api-6.4.8-11.jar and sagex.api-6.4.8-9.jar, then remove the -9 version of the Jar file.  Having more than one version of jar file in the directory will be very troublesome.
+Shutdown your Sage client/server process.
+
+Download the zip and unzip at the root of the SageTV server directory.
+
+Once you unzip, check the JARs directory, and remove any duplicate jar files that have different versions.  For example, if you see sagex.api-6.4.8-11.jar and sagex.api-6.4.8-9.jar, then remove the -9 version of the Jar file.  Having more than one version of jar file in the directory will be very troublesome.  Also make sure that you have only one copy of the metadata-updater.jar.  If you find that you have a metadata-updater-VERSION.jar then remove the versioned jar file.
+
+Restart your Sage client / server.
+
+== Default STV ==
+Import the MetadataFanartTools-DefaultSTV.stvi into the default stv.  This will add a new Metadata/Fanart configuration option to the Detailed Setup menu.  From there you can enable the central fanart and set the central fanart location.  You can also enable the automated metadata lookup.  If you enable the automated metadata lookup, you will need to restart the server process for this change to be picked up by sage.
+
+You can also configure the metadata providers that you want to use for searching for new metadata/fanart.  By default it should come with pretty much everything enabled.
+
+== SageMC ==
+In SageMC import the MetadataFanartTools-SageMC.xml.  This will add a Metadata/Fanart configuration section to the "Extras" section in the SageMC configuration screens.
+
+From there, like with the default stv, you can enable the automated lookups and configure which providers you want to use.
+
+== Manual Installation ==
 
 The Sage.properties.metadataupdater is the property that you need to update/edit in the Sage.properties.
 
@@ -24,5 +41,8 @@ Start SageTV, add a new movie, and then tell SageTV to refresh.  If your movie w
 
 Good luck, and you can post any comments/problems to the SageTV thread for the [http://forums.sagetv.com/forums/showthread.php?t=34301 Batch Metadata Tools].
 
-= Configuration =
+=== Configuration ===
 To configure this plugin see the [http://code.google.com/p/customsagetv/wiki/BatchMetadataImporter Configuration Options for the Batch Metadata Tools].
+
+= On Demand Lookups =
+If you've imported the MetadataFanartTools stvi/xml for the default stv/sagemc, then you will also get the option when you have selected a video, to search/download fanart for that particular item.  
