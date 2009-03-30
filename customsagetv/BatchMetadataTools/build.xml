@@ -58,7 +58,7 @@
 			</fileset>
 		</copy>
 
-		<zip destfile="${targetDir}/${name}-plugin-${version}.zip" basedir="${targetDir}/sage" />
+		<zip destfile="${targetDir}/${name}-${version}.zip" basedir="${targetDir}/sage" />
 	</target>
 
 	<target name="copyJars">
