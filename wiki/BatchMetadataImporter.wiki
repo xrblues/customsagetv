@@ -101,6 +101,7 @@ To update the Sage.properties, *shut down SageTV*, then edit the Sage.properties
 
 {{{
 mediafile_metadata_parser_plugins=org.jdna.sage.MetadataUpdaterPlugin
+custom_metadata_properties=MediaProviderDataID;MediaTitle;MediaType;OriginalAirDate;EpisodeTitle;EpisodeNumber;SeasonNumber;DiscNumber;UserRating
 }}}
 
 If you have an existing metadata.properties, then copy that file to the sagetv server root directory (ie, same directory where Sage.properties exists)
