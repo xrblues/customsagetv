@@ -14,7 +14,6 @@ import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
 import org.jdna.media.metadata.impl.composite.MetadataProviderContainer;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
-import org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider;
 import org.jdna.media.metadata.impl.xbmc.XbmcMetadataProvider;
 import org.jdna.media.metadata.impl.xbmc.XbmcScraper;

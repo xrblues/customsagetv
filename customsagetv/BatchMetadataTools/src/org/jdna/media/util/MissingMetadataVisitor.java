@@ -4,9 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
-import org.jdna.media.impl.URIAdapter;
-import org.jdna.media.impl.URIAdapterFactory;
 import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataPersistence;
 
 /**
  * Resource Visitor that collects ONLY resources that contain missing metadata.
@@ -17,9 +16,10 @@ import org.jdna.media.metadata.IMediaMetadata;
 public class MissingMetadataVisitor implements IMediaResourceVisitor {
     private IMediaResourceVisitor missingVisitor;
     private IMediaResourceVisitor skippedVisitor;
+    private IMediaMetadataPersistence persistence=null;
 
-    public MissingMetadataVisitor(IMediaResourceVisitor missingVisitor) {
-        this(missingVisitor, null);
+    public MissingMetadataVisitor(IMediaMetadataPersistence persistence, IMediaResourceVisitor missingVisitor) {
+        this(persistence, missingVisitor, null);
     }
 
     /**
@@ -31,7 +31,8 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
      * @param skippedVisitor
      *            visitor to receive the skipped metadata resources (optional)
      */
-    public MissingMetadataVisitor(IMediaResourceVisitor missingVisitor, IMediaResourceVisitor skippedVisitor) {
+    public MissingMetadataVisitor(IMediaMetadataPersistence persistence, IMediaResourceVisitor missingVisitor, IMediaResourceVisitor skippedVisitor) {
+        this.persistence=persistence;
         this.missingVisitor = missingVisitor;
         this.skippedVisitor = skippedVisitor;
     }
@@ -42,7 +43,7 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
 
     public void visit(IMediaResource resource) {
         if (resource.getType() == IMediaFile.TYPE_FILE) {
-            if (isMissingMetadata(resource)) {
+            if (isMissingMetadata(persistence, resource)) {
                 if (missingVisitor != null) missingVisitor.visit(resource);
             } else {
                 if (skippedVisitor != null) skippedVisitor.visit(resource);
@@ -50,20 +51,20 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
         }
     }
 
-    public static boolean isMissingMetadata(IMediaResource resource) {
+    public static boolean isMissingMetadata(IMediaMetadataPersistence persistence, IMediaResource resource) {
         if (resource.getType() == IMediaFile.TYPE_FILE) {
             try {
-                // if the physical files does not exists, then it's missing metadata
-                URIAdapter ua  = URIAdapterFactory.getAdapter(resource.getLocalPosterUri());
-                IMediaMetadata md = resource.getMetadata();
+                IMediaMetadata md = persistence.loadMetaData(resource);
+
+              // TODO: Use Phoenix_HasFanart() to check for missing fanart
                 
-                if (md == null || StringUtils.isEmpty(md.getMediaTitle()) || (md.getPoster() == null && !ua.exists()) ) {
+                if (md == null || StringUtils.isEmpty(md.getMediaTitle())) {
                     return true;
-                } // else skip
+                }
             } catch (Exception e) {
                 return true;
             }
-        } // else skip
+        }
         return false;
     }
 

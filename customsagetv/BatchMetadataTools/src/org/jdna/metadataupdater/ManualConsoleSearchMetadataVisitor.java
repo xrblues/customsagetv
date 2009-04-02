@@ -10,7 +10,9 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaSearchResult;
+import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 
@@ -19,12 +21,12 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
 
     private int                 displaySize = 10;
 
-    public ManualConsoleSearchMetadataVisitor(String providerId, boolean overwrite, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
-        super(providerId, overwrite, defaultSearchType, updatedVisitor, notFoundHandler);
+    public ManualConsoleSearchMetadataVisitor(String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
+        super(providerId, persistence, options, defaultSearchType, updatedVisitor, notFoundHandler);
     }
 
-    public ManualConsoleSearchMetadataVisitor(String providerId, boolean overwrite, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler, int displaySize) {
-        super(providerId, overwrite, defaultSearchType, updatedVisitor, notFoundHandler);
+    public ManualConsoleSearchMetadataVisitor(String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler, int displaySize) {
+        super(providerId, persistence, options, defaultSearchType, updatedVisitor, notFoundHandler);
         this.displaySize = displaySize;
     }
 
@@ -68,7 +70,7 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
                 // remember the selected title
                 ConfigurationManager.getInstance().setMetadataIdForTitle(query.get(SearchQuery.Field.TITLE), sr.getMetadataId());
                 IMediaMetadata md = getProvider().getMetaData(sr);
-                file.updateMetadata(md, isOverwriteEnabled());
+                getPersistence().storeMetaData(md, file, getPersistenceOptions());
                 if (getUpdatedVisitor() != null) getUpdatedVisitor().visit(file);
             }
         } catch (Exception e) {

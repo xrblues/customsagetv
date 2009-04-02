@@ -6,15 +6,18 @@ import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MetadataKey;
 
 import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
 
 public class ListMovieVisitor implements IMediaResourceVisitor {
     private boolean verbose = false;
+    private IMediaMetadataPersistence persistence;
 
-    public ListMovieVisitor(boolean verbose) {
+    public ListMovieVisitor(IMediaMetadataPersistence persistence, boolean verbose) {
         this.verbose = verbose;
+        this.persistence = persistence;
         System.out.printf("\nListing Movies\n- = Missing MetaData;\n");
     }
 
@@ -23,7 +26,7 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
             if (verbose) {
                 showMetadata((IMediaFile) resource);
             } else {
-                IMediaMetadata md = resource.getMetadata();
+                IMediaMetadata md = persistence.loadMetaData(resource);
                 IMediaFile mediaFile = (IMediaFile) resource;
                 String code = ((md == null) ? "-" : " ");
                 System.out.printf("%s %-40s (%s)\n", code, mediaFile.getTitle(), mediaFile.getLocationUri());
@@ -32,7 +35,7 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
     }
 
     public void showMetadata(IMediaFile mf) {
-        printMetadata(mf.getMetadata(), mf.getName(), mf.getLocationUri());
+        printMetadata(persistence.loadMetaData(mf), mf.getName(), mf.getLocationUri());
     }
     
     public static void printMetadata(IMediaMetadata md, String name, String location) {

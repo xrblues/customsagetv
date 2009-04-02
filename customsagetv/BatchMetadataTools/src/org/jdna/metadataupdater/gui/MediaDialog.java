@@ -2,7 +2,6 @@ package org.jdna.metadataupdater.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -15,6 +14,7 @@ import net.miginfocom.swing.MigLayout;
 
 import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.ui.SwingBindingUtils;
@@ -25,10 +25,10 @@ public class MediaDialog extends JDialog {
 
     JTextField title;
     JTextField mpaa;
-    public MediaDialog(IMediaResource resource, JFrame parent, String dialogTitle) {
+    public MediaDialog(IMediaMetadataPersistence persistence, IMediaResource resource, JFrame parent, String dialogTitle) {
         super(parent, dialogTitle, true);
         this.res = resource;
-        this.md=resource.getMetadata();
+        this.md=persistence.loadMetaData(resource);
         if (md==null) {
             md=new MediaMetadata();
         }
@@ -49,14 +49,15 @@ public class MediaDialog extends JDialog {
         mpaa=SwingBindingUtils.createTextBox(md, MetadataKey.MPAA_RATING);
         panel.add(mpaa, "growx, wrap");
         
+        /*
         try {
-            ImageLabel img = new ImageLabel(res.getLocalPosterUri());
-            panel.add(img, "span, wrap");
+            //ImageLabel img = new ImageLabel(md.getP);
+            //panel.add(img, "span, wrap");
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        
+        */
         
         JPanel buttons = new JPanel(new MigLayout());
         

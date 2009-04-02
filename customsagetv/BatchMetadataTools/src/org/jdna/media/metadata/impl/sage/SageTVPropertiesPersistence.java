@@ -29,18 +29,19 @@ import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 import org.jdna.util.SortedProperties;
 
 import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
 
-public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataPersistence {
-    private static final Logger                                   log              = Logger.getLogger(SageTVWithCentralFanartFolderPersistence.class);
-    private static final SageTVWithCentralFanartFolderPersistence instance         = new SageTVWithCentralFanartFolderPersistence();
+public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
+    private static final SageTVPropertiesPersistence instance = new SageTVPropertiesPersistence();
+    private static final Logger                                   log              = Logger.getLogger(SageTVPropertiesPersistence.class);
     public static final String                                   MOVIE_MEDIA_TYPE = "Movie";
     public static final String                                   TV_MEDIA_TYPE    = "TV";
 
-    public SageTVWithCentralFanartFolderPersistence() {
+    public SageTVPropertiesPersistence() {
         if (!SageProperty.isPropertySetValid()) {
             throw new RuntimeException("Programmer Error: SageProperty is missing some MetadataKey values!");
         }
@@ -51,12 +52,14 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
     }
 
     public String getId() {
-        return "sage";
+        return "sageProperties";
     }
 
     private File getPropertyFile(IMediaResource mediaFile) {
         try {
-            return new File(new URI(mediaFile.getLocalMetadataUri()));
+            File f = new File(new URI(mediaFile.getLocationUri()));
+            f = new File(f.getParent(), f.getName() + ".properties");
+            return f;
         } catch (URISyntaxException e) {
             log.error("Failed to create File Uri!", e);
             return null;
@@ -66,6 +69,7 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
     /**
      * We only load the metadata for the first part of a MediaFile.
      */
+    @SuppressWarnings("unchecked")
     private Map<String, String> loadProperties(IMediaResource mf) throws Exception {
         File propFile = getPropertyFile(mf);
         Properties props = new Properties();
@@ -83,7 +87,7 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
         return m;
     }
 
-    public Map<String, String> getMetadataProperties(IMediaResource mediaFile, IMediaMetadata md) throws IOException {
+    public Map<String, String> getMetadataProperties(IMediaResource mediaFile, IMediaMetadata md, PersistenceOptions options) throws IOException {
         if (md.getMediaTitle() == null) throw new IOException("MetaData doesn't contain title.  Will not Save/Update.");
 
         if (mediaFile.getType() != IMediaFile.TYPE_FILE) {
@@ -111,15 +115,13 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
         props.put(SageProperty.FILENAME.sageKey, mediaFile.getName());
         props.put(SageProperty.FILEURI.sageKey, mediaFile.getLocationUri());
         
-        props = getMetadataProperties(md, props);
+        props = getMetadataProperties(md, props, options);
         return props;
     }
     
     
-    public Map<String, String> getMetadataProperties(IMediaMetadata md, Map<String, String> props) throws IOException {
+    public Map<String, String> getMetadataProperties(IMediaMetadata md, Map<String, String> props, PersistenceOptions options) throws IOException {
         ConfigurationManager cm = ConfigurationManager.getInstance();
-
-        boolean overwrite = cm.getMetadataUpdaterConfiguration().isOverwrite();
 
         // set the media type, if it's not set
         if (StringUtils.isEmpty((String) md.get(MetadataKey.MEDIA_TYPE))) {
@@ -149,11 +151,11 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
             } else if (p == SageProperty.SERIALIZED_CAST) {
                 props.put(p.sageKey, encodeString(serializeCast(md.getCastMembers(ICastMember.ALL))));
             } else if (p == SageProperty.FANART_BACKGROUND) {
-                setFanartImageUrl(overwrite, props, md.getBackground(), p);
+                setFanartImageUrl(options, props, md.getBackground(), p);
             } else if (p == SageProperty.FANART_BANNER) {
-                setFanartImageUrl(overwrite, props, md.getBanner(), p);
+                setFanartImageUrl(options, props, md.getBanner(), p);
             } else if (p == SageProperty.FANART_POSTER) {
-                setFanartImageUrl(overwrite, props, md.getPoster(), p);
+                setFanartImageUrl(options, props, md.getPoster(), p);
             } else if (p == SageProperty.SEASON_NUMBER) {
                 props.put(p.sageKey, zeroPad(encodeString((md.get(MetadataKey.SEASON))), 2));
             } else if (p == SageProperty.EPISODE_NUMBER) {
@@ -199,13 +201,13 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
     }
 
 
-    public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, boolean overwrite) throws IOException {
+    public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
         // do the actual save
-        save((IMediaFile) mediaFile, md, getMetadataProperties(mediaFile, md), overwrite);
+        save((IMediaFile) mediaFile, md, getMetadataProperties(mediaFile, md, options), options);
     }
 
-    private void setFanartImageUrl(boolean overwrite, Map<String,String> props, IMediaArt fanart, SageProperty key) {
-        if (overwrite || ((props.get(key.sageKey) == null || ((String)props.get(key.sageKey)).trim().length() == 0) && fanart != null && !StringUtils.isEmpty(fanart.getDownloadUrl()))) {
+    private void setFanartImageUrl(PersistenceOptions options, Map<String,String> props, IMediaArt fanart, SageProperty key) {
+        if ((options!=null && options.isOverwriteFanart()) || ((props.get(key.sageKey) == null || ((String)props.get(key.sageKey)).trim().length() == 0) && fanart != null && !StringUtils.isEmpty(fanart.getDownloadUrl()))) {
 
             if (fanart != null && !StringUtils.isEmpty(fanart.getDownloadUrl())) {
                 props.put(key.sageKey, encodeString(fanart.getDownloadUrl()));
@@ -267,7 +269,7 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
         return sb.toString();
     }
 
-    private void save(IMediaFile mediaFileParent, IMediaMetadata md, Map<String,String> props, boolean overwrite) {
+    private void save(IMediaFile mediaFileParent, IMediaMetadata md, Map<String,String> props, PersistenceOptions options) {
         // in the event that this is a grouped/stacked MediaFile, we need to
         // write the metadata for each part.
         if (mediaFileParent.isStacked()) {
@@ -284,7 +286,7 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
                     props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getMultiCDTitleMask(), props));
                     // for multiple parts, we try tro re-use the thumbnail to
                     // reduce the amount of downloading...
-                    saveSingle(props, (IMediaFile) mf, md, overwrite);
+                    saveSingle(props, (IMediaFile) mf, md, options);
                 } else {
                     log.error("Unknown Media File type for: " + mf.getLocationUri() + "; " + mf.getClass().getName());
                 }
@@ -303,19 +305,16 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
             } else {
                 props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTitleMask(), props));
             }
-            saveSingle(props, mediaFileParent, md, overwrite);
+            saveSingle(props, mediaFileParent, md, options);
         }
-
-        FanartStorage.downloadFanart(mediaFileParent, md, overwrite);
-
-        mediaFileParent.touch();
     }
 
 
-    private void saveSingle(Map<String,String> allprops, IMediaFile mf, IMediaMetadata md, boolean overwrite) {
+    private void saveSingle(Map<String,String> allprops, IMediaFile mf, IMediaMetadata md, PersistenceOptions options) {
         File partFile = getPropertyFile(mf);
-        if (!overwrite && partFile.exists()) {
+        if (!(options!=null && options.isOverwriteMetadata()) && partFile.exists()) {
             log.debug("Skipping overwrite of property file: " + partFile.getAbsolutePath() + " since overwrite is disabled.");
+            return;
         }
         
         try {
@@ -336,8 +335,6 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
             }
 
             props.store(new FileOutputStream(partFile), "Sage Video Metadata for " + mf.getLocationUri());
-
-            log.debug("Touched Media File: " + mf.getLocationUri() + " so that sage to reload the metadata.");
         } catch (IOException e) {
             log.error("Failed to save properties: " + partFile.getAbsolutePath(), e);
         }
@@ -517,7 +514,10 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
     public static Map<String, String> getSageTVMetadataMap(IMediaMetadata md) {
         Map<String, String> props = new HashMap<String, String>();
         try {
-            return instance.getMetadataProperties(md, props);
+            PersistenceOptions options =new PersistenceOptions();
+            options.setOverwriteFanart(true);
+            options.setOverwriteMetadata(true);
+            return instance.getMetadataProperties(md, props, options);
         } catch (IOException e) {
             log.error("Unable to load metadata for: " + md.getMediaTitle(), e);
         }
@@ -526,7 +526,10 @@ public class SageTVWithCentralFanartFolderPersistence implements IMediaMetadataP
     
     public static Map<String, String> getSageTVMetadataMap(IMediaFile mediaFile, IMediaMetadata md) {
         try {
-            return instance.getMetadataProperties(mediaFile, md);
+            PersistenceOptions options =new PersistenceOptions();
+            options.setOverwriteFanart(true);
+            options.setOverwriteMetadata(true);
+            return instance.getMetadataProperties(mediaFile, md, options);
         } catch (IOException e) {
             log.error("Unabled to get Metadata Properties for: " + mediaFile.getLocationUri(), e);
         }

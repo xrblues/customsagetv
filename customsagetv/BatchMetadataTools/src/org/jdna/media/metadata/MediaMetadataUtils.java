@@ -29,12 +29,12 @@ public class MediaMetadataUtils {
         URL u = new URL(url);
         URLConnection conn = u.openConnection();
         if (conn instanceof HttpURLConnection) {
-            HttpURLConnection uconn = (HttpURLConnection) conn;
             conn.setRequestProperty("User-Agent", ConfigurationManager.getInstance().getUrlConfiguration().getHttpUserAgent());
         }
 
         BufferedImage img = ImageIO.read(conn.getInputStream());
         ImageIO.write(img, "jpg", out);
+        log.debug("Wrote standard image: " + out.getAbsolutePath());
     }
 
     public static void writeImageFromUrl(String url, File out, int scaleWidth) throws IOException {
@@ -44,21 +44,22 @@ public class MediaMetadataUtils {
         URL u = new URL(url);
         URLConnection conn = u.openConnection();
         if (conn instanceof HttpURLConnection) {
-            HttpURLConnection uconn = (HttpURLConnection) conn;
             conn.setRequestProperty("User-Agent", ConfigurationManager.getInstance().getUrlConfiguration().getHttpUserAgent());
         }
+        
+        log.debug("Scaling was requested: " + scaleWidth);
 
         BufferedImage imageSrc = ImageIO.read(conn.getInputStream());
-        if (scaleWidth!=-1 && imageSrc.getWidth()>scaleWidth) {
+        if (scaleWidth>0 && imageSrc.getWidth()>scaleWidth) {
             // scale
             int width = imageSrc.getWidth();
             int height = imageSrc.getHeight();
 
             int thumbWidth = scaleWidth;
-            int div = width/thumbWidth;
-            height = height/div;
+            float div = (float)width/thumbWidth;
+            height = (int)(height/div);
 
-            log.debug(String.format("Scaling Poster from %sx%s to %sx%s", imageSrc.getWidth(), imageSrc.getHeight(), width, height));
+            log.warn(String.format("Scaling Poster from %sx%s to %sx%s", imageSrc.getWidth(), imageSrc.getHeight(), thumbWidth, height));
             Image img = imageSrc.getScaledInstance(thumbWidth, height ,Image.SCALE_SMOOTH);
 
             BufferedImage bi = new BufferedImage(thumbWidth, height, BufferedImage.TYPE_INT_RGB);
@@ -66,9 +67,11 @@ public class MediaMetadataUtils {
             biContext.drawImage(img, 0, 0, null);
             
             imageSrc = bi;
+        } else {
+            log.debug("Scaling was not used because image was smaller than the scale width");
         }
         ImageIO.write(imageSrc, "jpg", out);
-        
+        log.debug("Wrote scaled image: " + out.getAbsolutePath());
     }
 
     /**

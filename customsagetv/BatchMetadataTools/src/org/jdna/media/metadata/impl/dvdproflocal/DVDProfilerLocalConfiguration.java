@@ -2,7 +2,6 @@ package org.jdna.media.metadata.impl.dvdproflocal;
 
 import java.io.File;
 
-import org.jdna.metadataupdater.MetadataUpdater;
 import org.jdna.persistence.annotations.Field;
 import org.jdna.persistence.annotations.Table;
 

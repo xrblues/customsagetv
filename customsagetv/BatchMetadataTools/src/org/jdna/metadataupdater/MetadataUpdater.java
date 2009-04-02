@@ -19,14 +19,19 @@ import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.MediaResourceFactory;
+import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
+import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
+import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
+import org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
-import org.jdna.media.util.BackdropDownloaderVisitor;
 import org.jdna.media.util.CollectorResourceVisitor;
 import org.jdna.media.util.CompositeResourceVisitor;
 import org.jdna.media.util.CountResourceVisitor;
@@ -153,6 +158,9 @@ public class MetadataUpdater {
     private boolean showSupportedMetadata = false;
     private boolean gui = false;
 
+    private PersistenceOptions options = new PersistenceOptions();
+    private IMediaMetadataPersistence persistence = new SageTVPropertiesWithCentralFanartPersistence();
+
     private boolean tvSearch;
     
     /**
@@ -199,6 +207,7 @@ public class MetadataUpdater {
             renderProviders(MediaMetadataFactory.getInstance().getMetaDataProviders(), provider);
             return;
         }
+        
 
         // get the parent folder for processing
         IMediaFolder parentFolder = null;
@@ -231,34 +240,32 @@ public class MetadataUpdater {
         } else {
             // check if we are just listing movies
             if (listMovies) {
-                parentFolder.accept(new ListMovieVisitor(false), config.isRecurseFolders());
+                parentFolder.accept(new ListMovieVisitor(persistence, false), config.isRecurseFolders());
                 return;
             }
 
             // we are showing info for these...
             if (showMetadata) {
-                parentFolder.accept(new ListMovieVisitor(true), config.isRecurseFolders());
+                parentFolder.accept(new ListMovieVisitor(persistence, true), config.isRecurseFolders());
                 return;
             }
             
-            //TODO: check if we are just doing fanart only
-            
-            boolean overwrite = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwrite();
-
             // collectors and counters for automatic updating
             CollectorResourceVisitor autoHandled = new CollectorResourceVisitor();
             CollectorResourceVisitor autoSkipped = new CollectorResourceVisitor();
             if (!config.isProcessMissingMetadataOnly()) {
-                parentFolder.accept(new RefreshMetadataVisitor(overwrite, autoHandled, autoSkipped));
+                parentFolder.accept(new RefreshMetadataVisitor(persistence, options, autoHandled, autoSkipped));
                 return;
             }
 
             IMediaResourceVisitor updatedDisplay = new IMediaResourceVisitor() {
                 public void visit(IMediaResource resource) {
-                    if (resource.getMetadata().getMediaTitle()==null) {
-                        
+                    IMediaMetadata md = persistence.loadMetaData(resource);
+                    String title = resource.getTitle();
+                    if (md!=null) {
+                        title=md.getMediaTitle();
                     }
-                    System.out.printf("Updated: %s; %s\n", resource.getMetadata().getMediaTitle(), resource.getLocationUri());
+                    System.out.printf("Updated: %s; %s\n", title, resource.getLocationUri());
                 }
             };
 
@@ -280,7 +287,7 @@ public class MetadataUpdater {
             }
             
             // Main visitor for automatic updating
-            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, overwrite, searchType, autoUpdated, autoNotFound);
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, persistence, options, searchType, autoUpdated, autoNotFound);
             
             // collectors and counters for manual updating
             CountResourceVisitor manualUpdatedCount = new CountResourceVisitor();
@@ -288,12 +295,12 @@ public class MetadataUpdater {
             CompositeResourceVisitor manualUpdated  = new CompositeResourceVisitor(updatedDisplay, manualUpdatedCount);
             
             // Main visitor for manual interactive searching
-            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(provider, overwrite, searchType, manualUpdated, manualSkippedCount, config.getSearchResultDisplaySize());
+            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(provider, persistence, options, searchType, manualUpdated, manualSkippedCount, config.getSearchResultDisplaySize());
 
             // Main visitor that only does files that a missing metadata
-            MissingMetadataVisitor missingMetadata = new MissingMetadataVisitor(config.isAutomaticUpdate() ? autoUpdater : manualUpdater, new CompositeResourceVisitor(up2dateDisplay, config.isAutomaticUpdate() ? autoSkippedCount : manualSkippedCount));
+            MissingMetadataVisitor missingMetadata = new MissingMetadataVisitor(persistence, config.isAutomaticUpdate() ? autoUpdater : manualUpdater, new CompositeResourceVisitor(up2dateDisplay, config.isAutomaticUpdate() ? autoSkippedCount : manualSkippedCount));
             
-            if (overwrite) {
+            if (options.isOverwriteFanart() || options.isOverwriteMetadata()) {
                 // do all videos... no matter what
                 parentFolder.accept(config.isAutomaticUpdate() ? autoUpdater : manualUpdater, config.isRecurseFolders());
             } else {
@@ -336,22 +343,6 @@ public class MetadataUpdater {
             } catch (Throwable t) {
             }
         }
-    }
-
-    private void processBackdrops(IMediaFolder parent) {
-        IMediaResourceVisitor skipped = new IMediaResourceVisitor() {
-            public void visit(IMediaResource resource) {
-                System.out.println("Skipping Backdrop for: " + resource.getLocationUri());
-            }
-        };
-        IMediaResourceVisitor handled = new IMediaResourceVisitor() {
-            public void visit(IMediaResource resource) {
-                System.out.println("Downloaded Backdrop for: " + resource.getLocationUri());
-            }
-        };
-        
-        BackdropDownloaderVisitor vis = new BackdropDownloaderVisitor(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId(), config.isOverwrite(), handled, skipped);
-        parent.accept(vis, config.isRecurseFolders());
     }
 
     public void renderProviders(List<IMediaMetadataProvider> providers, String defaultProvider) {
@@ -411,7 +402,28 @@ public class MetadataUpdater {
      */
     @CommandLineArg(name = "overwrite", description = "Overwrite metadata and images. (default false)")
     public void setOverwrite(boolean b) {
-        config.setOverwrite(b);
+        options.setOverwriteFanart(b);
+        options.setOverwriteMetadata(b);
+    }
+
+    /**
+     * if set to true, will overwrite metadata
+     * 
+     * @param b
+     */
+    @CommandLineArg(name = "overwriteMetadata", description = "Overwrite metadata. (default false)")
+    public void setOverwriteMetadata(boolean b) {
+        options.setOverwriteMetadata(b);
+    }
+
+    /**
+     * if set to true, it will overwrite fanart
+     * 
+     * @param b
+     */
+    @CommandLineArg(name = "overwriteFanart", description = "Overwrite fanart. (default false)")
+    public void setOverwriteFanart(boolean b) {
+        options.setOverwriteFanart(b);
     }
 
     @CommandLineArg(name = "fanartEnabled", description = "Enable fanart support (backgrounds, banners, extra posters, etc). (default true)")
@@ -542,11 +554,18 @@ public class MetadataUpdater {
         config.setAutomaticUpdate(b);
     }
 
-    /**
-     * Set a configuration property
-     * 
-     * @param s
-     */
+    @CommandLineArg(name = "fanartOnly", description = "Only process fanart, ignore updating metadata (default false)")
+    public void setFanartOnly(boolean b) {
+        persistence=new CentralFanartPersistence();
+        options.setOverwriteMetadata(false);
+    }
+
+    @CommandLineArg(name = "metadataOnly", description = "Only process metadata, ignore updating fanart (default false)")
+    public void setMetadataOnly(boolean b) {
+        persistence=new SageTVPropertiesPersistence();
+        options.setOverwriteFanart(false);
+    }
+    
     @CommandLineArg(name = "setProperty", description = "Sets a Property (--setProperty=name:value) (use --showProperties to get property list)")
     public void setPropertu(String propAndVal) {
         Pattern p = Pattern.compile("([^:]+):(.*)");
@@ -613,5 +632,13 @@ public class MetadataUpdater {
             log.error("Failed to save configuration before exit.", e);
         }
         System.exit(1);
+    }
+
+    public IMediaMetadataPersistence getPersistence() {
+        return persistence;
+    }
+
+    public PersistenceOptions getPersistenceOptions() {
+        return options;
     }
 }

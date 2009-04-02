@@ -15,7 +15,9 @@ import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.MediaMetadataUtils;
+import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.PersistenceOptions;
 
 import sagex.phoenix.fanart.FanartUtil;
 import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
@@ -25,12 +27,12 @@ public class FanartStorage {
     private static final FanartStorage instance = new FanartStorage();
     private static final Logger log = Logger.getLogger(FanartStorage.class);
     
-    public void saveFanart(IMediaFile mediaFileParent, String title, IMediaMetadata md, boolean overwrite) {
+    public void saveFanart(IMediaFile mediaFileParent, String title, IMediaMetadata md, PersistenceOptions options) {
         MediaArtifactType[] localArtTypes = null;
         if (ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isFanartEnabled() && !StringUtils.isEmpty(ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder())) {
             log.info("Using Central Fanart: " + ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder());
             for (MediaArtifactType mt : MediaArtifactType.values()) {
-                saveCentralFanart(title, md, mt, overwrite);
+                saveCentralFanart(title, md, mt, options);
             }
             localArtTypes = new MediaArtifactType[] {MediaArtifactType.POSTER};
         } else if (ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isFanartEnabled()) {
@@ -43,16 +45,16 @@ public class FanartStorage {
         
         if (mediaFileParent!=null) {
             // save any local artifacts
-            saveLocalFanartForTypes(mediaFileParent, md, overwrite, localArtTypes);
+            saveLocalFanartForTypes(mediaFileParent, md, options, localArtTypes);
         }
     }
     
-    private void saveLocalFanartForTypes(IMediaFile mediaFileParent, IMediaMetadata md, boolean overwrite, MediaArtifactType[] artTypes) {
+    private void saveLocalFanartForTypes(IMediaFile mediaFileParent, IMediaMetadata md, PersistenceOptions options, MediaArtifactType[] artTypes) {
         if (mediaFileParent.isStacked()) {
             for (IMediaResource mf : mediaFileParent.getParts()) {
                 for (MediaArtifactType mt : artTypes) {
                     try {
-                        saveLocalFanart((IMediaFile)mf, md, mt, overwrite);
+                        saveLocalFanart((IMediaFile)mf, md, mt, options);
                     } catch (Exception e) {
                         log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocationUri(),e);
                     }
@@ -61,7 +63,7 @@ public class FanartStorage {
         } else {
             for (MediaArtifactType mt : artTypes) {
                 try {
-                    saveLocalFanart(mediaFileParent, md, mt, overwrite);
+                    saveLocalFanart(mediaFileParent, md, mt, options);
                 } catch (Exception e) {
                     log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocationUri(),e);
                 }
@@ -69,7 +71,7 @@ public class FanartStorage {
         }
     }
 
-    private void saveLocalFanart(IMediaFile mediaFileParent, IMediaMetadata md, MediaArtifactType mt, boolean overwrite) throws IOException {
+    private void saveLocalFanart(IMediaFile mediaFileParent, IMediaMetadata md, MediaArtifactType mt, PersistenceOptions options) throws IOException {
         try {
             File mediaFile = new File(new URI(mediaFileParent.getLocationUri()));
 
@@ -77,14 +79,14 @@ public class FanartStorage {
             File imageFile = FanartUtil.getLocalFanartForFile(mediaFile, MediaType.MOVIE, mt);
             IMediaArt ma[] = md.getMediaArt(mt);
             if (ma != null && ma.length > 0) {
-                downloadAndSaveFanart(ma[0], imageFile, overwrite, false);
+                downloadAndSaveFanart(mt, ma[0], imageFile, options, false);
             }
         } catch (URISyntaxException e) {
             log.error("Failed to save media art: " + mt + " for file: " + mediaFileParent.getLocationUri(),e);
         }
     }
 
-    private void downloadAndSaveFanart(IMediaArt mediaArt, File imageFile, boolean overwrite, boolean useOriginalName) throws IOException {
+    private void downloadAndSaveFanart(MediaArtifactType mt, IMediaArt mediaArt, File imageFile, PersistenceOptions options, boolean useOriginalName) throws IOException {
         if (mediaArt == null || mediaArt.getDownloadUrl() == null || imageFile == null) return;
         
         String url = mediaArt.getDownloadUrl();
@@ -93,14 +95,43 @@ public class FanartStorage {
             log.debug("Using orginal image filename from url: " + imageFile.getAbsolutePath());
         }
         
-        if (!overwrite && imageFile.exists()) {
-            log.debug("Skipping writing of image file: " + imageFile.getAbsolutePath() + " since overwrite is disabled.");
+        if (!imageFile.exists() || (options!=null && options.isOverwriteFanart()) || !shouldSkipFile(imageFile)) {
+            int scale = getScale(mt);
+            if (scale>0) {
+                MediaMetadataUtils.writeImageFromUrl(mediaArt.getDownloadUrl(), imageFile, scale);
+            } else {
+                MediaMetadataUtils.writeImageFromUrl(mediaArt.getDownloadUrl(), imageFile);
+            }
         } else {
-            MediaMetadataUtils.writeImageFromUrl(mediaArt.getDownloadUrl(), imageFile);
+            log.debug("Skipping writing of image file: " + imageFile.getAbsolutePath());
         }
     }
+    
+    private int getScale(MediaArtifactType mt) {
+        MetadataConfiguration mc = ConfigurationManager.getInstance().getMetadataConfiguration();
+        int scale = -1;
+        if (mc==null) return scale;
+        if (mt == MediaArtifactType.BACKGROUND) {
+            scale = mc.getBackgroundImageWidth();
+        } else if (mt == MediaArtifactType.BANNER) {
+            scale = mc.getBannerImageWidth();
+        } else if (mt == MediaArtifactType.POSTER) {
+            scale = mc.getPosterImageWidth();
+        } else {
+            scale = -1;
+        }
+        return scale;
+    }
 
-    private void saveCentralFanart(String title, IMediaMetadata md, MediaArtifactType mt, boolean overwrite) {
+    private boolean shouldSkipFile(File imageFile) {
+        File downloaded = new File(imageFile.getParentFile(), "images");
+        boolean skip = false;
+        //if (imageFile.exists()) {
+        //}
+        return skip;
+    }
+
+    private void saveCentralFanart(String title, IMediaMetadata md, MediaArtifactType mt, PersistenceOptions options) {
         String centralFolder = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder();
         if (centralFolder == null) {
             throw new RuntimeException("Central Fanart Support is enabled, but no central folder location is set!");
@@ -126,7 +157,7 @@ public class FanartStorage {
         if (artwork != null && artwork.length > 0) {
             for (IMediaArt ma : artwork) {
                 try {
-                    downloadAndSaveFanart(ma, fanartFile, overwrite, true);
+                    downloadAndSaveFanart(mt, ma, fanartFile, options, true);
                 } catch (IOException e) {
                     log.error("Failed to download Fanart: " + ma.getDownloadUrl() + " for : " + title, e);
                 }
@@ -140,22 +171,22 @@ public class FanartStorage {
     }
 
     private boolean isTV(IMediaMetadata md) {
-        return SageTVWithCentralFanartFolderPersistence.TV_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
+        return SageTVPropertiesPersistence.TV_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
     }
 
     private boolean isMovie(IMediaMetadata md) {
-        return md == null || SageTVWithCentralFanartFolderPersistence.MOVIE_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
+        return md == null || SageTVPropertiesPersistence.MOVIE_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
     }
     
-    public static void  downloadFanart(String title, IMediaMetadata md, boolean overwrite) {
-        instance.saveFanart(null, title, md, overwrite);
+    public static void  downloadFanart(String title, IMediaMetadata md, PersistenceOptions options) {
+        instance.saveFanart(null, title, md, options);
     }
 
-    public static void  downloadFanart(IMediaMetadata md, boolean overwrite) {
-        instance.saveFanart(null, md.getMediaTitle(), md, overwrite);
+    public static void  downloadFanart(IMediaMetadata md, PersistenceOptions options) {
+        instance.saveFanart(null, md.getMediaTitle(), md, options);
     }
 
-    public static void  downloadFanart(IMediaFile mediaFile, IMediaMetadata md, boolean overwrite) {
-        instance.saveFanart(mediaFile, md.getMediaTitle(), md, overwrite);
+    public static void  downloadFanart(IMediaFile mediaFile, IMediaMetadata md, PersistenceOptions options) {
+        instance.saveFanart(mediaFile, md.getMediaTitle(), md, options);
     }
 }

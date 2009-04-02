@@ -5,9 +5,6 @@ import org.jdna.persistence.annotations.Table;
 
 @Table(label="Application Configuration", name = "metadataUpdater", requiresKey = false, description = "Configuration for Main Metadata Updater")
 public class MetadataUpdaterConfiguration {
-    @Field(label="Overwrite", description = "If true, then it will overwrite properties and images")
-    private boolean overwrite = false;
-    
     @Field(label="Media Folder", description = "Default Folder to Scan (GUI Only)")
     private String guiFolderToScan = null;
     
@@ -76,14 +73,6 @@ public class MetadataUpdaterConfiguration {
     }
 
     public MetadataUpdaterConfiguration() {
-    }
-
-    public void setOverwrite(boolean b) {
-        this.overwrite = b;
-    }
-
-    public boolean isOverwrite() {
-        return overwrite;
     }
 
     public boolean isRecurseFolders() {

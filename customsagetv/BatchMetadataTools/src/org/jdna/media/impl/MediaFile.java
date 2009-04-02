@@ -8,7 +8,6 @@ import java.util.List;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.media.metadata.MediaMetadataFactory;
 
 import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
@@ -69,32 +68,6 @@ public class MediaFile extends AbstractMediaResource implements IMediaFile {
     public void addStackedTitle(IMediaResource res) {
         if (!isStacked()) setStacked(true);
         parts.add(res);
-    }
-
-    @Override
-    public String getLocalMetadataUri() {
-        URIAdapter ua = URIAdapterFactory.getAdapter(getURIAdapter().getParentUri());
-        return ua.createUriAdapter(getName() + ".properties").toString();
-    }
-
-    @Override
-    public String getLocalPosterUri() {
-        URIAdapter ua = URIAdapterFactory.getAdapter(getURIAdapter().getParentUri());
-        return ua.createUriAdapter(getBasename() + ".jpg").toString();
-    }
-
-    @Override
-    public String getLocalBackdropUri() {
-        URIAdapter ua = URIAdapterFactory.getAdapter(getURIAdapter().getParentUri());
-        return ua.createUriAdapter(getBasename() + "_background.jpg").toString();
-    }
-
-    @Override
-    public IMediaMetadata getMetadata() {
-        if (metadata == null) {
-            metadata = MediaMetadataFactory.getInstance().getDefaultPeristence().loadMetaData(this);
-        }
-        return metadata;
     }
 
     public boolean isWatched() {

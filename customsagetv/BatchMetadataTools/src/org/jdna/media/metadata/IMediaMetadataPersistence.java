@@ -30,7 +30,7 @@ public interface IMediaMetadataPersistence {
      * @throws IOException
      *             if it connot be saved
      */
-    public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, boolean overwrite) throws IOException;
+    public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException;
 
     /**
      * loads the saved IVideoMetaData associated with the given media file. This

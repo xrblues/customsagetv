@@ -10,13 +10,13 @@ import org.jdna.persistence.annotations.Table;
 @Table(label="Metadata Configuration", name = "metadata", requiresKey = false, description = "Configuration for Metadata")
 public class MetadataConfiguration {
     @Field(label="Persistence Classname", description = "Default class name for storing metadata")
-    private String persistenceClass       = org.jdna.media.metadata.impl.sage.SageTVWithCentralFanartFolderPersistence.class.getName();
+    private String persistenceClass       = org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence.class.getName();
 
     @Field(label="Registered Providers", description = "Comma separated list of known metadata providers (ie, can be used for searching for metadata)")
     private String videoMetadataProviders = IMDBMetaDataProvider.class.getName() + "," + NielmIMDBMetaDataProvider.class.getName() + "," + "," + LocalDVDProfMetaDataProvider.class.getName() + "," + TheMovieDBMetadataProvider.class.getName();
 
     @Field(label="Ignore Words in Title", description = "Comma separated list of words that will be removed from a title when doing a search")
-    private String wordsToClean           = "dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv";
+    private String wordsToClean           = "1080p,720p,480p,1080i,720i,480i,dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv,HDTV,x264";
 
     @Field(label="Metadata Provider(s)", description = "Default provider id to use (comma separate, if more than 1)")
     private String defaultProviderId      = "tvdb.xml,themoviedb.org,themoviedb.org-2,imdb.xml,imdb";
@@ -26,6 +26,15 @@ public class MetadataConfiguration {
 
     @Field(label="Score Alternate Titles", description = "If true, then providers will check alternate titles for matches.")
     private boolean scoreAlternateTitles = true;
+
+    @Field(label="Poster width", description="Resize poster to scale using the specified max width")
+    private int posterImageWidth = 200;
+
+    @Field(label="Banner width", description="Resize banner to scale using the specified max width")
+    private int bannerImageWidth = -1;
+
+    @Field(label="Background width", description="Resize backgrond to scale using the specified max width")
+    private int backgroundImageWidth = -1;
 
     public MetadataConfiguration() {
     }
@@ -76,5 +85,29 @@ public class MetadataConfiguration {
 
     public void setScoreAlternateTitles(boolean scoreAlternateTitles) {
         this.scoreAlternateTitles = scoreAlternateTitles;
+    }
+
+    public int getPosterImageWidth() {
+        return posterImageWidth;
+    }
+
+    public void setPosterImageWidth(int posterImageWidth) {
+        this.posterImageWidth = posterImageWidth;
+    }
+
+    public int getBannerImageWidth() {
+        return bannerImageWidth;
+    }
+
+    public void setBannerImageWidth(int bannerImageWidth) {
+        this.bannerImageWidth = bannerImageWidth;
+    }
+
+    public int getBackgroundImageWidth() {
+        return backgroundImageWidth;
+    }
+
+    public void setBackgroundImageWidth(int backgroundImageWidth) {
+        this.backgroundImageWidth = backgroundImageWidth;
     }
 }

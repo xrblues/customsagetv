@@ -15,8 +15,8 @@ public class MediaTableMouseListener implements MouseListener {
         IMediaResource res = (IMediaResource) t.getModel().getValueAt(t.convertRowIndexToModel(t.getSelectedRow()),-1);
         System.out.println("Selected Resource: " + res.getName());
         
-        MediaDialog md = new MediaDialog(res, BatchMetadataToolsGUI.APPLICATION_FRAME, "Media: " + res.getName());
-        md.setVisible(true);
+        //MediaDialog md = new MediaDialog(res, BatchMetadataToolsGUI.APPLICATION_FRAME, "Media: " + res.getName());
+        //md.setVisible(true);
         
     }
 

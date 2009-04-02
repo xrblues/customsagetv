@@ -5,17 +5,21 @@ import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.PersistenceOptions;
 
 public class RefreshMetadataVisitor implements IMediaResourceVisitor {
     private static final Logger   log = Logger.getLogger(RefreshMetadataVisitor.class);
     private IMediaResourceVisitor onUpdateVisitor;
     private IMediaResourceVisitor onSkipMediaResourceVisitor;
-    private boolean overwrite;
+    private PersistenceOptions options;
+    private IMediaMetadataPersistence persistence;
 
-    public RefreshMetadataVisitor(boolean overwrite, IMediaResourceVisitor onUpdateVisitor, IMediaResourceVisitor onSkipMediaResourceVisitor) {
-        this.overwrite = overwrite;
+    public RefreshMetadataVisitor(IMediaMetadataPersistence persistence, PersistenceOptions options, IMediaResourceVisitor onUpdateVisitor, IMediaResourceVisitor onSkipMediaResourceVisitor) {
+        this.options=options;
+        this.persistence=persistence;
         this.onUpdateVisitor = onUpdateVisitor;
         this.onSkipMediaResourceVisitor = onSkipMediaResourceVisitor;
     }
@@ -29,7 +33,7 @@ public class RefreshMetadataVisitor implements IMediaResourceVisitor {
                 // if we only have title, then call the searchMetaData() using
                 // the title
                 // from the existing metadata
-                IMediaMetadata md = resource.getMetadata();
+                IMediaMetadata md = persistence.loadMetaData(resource);
 
                 if (md.getProviderDataId() != null) {
                     IMediaMetadataProvider provider = MediaMetadataFactory.getInstance().getProvider(md.getProviderId());
@@ -39,7 +43,7 @@ public class RefreshMetadataVisitor implements IMediaResourceVisitor {
 
                     log.debug("Refreshing: " + resource.getLocationUri());
                     IMediaMetadata updated = provider.getMetaDataByUrl(md.getProviderDataUrl());
-                    resource.updateMetadata(updated, overwrite);
+                    persistence.storeMetaData(updated, resource, options);
 
                     onUpdateVisitor.visit(resource);
                 } else {
