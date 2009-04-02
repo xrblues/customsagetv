@@ -7,11 +7,13 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
+import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.media.metadata.MetadataID;
+import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
 
@@ -20,18 +22,19 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
 
     private IMediaResourceVisitor  updatedHandler;
     private IMediaMetadataProvider provider;
-
     private IMediaResourceVisitor  notFoundHandler;
-    private boolean                overwrite;
+    
+    private IMediaMetadataPersistence persistence;
+    private PersistenceOptions options;
 
-    private long                   persistenceOptions;
     private SearchQuery.Type defaultSearchType;
 
-    public AutomaticUpdateMetadataVisitor(String providerId, boolean overwrite, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
+    public AutomaticUpdateMetadataVisitor(String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
         this.provider = MediaMetadataFactory.getInstance().getProvider(providerId);
         this.updatedHandler = updatedVisitor;
         this.notFoundHandler = notFoundHandler;
-        this.overwrite = overwrite;
+        this.options = options;
+        this.persistence =  persistence;
         this.defaultSearchType=defaultSearchType;
     }
 
@@ -105,7 +108,7 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
         
         if (result!=null) {
             log.info("Automatically Selecting Search Result: " + result.getTitle() + "; Score: " + result.getScore());
-            file.updateMetadata(provider.getMetaData(result), overwrite);
+            persistence.storeMetaData(provider.getMetaData(result), file, options);
             if (updatedHandler != null) updatedHandler.visit(file);
         } else {
             handleNotFoundResults(file, query, results);
@@ -124,15 +127,15 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
         return updatedHandler;
     }
 
-    protected boolean isOverwriteEnabled() {
-        return overwrite;
-    }
-
     protected IMediaMetadataProvider getProvider() {
         return provider;
     }
-
-    public long getPersistenceOptions() {
-        return persistenceOptions;
+    
+    public PersistenceOptions getPersistenceOptions() {
+        return options;
+    }
+    
+    public IMediaMetadataPersistence getPersistence() {
+        return persistence;
     }
 }

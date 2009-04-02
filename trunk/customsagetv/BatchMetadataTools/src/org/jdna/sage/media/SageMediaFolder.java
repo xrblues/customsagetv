@@ -10,9 +10,6 @@ import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.IMediaStackModel;
 import org.jdna.media.metadata.IMediaMetadata;
 
-import sagex.api.Database;
-import sagex.api.MediaFileAPI;
-
 public class SageMediaFolder implements IMediaFolder {
     private Object[] files = null;
     

@@ -7,11 +7,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
-import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.media.metadata.MediaMetadataFactory;
 
 import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
@@ -27,7 +24,6 @@ public class DVDMediaItem extends AbstractMediaResource implements IMediaFile {
     private static Pattern dvdFileExtPattern = Pattern.compile("\\.vob$|\\.ifo$|\\.bup$", Pattern.CASE_INSENSITIVE);
     private Object         sageMediaFile;
     private Object         sageAiring;
-    private IMediaMetadata metadata;
 
     public static boolean isDVD(URIAdapter uri) {
         if (uri.isDirectory()) {
@@ -90,51 +86,6 @@ public class DVDMediaItem extends AbstractMediaResource implements IMediaFile {
     public void delete() {
         // TODO Auto-generated method stub
         super.delete();
-    }
-
-    @Override
-    public String getLocalMetadataUri() {
-        URIAdapter ua = URIAdapterFactory.getAdapter(getURIAdapter().getParentUri());
-        return ua.createUriAdapter(getName() + ".properties").getUri().toString();
-    }
-
-    @Override
-    public String getLocalSubtitlesUri() {
-        // TODO Auto-generated method stub
-        return super.getLocalSubtitlesUri();
-    }
-
-    /**
-     * For regular files, returns basefilename + .jpg ext. For DVD Folders, it
-     * will return VIDEO_TS/folder.jpg if VIDEO_TS dir exists, or just
-     * basedirname + .jpg
-     * 
-     * @param mediaFile
-     * @return
-     */
-    @Override
-    public String getLocalPosterUri() {
-        boolean useTSVIDEO = ConfigurationManager.getInstance().getMediaConfiguration().isUseTSFolderForThumbnail();
-        URIAdapter tsdir = getURIAdapter().createUriAdapter("VIDEO_TS");
-        if (tsdir.exists() && useTSVIDEO) {
-            return tsdir.createUriAdapter("folder.jpg").toURIString();
-        } else {
-            URIAdapter ua = URIAdapterFactory.getAdapter(getURIAdapter().getParentUri());
-            return ua.createUriAdapter(getName() + ".jpg").toURIString();
-        }
-    }
-    
-    
-
-    @Override
-    public String getLocalBackdropUri() {
-        boolean useTSVIDEO = ConfigurationManager.getInstance().getMediaConfiguration().isUseTSFolderForThumbnail();
-        URIAdapter tsdir = getURIAdapter().createUriAdapter("VIDEO_TS");
-        if (tsdir.exists() && useTSVIDEO) {
-            return tsdir.createUriAdapter("background.jpg").toURIString();
-        } else {
-            return getURIAdapter().createUriAdapter("background.jpg").toURIString();
-        }
     }
 
     /**
@@ -207,13 +158,4 @@ public class DVDMediaItem extends AbstractMediaResource implements IMediaFile {
 
         return sageAiring;
     }
-
-    @Override
-    public IMediaMetadata getMetadata() {
-        if (metadata == null) {
-            metadata = MediaMetadataFactory.getInstance().getDefaultPeristence().loadMetaData(this);
-        }
-        return metadata;
-    }
-
 }

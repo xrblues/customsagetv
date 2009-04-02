@@ -1,8 +1,5 @@
 package org.jdna.media;
 
-import java.io.IOException;
-
-import org.jdna.media.metadata.IMediaMetadata;
 
 public interface IMediaResource extends Comparable<IMediaResource> {
     public static final int CONTENT_TYPE_UNKNOWN = 0;
@@ -36,31 +33,9 @@ public interface IMediaResource extends Comparable<IMediaResource> {
 
     public long lastModified();
 
-    public String getRelativePath(IMediaResource res);
-
     public void touch();
 
     public int getType();
 
     public int getContentType();
-
-    public IMediaMetadata getMetadata();
-
-    public String getLocalPosterUri();
-
-    public String getLocalMetadataUri();
-
-    public String getLocalSubtitlesUri();
-    
-    public String getLocalBackdropUri();
-
-    /**
-     * Convenience Method for saving/storing the metadata for a given resource.
-     * 
-     * @param metadata
-     * @param overwrite if true, then existing metadata/images will be replaced
-     * 
-     * @throws IOException
-     */
-    public void updateMetadata(IMediaMetadata metadata, boolean overwrite) throws IOException;
 }

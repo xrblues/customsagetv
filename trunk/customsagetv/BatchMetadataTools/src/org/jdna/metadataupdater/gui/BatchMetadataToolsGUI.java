@@ -69,8 +69,6 @@ public class BatchMetadataToolsGUI extends JFrame {
                 parentFolder = MediaResourceFactory.getInstance().createVirtualFolder("Videos", resources);
             }
 
-            boolean overwrite = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwrite();
-
             IMediaResourceVisitor updatedVisitor = new IMediaResourceVisitor() {
                 public void visit(IMediaResource resource) {
                     updatedMetadataModel.add(resource);
@@ -78,7 +76,7 @@ public class BatchMetadataToolsGUI extends JFrame {
             };
 
             // Main visitor for automatic updating
-            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId(), overwrite,null, updatedVisitor, new IMediaResourceVisitor() {
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId(), updaterTool.getPersistence(), updaterTool.getPersistenceOptions(),null, updatedVisitor, new IMediaResourceVisitor() {
                 public void visit(IMediaResource resource) {
                     missingTableModel.add(resource);
                 }
@@ -87,7 +85,7 @@ public class BatchMetadataToolsGUI extends JFrame {
             IMediaResourceVisitor updater = null;
             
             if (config.isProcessMissingMetadataOnly()) {
-                updater = new MissingMetadataVisitor(autoUpdater);
+                updater = new MissingMetadataVisitor(updaterTool.getPersistence(), autoUpdater);
             } else {
                 updater = autoUpdater;
             }
@@ -110,7 +108,6 @@ public class BatchMetadataToolsGUI extends JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable      missingMetadataTable;
     JCheckBox                       recurse;
-    JCheckBox                       overwrite;
     JCheckBox                       refreshSage;
     JCheckBox                       autoUpdate;
     JCheckBox                       processMissingOnly;
@@ -148,7 +145,6 @@ public class BatchMetadataToolsGUI extends JFrame {
 
         // init components
         recurse = SwingBindingUtils.createCheckBox("Recurse into sub directories", config, "setRecurseFolders", "isRecurseFolders");
-        overwrite = SwingBindingUtils.createCheckBox("Overwrite existing metadata" , config, "setOverwrite", "isOverwrite");
         refreshSage = SwingBindingUtils.createCheckBox("Refresh SageTV after scan", config, "setRefreshSageTV", "isRefreshSageTV");
         autoUpdate = SwingBindingUtils.createCheckBox("Automatic Search and Update", config, "setAutomaticUpdate", "isAutomaticUpdate");
         reindex = SwingBindingUtils.createCheckBox("Force rebuild of indexes", config, "setRefreshIndexes", "isRefreshIndexes");
@@ -200,7 +196,6 @@ public class BatchMetadataToolsGUI extends JFrame {
 
         options.add(recurse);
         options.add(autoUpdate);
-        options.add(overwrite);
         options.add(processMissingOnly);
         options.add(reindex);
         options.add(refreshSage);
@@ -313,8 +308,6 @@ public class BatchMetadataToolsGUI extends JFrame {
         if (!StringUtils.isEmpty(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId())) {
             mdProvider.setText(ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId());
         }
-
-        overwrite.setSelected(ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isOverwrite());
 
         if (StringUtils.isEmpty(folder.getText()) || StringUtils.isEmpty(mdProvider.getText())) {
             System.out.println("Disabling Button");

@@ -1,7 +1,6 @@
 package org.jdna.media.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -10,8 +9,6 @@ import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.MediaResourceFactory;
-import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.media.metadata.MediaMetadataFactory;
 
 public abstract class AbstractMediaResource implements IMediaResource {
     private static final Logger log  = Logger.getLogger(AbstractMediaResource.class);
@@ -132,36 +129,8 @@ public abstract class AbstractMediaResource implements IMediaResource {
         throw new UnsupportedOperationException("delete");
     }
 
-    public String getRelativePath(IMediaResource res) {
-        throw new UnsupportedOperationException("relative path");
-    }
-
     public int getType() {
         return type;
-    }
-
-    public String getLocalMetadataUri() {
-        return null;
-    }
-
-    public String getLocalSubtitlesUri() {
-        return null;
-    }
-
-    public String getLocalPosterUri() {
-        return null;
-    }
-    
-    public String getLocalBackdropUri() {
-        return null;
-    }
-
-    public IMediaMetadata getMetadata() {
-        return null;
-    }
-
-    public void updateMetadata(IMediaMetadata metadata, boolean overwrite) throws IOException {
-        MediaMetadataFactory.getInstance().getDefaultPeristence().storeMetaData(metadata, this, overwrite);
     }
 
     protected File getResourceAsFile() {
