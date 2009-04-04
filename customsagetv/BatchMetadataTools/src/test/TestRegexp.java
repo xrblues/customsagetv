@@ -84,11 +84,11 @@ public class TestRegexp {
         testRegexp("p1,p2", "([^,]+)");
         testRegexp("p1", "([^,]+)");
         
-        String regexp = "^(in\\s+the|in\\s+a|i\\s+am|in|the|a|an|i|am)\\s+(.*)";
+        String regexp = "^(in\\s+the|in\\s+a|i\\s+am|in|the|a|an|i|am),?\\s+(.*)";
         testReplaceRegexp("The Big Chill", regexp, "$2, $1");
         testReplaceRegexp("An Inconvenient Truth", regexp, "$2, $1");
         testReplaceRegexp("I Am Legend", regexp, "$2, $1");
-        testReplaceRegexp("I Robot", regexp, "$2, $1");
+        testReplaceRegexp("I, Robot", regexp, "$2, $1");
         testReplaceRegexp("What The Pick", regexp, "$2, $1");
         testReplaceRegexp("Another Time", regexp, "$2, $1");
         testReplaceRegexp("In A Time Capsule", regexp, "$2, $1");

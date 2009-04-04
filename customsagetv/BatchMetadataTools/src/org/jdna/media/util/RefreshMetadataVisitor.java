@@ -35,7 +35,7 @@ public class RefreshMetadataVisitor implements IMediaResourceVisitor {
                 // from the existing metadata
                 IMediaMetadata md = persistence.loadMetaData(resource);
 
-                if (md.getProviderDataId() != null) {
+                if (md!=null && md.getProviderDataId() != null) {
                     IMediaMetadataProvider provider = MediaMetadataFactory.getInstance().getProvider(md.getProviderId());
                     if (provider == null) {
                         throw new Exception("Provider Not Registered: " + md.getProviderDataId());

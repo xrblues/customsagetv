@@ -17,6 +17,7 @@ import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
 
 import sagex.phoenix.fanart.FanartUtil;
@@ -152,15 +153,21 @@ public class FanartStorage {
             return;
         }
 
+        int downloaded=0;
+        int max = ConfigurationManager.getInstance().getMetadataConfiguration().getMaxDownloadableImages();
+        if (max==-1) max=99;
         File fanartFile = FanartUtil.getCentralFanartArtifact(mediaType, mt, title, centralFolder, extraMD);
         IMediaArt artwork[] = md.getMediaArt(mt);
         if (artwork != null && artwork.length > 0) {
+            max = Math.min(max, artwork.length);
             for (IMediaArt ma : artwork) {
                 try {
                     downloadAndSaveFanart(mt, ma, fanartFile, options, true);
                 } catch (IOException e) {
                     log.error("Failed to download Fanart: " + ma.getDownloadUrl() + " for : " + title, e);
                 }
+                downloaded++;
+                if (downloaded>=max) break;
             }
         }
     }
@@ -171,11 +178,11 @@ public class FanartStorage {
     }
 
     private boolean isTV(IMediaMetadata md) {
-        return SageTVPropertiesPersistence.TV_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
+        return MetadataUtil.TV_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
     }
 
     private boolean isMovie(IMediaMetadata md) {
-        return md == null || SageTVPropertiesPersistence.MOVIE_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
+        return md == null || MetadataUtil.MOVIE_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
     }
     
     public static void  downloadFanart(String title, IMediaMetadata md, PersistenceOptions options) {

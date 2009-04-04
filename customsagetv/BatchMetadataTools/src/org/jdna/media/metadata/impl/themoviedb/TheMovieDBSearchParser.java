@@ -150,7 +150,9 @@ public class TheMovieDBSearchParser {
     private float getScore(String title) {
         if (title==null) return 0.0f;
         try {
-            return (float)org.jdna.util.Similarity.getInstance().compareStrings(searchTitle,title);
+            float score = (float)org.jdna.util.Similarity.getInstance().compareStrings(searchTitle,title);
+            log.debug(String.format("Comparing:[%s][%s]: %s", searchTitle, title, score));
+            return score;
         } catch (Exception e) {
             return 0.0f;
         }

@@ -29,6 +29,7 @@ import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 import org.jdna.util.SortedProperties;
@@ -38,8 +39,6 @@ import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
 public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     private static final SageTVPropertiesPersistence instance = new SageTVPropertiesPersistence();
     private static final Logger                                   log              = Logger.getLogger(SageTVPropertiesPersistence.class);
-    public static final String                                   MOVIE_MEDIA_TYPE = "Movie";
-    public static final String                                   TV_MEDIA_TYPE    = "TV";
 
     public SageTVPropertiesPersistence() {
         if (!SageProperty.isPropertySetValid()) {
@@ -95,13 +94,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         }
         
         // set the media type, if it's not set
-        if (StringUtils.isEmpty((String) md.get(MetadataKey.MEDIA_TYPE))) {
-            if (StringUtils.isEmpty((String) md.get(MetadataKey.SEASON))) {
-                md.set(MetadataKey.MEDIA_TYPE, MOVIE_MEDIA_TYPE);
-            } else {
-                md.set(MetadataKey.MEDIA_TYPE, TV_MEDIA_TYPE);
-            }
-        }
+        MetadataUtil.updateMetadataMediaType(md);
 
         Map<String, String> props;
         try {
@@ -124,13 +117,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         ConfigurationManager cm = ConfigurationManager.getInstance();
 
         // set the media type, if it's not set
-        if (StringUtils.isEmpty((String) md.get(MetadataKey.MEDIA_TYPE))) {
-            if (StringUtils.isEmpty((String) md.get(MetadataKey.SEASON))) {
-                md.set(MetadataKey.MEDIA_TYPE, MOVIE_MEDIA_TYPE);
-            } else {
-                md.set(MetadataKey.MEDIA_TYPE, TV_MEDIA_TYPE);
-            }
-        }
+        MetadataUtil.updateMetadataMediaType(md);
 
         // store properties...
         for (SageProperty p : SageProperty.values()) {

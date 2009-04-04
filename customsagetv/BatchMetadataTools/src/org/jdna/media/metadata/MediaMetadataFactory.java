@@ -143,6 +143,7 @@ public class MediaMetadataFactory {
     }
 
     public IMediaMetadataProvider getProvider(String providerId) {
+        if (providerId==null) providerId=ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
         if (!StringUtils.isEmpty(providerId) && providerId.contains(",")) {
             MetadataProviderContainer container = new MetadataProviderContainer(providerId);
             log.debug("Multiple Provider Ids were passed; " + providerId + "; Creating a MetadataProviderContainer for them...");

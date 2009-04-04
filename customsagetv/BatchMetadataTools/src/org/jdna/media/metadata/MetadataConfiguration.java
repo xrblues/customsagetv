@@ -35,6 +35,9 @@ public class MetadataConfiguration {
 
     @Field(label="Background width", description="Resize backgrond to scale using the specified max width")
     private int backgroundImageWidth = -1;
+    
+    @Field(label="Max Images to Download", description="Maximum # of images within each fanart type to download.")
+    private int maxDownloadableImages = 5;
 
     public MetadataConfiguration() {
     }
@@ -109,5 +112,13 @@ public class MetadataConfiguration {
 
     public void setBackgroundImageWidth(int backgroundImageWidth) {
         this.backgroundImageWidth = backgroundImageWidth;
+    }
+
+    public int getMaxDownloadableImages() {
+        return maxDownloadableImages;
+    }
+
+    public void setMaxDownloadableImages(int maxDownloadableImages) {
+        this.maxDownloadableImages = maxDownloadableImages;
     }
 }

@@ -14,7 +14,6 @@ import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
-import org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 import org.jdna.media.util.NullResourceVisitor;
 import org.jdna.metadataupdater.Version;
@@ -76,10 +75,8 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 System.out.println("** Batch Metadata Plugin; Using ProviderId: " + providerId);
                 System.out.println("** Configuration for Metadata Plugin: " + ConfigurationManager.getInstance().getConfigFileLocation());
 
-                persistence = new SageTVPropertiesWithCentralFanartPersistence();
-                options = new PersistenceOptions();
-                options.setOverwriteFanart(false);
-                options.setOverwriteMetadata(true);
+                persistence = MetadataPluginOptions.getPersistence();
+                options = MetadataPluginOptions.getPersistenceOptions();
                 updater = new AutomaticUpdateMetadataVisitor(providerId, persistence, options, null, new NullResourceVisitor(), new IMediaResourceVisitor() {
                     public void visit(IMediaResource resource) {
                         System.out.println("Could not automatically update: " + resource.getLocationUri());
@@ -96,8 +93,8 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
         try {
             // sync our settings with the sage stv settings for central
             // fanart...
-            ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setFanartEnabled(phoenix.api.IsFanartEnabled());
             if (phoenix.api.IsFanartEnabled()) {
+                ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setFanartEnabled(phoenix.api.IsFanartEnabled());
                 ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
             }
 

@@ -34,6 +34,7 @@ public class Similarity {
     }
 
     /** @return an ArrayList of 2-character Strings. */
+    @SuppressWarnings("unchecked")
     private ArrayList wordLetterPairs(String str) {
 
         ArrayList allPairs = new ArrayList();
@@ -62,7 +63,8 @@ public class Similarity {
     }
     
     /** @return lexical similarity value in the range [0,1] */
-    public double compareStrings(String str1, String str2) {
+    @SuppressWarnings("unchecked")
+    public float compareStrings(String str1, String str2) {
     	try {
 	        ArrayList pairs1 = wordLetterPairs(str1.toUpperCase());
 	        ArrayList pairs2 = wordLetterPairs(str2.toUpperCase());
@@ -93,10 +95,22 @@ public class Similarity {
 	
 	        }
 	
-	        return (2.0*intersection)/union;
+	        float score= (float)(2.0*intersection)/union;
+	        if (score==1.0f) {
+	            // exception case... for some reason, "Batman Begins" == "Batman Begins 2"
+	            // for the lack of a better test...
+	            if (str1.toUpperCase().equals(str2.toUpperCase())) {
+	                return score;
+	            } else {
+	                log.warn("Adjusted the perfect score to " + 0.90 + " for " + str1 + " and " + str2 + " because they are not equal.");
+	                // adjust the score, because only 2 strings should be equal.
+	                return 0.90f;
+	            }
+	        }
+	        return score;
     	} catch (Exception e){
     		log.debug("Exception in compareStrings str1 = " + str1 + " str12 = " + str2);
-    		return 0.0;
+    		return (float)0.0;
     	}
     }
 

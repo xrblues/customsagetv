@@ -76,6 +76,12 @@ public class DVDMediaItem extends AbstractMediaResource implements IMediaFile {
         return false;
     }
 
+    // need to override the dvd for basename to simply return the name, since a dvd folder does not
+    // have an extension.
+    public String getBasename() {
+        return getName();
+    }
+
     @Override
     public void copy() {
         // TODO Auto-generated method stub

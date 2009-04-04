@@ -1,14 +1,12 @@
 package org.jdna.sage.media;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
-import org.jdna.media.metadata.IMediaMetadata;
 
 import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
@@ -27,10 +25,12 @@ public class SageMediaFile implements IMediaFile {
     private int mediaType;
 
     public SageMediaFile(File file) {
+        log.debug("Creating SageMediaFile from File: " + file.getAbsolutePath());
         init(MediaFileAPI.GetMediaFileForFilePath(file));
     }
     
     public SageMediaFile(String mediaFileOrId) {
+        log.debug("Creating SageMediaFile from ID: " + mediaFileOrId);
         try {
             int id = Integer.parseInt(mediaFileOrId);
             init(MediaFileAPI.GetMediaFileForID(id));
@@ -40,6 +40,7 @@ public class SageMediaFile implements IMediaFile {
     }
     
     public SageMediaFile(Object mediaFile) {
+        log.debug("Creating SageMediaFile from Object");
         init(mediaFile);
     }
     
@@ -119,26 +120,6 @@ public class SageMediaFile implements IMediaFile {
         return mediaType;
     }
 
-    public String getLocalBackdropUri() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getLocalMetadataUri() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getLocalPosterUri() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getLocalSubtitlesUri() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public String getLocationUri() {
         File f = getFile();
         if (f!=null) {
@@ -146,11 +127,6 @@ public class SageMediaFile implements IMediaFile {
         } else {
             return null;
         }
-    }
-
-    public IMediaMetadata getMetadata() {
-        // TODO We need to create a Metadata from a SageAiring/Show/MediaFile object
-        return null;
     }
 
     public String getName() {
@@ -211,13 +187,5 @@ public class SageMediaFile implements IMediaFile {
         if (f!=null) {
             f.setLastModified(System.currentTimeMillis());
         }
-    }
-
-    /**
-     * UpdateMetadata will only download fanart based on the fanart rules.  It will not actually update the 
-     * Sage Metadata, since it can't do it anyways.
-     */
-    public void updateMetadata(IMediaMetadata metadata, boolean overwrite) throws IOException {
-        log.warn("updateMetadata() not implemented yet.");
     }
 }

@@ -6,6 +6,7 @@ import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
 
 public class CentralFanartPersistence implements IMediaMetadataPersistence {
@@ -24,6 +25,8 @@ public class CentralFanartPersistence implements IMediaMetadataPersistence {
     }
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
+        // ensure the metadata type is set.
+        MetadataUtil.updateMetadataMediaType(md);
         FanartStorage.downloadFanart((IMediaFile)mediaFile, md, options);
     }
 
