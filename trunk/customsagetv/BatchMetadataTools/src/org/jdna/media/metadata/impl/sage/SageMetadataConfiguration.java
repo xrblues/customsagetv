@@ -12,25 +12,25 @@ public class SageMetadataConfiguration {
     private String descriptionMask  = "${"+SageProperty.DESCRIPTION.sageKey+"}\nUser Rating: ${"+SageProperty.USER_RATING.sageKey+"}\n";
 
     @Field(label="Multi CD Title Mask", description = "Title to use for multi volume vidoes (_disc is disc # 1,2,3,etc)")
-    private String multiCDTitleMask = "${"+SageProperty.MEDIA_TITLE.sageKey+"} Disc ${"+SageProperty.DISC.sageKey+"}";
+    private String multiCDTitleMask = "${"+SageProperty.DISPLAY_TITLE.sageKey+"} Disc ${"+SageProperty.DISC.sageKey+"}";
 
     @Field(label="Single CD Title Mask", description = "Title to use for single volume vidoes")
-    private String titleMask        = "${"+SageProperty.MEDIA_TITLE.sageKey+"}";
+    private String titleMask        = "${"+SageProperty.DISPLAY_TITLE.sageKey+"}";
 
     @Field(label="Genre Levels", description = "Number genre levels to write.  -1 means all levels.")
     private int    genreLevels      = 1;
     
     @Field(label="TV Title Mask", description="Title mask to use for TV Files")
-    private String tvTitleMask = "${"+SageProperty.MEDIA_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}E${"+SageProperty.EPISODE_NUMBER.sageKey+"} - ${"+SageProperty.EPISODE_TITLE.sageKey+"}";
+    private String tvTitleMask = "${"+SageProperty.DISPLAY_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}E${"+SageProperty.EPISODE_NUMBER.sageKey+"} - ${"+SageProperty.EPISODE_TITLE.sageKey+"}";
     
     @Field(label="TV DVD Title Mask", description="Title mask to use for TV on Dvd")
-    private String tvDvdTitleMask = "${"+SageProperty.MEDIA_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}D${"+SageProperty.DISC.sageKey+"}";
+    private String tvDvdTitleMask = "${"+SageProperty.DISPLAY_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}D${"+SageProperty.DISC.sageKey+"}";
     
     @Field(label="Rewrite Titles", description="Rewrite titles so that 'A Big Adventure' becomes 'Big Adventure, A'")
     private boolean rewriteTitle = false;
     
     @Field(label="Rewrite Title Regexp", description="A Search/Replace Regex containing 2 groups that will rewrite the title")
-    private String rewriteTitleRegex = "^(in\\s+the|in\\s+a|i\\s+am|in|the|a|an|i|am)\\s+(.*)";
+    private String rewriteTitleRegex = "^(in\\s+the|in\\s+a|i\\s+am|in|the|a|an|i|am),?\\s+(.*)";
     
     public String getActorMask() {
         return actorMask;

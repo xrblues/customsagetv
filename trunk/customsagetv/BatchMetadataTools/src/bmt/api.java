@@ -110,6 +110,11 @@ public class api {
     
     public static void SaveMetadataProviderConfiguration() {
         try {
+            // update central fanart locations from phoenix
+            ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setFanartEnabled(phoenix.api.IsFanartEnabled());
+            ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
+
+            // update and save
             ConfigurationManager.getInstance().updated(ConfigurationManager.getInstance().getMetadataConfiguration());
             ConfigurationManager.getInstance().save();
             System.out.println("Metadata Configuration is peristed.");

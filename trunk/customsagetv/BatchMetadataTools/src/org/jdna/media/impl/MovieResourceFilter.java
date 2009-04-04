@@ -16,17 +16,23 @@ public class MovieResourceFilter implements IMediaResourceFilter {
     private Pattern                         filePattern       = null;
     private Pattern                         dirExcludePattern = null;
 
-    public MovieResourceFilter() {
-        String pat = ConfigurationManager.getInstance().getMediaConfiguration().getVideoExtensionsRegex();
-        log.debug("Using Movie Filter Regex: " + pat);
-        filePattern = Pattern.compile(pat, Pattern.CASE_INSENSITIVE);
+    public MovieResourceFilter(String dirFilterRegex) {
+        init(dirFilterRegex, ConfigurationManager.getInstance().getMediaConfiguration().getVideoExtensionsRegex());
+    }
 
-        pat = ConfigurationManager.getInstance().getMediaConfiguration().getExcludeVideoDirsRegex();
-        if (pat == null) {
+    public MovieResourceFilter() {
+        init(ConfigurationManager.getInstance().getMediaConfiguration().getExcludeVideoDirsRegex(), ConfigurationManager.getInstance().getMediaConfiguration().getVideoExtensionsRegex());
+    }
+    
+    private void init(String dirFilter, String fileFilter) {
+        log.debug("Using Movie Filter Regex: " + fileFilter);
+        filePattern = Pattern.compile(fileFilter, Pattern.CASE_INSENSITIVE);
+
+        if (dirFilter == null) {
             log.debug("Not Using any Directory Exclude Filters.");
         } else {
-            log.debug("Using Directory Exclude Regex: " + pat);
-            dirExcludePattern = Pattern.compile(pat, Pattern.CASE_INSENSITIVE);
+            log.debug("Using Directory Exclude Regex: " + dirFilter);
+            dirExcludePattern = Pattern.compile(dirFilter, Pattern.CASE_INSENSITIVE);
         }
 
     }
@@ -34,15 +40,17 @@ public class MovieResourceFilter implements IMediaResourceFilter {
     public boolean accept(IMediaResource resource) {
         if (resource == null) return false;
 
-        if (resource.getType() == IMediaFolder.TYPE_FOLDER) {
-            if (dirExcludePattern == null) {
-                // keep it
-                return true;
-            } else {
-                String name = resource.getName();
-                Matcher m = dirExcludePattern.matcher(name);
-                return !m.matches();
+        // check dir pattern
+        if (dirExcludePattern != null) {
+            String uri = resource.getLocationUri();
+            Matcher m = dirExcludePattern.matcher(uri);
+            if (m.find()) {
+                return false;
             }
+        }
+
+        if (resource.getType() == IMediaFolder.TYPE_FOLDER) {
+            return true;
         } else {
             // if this is a DVD Media Item, then keep it
             if (resource.getContentType() == IMediaResource.CONTENT_TYPE_DVD) {
@@ -52,10 +60,9 @@ public class MovieResourceFilter implements IMediaResourceFilter {
                 String ext = resource.getExtension();
                 if (ext == null) return false;
 
-                Matcher m = filePattern.matcher(ext);
-                return m.matches();
+                Matcher filematcher = filePattern.matcher(ext);
+                return filematcher.matches();
             }
         }
     }
-
 }

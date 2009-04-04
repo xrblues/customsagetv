@@ -9,13 +9,15 @@ public class TestSimilarity {
         similar("dexter", "Dexter's Lab");
         similar("dexter", "A Dexter Tale");
         similar("dexter", "dexter 2009");
-        similar("dexter", "abxdfs");
-        similar("dexter", "abxder");
+        similar("dexter", "dexter 11");
+        similar("dexter 1", "dexter");
+        similar("Batman Begins", "Batman Begins 2");
     }
 
     private static void similar(String s1, String s2) {
         System.out.println("   S1: " + s1);
         System.out.println("   S2: " + s2);
         System.out.println("Score: " + Similarity.getInstance().compareStrings(s1, s2) + "\n");
+        System.out.println("Float: " + (float)Similarity.getInstance().compareStrings(s1, s2) + "\n");
     }
 }

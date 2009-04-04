@@ -1,6 +1,6 @@
 package org.jdna.sage.media;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jdna.media.IMediaFolder;
@@ -8,16 +8,33 @@ import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceFilter;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.IMediaStackModel;
-import org.jdna.media.metadata.IMediaMetadata;
 
+/**
+ * Incomplete, but it should provide the basis of wrapping a Sage Media into the BMT VFS
+ * 
+ * @author seans
+ *
+ */
 public class SageMediaFolder implements IMediaFolder {
-    private Object[] files = null;
+    private List<IMediaResource> files=null;
     
-    public SageMediaFolder(Object files[]) {
-        this.files=files;
+    public SageMediaFolder(Object media[]) {
+        if (media!=null) {
+            files=new ArrayList<IMediaResource>(media.length);
+            for (Object o : media) {
+                files.add(new SageMediaFile(o));
+            }
+        }
     }
     
     public void accept(IMediaResourceVisitor visitor, boolean recurse) {
+        visitor.visit(this);
+        List<IMediaResource> mems = members();
+        if (mems!=null) {
+            for (IMediaResource r : mems) {
+                r.accept(visitor);
+            }
+        }
     }
 
     public boolean contains(String string) {
@@ -41,138 +58,84 @@ public class SageMediaFolder implements IMediaFolder {
     }
 
     public List<IMediaResource> members() {
-        // TODO Auto-generated method stub
-        return null;
+        return files;
     }
 
     public void setFilter(IMediaResourceFilter filter) {
         // TODO Auto-generated method stub
-
     }
 
     public void setStackingModel(IMediaStackModel stackingModel) {
         // TODO Auto-generated method stub
-
     }
 
     public void accept(IMediaResourceVisitor visitor) {
-        // TODO Auto-generated method stub
-
+        accept(visitor, false);
     }
 
     public void copy() {
         // TODO Auto-generated method stub
-
     }
 
     public void delete() {
         // TODO Auto-generated method stub
-
     }
 
     public boolean exists() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     public String getBasename() {
-        // TODO Auto-generated method stub
-        return null;
+        return getName();
     }
 
     public int getContentType() {
-        // TODO Auto-generated method stub
-        return 0;
+        return CONTENT_TYPE_MOVIE;
     }
 
     public String getExtension() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getLocalBackdropUri() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getLocalMetadataUri() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getLocalPosterUri() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getLocalSubtitlesUri() {
-        // TODO Auto-generated method stub
-        return null;
+        return "";
     }
 
     public String getLocationUri() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public IMediaMetadata getMetadata() {
-        // TODO Auto-generated method stub
-        return null;
+        return "sageFolder://";
     }
 
     public String getName() {
-        // TODO Auto-generated method stub
-        return null;
+        return "SageMediaFolder";
     }
 
     public IMediaResource getParent() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public String getPath() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getRelativePath(IMediaResource res) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public String getTitle() {
-        // TODO Auto-generated method stub
-        return null;
+        return getName();
     }
 
     public int getType() {
-        // TODO Auto-generated method stub
-        return 0;
+        return TYPE_FOLDER;
     }
 
     public boolean isReadOnly() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     public long lastModified() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public void touch() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void updateMetadata(IMediaMetadata metadata, boolean overwrite) throws IOException {
-        // TODO Auto-generated method stub
-
+        for (IMediaResource m : members()) {
+            m.touch();
+        }
     }
 
     public int compareTo(IMediaResource arg0) {
-        // TODO Auto-generated method stub
         return 0;
     }
-
 }

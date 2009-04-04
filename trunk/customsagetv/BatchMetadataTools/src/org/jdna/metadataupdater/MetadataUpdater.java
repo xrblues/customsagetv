@@ -266,6 +266,9 @@ public class MetadataUpdater {
                         title=md.getMediaTitle();
                     }
                     System.out.printf("Updated: %s; %s\n", title, resource.getLocationUri());
+                    
+                    // touch the resource, so that Sage will reload.
+                    resource.touch();
                 }
             };
 

@@ -9,11 +9,11 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.MediaResourceFactory;
 import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
@@ -21,6 +21,9 @@ import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
 import org.jdna.media.metadata.impl.sage.FanartStorage;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
+import org.jdna.media.util.BackgroundMetadataUpdater;
+import org.jdna.sage.MetadataPluginOptions;
+import org.jdna.sage.media.SageMediaFolder;
 
 import sagex.phoenix.fanart.IMetadataProviderInfo;
 import sagex.phoenix.fanart.IMetadataSearchResult;
@@ -36,12 +39,11 @@ import sagex.phoenix.fanart.FanartUtil.MediaType;
  * 
  */
 public class BMTMetadataSupport implements IMetadataSupport {
-    private IMediaMetadataPersistence persistence;
     private PersistenceOptions options;
     
     public BMTMetadataSupport() {
         SageUtil.Log("Using BMTMetadataSupport: " + bmt.api.GetVersion());
-        persistence=new CentralFanartPersistence();
+        new CentralFanartPersistence();
         options=new PersistenceOptions();
         options.setOverwriteFanart(false);
     }
@@ -116,12 +118,12 @@ public class BMTMetadataSupport implements IMetadataSupport {
             // TODO: Synchronize the Media Types
             // TODO: Fix this so that it will use persistence, maybe set MEDIA_TITLE using mf.getTitle()
             if (mf.getMediaType()==MediaType.TV) {
-                md.set(MetadataKey.MEDIA_TYPE, SageTVPropertiesPersistence.TV_MEDIA_TYPE);
+                md.set(MetadataKey.MEDIA_TYPE, MetadataUtil.TV_MEDIA_TYPE);
                 SageUtil.Log("Only Updating Fanart for: " + mf.getTitle());
                 FanartStorage.downloadFanart(mf.getTitle(), md, options);
                 return true;
             } else {
-                md.set(MetadataKey.MEDIA_TYPE, SageTVPropertiesPersistence.MOVIE_MEDIA_TYPE);
+                md.set(MetadataKey.MEDIA_TYPE, MetadataUtil.MOVIE_MEDIA_TYPE);
                 SageUtil.Log("Updating Fanart and Metadata for: " + mf.getTitle());
                 File file = SageUtil.GetFile(media);
                 if (file == null) {
@@ -195,5 +197,24 @@ public class BMTMetadataSupport implements IMetadataSupport {
             SageUtil.Log("Failed to do a metadata lookup", e);
         }
         return null;
+    }
+
+    public float getMetadataScanComplete() {
+        return BackgroundMetadataUpdater.getCompleted();
+    }
+
+    public boolean isMetadataScanRunning() {
+        return BackgroundMetadataUpdater.isRunning();
+    }
+
+    public void startMetadataScan(String provider, Object[] sageMediaFiles) {
+        try {
+            if (provider==null) {
+                provider = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
+            }
+            BackgroundMetadataUpdater.startScan(new SageMediaFolder(sageMediaFiles), provider, MetadataPluginOptions.getFanartPersistence(), MetadataPluginOptions.getPersistenceOptions());
+        } catch (Exception e) {
+            SageUtil.Log("Scan Failed!", e);
+        }
     }
 }
