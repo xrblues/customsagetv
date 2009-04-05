@@ -1,6 +1,8 @@
 package org.jdna.media.metadata.impl.sage;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,6 +21,7 @@ import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
+import org.jdna.util.StoredStringSet;
 
 import sagex.phoenix.fanart.FanartUtil;
 import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
@@ -44,7 +47,7 @@ public class FanartStorage {
             localArtTypes = new MediaArtifactType[] {MediaArtifactType.POSTER};
         }
         
-        if (mediaFileParent!=null) {
+        if (mediaFileParent!=null && ConfigurationManager.getInstance().getMetadataConfiguration().isEnableDefaultSTVPosterCompatibility()) {
             // save any local artifacts
             saveLocalFanartForTypes(mediaFileParent, md, options, localArtTypes);
         }
@@ -96,15 +99,19 @@ public class FanartStorage {
             log.debug("Using orginal image filename from url: " + imageFile.getAbsolutePath());
         }
         
-        if (!imageFile.exists() || (options!=null && options.isOverwriteFanart()) || !shouldSkipFile(imageFile)) {
-            int scale = getScale(mt);
-            if (scale>0) {
-                MediaMetadataUtils.writeImageFromUrl(mediaArt.getDownloadUrl(), imageFile, scale);
+        if (!shouldSkipFile(imageFile) || (options!=null && options.isOverwriteFanart())) {
+            if (!imageFile.exists() || (options!=null && options.isOverwriteFanart())) {
+                int scale = getScale(mt);
+                if (scale>0) {
+                    MediaMetadataUtils.writeImageFromUrl(mediaArt.getDownloadUrl(), imageFile, scale);
+                } else {
+                    MediaMetadataUtils.writeImageFromUrl(mediaArt.getDownloadUrl(), imageFile);
+                }
             } else {
-                MediaMetadataUtils.writeImageFromUrl(mediaArt.getDownloadUrl(), imageFile);
+                log.debug("Skipping writing of image file: " + imageFile.getAbsolutePath() +" consider using --overwrite or --overwriteFanart.");
             }
         } else {
-            log.debug("Skipping writing of image file: " + imageFile.getAbsolutePath());
+            log.debug("Skipping writing of image file: " + imageFile.getAbsolutePath() +" consider using --overwrite or --overwriteFanart or remove the image name from the image skip file");
         }
     }
     
@@ -125,10 +132,33 @@ public class FanartStorage {
     }
 
     private boolean shouldSkipFile(File imageFile) {
-        File downloaded = new File(imageFile.getParentFile(), "images");
         boolean skip = false;
-        //if (imageFile.exists()) {
-        //}
+        try {
+            File storedFile = new File(imageFile.getParentFile(), "images");
+            StoredStringSet set = new StoredStringSet();
+            String name = imageFile.getName();
+            if (storedFile.exists()) {
+                set.load(new FileReader(storedFile));
+                if (set.contains(name)) {
+                    log.debug("Skipping Image file: " + imageFile.getPath() + " because it's in the image skip file.");
+                    skip=true;
+                }
+            }
+            if (!skip) {
+                log.debug("Adding Image file: " + imageFile.getPath() + " to the image skip file.");
+                set.add(name);
+                // create the file's parent dir if it's not exist
+                if (!storedFile.getParentFile().exists()) {
+                    storedFile.getParentFile().mkdirs();
+                }
+                FileWriter fw = new FileWriter(storedFile);
+                set.store(fw, "Ignoring these image files");
+                fw.flush();
+                fw.close();
+            }
+        } catch (Exception e) {
+            log.error("Failed to load/save the skip file for image: " + imageFile.getAbsolutePath(), e);
+        }
         return skip;
     }
 
@@ -169,6 +199,8 @@ public class FanartStorage {
                 downloaded++;
                 if (downloaded>=max) break;
             }
+        } else {
+            log.warn("No " + mt + " for " + title + " in the metadata.");
         }
     }
 

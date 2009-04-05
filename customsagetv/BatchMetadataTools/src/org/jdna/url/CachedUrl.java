@@ -6,11 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
@@ -19,6 +20,7 @@ public class CachedUrl extends Url implements IUrl {
 
     private static final Logger log             = Logger.getLogger(CachedUrl.class);
 
+    private String urlId = null;
     private File                propFile        = null;
     private Properties          props           = null;
     public File                 urlCacheDir     = null;
@@ -27,8 +29,8 @@ public class CachedUrl extends Url implements IUrl {
     public CachedUrl(String url) throws IOException {
         super(url);
 
-        String cachedFileName = getCachedFileName(url);
-        propFile = new File(getCacheDir(), cachedFileName + ".properties");
+        urlId = getCachedFileName(url);
+        propFile = new File(getCacheDir(), urlId + ".properties");
         props = new Properties();
         if (propFile.exists()) {
             log.debug("Reloading existing cached url: " + propFile.getAbsolutePath());
@@ -43,7 +45,7 @@ public class CachedUrl extends Url implements IUrl {
             f.mkdirs();
             log.debug("Creating a new cached url for: " + url);
             props.setProperty("url", url);
-            props.setProperty("file", createCachedFile());
+            props.setProperty("file", new File(getCacheDir(), urlId + ".cache").getPath());
         }
 
         // sanity check
@@ -54,16 +56,13 @@ public class CachedUrl extends Url implements IUrl {
 
     private String getCachedFileName(String url) {
         try {
-            URL u = new URL(url);
-            String path = u.getPath();
-            String q = u.getQuery();
-            if (q == null) {
-                return path;
-            } else {
-                String name = q.replaceAll("[^a-zA-Z0-9]+", "_");
-                return path + "_" + name;
-            }
-        } catch (MalformedURLException e) {
+            if (url==null) return null;
+            
+            // now uses a simple md5 hash, which should have a fairly low collision rate, especially for our
+            // limited use
+            byte[] key = DigestUtils.md5(url);
+            return new String(Hex.encodeHex(key));
+        } catch (Exception e) {
             log.error("Failed to create cached filename for url: " + url, e);
             throw new RuntimeException(e);
         }
@@ -84,15 +83,6 @@ public class CachedUrl extends Url implements IUrl {
             if (!urlCacheDir.exists()) urlCacheDir.mkdirs();
         }
         return urlCacheDir;
-    }
-
-    private String createCachedFile() throws IOException {
-        File f = File.createTempFile(propFile.getName(), ".cache", propFile.getParentFile());
-
-        // we just want the name
-        f.delete();
-
-        return f.getCanonicalPath();
     }
 
     public URL getOriginalUrl() throws IOException {
@@ -194,20 +184,27 @@ public class CachedUrl extends Url implements IUrl {
         } catch (IOException e) {
             log.error("Unabled to remove cached data url: " + dataUrl);
         }
-
     }
 
     private void remove() {
         try {
             log.debug("Removing Cached Url: " + this.getOriginalUrl().toExternalForm());
             if (props != null) {
+                // remove the data
                 File f = getCachedFile();
                 if (f.exists()) {
                     log.debug("Removing Cached File: " + f.getAbsolutePath());
                     f.delete();
                 }
+                
+                // now remove the propfile
+                propFile.delete();
             }
         } catch (IOException e) {
         }
+    }
+    
+    public String toString() {
+        return "CachedUrl: " + (props!=null ? props.getProperty("url") : "N/A") + "; UrlId: " + urlId;
     }
 }

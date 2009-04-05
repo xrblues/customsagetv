@@ -38,6 +38,12 @@ public class MetadataConfiguration {
     
     @Field(label="Max Images to Download", description="Maximum # of images within each fanart type to download.")
     private int maxDownloadableImages = 5;
+    
+    @Field(label="Default STV Poster Compatibility", description="When writing fanart, if this is enabled, an additional poster file will be written that is compatible with the default stv.")
+    private boolean enableDefaultSTVPosterCompatibility = false;
+    
+    @Field(label="AiringId Regex", description="Regex that is used to parse the AiringId from a filename.")
+    private String airingIdRegex = "([0-9]+)-[0-9]{1,2}\\.";
 
     public MetadataConfiguration() {
     }
@@ -120,5 +126,21 @@ public class MetadataConfiguration {
 
     public void setMaxDownloadableImages(int maxDownloadableImages) {
         this.maxDownloadableImages = maxDownloadableImages;
+    }
+
+    public boolean isEnableDefaultSTVPosterCompatibility() {
+        return enableDefaultSTVPosterCompatibility;
+    }
+
+    public void setEnableDefaultSTVPosterCompatibility(boolean enableDefaultSTVPosterCompatibility) {
+        this.enableDefaultSTVPosterCompatibility = enableDefaultSTVPosterCompatibility;
+    }
+
+    public String getAiringIdRegex() {
+        return airingIdRegex;
+    }
+
+    public void setAiringIdRegex(String airingIdRegex) {
+        this.airingIdRegex = airingIdRegex;
     }
 }

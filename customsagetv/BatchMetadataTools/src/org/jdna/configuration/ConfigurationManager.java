@@ -20,6 +20,7 @@ import org.jdna.media.impl.MediaConfiguration;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
+import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
@@ -191,7 +192,7 @@ public class ConfigurationManager {
                 c.setDescription("This is a sample Composite Provider that will disappear as soon as you create one");
                 c.setSearchProviderId(IMDBMetaDataProvider.PROVIDER_ID);
                 c.setDetailProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
-                c.setFieldsFromSearchProvider("Genre");
+                c.setCompositeDetailsMode(CompositeMetadataProvider.MODE_PREFER_DETAILS);
                 l = new ArrayList<CompositeMetadataConfiguration>();
                 l.add(c);
             }

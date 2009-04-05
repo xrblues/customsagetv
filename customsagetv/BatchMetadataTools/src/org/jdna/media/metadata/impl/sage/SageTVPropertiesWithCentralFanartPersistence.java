@@ -2,6 +2,7 @@ package org.jdna.media.metadata.impl.sage;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
@@ -13,6 +14,7 @@ import org.jdna.media.metadata.PersistenceOptions;
  * @author seans
  */
 public class SageTVPropertiesWithCentralFanartPersistence implements IMediaMetadataPersistence {
+    private static final Logger log = Logger.getLogger(SageTVPropertiesWithCentralFanartPersistence.class);
     private SageTVPropertiesPersistence propPersist = new SageTVPropertiesPersistence();
     private CentralFanartPersistence fanartPersist = new CentralFanartPersistence();
     
@@ -31,11 +33,11 @@ public class SageTVPropertiesWithCentralFanartPersistence implements IMediaMetad
     }
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
+        log.debug("Storing Properties...");
         propPersist.storeMetaData(md, mediaFile, options);
+        log.debug("Storing Fanart...");
         fanartPersist.storeMetaData(md, mediaFile, options);
-        
-        // lastly, let's touch the mediafile so that Sage to reload the changes.
-        mediaFile.touch();
+        log.debug("Stored Properties and Fanart.");
     }
 
     public IMediaMetadata loadMetaData(IMediaResource mediaFile) {

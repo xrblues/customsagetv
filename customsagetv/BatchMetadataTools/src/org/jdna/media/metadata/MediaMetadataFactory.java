@@ -79,9 +79,7 @@ public class MediaMetadataFactory {
             cmc.setSearchProviderId(IMDBMetaDataProvider.PROVIDER_ID);
             cmc.setDetailProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
             cmc.setIconUrl(IMDBMetaDataProvider.PROVIDER_ICON_URL);
-            
-            // Take User Rating and Genre information from IMDB, if it exists.
-            cmc.setFieldsFromSearchProvider(MetadataKey.USER_RATING.getId() + ";" + MetadataKey.GENRE_LIST.getId());
+            cmc.setCompositeDetailsMode(CompositeMetadataProvider.MODE_PREFER_SEARCHER);
 
             addMetaDataProvider(new CompositeMetadataProvider(cmc));
         }

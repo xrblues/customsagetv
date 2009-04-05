@@ -298,6 +298,7 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
         if (isTag("h5", localName)) headerState = HEADER_ON;
 
         if (state == LOOKING && isTag("A", localName) && "poster".equals(atts.getValue("name"))) {
+            log.debug("looking for poster...");
             // next parse state is the poster (thumbnail)
             state = POSTER;
             return;
@@ -324,6 +325,7 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
             ma.setDownloadUrl(u);
             ma.setLabel(null);
             metadata.addMediaArt(ma);
+            log.debug("Added Poster: " + u);
             // reset state
             state = LOOKING;
             return;
