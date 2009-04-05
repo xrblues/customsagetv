@@ -17,6 +17,8 @@ import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.url.IUrl;
+import org.jdna.url.UrlFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -29,7 +31,8 @@ public class TheMovieDBItemParser {
     public static final String     ITEM_URL      = "http://api.themoviedb.org/2.0/Movie.getInfo?id=%s&api_key=";
     public static final String     IMDB_ITEM_URL = "http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=%s&api_key=";
 
-    private String                 url;
+    private String origUrl = null;
+    private IUrl                 url;
     private MediaMetadata          md            = null;
     private DocumentBuilderFactory factory       = DocumentBuilderFactory.newInstance();
     private List<ICastMember>      cast          = new ArrayList<ICastMember>();
@@ -37,7 +40,8 @@ public class TheMovieDBItemParser {
     private String                 theMovieDBID;
 
     public TheMovieDBItemParser(String providerDataUrl) {
-        this.url = providerDataUrl;
+        this.origUrl = providerDataUrl;
+        this.url = UrlFactory.newUrl(providerDataUrl + TheMovieDBMetadataProvider.getApiKey());
     }
 
     public IMediaMetadata getMetadata() {
@@ -46,7 +50,7 @@ public class TheMovieDBItemParser {
                 // parse and fill
                 DocumentBuilder parser = factory.newDocumentBuilder();
                 log.debug("Parsing TheMovieDB url: " + url + TheMovieDBMetadataProvider.getApiKey());
-                Document doc = parser.parse(url + TheMovieDBMetadataProvider.getApiKey());
+                Document doc = parser.parse(url.getInputStream(null, true));
                 
                 md = new MediaMetadata(new MetadataKey[] {
                         MetadataKey.CAST_MEMBER_LIST,
@@ -93,7 +97,7 @@ public class TheMovieDBItemParser {
                 md.setUserRating(getElementValue(movie, "rating"));
                 md.setYear(parseYear(md.getReleaseDate()));
 
-                md.setProviderDataUrl(url);
+                md.setProviderDataUrl(origUrl);
                 md.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
                 md.setProviderDataId(new MetadataID("themoviedb", theMovieDBID));
             } catch (Exception e) {

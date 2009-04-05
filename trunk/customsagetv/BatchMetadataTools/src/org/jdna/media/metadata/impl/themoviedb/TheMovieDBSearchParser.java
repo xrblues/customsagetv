@@ -19,6 +19,8 @@ import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.SearchQuery;
+import org.jdna.url.IUrl;
+import org.jdna.url.UrlFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -30,7 +32,7 @@ public class TheMovieDBSearchParser {
     private static final DocumentBuilderFactory factory    = DocumentBuilderFactory.newInstance();
     private static final Pattern yearPattern = Pattern.compile("([0-9]{4})");
 
-    private String                              url;
+    private IUrl                                url;
     private List<IMediaSearchResult>            results    = new ArrayList<IMediaSearchResult>();
     private String								searchTitle;
     private Comparator<IMediaSearchResult> sorter              = new Comparator<IMediaSearchResult>() {
@@ -55,7 +57,7 @@ public class TheMovieDBSearchParser {
     
     public TheMovieDBSearchParser(SearchQuery query) {
         searchTitle = query.get(SearchQuery.Field.TITLE);
-        this.url = String.format(SEARCH_URL, URLEncoder.encode(searchTitle), TheMovieDBMetadataProvider.getApiKey());
+        this.url = UrlFactory.newUrl(String.format(SEARCH_URL, URLEncoder.encode(searchTitle), TheMovieDBMetadataProvider.getApiKey()));
 
         log.debug("TheMovieDB SearchQuery Url: " + url);
     }
@@ -67,7 +69,7 @@ public class TheMovieDBSearchParser {
         // parse
         try {
             DocumentBuilder parser = factory.newDocumentBuilder();
-            Document doc = parser.parse(url);
+            Document doc = parser.parse(url.getInputStream(null, true));
 
             NodeList nl = doc.getElementsByTagName("movie");
             int len = nl.getLength();

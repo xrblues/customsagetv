@@ -17,9 +17,11 @@ import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 import org.jdna.media.util.NullResourceVisitor;
 import org.jdna.metadataupdater.Version;
+import org.jdna.sage.media.SageMediaFile;
 import org.jdna.util.LoggerConfiguration;
 
 import sage.MediaFileMetadataParser;
+import sagex.api.AiringAPI;
 
 /**
  * A MetadataUpdaterPlugin that will fetch metadata for new movies.
@@ -31,11 +33,13 @@ import sage.MediaFileMetadataParser;
  * 
  */
 public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
-    private static AutomaticUpdateMetadataVisitor updater;
+    private static AutomaticUpdateMetadataVisitor stdUpdater;
+    private static AutomaticUpdateMetadataVisitor fanartUpdater;
     private static MovieResourceFilter            filter;
-    private static IMediaMetadataPersistence persistence;
-    private static PersistenceOptions options;
-    
+    private static IMediaMetadataPersistence      persistence;
+    private static PersistenceOptions             options;
+    private static Pattern                        airingIdRegex;
+
     static {
         try {
             LoggerConfiguration.configurePlugin();
@@ -77,12 +81,18 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
 
                 persistence = MetadataPluginOptions.getPersistence();
                 options = MetadataPluginOptions.getPersistenceOptions();
-                updater = new AutomaticUpdateMetadataVisitor(providerId, persistence, options, null, new NullResourceVisitor(), new IMediaResourceVisitor() {
+                stdUpdater = new AutomaticUpdateMetadataVisitor(providerId, persistence, options, null, new NullResourceVisitor(), new IMediaResourceVisitor() {
                     public void visit(IMediaResource resource) {
                         System.out.println("Could not automatically update: " + resource.getLocationUri());
                     }
                 });
+                fanartUpdater = new AutomaticUpdateMetadataVisitor(providerId, MetadataPluginOptions.getFanartPersistence(), options, null, new NullResourceVisitor(), new IMediaResourceVisitor() {
+                    public void visit(IMediaResource resource) {
+                        System.out.println("Could not automatically update fanart: " + resource.getLocationUri());
+                    }
+                });
                 filter = MovieResourceFilter.INSTANCE;
+                airingIdRegex = Pattern.compile(ConfigurationManager.getInstance().getMetadataConfiguration().getAiringIdRegex());
             }
         } catch (Throwable e) {
             System.out.println("BMT: Error!!!");
@@ -98,26 +108,49 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
             }
 
-            // now do the lookups
-            IMediaResource mr = MediaResourceFactory.getInstance().createResource(file.toURI());
-            if (filter.accept(mr)) {
-                System.out.println("BatchMetadataTools " + Version.VERSION + "; Handling File: " + file.getAbsolutePath() + "; arg: " + arg);
-
-                // update the metadata and download fanart... 
-                updater.visit(mr);
-                
-                // now load the props and pass back to sage
-                IMediaMetadata md = persistence.loadMetaData(mr);
-                if (md != null) {
-                    // return the props
-                    Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
-                    System.out.println("Metadata Imported for: " + file.getAbsolutePath());
-                    return props;
-                } else {
-                    System.out.println("Unable to Fetch Metadata for Medai: " + file.getAbsolutePath());
+            // try to match on a tv airing first
+            IMediaResource mr = null;
+            try {
+                Matcher m = airingIdRegex.matcher(file.getName());
+                if (m.find()) {
+                    int airingId = Integer.parseInt(m.group(1));
+                    Object airing = AiringAPI.GetAiringForID(airingId);
+                    if (airing != null) {
+                        mr = new SageMediaFile(airing);
+                        if (filter.accept(mr)) {
+                            System.out.println("BatchMetadataTools " + Version.VERSION + "; Handling SageTV Airing: " + mr.getTitle() + " for File: " + file.getAbsolutePath() + "; arg: " + arg);
+                            fanartUpdater.visit(mr);
+                        } else {
+                            System.out.println("Can't accept SageTV Airing: " + mr.getTitle());
+                        }
+                    }
                 }
-            } else {
-                System.out.println("BatchMetadataTools: Skipping File: " + file.getAbsolutePath());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // didn't accept/match on tv airing, so just try normal lookups
+            if (mr == null) {
+                mr = MediaResourceFactory.getInstance().createResource(file.toURI());
+                if (filter.accept(mr)) {
+                    System.out.println("BatchMetadataTools " + Version.VERSION + "; Handling File: " + file.getAbsolutePath() + "; arg: " + arg);
+
+                    // update the metadata and download fanart...
+                    stdUpdater.visit(mr);
+
+                    // now load the props and pass back to sage
+                    IMediaMetadata md = persistence.loadMetaData(mr);
+                    if (md != null) {
+                        // return the props
+                        Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
+                        System.out.println("Metadata Imported for: " + file.getAbsolutePath());
+                        return props;
+                    } else {
+                        System.out.println("Unable to Fetch Metadata for Medai: " + file.getAbsolutePath());
+                    }
+                } else {
+                    System.out.println("BatchMetadataTools: Can't accept file: " + file.getAbsolutePath());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

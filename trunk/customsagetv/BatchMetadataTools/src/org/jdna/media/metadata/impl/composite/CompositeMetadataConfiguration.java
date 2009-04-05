@@ -23,8 +23,8 @@ public class CompositeMetadataConfiguration {
     @Field(label="Details Provider Id", description = "Provider ID to use when getting details")
     private String detailProviderId;
 
-    @Field(label="Search Fields to Use in Details", description = "Semi-Colon separated fields to use from the search provider.  ie, if you want to use the Genre field from the search provider details, then put Genre in this setting")
-    private String fieldsFromSearchProvider;
+    @Field(label="Composite Mode", description = "1 - Use Search searchProvider then detailProvider; 2 - Use detailsProvider then searchProvider")
+    private int compositeMode=2;
 
     public CompositeMetadataConfiguration() {
     }
@@ -77,11 +77,11 @@ public class CompositeMetadataConfiguration {
         this.detailProviderId = detailProviderId;
     }
 
-    public String getFieldsFromSearchProvider() {
-        return fieldsFromSearchProvider;
+    public int getCompositeMode() {
+        return compositeMode;
     }
 
-    public void setFieldsFromSearchProvider(String fieldsFromSearchProvider) {
-        this.fieldsFromSearchProvider = fieldsFromSearchProvider;
+    public void setCompositeDetailsMode(int compositeDetailsMode) {
+        this.compositeMode = compositeDetailsMode;
     }
 }
