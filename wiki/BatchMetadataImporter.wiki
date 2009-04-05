@@ -121,8 +121,7 @@ In the future, once Sage support setting metadata elements, this same process wi
 = Commandline Usage =
 {{{
  # java -jar MetadataTool.jar
-Batch MetaData Tools (2.0)
-Batch MetaData Tools (2.0)
+Batch MetaData Tools (2.1)
 Import/Update Movie MetaData from a MetaData Provider.
 
 Usage:java MetadataTool OPTIONS ...
@@ -132,12 +131,16 @@ OPTIONS: (* are required)
   --displaySize          # of search results to display on the screen. (default 10)
   --fanartEnabled        Enable fanart support (backgrounds, banners, extra posters, etc). (default true)
   --fanartFolder         Central Fanart Folder location
+  --fanartOnly           Only process fanart, ignore updating metadata (default false)
   --gui                  Enable/Disable gui (default true)
   --listMovies           Just list the movies it would find. (default false)
   --listProviders        Just list the installed metadata providers. (default false)
   --metadata             Show metadata for movie. (default false)
+  --metadataOnly         Only process metadata, ignore updating fanart (default false)
   --offline              if true, then the passed file(s) will be treated as offline files. (default false)
   --overwrite            Overwrite metadata and images. (default false)
+  --overwriteFanart      Overwrite fanart. (default false)
+  --overwriteMetadata    Overwrite metadata. (default false)
   --prompt               When a media file cannot be updated, then prompt to enter a title to search on. (default true)
   --provider             Set the metadata provider. (default imdb)
   --recurse              Recursively process sub directories. (default false)
@@ -224,7 +227,7 @@ It should produce the following results.  Keep in mind, that if  you have a cust
 BMT ships with a metadata.properties.sample, so you can rename that to metadata.properties and simply copy and paste a property from the list below (or --showProperties) and add it directly to that file.  Any changes to the property file will require a SageTV restart.
 
 {{{
-Batch MetaData Tools (2.0-beta9)
+Batch MetaData Tools (2.1)
 #       Begin: urlconfiguration
 # Description: Configures Properties regarding how URLs are handled.
 
@@ -249,10 +252,6 @@ Batch MetaData Tools (2.0-beta9)
 #       Begin: metadataUpdater
 # Description: Configuration for Main Metadata Updater
 
-# Description: If true, then it will overwrite properties and images
-#        Type: boolean
-/metadataUpdater/overwrite=false
-
 # Description: Default Folder to Scan (GUI Only)
 #        Type: java.lang.String
 /metadataUpdater/guiFolderToScan=
@@ -276,10 +275,6 @@ Batch MetaData Tools (2.0-beta9)
 # Description: Only process files that is missing metadata
 #        Type: boolean
 /metadataUpdater/processMissingMetadataOnly=true
-
-# Description: Rescale Posters to this width
-#        Type: int
-/metadataUpdater/posterImageWidth=500
 
 # Description: Enable Fanart downloading
 #        Type: boolean
@@ -321,7 +316,7 @@ Batch MetaData Tools (2.0-beta9)
 
 # Description: Default class name for storing metadata
 #        Type: java.lang.String
-/metadata/persistenceClass=org.jdna.media.metadata.impl.sage.SageTVWithCentralFanartFolderPersistence
+/metadata/persistenceClass=org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence
 
 # Description: Comma separated list of known metadata providers (ie, can be used for searching for metadata)
 #        Type: java.lang.String
@@ -329,7 +324,7 @@ Batch MetaData Tools (2.0-beta9)
 
 # Description: Comma separated list of words that will be removed from a title when doing a search
 #        Type: java.lang.String
-/metadata/wordsToClean=dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv
+/metadata/wordsToClean=1080p,720p,480p,1080i,720i,480i,dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv,HDTV,x264
 
 # Description: Default provider id to use (comma separate, if more than 1)
 #        Type: java.lang.String
@@ -342,6 +337,30 @@ Batch MetaData Tools (2.0-beta9)
 # Description: If true, then providers will check alternate titles for matches.
 #        Type: boolean
 /metadata/scoreAlternateTitles=true
+
+# Description: Resize poster to scale using the specified max width
+#        Type: int
+/metadata/posterImageWidth=200
+
+# Description: Resize banner to scale using the specified max width
+#        Type: int
+/metadata/bannerImageWidth=-1
+
+# Description: Resize backgrond to scale using the specified max width
+#        Type: int
+/metadata/backgroundImageWidth=-1
+
+# Description: Maximum # of images within each fanart type to download.
+#        Type: int
+/metadata/maxDownloadableImages=5
+
+# Description: When writing fanart, if this is enabled, an additional poster file will be written that is compatible with the default stv.
+#        Type: boolean
+/metadata/enableDefaultSTVPosterCompatibility=false
+
+# Description: Regex that is used to parse the AiringId from a filename.
+#        Type: java.lang.String
+/metadata/airingIdRegex=([0-9]+)-[0-9]{1,2}\.
 # End: metadata
 
 
@@ -379,11 +398,11 @@ Batch MetaData Tools (2.0-beta9)
 
 # Description: Title to use for multi volume vidoes (_disc is disc # 1,2,3,etc)
 #        Type: java.lang.String
-/sageMetadata/multiCDTitleMask=${MediaTitle} Disc ${DiscNumber}
+/sageMetadata/multiCDTitleMask=${Title} Disc ${DiscNumber}
 
 # Description: Title to use for single volume vidoes
 #        Type: java.lang.String
-/sageMetadata/titleMask=${MediaTitle}
+/sageMetadata/titleMask=${Title}
 
 # Description: Number genre levels to write.  -1 means all levels.
 #        Type: int
@@ -391,11 +410,11 @@ Batch MetaData Tools (2.0-beta9)
 
 # Description: Title mask to use for TV Files
 #        Type: java.lang.String
-/sageMetadata/tvTitleMask=${MediaTitle} - S${SeasonNumber}E${EpisodeNumber} - ${EpisodeTitle}
+/sageMetadata/tvTitleMask=${Title} - S${SeasonNumber}E${EpisodeNumber} - ${EpisodeTitle}
 
 # Description: Title mask to use for TV on Dvd
 #        Type: java.lang.String
-/sageMetadata/tvDvdTitleMask=${MediaTitle} - S${SeasonNumber}D${DiscNumber}
+/sageMetadata/tvDvdTitleMask=${Title} - S${SeasonNumber}D${DiscNumber}
 
 # Description: Rewrite titles so that 'A Big Adventure' becomes 'Big Adventure, A'
 #        Type: boolean
@@ -403,7 +422,7 @@ Batch MetaData Tools (2.0-beta9)
 
 # Description: A Search/Replace Regex containing 2 groups that will rewrite the title
 #        Type: java.lang.String
-/sageMetadata/rewriteTitleRegex=^(in\s+the|in\s+a|i\s+am|in|the|a|an|i|am)\s+(.*)
+/sageMetadata/rewriteTitleRegex=^(in\s+the|in\s+a|i\s+am|in|the|a|an|i|am),?\s+(.*)
 # End: sageMetadata
 
 
@@ -439,10 +458,11 @@ Batch MetaData Tools (2.0-beta9)
 #        Type: java.lang.String
 /compositeMetadataProviders/sample/detailProviderId=themoviedb.org
 
-# Description: Semi-Colon separated fields to use from the search provider.  ie, if you want to use the Genre field from the search provider details, then put Genre in this setting
-#        Type: java.lang.String
-/compositeMetadataProviders/sample/fieldsFromSearchProvider=Genre
+# Description: 1 - Use Search searchProvider then detailProvider; 2 - Use detailsProvider then searchProvider
+#        Type: int
+/compositeMetadataProviders/sample/compositeMode=2
 # End: compositeMetadataProviders
+
 }}}
 
 
