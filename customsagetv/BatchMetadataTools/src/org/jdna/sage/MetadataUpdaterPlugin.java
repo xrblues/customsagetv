@@ -146,7 +146,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                         System.out.println("Metadata Imported for: " + file.getAbsolutePath());
                         return props;
                     } else {
-                        System.out.println("Unable to Fetch Metadata for Medai: " + file.getAbsolutePath());
+                        System.out.println("Unable to Fetch Metadata for Media: " + file.getAbsolutePath());
                     }
                 } else {
                     System.out.println("BatchMetadataTools: Can't accept file: " + file.getAbsolutePath());
