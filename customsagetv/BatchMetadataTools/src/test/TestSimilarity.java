@@ -12,6 +12,7 @@ public class TestSimilarity {
         similar("dexter", "dexter 11");
         similar("dexter 1", "dexter");
         similar("Batman Begins", "Batman Begins 2");
+        similar("She's the one", "She's the one");
     }
 
     private static void similar(String s1, String s2) {

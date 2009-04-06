@@ -104,8 +104,11 @@ public class Similarity {
 	            } else {
 	                log.warn("Adjusted the perfect score to " + 0.90 + " for " + str1 + " and " + str2 + " because they are not equal.");
 	                // adjust the score, because only 2 strings should be equal.
-	                return 0.90f;
+	                score = 0.90f;
 	            }
+	        }
+	        if (log.isDebugEnabled()) {
+	            log.debug(String.format("Similarity Score: [%s][%s]=[%s]",str1,str2,score));
 	        }
 	        return score;
     	} catch (Exception e){

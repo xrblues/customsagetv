@@ -32,18 +32,7 @@ public class MediaMetadataFactory {
     private List<IMediaMetadataProvider> metadataProviders = new ArrayList<IMediaMetadataProvider>();
     private List<ICoverProvider>         coverProviders    = new ArrayList<ICoverProvider>();
 
-    private IMediaMetadataPersistence    persistence;
-
     public MediaMetadataFactory() {
-        try {
-            // create the default persistence...
-            String cl = ConfigurationManager.getInstance().getMetadataConfiguration().getPersistenceClass();
-            persistence = (IMediaMetadataPersistence) Class.forName(cl).newInstance();
-            log.info("Using Default Persistence Engine: " + cl);
-        } catch (Exception e) {
-            log.error("Failed to create the default persistence engine.");
-        }
-
         // create the default provider list
         try {
             String providers = ConfigurationManager.getInstance().getMetadataConfiguration().getMediaMetadataProviders();
@@ -167,10 +156,6 @@ public class MediaMetadataFactory {
             log.warn("Mising or Unknown Provider: " + providerId);
         }
         return provider;
-    }
-
-    public IMediaMetadataPersistence getDefaultPeristence() {
-        return persistence;
     }
 
     public List<ICoverProvider> getCoverProviders() {
