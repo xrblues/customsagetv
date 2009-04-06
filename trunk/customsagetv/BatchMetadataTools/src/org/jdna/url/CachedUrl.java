@@ -36,7 +36,7 @@ public class CachedUrl extends Url implements IUrl {
             log.debug("Reloading existing cached url: " + propFile.getAbsolutePath());
             props.load(new FileInputStream(propFile));
             File f = getCachedFile();
-            if (f.exists() && isExpired(f)) {
+            if (f.exists() && (isExpired(f) || f.length()==0)) {
                 log.debug("Expiring Cached Url File: " + f.getAbsolutePath());
                 f.delete();
             }
@@ -142,13 +142,19 @@ public class CachedUrl extends Url implements IUrl {
                     props.setProperty("movedUrl", redirectUrl);
                 }
                 File f = getCachedFile();
-                IOUtils.copy(is, new FileOutputStream(f));
+                FileOutputStream fos = new FileOutputStream(f);
+                IOUtils.copy(is, fos);
+                fos.flush();
+                fos.close();
                 log.debug("Url " + u.toExternalForm() + " Cached To: " + f.getAbsolutePath());
                 log.debug(String.format("Url: %s moved to %s", u.toExternalForm(), redirectUrl));
             } else if (rc == HttpURLConnection.HTTP_OK) {
                 handleCookies(u, c, handler);
                 File f = getCachedFile();
-                IOUtils.copy(is, new FileOutputStream(f));
+                FileOutputStream fos = new FileOutputStream(f);
+                IOUtils.copy(is, fos);
+                fos.flush();
+                fos.close();
                 log.debug("Url " + u.toExternalForm() + " Cached To: " + f.getAbsolutePath());
             } else {
                 throw new IOException("Http Response Code: " + rc + "; Message: " + conn.getResponseMessage());

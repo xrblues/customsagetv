@@ -92,6 +92,11 @@ public class TestRegexp {
         testReplaceRegexp("What The Pick", regexp, "$2, $1");
         testReplaceRegexp("Another Time", regexp, "$2, $1");
         testReplaceRegexp("In A Time Capsule", regexp, "$2, $1");
+        
+        testRegexp("She's the One (1996)", "(.*)\\s+\\(?([0-9]{4})\\)?");
+        testRegexp("She's the One 1996", "(.*)\\s+\\(?([0-9]{4})\\)?");
+        testRegexp("Total Recall 2112 (2003)", "(.*)\\s+\\(?([0-9]{4})\\)?");
+        testRegexp("Total Recall (en)", "(.*)\\s+\\(?([0-9]{4})\\)?");
     }
 
     private static void testReplaceRegexp(String in, String search, String replace) {
