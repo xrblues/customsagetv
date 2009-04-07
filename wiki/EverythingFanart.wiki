@@ -1,0 +1,95 @@
+#summary Everything you every wanted to know about fanart but were too afraid to ask
+
+= Introduction =
+
+This is a work in progress document, once I get a bit more information I'll create a sticky in the sage forum.
+
+Fanart refers the Banners, Posters and Backgrounds for Media (TV, DVDs, Movies, and Music)
+
+<dl>
+<dt>What are the Phoenix APIs?</dt>
+<dd>
+The Phoenix APIs is a set of Fanart/Metadata apis that make is easier for STV developers to build Fanart Support into their STV plugins.
+</dd>
+
+<dt>Why build a library for this?</dt>
+<dd>
+A library makes sense, since the logic to "discover" Fanart was getting overly complex, and each plugin had to reproduce the logic in each plugin, in order to support it.  Using a library (api) means that STV developers call use a single consistent api call to fetch metadata for a given media file.
+</dd>
+
+<dt>What is required to use the new Phoenix APIs to it's full potential</dt>
+<dd>
+Latest Beta of SageTV (TODO: Find Version)
+Latest SageMC (TODO: Find Version)
+Metadata Tools 2.0 or later
+Evilpenquin's MediaScraper Tools (TODO: Find Version)
+</dd>
+
+<dt>What uses the new Phoenix Fanart APIs</dt>
+<dd>
+SageMC
+Metadata Tools
+Evilpenquins MediaScraper supports the File Structure and the Metadata Properties, but it doesn't require the actual phoenix jar file
+</dd>
+
+<dt>How do I enable Fanart in the (STV) UI?</dt>
+<dd>
+See the SageMC fanart guide
+
+or
+
+Import the STVi for SageMC or the Default STV and then enable Fanart in the Setting Screen and set the Central Fanart Folder.
+</dd>
+
+<dt>What is the new folder layout?</dt>
+<dd>
+TV/SeriesName/Backgrounds
+TV/SeriesName/Posters
+TV/SeriesName/Banners
+TV/SeriesName/Season #/Backgrounds
+TV/SeriesName/Season #/Posters
+TV/SeriesName/Seaons #/Banners
+
+Movies/Title/Backgrounds
+Movies/Title/Posters
+Movies/Title/Banners
+
+Music/Album/Backgrounds
+Music/Album/Posters
+Music/Album/Banners
+
+Music/Artist/Backgrounds
+Music/Artist/Posters
+Music/Artist/Banners
+</dd>
+
+<dt>I don't like the new folder layout, Can I use the old SageMC format?</dt>
+<dd>
+Yes, simply set the follow property in your Sage properties, and it will use the SageMC legacy format for looking up Fanart.
+TODO: Add property
+</dd>
+
+<dt>If I use the Old SageMC format will the scraper tools still work?</dt>
+<dd>
+It was decided that the scraper tools will only support the new folder structure.  So if you opt to use the legacy SageMC format, then the scaper tools will not put the fanart in the SageMC legacy directories.
+</dd>
+
+<dt>I don't want to use the new format or the SageMC format, Can I use have simple background image?</dt>
+<dd>
+Yes. Simply enable the LocalFanartStorage by setting the following property in your Sage properties.
+TODO: Add Property
+
+This will enable the phoenix apis to find a single poster and a single background in the current directory of the Media item.
+
+But it will not find anything for a SageTV Airing (ie, a guide entry)
+</dd>
+
+
+<dt></dt>
+<dd></dd>
+
+<dt></dt>
+<dd></dd>
+
+
+</dl>
