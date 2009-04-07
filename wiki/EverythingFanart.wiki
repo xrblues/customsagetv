@@ -85,8 +85,10 @@ But it will not find anything for a SageTV Airing (ie, a guide entry)
 </dd>
 
 
-<dt></dt>
-<dd></dd>
+<dt>When I download Fanart using the UI Search/Select Tools, is it supposed to download the metadata as well?</dt>
+<dd>
+Currently SageTV does not suppport updating metadata after a mediafile has been imported.   Because of this, the Search/Select tools that are provided in the STV plugin will only fetch fanart and not metadata.
+</dd>
 
 <dt></dt>
 <dd></dd>
