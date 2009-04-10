@@ -230,7 +230,6 @@ public class ApiHandler implements SageHandler {
         pw.println("</table>");
 
         pw.flush();
-        pw.close();
     }
 
     private void dumpSageApi(JSONObject o, PrintWriter pw) throws Exception {

@@ -4,7 +4,7 @@
 	
 	<property name="target" value="target"/>
 	<property name="name" value="sagex.api"/>
-	<property name="version" value="6.5.9-5"/>
+	<property name="version" value="6.5.9-7"/>
 	<property name="jarname" value="${name}.jar"/>
 
 	<path id="SageAPI.classpath">
@@ -27,6 +27,9 @@
 	</target>
 
 	<target name="build" depends="cleanGeneratedAPI,buildVersion,generateSageAPI">
+		<copy todir="target/classes">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
 		<mkdir dir="target/classes"/>
 		<javac debug="true" classpathref="AppClasspath" srcdir="src" destdir="target/classes">
 		</javac>
