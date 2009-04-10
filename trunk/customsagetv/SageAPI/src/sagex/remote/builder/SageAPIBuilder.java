@@ -14,6 +14,7 @@ import sagex.api.AlbumAPI;
 import sagex.api.ChannelAPI;
 import sagex.api.FavoriteAPI;
 import sagex.api.MediaFileAPI;
+import sagex.api.PlaylistAPI;
 import sagex.api.ShowAPI;
 
 public class SageAPIBuilder {
@@ -52,6 +53,8 @@ public class SageAPIBuilder {
             buildFavorite(parent, handler);
         } else if(ChannelAPI.IsChannelObject(parent)) {
             buildChannel(parent, handler);
+        } else if(PlaylistAPI.IsPlaylistObject(parent)) {
+            buildPlaylist(parent, handler);
         } else {
             handler.handleError("Unknown Object Type: " + parent.getClass().getName(), new Exception("Unknown Object Type: " + parent.getClass().getName()));
         }
@@ -78,7 +81,7 @@ public class SageAPIBuilder {
     }
 
     public void buildAlbum(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("Album", AlbumAPI.class, parent, handler, new String[] {"GetAlbumArt"});
+        buildObject("Album", AlbumAPI.class, parent, handler, new String[] {"GetAlbumArt", "GetAlbumTracks"});
     }
 
     public void buildAiring(Object parent, BuilderHandler handler) throws Exception {
@@ -90,7 +93,11 @@ public class SageAPIBuilder {
     }
 
     public void buildMediaFile(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("MediaFile", MediaFileAPI.class, parent, handler, new String[] {"GetFullImage", "GetThumbnail", "GetStartTimesForSegments",});
+        buildObject("MediaFile", MediaFileAPI.class, parent, handler, new String[] {"GetFullImage", "GetThumbnail", "GetStartTimesForSegments"});
+    }
+
+    public void buildPlaylist(Object parent, BuilderHandler handler) throws Exception {
+        buildObject("Playlist", MediaFileAPI.class, parent, handler, null);
     }
 
     public void buildObject(String objectName, Class staticObjectClass, Object parent, BuilderHandler handler, String[] ignoreMethods) throws Exception {
