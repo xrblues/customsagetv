@@ -188,4 +188,8 @@ public class SageMediaFile implements IMediaFile {
             f.setLastModified(System.currentTimeMillis());
         }
     }
+    
+    public Object getSageMediaFile() {
+        return mediaFile;
+    }
 }

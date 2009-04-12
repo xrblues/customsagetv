@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
+import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IProviderInfo;
@@ -15,12 +16,13 @@ import org.jdna.media.metadata.impl.sage.SagePropertyType;
 import org.jdna.metadataupdater.Version;
 import org.jdna.util.LoggerConfiguration;
 
-import sagex.phoenix.fanart.SageUtil;
+import sagex.api.Configuration;
 
 public class api {
+    private static final Logger log = Logger.getLogger(api.class);
     static {
-        SageUtil.Log("Metadata Tools API: " + GetVersion() + "; Using Phoenix: " + phoenix.api.GetVersion());
         LoggerConfiguration.configurePlugin();
+        log.info("Metadata Tools API: " + GetVersion() + "; Using Phoenix: " + phoenix.api.GetVersion());
     }
     
     public static String GetVersion() {
@@ -28,9 +30,9 @@ public class api {
     }
     
     public static void InstallBMTPlugin() {
-        SageUtil.Log("BMT Plugin is being installed.");
+        log.debug("BMT Plugin is being installed.");
         String bmtClass=org.jdna.sage.MetadataUpdaterPlugin.class.getName();
-        String plugins = (String) SageUtil.GetServerProperty("mediafile_metadata_parser_plugins",null);
+        String plugins = Configuration.GetServerProperty("mediafile_metadata_parser_plugins",null);
         
         if (!IsBMTPluginInstalled()) {
             if (StringUtils.isEmpty(plugins)) {
@@ -38,13 +40,13 @@ public class api {
             } else {
                 plugins += ";";
             }
-            SageUtil.SetServerProperty("mediafile_metadata_parser_plugins", plugins + bmtClass);
+            Configuration.SetServerProperty("mediafile_metadata_parser_plugins", plugins + bmtClass);
         }
         
-        SageUtil.Log("Installing the custom metadata fields....");
+        log.debug("Installing the custom metadata fields....");
 
         List<String> props = new LinkedList<String>();
-        String customPropsStr = (String)SageUtil.GetServerProperty("custom_metadata_properties", null);
+        String customPropsStr = Configuration.GetServerProperty("custom_metadata_properties", null);
         if (!StringUtils.isEmpty(customPropsStr)) {
             for (String s : customPropsStr.split(";")) {
                 props.add(s.trim());
@@ -61,19 +63,19 @@ public class api {
         }
         
         if (props.size()>0) {
-            SageUtil.SetServerProperty("custom_metadata_properties", new StrBuilder().appendWithSeparators(props, ";").toString());
-            SageUtil.Log("Set Custom Metadata Properties: " + (String)SageUtil.GetServerProperty("custom_metadata_properties", ""));
+            Configuration.SetServerProperty("custom_metadata_properties", new StrBuilder().appendWithSeparators(props, ";").toString());
+            log.debug("Set Custom Metadata Properties: " + Configuration.GetServerProperty("custom_metadata_properties", ""));
         }
     }
 
     public static void RemoveBMTPlugin() {
         String bmtClass=org.jdna.sage.MetadataUpdaterPlugin.class.getName();
-        String plugins = (String) SageUtil.GetServerProperty("mediafile_metadata_parser_plugins",null);
+        String plugins = Configuration.GetServerProperty("mediafile_metadata_parser_plugins",null);
         if (IsBMTPluginInstalled()) {
             plugins = plugins.replaceAll(";"+bmtClass, "");
             plugins = plugins.replaceAll(bmtClass+";", "");
             plugins = plugins.replaceAll(bmtClass, "");
-            SageUtil.SetServerProperty("mediafile_metadata_parser_plugins", plugins);
+            Configuration.SetServerProperty("mediafile_metadata_parser_plugins", plugins);
         }
     }
     
@@ -87,7 +89,7 @@ public class api {
     
     public static boolean IsBMTPluginInstalled() {
         String bmtClass=org.jdna.sage.MetadataUpdaterPlugin.class.getName();
-        String plugins = (String) SageUtil.GetServerProperty("mediafile_metadata_parser_plugins",null);
+        String plugins = Configuration.GetServerProperty("mediafile_metadata_parser_plugins",null);
         if (plugins==null) {
             return false;
         }
