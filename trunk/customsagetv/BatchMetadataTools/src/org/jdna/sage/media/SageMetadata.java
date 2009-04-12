@@ -21,7 +21,6 @@ public class SageMetadata implements IMediaMetadata {
         return null;
     }
 
-    @MetadataField(key=MetadataKey.BACKGROUND_ART)
     public IMediaArt getBackground() {
         // TODO Auto-generated method stub
         return null;

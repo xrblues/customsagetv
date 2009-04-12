@@ -42,6 +42,8 @@ import org.jdna.util.LoggerConfiguration;
 
 import sagex.SageAPI;
 import sagex.api.Global;
+import sagex.api.Utility;
+import sagex.api.WidgetAPI;
 
 /**
  * This is an engine that will process one of more directories and files and
@@ -162,6 +164,7 @@ public class MetadataUpdater {
     private IMediaMetadataPersistence persistence = new SageTVPropertiesWithCentralFanartPersistence();
 
     private boolean tvSearch;
+    private String reportType;
     
     /**
      * This is the entry into the tool. This will process() all files/dirs that
@@ -208,6 +211,19 @@ public class MetadataUpdater {
             return;
         }
         
+        if (reportType!=null) {
+            System.out.println("Requesting a Fanart report: " + reportType + " on the SageTV Server.");
+            try {
+                String result = (String) WidgetAPI.EvaluateExpression("phoenix_api_RunPhoenixDiagnostics(\""+ reportType +"\")");
+                if (result==null) {
+                    throw new Exception("Failed to execute the report on the server.");
+                }
+                System.out.println(result);
+            } catch (Throwable e) {
+                System.out.println("Report Failed.  Most likely cause is that the sagex.api Remote APIs are not installed on the server.");
+            }
+            return;
+        }
 
         // get the parent folder for processing
         IMediaFolder parentFolder = null;
@@ -613,6 +629,16 @@ public class MetadataUpdater {
     @CommandLineArg(name = "tv", description = "Force a TV Search (default false)")
     public void setTVSearch(boolean b) {
         this.tvSearch = b;
+    }
+    
+    /**
+     * perform the phoenix tests on the sage server
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "report", description = "Perform a 'quick' or 'detailed' report on fanart.")
+    public void setPerformTests(String reportType) {
+        this.reportType = reportType;
     }
     
     public boolean isTVSearch() {
