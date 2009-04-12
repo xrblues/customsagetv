@@ -59,7 +59,12 @@ public class MetadataProviderContainer implements IMediaMetadataProvider {
                     log.debug("Provider: " + p.getInfo().getId() + " cannot handle query: " + query);
                 }
             } catch (Exception e) {
-                log.error("Failed Search using provider: " + p.getInfo().getId() + "; for query: " + query);
+                if (p==null || p.getInfo()==null) {
+                    log.error("Failed Search; Provider or ProviderInfo is not known; Query: " + query, e);
+                } else {
+                    log.error("Failed Search using provider: " + p.getInfo().getId() + "; for query: " + query, e);
+                }
+                    
             }
         }
         
