@@ -167,8 +167,8 @@ public class MediaMetadataFactory {
         coverProviders.add(provider);
     }
 
-    public void removeCoverProvider(ICoverProvider provider) {
-        metadataProviders.remove(provider);
+    public void removeCoverProvider(ICoverProvider cprovider) {
+        coverProviders.remove(cprovider);
     }
     
     public boolean canProviderAcceptQuery(IMediaMetadataProvider provider, SearchQuery query) {

@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
@@ -140,7 +141,7 @@ public class XbmcScraperProcessor {
         if (cond!=null) {
             boolean not = cond.startsWith("!");
             if (not) cond = cond.substring(1);
-            Boolean b = (Boolean) parseBoolean(options.get(cond));
+            Boolean b = BooleanUtils.toBooleanObject(options.get(cond));
             log.debug("Processing Conditional: " + regex.getConditional() + "; " + b);
             boolean b2 = (b==null || b.booleanValue()==true); 
             if (!(b2 || (not && !b2))) {
@@ -154,17 +155,6 @@ public class XbmcScraperProcessor {
         }
         executeExpression(regex);        
     }
-
-    private Boolean parseBoolean(String strBoolValue) {
-        try {
-            if (strBoolValue==null) return null;
-            return Boolean.parseBoolean(strBoolValue);
-        } catch (Exception e) {
-            log.error("Failed to parse boolean for: " + strBoolValue, e);
-            return null;
-        }
-    }
-
 
     private void executeExpression(RegExp r) {
         log.debug(String.format("Processing Expression: %s; Dest: %s; Input: %s; Output: %s", r.getExpression().getExpression(), r.getDest(), r.getInput(), r.getOutput()));

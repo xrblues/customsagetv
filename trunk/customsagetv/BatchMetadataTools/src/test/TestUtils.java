@@ -55,7 +55,7 @@ public class TestUtils {
             } else if (cm.getType() == ICastMember.WRITER) {
                 System.out.printf("Writer: %s\n", cm.getName());
             } else {
-                System.out.printf("Other: %s doing \n", cm.getName(), cm.getPart());
+                System.out.printf("Other: %s doing %s\n", cm.getName(), cm.getPart());
             }
         }
     }

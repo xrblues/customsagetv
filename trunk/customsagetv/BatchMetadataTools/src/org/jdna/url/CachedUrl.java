@@ -1,7 +1,6 @@
 package org.jdna.url;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +14,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
+import org.jdna.util.PropertiesUtils;
 
 public class CachedUrl extends Url implements IUrl {
 
@@ -34,7 +34,7 @@ public class CachedUrl extends Url implements IUrl {
         props = new Properties();
         if (propFile.exists()) {
             log.debug("Reloading existing cached url: " + propFile.getAbsolutePath());
-            props.load(new FileInputStream(propFile));
+            PropertiesUtils.load(props, propFile);
             File f = getCachedFile();
             if (f.exists() && (isExpired(f) || f.length()==0)) {
                 log.debug("Expiring Cached Url File: " + f.getAbsolutePath());
@@ -164,7 +164,7 @@ public class CachedUrl extends Url implements IUrl {
             log.warn("Cannot Cache Url Connection Type; " + c.getClass().getName());
 
         }
-        props.store(new FileOutputStream(getPropertyFile()), "Cached Url Properties");
+        PropertiesUtils.store(props, getPropertyFile(), "Cached Url Properties");
         log.debug("Properties for cached url are now stored: " + getPropertyFile().getAbsolutePath());
     }
 

@@ -1,7 +1,9 @@
 package org.jdna.media.metadata;
 
+import java.io.Serializable;
+
 // TODO: Make this contain a map of ids
-public class MetadataID {
+public class MetadataID implements Serializable {
     private String key, id;
     public MetadataID(String key, String id) {
         this.key=key;

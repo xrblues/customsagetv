@@ -69,7 +69,7 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 
     private static final int    HEADER_ON           = 1;
     private static final int    HEADER_OFF          = 0;
-    private static int          headerState         = HEADER_OFF;
+    private int          headerState         = HEADER_OFF;
 
     private CastMember          curCastMember       = null;
 
