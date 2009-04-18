@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
-import org.jdna.media.metadata.IMediaMetadata;
 
 import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
@@ -15,7 +14,6 @@ import sagex.api.MediaFileAPI;
 public class MediaFile extends AbstractMediaResource implements IMediaFile {
     private boolean              stacked;
     private List<IMediaResource> parts;
-    private IMediaMetadata       metadata;
     private Object               sageMediaFile;
     private Object               sageAiring;
 

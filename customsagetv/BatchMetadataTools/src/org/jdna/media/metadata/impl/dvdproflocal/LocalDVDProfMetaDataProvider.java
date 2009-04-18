@@ -78,7 +78,7 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
 
         String xml = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getXmlFile();
         if (xml == null) {
-            throw new Exception(String.format("Missing xml.  Please Set Xml Property.", this.getClass().getName()));
+            throw new Exception("Missing xml.  Please Set DVDProfiler Xml Location.");
         }
 
         xmlFile = new File(xml);

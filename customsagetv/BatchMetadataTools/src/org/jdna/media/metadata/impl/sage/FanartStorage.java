@@ -1,8 +1,6 @@
 package org.jdna.media.metadata.impl.sage;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,21 +31,25 @@ public class FanartStorage {
     
     public void saveFanart(IMediaFile mediaFileParent, String title, IMediaMetadata md, PersistenceOptions options) {
         MediaArtifactType[] localArtTypes = null;
+        boolean localFanart = false;
         if (ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isFanartEnabled() && !StringUtils.isEmpty(ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder())) {
             log.info("Using Central Fanart: " + ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder());
             for (MediaArtifactType mt : MediaArtifactType.values()) {
                 saveCentralFanart(title, md, mt, options);
             }
             localArtTypes = new MediaArtifactType[] {MediaArtifactType.POSTER};
+            localFanart = ConfigurationManager.getInstance().getMetadataConfiguration().isEnableDefaultSTVPosterCompatibility();
         } else if (ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isFanartEnabled()) {
             log.info("Using Local Fanart; The central fanart folder is not set.");
             localArtTypes = MediaArtifactType.values();
+            localFanart = true;
         } else {
             log.info("Fanart is not enabled.  Saving local thumbnails only.");
             localArtTypes = new MediaArtifactType[] {MediaArtifactType.POSTER};
+            localFanart = true;
         }
         
-        if (mediaFileParent!=null && ConfigurationManager.getInstance().getMetadataConfiguration().isEnableDefaultSTVPosterCompatibility()) {
+        if (mediaFileParent!=null && localFanart) {
             // save any local artifacts
             saveLocalFanartForTypes(mediaFileParent, md, options, localArtTypes);
         }
@@ -138,7 +140,7 @@ public class FanartStorage {
             StoredStringSet set = new StoredStringSet();
             String name = imageFile.getName();
             if (storedFile.exists()) {
-                set.load(new FileReader(storedFile));
+                StoredStringSet.load(set, storedFile);
                 if (set.contains(name)) {
                     log.debug("Skipping Image file: " + imageFile.getPath() + " because it's in the image skip file.");
                     skip=true;
@@ -151,10 +153,7 @@ public class FanartStorage {
                 if (!storedFile.getParentFile().exists()) {
                     storedFile.getParentFile().mkdirs();
                 }
-                FileWriter fw = new FileWriter(storedFile);
-                set.store(fw, "Ignoring these image files");
-                fw.flush();
-                fw.close();
+                StoredStringSet.save(set, storedFile, "Ignoring these image files");
             }
         } catch (Exception e) {
             log.error("Failed to load/save the skip file for image: " + imageFile.getAbsolutePath(), e);

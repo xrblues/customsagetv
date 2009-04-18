@@ -1,8 +1,6 @@
 package org.jdna.media.metadata.impl.sage;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,6 +30,7 @@ import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
+import org.jdna.util.PropertiesUtils;
 import org.jdna.util.SortedProperties;
 
 import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
@@ -74,14 +73,13 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         Properties props = new Properties();
         if (propFile != null && propFile.exists() && propFile.canRead()) {
             log.debug("Loading Sage Video Metadata properties: " + propFile.getAbsolutePath());
-            props.load(new FileInputStream(propFile));
+            PropertiesUtils.load(props, propFile);
         }
         
         Map<String,String> m = new HashMap<String,String>();
         for (Enumeration e = props.propertyNames(); e.hasMoreElements();) {
             String n = (String)e.nextElement();
             m.put(n, props.getProperty(n));
-            log.debug("xx Keeping Property: " + n);
         }
         return m;
     }
@@ -179,9 +177,6 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
             String v =me.getValue();
             if (!StringUtils.isEmpty(v)) {
                 xprops.put(me.getKey(), v);
-                log.debug("Adding Property: " + me.getKey() + "; value: " + me.getValue());
-            } else {
-                log.warn("Removing Property: " + me.getKey() + "; It has an empty value.");
             }
         }
         return props;
@@ -314,14 +309,11 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
                 if (StringUtils.isEmpty(p.sageKey)) continue;
                 
                 if (!StringUtils.isEmpty(allprops.get(p.sageKey))) {
-                    log.debug("Storing: " + p.sageKey);
                     props.setProperty(p.sageKey, allprops.get(p.sageKey));
-                } else {
-                    log.debug("Rejecting: " + p);
                 }
             }
 
-            props.store(new FileOutputStream(partFile), "Sage Video Metadata for " + mf.getLocationUri());
+            PropertiesUtils.store(props, partFile, "Sage Video Metadata for " + mf.getLocationUri());
         } catch (IOException e) {
             log.error("Failed to save properties: " + partFile.getAbsolutePath(), e);
         }

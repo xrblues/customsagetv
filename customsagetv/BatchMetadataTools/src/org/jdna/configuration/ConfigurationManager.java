@@ -1,8 +1,6 @@
 package org.jdna.configuration;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
@@ -32,6 +30,7 @@ import org.jdna.persistence.IPersistence;
 import org.jdna.persistence.PropertiesPersistence;
 import org.jdna.persistence.annotations.Table;
 import org.jdna.url.UrlConfiguration;
+import org.jdna.util.PropertiesUtils;
 import org.jdna.util.SortedProperties;
 
 /**
@@ -88,7 +87,7 @@ public class ConfigurationManager {
         props = new SortedProperties();
         if (configFile.exists()) {
             try {
-                props.load(new FileInputStream(configFile));
+                PropertiesUtils.load(props, configFile);
             } catch (Exception e) {
                 log.error("Failed to load custom properties from: " + cFile, e);
             }
@@ -103,7 +102,7 @@ public class ConfigurationManager {
         log.debug("Loading: " + titleMapPropsFile.getAbsolutePath());
         if (titleMapPropsFile.exists()) {
             try {
-                titleMapProps.load(new FileInputStream(titleMapPropsFile));
+                PropertiesUtils.load(titleMapProps, titleMapPropsFile);
             } catch (Exception e) {
                 log.error("Failed to load title mappings from: " + titleMapPropsFile.getAbsolutePath(),e);
             }
@@ -118,20 +117,12 @@ public class ConfigurationManager {
 
     public synchronized void save() throws IOException {
         log.debug("Writing configuration to persistent store: " + configFile.getAbsolutePath());
-        
-        FileWriter fw = new FileWriter(configFile);
-        props.store(fw, "Configuration Properties");
-        fw.flush();
-        fw.close();
+        PropertiesUtils.store(props, configFile, "Configuration Properties");
     }
 
     public synchronized void saveTitleMappings() throws IOException {
         log.debug("Writing Title mappings: " + titleMapPropsFile.getAbsolutePath());
-        
-        FileWriter fw = new FileWriter(titleMapPropsFile);
-        titleMapProps.store(fw, "Title to MediaProviderDataID mappings");
-        fw.flush();
-        fw.close();
+        PropertiesUtils.store(titleMapProps, titleMapPropsFile, "Title to MediaProviderDataID mappings");
     }
     
     public MetadataID getMetadataIdForTitle(String title) {

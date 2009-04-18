@@ -213,7 +213,7 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         ICastMember castMembers[] = (ICastMember[]) get(MetadataKey.CAST_MEMBER_LIST);
         if (castMembers!=null) {
             for (ICastMember m : castMembers) {
-                if (m.getType() == cm.getType() && m.getName()==cm.getName()) {
+                if (m.getType() == cm.getType() && (cm.getName()!=null && cm.getName().equals(cm.getName()))) {
                     found = true;
                     break;
                 }

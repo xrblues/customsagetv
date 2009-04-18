@@ -2,6 +2,9 @@ package org.jdna.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -112,5 +115,30 @@ public class StoredStringSet implements Set<String> {
 
     public <T> T[] toArray(T[] a) {
         return set.toArray(a);
+    }
+    
+    public static void load(StoredStringSet set, File f) throws IOException {
+        Reader r = null;
+        try {
+            r = new FileReader(f);
+            set.load(r);
+        } finally {
+            if (r!=null) r.close();
+        }
+    }
+    
+    public static void save(StoredStringSet set, File f, String msg) throws IOException {
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(f);
+            set.store(fw, msg);
+        } finally {
+            if (fw!=null) {
+                try {
+                    fw.flush();
+                } catch (IOException e) {}
+                fw.close();
+            }
+        }
     }
 }

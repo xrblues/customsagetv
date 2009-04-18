@@ -15,7 +15,7 @@ import org.jdna.media.impl.VirtualMediaFolder;
 
 public class MediaResourceFactory {
     private static final Logger        log = Logger.getLogger(MediaResourceFactory.class);
-    public static MediaResourceFactory instance;
+    private static MediaResourceFactory instance;
 
     public static MediaResourceFactory getInstance() {
         if (instance == null) instance = new MediaResourceFactory();

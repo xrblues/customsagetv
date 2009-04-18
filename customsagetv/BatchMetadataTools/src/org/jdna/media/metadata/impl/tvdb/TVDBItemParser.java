@@ -160,7 +160,7 @@ public class TVDBItemParser {
                 }
             }
         } catch (Exception e) {
-            log.error("Failed to get season/episode specific information for " + seriesId + "; Season: " + season + "; episode: " + episode);
+            log.error("Failed to get season/episode specific information for " + seriesId + "; Season: " + season + "; episode: " + episode,e);
         }
 
     }
@@ -196,7 +196,6 @@ public class TVDBItemParser {
                             ma = new MediaArt();
                             ma.setType(MediaArtifactType.BANNER);
                         } else if ("season".equals(type)) {
-                            log.debug("Ignoring Season artwork for now.");
                         } else {
                             log.debug("Unhandled Banner Type: " + type);
                         }

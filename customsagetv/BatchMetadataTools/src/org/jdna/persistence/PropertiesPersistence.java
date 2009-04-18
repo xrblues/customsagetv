@@ -89,11 +89,7 @@ public class PropertiesPersistence implements IPersistence {
                     continue;
                 }
 
-                if (key == null) {
-                    propKey = path + (c.name().equals(org.jdna.persistence.annotations.Field.USE_FIELD_NAME) ? f.getName() : c.name());
-                } else {
-                    propKey = path + key + "/" + (c.name().equals(org.jdna.persistence.annotations.Field.USE_FIELD_NAME) ? f.getName() : c.name());
-                }
+                propKey = path + (c.name().equals(org.jdna.persistence.annotations.Field.USE_FIELD_NAME) ? f.getName() : c.name());
                 props.remove(propKey);
             }
         }
