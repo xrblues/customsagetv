@@ -42,7 +42,6 @@ import org.jdna.util.LoggerConfiguration;
 
 import sagex.SageAPI;
 import sagex.api.Global;
-import sagex.api.Utility;
 import sagex.api.WidgetAPI;
 
 /**

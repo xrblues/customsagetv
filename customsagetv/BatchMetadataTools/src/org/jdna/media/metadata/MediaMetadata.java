@@ -27,6 +27,7 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
     }
 
     public MediaMetadata(IMediaMetadata md) {
+        this.supportedKeys = MetadataKey.values();
         if (md!=null) {
             // TODO: Maybe do a deep clone on objects
             for (MetadataKey k : MetadataKey.values()) {

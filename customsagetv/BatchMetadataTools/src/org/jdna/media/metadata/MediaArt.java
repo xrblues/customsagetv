@@ -7,6 +7,7 @@ public class MediaArt implements IMediaArt {
     private String providerId;
     private MediaArtifactType type;
     private String label;
+    private int season;
 
     public MediaArt() {
         super();
@@ -53,4 +54,11 @@ public class MediaArt implements IMediaArt {
         this.label = label;
     }
 
+    public int getSeason() {
+        return season;
+    }
+
+    public void setSeason(int season) {
+        this.season = season;
+    }
 }

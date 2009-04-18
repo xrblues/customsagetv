@@ -8,10 +8,12 @@ import org.jdna.sage.media.SageMediaFile;
 
 import sagex.SageAPI;
 import sagex.api.AiringAPI;
+import sagex.stub.StubSageAPI;
 
 public class TestAiringParser {
     public static void main(String args[]) {
         SageAPI.setProvider(SageAPI.getRemoteProvider());
+        SageAPI.setProvider(new StubSageAPI());
         String file = "Futurama-BenderShouldNotBeAllowedonTelevision-2232522-0.ts";
         Pattern p = Pattern.compile("([0-9]+)-[0-9]{1,2}\\.");
         Matcher m = p.matcher(file);
