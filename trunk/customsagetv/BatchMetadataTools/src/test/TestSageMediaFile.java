@@ -7,11 +7,10 @@ import org.jdna.metadataupdater.MetadataUpdater;
 import org.jdna.sage.media.SageMediaFolder;
 import org.jdna.util.LoggerConfiguration;
 
-import bmt.BMTMetadataSupport;
-
 import sagex.SageAPI;
 import sagex.api.Database;
 import sagex.api.MediaFileAPI;
+import bmt.BMTMetadataSupport;
 
 public class TestSageMediaFile {
     public static void main(String[] args) throws Exception {

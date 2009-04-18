@@ -40,7 +40,12 @@ public class DOMUtils {
         }
         return retVal;
     }
-
-
-
+    
+    public static Element getElementByTagName(Element el, String tag) {
+        NodeList nl = el.getElementsByTagName(tag);
+        if (nl.getLength() > 0) {
+            return (Element)nl.item(0);
+        }
+        return null;
+    }
 }
