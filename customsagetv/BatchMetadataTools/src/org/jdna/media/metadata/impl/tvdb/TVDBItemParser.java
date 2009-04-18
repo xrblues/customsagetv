@@ -186,16 +186,16 @@ public class TVDBItemParser {
                     String type = DOMUtils.getElementValue(el, "BannerType");
                     MediaArt ma = null;
                     if (season == null) {
-                        if ("fanart".equals(type) && season == null) {
+                        if ("fanart".equals(type)) {
                             ma = new MediaArt();
                             ma.setType(MediaArtifactType.BACKGROUND);
-                        } else if ("poster".equals(type) && season == null) {
+                        } else if ("poster".equals(type)) {
                             ma = new MediaArt();
                             ma.setType(MediaArtifactType.POSTER);
-                        } else if ("series".equals(type) && season == null) {
+                        } else if ("series".equals(type)) {
                             ma = new MediaArt();
                             ma.setType(MediaArtifactType.BANNER);
-                        } else if ("season".equals(type) && season != null) {
+                        } else if ("season".equals(type)) {
                             log.debug("Ignoring Season artwork for now.");
                         } else {
                             log.debug("Unhandled Banner Type: " + type);
@@ -216,14 +216,14 @@ public class TVDBItemParser {
                                     ma = new MediaArt();
                                     ma.setType(MediaArtifactType.BANNER);
                                 } else {
-                                    log.debug("Unhandled Banner Type2: " + type2);
+                                    log.debug("Unhandled Season Banner Type2: " + type2);
                                 }
                                 if (ma != null) {
                                     ma.setSeason(seasonNum);
                                 }
                             }
                         } else {
-                            log.debug("Unhandled Banner Type: " + type);
+                            log.debug("Unhandled Season Banner Type: " + type);
                         }
                     }
 
@@ -252,9 +252,15 @@ public class TVDBItemParser {
                 cm.setName(DOMUtils.getElementValue(e, "Name"));
                 cm.setPart(DOMUtils.getElementValue(e, "Role"));
                 md2.addCastMember(cm);
+                
+                NodeList imgs = e.getElementsByTagName("Image");
+                for (int j=0;j<imgs.getLength();j++) {
+                    log.debug("Adding actor fanart: " + imgs.item(j).getTextContent());
+                    cm.addFanart(imgs.item(j).getTextContent());
+                }
             }
         } catch (Exception e) {
-            log.warn("Failed to process the Actors for series: " + seriesId);
+            log.warn("Failed to process the Actors for series: " + seriesId, e);
         }
     }
 
