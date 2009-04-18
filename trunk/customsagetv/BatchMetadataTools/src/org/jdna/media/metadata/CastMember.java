@@ -1,6 +1,8 @@
 package org.jdna.media.metadata;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 public class CastMember implements ICastMember, Serializable {
     private static final long serialVersionUID = 1L;
@@ -9,6 +11,7 @@ public class CastMember implements ICastMember, Serializable {
     private String            part;
     private String            providerDataUrl;
     private int               type;
+    private List<String> fanart = new LinkedList<String>();
 
     public CastMember() {
     }
@@ -63,5 +66,11 @@ public class CastMember implements ICastMember, Serializable {
 
     public void setType(int type) {
         this.type = type;
+    }
+    
+    public void addFanart(String url) {
+        if (url!=null) {
+            fanart.add(url.trim());
+        }
     }
 }
