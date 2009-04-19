@@ -138,4 +138,9 @@ public class SageMediaFolder implements IMediaFolder {
     public int compareTo(IMediaResource arg0) {
         return 0;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }

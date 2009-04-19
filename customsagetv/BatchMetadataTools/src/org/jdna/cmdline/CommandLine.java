@@ -31,7 +31,7 @@ public class CommandLine {
      */
     public static final String  EXTRA_ARGS_CLA = "EXTRAARGS";
 
-    public class Arg {
+    public static class Arg {
         public Arg(String name, Object value) {
             this.name = name;
             this.value = value;
@@ -319,6 +319,7 @@ public class CommandLine {
         CommandLineProcess clp = o.getClass().getAnnotation(CommandLineProcess.class);
         if (clp==null) {
             System.out.println("Class does not contain a CommandLineProcess annotation.  Help cannot be generated for class: " + this.getClass().getName());
+            return;
         }
         System.out.printf("%s\n", clp.description());
 
