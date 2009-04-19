@@ -207,7 +207,7 @@ public class TVDBItemParser {
                         } else if ("season".equals(type)) {
                             int seasonNum = DOMUtils.getElementIntValue(el, "Season");
                             if (seasonNum == inSeason) {
-                                String type2 = DOMUtils.getElementValue(el, "BannerType");
+                                String type2 = DOMUtils.getElementValue(el, "BannerType2");
                                 if ("season".equals(type2)) {
                                     ma = new MediaArt();
                                     ma.setType(MediaArtifactType.POSTER);

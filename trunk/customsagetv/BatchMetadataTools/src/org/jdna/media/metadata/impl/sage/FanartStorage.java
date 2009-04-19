@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,8 +30,8 @@ import sagex.phoenix.fanart.FanartUtil.MediaType;
 
 public class FanartStorage {
     private static final FanartStorage instance = new FanartStorage();
-    private static final Logger log = Logger.getLogger(FanartStorage.class);
-    
+    private static final Logger        log      = Logger.getLogger(FanartStorage.class);
+
     public void saveFanart(IMediaFile mediaFileParent, String title, IMediaMetadata md, PersistenceOptions options) {
         MediaArtifactType[] localArtTypes = null;
         boolean localFanart = false;
@@ -37,7 +40,7 @@ public class FanartStorage {
             for (MediaArtifactType mt : MediaArtifactType.values()) {
                 saveCentralFanart(title, md, mt, options);
             }
-            localArtTypes = new MediaArtifactType[] {MediaArtifactType.POSTER};
+            localArtTypes = new MediaArtifactType[] { MediaArtifactType.POSTER };
             localFanart = ConfigurationManager.getInstance().getMetadataConfiguration().isEnableDefaultSTVPosterCompatibility();
         } else if (ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isFanartEnabled()) {
             log.info("Using Local Fanart; The central fanart folder is not set.");
@@ -45,24 +48,24 @@ public class FanartStorage {
             localFanart = true;
         } else {
             log.info("Fanart is not enabled.  Saving local thumbnails only.");
-            localArtTypes = new MediaArtifactType[] {MediaArtifactType.POSTER};
+            localArtTypes = new MediaArtifactType[] { MediaArtifactType.POSTER };
             localFanart = true;
         }
-        
-        if (mediaFileParent!=null && localFanart) {
+
+        if (mediaFileParent != null && localFanart) {
             // save any local artifacts
             saveLocalFanartForTypes(mediaFileParent, md, options, localArtTypes);
         }
     }
-    
+
     private void saveLocalFanartForTypes(IMediaFile mediaFileParent, IMediaMetadata md, PersistenceOptions options, MediaArtifactType[] artTypes) {
         if (mediaFileParent.isStacked()) {
             for (IMediaResource mf : mediaFileParent.getParts()) {
                 for (MediaArtifactType mt : artTypes) {
                     try {
-                        saveLocalFanart((IMediaFile)mf, md, mt, options);
+                        saveLocalFanart((IMediaFile) mf, md, mt, options);
                     } catch (Exception e) {
-                        log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocationUri(),e);
+                        log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocationUri(), e);
                     }
                 }
             }
@@ -71,7 +74,7 @@ public class FanartStorage {
                 try {
                     saveLocalFanart(mediaFileParent, md, mt, options);
                 } catch (Exception e) {
-                    log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocationUri(),e);
+                    log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocationUri(), e);
                 }
             }
         }
@@ -88,39 +91,39 @@ public class FanartStorage {
                 downloadAndSaveFanart(mt, ma[0], imageFile, options, false);
             }
         } catch (URISyntaxException e) {
-            log.error("Failed to save media art: " + mt + " for file: " + mediaFileParent.getLocationUri(),e);
+            log.error("Failed to save media art: " + mt + " for file: " + mediaFileParent.getLocationUri(), e);
         }
     }
 
     private void downloadAndSaveFanart(MediaArtifactType mt, IMediaArt mediaArt, File imageFile, PersistenceOptions options, boolean useOriginalName) throws IOException {
         if (mediaArt == null || mediaArt.getDownloadUrl() == null || imageFile == null) return;
-        
+
         String url = mediaArt.getDownloadUrl();
         if (useOriginalName) {
             imageFile = new File(imageFile.getParentFile(), new File(url).getName());
             log.debug("Using orginal image filename from url: " + imageFile.getAbsolutePath());
         }
-        
-        if (!shouldSkipFile(imageFile) || (options!=null && options.isOverwriteFanart())) {
-            if (!imageFile.exists() || (options!=null && options.isOverwriteFanart())) {
+
+        if (!shouldSkipFile(imageFile) || (options != null && options.isOverwriteFanart())) {
+            if (!imageFile.exists() || (options != null && options.isOverwriteFanart())) {
                 int scale = getScale(mt);
-                if (scale>0) {
+                if (scale > 0) {
                     MediaMetadataUtils.writeImageFromUrl(mediaArt.getDownloadUrl(), imageFile, scale);
                 } else {
                     MediaMetadataUtils.writeImageFromUrl(mediaArt.getDownloadUrl(), imageFile);
                 }
             } else {
-                log.debug("Skipping writing of image file: " + imageFile.getAbsolutePath() +" consider using --overwrite or --overwriteFanart.");
+                log.debug("Skipping writing of image file: " + imageFile.getAbsolutePath() + " consider using --overwrite or --overwriteFanart.");
             }
         } else {
-            log.debug("Skipping writing of image file: " + imageFile.getAbsolutePath() +" consider using --overwrite or --overwriteFanart or remove the image name from the image skip file");
+            log.debug("Skipping writing of image file: " + imageFile.getAbsolutePath() + " consider using --overwrite or --overwriteFanart or remove the image name from the image skip file");
         }
     }
-    
+
     private int getScale(MediaArtifactType mt) {
         MetadataConfiguration mc = ConfigurationManager.getInstance().getMetadataConfiguration();
         int scale = -1;
-        if (mc==null) return scale;
+        if (mc == null) return scale;
         if (mt == MediaArtifactType.BACKGROUND) {
             scale = mc.getBackgroundImageWidth();
         } else if (mt == MediaArtifactType.BANNER) {
@@ -135,28 +138,31 @@ public class FanartStorage {
 
     private boolean shouldSkipFile(File imageFile) {
         boolean skip = false;
-        try {
-            File storedFile = new File(imageFile.getParentFile(), "images");
-            StoredStringSet set = new StoredStringSet();
-            String name = imageFile.getName();
-            if (storedFile.exists()) {
-                StoredStringSet.load(set, storedFile);
-                if (set.contains(name)) {
-                    log.debug("Skipping Image file: " + imageFile.getPath() + " because it's in the image skip file.");
-                    skip=true;
+        // only do this if we are using the central fanart
+        if ((ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isFanartEnabled() && !StringUtils.isEmpty(ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder()))) {
+            try {
+                File storedFile = new File(imageFile.getParentFile(), "images");
+                StoredStringSet set = new StoredStringSet();
+                String name = imageFile.getName();
+                if (storedFile.exists()) {
+                    StoredStringSet.load(set, storedFile);
+                    if (set.contains(name)) {
+                        log.debug("Skipping Image file: " + imageFile.getPath() + " because it's in the image skip file.");
+                        skip = true;
+                    }
                 }
-            }
-            if (!skip) {
-                log.debug("Adding Image file: " + imageFile.getPath() + " to the image skip file.");
-                set.add(name);
-                // create the file's parent dir if it's not exist
-                if (!storedFile.getParentFile().exists()) {
-                    storedFile.getParentFile().mkdirs();
+                if (!skip) {
+                    log.debug("Adding Image file: " + imageFile.getPath() + " to the image skip file.");
+                    set.add(name);
+                    // create the file's parent dir if it's not exist
+                    if (!storedFile.getParentFile().exists()) {
+                        storedFile.getParentFile().mkdirs();
+                    }
+                    StoredStringSet.save(set, storedFile, "Ignoring these image files");
                 }
-                StoredStringSet.save(set, storedFile, "Ignoring these image files");
+            } catch (Exception e) {
+                log.error("Failed to load/save the skip file for image: " + imageFile.getAbsolutePath(), e);
             }
-        } catch (Exception e) {
-            log.error("Failed to load/save the skip file for image: " + imageFile.getAbsolutePath(), e);
         }
         return skip;
     }
@@ -166,40 +172,95 @@ public class FanartStorage {
         if (centralFolder == null) {
             throw new RuntimeException("Central Fanart Support is enabled, but no central folder location is set!");
         }
-        MediaType mediaType = null;
-        Map<String, String> extraMD = new HashMap<String, String>();
-        if (isMovie(md)) {
-            mediaType = MediaType.MOVIE;
-        } else if (isTV(md)) {
-            mediaType = MediaType.TV;
-            if (!StringUtils.isEmpty((String) md.get(MetadataKey.SEASON))) {
-                extraMD.put(SageProperty.SEASON_NUMBER.sageKey, (String) md.get(MetadataKey.SEASON));
-            }
-        } else if (isMusic(md)) {
-            mediaType = MediaType.MUSIC;
-        } else {
-            log.error("Unsupported MediaFile Type: " + md.get(MetadataKey.MEDIA_TYPE));
-            return;
-        }
 
-        int downloaded=0;
+        if (isTV(md)) {
+            sageCentralFanartForTV(title, md, mt, options, centralFolder);
+        } else {
+            MediaType mediaType = null;
+            Map<String, String> extraMD = new HashMap<String, String>();
+            if (isMovie(md)) {
+                mediaType = MediaType.MOVIE;
+            } else if (isMusic(md)) {
+                mediaType = MediaType.MUSIC;
+            } else {
+                log.error("Unsupported MediaFile Type: " + md.get(MetadataKey.MEDIA_TYPE));
+                return;
+            }
+
+            File fanartFile = FanartUtil.getCentralFanartArtifact(mediaType, mt, title, centralFolder, extraMD);
+            IMediaArt artwork[] = md.getMediaArt(mt);
+            downloadAndSageCentralFanart(mt, fanartFile, artwork, options);
+        }
+    }
+
+    private void downloadAndSageCentralFanart(MediaArtifactType mt, File fanartDir, IMediaArt artwork[], PersistenceOptions options) {
+        int downloaded = 0;
         int max = ConfigurationManager.getInstance().getMetadataConfiguration().getMaxDownloadableImages();
-        if (max==-1) max=99;
-        File fanartFile = FanartUtil.getCentralFanartArtifact(mediaType, mt, title, centralFolder, extraMD);
-        IMediaArt artwork[] = md.getMediaArt(mt);
+        if (max == -1) max = 99;
         if (artwork != null && artwork.length > 0) {
             max = Math.min(max, artwork.length);
             for (IMediaArt ma : artwork) {
                 try {
-                    downloadAndSaveFanart(mt, ma, fanartFile, options, true);
+                    downloadAndSaveFanart(mt, ma, fanartDir, options, true);
                 } catch (IOException e) {
-                    log.error("Failed to download Fanart: " + ma.getDownloadUrl() + " for : " + title, e);
+                    log.error("Failed to download Fanart: " + ma.getDownloadUrl() + " for : " + fanartDir.getAbsolutePath(), e);
                 }
                 downloaded++;
-                if (downloaded>=max) break;
+                if (downloaded >= max) break;
             }
         } else {
-            log.warn("No " + mt + " for " + title + " in the metadata.");
+            log.warn("No " + mt + " for " + fanartDir.getAbsolutePath() + " in the metadata.");
+        }
+    }
+
+    private void sageCentralFanartForTV(String title, IMediaMetadata md, MediaArtifactType mt, PersistenceOptions options, String centralFolder) {
+        // TODO: Change this so that if we are doing TV Fanart, then we call
+        // sageTVCentralFanart();
+        // TV Central fanart would download series based fanart, then season
+        // based fanart
+
+        // do the series level artwork
+        Map<String, String> emptyMap = Collections.emptyMap();
+        File fanartFile = FanartUtil.getCentralFanartArtifact(MediaType.TV, mt, title, centralFolder, emptyMap);
+        IMediaArt artwork[] = md.getMediaArt(mt);
+        if (artwork == null || artwork.length == 0) {
+            log.debug("No TV " + mt.name() + " MediaArt for " + md.getMediaTitle());
+            return;
+        }
+        List<IMediaArt> l = new LinkedList<IMediaArt>();
+        for (IMediaArt ma : artwork) {
+            if (ma.getSeason() == 0) {
+                l.add(ma);
+            }
+        }
+        if (l.size() == 0) {
+            log.debug("No Series Level TV " + mt.name() + " MediaArt for " + md.getMediaTitle());
+        } else {
+            downloadAndSageCentralFanart(mt, fanartFile, l.toArray(new IMediaArt[l.size()]), options);
+        }
+
+        // do the season level artwork
+        Map<String, String> extraMD = new HashMap<String, String>();
+        if (!StringUtils.isEmpty((String) md.get(MetadataKey.SEASON))) {
+            extraMD.put(SageProperty.SEASON_NUMBER.sageKey, (String) md.get(MetadataKey.SEASON));
+            fanartFile = FanartUtil.getCentralFanartArtifact(MediaType.TV, mt, title, centralFolder, extraMD);
+            artwork = md.getMediaArt(mt);
+            if (artwork == null || artwork.length == 0) {
+                log.debug("No TV " + mt.name() + " MediaArt for " + md.getMediaTitle());
+                return;
+            }
+
+            l = new LinkedList<IMediaArt>();
+            for (IMediaArt ma : artwork) {
+                if (ma.getSeason() > 0) {
+                    l.add(ma);
+                }
+            }
+            if (l.size() == 0) {
+                log.debug("No Season Level TV " + mt.name() + " MediaArt for " + md.getMediaTitle());
+            } else {
+                downloadAndSageCentralFanart(mt, fanartFile, l.toArray(new IMediaArt[l.size()]), options);
+            }
         }
     }
 
@@ -215,16 +276,16 @@ public class FanartStorage {
     private boolean isMovie(IMediaMetadata md) {
         return md == null || MetadataUtil.MOVIE_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
     }
-    
-    public static void  downloadFanart(String title, IMediaMetadata md, PersistenceOptions options) {
+
+    public static void downloadFanart(String title, IMediaMetadata md, PersistenceOptions options) {
         instance.saveFanart(null, title, md, options);
     }
 
-    public static void  downloadFanart(IMediaMetadata md, PersistenceOptions options) {
+    public static void downloadFanart(IMediaMetadata md, PersistenceOptions options) {
         instance.saveFanart(null, md.getMediaTitle(), md, options);
     }
 
-    public static void  downloadFanart(IMediaFile mediaFile, IMediaMetadata md, PersistenceOptions options) {
+    public static void downloadFanart(IMediaFile mediaFile, IMediaMetadata md, PersistenceOptions options) {
         instance.saveFanart(mediaFile, md.getMediaTitle(), md, options);
     }
 }
