@@ -11,8 +11,10 @@ import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
+import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.util.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -34,7 +36,7 @@ public class LocalDVDProfParser {
 
     public LocalDVDProfParser(String id) throws Exception {
         this.id = id;
-        this.provider = LocalDVDProfMetaDataProvider.getInstance();
+        this.provider = (LocalDVDProfMetaDataProvider) MediaMetadataFactory.getInstance().getProvider(LocalDVDProfMetaDataProvider.PROVIDER_ID);
         this.dvdFile = provider.getDvdProfilerXmlFile();
         this.node = dvdFile.findMovieById(id);
     }
@@ -153,7 +155,7 @@ public class LocalDVDProfParser {
     }
 
     public String getPlot() {
-        return DVDProfXmlFile.getElementValue(node, "Overview");
+        return StringUtils.removeHtml(DVDProfXmlFile.getElementValue(node, "Overview"));
     }
 
     public String getProviderUrl() {
@@ -193,11 +195,7 @@ public class LocalDVDProfParser {
     }
 
     public String getTitle() {
-        String title =  DVDProfXmlFile.getElementValue(node, "Title");
-        if (title!=null) {
-            title = title.replaceAll("<[^>]+>", "");
-        }
-        return title;
+        return StringUtils.removeHtml(DVDProfXmlFile.getElementValue(node, "Title"));
     }
 
     public String getUserRating() {

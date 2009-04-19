@@ -73,6 +73,17 @@ public class MediaMetadataUtils {
         ImageIO.write(imageSrc, "jpg", out);
         log.debug("Wrote scaled image: " + out.getAbsolutePath());
     }
+    
+    /**
+     * For the purposes of searching it will, keep only alpha numeric characters and '
+     * 
+     * @param s
+     * @return
+     */
+    public static String removeNonSearchCharacters(String s) {
+        if (s==null) return null;
+        return (s.replaceAll("[^A-Za-z0-9']", " ")).replaceAll("[\\ ]+", " ");
+    }
 
     /**
      * Utility method that can be used to clean the search criteria before
@@ -94,7 +105,7 @@ public class MediaMetadataUtils {
         s = CDStackingModel.INSTANCE.getStackedTitle(s);
         log.debug("Cleaning Search Criteria: " + s);
 
-        String parts[] = (s.replaceAll("[^A-Za-z0-9']", " ")).split(" ");
+        String parts[] = removeNonSearchCharacters(s).split(" ");
         StringBuffer sb = new StringBuffer();
         int l = parts.length;
         for (int i = 0; i < l; i++) {

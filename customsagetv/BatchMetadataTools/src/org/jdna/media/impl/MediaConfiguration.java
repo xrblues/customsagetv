@@ -12,7 +12,7 @@ public class MediaConfiguration {
     private boolean useTSFolderForThumbnail = false;
 
     @Field(label="Supported Filenames", description = "Regular expression for the file extensions that are recognized")
-    private String  videoExtensionsRegex    = "avi|mpg|divx|mkv|wmv|mov|xvid|ts|m2ts|m4v|mp4";
+    private String  videoExtensionsRegex    = "avi|mpg|divx|mkv|wmv|mov|xvid|ts|m2ts|m4v|mp4|iso";
 
     @Field(label="Ignore These Folders", description = "Regular expression for the directory names to ignore")
     private String  excludeVideoDirsRegex   = null;

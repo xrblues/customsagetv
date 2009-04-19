@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.IUrl;
 import org.jdna.url.UrlFactory;
@@ -123,7 +124,7 @@ public class TVDBSearchParser {
     private float getScore(String title) {
         if (title==null) return 0.0f;
         try {
-            float score = (float)org.jdna.util.Similarity.getInstance().compareStrings(searchTitle,title);
+            float score = MetadataUtil.calculateScore(searchTitle,title);
             log.debug(String.format("Comparing:[%s][%s]: %s", searchTitle, title, score));
             return score;
         } catch (Exception e) {
