@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
@@ -142,9 +143,9 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
             } else if (p == SageProperty.FANART_POSTER) {
                 setFanartImageUrl(options, props, md.getPoster(), p);
             } else if (p == SageProperty.SEASON_NUMBER) {
-                props.put(p.sageKey, zeroPad(encodeString((md.get(MetadataKey.SEASON))), 2));
+                props.put(p.sageKey, encodeNumberString(md.get(MetadataKey.SEASON)));
             } else if (p == SageProperty.EPISODE_NUMBER) {
-                props.put(p.sageKey, zeroPad(encodeString((md.get(MetadataKey.EPISODE))), 2));
+                props.put(p.sageKey, encodeNumberString(md.get(MetadataKey.EPISODE)));
             } else if (p == SageProperty.DISPLAY_TITLE) {
                 props.put(p.sageKey, rewriteTitle(encodeString(md.getMediaTitle())));
             } else if (p == SageProperty.PROVIDER_DATA_ID) {
@@ -170,7 +171,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         // lastly encode the description, to ensure that all other props are
         // set.
         props.put(SageProperty.DESCRIPTION.sageKey, encodeDescription(md, cm.getSageMetadataConfiguration().getDescriptionMask(), props));
-
+        
         // now copy this metadata...
         Map<String, String> xprops = new HashMap<String, String>();
         for (Map.Entry<String, String> me : props.entrySet()) {
@@ -182,6 +183,16 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         return props;
     }
 
+
+    private String encodeNumberString(Object s) {
+        if (s == null) return "";
+        if (s instanceof String) {
+            String num = ((String) s).trim();
+            return String.valueOf(NumberUtils.toInt(num));
+        } else {
+            return s.toString();
+        }
+    }
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
         // do the actual save
@@ -280,9 +291,16 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
             if (!StringUtils.isEmpty(props.get(SageProperty.SEASON_NUMBER.sageKey))) {
                 // assume TV
                 if (!StringUtils.isEmpty(props.get(SageProperty.EPISODE_NUMBER.sageKey))) {
-                    props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTvTitleMask(), props));
+                    // cough hack - need to format the season and episode so that it look liks 01, 02, etc.
+                    Map mod = new HashMap(props);
+                    mod.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(props.get(SageProperty.SEASON_NUMBER.sageKey), 2));
+                    mod.put(SageProperty.EPISODE_NUMBER.sageKey, zeroPad(props.get(SageProperty.EPISODE_NUMBER.sageKey), 2));
+                    props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTvTitleMask(), mod));
                 } else {
-                    props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTvDvdTitleMask(), props));
+                    Map mod = new HashMap(props);
+                    mod.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(props.get(SageProperty.SEASON_NUMBER.sageKey), 2));
+                    mod.put(SageProperty.DISC.sageKey, zeroPad(props.get(SageProperty.DISC.sageKey), 2));
+                    props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTvDvdTitleMask(), mod));
                 }
             } else {
                 props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTitleMask(), props));

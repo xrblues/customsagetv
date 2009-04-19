@@ -31,13 +31,12 @@ public class DVDMediaItem extends AbstractMediaResource implements IMediaFile {
             if (ua.exists() && ua.isDirectory()) {
                 return true;
             }
-            
+
             // check for bluray
             ua = uri.createUriAdapter("BDMV");
             if (ua.exists() && ua.isDirectory()) {
                 return true;
             }
-
 
             if (deepDVDScanning) {
                 URI files[] = uri.listMembers();
@@ -76,22 +75,11 @@ public class DVDMediaItem extends AbstractMediaResource implements IMediaFile {
         return false;
     }
 
-    // need to override the dvd for basename to simply return the name, since a dvd folder does not
+    // need to override the dvd for basename to simply return the name, since a
+    // dvd folder does not
     // have an extension.
     public String getBasename() {
         return getName();
-    }
-
-    @Override
-    public void copy() {
-        // TODO Auto-generated method stub
-        super.copy();
-    }
-
-    @Override
-    public void delete() {
-        // TODO Auto-generated method stub
-        super.delete();
     }
 
     /**
@@ -163,5 +151,27 @@ public class DVDMediaItem extends AbstractMediaResource implements IMediaFile {
         }
 
         return sageAiring;
+    }
+
+    @Override
+    public void touch() {
+        super.touch();
+
+        if (getURIAdapter() != null) {
+            URIAdapter ua = getURIAdapter().createUriAdapter("VIDEO_TS");
+            if (ua.exists() && ua.isDirectory()) {
+                // this is a hack for sage... since sage considers the VIDEO_TS
+                ua.touch();
+                return;
+            }
+
+            // check for bluray
+            ua = getURIAdapter().createUriAdapter("BDMV");
+            if (ua.exists() && ua.isDirectory()) {
+                // this is a hack for sage... since sage considers the VIDEO_TS
+                ua.touch();
+                return;
+            }
+        }
     }
 }

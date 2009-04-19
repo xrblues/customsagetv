@@ -14,13 +14,13 @@ public class MetadataConfiguration {
     private String persistenceClass       = org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence.class.getName();
 
     @Field(label="Registered Providers", description = "Comma separated list of known metadata providers (ie, can be used for searching for metadata)")
-    private String videoMetadataProviders = IMDBMetaDataProvider.class.getName() + "," + NielmIMDBMetaDataProvider.class.getName() + "," + "," + LocalDVDProfMetaDataProvider.class.getName() + "," + TheMovieDBMetadataProvider.class.getName() + "," + TVDBMetadataProvider.class.getName();
+    private String videoMetadataProviders = TVDBMetadataProvider.class.getName()+","+IMDBMetaDataProvider.class.getName() + "," + NielmIMDBMetaDataProvider.class.getName() + "," + "," + LocalDVDProfMetaDataProvider.class.getName() + "," + TheMovieDBMetadataProvider.class.getName() + "," + TVDBMetadataProvider.class.getName();
 
     @Field(label="Ignore Words in Title", description = "Comma separated list of words that will be removed from a title when doing a search")
     private String wordsToClean           = "1080p,720p,480p,1080i,720i,480i,dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv,HDTV,x264";
 
     @Field(label="Metadata Provider(s)", description = "Default provider id to use (comma separate, if more than 1)")
-    private String defaultProviderId      = "tvdb.xml,themoviedb.org,themoviedb.org-2,imdb.xml,imdb";
+    private String defaultProviderId      = "tvdb,themoviedb.org,themoviedb.org-2,imdb.xml,imdb";
     
     @Field(label="Good Score Threshold", description = "Score which must be exceeded to consider a result a good match")
     private float goodScoreThreshold = 0.9f;
