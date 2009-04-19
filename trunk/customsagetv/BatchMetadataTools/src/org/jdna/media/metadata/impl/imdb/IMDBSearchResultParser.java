@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -148,7 +149,7 @@ public class IMDBSearchResultParser extends URLSaxParser {
 
 
             String tmpStr = curResult.getTitle();
-            curResult.setScore((float)org.jdna.util.Similarity.getInstance().compareStrings(searchTitle,tmpStr));
+            curResult.setScore(MetadataUtil.calculateScore(searchTitle,tmpStr));
             
             // add the result.
             log.debug("Adding Result: " + tmpStr);

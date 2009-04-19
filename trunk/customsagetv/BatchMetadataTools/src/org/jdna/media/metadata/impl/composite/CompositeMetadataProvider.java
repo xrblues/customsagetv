@@ -18,16 +18,16 @@ import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
 
 public class CompositeMetadataProvider implements IMediaMetadataProvider {
-    public static final int MODE_PREFER_SEARCHER = 1;
-    public static final int MODE_PREFER_DETAILS = 2;
-    
-    private static final Logger            log          = Logger.getLogger(CompositeMetadataProvider.class);
+    public static final int                MODE_PREFER_SEARCHER = 1;
+    public static final int                MODE_PREFER_DETAILS  = 2;
+
+    private static final Logger            log                  = Logger.getLogger(CompositeMetadataProvider.class);
 
     private IProviderInfo                  info;
     private String                         searcherProviderId;
     private String                         detailsProviderId;
     private CompositeMetadataConfiguration conf;
-    private int mode = 0;
+    private int                            mode                 = 0;
 
     public CompositeMetadataProvider(CompositeMetadataConfiguration conf) {
         info = new ProviderInfo(conf.getId(), conf.getName(), conf.getDescription(), conf.getIconUrl());
@@ -43,30 +43,31 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
+        log.debug("Getting Details from the Primary Provider: " + searcherProviderId);
         // get the primary results from the search
         IMediaMetadata searcher = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaData(result);
-        
+
         // now get the search results from the title search
         IMediaMetadata details = searchDetailsByResult(result);
 
         // return the merged details
         return mergeDetails(details, searcher);
     }
-    
+
     private IMediaMetadata searchDetailsByResult(IMediaSearchResult result) {
         try {
             log.debug("Searching the details provider: " + detailsProviderId + " for movie id: " + result.getMetadataId());
-            IMediaMetadata detail = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaDataById(result.getMetadataId());
-            if (detail == null) {
+            try {
+                return MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaDataById(result.getMetadataId());
+            } catch (Exception e) {
                 log.debug("Searching the details provider: " + detailsProviderId + " for movie title: " + result.getTitle());
-	            List<IMediaSearchResult> results = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).search(new SearchQuery(result.getTitle()));
-	            if (MediaMetadataFactory.getInstance().isGoodSearch(results)) {
-	                return MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaData(results.get(0));
-	            }
-            } else
-            	return detail;
+                List<IMediaSearchResult> results = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).search(new SearchQuery(result.getTitle()));
+                if (MediaMetadataFactory.getInstance().isGoodSearch(results)) {
+                    return MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaData(results.get(0));
+                }
+            }
         } catch (Exception e) {
-            log.error("Failed to find an Exact Match for " + result.getTitle() + " using provider: " + detailsProviderId);
+            log.error("Could not find a valid details for result: " + result);
         }
         return null;
     }
@@ -85,23 +86,24 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
     }
 
     public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
-    	String providerId = getInfo().getId();
+        String providerId = getInfo().getId();
         log.debug("Searching using composite provider: " + providerId);
         List<IMediaSearchResult> results = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).search(query);
-        
-        for (int i =0; i< results.size(); i++) {
-        	results.get(i).setProviderId(providerId);
+
+        for (int i = 0; i < results.size(); i++) {
+            results.get(i).setProviderId(providerId);
         }
-        
+
         return results;
     }
 
     private IMediaMetadata mergeDetails(IMediaMetadata details, IMediaMetadata searcher) {
+        log.debug("Merging the metadata from the primary and secondary metadata providers.");
         MediaMetadata md = null;
         IMediaMetadata pri = null;
         IMediaMetadata sec = null;
-        
-        if (mode==MODE_PREFER_DETAILS && details!=null) {
+
+        if (mode == MODE_PREFER_DETAILS && details != null) {
             pri = details;
             sec = searcher;
         } else {
@@ -112,7 +114,7 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         md = new MediaMetadata(pri);
         md.setProviderId(getInfo().getId());
         if (sec == null) return md;
-        
+
         // now find all fields that null in the primary, and set them from the
         // seconday
         for (MetadataKey k : MetadataKey.values()) {
@@ -120,18 +122,18 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
                 List<IMediaArt> all = new LinkedList<IMediaArt>();
                 // merge the list into a single list
                 Object o = pri.get(k);
-                if (o!=null) {
-                    for (IMediaArt ma : (IMediaArt[])o) {
+                if (o != null) {
+                    for (IMediaArt ma : (IMediaArt[]) o) {
                         all.add(ma);
                     }
                 }
                 o = sec.get(k);
-                if (o!=null) {
-                    for (IMediaArt ma : (IMediaArt[])o) {
+                if (o != null) {
+                    for (IMediaArt ma : (IMediaArt[]) o) {
                         all.add(ma);
                     }
                 }
-                if (all.size()>0) {
+                if (all.size() > 0) {
                     md.set(k, all.toArray(new IMediaArt[all.size()]));
                 }
             } else {
@@ -141,18 +143,15 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
                 }
             }
         }
-        
+
         // set the pimary to be the searcher
         md.setProviderDataUrl(pri.getProviderDataUrl());
         md.setProviderDataId(pri.getProviderDataId());
         return md;
     }
-    
+
     private boolean isEmpty(Object o) {
-        if (o == null 
-                || (o.getClass().isArray() && ((Object[]) o).length == 0) 
-                || (o instanceof String && ((String)o).trim().length()==0)
-                ) {
+        if (o == null || (o.getClass().isArray() && ((Object[]) o).length == 0) || (o instanceof String && ((String) o).trim().length() == 0)) {
             return true;
         } else {
             return false;
@@ -171,13 +170,13 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         IMediaMetadata searcher = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaDataByUrl(url);
         IMediaMetadata details = null;
         try {
-            if (searcher.getProviderDataId()!=null) {
+            if (searcher.getProviderDataId() != null) {
                 details = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaDataById(searcher.getProviderDataId());
             }
         } catch (Exception e) {
-            log.error("Failed to find details using searcher's metadataid: " + searcher.getProviderDataId() + " will try using title search",e);
+            log.error("Failed to find details using searcher's metadataid: " + searcher.getProviderDataId() + " will try using title search", e);
         }
-        details = searchDetailsByTitle(searcher.getMediaTitle()); 
+        details = searchDetailsByTitle(searcher.getMediaTitle());
         return mergeDetails(details, searcher);
     }
 }

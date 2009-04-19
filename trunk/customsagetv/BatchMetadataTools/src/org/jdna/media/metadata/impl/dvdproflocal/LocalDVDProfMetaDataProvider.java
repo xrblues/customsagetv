@@ -29,16 +29,11 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     private DVDProfXmlFile                      xmlFileTool;
 
     private boolean                             initialized       = false;
-    private static LocalDVDProfMetaDataProvider instance          = null;
+    private static LocalDVDProfMetaDataProvider instance          = new LocalDVDProfMetaDataProvider();
     
     private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
 
-    public static final LocalDVDProfMetaDataProvider getInstance() {
-        return instance;
-    }
-
     public LocalDVDProfMetaDataProvider() {
-        LocalDVDProfMetaDataProvider.instance = this;
     }
 
     public String getIconUrl() {

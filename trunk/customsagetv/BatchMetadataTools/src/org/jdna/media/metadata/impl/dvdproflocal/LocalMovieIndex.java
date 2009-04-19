@@ -18,7 +18,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
-import org.jdna.util.Similarity;
+import org.jdna.media.metadata.MetadataUtil;
 import org.w3c.dom.Element;
 
 public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
@@ -81,9 +81,7 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
         Document doc = new Document();
 
         // ISSUE: 24 - remove html tags from the titles
-        if (name!=null) {
-            name=name.replaceAll("<[^>]+>", "");
-        }
+        name=org.jdna.util.StringUtils.removeHtml(name);
         
         // index titles
         doc.add(new Field("title", name, Field.Store.YES, Field.Index.TOKENIZED));
@@ -111,8 +109,7 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
             String date = d.get("release");
             String id = d.get("id");
             
-            //float score = hits.score(i);
-            float score = (float) Similarity.getInstance().compareStrings(title, name);
+            float score = MetadataUtil.calculateScore(title, name);
 
             results.add(new MediaSearchResult(LocalDVDProfMetaDataProvider.PROVIDER_ID, id, name, date, score));
         }

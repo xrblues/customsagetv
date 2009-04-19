@@ -1,6 +1,7 @@
 package org.jdna.media.metadata;
 
 import org.apache.commons.lang.StringUtils;
+import org.jdna.util.Similarity;
 
 public class MetadataUtil {
     public static final String                                   MOVIE_MEDIA_TYPE = "Movie";
@@ -38,5 +39,19 @@ public class MetadataUtil {
                 md.set(MetadataKey.MEDIA_TYPE, TV_MEDIA_TYPE);
             }
         }
+    }
+
+    /**
+     * Return the best score for a title when compared to the search string.  It uses 2 passes to find the best match.
+     * the first pass uses the matchTitle as is, and the second pass uses the matchTitle will non search characters removed.
+     * 
+     * @param searchTitle
+     * @param matchTitle
+     * @return
+     */
+    public static float calculateScore(String searchTitle, String matchTitle) {
+        float score1 = Similarity.getInstance().compareStrings(searchTitle, matchTitle);
+        float score2 = Similarity.getInstance().compareStrings(searchTitle, MediaMetadataUtils.removeNonSearchCharacters(matchTitle));
+        return Math.max(score1, score2);
     }
 }

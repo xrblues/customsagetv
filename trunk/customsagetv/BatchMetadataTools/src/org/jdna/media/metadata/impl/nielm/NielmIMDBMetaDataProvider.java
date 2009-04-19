@@ -20,6 +20,7 @@ import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
@@ -54,7 +55,7 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
                 for (Role r : list) {
                     MediaSearchResult vsr = new MediaSearchResult();
                     updateTitleAndYear(vsr, r);
-                    vsr.setScore((float)org.jdna.util.Similarity.getInstance().compareStrings(arg,vsr.getTitle()));
+                    vsr.setScore(MetadataUtil.calculateScore(arg,vsr.getTitle()));
                     vsr.setProviderId(NielmIMDBMetaDataProvider.PROVIDER_ID);
                     DbObjectRef objRef = r.getName();
                     if (objRef instanceof ImdbWebObjectRef) {

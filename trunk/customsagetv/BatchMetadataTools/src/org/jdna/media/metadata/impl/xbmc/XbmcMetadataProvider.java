@@ -26,6 +26,7 @@ import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
@@ -455,7 +456,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
                 String v[] = ParserUtils.parseTitle(t);
                 sr.setTitle(v[0]);
                 sr.setYear(v[1]);
-                sr.setScore((float) org.jdna.util.Similarity.getInstance().compareStrings(arg, v[0]));
+                sr.setScore(MetadataUtil.calculateScore(arg, v[0]));
                 l.add(sr);
             } catch (Exception e) {
                 log.error("Error process an xml node!  Ignoring it from the search results.");
