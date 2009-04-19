@@ -45,7 +45,7 @@ public class TheMovieDBSearchParser {
 
     };
     
-    private class ScoredTitle {
+    private static class ScoredTitle {
         String title;
         float score;
         

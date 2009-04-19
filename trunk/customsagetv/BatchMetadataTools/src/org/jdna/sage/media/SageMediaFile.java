@@ -94,6 +94,11 @@ public class SageMediaFile implements IMediaFile {
         return this.getName().toLowerCase().compareTo(o.getName().toLowerCase());
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
     public String getExtension() {
         String name = getName();
         if (name == null) return null;
