@@ -4,7 +4,7 @@ import sagex.ISageAPIProvider;
 
 public class StubSageAPI implements ISageAPIProvider {
 
-	public Object callService(String name, Object[] args) {
+	public Object callService(String name, Object[] args) throws Exception {
 		System.out.printf("Calling: %s\n", name);
 		if (args != null) {
 			for (int i = 0; i < args.length; i++) {
@@ -21,7 +21,7 @@ public class StubSageAPI implements ISageAPIProvider {
 		return "sage://stub";
 	}
 
-	public Object callService(String context, String name, Object[] args) {
+	public Object callService(String context, String name, Object[] args) throws Exception {
 		return callService(name, args);
 	}
 }

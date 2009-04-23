@@ -67,15 +67,25 @@ public class SageAPI {
 		if (ctx!=null) {
 			return call(ctx, serviceName, args);
 		} else {
-			return SageAPI.getProvider().callService(serviceName, args);
+		    try {
+		        return SageAPI.getProvider().callService(serviceName, args);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        return null;
+		    }
 		}
 	}
 
 	public static Object call(String context, String serviceName, Object[] args) {
 		System.out.println("Using Context: " + context + " for command: " + serviceName);
-		return SageAPI.getProvider().callService(context, serviceName, args);
+		try {
+		    return SageAPI.getProvider().callService(context, serviceName, args);
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    return null;
+		}
 	}
-	
+
 	/**
 	 * set the UI context for the current thread.  All calls within this thread will now use the provided context.
 	 * 
