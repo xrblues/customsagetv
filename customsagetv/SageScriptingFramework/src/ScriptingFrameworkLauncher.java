@@ -79,9 +79,6 @@ public class ScriptingFrameworkLauncher {
         File libDir = new File(homeDir, "libs");
         File libs[] = libDir.listFiles();
 
-        // checkDuplicate("metadata-updater-([0-9\\.]+).jar", libs);
-        checkDuplicate("sagex\\.api-([0-9\\.-]+)\\.jar", libs);
-
         for (File lib : libs) {
             if (lib.getName().endsWith(".jar")) {
                 if (debug) System.out.println("Adding Lib: " + lib.getAbsolutePath());
