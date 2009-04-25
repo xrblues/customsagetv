@@ -7,6 +7,8 @@ public class MetadataUtil {
     public static final String                                   MOVIE_MEDIA_TYPE = "Movie";
     public static final String                                   TV_MEDIA_TYPE    = "TV";
 
+    private static String compressedRegex = "[^a-zA-Z]+";
+
     /**
      * Given a metadata id, id:###, return 2 parts, the id, and the ####
      * 
@@ -47,11 +49,30 @@ public class MetadataUtil {
      * 
      * @param searchTitle
      * @param matchTitle
-     * @return
+     * @return the best out of the 2 scored attempts
      */
     public static float calculateScore(String searchTitle, String matchTitle) {
         float score1 = Similarity.getInstance().compareStrings(searchTitle, matchTitle);
         float score2 = Similarity.getInstance().compareStrings(searchTitle, MediaMetadataUtils.removeNonSearchCharacters(matchTitle));
+        return Math.max(score1, score2);
+    }
+
+    /**
+     * Return the best score for a title when compared to the search string.  It uses 3 passes to find the best match.
+     * the first pass uses the matchTitle as is, and the second pass uses the matchTitle will non search characters removed, and
+     * the 3rd pass uses a compressed title search.
+     * 
+     * Compressed Scoring is useful when you are comparing a Sage recording (csimiami to "CSI: Miami")
+     * 
+     * @param searchTitle
+     * @param matchTitle
+     * @return the best out of the 3 scored attempts
+     */
+    public static float calculateCompressedScore(String searchTitle, String matchTitle) {
+        float score1 = calculateScore(searchTitle, matchTitle);
+        if (searchTitle==null || matchTitle==null) return score1;
+        
+        float score2 = Similarity.getInstance().compareStrings(searchTitle.replaceAll(compressedRegex, ""), matchTitle.replaceAll(compressedRegex, ""));
         return Math.max(score1, score2);
     }
 }

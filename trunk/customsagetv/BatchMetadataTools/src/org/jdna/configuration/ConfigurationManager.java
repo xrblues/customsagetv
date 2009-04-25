@@ -22,6 +22,7 @@ import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
+import org.jdna.media.metadata.impl.mymovies.MyMoviesConfiguration;
 import org.jdna.media.metadata.impl.sage.SageMetadataConfiguration;
 import org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider;
 import org.jdna.media.metadata.impl.xbmc.XbmcScraperConfiguration;
@@ -70,6 +71,7 @@ public class ConfigurationManager {
             MediaConfiguration.class,
             MetadataConfiguration.class,
             DVDProfilerLocalConfiguration.class,
+            MyMoviesConfiguration.class,
             SageMetadataConfiguration.class,
             IMDBConfiguration.class,
             CompositeMetadataConfiguration.class   };
@@ -321,6 +323,8 @@ public class ConfigurationManager {
         }
         return null;
     }
-    
-    
+
+    public MyMoviesConfiguration getMyMoviesConfiguration() {
+        return load(MyMoviesConfiguration.class);
+    }
 }

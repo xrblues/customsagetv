@@ -111,7 +111,7 @@ public class CachedUrl extends Url implements IUrl {
 
     public URL getUrl(ICookieHandler handler) throws IOException {
         File f = getCachedFile();
-        if (!f.exists()) {
+        if (!f.exists() || f.length()==0) {
             cache(handler);
         } else {
             log.debug("Cached File exists: " + f.getAbsolutePath() + " so we'll just use it.");

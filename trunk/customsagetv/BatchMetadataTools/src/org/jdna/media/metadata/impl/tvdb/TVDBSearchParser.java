@@ -124,7 +124,7 @@ public class TVDBSearchParser {
     private float getScore(String title) {
         if (title==null) return 0.0f;
         try {
-            float score = MetadataUtil.calculateScore(searchTitle,title);
+            float score = MetadataUtil.calculateCompressedScore(searchTitle,title);
             log.debug(String.format("Comparing:[%s][%s]: %s", searchTitle, title, score));
             return score;
         } catch (Exception e) {

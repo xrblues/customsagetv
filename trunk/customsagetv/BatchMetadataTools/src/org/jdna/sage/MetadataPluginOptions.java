@@ -1,35 +1,57 @@
 package org.jdna.sage;
 
+import org.jdna.media.metadata.CompositeMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
+import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence;
+import org.jdna.sage.media.SageCustomMetadataPersistence;
 
 public class MetadataPluginOptions {
-    private static IMediaMetadataPersistence persistence;
+    private static IMediaMetadataPersistence onDemandPersistence;
     private static IMediaMetadataPersistence fanartOnlyPersistence;
+    private static IMediaMetadataPersistence automaticUpdaterPersistence;
+    
     private static PersistenceOptions options;
     
-    public static IMediaMetadataPersistence getPersistence() {
-        if (persistence==null) {
-            persistence = new SageTVPropertiesWithCentralFanartPersistence();
+    /**
+     * Used for On-Demand lookups of regular media files; ie, Non-Epg items
+     * @return
+     */
+    public static IMediaMetadataPersistence getOnDemandUpdaterPersistence() {
+        if (onDemandPersistence==null) {
+            //onDemandPersistence = new CompositeMediaMetadataPersistence(new SageTVPropertiesPersistence(), new SageShowPeristence(), new SageCustomMetadataPersistence(), new CentralFanartPersistence());
+            // eventually have the SageShowPersistence() included when tv import is there.
+            onDemandPersistence = new CompositeMediaMetadataPersistence(new SageTVPropertiesPersistence(), new SageCustomMetadataPersistence(), new CentralFanartPersistence(), new UpdateMediaFileTimeStamp());
         }
-        return persistence;
+        return onDemandPersistence;
     }
-    
-    public static IMediaMetadataPersistence getFanartPersistence() {
+
+    /**
+     * Used for On-Demand lookups for Airings (ie, epg data)
+     * 
+     * @return
+     */
+    public static IMediaMetadataPersistence getFanartOnlyPersistence() {
         if (fanartOnlyPersistence==null) {
-            // TODO: later, once full metadata support is available
-            fanartOnlyPersistence = new CentralFanartPersistence();
+            fanartOnlyPersistence = new CompositeMediaMetadataPersistence(new SageCustomMetadataPersistence(), new CentralFanartPersistence());
         }
         return fanartOnlyPersistence;
+    }
+    
+    public static IMediaMetadataPersistence getAutomaticUpdaterPersistence() {
+        if (automaticUpdaterPersistence==null) {
+            automaticUpdaterPersistence = new SageTVPropertiesWithCentralFanartPersistence();
+        }
+        return automaticUpdaterPersistence;
     }
     
     public static PersistenceOptions getPersistenceOptions() {
         if (options==null) {
             options = new PersistenceOptions();
             options.setOverwriteFanart(false);
-            options.setOverwriteMetadata(true);
+            options.setOverwriteMetadata(false);
         }
         return options;
     }

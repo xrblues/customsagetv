@@ -1,4 +1,4 @@
-# This is a sample property file, rename this to metadata.properties
+# This is a sample property file
 #
 # For a list of properties can be be configured here, 
 # java -jar MetadataTools.jar --showProperties

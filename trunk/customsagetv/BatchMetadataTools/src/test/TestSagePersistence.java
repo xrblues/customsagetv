@@ -24,7 +24,7 @@ public class TestSagePersistence {
         SageMediaFile mf = new SageMediaFile("2812563");
         System.out.println("MediaTitle: " + mf.getTitle());
         
-        Object sageMF = ((SageMediaFile)mf).getSageMediaFile();
+        Object sageMF = ((SageMediaFile)mf).getSageMediaObject();
         Object airing = MediaFileAPI.GetMediaFileAiring(sageMF);
         Object origShow  = AiringAPI.GetShow(airing);
 
