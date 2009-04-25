@@ -1,12 +1,13 @@
 package test;
 
-import org.jdna.util.StringUtils;
 
 
 public class TestMisc {
     public static void main(String args[]) {
-        String s = "<h1>Title <B> - WTF</B></h1>";
-        System.out.println(s);
-        System.out.println(StringUtils.removeHtml(s));
+        String str = "|Bill|Sam,Lorne|";
+        String x[] = str.split("[,\\|]");
+        for (String s : x) {
+            System.out.println(s);
+        }
     }
 }

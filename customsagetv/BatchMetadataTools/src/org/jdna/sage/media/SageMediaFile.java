@@ -12,7 +12,7 @@ import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
 
 /**
- * A SageMediaFile is meant to allow a native Sage MediaFile object to represent itself as a BMT media file object.
+ * A SageMediaFile is meant to allow a native Sage MediaFile or Airing object to represent itself as a BMT media file object.
  * This would allow for a more transparent operation when running in plugin mode.
  * 
  * @author seans
@@ -21,7 +21,8 @@ import sagex.api.MediaFileAPI;
 public class SageMediaFile implements IMediaFile {
     private static final Logger log = Logger.getLogger(SageMediaFile.class);
     
-    private Object mediaFile;
+    private Object mediaFile=null;
+    private Object airing=null;
     private int mediaType;
 
     public SageMediaFile(File file) {
@@ -45,15 +46,25 @@ public class SageMediaFile implements IMediaFile {
     }
     
     protected void init(Object mediaFile) {
-        this.mediaFile = mediaFile;
-        if (MediaFileAPI.IsDVD(mediaFile)) {
-            mediaType = CONTENT_TYPE_DVD;
-        } else if (MediaFileAPI.IsTVFile(mediaFile)) {
-            mediaType = CONTENT_TYPE_TV;
-        } else if (MediaFileAPI.IsVideoFile(mediaFile)) {
-            mediaType = CONTENT_TYPE_MOVIE;
-        } else {
-            mediaType = CONTENT_TYPE_UNKNOWN;
+        if (AiringAPI.IsAiringObject(mediaFile)) {
+            Object o = AiringAPI.GetMediaFileForAiring(mediaFile);
+            if (o==null) {
+                this.airing=mediaFile;
+                mediaType = CONTENT_TYPE_TV;
+            } else {
+                init(o);
+            }
+        } else if (MediaFileAPI.IsMediaFileObject(mediaFile)) {
+            this.mediaFile = mediaFile;
+            if (MediaFileAPI.IsDVD(mediaFile)) {
+                mediaType = CONTENT_TYPE_DVD;
+            } else if (MediaFileAPI.IsTVFile(mediaFile)) {
+                mediaType = CONTENT_TYPE_TV;
+            } else if (MediaFileAPI.IsVideoFile(mediaFile)) {
+                mediaType = CONTENT_TYPE_MOVIE;
+            } else {
+                mediaType = CONTENT_TYPE_UNKNOWN;
+            }
         }
     }
     
@@ -67,11 +78,11 @@ public class SageMediaFile implements IMediaFile {
     }
 
     public boolean isWatched() {
-        return AiringAPI.IsWatched(mediaFile);
+        return AiringAPI.IsWatched(getSageMediaObject());
     }
 
     public void setWatched(boolean watched) {
-        AiringAPI.SetWatched(mediaFile);
+        AiringAPI.SetWatched(getSageMediaObject());
     }
 
     public void accept(IMediaResourceVisitor visitor) {
@@ -83,10 +94,14 @@ public class SageMediaFile implements IMediaFile {
     }
 
     public void delete() {
-        MediaFileAPI.DeleteFileWithoutPrejudice(mediaFile);
+        if (mediaFile!=null) {
+            MediaFileAPI.DeleteFileWithoutPrejudice(mediaFile);
+        }
     }
 
     public boolean exists() {
+        if (airing!=null) return false;
+        
         return true;
     }
 
@@ -126,11 +141,15 @@ public class SageMediaFile implements IMediaFile {
     }
 
     public String getLocationUri() {
-        File f = getFile();
-        if (f!=null) {
-            return f.toURI().toString();
+        if (mediaFile!=null) {
+            File f = getFile();
+            if (f!=null) {
+                return f.toURI().toString();
+            } else {
+                return null;
+            }
         } else {
-            return null;
+            return "airing://" + AiringAPI.GetAiringID(airing);
         }
     }
 
@@ -144,7 +163,12 @@ public class SageMediaFile implements IMediaFile {
     }
     
     private File getFile() {
-        return MediaFileAPI.GetFileForSegment(mediaFile, 0);
+        if (mediaFile!=null) {
+            return MediaFileAPI.GetFileForSegment(mediaFile, 0);
+        } else {
+            // airings have no file
+            return null;
+        }
     }
 
     public IMediaResource getParent() {
@@ -166,7 +190,13 @@ public class SageMediaFile implements IMediaFile {
     }
 
     public String getTitle() {
-        return MediaFileAPI.GetMediaTitle(mediaFile);
+        if (mediaFile!=null) {
+            return MediaFileAPI.GetMediaTitle(mediaFile);
+        }
+        if (airing!=null) {
+            return AiringAPI.GetAiringTitle(airing);
+        }
+        return null;
     }
 
     public int getType() {
@@ -174,6 +204,7 @@ public class SageMediaFile implements IMediaFile {
     }
 
     public boolean isReadOnly() {
+        if (airing!=null) return true;
         return false;
     }
 
@@ -194,7 +225,7 @@ public class SageMediaFile implements IMediaFile {
         }
     }
     
-    public Object getSageMediaFile() {
-        return mediaFile;
+    public Object getSageMediaObject() {
+        return (mediaFile!=null)?mediaFile:airing;
     }
 }

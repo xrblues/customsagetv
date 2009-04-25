@@ -208,7 +208,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         }
     }
 
-    private String zeroPad(String encodeString, int padding) {
+    private static String zeroPad(String encodeString, int padding) {
         try {
             int v = Integer.parseInt(encodeString);
             String format = "%0" + padding + "d";
@@ -218,7 +218,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         }
     }
 
-    private String rewriteTitle(String title) {
+    private static String rewriteTitle(String title) {
         log.debug("rewriting title: " + title);
         if (title == null) title = "";
         if (ConfigurationManager.getInstance().getSageMetadataConfiguration().isRewriteTitle()) {
@@ -368,6 +368,10 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     private static String encodeActors(ICastMember[] actors, String mask) {
         if (actors == null) return "";
 
+        if (actors != null) {
+            log.debug("Encoding Actors: " + actors.length);
+        }
+        
         if (mask == null) mask = "{0} -- {1};";
 
         StringBuffer sb = new StringBuffer();
@@ -531,5 +535,28 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
             log.error("Unabled to get Metadata Properties for: " + mediaFile.getLocationUri(), e);
         }
         return null;
+    }
+    
+    public static void updatePropertiesForDisplay(Map<String, String> props, IMediaMetadata md) {
+        // store the title
+        props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(md.getMediaTitle()));
+        // update it using the mask
+        if (!StringUtils.isEmpty(props.get(SageProperty.SEASON_NUMBER.sageKey))) {
+            // assume TV
+            if (!StringUtils.isEmpty(props.get(SageProperty.EPISODE_NUMBER.sageKey))) {
+                // cough hack - need to format the season and episode so that it look liks 01, 02, etc.
+                Map<String, String> mod = new HashMap(props);
+                mod.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(props.get(SageProperty.SEASON_NUMBER.sageKey), 2));
+                mod.put(SageProperty.EPISODE_NUMBER.sageKey, zeroPad(props.get(SageProperty.EPISODE_NUMBER.sageKey), 2));
+                props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTvTitleMask(), mod));
+            } else {
+                Map mod = new HashMap(props);
+                mod.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(props.get(SageProperty.SEASON_NUMBER.sageKey), 2));
+                mod.put(SageProperty.DISC.sageKey, zeroPad(props.get(SageProperty.DISC.sageKey), 2));
+                props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTvDvdTitleMask(), mod));
+            }
+        } else {
+            props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getTitleMask(), props));
+        }
     }
 }

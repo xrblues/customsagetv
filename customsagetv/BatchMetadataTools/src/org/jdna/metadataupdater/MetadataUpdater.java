@@ -72,6 +72,7 @@ public class MetadataUpdater {
      */
     public static void main(String args[]) throws Exception {
         LoggerConfiguration.configure();
+        upgrade();
         
         try {
 
@@ -164,7 +165,7 @@ public class MetadataUpdater {
 
     private boolean tvSearch;
     private String reportType;
-    
+
     /**
      * This is the entry into the tool. This will process() all files/dirs that
      * are passed.
@@ -223,7 +224,7 @@ public class MetadataUpdater {
             }
             return;
         }
-
+        
         // get the parent folder for processing
         IMediaFolder parentFolder = null;
         List<IMediaResource> resources = new ArrayList<IMediaResource>();
@@ -390,6 +391,38 @@ public class MetadataUpdater {
         }
         
         config = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration();
+    }
+    
+    
+    public static void upgrade() {
+        deleteFile(new File("scrapers/xbmc/video/tvcom.xml"));
+        deleteFile(new File("scrapers/xbmc/video/tvcom.png"));
+        deleteFile(new File("scrapers/xbmc/video/tvdb.xml"));
+        deleteFile(new File("scrapers/xbmc/video/tvdb.png"));
+        
+//        MetadataConfiguration mc = ConfigurationManager.getInstance().getMetadataConfiguration();
+//        String s = mc.getDefaultProviderId();
+//        if (!StringUtils.isEmpty(s)) {
+//            Object ids[] = s.split(",");
+//            if (ArrayUtils.contains(ids, "tvcom.xml")) {
+//                log.debug("removing tvcom.xml provider");
+//                ids=ArrayUtils.removeElement(ids, "tvcom.xml");
+//            }
+//            int ind = ArrayUtils.indexOf(ids, "tvdb.xml");
+//            if (ind!=-1) {
+//                log.debug("replacing xbmc tvdb provider with native tvdb provider");
+//                ids[ind] = "tvdb";
+//            } else {
+//                log.warn("TVDB is not installed.  Hope that's intentional.  If not, then add tvdb to your default provider ids");
+//            }
+//        }
+        
+    }
+    
+    private static void deleteFile(File f) {
+        if (f.exists()) {
+            log.debug("Deleted File: " + f.getAbsolutePath() + "; Deleted: " + f.delete());
+        }
     }
 
     /**
@@ -629,7 +662,7 @@ public class MetadataUpdater {
     public void setTVSearch(boolean b) {
         this.tvSearch = b;
     }
-    
+
     /**
      * perform the phoenix tests on the sage server
      * 

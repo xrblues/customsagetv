@@ -1,9 +1,11 @@
 package org.jdna.sage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
@@ -13,15 +15,19 @@ import org.jdna.media.impl.MovieResourceFilter;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.PersistenceOptions;
+import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
+import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 import org.jdna.media.util.NullResourceVisitor;
+import org.jdna.metadataupdater.MetadataUpdater;
 import org.jdna.metadataupdater.Version;
 import org.jdna.sage.media.SageMediaFile;
 import org.jdna.util.LoggerConfiguration;
 
 import sage.MediaFileMetadataParser;
-import sagex.api.AiringAPI;
+import sagex.api.Configuration;
+import sagex.api.MediaFileAPI;
 
 /**
  * A MetadataUpdaterPlugin that will fetch metadata for new movies.
@@ -33,12 +39,10 @@ import sagex.api.AiringAPI;
  * 
  */
 public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
-    private static AutomaticUpdateMetadataVisitor stdUpdater;
-    private static AutomaticUpdateMetadataVisitor fanartUpdater;
+    private static AutomaticUpdateMetadataVisitor automaticUpdater;
     private static MovieResourceFilter            filter;
     private static IMediaMetadataPersistence      persistence;
     private static PersistenceOptions             options;
-    private static Pattern                        airingIdRegex;
 
     static {
         try {
@@ -60,43 +64,39 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
         // lazy load the static references, and only load them once
         try {
             if (filter == null) {
-                System.out.println("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
-                System.out.println("    BMT Version:  " + Version.VERSION);
-                System.out.println("Phoenix Version:  " + phoenix.api.GetVersion());
-                System.out.println("  Sagex Version:  " + sagex.api.Version.GetVersion());
-                System.out.println("   Java Version:  " + System.getProperty("java.version"));
-                System.out.println(" Java Classpath:  " + System.getProperty("java.class.path"));
+                debug("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
+                debug("    BMT Version:  " + Version.VERSION);
+                debug("Phoenix Version:  " + phoenix.api.GetVersion());
+                debug("  Sagex Version:  " + sagex.api.Version.GetVersion());
+                debug("   Java Version:  " + System.getProperty("java.version"));
+                debug(" Java Classpath:  " + System.getProperty("java.class.path"));
 
                 String classpath = System.getProperty("java.class.path");
                 Pattern p = Pattern.compile("metadata-updater-([0-9\\.]+).jar");
                 Matcher m = p.matcher(classpath);
                 if (m.find()) {
-                    System.out.println("You should not be running a VERSIONED metadata-updater.jar.  Please remove all versioned jarfiles starting with metadata-updater-*");
+                    debug("You should not be running a VERSIONED metadata-updater.jar.  Please remove all versioned jarfiles starting with metadata-updater-*");
                 }
-                System.out.println("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
+                debug("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
+
+                // do any upgrades
+                MetadataUpdater.upgrade();
 
                 String providerId = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
-                System.out.println("** Batch Metadata Plugin; Using ProviderId: " + providerId);
-                System.out.println("** Configuration for Metadata Plugin: " + ConfigurationManager.getInstance().getConfigFileLocation());
+                debug("** Batch Metadata Plugin; Using ProviderId: " + providerId);
+                debug("** Configuration for Metadata Plugin: " + ConfigurationManager.getInstance().getConfigFileLocation());
 
-                persistence = MetadataPluginOptions.getPersistence();
+                persistence = MetadataPluginOptions.getAutomaticUpdaterPersistence();
                 options = MetadataPluginOptions.getPersistenceOptions();
-                stdUpdater = new AutomaticUpdateMetadataVisitor(providerId, persistence, options, null, new NullResourceVisitor(), new IMediaResourceVisitor() {
+                automaticUpdater = new AutomaticUpdateMetadataVisitor(providerId, persistence, options, null, new NullResourceVisitor(), new IMediaResourceVisitor() {
                     public void visit(IMediaResource resource) {
-                        System.out.println("Could not automatically update: " + resource.getLocationUri());
-                    }
-                });
-                fanartUpdater = new AutomaticUpdateMetadataVisitor(providerId, MetadataPluginOptions.getFanartPersistence(), options, null, new NullResourceVisitor(), new IMediaResourceVisitor() {
-                    public void visit(IMediaResource resource) {
-                        System.out.println("Could not automatically update fanart: " + resource.getLocationUri());
+                        debug("Could not automatically update: " + resource.getLocationUri());
                     }
                 });
                 filter = MovieResourceFilter.INSTANCE;
-                airingIdRegex = Pattern.compile(ConfigurationManager.getInstance().getMetadataConfiguration().getAiringIdRegex());
             }
         } catch (Throwable e) {
-            System.out.println("BMT: Error!!!");
-            e.printStackTrace();
+            error("Failed while initializing the BMT Plugin!", e);
         }
 
         // do the work....
@@ -108,55 +108,78 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
             }
 
-            // try to match on a tv airing first
-            IMediaResource mr = null;
-            try {
-                Matcher m = airingIdRegex.matcher(file.getName());
-                if (m.find()) {
-                    int airingId = Integer.parseInt(m.group(1));
-                    Object airing = AiringAPI.GetAiringForID(airingId);
-                    if (airing != null) {
-                        mr = new SageMediaFile(airing);
-                        if (filter.accept(mr)) {
-                            System.out.println("BatchMetadataTools " + Version.VERSION + "; Handling SageTV Airing: " + mr.getTitle() + " for File: " + file.getAbsolutePath() + "; arg: " + arg);
-                            fanartUpdater.visit(mr);
-                        } else {
-                            System.out.println("Can't accept SageTV Airing: " + mr.getTitle());
-                        }
+            // check if the dvd profiler info is not set, and if not set, then
+            // use the sagemc defaults
+            if (ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId().contains(LocalDVDProfMetaDataProvider.PROVIDER_ID)) {
+                DVDProfilerLocalConfiguration dvdprof = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration();
+                if (StringUtils.isEmpty(dvdprof.getImageDir())) {
+                    if (!StringUtils.isEmpty(Configuration.GetProperty("sagemc/DVDProfiler_Root", null))) {
+                        dvdprof.setImageDir(Configuration.GetProperty("sagemc/DVDProfiler_Root", null) + File.separator + "Images");
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                if (StringUtils.isEmpty(dvdprof.getXmlFile())) {
+                    if (!StringUtils.isEmpty(Configuration.GetProperty("sagemc/meta_data_collection_xml", null))) {
+                        dvdprof.setImageDir(Configuration.GetProperty("sagemc/meta_data_collection_xml", null));
+                    }
+                }
+                File f = new File(dvdprof.getImageDir());
+                if (!f.exists()) {
+                    error("DVD Profiler Images dir is not valid: " + f.getAbsolutePath(), new FileNotFoundException(f.getAbsolutePath()));
+                }
+                f = new File(dvdprof.getXmlFile());
+                if (!f.exists()) {
+                    error("DVD Profiler Xml file is not valid: " + f.getAbsolutePath(), new FileNotFoundException(f.getAbsolutePath()));
+                }
             }
 
-            // didn't accept/match on tv airing, so just try normal lookups
-            if (mr == null) {
+            IMediaResource mr = null;
+            Object o = MediaFileAPI.GetMediaFileForFilePath(file);
+            if (o != null) {
+                mr = new SageMediaFile(o);
+            } else {
                 mr = MediaResourceFactory.getInstance().createResource(file.toURI());
-                if (filter.accept(mr)) {
-                    System.out.println("BatchMetadataTools " + Version.VERSION + "; Handling File: " + file.getAbsolutePath() + "; arg: " + arg);
+            }
+            if (filter.accept(mr)) {
+                debug("BatchMetadataTools " + Version.VERSION + "; Handling File: " + file.getAbsolutePath() + "; arg: " + arg);
 
-                    // update the metadata and download fanart...
-                    stdUpdater.visit(mr);
-
-                    // now load the props and pass back to sage
-                    IMediaMetadata md = persistence.loadMetaData(mr);
-                    if (md != null) {
-                        // return the props
-                        Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
-                        System.out.println("Metadata Imported for: " + file.getAbsolutePath());
-                        return props;
-                    } else {
-                        System.out.println("Unable to Fetch Metadata for Media: " + file.getAbsolutePath());
-                    }
-                } else {
-                    System.out.println("BatchMetadataTools: Can't accept file: " + file.getAbsolutePath());
+                IMediaMetadata md = persistence.loadMetaData(mr);
+                if (md != null) {
+                    Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
+                    debug("Reusing existing metadata for MediaFile: " + file.getAbsolutePath());
+                    return props;
                 }
+
+                // update the metadata and download fanart...
+                automaticUpdater.visit(mr);
+
+                // now load the props and pass back to sage
+                md = persistence.loadMetaData(mr);
+                if (md != null) {
+                    // return the props
+                    Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
+                    debug("New Metadata Imported for: " + file.getAbsolutePath());
+                    return props;
+                } else {
+                    debug("Failed to Fetch Metadata for Media: " + file.getAbsolutePath());
+                }
+            } else {
+                debug("Type not recognized.  Can't perform metadata/fanart lookup on file file: " + file.getAbsolutePath());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            error("Failed while performing Automatic Metadata/Fanart lookup", e);
         }
 
         return null;
     }
 
+    private void debug(String msg) {
+        System.out.println("BMT: " + msg);
+    }
+
+    private void error(String msg, Throwable t) {
+        debug("BMT: ERROR: " + msg);
+        debug("=============== BEGIN BMT EXCEPTION ================");
+        t.printStackTrace();
+        debug("=============== END BMT EXCEPTION ================");
+    }
 }

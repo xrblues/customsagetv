@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
 
@@ -213,7 +214,7 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         ICastMember castMembers[] = (ICastMember[]) get(MetadataKey.CAST_MEMBER_LIST);
         if (castMembers!=null) {
             for (ICastMember m : castMembers) {
-                if (m.getType() == cm.getType() && (cm.getName()!=null && cm.getName().equals(cm.getName()))) {
+                if (m.getType() == cm.getType() && (m.getName()!=null && m.getName().equals(cm.getName()))) {
                     found = true;
                     break;
                 }
@@ -249,6 +250,14 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
 
     public void set(MetadataKey key, Object value) {
         if (value!=null) {
+            // manipulate some fields
+            if (key == MetadataKey.SEASON || key == MetadataKey.EPISODE || key == MetadataKey.DVD_DISC) {
+                if (value instanceof String) {
+                    int n = NumberUtils.toInt((String)value);
+                    value = String.valueOf(n);
+                }
+            }
+            
             store.put(key, value);
         }
     }

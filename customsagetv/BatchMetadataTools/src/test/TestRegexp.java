@@ -97,6 +97,9 @@ public class TestRegexp {
         testRegexp("She's the One 1996", "(.*)\\s+\\(?([0-9]{4})\\)?");
         testRegexp("Total Recall 2112 (2003)", "(.*)\\s+\\(?([0-9]{4})\\)?");
         testRegexp("Total Recall (en)", "(.*)\\s+\\(?([0-9]{4})\\)?");
+        testRegexp("/test/x/y/House 2005-09-13.avi", ".*/(.+) ([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})");
+        testRegexp("House 2005-09-13.avi", ".*/(.+) ([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})");
+        testRegexp("file:/home/seans/DevelopmentProjects/workspaces/sage/MovieMetadataUpdater/target/sage/Futurama-AFishfulofDollars-2557575-0.avi", ".*/([^-]+)-([^-]+)-([0-9]+)-([0-9]{1,2})\\.");
     }
 
     private static void testReplaceRegexp(String in, String search, String replace) {

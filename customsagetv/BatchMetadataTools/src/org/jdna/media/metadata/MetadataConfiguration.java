@@ -14,7 +14,7 @@ public class MetadataConfiguration {
     private String persistenceClass       = org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence.class.getName();
 
     @Field(label="Registered Providers", description = "Comma separated list of known metadata providers (ie, can be used for searching for metadata)")
-    private String videoMetadataProviders = TVDBMetadataProvider.class.getName()+","+IMDBMetaDataProvider.class.getName() + "," + NielmIMDBMetaDataProvider.class.getName() + "," + "," + LocalDVDProfMetaDataProvider.class.getName() + "," + TheMovieDBMetadataProvider.class.getName() + "," + TVDBMetadataProvider.class.getName();
+    private String videoMetadataProviders = TVDBMetadataProvider.class.getName()+","+IMDBMetaDataProvider.class.getName() + "," + NielmIMDBMetaDataProvider.class.getName() + "," + "," + LocalDVDProfMetaDataProvider.class.getName() + "," + TheMovieDBMetadataProvider.class.getName() + ",";
 
     @Field(label="Ignore Words in Title", description = "Comma separated list of words that will be removed from a title when doing a search")
     private String wordsToClean           = "1080p,720p,480p,1080i,720i,480i,dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv,HDTV,x264";

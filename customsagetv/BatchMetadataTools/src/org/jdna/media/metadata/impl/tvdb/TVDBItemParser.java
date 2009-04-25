@@ -21,6 +21,7 @@ import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.IUrl;
 import org.jdna.url.UrlFactory;
@@ -54,6 +55,7 @@ public class TVDBItemParser {
     private List<ICastMember>      cast                = new ArrayList<ICastMember>();
     private Document               banners             = null;
 
+
     public TVDBItemParser(String metadataResultUrl) {
         this.origUrl = metadataResultUrl;
         MediaSearchResult sr = new MediaSearchResult();
@@ -83,8 +85,10 @@ public class TVDBItemParser {
                     // now add in episode specific fanart
                     if (!StringUtils.isEmpty(queryArgs.get(SearchQuery.Field.SEASON.name())) && !StringUtils.isEmpty(queryArgs.get(SearchQuery.Field.EPISODE.name()))) {
                         addSeasonEpisodeInfo(md, queryArgs.get(SearchQuery.Field.SEASON.name()), queryArgs.get(SearchQuery.Field.EPISODE.name()));
+                    } else if (!StringUtils.isEmpty(queryArgs.get(SearchQuery.Field.EPISODE_DATE.name()))) {
+                        addSeasonEpisodeInfoByDate(md, queryArgs.get(SearchQuery.Field.EPISODE_DATE.name()));
                     } else if (!StringUtils.isEmpty(queryArgs.get(SearchQuery.Field.EPISODE_TITLE.name()))) {
-                        // addByTitleInfo(md);
+                        addSeasonEpisodeInfoByTitle(md, queryArgs.get(SearchQuery.Field.EPISODE_TITLE.name()));
                     } else {
                         log.warn("No Specific Episode Lookup for query: " + origUrl);
                     }
@@ -98,69 +102,115 @@ public class TVDBItemParser {
                 md = null;
             }
         }
+        
+        if (md!=null) {
+            log.debug("Metadata Contains: " + md.getCastMembers(ICastMember.ACTOR).length + " actors");
+        }
+        
         return md;
     }
 
+    private void updateMetadataFromUrl(MediaMetadata md, String episodeUrl) throws Exception {
+        DocumentBuilder parser = factory.newDocumentBuilder();
+        log.debug("Parsing TVDB Episode url: " + episodeUrl);
+        IUrl url = UrlFactory.newUrl(episodeUrl);
+        Document doc = parser.parse(url.getInputStream(null, true));
+
+        Element el = DOMUtils.getElementByTagName(doc.getDocumentElement(), "Episode");
+        updateMetadataFromElement(md, el);
+    }
+    
+    private void updateMetadataFromElement(MediaMetadata md, Element el) {
+        md.set(MetadataKey.SEASON, DOMUtils.getElementValue(el, "SeasonNumber"));
+        md.set(MetadataKey.EPISODE, DOMUtils.getElementValue(el, "EpisodeNumber"));
+        md.set(MetadataKey.EPISODE_TITLE, DOMUtils.getElementValue(el, "EpisodeName"));
+        md.set(MetadataKey.RELEASE_DATE, DOMUtils.getElementValue(el, "FirstAired"));
+        md.set(MetadataKey.YEAR, parseYear(DOMUtils.getElementValue(el, "FirstAired")));
+        md.set(MetadataKey.DESCRIPTION, DOMUtils.getElementValue(el, "Overview"));
+        md.set(MetadataKey.USER_RATING, DOMUtils.getElementValue(el, "Rating"));
+
+        addCastMember(md, DOMUtils.getElementValue(el, "GuestStars"), "Guest", ICastMember.ACTOR);
+        addCastMember(md, DOMUtils.getElementValue(el, "Writer"), "Writer", ICastMember.WRITER);
+        addCastMember(md, DOMUtils.getElementValue(el, "Director"), "Director", ICastMember.DIRECTOR);
+    }
+    
+    private void addCastMember(MediaMetadata md, String strSplit, String part, int type) {
+        if (!StringUtils.isEmpty(strSplit)) {
+            String directorsArr[] = strSplit.split("[,\\|]");
+            for (String d : directorsArr) {
+                if (!StringUtils.isEmpty(d)) {
+                    CastMember cm = new CastMember(type);
+                    cm.setName(d.trim());
+                    cm.setPart(part);
+                    md.addCastMember(cm);
+                    log.debug("Adding Cast Member: " + cm.getName());
+                }
+            }
+        }
+    }
+
+    private void addSeasonEpisodeInfoByDate(MediaMetadata md, String date) {
+        try {
+            updateMetadataFromUrl(md, MessageFormat.format(EPISODE_BY_DATE_URL, TVDBMetadataProvider.getApiKey(), seriesId, date));
+        } catch (Exception e) {
+            log.error("Failed to get season/episode specific information for " + seriesId + "; Date: " + date, e);
+        }
+
+    }
+
+    private void addSeasonEpisodeInfoByTitle(MediaMetadata md, String title) {
+        try {
+            DocumentBuilder parser = factory.newDocumentBuilder();
+            String allurl = MessageFormat.format(EPISODE_BY_TITLE, TVDBMetadataProvider.getApiKey(), seriesId); 
+            log.debug("Parsing TVDB Complete Episode Info: " + allurl);
+            IUrl url = UrlFactory.newUrl(allurl);
+            Document doc = parser.parse(url.getInputStream(null, true));
+            
+            NodeList nl = doc.getElementsByTagName("Episode");
+            boolean updated = updateIfScored(nl, title, 1.0f);
+            if (!updated) {
+                float matchScore = 0.8f;
+                log.debug("Couldn't find an exact title match, so using a fuzzy match score of " + matchScore);
+
+                // do another search, this time use a less sensitive matching criteria
+                updated = updateIfScored(nl, title, matchScore);
+            }
+            
+            if (!updated) {
+                log.info("Unable to match a direct title for: " + title);
+            }
+        } catch (Exception e) {
+            log.error("Failed to find a match based on title: " + title);
+        }
+    }
+    
+    private boolean updateIfScored(NodeList nl, String title, float scoreToMatch) {
+        boolean updated=false;
+        int s = nl.getLength();
+        for (int i=0;i<s;i++) {
+            Element el = (Element) nl.item(i);
+            String epTitle = DOMUtils.getElementValue(el, "EpisodeName");
+            float score = MetadataUtil.calculateCompressedScore(title, epTitle);
+            
+            if (score>=scoreToMatch) {
+                log.debug("Found a title match: " + epTitle + "; Updating Metadata.");
+                updateMetadataFromElement(md, el);
+                updated=true;
+                break;
+            }
+        }
+        return updated;
+    }
+
+    
     private void addSeasonEpisodeInfo(MediaMetadata md, String season, String episode) {
         int inSeason = NumberUtils.toInt(season, -1);
         int inEpisode = NumberUtils.toInt(episode, -1);
 
         try {
-            DocumentBuilder parser = factory.newDocumentBuilder();
-            String seriesUrl = MessageFormat.format(SEASON_EPISODE_URL, TVDBMetadataProvider.getApiKey(), seriesId, inSeason, inEpisode);
-            log.debug("Parsing TVDB Episode url: " + seriesUrl);
-            IUrl url = UrlFactory.newUrl(seriesUrl);
-            Document doc = parser.parse(url.getInputStream(null, true));
-
-            Element el = DOMUtils.getElementByTagName(doc.getDocumentElement(), "Episode");
-            md.set(MetadataKey.SEASON, season);
-            md.set(MetadataKey.EPISODE, episode);
-            md.set(MetadataKey.EPISODE_TITLE, DOMUtils.getElementValue(el, "EpisodeName"));
-            md.set(MetadataKey.RELEASE_DATE, DOMUtils.getElementValue(el, "FirstAired"));
-            md.set(MetadataKey.YEAR, parseYear(DOMUtils.getElementValue(el, "FirstAired")));
-            md.set(MetadataKey.DESCRIPTION, DOMUtils.getElementValue(el, "Overview"));
-            md.set(MetadataKey.USER_RATING, DOMUtils.getElementValue(el, "Rating"));
-
-            String guests = DOMUtils.getElementValue(el, "GuestStars");
-            if (!StringUtils.isEmpty(guests)) {
-                String guestArr[] = guests.split("\\|");
-                for (String g : guestArr) {
-                    if (!StringUtils.isEmpty(g)) {
-                        CastMember cm = new CastMember(ICastMember.ACTOR);
-                        cm.setName(g.trim());
-                        cm.setPart("Guest");
-                        md.addCastMember(cm);
-                    }
-                }
-            }
-
-            String writers = DOMUtils.getElementValue(el, "Writer");
-            if (!StringUtils.isEmpty(writers)) {
-                String writerArr[] = writers.split(",");
-                for (String w : writerArr) {
-                    if (!StringUtils.isEmpty(w)) {
-                        CastMember cm = new CastMember(ICastMember.WRITER);
-                        cm.setName(w.trim());
-                        cm.setPart("Writer");
-                        md.addCastMember(cm);
-                    }
-                }
-            }
-
-            String directors = DOMUtils.getElementValue(el, "Director");
-            if (!StringUtils.isEmpty(directors)) {
-                String directorsArr[] = directors.split(",");
-                for (String d : directorsArr) {
-                    if (!StringUtils.isEmpty(d)) {
-                        CastMember cm = new CastMember(ICastMember.DIRECTOR);
-                        cm.setName(d.trim());
-                        cm.setPart("Director");
-                        md.addCastMember(cm);
-                    }
-                }
-            }
+            updateMetadataFromUrl(md, MessageFormat.format(SEASON_EPISODE_URL, TVDBMetadataProvider.getApiKey(), seriesId, inSeason, inEpisode));
         } catch (Exception e) {
-            log.error("Failed to get season/episode specific information for " + seriesId + "; Season: " + season + "; episode: " + episode,e);
+            log.error("Failed to get season/episode specific information for " + seriesId + "; Season: " + season + "; episode: " + episode, e);
         }
 
     }
@@ -250,10 +300,11 @@ public class TVDBItemParser {
                 Element e = (Element) nl.item(i);
                 cm.setName(DOMUtils.getElementValue(e, "Name"));
                 cm.setPart(DOMUtils.getElementValue(e, "Role"));
+                log.debug("Adding Actor: " + cm.getName());
                 md2.addCastMember(cm);
-                
+
                 NodeList imgs = e.getElementsByTagName("Image");
-                for (int j=0;j<imgs.getLength();j++) {
+                for (int j = 0; j < imgs.getLength(); j++) {
                     log.debug("Adding actor fanart: " + imgs.item(j).getTextContent());
                     cm.addFanart(imgs.item(j).getTextContent());
                 }
@@ -277,7 +328,7 @@ public class TVDBItemParser {
 
         String genres = DOMUtils.getElementValue(series, "Genre");
         if (!StringUtils.isEmpty(genres)) {
-            for (String g : genres.split("\\|")) {
+            for (String g : genres.split("[,\\|]")) {
                 if (!StringUtils.isEmpty(g)) {
                     md.addGenre(g.trim());
                 }
@@ -308,13 +359,7 @@ public class TVDBItemParser {
     }
 
     private String convertTimeToMillissecondsForSage(String time) {
-        long t = 0;
-        try {
-            t = Long.parseLong(time);
-            t = t * 60 * 1000;
-        } catch (Exception e) {
-        }
-        return String.valueOf(t);
+        return String.valueOf(NumberUtils.toLong(time) * 60 * 1000);
     }
 
     public String getTheMovieDBID() {
