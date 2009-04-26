@@ -14,6 +14,7 @@ import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.util.DOMUtils;
 import org.jdna.util.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -21,18 +22,18 @@ import org.w3c.dom.NodeList;
 import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
 
 public class MyMoviesParser {
-    private static final Logger          log         = Logger.getLogger(MyMoviesParser.class);
+    private static final Logger      log         = Logger.getLogger(MyMoviesParser.class);
 
-    private String                       id          = null;
+    private String                   id          = null;
 
     private MyMoviesMetadataProvider provider    = null;
-    private MyMoviesXmlFile               movieFile     = null;
-    private Element                      node        = null;
+    private MyMoviesXmlFile          movieFile   = null;
+    private Element                  node        = null;
 
-    private List<ICastMember>            castMembers = new ArrayList<ICastMember>();               ;
-    private List<String>                 genres      = new ArrayList<String>();
+    private List<ICastMember>        castMembers = new ArrayList<ICastMember>();
+    private List<String>             genres      = new ArrayList<String>();
 
-    private MediaMetadata                metadata;
+    private MediaMetadata            metadata;
 
     public MyMoviesParser(String id) throws Exception {
         this.id = id;
@@ -42,30 +43,14 @@ public class MyMoviesParser {
     }
 
     public MediaMetadata getMetaData() {
-        metadata = new MediaMetadata(new MetadataKey[] {
-                MetadataKey.ASPECT_RATIO,
-                MetadataKey.COMPANY,
-                MetadataKey.DESCRIPTION,
-                MetadataKey.GENRE_LIST,
-                MetadataKey.MEDIA_ART_LIST,
-                MetadataKey.MPAA_RATING,
-                MetadataKey.POSTER_ART,
-                MetadataKey.MEDIA_PROVIDER_DATA_ID,
-                MetadataKey.METADATA_PROVIDER_ID,
-                MetadataKey.METADATA_PROVIDER_DATA_URL,
-                MetadataKey.RELEASE_DATE,
-                MetadataKey.RUNNING_TIME,
-                MetadataKey.MEDIA_TITLE,
-                MetadataKey.USER_RATING,
-                MetadataKey.YEAR });
+        metadata = new MediaMetadata();
 
-        if (castMembers != null) {
-            metadata.setCastMembers(getCastMembers().toArray(new CastMember[castMembers.size()]));
-        }
+        metadata.setCastMembers(getCastMembers().toArray(new CastMember[castMembers.size()]));
+
         metadata.setAspectRatio(getAspectRatio());
         metadata.setCompany(getCompany());
         metadata.setGenres(getGenres().toArray(new String[genres.size()]));
-        metadata.setMPAARating(getMPAARating());
+        updateMPAARating(metadata);
         metadata.setDescription(getPlot());
         metadata.setReleaseDate(getReleaseDate());
         metadata.setRuntime(getRuntime());
@@ -76,7 +61,6 @@ public class MyMoviesParser {
         }
 
         metadata.setMediaTitle(getTitle());
-        metadata.setUserRating(getUserRating());
         metadata.setYear(getYear());
 
         metadata.setProviderId(MyMoviesMetadataProvider.PROVIDER_ID);
@@ -86,57 +70,36 @@ public class MyMoviesParser {
     }
 
     private List<ICastMember> getCastMembers() {
-        if (castMembers == null) {
-            castMembers = getActors();
-
-            // add in others
-            NodeList nl = node.getElementsByTagName("Credit");
-            for (int i = 0; i < nl.getLength(); i++) {
-                Element e = (Element) nl.item(i);
-                String credType = e.getAttribute("CreditType");
-                CastMember cm = new CastMember();
-                cm.setName(String.format("%s %s", e.getAttribute("FirstName"), e.getAttribute("LastName")));
-                cm.setPart(credType);
-                if ("Direction".equals(credType)) {
-                    cm.setType(ICastMember.DIRECTOR);
-                } else if ("Writing".equals(credType)) {
-                    cm.setType(ICastMember.WRITER);
-                } else {
-                    cm.setType(ICastMember.OTHER);
-                }
-                castMembers.add(cm);
+        // add in others
+        NodeList nl = node.getElementsByTagName("Person");
+        for (int i = 0; i < nl.getLength(); i++) {
+            Element e = (Element) nl.item(i);
+            String credType = DOMUtils.getElementValue(e, "Type");
+            CastMember cm = new CastMember();
+            cm.setName(DOMUtils.getElementValue(e, "Name"));
+            cm.setPart(DOMUtils.getElementValue(e, "Role"));
+            if ("Director".equals(credType)) {
+                cm.setType(ICastMember.DIRECTOR);
+            } else if ("Writer".equals(credType)) {
+                cm.setType(ICastMember.WRITER);
+            } else if ("Actor".equals(credType)) {
+                cm.setType(ICastMember.ACTOR);
+            } else {
+                cm.setType(ICastMember.OTHER);
             }
+            castMembers.add(cm);
         }
         return castMembers;
     }
 
-    // TOOD: People
-    public List<ICastMember> getActors() {
-        List<ICastMember> actors = new ArrayList<ICastMember>();
-        if (actors.size() == 0) {
-            NodeList nl = node.getElementsByTagName("Actor");
-            for (int i = 0; i < nl.getLength(); i++) {
-                Element e = (Element) nl.item(i);
-                CastMember cm = new CastMember(ICastMember.ACTOR);
-                cm.setName(String.format("%s %s", e.getAttribute("FirstName"), e.getAttribute("LastName")));
-                cm.setPart(e.getAttribute("Role"));
-                actors.add(cm);
-            }
-        }
-        return actors;
-    }
-
-    
     public String getAspectRatio() {
         return MyMoviesXmlFile.getElementValue(node, "AspectRatio");
     }
 
-    // TODO: Studios
     public String getCompany() {
         return MyMoviesXmlFile.getElementValue(node, "Studio");
     }
 
-    // TODO: Genres
     public List<String> getGenres() {
         if (genres.size() == 0) {
             NodeList nl = node.getElementsByTagName("Genre");
@@ -148,9 +111,15 @@ public class MyMoviesParser {
         return genres;
     }
 
-    public String getMPAARating() {
-        // TODO: Find Rating
-        return MyMoviesXmlFile.getElementValue(node, "Rating");
+    public void updateMPAARating(MediaMetadata md) {
+        NodeList nl = node.getElementsByTagName("ParentalRating");
+        Element el = null;
+        if (nl.getLength() > 0) {
+            el = (Element) nl.item(0);
+        }
+
+        md.set(MetadataKey.MPAA_RATING, DOMUtils.getElementValue(el, "Value"));
+        md.set(MetadataKey.MPAA_RATING_DESCRIPTION, DOMUtils.getElementValue(el, "Description"));
     }
 
     public String getPlot() {
@@ -173,13 +142,11 @@ public class MyMoviesParser {
         return MyMoviesXmlFile.getElementValue(node, "RunningTime");
     }
 
-    // TODO: Find Cover
     public IMediaArt getMediaArtImage(String type) {
-        File f = new File(provider.getImagesDir(), id + type + ".jpg");
-        if (!f.exists()) {
-            log.warn("Missing Cover for Movie: " + id + "; " + getTitle());
-        } else {
+        Element el = DOMUtils.getElementByTagName(node, "Covers");
+        if (el != null) {
             try {
+                File f = new File(DOMUtils.getElementValue(el, "Front"));
                 String uri = f.toURI().toURL().toExternalForm();
                 MediaArt ma = new MediaArt();
                 ma.setProviderId(getProviderId());
@@ -196,11 +163,6 @@ public class MyMoviesParser {
 
     public String getTitle() {
         return StringUtils.removeHtml(MyMoviesXmlFile.getElementValue(node, "LocalTitle"));
-    }
-
-    public String getUserRating() {
-        // Didn't find user rating in profile information
-        return null;
     }
 
     public String getYear() {
