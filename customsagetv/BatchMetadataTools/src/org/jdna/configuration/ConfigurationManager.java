@@ -140,7 +140,10 @@ public class ConfigurationManager {
     }
     
     public void setMetadataIdForTitle(String title, MetadataID id) {
-        if (id==null||title==null) return;
+        if (id==null||title==null) {
+            log.warn("setMetadataForTitle(): title or id is null; Title: " + title + "; id: " + id);
+            return;
+        }
         titleMapProps.setProperty(title, id.toIDString());
     }
 
@@ -176,18 +179,6 @@ public class ConfigurationManager {
                 if (l != null) {
                     loaded.put(CompositeMetadataConfiguration.class, l);
                 }
-            }
-            if (l == null || l.size() == 0) {
-                // add in the sample CompositeProvider
-                CompositeMetadataConfiguration c = new CompositeMetadataConfiguration();
-                c.setId("sample");
-                c.setName("Sample Composite Provider");
-                c.setDescription("This is a sample Composite Provider that will disappear as soon as you create one");
-                c.setSearchProviderId(IMDBMetaDataProvider.PROVIDER_ID);
-                c.setDetailProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
-                c.setCompositeDetailsMode(CompositeMetadataProvider.MODE_PREFER_DETAILS);
-                l = new ArrayList<CompositeMetadataConfiguration>();
-                l.add(c);
             }
             return l;
         } catch (Exception e) {

@@ -7,11 +7,13 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
@@ -48,6 +50,16 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             return;
         }
 
+        if (!MetadataUtil.TV_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE))) {
+            log.warn("SageShowPersistence can only be used for TV media types; This type is: " + md.get(MetadataKey.MEDIA_TYPE));
+            return;
+        }
+
+        if (!ConfigurationManager.getInstance().getMetadataConfiguration().isImportTVAsRecordedShows()) {
+            log.info("Import Shows as Sage Recordings is currently disabled.");
+            return;
+        }
+        
         log.debug("Storing Sage Metdata directly to the Sage SHOW object");
         Object sageMF = ((SageMediaFile) mediaFile).getSageMediaObject();
         Object airing = MediaFileAPI.GetMediaFileAiring(sageMF);
@@ -87,7 +99,11 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             parentRating = ShowAPI.GetShowParentalRating(origShow);
             language = ShowAPI.GetShowLanguage(origShow);
             origAirDate = ShowAPI.GetOriginalAiringDate(origShow);
-            //externalID = ShowAPI.GetShowExternalID(origShow);
+            externalID = ShowAPI.GetShowExternalID(origShow);
+            if (externalID!=null && !externalID.startsWith("EP")) {
+                log.debug("Existing show external id is not a sage recording, so we are going to discard it, and create a new one. OldId: "+externalID);
+                externalID=null;
+            }
         }
 
         if (origAirDate==0) {
@@ -182,7 +198,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
     private String createShowId(IMediaMetadata md) {
         // TODO: if import tv is enabled, then set the prefix to "EP", so that 
         // it will show up in the sage recordings
-        String prefix = "MFss";
+        String prefix = "EPmt";
         String id = null;
         do {
             // keep gen'd EPGID less than 12 chars

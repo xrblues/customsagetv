@@ -28,13 +28,14 @@ public class MediaSearchResult implements IMediaSearchResult, Serializable {
         this.score = score;
     }
 
-    public MediaSearchResult(String providerId, String url, String title, String year, float score) {
+    public MediaSearchResult(String providerId, String url, MetadataID mid, String title, String year, float score) {
         super();
         this.providerId = providerId;
         setUrlWithExtraArgs(url);
         this.title = title;
         this.year = year;
         this.score = score;
+        this.metadataId=mid;
     }
 
     public String getProviderId() {

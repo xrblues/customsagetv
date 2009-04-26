@@ -255,4 +255,13 @@ public class api {
         System.out.println("Metadata Provider Priority for: " + id + " Changed from : " + i + " to " + (i+1));
         SetCurrentProvidersIds(new StrBuilder().appendWithSeparators(ids, ",").toString());
     }
+    
+    public static boolean IsImportShowAsSageRecordingEnabled() {
+        return ConfigurationManager.getInstance().getMetadataConfiguration().isImportTVAsRecordedShows();
+    }
+    
+    public static void SetImportShowAsSageRecordingEnabled(boolean b) {
+        ConfigurationManager.getInstance().getMetadataConfiguration().setImportTVAsRecordedShows(b);
+        SaveMetadataProviderConfiguration();
+    }
 }

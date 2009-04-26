@@ -18,6 +18,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
 import org.w3c.dom.Element;
 
@@ -111,7 +112,7 @@ public class MyMoviesIndex implements MyMoviesNodeVisitor {
             
             float score = MetadataUtil.calculateScore(title, name);
 
-            results.add(new MediaSearchResult(MyMoviesMetadataProvider.PROVIDER_ID, id, name, date, score));
+            results.add(new MediaSearchResult(MyMoviesMetadataProvider.PROVIDER_ID, id, new MetadataID(MyMoviesMetadataProvider.PROVIDER_ID, id), name, date, score));
         }
 
         return results;

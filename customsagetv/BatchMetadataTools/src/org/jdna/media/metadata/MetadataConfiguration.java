@@ -44,9 +44,9 @@ public class MetadataConfiguration {
     @Field(label="Default STV Poster Compatibility", description="When writing fanart, if this is enabled, an additional poster file will be written that is compatible with the default stv.")
     private boolean enableDefaultSTVPosterCompatibility = false;
     
-    @Field(label="AiringId Regex", description="Regex that is used to parse the AiringId from a filename.")
-    private String airingIdRegex = "([0-9]+)-[0-9]{1,2}\\.";
-
+    @Field(label="Import TV as Sage Recordings", description="When importing TV Shows, try to add them into the Sage Recordings.")
+    private boolean importTVAsRecordedShows = false;
+    
     public MetadataConfiguration() {
     }
 
@@ -138,11 +138,11 @@ public class MetadataConfiguration {
         this.enableDefaultSTVPosterCompatibility = enableDefaultSTVPosterCompatibility;
     }
 
-    public String getAiringIdRegex() {
-        return airingIdRegex;
+    public boolean isImportTVAsRecordedShows() {
+        return importTVAsRecordedShows;
     }
 
-    public void setAiringIdRegex(String airingIdRegex) {
-        this.airingIdRegex = airingIdRegex;
+    public void setImportTVAsRecordedShows(boolean importTVAsRecordedShows) {
+        this.importTVAsRecordedShows = importTVAsRecordedShows;
     }
 }

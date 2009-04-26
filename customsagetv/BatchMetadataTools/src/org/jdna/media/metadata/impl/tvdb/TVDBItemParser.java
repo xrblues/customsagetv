@@ -1,8 +1,6 @@
 package org.jdna.media.metadata.impl.tvdb;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,7 +50,6 @@ public class TVDBItemParser {
 
     private MediaMetadata          md                  = null;
     private DocumentBuilderFactory factory             = DocumentBuilderFactory.newInstance();
-    private List<ICastMember>      cast                = new ArrayList<ICastMember>();
     private Document               banners             = null;
 
 
@@ -340,7 +337,7 @@ public class TVDBItemParser {
         md.set(MetadataKey.RUNNING_TIME, convertTimeToMillissecondsForSage(DOMUtils.getElementValue(series, "Runtime")));
         md.set(MetadataKey.MEDIA_TITLE, DOMUtils.getElementValue(series, "SeriesName"));
         md.set(MetadataKey.DISPLAY_TITLE, DOMUtils.getElementValue(series, "SeriesName"));
-        md.set(MetadataKey.MEDIA_TYPE, "TV");
+        md.set(MetadataKey.MEDIA_TYPE, MetadataUtil.TV_MEDIA_TYPE);
     }
 
     private void addFanartUrl(MediaMetadata md, MediaArt ma, String path) {
