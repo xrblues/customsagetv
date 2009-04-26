@@ -124,7 +124,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         String xmlDetails = processor.getDetails(url, (extraArgs != null) ? extraArgs.get("id") : null);
 
         if (extraArgs != null && SearchQuery.Type.TV.toString().equals(extraArgs.get("mediatype"))) {
-            md.set(MetadataKey.MEDIA_TYPE, "TV");
+            md.set(MetadataKey.MEDIA_TYPE, MetadataUtil.TV_MEDIA_TYPE);
             processXmlContentForTV(xmlDetails, md, extraArgs);
         } else {
             processXmlContent(xmlDetails, md);

@@ -344,6 +344,8 @@ public class MetadataUpdater {
 
             if (config.isRememberSelectedSearches()) {
                 ConfigurationManager.getInstance().saveTitleMappings();
+            } else {
+                log.warn("Manual Searched will not be saved, since /metadataUpdater/rememberSelectedSearches=false");
             }
             
             ConfigurationManager.getInstance().save();

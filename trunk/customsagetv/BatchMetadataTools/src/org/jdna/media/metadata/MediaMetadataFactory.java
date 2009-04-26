@@ -13,7 +13,10 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
 import org.jdna.media.metadata.impl.composite.MetadataProviderContainer;
+import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
+import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
+import org.jdna.media.metadata.impl.mymovies.MyMoviesMetadataProvider;
 import org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider;
 import org.jdna.media.metadata.impl.xbmc.XbmcMetadataProvider;
 import org.jdna.media.metadata.impl.xbmc.XbmcScraper;
@@ -60,21 +63,11 @@ public class MediaMetadataFactory {
         // Now add in a couple of composite providers
         
         // This provider uses the imdb for searching and themoviedb.com for details
-        if (getProvider(IMDBMetaDataProvider.PROVIDER_ID)!=null && getProvider(TheMovieDBMetadataProvider.PROVIDER_ID)!=null) {
-            CompositeMetadataConfiguration cmc = new CompositeMetadataConfiguration();
-            cmc.setName("IMDb/themoviedb.org");
-            cmc.setDescription("Metadata Provider that uses IMDb for searching, but themoviedb.org for metadata completion and fanart.");
-            cmc.setId(TheMovieDBMetadataProvider.PROVIDER_ID + "-2");
-            cmc.setSearchProviderId(IMDBMetaDataProvider.PROVIDER_ID);
-            cmc.setDetailProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
-            cmc.setIconUrl(IMDBMetaDataProvider.PROVIDER_ICON_URL);
-            cmc.setCompositeDetailsMode(CompositeMetadataProvider.MODE_PREFER_SEARCHER);
-
-            addMetaDataProvider(new CompositeMetadataProvider(cmc));
-        }
+        addCompositeProvider(IMDBMetaDataProvider.PROVIDER_ID, TheMovieDBMetadataProvider.PROVIDER_ID, "IMDb plus TheMovieDB.org provider");
+        addCompositeProvider(LocalDVDProfMetaDataProvider.PROVIDER_ID, TheMovieDBMetadataProvider.PROVIDER_ID, "DVDProfiler plus TheMovieDB.org provider");
+        addCompositeProvider(MyMoviesMetadataProvider.PROVIDER_ID, TheMovieDBMetadataProvider.PROVIDER_ID, "MyMovies plus TheMovieDB.org provider");
         
         // now let's find all the xbmc scrapers and add them as well...
-        
         File videos = new File("scrapers/xbmc/video");
         if (videos.exists()) {
             File[] files = videos.listFiles(new FilenameFilter() {
@@ -98,6 +91,30 @@ public class MediaMetadataFactory {
                     log.error("Failed to create Xbmc Scraper: " + f.getAbsolutePath(), e);
                 }
             }
+        }
+    }
+    
+    protected void addCompositeProvider(String searcher, String details, String description) {
+        IMediaMetadataProvider sprov = getProvider(searcher);
+        IMediaMetadataProvider dprov = getProvider(details);
+        IMediaMetadataProvider newProv = null;
+        String newId = null;
+        if (sprov!=null) {
+            newId = sprov.getInfo().getId() +"-2";
+            newProv = getProvider(newId);
+        }
+        
+        if (newProv == null && getProvider(searcher)!=null && getProvider(details)!=null) {
+            CompositeMetadataConfiguration cmc = new CompositeMetadataConfiguration();
+            cmc.setName(sprov.getInfo().getName() + " + " + dprov.getInfo().getName());
+            cmc.setDescription(description);
+            cmc.setId(newId);
+            cmc.setSearchProviderId(searcher);
+            cmc.setDetailProviderId(details);
+            cmc.setIconUrl(sprov.getInfo().getIconUrl());
+            cmc.setCompositeDetailsMode(CompositeMetadataProvider.MODE_PREFER_SEARCHER);
+
+            addMetaDataProvider(new CompositeMetadataProvider(cmc));
         }
     }
 

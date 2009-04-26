@@ -22,6 +22,7 @@ import org.jdna.media.util.BackgroundMetadataUpdater;
 import org.jdna.sage.MetadataPluginOptions;
 import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageMediaFolder;
+import org.jdna.sage.media.SageShowPeristence;
 
 import sagex.api.AiringAPI;
 import sagex.api.Global;
@@ -125,8 +126,17 @@ public class BMTMetadataSupport implements IMetadataSupport {
                 persistence = MetadataPluginOptions.getOnDemandUpdaterPersistence();
             }
             
+            IMediaFile smf = new SageMediaFile(media);
             // Save the sage properties, the update sage's wiz.bin, then download the fanart.
-            persistence.storeMetaData(md, new SageMediaFile(media), options);
+            persistence.storeMetaData(md, smf, options);
+            
+            if (MediaFileAPI.IsMediaFileObject(media)) {
+                if (ConfigurationManager.getInstance().getMetadataConfiguration().isImportTVAsRecordedShows()) {
+                    log.debug("Importing Show as a SageRecording....");
+                    SageShowPeristence sp = new SageShowPeristence();
+                    sp.storeMetaData(md, smf, options);
+                }
+            }
             
             if (MediaFileAPI.IsMediaFileObject(media)) {
                 log.debug("Running Library Import Scan to pick up the changes.");

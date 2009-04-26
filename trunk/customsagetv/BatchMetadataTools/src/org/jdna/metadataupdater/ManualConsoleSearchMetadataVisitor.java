@@ -12,6 +12,8 @@ import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaSearchResult;
+import org.jdna.media.metadata.MetadataID;
+import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
@@ -67,10 +69,11 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
                 }
                 IMediaSearchResult sr = results.get(n);
                 log.debug("User's Selected Title: " + sr.getTitle());
-                // remember the selected title
-                ConfigurationManager.getInstance().setMetadataIdForTitle(query.get(SearchQuery.Field.TITLE), sr.getMetadataId());
                 IMediaMetadata md = getProvider().getMetaData(sr);
                 getPersistence().storeMetaData(md, file, getPersistenceOptions());
+
+                // remember the selected title
+                ConfigurationManager.getInstance().setMetadataIdForTitle(query.get(SearchQuery.Field.TITLE), sr.getMetadataId());
                 if (getUpdatedVisitor() != null) getUpdatedVisitor().visit(file);
             }
         } catch (Exception e) {
