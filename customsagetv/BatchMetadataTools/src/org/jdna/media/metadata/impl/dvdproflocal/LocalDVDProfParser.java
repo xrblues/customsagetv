@@ -14,6 +14,7 @@ import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.util.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -29,7 +30,7 @@ public class LocalDVDProfParser {
     private DVDProfXmlFile               dvdFile     = null;
     private Element                      node        = null;
 
-    private List<ICastMember>            castMembers = new ArrayList<ICastMember>();               ;
+    private List<ICastMember>            castMembers = null;
     private List<String>                 genres      = new ArrayList<String>();
 
     private MediaMetadata                metadata;
@@ -42,26 +43,8 @@ public class LocalDVDProfParser {
     }
 
     public MediaMetadata getMetaData() {
-        metadata = new MediaMetadata(new MetadataKey[] {
-                MetadataKey.ASPECT_RATIO,
-                MetadataKey.COMPANY,
-                MetadataKey.DESCRIPTION,
-                MetadataKey.GENRE_LIST,
-                MetadataKey.MEDIA_ART_LIST,
-                MetadataKey.MPAA_RATING,
-                MetadataKey.POSTER_ART,
-                MetadataKey.MEDIA_PROVIDER_DATA_ID,
-                MetadataKey.METADATA_PROVIDER_ID,
-                MetadataKey.METADATA_PROVIDER_DATA_URL,
-                MetadataKey.RELEASE_DATE,
-                MetadataKey.RUNNING_TIME,
-                MetadataKey.MEDIA_TITLE,
-                MetadataKey.USER_RATING,
-                MetadataKey.YEAR });
-
-        if (castMembers != null) {
-            metadata.setCastMembers(getCastMembers().toArray(new CastMember[castMembers.size()]));
-        }
+        metadata = new MediaMetadata();
+        metadata.setCastMembers(getCastMembers().toArray(new CastMember[castMembers.size()]));
         metadata.setAspectRatio(getAspectRatio());
         metadata.setCompany(getCompany());
         metadata.setGenres(getGenres().toArray(new String[genres.size()]));
@@ -110,6 +93,7 @@ public class LocalDVDProfParser {
                 } else {
                     cm.setType(ICastMember.OTHER);
                 }
+                log.debug("Adding Cast: " + cm);
                 castMembers.add(cm);
             }
         }
@@ -126,7 +110,10 @@ public class LocalDVDProfParser {
                 cm.setName(String.format("%s %s", e.getAttribute("FirstName"), e.getAttribute("LastName")));
                 cm.setPart(e.getAttribute("Role"));
                 actors.add(cm);
+                log.debug("Adding Actor: " + cm);
             }
+        } else {
+            log.debug("No Actors!");
         }
         return actors;
     }
@@ -171,7 +158,7 @@ public class LocalDVDProfParser {
     }
 
     public String getRuntime() {
-        return DVDProfXmlFile.getElementValue(node, "RunningTime");
+        return MetadataUtil.convertTimeToMillissecondsForSage(DVDProfXmlFile.getElementValue(node, "RunningTime"));
     }
 
     public IMediaArt getMediaArtImage(String type) {

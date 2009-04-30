@@ -1,9 +1,19 @@
 package org.jdna.media.metadata;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.log4j.Logger;
 import org.jdna.util.Similarity;
 
 public class MetadataUtil {
+    private static final Logger log = Logger.getLogger(MetadataUtil.class);
+    
     public static final String                                   MOVIE_MEDIA_TYPE = "Movie";
     public static final String                                   TV_MEDIA_TYPE    = "TV";
 
@@ -74,5 +84,62 @@ public class MetadataUtil {
         
         float score2 = Similarity.getInstance().compareStrings(searchTitle.replaceAll(compressedRegex, ""), matchTitle.replaceAll(compressedRegex, ""));
         return Math.max(score1, score2);
+    }
+
+    /**
+     * Sets the RELEASE_DATE in a consistent YYYY-MM-dd format using the passed in {@link SimpleDateFormat} mask that is passed in.
+     * 
+     * @param md metadata object
+     * @param strDate date in
+     * @param dateInFormat date in format using {@link SimpleDateFormat} notation
+     */
+    public static void setReleaseDateFromFormattedDate(IMediaMetadata md, String strDate, String dateInFormat) {
+        if (strDate==null || dateInFormat==null) {
+            return;
+        }
+        
+        try {
+            DateFormat dateOutFormat  = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat dateInParser = new SimpleDateFormat(dateInFormat);
+            
+            Date in = dateInParser.parse(strDate);
+            String out = dateOutFormat.format(in);
+
+            md.set(MetadataKey.RELEASE_DATE, out);
+        } catch (Exception e) {
+            log.error("Failed to parse/format release dates; dateIn: " + strDate + "; dateInFormat: " + dateInFormat, e);
+            md.set(MetadataKey.RELEASE_DATE, null);
+        }
+    }
+    
+    public static Date getReleaseDate(IMediaMetadata md) {
+        if (md==null) return null;
+        String date = (String) md.get(MetadataKey.RELEASE_DATE);
+        if (date==null) return null;
+        
+        try {
+            DateFormat dateFormat  = new SimpleDateFormat("yyyy-MM-dd");
+            Date d = dateFormat.parse(date);
+            return d;
+        } catch (Exception e) {
+            log.error("Failed to get a date from the metadata date: " + date, e);
+        }
+        return null;
+    }
+    
+    public static String convertTimeToMillissecondsForSage(String time) {
+        return String.valueOf(NumberUtils.toLong(time) * 60 * 1000);
+    }
+    
+    public static String parseRunningTime(String in, String regex) {
+        if (in==null || regex==null) return null;
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(in);
+        if (m.find()) {
+            return convertTimeToMillissecondsForSage(m.group(1));
+        } else {
+            log.warn("Could not find Running Time in " + in + "; using Regex: " + regex);
+            return null;
+        }
     }
 }

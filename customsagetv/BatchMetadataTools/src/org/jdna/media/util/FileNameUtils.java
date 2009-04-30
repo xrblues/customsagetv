@@ -15,6 +15,7 @@ import org.jdna.media.metadata.impl.xbmc.XbmcScraperParser;
 import org.jdna.media.metadata.impl.xbmc.XbmcScraperProcessor;
 
 import sagex.api.AiringAPI;
+import sagex.api.ShowAPI;
 
 public class FileNameUtils {
     private static final Logger log      = Logger.getLogger(FileNameUtils.class);
@@ -72,7 +73,7 @@ public class FileNameUtils {
                     if (StringUtils.isEmpty(dp)) continue;
                 }
 
-                log.debug("We have a hit for a tv show for: " + filenameUri);
+                log.debug("We have a hit for a tv show for: " + filenameUri + " by season: " + season + "; episode/disc: " + ep + "/" + dp);
                 q.setType(SearchQuery.Type.TV);
                 q.set(SearchQuery.Field.TITLE, MediaMetadataUtils.cleanSearchCriteria(title, false));
                 q.set(SearchQuery.Field.SEASON, season);
@@ -85,19 +86,30 @@ public class FileNameUtils {
             // TODO: If sage is not enabled, then just do the compressed airing title
             String sageAiringId = proc.executeFunction("GetAiringId", args);
             if (!StringUtils.isEmpty(sageAiringId)) {
+                log.debug("Using sage airing info to find a title/episode for airing: " + sageAiringId);
                 q.setType(SearchQuery.Type.TV);
                 q.set(SearchQuery.Field.TITLE, title);
                 Object airing = AiringAPI.GetAiringForID(NumberUtils.toInt(sageAiringId));
                 if (airing!=null) {
-                    q.set(SearchQuery.Field.EPISODE_TITLE, AiringAPI.GetAiringTitle(airing));
+                    q.set(SearchQuery.Field.TITLE, AiringAPI.GetAiringTitle(airing));
+                    q.set(SearchQuery.Field.EPISODE_TITLE, ShowAPI.GetShowEpisode(AiringAPI.GetShow(airing)));
                     break;
                 }
-                
+
+                log.debug("Using Title and Episode title from the commandline");
                 // let's just use the compressed title
-                q.set(SearchQuery.Field.EPISODE_TITLE, proc.executeFunction("GetEpisodeTitle", args));
+                q.set(SearchQuery.Field.TITLE, uncompressTitle(title));
+                q.set(SearchQuery.Field.EPISODE_TITLE, uncompressTitle(proc.executeFunction("GetEpisodeTitle", args)));
                 break;
             }
         }
+        
+        log.debug("Created Query: " + q);
         return q;
+    }
+
+    public static String uncompressTitle(String title) {
+        if (title==null) return null;
+        return title.replaceAll("([A-Z])", " $1").trim();
     }
 }

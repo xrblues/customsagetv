@@ -2,19 +2,53 @@ package test;
 
 import java.io.File;
 
+import org.jdna.configuration.ConfigurationManager;
+import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataProvider;
+import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
+import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.PersistenceOptions;
+import org.jdna.sage.media.SageMediaFile;
+import org.jdna.sage.media.SageShowPeristence;
 import org.jdna.util.LoggerConfiguration;
 
 import sagex.SageAPI;
+import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
+import sagex.api.ShowAPI;
 import sagex.phoenix.fanart.IMetadataSearchResult;
 
 public class TestBMTApis {
-    public static void main(String args[]) {
+    public static void main(String args[]) throws Exception {
         LoggerConfiguration.configurePlugin();
         SageAPI.setProvider(SageAPI.getRemoteProvider());
         // testFindSearchResults();
-        testRemoveShowMetadata();
+        //testRemoveShowMetadata();
+        //testUpdateShow();
+        testShowTitles();
+    }
+
+    private static void testShowTitles() {
+        Object smf = MediaFileAPI.GetMediaFileForFilePath(new File("/var/media/tv/Futurama-ISecondThatEmotion-2559577-0.ts"));
+        System.out.println("Title: " + AiringAPI.GetAiringTitle(smf));
+        System.out.println("Show Title: " + ShowAPI.GetShowTitle(smf));
+        System.out.println("Show Title: " + ShowAPI.GetShowEpisode(smf));
+    }
+
+    private static void testUpdateShow() throws Exception {
+        Object smf = MediaFileAPI.GetMediaFileForFilePath(new File("/var/media/tv/Futurama-ISecondThatEmotion-2559577-0.ts"));
+
+        IMetadataSearchResult[] results = phoenix.api.GetMetadataSearchResults(smf);
+        IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(results[0].getProviderId());
+        IMediaMetadata md = prov.getMetaData((IMediaSearchResult) results[0]);
+
+        ConfigurationManager.getInstance().getMetadataConfiguration().setImportTVAsRecordedShows(true);
+        
+        SageShowPeristence sp = new SageShowPeristence();
+        PersistenceOptions options = new PersistenceOptions();
+        options.setOverwriteMetadata(true);
+        sp.storeMetaData(md, new SageMediaFile(smf), options);
     }
 
     public static void testRemoveShowMetadata() {

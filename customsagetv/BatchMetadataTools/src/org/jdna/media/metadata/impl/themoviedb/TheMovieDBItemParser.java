@@ -17,6 +17,7 @@ import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.url.IUrl;
 import org.jdna.url.UrlFactory;
 import org.w3c.dom.Document;
@@ -52,21 +53,7 @@ public class TheMovieDBItemParser {
                 log.debug("Parsing TheMovieDB url: " + url + TheMovieDBMetadataProvider.getApiKey());
                 Document doc = parser.parse(url.getInputStream(null, true));
                 
-                md = new MediaMetadata(new MetadataKey[] {
-                        MetadataKey.CAST_MEMBER_LIST,
-                        MetadataKey.GENRE_LIST,
-                        MetadataKey.DESCRIPTION,
-                        MetadataKey.MEDIA_PROVIDER_DATA_ID,
-                        MetadataKey.METADATA_PROVIDER_ID,
-                        MetadataKey.METADATA_PROVIDER_DATA_URL,
-                        MetadataKey.RELEASE_DATE,
-                        MetadataKey.RUNNING_TIME,
-                        MetadataKey.MEDIA_ART_LIST,
-                        MetadataKey.POSTER_ART,
-                        MetadataKey.BACKGROUND_ART,
-                        MetadataKey.MEDIA_TITLE,
-                        MetadataKey.USER_RATING,
-                        MetadataKey.YEAR });
+                md = new MediaMetadata();
 
                 NodeList nl = doc.getElementsByTagName("movie");
                 if (nl == null || nl.getLength() == 0) {
@@ -86,7 +73,7 @@ public class TheMovieDBItemParser {
                 md.setGenres(getGenres(movie));
                 md.setDescription(getElementValue(movie, "short_overview"));
                 md.setReleaseDate(getElementValue(movie, "release"));
-                md.setRuntime(convertTimeToMillissecondsForSage(getElementValue(movie, "runtime")));
+                md.setRuntime(MetadataUtil.convertTimeToMillissecondsForSage(getElementValue(movie, "runtime")));
                 addPosters(md, movie);
                 addBackgrounds(md, movie);
                 addBanners(md, movie);
@@ -208,16 +195,6 @@ public class TheMovieDBItemParser {
         } catch (Exception e) {
             return null;
         }
-    }
-
-    private String convertTimeToMillissecondsForSage(String time) {
-        long t = 0;
-        try {
-            t = Long.parseLong(time);
-            t = t * 60 * 1000;
-        } catch (Exception e) {
-        }
-        return String.valueOf(t);
     }
 
     public static String getElementValue(Element el, String tag) {

@@ -311,7 +311,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         updateMDValue(md, MetadataKey.MPAA_RATING_DESCRIPTION, DOMUtils.getElementValue(details, "mpaa"));
 
         updateMDValue(md, MetadataKey.RELEASE_DATE, DOMUtils.getElementValue(details, "year"));
-        updateMDValue(md, MetadataKey.RUNNING_TIME, DOMUtils.getElementValue(details, "runtime"));
+        updateMDValue(md, MetadataKey.RUNNING_TIME, MetadataUtil.parseRunningTime(DOMUtils.getElementValue(details, "runtime"), IMDBMovieMetaDataParser.IMDB_RUNNING_TIME_REGEX));
         updateMDValue(md, MetadataKey.MEDIA_TITLE, DOMUtils.getElementValue(details, "title"));
         updateMDValue(md, MetadataKey.USER_RATING, DOMUtils.getElementValue(details, "rating"));
         updateMDValue(md, MetadataKey.YEAR, DOMUtils.getElementValue(details, "year"));
