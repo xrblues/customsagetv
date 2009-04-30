@@ -32,21 +32,7 @@ public class NeilmIMDBMetaDataParser {
     }
 
     public MediaMetadata getMetaData() {
-        MediaMetadata md = new MediaMetadata(new MetadataKey[] {
-                MetadataKey.CAST_MEMBER_LIST,
-                MetadataKey.MEDIA_ART_LIST,
-                MetadataKey.DESCRIPTION,
-                MetadataKey.GENRE_LIST,
-                MetadataKey.MPAA_RATING,
-                MetadataKey.MPAA_RATING_DESCRIPTION,
-                MetadataKey.POSTER_ART,
-                MetadataKey.MEDIA_PROVIDER_DATA_ID,
-                MetadataKey.METADATA_PROVIDER_DATA_URL,
-                MetadataKey.RELEASE_DATE,
-                MetadataKey.RUNNING_TIME,
-                MetadataKey.MEDIA_TITLE,
-                MetadataKey.USER_RATING,
-                MetadataKey.YEAR });
+        MediaMetadata md = new MediaMetadata();
 
         md.setCastMembers(getCastMembers());
         md.setGenres(data.getGenres());

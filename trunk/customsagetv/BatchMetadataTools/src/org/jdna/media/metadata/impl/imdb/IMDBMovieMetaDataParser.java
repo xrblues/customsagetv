@@ -11,6 +11,7 @@ import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -69,6 +70,9 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 
     private static final int    HEADER_ON           = 1;
     private static final int    HEADER_OFF          = 0;
+
+    public static final String IMDB_RUNNING_TIME_REGEX = "([0-9]+)(\\s+min)?";
+    
     private int          headerState         = HEADER_OFF;
 
     private CastMember          curCastMember       = null;
@@ -221,7 +225,7 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
         }
 
         if (state == RUNTIME) {
-            metadata.setRuntime(charbuf);
+            metadata.setRuntime(MetadataUtil.parseRunningTime(charbuf, IMDB_RUNNING_TIME_REGEX));
             state = LOOKING;
             return;
         }

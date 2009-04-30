@@ -1,6 +1,7 @@
 package org.jdna.sage.media;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -106,9 +107,15 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             }
         }
 
-        if (origAirDate==0) {
-            log.debug("No Original Airing Date, using today");
-            origAirDate = System.currentTimeMillis();
+        if (origAirDate==0 || options.isOverwriteMetadata()) {
+            Date d = MetadataUtil.getReleaseDate(md);
+            if (d==null) {
+                log.debug("No Original Airing Date, using today");
+                origAirDate =  System.currentTimeMillis();
+            } else {
+                log.debug("Setting Original Airing Date: " + d);
+                origAirDate = d.getTime();
+            }
         }
         
         if (duration==0) {
@@ -160,12 +167,8 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             }
         }
 
-        if (origShow!=null) {
-            String currentId = ShowAPI.GetShowExternalID(origShow);
-        }
-        
         // TODO: If import show as TV, then create a new airing id
-        if (externalID==null) {
+        if (externalID==null || options.isOverwriteMetadata()) {
             externalID = createShowId(md);
         }
 

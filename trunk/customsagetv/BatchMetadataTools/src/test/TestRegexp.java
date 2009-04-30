@@ -100,6 +100,16 @@ public class TestRegexp {
         testRegexp("/test/x/y/House 2005-09-13.avi", ".*/(.+) ([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})");
         testRegexp("House 2005-09-13.avi", ".*/(.+) ([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})");
         testRegexp("file:/home/seans/DevelopmentProjects/workspaces/sage/MovieMetadataUpdater/target/sage/Futurama-AFishfulofDollars-2557575-0.avi", ".*/([^-]+)-([^-]+)-([0-9]+)-([0-9]{1,2})\\.");
+        
+        testReplaceRegexp("03-22-1973", "([0-9]+)-([0-9]+)-([0-9]+)", "$3-$1-$2");
+        testReplaceRegexp("dd-22-1973", "([0-9]+)-([0-9]+)-([0-9]+)", "$3-$1-$2");
+        
+        String runtime="([0-9]+)(\\s+min)?";
+        testRegexp("123min", runtime);
+        testRegexp("126 min", runtime);
+        testRegexp("124 min (canda 125 min)", runtime);
+        testRegexp("129", runtime);
+        
     }
 
     private static void testReplaceRegexp(String in, String search, String replace) {

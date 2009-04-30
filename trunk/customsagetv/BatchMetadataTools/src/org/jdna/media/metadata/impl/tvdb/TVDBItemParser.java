@@ -100,10 +100,6 @@ public class TVDBItemParser {
             }
         }
         
-        if (md!=null) {
-            log.debug("Metadata Contains: " + md.getCastMembers(ICastMember.ACTOR).length + " actors");
-        }
-        
         return md;
     }
 
@@ -121,7 +117,9 @@ public class TVDBItemParser {
         md.set(MetadataKey.SEASON, DOMUtils.getElementValue(el, "SeasonNumber"));
         md.set(MetadataKey.EPISODE, DOMUtils.getElementValue(el, "EpisodeNumber"));
         md.set(MetadataKey.EPISODE_TITLE, DOMUtils.getElementValue(el, "EpisodeName"));
-        md.set(MetadataKey.RELEASE_DATE, DOMUtils.getElementValue(el, "FirstAired"));
+        // actually this is redundant because the tvdb is already YYYY-MM-DD, but this will
+        // ensure that we are safe if out internal mask changes
+        MetadataUtil.setReleaseDateFromFormattedDate(md, DOMUtils.getElementValue(el, "FirstAired"), "yyyy-MM-dd");
         md.set(MetadataKey.YEAR, parseYear(DOMUtils.getElementValue(el, "FirstAired")));
         md.set(MetadataKey.DESCRIPTION, DOMUtils.getElementValue(el, "Overview"));
         md.set(MetadataKey.USER_RATING, DOMUtils.getElementValue(el, "Rating"));
@@ -320,7 +318,7 @@ public class TVDBItemParser {
 
         Element series = DOMUtils.getElementByTagName(doc.getDocumentElement(), "Series");
         md.set(MetadataKey.MPAA_RATING, DOMUtils.getElementValue(series, "ContentRating"));
-        md.set(MetadataKey.RELEASE_DATE, DOMUtils.getElementValue(series, "FirstAired"));
+        MetadataUtil.setReleaseDateFromFormattedDate(md, DOMUtils.getElementValue(series, "FirstAired"), "yyyy-MM-dd");
         md.set(MetadataKey.YEAR, parseYear(DOMUtils.getElementValue(series, "FirstAired")));
 
         String genres = DOMUtils.getElementValue(series, "Genre");
@@ -334,7 +332,7 @@ public class TVDBItemParser {
 
         md.set(MetadataKey.DESCRIPTION, DOMUtils.getElementValue(series, "Overview"));
         md.set(MetadataKey.USER_RATING, DOMUtils.getElementValue(series, "Rating"));
-        md.set(MetadataKey.RUNNING_TIME, convertTimeToMillissecondsForSage(DOMUtils.getElementValue(series, "Runtime")));
+        md.set(MetadataKey.RUNNING_TIME, MetadataUtil.convertTimeToMillissecondsForSage(DOMUtils.getElementValue(series, "Runtime")));
         md.set(MetadataKey.MEDIA_TITLE, DOMUtils.getElementValue(series, "SeriesName"));
         md.set(MetadataKey.DISPLAY_TITLE, DOMUtils.getElementValue(series, "SeriesName"));
         md.set(MetadataKey.MEDIA_TYPE, MetadataUtil.TV_MEDIA_TYPE);
@@ -353,10 +351,6 @@ public class TVDBItemParser {
             return m.group(1);
         }
         return null;
-    }
-
-    private String convertTimeToMillissecondsForSage(String time) {
-        return String.valueOf(NumberUtils.toLong(time) * 60 * 1000);
     }
 
     public String getTheMovieDBID() {

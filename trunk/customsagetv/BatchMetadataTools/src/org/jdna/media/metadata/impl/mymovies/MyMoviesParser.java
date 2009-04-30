@@ -14,6 +14,7 @@ import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.util.DOMUtils;
 import org.jdna.util.StringUtils;
 import org.w3c.dom.Element;
@@ -139,7 +140,7 @@ public class MyMoviesParser {
     }
 
     public String getRuntime() {
-        return MyMoviesXmlFile.getElementValue(node, "RunningTime");
+        return MetadataUtil.convertTimeToMillissecondsForSage(MyMoviesXmlFile.getElementValue(node, "RunningTime"));
     }
 
     public IMediaArt getMediaArtImage(String type) {

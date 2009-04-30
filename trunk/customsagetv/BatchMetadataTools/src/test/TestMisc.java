@@ -1,13 +1,11 @@
 package test;
 
+import org.jdna.media.util.FileNameUtils;
+
 
 
 public class TestMisc {
     public static void main(String args[]) {
-        String str = "|Bill|Sam,Lorne|";
-        String x[] = str.split("[,\\|]");
-        for (String s : x) {
-            System.out.println(s);
-        }
+        System.out.println("Title: " + FileNameUtils.uncompressTitle("LouDobbsIAmHe"));
     }
 }
