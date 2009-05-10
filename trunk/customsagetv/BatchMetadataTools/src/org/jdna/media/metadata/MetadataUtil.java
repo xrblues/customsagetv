@@ -142,4 +142,9 @@ public class MetadataUtil {
             return null;
         }
     }
+    
+    public static String getBareTitle(String name) {
+       if (name != null) return name.replaceAll("[^A-Za-z0-9']", " ");
+       return name;
+    }
 }

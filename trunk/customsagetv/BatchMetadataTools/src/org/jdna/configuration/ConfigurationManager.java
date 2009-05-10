@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.media.impl.MediaConfiguration;
+import org.jdna.media.MediaConfiguration;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;

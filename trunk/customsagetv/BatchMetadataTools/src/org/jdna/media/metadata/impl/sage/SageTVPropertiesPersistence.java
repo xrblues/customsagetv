@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
+import org.jdna.media.StackedMediaFile;
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaArt;
@@ -55,14 +56,9 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     }
 
     private File getPropertyFile(IMediaResource mediaFile) {
-        try {
-            File f = new File(new URI(mediaFile.getLocationUri()));
-            f = new File(f.getParent(), f.getName() + ".properties");
-            return f;
-        } catch (URISyntaxException e) {
-            log.error("Failed to create File Uri!", e);
-            return null;
-        }
+        File f = new File(mediaFile.getLocationUri());
+        f = new File(f.getParent(), f.getName() + ".properties");
+        return f;
     }
 
     /**
@@ -88,7 +84,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     public Map<String, String> getMetadataProperties(IMediaResource mediaFile, IMediaMetadata md, PersistenceOptions options) throws IOException {
         if (md.getMediaTitle() == null) throw new IOException("MetaData doesn't contain title.  Will not Save/Update.");
 
-        if (mediaFile.getType() != IMediaFile.TYPE_FILE) {
+        if (mediaFile.getType() != IMediaResource.Type.File) {
             throw new IOException("Can only store metadata for IMedaiFile.TYPE_FILE objects.  Not a valid file: " + mediaFile.getLocationUri());
         }
         
@@ -105,7 +101,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
 
         // add the filename and file uri
         props.put(SageProperty.FILENAME.sageKey, mediaFile.getName());
-        props.put(SageProperty.FILEURI.sageKey, mediaFile.getLocationUri());
+        props.put(SageProperty.FILEURI.sageKey, mediaFile.getLocationUri().toString());
         
         props = getMetadataProperties(md, props, options);
         return props;
@@ -265,24 +261,20 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     private void save(IMediaFile mediaFileParent, IMediaMetadata md, Map<String,String> props, PersistenceOptions options) {
         // in the event that this is a grouped/stacked MediaFile, we need to
         // write the metadata for each part.
-        if (mediaFileParent.isStacked()) {
+        if (mediaFileParent instanceof StackedMediaFile) {
             int i = 1;
-            for (IMediaResource mf : mediaFileParent.getParts()) {
-                if (mf instanceof IMediaFile) {
-                    // Update the title with the title mask before saving multi
-                    // part movies
-                    // store the title
-                    props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(md.getMediaTitle()));
-                    // set the disc # in the props
-                    props.put(SageProperty.DISC.sageKey, String.valueOf(i++));
-                    // update it using the mask
-                    props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getMultiCDTitleMask(), props));
-                    // for multiple parts, we try tro re-use the thumbnail to
-                    // reduce the amount of downloading...
-                    saveSingle(props, (IMediaFile) mf, md, options);
-                } else {
-                    log.error("Unknown Media File type for: " + mf.getLocationUri() + "; " + mf.getClass().getName());
-                }
+            for (IMediaResource mf : ((StackedMediaFile)mediaFileParent).getStackedFiles()) {
+                // Update the title with the title mask before saving multi
+                // part movies
+                // store the title
+                props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(md.getMediaTitle()));
+                // set the disc # in the props
+                props.put(SageProperty.DISC.sageKey, String.valueOf(i++));
+                // update it using the mask
+                props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(ConfigurationManager.getInstance().getSageMetadataConfiguration().getMultiCDTitleMask(), props));
+                // for multiple parts, we try tro re-use the thumbnail to
+                // reduce the amount of downloading...
+                saveSingle(props, (IMediaFile) mf, md, options);
             }
         } else {
             // store the title

@@ -42,7 +42,7 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
     }
 
     public void visit(IMediaResource resource) {
-        if (resource.getType() == IMediaFile.TYPE_FILE) {
+        if (resource.getType() == IMediaResource.Type.File) {
             if (isMissingMetadata(persistence, resource)) {
                 if (missingVisitor != null) missingVisitor.visit(resource);
             } else {
@@ -52,7 +52,7 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
     }
 
     public static boolean isMissingMetadata(IMediaMetadataPersistence persistence, IMediaResource resource) {
-        if (resource.getType() == IMediaFile.TYPE_FILE) {
+        if (resource.getType() == IMediaResource.Type.File) {
             try {
                 IMediaMetadata md = persistence.loadMetaData(resource);
 

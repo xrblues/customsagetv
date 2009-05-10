@@ -1,5 +1,7 @@
 package org.jdna.metadataupdater;
 
+import java.net.URI;
+
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
@@ -22,7 +24,7 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
     }
 
     public void visit(IMediaResource resource) {
-        if (resource.getType() == IMediaFile.TYPE_FILE) {
+        if (resource.getType() == IMediaResource.Type.File) {
             if (verbose) {
                 showMetadata((IMediaFile) resource);
             } else {
@@ -38,7 +40,7 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
         printMetadata(persistence.loadMetaData(mf), mf.getName(), mf.getLocationUri());
     }
     
-    public static void printMetadata(IMediaMetadata md, String name, String location) {
+    public static void printMetadata(IMediaMetadata md, String name, URI location) {
         if (md == null) {
             System.out.println("No Metadata for: " + location);
         } else {
@@ -93,7 +95,7 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
             } else {
                 col2("Actors:", "-- NONE --");
             }
-            col2("----- END:", location);
+            col2("----- END:", location.toString());
             System.out.println("");
         }
     }

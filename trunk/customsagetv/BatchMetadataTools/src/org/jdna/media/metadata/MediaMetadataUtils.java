@@ -16,7 +16,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
-import org.jdna.media.impl.CDStackingModel;
+import org.jdna.media.CDStackingModel;
 
 public class MediaMetadataUtils {
 

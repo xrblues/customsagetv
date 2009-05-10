@@ -42,7 +42,7 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
      * 
      */
     public void visit(IMediaResource resource) {
-        if (resource.getType() == IMediaFile.TYPE_FILE) {
+        if (resource.getType() == IMediaResource.Type.File) {
             try {
                 fetchMetaData((IMediaFile) resource);
             } catch (Exception e) {

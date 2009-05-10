@@ -29,7 +29,7 @@ public class SearchQueryFactory {
         String name = MediaMetadataUtils.cleanSearchCriteria(resource.getTitle(), false);
 
         try {
-            SearchQuery tvQ = filenameUtils.createSearchQuery(resource.getLocationUri());
+            SearchQuery tvQ = filenameUtils.createSearchQuery(resource.getLocationUri().toString());
             if (tvQ!=null && !StringUtils.isEmpty(tvQ.get(SearchQuery.Field.TITLE))) {
                 return tvQ;
             }
@@ -50,7 +50,7 @@ public class SearchQueryFactory {
         String name = MediaMetadataUtils.cleanSearchCriteria(resource.getTitle(), false);
         
         try {
-            SearchQuery tvQ = filenameUtils.createSearchQuery(resource.getLocationUri());
+            SearchQuery tvQ = filenameUtils.createSearchQuery(resource.getLocationUri().toString());
             if (tvQ!=null && !StringUtils.isEmpty(tvQ.get(SearchQuery.Field.TITLE))) {
                 return tvQ;
             }

@@ -164,7 +164,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
             SageMediaFile smf = new SageMediaFile(media);
 
             SearchQuery q = SearchQueryFactory.getInstance().createQuery(smf);
-            if (smf.getContentType() == IMediaFile.CONTENT_TYPE_TV) {
+            if (smf.getContentType() == IMediaFile.ContentType.TV) {
                 q.setType(SearchQuery.Type.TV);
             }
 
