@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -18,7 +18,9 @@ Returns:
 the value for the specified key in the specified map
  */
 public static java.lang.Object GetSubgroup (java.util.Map Grouping, java.lang.Object Key) {
-   return (java.lang.Object) sagex.SageAPI.call("GetSubgroup", new Object[] {Grouping,Key});
+  Object o = sagex.SageAPI.call("GetSubgroup", new Object[] {Grouping,Key});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -29,7 +31,7 @@ Character- the keystroke to perform, can contain Ctrl, Shift, Alt and combinatio
 System- if true then an operating system keystroke should be emulated, if false then keep the keystroke within SageTV
  */
 public static void Keystroke (java.lang.String Character, boolean System) {
-    sagex.SageAPI.call("Keystroke", new Object[] {Character,System});
+   sagex.SageAPI.call("Keystroke", new Object[] {Character,System});
 }
 
 /**
@@ -41,7 +43,9 @@ Returns:
 for a Collection or Map, the size of it; for an array, the length; for a string, the length, otherwise 0 is returned
  */
 public static int Size (java.lang.Object Data) {
-   return (Integer) sagex.SageAPI.call("Size", new Object[] {Data});
+  Object o = sagex.SageAPI.call("Size", new Object[] {Data});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -54,7 +58,9 @@ Returns:
 the date formatted string
  */
 public static java.lang.String DateFormat (java.lang.String Format, java.lang.Object Date) {
-   return (java.lang.String) sagex.SageAPI.call("DateFormat", new Object[] {Format,Date});
+  Object o = sagex.SageAPI.call("DateFormat", new Object[] {Format,Date});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -67,7 +73,9 @@ Returns:
 the formatted numeric string
  */
 public static java.lang.String NumberFormat (java.lang.String Format, float Number) {
-   return (java.lang.String) sagex.SageAPI.call("NumberFormat", new Object[] {Format,Number});
+  Object o = sagex.SageAPI.call("NumberFormat", new Object[] {Format,Number});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -85,7 +93,9 @@ Returns:
 the formatted duration string
  */
 public static java.lang.String DurFormat (java.lang.String Format, long Duration) {
-   return (java.lang.String) sagex.SageAPI.call("DurFormat", new Object[] {Format,Duration});
+  Object o = sagex.SageAPI.call("DurFormat", new Object[] {Format,Duration});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -99,7 +109,7 @@ Returns:
 an array which represents this time span
  */
 public static java.lang.Long[] CreateTimeSpan (long StartTime, long EndTime) {
-   return (java.lang.Long[]) sagex.SageAPI.call("CreateTimeSpan", new Object[] {StartTime,EndTime});
+  return (java.lang.Long[]) sagex.SageAPI.call("CreateTimeSpan", new Object[] {StartTime,EndTime});
 }
 
 /**
@@ -112,7 +122,9 @@ Returns:
 the element at the specified index or null if there is no such element
  */
 public static java.lang.Object GetElement (java.lang.Object Data, int Index) {
-   return (java.lang.Object) sagex.SageAPI.call("GetElement", new Object[] {Data,Index});
+  Object o = sagex.SageAPI.call("GetElement", new Object[] {Data,Index});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -126,7 +138,9 @@ Returns:
 the Value parameters is returned
  */
 public static java.lang.Object SetElement (java.lang.Object Data, int Index, java.lang.Object Value) {
-   return (java.lang.Object) sagex.SageAPI.call("SetElement", new Object[] {Data,Index,Value});
+  Object o = sagex.SageAPI.call("SetElement", new Object[] {Data,Index,Value});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -139,7 +153,9 @@ Returns:
 the element at the specified index or null if there is no such element
  */
 public static java.lang.Object RemoveElementAtIndex (java.util.List Data, int Index) {
-   return (java.lang.Object) sagex.SageAPI.call("RemoveElementAtIndex", new Object[] {Data,Index});
+  Object o = sagex.SageAPI.call("RemoveElementAtIndex", new Object[] {Data,Index});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -153,7 +169,9 @@ Returns:
 for java.util.Collections true if the element exists and was removed, false otherwise; for java.util.Maps it returns the value that the specified key corresponded to
  */
 public static java.lang.Object RemoveElement (java.lang.Object Data, java.lang.Object Value) {
-   return (java.lang.Object) sagex.SageAPI.call("RemoveElement", new Object[] {Data,Value});
+  Object o = sagex.SageAPI.call("RemoveElement", new Object[] {Data,Value});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -167,7 +185,9 @@ Returns:
 the 0-based index of the specified element in the data, or -1 if it does not exist
  */
 public static int FindElementIndex (java.lang.Object Data, java.lang.Object Element) {
-   return (Integer) sagex.SageAPI.call("FindElementIndex", new Object[] {Data,Element});
+  Object o = sagex.SageAPI.call("FindElementIndex", new Object[] {Data,Element});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -183,7 +203,9 @@ Returns:
 the element at the comparative insertion point
  */
 public static java.lang.Object FindComparativeElement (java.lang.Object Data, java.lang.Comparable Criteria, java.lang.String Method) {
-   return (java.lang.Object) sagex.SageAPI.call("FindComparativeElement", new Object[] {Data,Criteria,Method});
+  Object o = sagex.SageAPI.call("FindComparativeElement", new Object[] {Data,Criteria,Method});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -197,7 +219,9 @@ Returns:
 the substring from the specified string
  */
 public static java.lang.String Substring (java.lang.String String, int StartIndex, int EndIndex) {
-   return (java.lang.String) sagex.SageAPI.call("Substring", new Object[] {String,StartIndex,EndIndex});
+  Object o = sagex.SageAPI.call("Substring", new Object[] {String,StartIndex,EndIndex});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -209,7 +233,9 @@ Returns:
 the rounded value
  */
 public static java.lang.Object Round (java.lang.Object Number) {
-   return (java.lang.Object) sagex.SageAPI.call("Round", new Object[] {Number});
+  Object o = sagex.SageAPI.call("Round", new Object[] {Number});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -219,7 +245,9 @@ Returns:
 the current time
  */
 public static long Time () {
-   return (Long) sagex.SageAPI.call("Time", (Object[])null);
+  Object o = sagex.SageAPI.call("Time", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -229,7 +257,9 @@ Returns:
 a string that represents the current time.
  */
 public static java.lang.String PrintCurrentTime () {
-   return (java.lang.String) sagex.SageAPI.call("PrintCurrentTime", (Object[])null);
+  Object o = sagex.SageAPI.call("PrintCurrentTime", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -241,7 +271,9 @@ Returns:
 a formatted date string
  */
 public static java.lang.String PrintDate (long Date) {
-   return (java.lang.String) sagex.SageAPI.call("PrintDate", new Object[] {Date});
+  Object o = sagex.SageAPI.call("PrintDate", new Object[] {Date});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -253,7 +285,9 @@ Returns:
 a formatted date string
  */
 public static java.lang.String PrintDateLong (long Date) {
-   return (java.lang.String) sagex.SageAPI.call("PrintDateLong", new Object[] {Date});
+  Object o = sagex.SageAPI.call("PrintDateLong", new Object[] {Date});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -265,7 +299,9 @@ Returns:
 a formatted date string
  */
 public static java.lang.String PrintDateShort (long Date) {
-   return (java.lang.String) sagex.SageAPI.call("PrintDateShort", new Object[] {Date});
+  Object o = sagex.SageAPI.call("PrintDateShort", new Object[] {Date});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -277,7 +313,9 @@ Returns:
 a formatted date string
  */
 public static java.lang.String PrintDateFull (long Date) {
-   return (java.lang.String) sagex.SageAPI.call("PrintDateFull", new Object[] {Date});
+  Object o = sagex.SageAPI.call("PrintDateFull", new Object[] {Date});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -289,7 +327,9 @@ Returns:
 a formatted time string
  */
 public static java.lang.String PrintTime (long Time) {
-   return (java.lang.String) sagex.SageAPI.call("PrintTime", new Object[] {Time});
+  Object o = sagex.SageAPI.call("PrintTime", new Object[] {Time});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -301,7 +341,9 @@ Returns:
 a formatted time string
  */
 public static java.lang.String PrintTimeLong (long Time) {
-   return (java.lang.String) sagex.SageAPI.call("PrintTimeLong", new Object[] {Time});
+  Object o = sagex.SageAPI.call("PrintTimeLong", new Object[] {Time});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -313,7 +355,9 @@ Returns:
 a formatted time string
  */
 public static java.lang.String PrintTimeShort (long Time) {
-   return (java.lang.String) sagex.SageAPI.call("PrintTimeShort", new Object[] {Time});
+  Object o = sagex.SageAPI.call("PrintTimeShort", new Object[] {Time});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -325,7 +369,9 @@ Returns:
 a formatted time string
  */
 public static java.lang.String PrintTimeFull (long Time) {
-   return (java.lang.String) sagex.SageAPI.call("PrintTimeFull", new Object[] {Time});
+  Object o = sagex.SageAPI.call("PrintTimeFull", new Object[] {Time});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -337,7 +383,9 @@ Returns:
 the formatted duration string
  */
 public static java.lang.String PrintDuration (long Duration) {
-   return (java.lang.String) sagex.SageAPI.call("PrintDuration", new Object[] {Duration});
+  Object o = sagex.SageAPI.call("PrintDuration", new Object[] {Duration});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -349,7 +397,9 @@ Returns:
 the formatted duration string
  */
 public static java.lang.String PrintDurationWithSeconds (long Duration) {
-   return (java.lang.String) sagex.SageAPI.call("PrintDurationWithSeconds", new Object[] {Duration});
+  Object o = sagex.SageAPI.call("PrintDurationWithSeconds", new Object[] {Duration});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -361,7 +411,9 @@ Returns:
 the formatted duration string
  */
 public static java.lang.String PrintDurationShort (long Duration) {
-   return (java.lang.String) sagex.SageAPI.call("PrintDurationShort", new Object[] {Duration});
+  Object o = sagex.SageAPI.call("PrintDurationShort", new Object[] {Duration});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -373,7 +425,9 @@ Returns:
 the free space on the specified disk in bytes
  */
 public static long GetDiskFreeSpace (java.lang.String DrivePath) {
-   return (Long) sagex.SageAPI.call("GetDiskFreeSpace", new Object[] {DrivePath});
+  Object o = sagex.SageAPI.call("GetDiskFreeSpace", new Object[] {DrivePath});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -385,7 +439,9 @@ Returns:
 the total space on the specified disk in bytes
  */
 public static long GetDiskTotalSpace (java.lang.String DrivePath) {
-   return (Long) sagex.SageAPI.call("GetDiskTotalSpace", new Object[] {DrivePath});
+  Object o = sagex.SageAPI.call("GetDiskTotalSpace", new Object[] {DrivePath});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -397,7 +453,9 @@ Returns:
 the name of the filesystem type at the specified path
  */
 public static java.lang.String GetFileSystemType (java.lang.String DrivePath) {
-   return (java.lang.String) sagex.SageAPI.call("GetFileSystemType", new Object[] {DrivePath});
+  Object o = sagex.SageAPI.call("GetFileSystemType", new Object[] {DrivePath});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -412,7 +470,7 @@ Returns:
 the names stored in the registry under the specified key
  */
 public static java.lang.String[] GetWindowsRegistryNames (java.lang.String Root, java.lang.String Key) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetWindowsRegistryNames", new Object[] {Root,Key});
+  return (java.lang.String[]) sagex.SageAPI.call("GetWindowsRegistryNames", new Object[] {Root,Key});
 }
 
 /**
@@ -428,7 +486,9 @@ Returns:
 the value of the specified registry setting as a DWORD
  */
 public static int GetWindowsRegistryDWORDValue (java.lang.String Root, java.lang.String Key, java.lang.String Name) {
-   return (Integer) sagex.SageAPI.call("GetWindowsRegistryDWORDValue", new Object[] {Root,Key,Name});
+  Object o = sagex.SageAPI.call("GetWindowsRegistryDWORDValue", new Object[] {Root,Key,Name});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -444,7 +504,9 @@ Returns:
 the value of the specified registry setting as a string
  */
 public static int GetWindowsRegistryStringValue (java.lang.String Root, java.lang.String Key, java.lang.String Name) {
-   return (Integer) sagex.SageAPI.call("GetWindowsRegistryStringValue", new Object[] {Root,Key,Name});
+  Object o = sagex.SageAPI.call("GetWindowsRegistryStringValue", new Object[] {Root,Key,Name});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -460,7 +522,9 @@ Returns:
 true if the specified setting was removed, false otherwise
  */
 public static boolean RemoveWindowsRegistryValue (java.lang.String Root, java.lang.String Key, java.lang.String Name) {
-   return (Boolean) sagex.SageAPI.call("RemoveWindowsRegistryValue", new Object[] {Root,Key,Name});
+  Object o = sagex.SageAPI.call("RemoveWindowsRegistryValue", new Object[] {Root,Key,Name});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -478,7 +542,9 @@ Returns:
 true if the operation was successful, false otherwise
  */
 public static boolean SetWindowsRegistryDWORDValue (java.lang.String Root, java.lang.String Key, java.lang.String Name, int Value) {
-   return (Boolean) sagex.SageAPI.call("SetWindowsRegistryDWORDValue", new Object[] {Root,Key,Name,Value});
+  Object o = sagex.SageAPI.call("SetWindowsRegistryDWORDValue", new Object[] {Root,Key,Name,Value});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -496,7 +562,9 @@ Returns:
 true if the operation was successful, false otherwise
  */
 public static boolean SetWindowsRegistryStringValue (java.lang.String Root, java.lang.String Key, java.lang.String Name, java.lang.String Value) {
-   return (Boolean) sagex.SageAPI.call("SetWindowsRegistryStringValue", new Object[] {Root,Key,Name,Value});
+  Object o = sagex.SageAPI.call("SetWindowsRegistryStringValue", new Object[] {Root,Key,Name,Value});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -506,7 +574,7 @@ Parameters:
 SoundFile- the path of the sound resource to play back
  */
 public static void PlaySound (java.lang.String SoundFile) {
-    sagex.SageAPI.call("PlaySound", new Object[] {SoundFile});
+   sagex.SageAPI.call("PlaySound", new Object[] {SoundFile});
 }
 
 /**
@@ -521,7 +589,9 @@ Returns:
 the appropriate value based on the condition
  */
 public static java.lang.Object If (boolean Condition, java.lang.Object True, java.lang.Object False) {
-   return (java.lang.Object) sagex.SageAPI.call("If", new Object[] {Condition,True,False});
+  Object o = sagex.SageAPI.call("If", new Object[] {Condition,True,False});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -533,7 +603,9 @@ Returns:
 the filename from the specified file path
  */
 public static java.lang.String GetFileNameFromPath (java.io.File FilePath) {
-   return (java.lang.String) sagex.SageAPI.call("GetFileNameFromPath", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("GetFileNameFromPath", new Object[] {FilePath});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -547,7 +619,9 @@ Since:
 6.4
  */
 public static java.lang.String GetFileExtensionFromPath (java.lang.String FilePath) {
-   return (java.lang.String) sagex.SageAPI.call("GetFileExtensionFromPath", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("GetFileExtensionFromPath", new Object[] {FilePath});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -557,7 +631,7 @@ Parameters:
 Time- the amount of time to sleep this thread for in milliseconds
  */
 public static void Wait (long Time) {
-    sagex.SageAPI.call("Wait", new Object[] {Time});
+   sagex.SageAPI.call("Wait", new Object[] {Time});
 }
 
 /**
@@ -570,7 +644,9 @@ Returns:
 the maximum of the passed in values
  */
 public static java.lang.Number Max (java.lang.Number Value1, java.lang.Number Value2) {
-   return (java.lang.Number) sagex.SageAPI.call("Max", new Object[] {Value1,Value2});
+  Object o = sagex.SageAPI.call("Max", new Object[] {Value1,Value2});
+  if (o!=null) return (java.lang.Number) o;
+  return null;
 }
 
 /**
@@ -583,7 +659,9 @@ Returns:
 the minimum of the passed in values
  */
 public static java.lang.Number Min (java.lang.Number Value1, java.lang.Number Value2) {
-   return (java.lang.Number) sagex.SageAPI.call("Min", new Object[] {Value1,Value2});
+  Object o = sagex.SageAPI.call("Min", new Object[] {Value1,Value2});
+  if (o!=null) return (java.lang.Number) o;
+  return null;
 }
 
 /**
@@ -598,7 +676,9 @@ Returns:
 the java.lang.Process object that represents the launched process
  */
 public static java.lang.Process ExecuteProcess (java.lang.String CommandString, java.lang.Object Arguments, java.io.File WorkingDirectory, boolean ConsoleApp) {
-   return (java.lang.Process) sagex.SageAPI.call("ExecuteProcess", new Object[] {CommandString,Arguments,WorkingDirectory,ConsoleApp});
+  Object o = sagex.SageAPI.call("ExecuteProcess", new Object[] {CommandString,Arguments,WorkingDirectory,ConsoleApp});
+  if (o!=null) return (java.lang.Process) o;
+  return null;
 }
 
 /**
@@ -616,7 +696,9 @@ Since:
 6.0
  */
 public static java.lang.String ExecuteProcessReturnOutput (java.lang.String CommandString, java.lang.Object Arguments, java.io.File WorkingDirectory, boolean ReturnStdout, boolean ReturnStderr) {
-   return (java.lang.String) sagex.SageAPI.call("ExecuteProcessReturnOutput", new Object[] {CommandString,Arguments,WorkingDirectory,ReturnStdout,ReturnStderr});
+  Object o = sagex.SageAPI.call("ExecuteProcessReturnOutput", new Object[] {CommandString,Arguments,WorkingDirectory,ReturnStdout,ReturnStderr});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -628,7 +710,9 @@ Returns:
 the loaded image object
  */
 public static Object LoadImageFile (java.io.File FilePath) {
-   return (Object) sagex.SageAPI.call("LoadImageFile", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("LoadImageFile", new Object[] {FilePath});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -643,7 +727,9 @@ Returns:
 the MetaImage that refers to the passed specified resource, if a MetaImage was passed in then the same object is returned
  */
 public static Object LoadImage (java.lang.Object Resource) {
-   return (Object) sagex.SageAPI.call("LoadImage", new Object[] {Resource});
+  Object o = sagex.SageAPI.call("LoadImage", new Object[] {Resource});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -658,7 +744,9 @@ Since:
 4.1
  */
 public static java.awt.image.BufferedImage GetImageAsBufferedImage (java.lang.Object Resource) {
-   return (java.awt.image.BufferedImage) sagex.SageAPI.call("GetImageAsBufferedImage", new Object[] {Resource});
+  Object o = sagex.SageAPI.call("GetImageAsBufferedImage", new Object[] {Resource});
+  if (o!=null) return (java.awt.image.BufferedImage) o;
+  return null;
 }
 
 /**
@@ -675,7 +763,9 @@ Since:
 4.1
  */
 public static java.awt.image.BufferedImage GetScaledImageAsBufferedImage (java.lang.Object Resource, int Width, int Height) {
-   return (java.awt.image.BufferedImage) sagex.SageAPI.call("GetScaledImageAsBufferedImage", new Object[] {Resource,Width,Height});
+  Object o = sagex.SageAPI.call("GetScaledImageAsBufferedImage", new Object[] {Resource,Width,Height});
+  if (o!=null) return (java.awt.image.BufferedImage) o;
+  return null;
 }
 
 /**
@@ -687,7 +777,7 @@ Parameters:
 ResPath- the path to the image resource, can be a url, JAR resource path or a file path
  */
 public static void UnloadImage (java.lang.String ResPath) {
-    sagex.SageAPI.call("UnloadImage", new Object[] {ResPath});
+   sagex.SageAPI.call("UnloadImage", new Object[] {ResPath});
 }
 
 /**
@@ -702,7 +792,9 @@ Since:
 6.1
  */
 public static boolean IsImageLoaded (java.lang.Object Image) {
-   return (Boolean) sagex.SageAPI.call("IsImageLoaded", new Object[] {Image});
+  Object o = sagex.SageAPI.call("IsImageLoaded", new Object[] {Image});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -714,7 +806,7 @@ Returns:
 a list of files in the specified directory
  */
 public static java.io.File[] DirectoryListing (java.io.File DirectoryPath) {
-   return (java.io.File[]) sagex.SageAPI.call("DirectoryListing", new Object[] {DirectoryPath});
+  return (java.io.File[]) sagex.SageAPI.call("DirectoryListing", new Object[] {DirectoryPath});
 }
 
 /**
@@ -728,7 +820,7 @@ Since:
 6.4
  */
 public static java.io.File[] LocalDirectoryListing (java.io.File DirectoryPath) {
-   return (java.io.File[]) sagex.SageAPI.call("LocalDirectoryListing", new Object[] {DirectoryPath});
+  return (java.io.File[]) sagex.SageAPI.call("LocalDirectoryListing", new Object[] {DirectoryPath});
 }
 
 /**
@@ -738,7 +830,7 @@ Returns:
 the root directories of the file systems
  */
 public static java.io.File[] GetFileSystemRoots () {
-   return (java.io.File[]) sagex.SageAPI.call("GetFileSystemRoots", (Object[])null);
+  return (java.io.File[]) sagex.SageAPI.call("GetFileSystemRoots", (Object[])null);
 }
 
 /**
@@ -750,7 +842,7 @@ Since:
 6.4
  */
 public static java.io.File[] GetLocalFileSystemRoots () {
-   return (java.io.File[]) sagex.SageAPI.call("GetLocalFileSystemRoots", (Object[])null);
+  return (java.io.File[]) sagex.SageAPI.call("GetLocalFileSystemRoots", (Object[])null);
 }
 
 /**
@@ -763,7 +855,9 @@ Returns:
 true if FullString ends with MatchString, false otherwise
  */
 public static boolean StringEndsWith (java.lang.String FullString, java.lang.String MatchString) {
-   return (Boolean) sagex.SageAPI.call("StringEndsWith", new Object[] {FullString,MatchString});
+  Object o = sagex.SageAPI.call("StringEndsWith", new Object[] {FullString,MatchString});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -776,7 +870,9 @@ Returns:
 true if FullString starts with MatchString, false otherwise
  */
 public static boolean StringStartsWith (java.lang.String FullString, java.lang.String MatchString) {
-   return (Boolean) sagex.SageAPI.call("StringStartsWith", new Object[] {FullString,MatchString});
+  Object o = sagex.SageAPI.call("StringStartsWith", new Object[] {FullString,MatchString});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -789,7 +885,9 @@ Returns:
 the first 0-based index in FullString that MatchString occurs at or -1 if it is not found
  */
 public static int StringIndexOf (java.lang.String FullString, java.lang.String MatchString) {
-   return (Integer) sagex.SageAPI.call("StringIndexOf", new Object[] {FullString,MatchString});
+  Object o = sagex.SageAPI.call("StringIndexOf", new Object[] {FullString,MatchString});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -802,7 +900,9 @@ Returns:
 the last 0-based index in FullString that MatchString occurs at or -1 if it is not found
  */
 public static int StringLastIndexOf (java.lang.String FullString, java.lang.String MatchString) {
-   return (Integer) sagex.SageAPI.call("StringLastIndexOf", new Object[] {FullString,MatchString});
+  Object o = sagex.SageAPI.call("StringLastIndexOf", new Object[] {FullString,MatchString});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -812,7 +912,9 @@ Returns:
 the current working directory for the application
  */
 public static java.lang.String GetWorkingDirectory () {
-   return (java.lang.String) sagex.SageAPI.call("GetWorkingDirectory", (Object[])null);
+  Object o = sagex.SageAPI.call("GetWorkingDirectory", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -824,7 +926,9 @@ Since:
 6.4
  */
 public static boolean HasLocalFilesystem () {
-   return (Boolean) sagex.SageAPI.call("HasLocalFilesystem", (Object[])null);
+  Object o = sagex.SageAPI.call("HasLocalFilesystem", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -837,7 +941,9 @@ Returns:
 a new file object for the specified directory and file name or relative path
  */
 public static java.io.File CreateFilePath (java.lang.String Directory, java.lang.String File) {
-   return (java.io.File) sagex.SageAPI.call("CreateFilePath", new Object[] {Directory,File});
+  Object o = sagex.SageAPI.call("CreateFilePath", new Object[] {Directory,File});
+  if (o!=null) return (java.io.File) o;
+  return null;
 }
 
 /**
@@ -849,7 +955,9 @@ Returns:
 true if the specified file path is marked as a hidden file
  */
 public static boolean IsFilePathHidden (java.lang.String FilePath) {
-   return (Boolean) sagex.SageAPI.call("IsFilePathHidden", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("IsFilePathHidden", new Object[] {FilePath});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -863,7 +971,9 @@ Since:
 6.4
  */
 public static boolean IsLocalFilePathHidden (java.lang.String FilePath) {
-   return (Boolean) sagex.SageAPI.call("IsLocalFilePathHidden", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("IsLocalFilePathHidden", new Object[] {FilePath});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -875,7 +985,9 @@ Returns:
 true if the specified file path denotes a file that exists and is not a directory
  */
 public static boolean IsFilePath (java.lang.String FilePath) {
-   return (Boolean) sagex.SageAPI.call("IsFilePath", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("IsFilePath", new Object[] {FilePath});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -889,7 +1001,9 @@ Since:
 6.4
  */
 public static boolean IsLocalFilePath (java.lang.String FilePath) {
-   return (Boolean) sagex.SageAPI.call("IsLocalFilePath", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("IsLocalFilePath", new Object[] {FilePath});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -901,7 +1015,9 @@ Returns:
 true if the specified path denotes a directory that exists
  */
 public static boolean IsDirectoryPath (java.lang.String FilePath) {
-   return (Boolean) sagex.SageAPI.call("IsDirectoryPath", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("IsDirectoryPath", new Object[] {FilePath});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -915,7 +1031,9 @@ Since:
 6.4
  */
 public static boolean IsLocalDirectoryPath (java.lang.String FilePath) {
-   return (Boolean) sagex.SageAPI.call("IsLocalDirectoryPath", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("IsLocalDirectoryPath", new Object[] {FilePath});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -927,7 +1045,9 @@ Returns:
 true if successful, false otherwise
  */
 public static boolean CreateNewDirectory (java.io.File DirectoryPath) {
-   return (Boolean) sagex.SageAPI.call("CreateNewDirectory", new Object[] {DirectoryPath});
+  Object o = sagex.SageAPI.call("CreateNewDirectory", new Object[] {DirectoryPath});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -941,7 +1061,9 @@ Since:
 6.4
  */
 public static boolean CreateNewLocalDirectory (java.io.File DirectoryPath) {
-   return (Boolean) sagex.SageAPI.call("CreateNewLocalDirectory", new Object[] {DirectoryPath});
+  Object o = sagex.SageAPI.call("CreateNewLocalDirectory", new Object[] {DirectoryPath});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -953,7 +1075,9 @@ Returns:
 the parent directory for the specified file path
  */
 public static java.io.File GetPathParentDirectory (java.io.File FilePath) {
-   return (java.io.File) sagex.SageAPI.call("GetPathParentDirectory", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("GetPathParentDirectory", new Object[] {FilePath});
+  if (o!=null) return (java.io.File) o;
+  return null;
 }
 
 /**
@@ -965,7 +1089,9 @@ Returns:
 the last modified time of the specified file path
  */
 public static long GetPathLastModifiedTime (java.io.File FilePath) {
-   return (Long) sagex.SageAPI.call("GetPathLastModifiedTime", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("GetPathLastModifiedTime", new Object[] {FilePath});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -979,7 +1105,9 @@ Since:
 6.4
  */
 public static long GetLocalPathLastModifiedTime (java.io.File FilePath) {
-   return (Long) sagex.SageAPI.call("GetLocalPathLastModifiedTime", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("GetLocalPathLastModifiedTime", new Object[] {FilePath});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -993,7 +1121,9 @@ Since:
 6.4
  */
 public static long GetFilePathSize (java.io.File FilePath) {
-   return (Long) sagex.SageAPI.call("GetFilePathSize", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("GetFilePathSize", new Object[] {FilePath});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -1007,7 +1137,9 @@ Since:
 6.4
  */
 public static long GetLocalFilePathSize (java.io.File FilePath) {
-   return (Long) sagex.SageAPI.call("GetLocalFilePathSize", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("GetLocalFilePathSize", new Object[] {FilePath});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -1021,7 +1153,9 @@ Since:
 6.3.9
  */
 public static boolean DeleteFilePath (java.io.File FilePath) {
-   return (Boolean) sagex.SageAPI.call("DeleteFilePath", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("DeleteFilePath", new Object[] {FilePath});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1035,7 +1169,9 @@ Since:
 6.4
  */
 public static boolean DeleteLocalFilePath (java.io.File FilePath) {
-   return (Boolean) sagex.SageAPI.call("DeleteLocalFilePath", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("DeleteLocalFilePath", new Object[] {FilePath});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1050,7 +1186,9 @@ Since:
 6.3.9
  */
 public static boolean RenameFilePath (java.io.File OriginalFilePath, java.io.File NewFilePath) {
-   return (Boolean) sagex.SageAPI.call("RenameFilePath", new Object[] {OriginalFilePath,NewFilePath});
+  Object o = sagex.SageAPI.call("RenameFilePath", new Object[] {OriginalFilePath,NewFilePath});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1066,7 +1204,9 @@ Returns:
 true is always returned
  */
 public static boolean AddToGrouping (java.util.Map Grouping, java.lang.Object Key, java.lang.Object Value) {
-   return (Boolean) sagex.SageAPI.call("AddToGrouping", new Object[] {Grouping,Key,Value});
+  Object o = sagex.SageAPI.call("AddToGrouping", new Object[] {Grouping,Key,Value});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1081,7 +1221,9 @@ Returns:
 true if successful, false otherwise
  */
 public static boolean SendNetworkCommand (java.lang.String Hostname, int Port, java.lang.Object Command) {
-   return (Boolean) sagex.SageAPI.call("SendNetworkCommand", new Object[] {Hostname,Port,Command});
+  Object o = sagex.SageAPI.call("SendNetworkCommand", new Object[] {Hostname,Port,Command});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1096,7 +1238,9 @@ Returns:
 a new BufferedImage that is a scaled version of the specified image
  */
 public static java.awt.image.BufferedImage ScaleBufferedImage (java.awt.image.BufferedImage JavaBufferedImage, int Width, int Height, boolean Alpha) {
-   return (java.awt.image.BufferedImage) sagex.SageAPI.call("ScaleBufferedImage", new Object[] {JavaBufferedImage,Width,Height,Alpha});
+  Object o = sagex.SageAPI.call("ScaleBufferedImage", new Object[] {JavaBufferedImage,Width,Height,Alpha});
+  if (o!=null) return (java.awt.image.BufferedImage) o;
+  return null;
 }
 
 /**
@@ -1108,7 +1252,9 @@ Returns:
 the translated version of the specified string in the currently configured language
  */
 public static java.lang.String LocalizeString (java.lang.String EnglishText) {
-   return (java.lang.String) sagex.SageAPI.call("LocalizeString", new Object[] {EnglishText});
+  Object o = sagex.SageAPI.call("LocalizeString", new Object[] {EnglishText});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1118,7 +1264,9 @@ Returns:
 the IP address of the machine
  */
 public static java.lang.String GetLocalIPAddress () {
-   return (java.lang.String) sagex.SageAPI.call("GetLocalIPAddress", (Object[])null);
+  Object o = sagex.SageAPI.call("GetLocalIPAddress", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1130,7 +1278,9 @@ Returns:
 true if the specified file path has a file extension which would be imported by SageTV into its library, false otherwise
  */
 public static boolean IsImportableFileType (java.lang.String Filename) {
-   return (Boolean) sagex.SageAPI.call("IsImportableFileType", new Object[] {Filename});
+  Object o = sagex.SageAPI.call("IsImportableFileType", new Object[] {Filename});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1145,7 +1295,9 @@ Since:
 6.4
  */
 public static java.lang.String GuessMajorFileType (java.lang.String Filename) {
-   return (java.lang.String) sagex.SageAPI.call("GuessMajorFileType", new Object[] {Filename});
+  Object o = sagex.SageAPI.call("GuessMajorFileType", new Object[] {Filename});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1164,7 +1316,9 @@ Returns:
 an integer status code as described above.
  */
 public static int TestPlaceshifterConnectivity (java.lang.String LocatorID) {
-   return (Integer) sagex.SageAPI.call("TestPlaceshifterConnectivity", new Object[] {LocatorID});
+  Object o = sagex.SageAPI.call("TestPlaceshifterConnectivity", new Object[] {LocatorID});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -1180,7 +1334,7 @@ Since:
 6.0
  */
 public static java.lang.Object[] CreateArray (java.lang.Object Value) {
-   return (java.lang.Object[]) sagex.SageAPI.call("CreateArray", new Object[] {Value});
+  return (java.lang.Object[]) sagex.SageAPI.call("CreateArray", new Object[] {Value});
 }
 
 /**
@@ -1193,7 +1347,7 @@ Since:
 6.2
  */
 public static void SetScrollPosition (float RelativeX, float RelativeY) {
-    sagex.SageAPI.call("SetScrollPosition", new Object[] {RelativeX,RelativeY});
+   sagex.SageAPI.call("SetScrollPosition", new Object[] {RelativeX,RelativeY});
 }
 
 /**
@@ -1203,7 +1357,7 @@ Since:
 6.2
  */
 public static void ClearMenuCache () {
-    sagex.SageAPI.call("ClearMenuCache", (Object[])null);
+   sagex.SageAPI.call("ClearMenuCache", (Object[])null);
 }
 
 /**
@@ -1271,7 +1425,9 @@ Since:
 6.2
  */
 public static boolean Animate (java.lang.String WidgetName, java.lang.String LayerName, java.lang.String AnimationName, long Duration) {
-   return (Boolean) sagex.SageAPI.call("Animate", new Object[] {WidgetName,LayerName,AnimationName,Duration});
+  Object o = sagex.SageAPI.call("Animate", new Object[] {WidgetName,LayerName,AnimationName,Duration});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1294,7 +1450,9 @@ Since:
 6.3
  */
 public static boolean AnimateVariable (java.lang.String WidgetName, java.lang.String LayerName, java.lang.String VarName, java.lang.Object VarValue, java.lang.String AnimationName, long Duration, long StartDelay, boolean Interruptable) {
-   return (Boolean) sagex.SageAPI.call("AnimateVariable", new Object[] {WidgetName,LayerName,VarName,VarValue,AnimationName,Duration,StartDelay,Interruptable});
+  Object o = sagex.SageAPI.call("AnimateVariable", new Object[] {WidgetName,LayerName,VarName,VarValue,AnimationName,Duration,StartDelay,Interruptable});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1317,7 +1475,9 @@ Since:
 6.3
  */
 public static boolean AnimateTransition (java.lang.String SourceWidgetName, java.lang.String TargetWidgetName, java.lang.String LayerName, java.lang.String AnimationName, long Duration, long StartDelay, boolean Interruptable) {
-   return (Boolean) sagex.SageAPI.call("AnimateTransition", new Object[] {SourceWidgetName,TargetWidgetName,LayerName,AnimationName,Duration,StartDelay,Interruptable});
+  Object o = sagex.SageAPI.call("AnimateTransition", new Object[] {SourceWidgetName,TargetWidgetName,LayerName,AnimationName,Duration,StartDelay,Interruptable});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1340,7 +1500,9 @@ Since:
 6.2
  */
 public static boolean AnimateDelayed (java.lang.String WidgetName, java.lang.String LayerName, java.lang.String AnimationName, long Duration, long StartDelay, boolean Interruptable) {
-   return (Boolean) sagex.SageAPI.call("AnimateDelayed", new Object[] {WidgetName,LayerName,AnimationName,Duration,StartDelay,Interruptable});
+  Object o = sagex.SageAPI.call("AnimateDelayed", new Object[] {WidgetName,LayerName,AnimationName,Duration,StartDelay,Interruptable});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1352,7 +1514,7 @@ Since:
 6.2
  */
 public static void SetCoreAnimationsEnabled (boolean Enabled) {
-    sagex.SageAPI.call("SetCoreAnimationsEnabled", new Object[] {Enabled});
+   sagex.SageAPI.call("SetCoreAnimationsEnabled", new Object[] {Enabled});
 }
 
 /**
@@ -1364,7 +1526,9 @@ Since:
 6.2
  */
 public static boolean AreCoreAnimationsEnabled () {
-   return (Boolean) sagex.SageAPI.call("AreCoreAnimationsEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("AreCoreAnimationsEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1383,7 +1547,9 @@ Since:
 6.4
  */
 public static boolean GetUIRefreshLock () {
-   return (Boolean) sagex.SageAPI.call("GetUIRefreshLock", (Object[])null);
+  Object o = sagex.SageAPI.call("GetUIRefreshLock", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1395,7 +1561,9 @@ Since:
 6.4
  */
 public static boolean ReleaseUIRefreshLock () {
-   return (Boolean) sagex.SageAPI.call("ReleaseUIRefreshLock", (Object[])null);
+  Object o = sagex.SageAPI.call("ReleaseUIRefreshLock", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1409,7 +1577,9 @@ Since:
 6.3
  */
 public static java.lang.String CalculateMD5Sum (java.io.File FilePath) {
-   return (java.lang.String) sagex.SageAPI.call("CalculateMD5Sum", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("CalculateMD5Sum", new Object[] {FilePath});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 

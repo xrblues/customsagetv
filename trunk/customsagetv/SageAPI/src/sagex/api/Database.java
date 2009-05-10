@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Database.html'>Database</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -20,7 +20,9 @@ Returns:
 The elements that passed the filter. The type is the same type as the passed in Data.
  */
 public static java.lang.Object FilterByBoolMethod (java.lang.Object Data, java.lang.String Method, boolean MatchValue) {
-   return (java.lang.Object) sagex.SageAPI.call("FilterByBoolMethod", new Object[] {Data,Method,MatchValue});
+  Object o = sagex.SageAPI.call("FilterByBoolMethod", new Object[] {Data,Method,MatchValue});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -38,7 +40,9 @@ Returns:
 The elements that passed the filter. The type is the same type as the passed in Data.
  */
 public static java.lang.Object FilterByMethod (java.lang.Object Data, java.lang.String Method, java.lang.Object MatchValue, boolean MatchedPasses) {
-   return (java.lang.Object) sagex.SageAPI.call("FilterByMethod", new Object[] {Data,Method,MatchValue,MatchedPasses});
+  Object o = sagex.SageAPI.call("FilterByMethod", new Object[] {Data,Method,MatchValue,MatchedPasses});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -62,7 +66,9 @@ Since:
 5.1
  */
 public static java.lang.Object FilterByMethodRegex (java.lang.Object Data, java.lang.String Method, java.util.regex.Pattern RegexPattern, boolean MatchedPasses, boolean CompleteMatch) {
-   return (java.lang.Object) sagex.SageAPI.call("FilterByMethodRegex", new Object[] {Data,Method,RegexPattern,MatchedPasses,CompleteMatch});
+  Object o = sagex.SageAPI.call("FilterByMethodRegex", new Object[] {Data,Method,RegexPattern,MatchedPasses,CompleteMatch});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -81,7 +87,9 @@ Returns:
 The elements that passed the filter. The type is the same type as the passed in Data.
  */
 public static java.lang.Object FilterByRange (java.lang.Object Data, java.lang.String Method, java.lang.Comparable LowerBoundInclusive, java.lang.Comparable UpperBoundExclusive, boolean KeepWithinBounds) {
-   return (java.lang.Object) sagex.SageAPI.call("FilterByRange", new Object[] {Data,Method,LowerBoundInclusive,UpperBoundExclusive,KeepWithinBounds});
+  Object o = sagex.SageAPI.call("FilterByRange", new Object[] {Data,Method,LowerBoundInclusive,UpperBoundExclusive,KeepWithinBounds});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -98,7 +106,9 @@ Returns:
 a java.util.Map keyed with the values obtained from executing Method on the Data and with values that are Vectors of elements who's keys match
  */
 public static java.util.Map GroupByMethod (java.lang.Object Data, java.lang.String Method) {
-   return (java.util.Map) sagex.SageAPI.call("GroupByMethod", new Object[] {Data,Method});
+  Object o = sagex.SageAPI.call("GroupByMethod", new Object[] {Data,Method});
+  if (o!=null) return (java.util.Map) o;
+  return null;
 }
 
 /**
@@ -120,7 +130,9 @@ Since:
 5.1
  */
 public static java.util.Map GroupByArrayMethod (java.lang.Object Data, java.lang.String Method) {
-   return (java.util.Map) sagex.SageAPI.call("GroupByArrayMethod", new Object[] {Data,Method});
+  Object o = sagex.SageAPI.call("GroupByArrayMethod", new Object[] {Data,Method});
+  if (o!=null) return (java.util.Map) o;
+  return null;
 }
 
 /**
@@ -140,7 +152,9 @@ Returns:
 the sorted data, for passed in Maps this'll be a sorted Map; for Collections or arrays this will be an array of the
  */
 public static java.lang.Object Sort (java.lang.Object Data, boolean Descending, java.lang.Object SortTechnique) {
-   return (java.lang.Object) sagex.SageAPI.call("Sort", new Object[] {Data,Descending,SortTechnique});
+  Object o = sagex.SageAPI.call("Sort", new Object[] {Data,Descending,SortTechnique});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -160,7 +174,9 @@ Since:
 5.1
  */
 public static java.lang.Object SortLexical (java.lang.Object Data, boolean Descending, java.lang.String SortByMethod) {
-   return (java.lang.Object) sagex.SageAPI.call("SortLexical", new Object[] {Data,Descending,SortByMethod});
+  Object o = sagex.SageAPI.call("SortLexical", new Object[] {Data,Descending,SortByMethod});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -176,7 +192,7 @@ Returns:
 the Airings on the specified channel within the specified time window
  */
 public static Object[] GetAiringsOnChannelAtTime (Object Channel, long StartTime, long EndTime, boolean MustStartDuringTime) {
-   return (Object[]) sagex.SageAPI.call("GetAiringsOnChannelAtTime", new Object[] {Channel,StartTime,EndTime,MustStartDuringTime});
+  return (Object[]) sagex.SageAPI.call("GetAiringsOnChannelAtTime", new Object[] {Channel,StartTime,EndTime,MustStartDuringTime});
 }
 
 /**
@@ -191,7 +207,7 @@ Returns:
 the Airings on all the viewable channels within the specified time window
  */
 public static Object[] GetAiringsOnViewableChannelsAtTime (long StartTime, long EndTime, boolean MustStartDuringTime) {
-   return (Object[]) sagex.SageAPI.call("GetAiringsOnViewableChannelsAtTime", new Object[] {StartTime,EndTime,MustStartDuringTime});
+  return (Object[]) sagex.SageAPI.call("GetAiringsOnViewableChannelsAtTime", new Object[] {StartTime,EndTime,MustStartDuringTime});
 }
 
 /**
@@ -206,7 +222,7 @@ Returns:
 an array of Airing objects that reference content that includes the specified person, music is not returned
  */
 public static Object[] GetAllNonMusicWithPerson (java.lang.String Person) {
-   return (Object[]) sagex.SageAPI.call("GetAllNonMusicWithPerson", new Object[] {Person});
+  return (Object[]) sagex.SageAPI.call("GetAllNonMusicWithPerson", new Object[] {Person});
 }
 
 /**
@@ -220,7 +236,7 @@ Returns:
 an array of Airing objects that reference content with the specified title, music is not returned
  */
 public static Object[] GetAllNonMusicWithTitle (java.lang.String Title) {
-   return (Object[]) sagex.SageAPI.call("GetAllNonMusicWithTitle", new Object[] {Title});
+  return (Object[]) sagex.SageAPI.call("GetAllNonMusicWithTitle", new Object[] {Title});
 }
 
 /**
@@ -235,7 +251,7 @@ Returns:
 an array of Airing objects that reference content that includes the specified person, music is not returned
  */
 public static Object[] SearchByPerson (java.lang.String SearchString) {
-   return (Object[]) sagex.SageAPI.call("SearchByPerson", new Object[] {SearchString});
+  return (Object[]) sagex.SageAPI.call("SearchByPerson", new Object[] {SearchString});
 }
 
 /**
@@ -252,7 +268,7 @@ Since:
 5.1
  */
 public static Object[] SearchByPerson (java.lang.String SearchString, java.lang.String MediaMask) {
-   return (Object[]) sagex.SageAPI.call("SearchByPerson", new Object[] {SearchString,MediaMask});
+  return (Object[]) sagex.SageAPI.call("SearchByPerson", new Object[] {SearchString,MediaMask});
 }
 
 /**
@@ -265,7 +281,7 @@ Returns:
 an array of Airings who's content has the specified search string in its description or episode name
  */
 public static Object[] SearchByText (java.lang.String SearchString) {
-   return (Object[]) sagex.SageAPI.call("SearchByText", new Object[] {SearchString});
+  return (Object[]) sagex.SageAPI.call("SearchByText", new Object[] {SearchString});
 }
 
 /**
@@ -282,7 +298,7 @@ Since:
 5.1
  */
 public static Object[] SearchByText (java.lang.String SearchString, java.lang.String MediaMask) {
-   return (Object[]) sagex.SageAPI.call("SearchByText", new Object[] {SearchString,MediaMask});
+  return (Object[]) sagex.SageAPI.call("SearchByText", new Object[] {SearchString,MediaMask});
 }
 
 /**
@@ -296,7 +312,7 @@ Returns:
 an array of Airing objects that reference content with the specified title, music is not returned
  */
 public static Object[] SearchByTitle (java.lang.String SearchString) {
-   return (Object[]) sagex.SageAPI.call("SearchByTitle", new Object[] {SearchString});
+  return (Object[]) sagex.SageAPI.call("SearchByTitle", new Object[] {SearchString});
 }
 
 /**
@@ -312,7 +328,7 @@ Since:
 5.1
  */
 public static Object[] SearchByTitle (java.lang.String SearchString, java.lang.String MediaMask) {
-   return (Object[]) sagex.SageAPI.call("SearchByTitle", new Object[] {SearchString,MediaMask});
+  return (Object[]) sagex.SageAPI.call("SearchByTitle", new Object[] {SearchString,MediaMask});
 }
 
 /**
@@ -325,7 +341,7 @@ Returns:
 an array of Strings which represent all of the people in the database that matched the search
  */
 public static java.lang.String[] SearchForPeople (java.lang.String SearchString) {
-   return (java.lang.String[]) sagex.SageAPI.call("SearchForPeople", new Object[] {SearchString});
+  return (java.lang.String[]) sagex.SageAPI.call("SearchForPeople", new Object[] {SearchString});
 }
 
 /**
@@ -341,7 +357,7 @@ Since:
 5.1
  */
 public static java.lang.String[] SearchForPeople (java.lang.String SearchString, java.lang.String MediaMask) {
-   return (java.lang.String[]) sagex.SageAPI.call("SearchForPeople", new Object[] {SearchString,MediaMask});
+  return (java.lang.String[]) sagex.SageAPI.call("SearchForPeople", new Object[] {SearchString,MediaMask});
 }
 
 /**
@@ -354,7 +370,7 @@ Returns:
 an array of Strings which represent all of the titles in the database that matched the search
  */
 public static java.lang.String[] SearchForTitles (java.lang.String SearchString) {
-   return (java.lang.String[]) sagex.SageAPI.call("SearchForTitles", new Object[] {SearchString});
+  return (java.lang.String[]) sagex.SageAPI.call("SearchForTitles", new Object[] {SearchString});
 }
 
 /**
@@ -370,7 +386,7 @@ Since:
 5.1
  */
 public static java.lang.String[] SearchForTitles (java.lang.String SearchString, java.lang.String MediaMask) {
-   return (java.lang.String[]) sagex.SageAPI.call("SearchForTitles", new Object[] {SearchString,MediaMask});
+  return (java.lang.String[]) sagex.SageAPI.call("SearchForTitles", new Object[] {SearchString,MediaMask});
 }
 
 /**
@@ -384,7 +400,7 @@ Since:
 5.1
  */
 public static java.lang.String[] SearchForPeopleRegex (java.util.regex.Pattern RegexPattern) {
-   return (java.lang.String[]) sagex.SageAPI.call("SearchForPeopleRegex", new Object[] {RegexPattern});
+  return (java.lang.String[]) sagex.SageAPI.call("SearchForPeopleRegex", new Object[] {RegexPattern});
 }
 
 /**
@@ -400,7 +416,7 @@ Since:
 5.1
  */
 public static java.lang.String[] SearchForPeopleRegex (java.util.regex.Pattern RegexPattern, java.lang.String MediaMask) {
-   return (java.lang.String[]) sagex.SageAPI.call("SearchForPeopleRegex", new Object[] {RegexPattern,MediaMask});
+  return (java.lang.String[]) sagex.SageAPI.call("SearchForPeopleRegex", new Object[] {RegexPattern,MediaMask});
 }
 
 /**
@@ -414,7 +430,7 @@ Since:
 5.1
  */
 public static java.lang.String[] SearchForTitlesRegex (java.util.regex.Pattern RegexPattern) {
-   return (java.lang.String[]) sagex.SageAPI.call("SearchForTitlesRegex", new Object[] {RegexPattern});
+  return (java.lang.String[]) sagex.SageAPI.call("SearchForTitlesRegex", new Object[] {RegexPattern});
 }
 
 /**
@@ -430,7 +446,7 @@ Since:
 5.1
  */
 public static java.lang.String[] SearchForTitlesRegex (java.util.regex.Pattern RegexPattern, java.lang.String MediaMask) {
-   return (java.lang.String[]) sagex.SageAPI.call("SearchForTitlesRegex", new Object[] {RegexPattern,MediaMask});
+  return (java.lang.String[]) sagex.SageAPI.call("SearchForTitlesRegex", new Object[] {RegexPattern,MediaMask});
 }
 
 /**
@@ -447,7 +463,9 @@ Returns:
 a java.util.Vector which is a union of all of the elements in the passed in arguments
  */
 public static java.util.Vector DataUnion (java.lang.Object DataSet1, java.lang.Object DataSet2) {
-   return (java.util.Vector) sagex.SageAPI.call("DataUnion", new Object[] {DataSet1,DataSet2});
+  Object o = sagex.SageAPI.call("DataUnion", new Object[] {DataSet1,DataSet2});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -464,7 +482,9 @@ Returns:
 a java.util.Vector which is an intersection of all of the elements in the passed in arguments
  */
 public static java.util.Vector DataIntersection (java.lang.Object DataSet1, java.lang.Object DataSet2) {
-   return (java.util.Vector) sagex.SageAPI.call("DataIntersection", new Object[] {DataSet1,DataSet2});
+  Object o = sagex.SageAPI.call("DataIntersection", new Object[] {DataSet1,DataSet2});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -486,7 +506,7 @@ Returns:
 an array of Airings which matches the search criteria
  */
 public static Object[] SearchSelectedFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
-   return (Object[]) sagex.SageAPI.call("SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+  return (Object[]) sagex.SageAPI.call("SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
 }
 
 /**
@@ -512,7 +532,7 @@ Since:
 5.1
  */
 public static Object[] SearchSelectedFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
-   return (Object[]) sagex.SageAPI.call("SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+  return (Object[]) sagex.SageAPI.call("SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
 }
 
 /**
@@ -538,7 +558,7 @@ Since:
 4.1
  */
 public static Object[] SearchSelectedExactFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
-   return (Object[]) sagex.SageAPI.call("SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+  return (Object[]) sagex.SageAPI.call("SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
 }
 
 /**
@@ -566,7 +586,7 @@ Since:
 5.1
  */
 public static Object[] SearchSelectedExactFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
-   return (Object[]) sagex.SageAPI.call("SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+  return (Object[]) sagex.SageAPI.call("SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
 }
 
 /**
@@ -590,7 +610,7 @@ Since:
 5.1
  */
 public static Object[] SearchSelectedFieldsRegex (java.util.regex.Pattern RegexPattern, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
-   return (Object[]) sagex.SageAPI.call("SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+  return (Object[]) sagex.SageAPI.call("SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
 }
 
 /**
@@ -616,7 +636,7 @@ Since:
 5.1
  */
 public static Object[] SearchSelectedFieldsRegex (java.util.regex.Pattern RegexPattern, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
-   return (Object[]) sagex.SageAPI.call("SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+  return (Object[]) sagex.SageAPI.call("SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
 }
 
 /**
@@ -628,7 +648,7 @@ Returns:
 an array of Channel objects that are on the specified Lineup
  */
 public static Object[] GetChannelsOnLineup (java.lang.String Lineup) {
-   return (Object[]) sagex.SageAPI.call("GetChannelsOnLineup", new Object[] {Lineup});
+  return (Object[]) sagex.SageAPI.call("GetChannelsOnLineup", new Object[] {Lineup});
 }
 
 /**
@@ -638,7 +658,7 @@ Returns:
 a list of all of the titles that are in the database
  */
 public static java.lang.String[] GetAllTitles () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAllTitles", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetAllTitles", (Object[])null);
 }
 
 /**
@@ -653,7 +673,7 @@ Since:
 5.1
  */
 public static java.lang.String[] GetAllTitles (java.lang.String MediaMask) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAllTitles", new Object[] {MediaMask});
+  return (java.lang.String[]) sagex.SageAPI.call("GetAllTitles", new Object[] {MediaMask});
 }
 
 /**
@@ -663,7 +683,7 @@ Returns:
 a list of all of the names of people in the database
  */
 public static java.lang.String[] GetAllPeople () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAllPeople", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetAllPeople", (Object[])null);
 }
 
 /**
@@ -678,7 +698,7 @@ Since:
 5.1
  */
 public static java.lang.String[] GetAllPeople (java.lang.String MediaMask) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAllPeople", new Object[] {MediaMask});
+  return (java.lang.String[]) sagex.SageAPI.call("GetAllPeople", new Object[] {MediaMask});
 }
 
 /**
@@ -688,7 +708,7 @@ Returns:
 all of the names of categories that are in the database
  */
 public static java.lang.String[] GetAllCategories () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAllCategories", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetAllCategories", (Object[])null);
 }
 
 /**
@@ -703,7 +723,7 @@ Since:
 5.1
  */
 public static java.lang.String[] GetAllCategories (java.lang.String MediaMask) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAllCategories", new Object[] {MediaMask});
+  return (java.lang.String[]) sagex.SageAPI.call("GetAllCategories", new Object[] {MediaMask});
 }
 
 /**
@@ -718,7 +738,9 @@ Since:
 5.1
  */
 public static long GetDatabaseLastModifiedTime (java.lang.String MediaMask) {
-   return (Long) sagex.SageAPI.call("GetDatabaseLastModifiedTime", new Object[] {MediaMask});
+  Object o = sagex.SageAPI.call("GetDatabaseLastModifiedTime", new Object[] {MediaMask});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -736,7 +758,9 @@ Since:
 6.4
  */
 public static java.lang.Object GetFilesWithImportPrefix (java.lang.String MediaMask, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
-   return (java.lang.Object) sagex.SageAPI.call("GetFilesWithImportPrefix", new Object[] {MediaMask,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
+  Object o = sagex.SageAPI.call("GetFilesWithImportPrefix", new Object[] {MediaMask,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -754,7 +778,9 @@ Since:
 6.4
  */
 public static java.lang.Object GetMediaFilesWithImportPrefix (java.lang.String MediaMask, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
-   return (java.lang.Object) sagex.SageAPI.call("GetMediaFilesWithImportPrefix", new Object[] {MediaMask,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
+  Object o = sagex.SageAPI.call("GetMediaFilesWithImportPrefix", new Object[] {MediaMask,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -766,7 +792,9 @@ Since:
 6.5
  */
 public static boolean IsDatabaseMemoryMaxed () {
-   return (Boolean) sagex.SageAPI.call("IsDatabaseMemoryMaxed", (Object[])null);
+  Object o = sagex.SageAPI.call("IsDatabaseMemoryMaxed", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 

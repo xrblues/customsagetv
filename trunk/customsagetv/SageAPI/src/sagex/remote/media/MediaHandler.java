@@ -102,7 +102,7 @@ public class MediaHandler implements SageHandler {
 			OutputStream os = resp.getOutputStream();
 			copyStream(new FileInputStream(file), os);
 			os.flush();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			resp.sendError(404, "MediaFile Not Found: " + mediaFileId);
 		}
 	}

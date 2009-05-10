@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPI.html'>FavoriteAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -16,7 +16,9 @@ Returns:
 true if this Favorite is configured to record both first runs AND reruns, false otherwise
  */
 public static boolean IsFirstRunsAndReRuns (Object Favorite) {
-   return (Boolean) sagex.SageAPI.call("IsFirstRunsAndReRuns", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("IsFirstRunsAndReRuns", new Object[] {Favorite});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -28,7 +30,9 @@ Returns:
 true if this Favorite is configured to record first runs only, false otherwise
  */
 public static boolean IsFirstRunsOnly (Object Favorite) {
-   return (Boolean) sagex.SageAPI.call("IsFirstRunsOnly", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("IsFirstRunsOnly", new Object[] {Favorite});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -40,7 +44,9 @@ Returns:
 true if this Favorite is configured to record reruns only, false otherwise
  */
 public static boolean IsReRunsOnly (Object Favorite) {
-   return (Boolean) sagex.SageAPI.call("IsReRunsOnly", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("IsReRunsOnly", new Object[] {Favorite});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -52,7 +58,9 @@ Returns:
 true if this Favorite is configured to record first runs, false otherwise
  */
 public static boolean IsFirstRuns (Object Favorite) {
-   return (Boolean) sagex.SageAPI.call("IsFirstRuns", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("IsFirstRuns", new Object[] {Favorite});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -64,7 +72,9 @@ Returns:
 true if this Favorite is configured to record reruns, false otherwise
  */
 public static boolean IsReRuns (Object Favorite) {
-   return (Boolean) sagex.SageAPI.call("IsReRuns", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("IsReRuns", new Object[] {Favorite});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -78,7 +88,9 @@ Returns:
 true if this Favorite is configured for auto delete, false otherwise
  */
 public static boolean IsAutoDelete (Object Favorite) {
-   return (Boolean) sagex.SageAPI.call("IsAutoDelete", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("IsAutoDelete", new Object[] {Favorite});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -93,7 +105,9 @@ Returns:
 the maximum number of recordings SageTV should keep on disk of this Favorite, 0 if it is unlimited
  */
 public static int GetKeepAtMost (Object Favorite) {
-   return (Integer) sagex.SageAPI.call("GetKeepAtMost", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetKeepAtMost", new Object[] {Favorite});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -105,7 +119,9 @@ Returns:
 a descriptive string for this Favorite
  */
 public static java.lang.String GetFavoriteDescription (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteDescription", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteDescription", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -117,7 +133,9 @@ Returns:
 the title that an Airing must match to be included in this Favorite, returns the empty string if the title isn't a field that needs to match
  */
 public static java.lang.String GetFavoriteTitle (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteTitle", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteTitle", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -129,7 +147,9 @@ Returns:
 the category that an Airing must match to be included in this Favorite, returns the empty string if category isn't a field that needs to match
  */
 public static java.lang.String GetFavoriteCategory (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteCategory", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteCategory", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -141,7 +161,9 @@ Returns:
 the subcategory that an Airing must match to be included in this Favorite, returns the empty string if subcategory isn't a field that needs to match
  */
 public static java.lang.String GetFavoriteSubCategory (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteSubCategory", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteSubCategory", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -153,7 +175,9 @@ Returns:
 the person that an Airing must have to be included in this Favorite, returns the empty string if person isn't a field that needs to match
  */
 public static java.lang.String GetFavoritePerson (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoritePerson", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoritePerson", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -165,7 +189,9 @@ Returns:
 the rating that an Airing must match to be included in this Favorite, returns the empty string if rating isn't a field that needs to match
  */
 public static java.lang.String GetFavoriteRated (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteRated", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteRated", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -177,7 +203,9 @@ Returns:
 the role that the favorite person for an Airing must have to be included in this Favorite, returns the empty string if role doesn't matter
  */
 public static java.lang.String GetFavoritePersonRole (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoritePersonRole", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoritePersonRole", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -189,7 +217,9 @@ Returns:
 the year that an Airing must match to be included in this Favorite, returns the empty string if year isn't a field that needs to match
  */
 public static java.lang.String GetFavoriteYear (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteYear", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteYear", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -201,7 +231,9 @@ Returns:
 the parental rating that an Airing must match to be included in this Favorite, returns the empty string if parental rating isn't a field that needs to match
  */
 public static java.lang.String GetFavoriteParentalRating (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteParentalRating", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteParentalRating", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -213,7 +245,9 @@ Returns:
 the channel name that an Airing must be on to be included in this Favorite, returns the empty string if channel doesn't matter; for mult-channel favorites this will be a semicolon or comma-delimited list of channel names
  */
 public static java.lang.String GetFavoriteChannel (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteChannel", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteChannel", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -229,7 +263,9 @@ Returns:
 the keyword that an Airing must match to be included in this Favorite, returns the empty string if keyword doesn't matter
  */
 public static java.lang.String GetFavoriteKeyword (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteKeyword", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteKeyword", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -241,7 +277,9 @@ Returns:
 the network name that an Airing must be on to be included in this Favorite, returns the empty string if network doesn't matter
  */
 public static java.lang.String GetFavoriteNetwork (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteNetwork", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteNetwork", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -253,7 +291,9 @@ Returns:
 the timeslot that an Airing must be in to be included in this Favorite, returns the empty string if timeslot doesn't matter
  */
 public static java.lang.String GetFavoriteTimeslot (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteTimeslot", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteTimeslot", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -265,7 +305,9 @@ Returns:
 the amount of time any recording for this Favorite should start before the actual Airing begins, in milliseconds
  */
 public static long GetStartPadding (Object Favorite) {
-   return (Long) sagex.SageAPI.call("GetStartPadding", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetStartPadding", new Object[] {Favorite});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -277,7 +319,9 @@ Returns:
 the amount of time any recording for this Favorite should stop after the actual Airing ends, in milliseconds
  */
 public static long GetStopPadding (Object Favorite) {
-   return (Long) sagex.SageAPI.call("GetStopPadding", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetStopPadding", new Object[] {Favorite});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -289,7 +333,9 @@ Returns:
 the name of the recording quality that should be used when recording this Favorite, the empty string if the default recording quality should be used
  */
 public static java.lang.String GetFavoriteQuality (Object Favorite) {
-   return (java.lang.String) sagex.SageAPI.call("GetFavoriteQuality", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteQuality", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -300,7 +346,7 @@ Favorite- the Favorite object
 StartPadding- the amount of time any recording for this Favorite should start before the actual Airing begins, in milliseconds
  */
 public static void SetStartPadding (Object Favorite, long StartPadding) {
-    sagex.SageAPI.call("SetStartPadding", new Object[] {Favorite,StartPadding});
+   sagex.SageAPI.call("SetStartPadding", new Object[] {Favorite,StartPadding});
 }
 
 /**
@@ -311,7 +357,7 @@ Favorite- the Favorite object
 StopPadding- the amount of time any recording for this Favorite should stop after the actual Airing ends, in milliseconds
  */
 public static void SetStopPadding (Object Favorite, long StopPadding) {
-    sagex.SageAPI.call("SetStopPadding", new Object[] {Favorite,StopPadding});
+   sagex.SageAPI.call("SetStopPadding", new Object[] {Favorite,StopPadding});
 }
 
 /**
@@ -322,7 +368,7 @@ Favorite- the Favorite object
 Quality- the name of the recording quality that should be used when recording this Favorite, the empty string if the default recording quality should be used
  */
 public static void SetFavoriteQuality (Object Favorite, java.lang.String Quality) {
-    sagex.SageAPI.call("SetFavoriteQuality", new Object[] {Favorite,Quality});
+   sagex.SageAPI.call("SetFavoriteQuality", new Object[] {Favorite,Quality});
 }
 
 /**
@@ -334,7 +380,7 @@ HigherPriorityFavorite- the Favorite object that you wish to make a higher prior
 LowerPriorityFavorite- the Favorite object that you wish to make a lower priority than the other specified Favorite object
  */
 public static void CreateFavoritePriority (Object HigherPriorityFavorite, Object LowerPriorityFavorite) {
-    sagex.SageAPI.call("CreateFavoritePriority", new Object[] {HigherPriorityFavorite,LowerPriorityFavorite});
+   sagex.SageAPI.call("CreateFavoritePriority", new Object[] {HigherPriorityFavorite,LowerPriorityFavorite});
 }
 
 /**
@@ -346,7 +392,7 @@ ManualRecordAiring- the manual record Airing object to confirm the recording pri
 FavoriteAiring- the Airing for the Favorite that won't be recorded due to the manual record
  */
 public static void ConfirmManualRecordOverFavoritePriority (Object ManualRecordAiring, Object FavoriteAiring) {
-    sagex.SageAPI.call("ConfirmManualRecordOverFavoritePriority", new Object[] {ManualRecordAiring,FavoriteAiring});
+   sagex.SageAPI.call("ConfirmManualRecordOverFavoritePriority", new Object[] {ManualRecordAiring,FavoriteAiring});
 }
 
 /**
@@ -359,7 +405,7 @@ Favorite- the Favorite object
 DontAutoDelete- true if this Favorite is configured to NOT auto delete, false otherwise
  */
 public static void SetDontAutodelete (Object Favorite, boolean DontAutoDelete) {
-    sagex.SageAPI.call("SetDontAutodelete", new Object[] {Favorite,DontAutoDelete});
+   sagex.SageAPI.call("SetDontAutodelete", new Object[] {Favorite,DontAutoDelete});
 }
 
 /**
@@ -373,7 +419,7 @@ Favorite- the Favorite object
 NumberToKeep- the maximum number of recordings SageTV should keep on disk of this Favorite, 0 if it is unlimited
  */
 public static void SetKeepAtMost (Object Favorite, int NumberToKeep) {
-    sagex.SageAPI.call("SetKeepAtMost", new Object[] {Favorite,NumberToKeep});
+   sagex.SageAPI.call("SetKeepAtMost", new Object[] {Favorite,NumberToKeep});
 }
 
 /**
@@ -386,7 +432,7 @@ FirstRuns- true if first runs should be recorded with this favorite, false other
 ReRuns- true if rerusn should be recorded with this Favorite, false otherwise
  */
 public static void SetRunStatus (Object Favorite, boolean FirstRuns, boolean ReRuns) {
-    sagex.SageAPI.call("SetRunStatus", new Object[] {Favorite,FirstRuns,ReRuns});
+   sagex.SageAPI.call("SetRunStatus", new Object[] {Favorite,FirstRuns,ReRuns});
 }
 
 /**
@@ -397,7 +443,7 @@ Favorite- the Favorite object
 Title- the title that an Airing must match to be included in this Favorite, use the empty string or null if the title isn't a field that needs to match
  */
 public static void SetFavoriteTitle (Object Favorite, java.lang.String Title) {
-    sagex.SageAPI.call("SetFavoriteTitle", new Object[] {Favorite,Title});
+   sagex.SageAPI.call("SetFavoriteTitle", new Object[] {Favorite,Title});
 }
 
 /**
@@ -409,7 +455,7 @@ Category- the category that an Airing must match to be included in this Favorite
 SubCategory- the category that an Airing must match to be included in this Favorite, use the empty string the subcategory doesn't need to match
  */
 public static void SetFavoriteCategories (Object Favorite, java.lang.String Category, java.lang.String SubCategory) {
-    sagex.SageAPI.call("SetFavoriteCategories", new Object[] {Favorite,Category,SubCategory});
+   sagex.SageAPI.call("SetFavoriteCategories", new Object[] {Favorite,Category,SubCategory});
 }
 
 /**
@@ -421,7 +467,7 @@ Person- the name of the person that needs to be included in an Airing for it to 
 Role- the name of the role the corresponding person needs to be in, or the emptry string or null if role doesn't matter
  */
 public static void SetFavoritePerson (Object Favorite, java.lang.String Person, java.lang.String Role) {
-    sagex.SageAPI.call("SetFavoritePerson", new Object[] {Favorite,Person,Role});
+   sagex.SageAPI.call("SetFavoritePerson", new Object[] {Favorite,Person,Role});
 }
 
 /**
@@ -432,7 +478,7 @@ Favorite- the Favorite object
 Rated- the rating that an Airing must match to be included in this Favorite, use the empty string or null if rating isn't a field that needs to match
  */
 public static void SetFavoriteRated (Object Favorite, java.lang.String Rated) {
-    sagex.SageAPI.call("SetFavoriteRated", new Object[] {Favorite,Rated});
+   sagex.SageAPI.call("SetFavoriteRated", new Object[] {Favorite,Rated});
 }
 
 /**
@@ -443,7 +489,7 @@ Favorite- the Favorite object
 Year- the year that an Airing must match to be included in this Favorite, use the empty string or null if year isn't a field that needs to match
  */
 public static void SetFavoriteYear (Object Favorite, java.lang.String Year) {
-    sagex.SageAPI.call("SetFavoriteYear", new Object[] {Favorite,Year});
+   sagex.SageAPI.call("SetFavoriteYear", new Object[] {Favorite,Year});
 }
 
 /**
@@ -454,7 +500,7 @@ Favorite- the Favorite object
 ParentalRating- the parental rating that an Airing must match to be included in this Favorite, use the empty string or null if parental rating isn't a field that needs to match
  */
 public static void SetFavoriteParentalRating (Object Favorite, java.lang.String ParentalRating) {
-    sagex.SageAPI.call("SetFavoriteParentalRating", new Object[] {Favorite,ParentalRating});
+   sagex.SageAPI.call("SetFavoriteParentalRating", new Object[] {Favorite,ParentalRating});
 }
 
 /**
@@ -469,7 +515,7 @@ Favorite- the Favorite object
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
  */
 public static void SetFavoriteKeyword (Object Favorite, java.lang.String Keyword) {
-    sagex.SageAPI.call("SetFavoriteKeyword", new Object[] {Favorite,Keyword});
+   sagex.SageAPI.call("SetFavoriteKeyword", new Object[] {Favorite,Keyword});
 }
 
 /**
@@ -480,7 +526,7 @@ Favorite- the Favorite object
 Channel- the channel name (String) or Channel object (Channel) that an Airing must be on to be included in this Favorite, use null or the empty string if channel doesn't matter; you may also use a semicolon or comma-delimited list of channel names for mult-channel favorites
  */
 public static void SetFavoriteChannel (Object Favorite, java.lang.Object Channel) {
-    sagex.SageAPI.call("SetFavoriteChannel", new Object[] {Favorite,Channel});
+   sagex.SageAPI.call("SetFavoriteChannel", new Object[] {Favorite,Channel});
 }
 
 /**
@@ -491,7 +537,7 @@ Favorite- the Favorite object
 Network- the network name that an Airing must be on to be included in this Favorite, use null or the empty string if network doesn't matter
  */
 public static void SetFavoriteNetwork (Object Favorite, java.lang.String Network) {
-    sagex.SageAPI.call("SetFavoriteNetwork", new Object[] {Favorite,Network});
+   sagex.SageAPI.call("SetFavoriteNetwork", new Object[] {Favorite,Network});
 }
 
 /**
@@ -504,7 +550,7 @@ Timeslot- the timeslot that an Airing must be in to be included in this Favorite
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
  */
 public static void SetFavoriteTimeslot (Object Favorite, java.lang.String Timeslot) {
-    sagex.SageAPI.call("SetFavoriteTimeslot", new Object[] {Favorite,Timeslot});
+   sagex.SageAPI.call("SetFavoriteTimeslot", new Object[] {Favorite,Timeslot});
 }
 
 /**
@@ -516,7 +562,9 @@ Returns:
 a Favorite object that matches this Airing or null if there is no such Favorite
  */
 public static Object GetFavoriteForAiring (Object Airing) {
-   return (Object) sagex.SageAPI.call("GetFavoriteForAiring", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetFavoriteForAiring", new Object[] {Airing});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -529,7 +577,9 @@ Returns:
 true if the specified Favorite matches the specified Airing, false otherwise
  */
 public static boolean DoesFavoriteMatchAiring (Object Favorite, Object Airing) {
-   return (Boolean) sagex.SageAPI.call("DoesFavoriteMatchAiring", new Object[] {Favorite,Airing});
+  Object o = sagex.SageAPI.call("DoesFavoriteMatchAiring", new Object[] {Favorite,Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -541,7 +591,9 @@ Returns:
 true if the argument is an instance of a Favorite object, false otherwise
  */
 public static boolean IsFavoriteObject (java.lang.Object Favorite) {
-   return (Boolean) sagex.SageAPI.call("IsFavoriteObject", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("IsFavoriteObject", new Object[] {Favorite});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -570,7 +622,9 @@ Returns:
 the updated Favorite object
  */
 public static Object UpdateFavorite (Object Favorite, java.lang.String Title, boolean FirstRuns, boolean ReRuns, java.lang.String Category, java.lang.String SubCategory, java.lang.String Person, java.lang.String RoleForPerson, java.lang.String Rated, java.lang.String Year, java.lang.String ParentalRating, java.lang.String Network, java.lang.String ChannelCallSign, java.lang.String Timeslot, java.lang.String Keyword) {
-   return (Object) sagex.SageAPI.call("UpdateFavorite", new Object[] {Favorite,Title,FirstRuns,ReRuns,Category,SubCategory,Person,RoleForPerson,Rated,Year,ParentalRating,Network,ChannelCallSign,Timeslot,Keyword});
+  Object o = sagex.SageAPI.call("UpdateFavorite", new Object[] {Favorite,Title,FirstRuns,ReRuns,Category,SubCategory,Person,RoleForPerson,Rated,Year,ParentalRating,Network,ChannelCallSign,Timeslot,Keyword});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -582,7 +636,7 @@ Returns:
 the list of Airings in the DB that match this Favorite
  */
 public static Object[] GetFavoriteAirings (Object Favorite) {
-   return (Object[]) sagex.SageAPI.call("GetFavoriteAirings", new Object[] {Favorite});
+  return (Object[]) sagex.SageAPI.call("GetFavoriteAirings", new Object[] {Favorite});
 }
 
 /**
@@ -595,7 +649,9 @@ Returns:
 the unique ID for this Favorite
  */
 public static int GetFavoriteID (Object Favorite) {
-   return (Integer) sagex.SageAPI.call("GetFavoriteID", new Object[] {Favorite});
+  Object o = sagex.SageAPI.call("GetFavoriteID", new Object[] {Favorite});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -608,7 +664,9 @@ Returns:
 the Favorite object with the specified ID if it exists, null otherwise
  */
 public static Object GetFavoriteForID (int FavoriteID) {
-   return (Object) sagex.SageAPI.call("GetFavoriteForID", new Object[] {FavoriteID});
+  Object o = sagex.SageAPI.call("GetFavoriteForID", new Object[] {FavoriteID});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -618,7 +676,7 @@ Returns:
 all of the Favorite objects in the database
  */
 public static Object[] GetFavorites () {
-   return (Object[]) sagex.SageAPI.call("GetFavorites", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetFavorites", (Object[])null);
 }
 
 /**
@@ -628,7 +686,7 @@ Parameters:
 Favorite- the Favorite object to remove
  */
 public static void RemoveFavorite (Object Favorite) {
-    sagex.SageAPI.call("RemoveFavorite", new Object[] {Favorite});
+   sagex.SageAPI.call("RemoveFavorite", new Object[] {Favorite});
 }
 
 /**
@@ -655,7 +713,9 @@ Returns:
 the newly created Favorite object
  */
 public static Object AddFavorite (java.lang.String Title, boolean FirstRuns, boolean ReRuns, java.lang.String Category, java.lang.String SubCategory, java.lang.String Person, java.lang.String RoleForPerson, java.lang.String Rated, java.lang.String Year, java.lang.String ParentalRating, java.lang.String Network, java.lang.String ChannelCallSign, java.lang.String Timeslot, java.lang.String Keyword) {
-   return (Object) sagex.SageAPI.call("AddFavorite", new Object[] {Title,FirstRuns,ReRuns,Category,SubCategory,Person,RoleForPerson,Rated,Year,ParentalRating,Network,ChannelCallSign,Timeslot,Keyword});
+  Object o = sagex.SageAPI.call("AddFavorite", new Object[] {Title,FirstRuns,ReRuns,Category,SubCategory,Person,RoleForPerson,Rated,Year,ParentalRating,Network,ChannelCallSign,Timeslot,Keyword});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 

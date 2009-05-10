@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.DatagramPacket;
 import java.util.HashMap;
@@ -133,7 +134,7 @@ public class SagexServlet extends HttpServlet {
 							if (props.containsKey("jetty.port")) {
 								jettyPort = props.getProperty("jetty.port");
 							}
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							System.out.println("Wasn't able to laod the jetty properties");
 						}
 					}
@@ -143,10 +144,18 @@ public class SagexServlet extends HttpServlet {
 					serverInfo.put("http.port", Configuration.GetProperty("nielm/webserver/port", "8080"));
 				}
 			} else {
+			    InputStream is = null;
 				try {
-					serverInfo.load(new FileInputStream(f));
+				    is = new FileInputStream(f);
+					serverInfo.load(is);
 				} catch (Exception e) {
 					serverInfo.put("error", e.getMessage());
+				} finally {
+				    if (is !=null) {
+				        try {
+				            is.close();
+				        } catch (Exception e) {}
+				    }
 				}
 			}
 			SageAPI.setProviderProperties(serverInfo);

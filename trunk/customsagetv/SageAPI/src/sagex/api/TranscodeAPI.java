@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/TranscodeAPI.html'>TranscodeAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -16,7 +16,7 @@ Since:
 5.1
  */
 public static java.lang.String[] GetTranscodeFormats () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetTranscodeFormats", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetTranscodeFormats", (Object[])null);
 }
 
 /**
@@ -30,7 +30,9 @@ Since:
 5.1
  */
 public static java.lang.String GetTranscodeFormatDetails (java.lang.String FormatName) {
-   return (java.lang.String) sagex.SageAPI.call("GetTranscodeFormatDetails", new Object[] {FormatName});
+  Object o = sagex.SageAPI.call("GetTranscodeFormatDetails", new Object[] {FormatName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -43,7 +45,9 @@ Since:
 5.1
  */
 public static java.lang.String AddTranscodeFormat (java.lang.String FormatName, java.lang.String FormatDetails) {
-   return (java.lang.String) sagex.SageAPI.call("AddTranscodeFormat", new Object[] {FormatName,FormatDetails});
+  Object o = sagex.SageAPI.call("AddTranscodeFormat", new Object[] {FormatName,FormatDetails});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -55,7 +59,9 @@ Since:
 5.1
  */
 public static java.lang.String RemoveTranscodeFormat (java.lang.String FormatName) {
-   return (java.lang.String) sagex.SageAPI.call("RemoveTranscodeFormat", new Object[] {FormatName});
+  Object o = sagex.SageAPI.call("RemoveTranscodeFormat", new Object[] {FormatName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -72,7 +78,9 @@ Since:
 5.1
  */
 public static int AddTranscodeJob (Object SourceMediaFile, java.lang.String FormatName, java.io.File DestinationFile, boolean DeleteSourceAfterTranscode) {
-   return (Integer) sagex.SageAPI.call("AddTranscodeJob", new Object[] {SourceMediaFile,FormatName,DestinationFile,DeleteSourceAfterTranscode});
+  Object o = sagex.SageAPI.call("AddTranscodeJob", new Object[] {SourceMediaFile,FormatName,DestinationFile,DeleteSourceAfterTranscode});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -92,7 +100,9 @@ Since:
 5.1
  */
 public static int AddTranscodeJob (Object SourceMediaFile, java.lang.String FormatName, java.io.File DestinationFile, boolean DeleteSourceAfterTranscode, long ClipTimeStart, long ClipDuration) {
-   return (Integer) sagex.SageAPI.call("AddTranscodeJob", new Object[] {SourceMediaFile,FormatName,DestinationFile,DeleteSourceAfterTranscode,ClipTimeStart,ClipDuration});
+  Object o = sagex.SageAPI.call("AddTranscodeJob", new Object[] {SourceMediaFile,FormatName,DestinationFile,DeleteSourceAfterTranscode,ClipTimeStart,ClipDuration});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -106,7 +116,9 @@ Since:
 5.1
  */
 public static java.lang.String GetTranscodeJobStatus (int JobID) {
-   return (java.lang.String) sagex.SageAPI.call("GetTranscodeJobStatus", new Object[] {JobID});
+  Object o = sagex.SageAPI.call("GetTranscodeJobStatus", new Object[] {JobID});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -120,7 +132,9 @@ Since:
 5.1
  */
 public static boolean CancelTranscodeJob (int JobID) {
-   return (Boolean) sagex.SageAPI.call("CancelTranscodeJob", new Object[] {JobID});
+  Object o = sagex.SageAPI.call("CancelTranscodeJob", new Object[] {JobID});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -134,7 +148,9 @@ Since:
 5.1
  */
 public static Object GetTranscodeJobSourceFile (int JobID) {
-   return (Object) sagex.SageAPI.call("GetTranscodeJobSourceFile", new Object[] {JobID});
+  Object o = sagex.SageAPI.call("GetTranscodeJobSourceFile", new Object[] {JobID});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -148,7 +164,9 @@ Since:
 5.1
  */
 public static java.io.File GetTranscodeJobDestFile (int JobID) {
-   return (java.io.File) sagex.SageAPI.call("GetTranscodeJobDestFile", new Object[] {JobID});
+  Object o = sagex.SageAPI.call("GetTranscodeJobDestFile", new Object[] {JobID});
+  if (o!=null) return (java.io.File) o;
+  return null;
 }
 
 /**
@@ -162,7 +180,9 @@ Since:
 5.1
  */
 public static boolean GetTranscodeJobShouldKeepOriginal (int JobID) {
-   return (Boolean) sagex.SageAPI.call("GetTranscodeJobShouldKeepOriginal", new Object[] {JobID});
+  Object o = sagex.SageAPI.call("GetTranscodeJobShouldKeepOriginal", new Object[] {JobID});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -176,7 +196,9 @@ Since:
 5.1
  */
 public static long GetTranscodeJobClipStart (int JobID) {
-   return (Long) sagex.SageAPI.call("GetTranscodeJobClipStart", new Object[] {JobID});
+  Object o = sagex.SageAPI.call("GetTranscodeJobClipStart", new Object[] {JobID});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -190,7 +212,9 @@ Since:
 5.1
  */
 public static long GetTranscodeJobClipDuration (int JobID) {
-   return (Long) sagex.SageAPI.call("GetTranscodeJobClipDuration", new Object[] {JobID});
+  Object o = sagex.SageAPI.call("GetTranscodeJobClipDuration", new Object[] {JobID});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -204,7 +228,9 @@ Since:
 5.1
  */
 public static java.lang.String GetTranscodeJobFormat (int JobID) {
-   return (java.lang.String) sagex.SageAPI.call("GetTranscodeJobFormat", new Object[] {JobID});
+  Object o = sagex.SageAPI.call("GetTranscodeJobFormat", new Object[] {JobID});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -214,7 +240,7 @@ Since:
 5.1
  */
 public static void ClearTranscodedJobs () {
-    sagex.SageAPI.call("ClearTranscodedJobs", (Object[])null);
+   sagex.SageAPI.call("ClearTranscodedJobs", (Object[])null);
 }
 
 /**
@@ -226,7 +252,7 @@ Since:
 5.1
  */
 public static java.lang.Integer[] GetTranscodeJobs () {
-   return (java.lang.Integer[]) sagex.SageAPI.call("GetTranscodeJobs", (Object[])null);
+  return (java.lang.Integer[]) sagex.SageAPI.call("GetTranscodeJobs", (Object[])null);
 }
 
 /**
@@ -241,7 +267,9 @@ Since:
 5.1
  */
 public static boolean CanFileBeTranscoded (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("CanFileBeTranscoded", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("CanFileBeTranscoded", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -255,7 +283,9 @@ Since:
 5.1
  */
 public static float GetTranscodeJobCompletePercent (int JobID) {
-   return (Float) sagex.SageAPI.call("GetTranscodeJobCompletePercent", new Object[] {JobID});
+  Object o = sagex.SageAPI.call("GetTranscodeJobCompletePercent", new Object[] {JobID});
+  if (o!=null) return (Float) o;
+  return 0.0f;
 }
 
 

@@ -88,14 +88,30 @@ public class SageAPIGenerator {
 	private void callSageSerice(PrintWriter pw, SageMethod m) {
 		String objArr = buildObjectArray(m);
 		String retStr = buildReturnString(m);
-		pw.printf("   %s sagex.SageAPI.call(\"%s\", %s);\n", retStr, m.name, objArr);
+		if (m.returnType==null || m.returnType=="" || m.returnType.equals("void") || m.returnType.contains("[]")) {
+	        pw.printf("  %s sagex.SageAPI.call(\"%s\", %s);\n", retStr, m.name, objArr);
+		} else {
+    		pw.printf("  Object o = sagex.SageAPI.call(\"%s\", %s);\n", m.name, objArr);
+    		pw.printf("  if (o!=null) %s o;\n", retStr);
+    		pw.printf("  return %s;\n", safeReturnType(m.returnType));
+		}
 	}
 
-	private void callSageUISerice(PrintWriter pw, SageMethod m) {
-		String objArr = buildObjectArray(m);
-		String retStr = buildReturnString(m);
-		pw.printf("   %s sagex.SageAPI.call(context, \"%s\", %s);\n", retStr, m.name, objArr);
-	}
+	private String safeReturnType(String type) {
+	    if (type.contains("boolean")) {
+	        return "false";
+	    }
+        if (type.contains("float")) {
+            return "0.0f";
+        }
+        if (type.contains("long")) {
+            return "0l";
+        }
+        if (type.contains("int")) {
+            return "0";
+        }
+        return "null";
+    }
 
 	private String buildObjectArray(SageMethod m) {
 		if (m.args.size() == 0)

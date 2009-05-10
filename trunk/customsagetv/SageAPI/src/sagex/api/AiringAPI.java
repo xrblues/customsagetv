@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AiringAPI.html'>AiringAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -16,7 +16,7 @@ Airing- the ManualRecord to set the name for
 Name- the name to set
  */
 public static void SetRecordingName (Object Airing, java.lang.String Name) {
-    sagex.SageAPI.call("SetRecordingName", new Object[] {Airing,Name});
+   sagex.SageAPI.call("SetRecordingName", new Object[] {Airing,Name});
 }
 
 /**
@@ -29,7 +29,9 @@ Returns:
 the name of the ManualRecord or the empty string if the argument was not a manual record
  */
 public static java.lang.String GetRecordingName (Object Airing) {
-   return (java.lang.String) sagex.SageAPI.call("GetRecordingName", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetRecordingName", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -41,7 +43,9 @@ Returns:
 the Channel that this Airing is on
  */
 public static Object GetChannel (Object Airing) {
-   return (Object) sagex.SageAPI.call("GetChannel", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetChannel", new Object[] {Airing});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -53,7 +57,9 @@ Returns:
 the name of the Channel that this Airing is on
  */
 public static java.lang.String GetAiringChannelName (Object Airing) {
-   return (java.lang.String) sagex.SageAPI.call("GetAiringChannelName", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetAiringChannelName", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -65,7 +71,9 @@ Returns:
 the channel number that this Airing is on
  */
 public static java.lang.String GetAiringChannelNumber (Object Airing) {
-   return (java.lang.String) sagex.SageAPI.call("GetAiringChannelNumber", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetAiringChannelNumber", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -77,7 +85,9 @@ Returns:
 the duration of this Airing in milliseconds
  */
 public static long GetAiringDuration (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetAiringDuration", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetAiringDuration", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -89,7 +99,9 @@ Returns:
 the start time of this Airing
  */
 public static long GetAiringStartTime (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetAiringStartTime", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetAiringStartTime", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -101,7 +113,9 @@ Returns:
 the end time of this Airing
  */
 public static long GetAiringEndTime (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetAiringEndTime", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetAiringEndTime", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -113,7 +127,9 @@ Returns:
 the Show object for this Airing
  */
 public static Object GetShow (Object Airing) {
-   return (Object) sagex.SageAPI.call("GetShow", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetShow", new Object[] {Airing});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -125,7 +141,7 @@ Returns:
 the list of the field values which correspond to parental ratings control for this Airing
  */
 public static java.lang.String[] GetAiringRatings (Object Airing) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAiringRatings", new Object[] {Airing});
+  return (java.lang.String[]) sagex.SageAPI.call("GetAiringRatings", new Object[] {Airing});
 }
 
 /**
@@ -137,7 +153,9 @@ Returns:
 the scheduling end time of the Airing
  */
 public static long GetScheduleStartTime (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetScheduleStartTime", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetScheduleStartTime", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -150,7 +168,9 @@ Returns:
 the scheduling end time of the Airing
  */
 public static long GetScheduleEndTime (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetScheduleEndTime", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetScheduleEndTime", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -163,7 +183,9 @@ Returns:
 the scheduling duration of the Airing
  */
 public static long GetScheduleDuration (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetScheduleDuration", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetScheduleDuration", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -175,7 +197,9 @@ Returns:
 a description of the recurrence frequency for this Airing's recording recurrence, or the empty string if this is not recurring time-based recording
  */
 public static java.lang.String GetScheduleRecordingRecurrence (Object Airing) {
-   return (java.lang.String) sagex.SageAPI.call("GetScheduleRecordingRecurrence", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetScheduleRecordingRecurrence", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -187,7 +211,9 @@ Returns:
 a lengthy string which is suitable for displaying information about this Airing
  */
 public static java.lang.String PrintAiringLong (Object Airing) {
-   return (java.lang.String) sagex.SageAPI.call("PrintAiringLong", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("PrintAiringLong", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -199,7 +225,9 @@ Returns:
 a string which is suitable for displaying information about this Airing
  */
 public static java.lang.String PrintAiringMedium (Object Airing) {
-   return (java.lang.String) sagex.SageAPI.call("PrintAiringMedium", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("PrintAiringMedium", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -211,7 +239,9 @@ Returns:
 a brief string which is suitable for displaying information about this Airing
  */
 public static java.lang.String PrintAiringShort (Object Airing) {
-   return (java.lang.String) sagex.SageAPI.call("PrintAiringShort", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("PrintAiringShort", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -223,7 +253,9 @@ Returns:
 the title of this Airing
  */
 public static java.lang.String GetAiringTitle (Object Airing) {
-   return (java.lang.String) sagex.SageAPI.call("GetAiringTitle", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetAiringTitle", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -235,7 +267,9 @@ Returns:
 true if this Airing's content has beeen watched completely before
  */
 public static boolean IsWatched (Object Airing) {
-   return (Boolean) sagex.SageAPI.call("IsWatched", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("IsWatched", new Object[] {Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -247,7 +281,9 @@ Returns:
 the duration of time of this Airing that has been watched already in milliseconds
  */
 public static long GetWatchedDuration (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetWatchedDuration", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetWatchedDuration", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -259,7 +295,9 @@ Returns:
 the time the user started watching this Airing
  */
 public static long GetWatchedStartTime (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetWatchedStartTime", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetWatchedStartTime", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -271,7 +309,9 @@ Returns:
 the time the user finished watching this Airing
  */
 public static long GetWatchedEndTime (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetWatchedEndTime", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetWatchedEndTime", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -285,7 +325,9 @@ Since:
 6.4
  */
 public static long GetRealWatchedStartTime (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetRealWatchedStartTime", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetRealWatchedStartTime", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -299,7 +341,9 @@ Since:
 6.4
  */
 public static long GetRealWatchedEndTime (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetRealWatchedEndTime", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetRealWatchedEndTime", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -309,7 +353,7 @@ Parameters:
 Airing- the Airing object
  */
 public static void SetWatched (Object Airing) {
-    sagex.SageAPI.call("SetWatched", new Object[] {Airing});
+   sagex.SageAPI.call("SetWatched", new Object[] {Airing});
 }
 
 /**
@@ -319,7 +363,7 @@ Parameters:
 Airing- the Airing object
  */
 public static void ClearWatched (Object Airing) {
-    sagex.SageAPI.call("ClearWatched", new Object[] {Airing});
+   sagex.SageAPI.call("ClearWatched", new Object[] {Airing});
 }
 
 /**
@@ -329,7 +373,9 @@ Parameters:
 Airing- the Airing object
  */
 public static long GetLatestWatchedTime (Object Airing) {
-   return (Long) sagex.SageAPI.call("GetLatestWatchedTime", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetLatestWatchedTime", new Object[] {Airing});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -342,7 +388,9 @@ Returns:
 true if this Airing has beeen watched completely
  */
 public static boolean IsWatchedCompletely (Object Airing) {
-   return (Boolean) sagex.SageAPI.call("IsWatchedCompletely", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("IsWatchedCompletely", new Object[] {Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -354,7 +402,9 @@ Returns:
 true if this Airing has been set as content the user "Doesn't Like"
  */
 public static boolean IsDontLike (Object Airing) {
-   return (Boolean) sagex.SageAPI.call("IsDontLike", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("IsDontLike", new Object[] {Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -364,7 +414,7 @@ Parameters:
 Airing- the Airing object
  */
 public static void SetDontLike (Object Airing) {
-    sagex.SageAPI.call("SetDontLike", new Object[] {Airing});
+   sagex.SageAPI.call("SetDontLike", new Object[] {Airing});
 }
 
 /**
@@ -374,7 +424,7 @@ Parameters:
 Airing- the Airing object
  */
 public static void ClearDontLike (Object Airing) {
-    sagex.SageAPI.call("ClearDontLike", new Object[] {Airing});
+   sagex.SageAPI.call("ClearDontLike", new Object[] {Airing});
 }
 
 /**
@@ -387,7 +437,9 @@ Returns:
 true if this Airing has been selected by the user to manually recordRecord()
  */
 public static boolean IsManualRecord (Object Airing) {
-   return (Boolean) sagex.SageAPI.call("IsManualRecord", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("IsManualRecord", new Object[] {Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -403,7 +455,9 @@ Since:
 6.2
  */
 public static boolean IsNotManualOrFavorite (Object Airing) {
-   return (Boolean) sagex.SageAPI.call("IsNotManualOrFavorite", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("IsNotManualOrFavorite", new Object[] {Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -415,7 +469,9 @@ Returns:
 true if this Airing is in HDTV, false otherwise
  */
 public static boolean IsAiringHDTV (Object Airing) {
-   return (Boolean) sagex.SageAPI.call("IsAiringHDTV", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("IsAiringHDTV", new Object[] {Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -427,7 +483,9 @@ Returns:
 the track number for the Airing if it's from a Music Album, 0 otherwise
  */
 public static int GetTrackNumber (Object Airing) {
-   return (Integer) sagex.SageAPI.call("GetTrackNumber", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetTrackNumber", new Object[] {Airing});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -440,7 +498,9 @@ Returns:
 the recording quality name that this Airing has been specifically set to record at; if no quality has been set it returns the empty string
  */
 public static java.lang.String GetRecordingQuality (Object Airing) {
-   return (java.lang.String) sagex.SageAPI.call("GetRecordingQuality", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetRecordingQuality", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -451,7 +511,7 @@ Airing- the Airing object
 Quality- the name of the recording quality
  */
 public static void SetRecordingQuality (Object Airing, java.lang.String Quality) {
-    sagex.SageAPI.call("SetRecordingQuality", new Object[] {Airing,Quality});
+   sagex.SageAPI.call("SetRecordingQuality", new Object[] {Airing,Quality});
 }
 
 /**
@@ -463,7 +523,9 @@ Returns:
 true if this Airing matches one of the Favorites the user has setup
  */
 public static boolean IsFavorite (Object Airing) {
-   return (Boolean) sagex.SageAPI.call("IsFavorite", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("IsFavorite", new Object[] {Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -477,7 +539,9 @@ Returns:
 true if the call succeeds, otherwise a localized error message is returned
  */
 public static java.lang.Object SetRecordingTimes (Object Airing, long StartTime, long StopTime) {
-   return (java.lang.Object) sagex.SageAPI.call("SetRecordingTimes", new Object[] {Airing,StartTime,StopTime});
+  Object o = sagex.SageAPI.call("SetRecordingTimes", new Object[] {Airing,StartTime,StopTime});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -489,7 +553,9 @@ Returns:
 true if the call succeeds, otherwise a localized error message is returned
  */
 public static java.lang.Object Record (Object Airing) {
-   return (java.lang.Object) sagex.SageAPI.call("Record", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("Record", new Object[] {Airing});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -501,7 +567,7 @@ Parameters:
 Airing- the Airing object
  */
 public static void CancelRecord (Object Airing) {
-    sagex.SageAPI.call("CancelRecord", new Object[] {Airing});
+   sagex.SageAPI.call("CancelRecord", new Object[] {Airing});
 }
 
 /**
@@ -513,7 +579,9 @@ Returns:
 true if the argument is an Airing object
  */
 public static boolean IsAiringObject (Object Airing) {
-   return (Boolean) sagex.SageAPI.call("IsAiringObject", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("IsAiringObject", new Object[] {Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -525,7 +593,9 @@ Returns:
 the parental rating information associated with this Airing
  */
 public static java.lang.String GetParentalRating (Object Airing) {
-   return (java.lang.String) sagex.SageAPI.call("GetParentalRating", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetParentalRating", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -537,7 +607,9 @@ Returns:
 miscellaneous information about this Airing
  */
 public static java.lang.String GetExtraAiringDetails (Object Airing) {
-   return (java.lang.String) sagex.SageAPI.call("GetExtraAiringDetails", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetExtraAiringDetails", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -550,7 +622,9 @@ Returns:
 the unique ID used to identify this Airing
  */
 public static int GetAiringID (Object Airing) {
-   return (Integer) sagex.SageAPI.call("GetAiringID", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetAiringID", new Object[] {Airing});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -563,7 +637,9 @@ Returns:
 the Airing object that corresponds to the passed in ID
  */
 public static Object GetAiringForID (int AiringID) {
-   return (Object) sagex.SageAPI.call("GetAiringForID", new Object[] {AiringID});
+  Object o = sagex.SageAPI.call("GetAiringForID", new Object[] {AiringID});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -578,7 +654,9 @@ Returns:
 the newly added Airing
  */
 public static Object AddAiring (java.lang.String ShowExternalID, int StationID, long StartTime, long Duration) {
-   return (Object) sagex.SageAPI.call("AddAiring", new Object[] {ShowExternalID,StationID,StartTime,Duration});
+  Object o = sagex.SageAPI.call("AddAiring", new Object[] {ShowExternalID,StationID,StartTime,Duration});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -605,7 +683,9 @@ Since:
 5.0
  */
 public static Object AddAiringDetailed (java.lang.String ShowExternalID, int StationID, long StartTime, long Duration, int PartNumber, int TotalParts, java.lang.String ParentalRating, boolean HDTV, boolean Stereo, boolean ClosedCaptioning, boolean SAP, boolean Subtitled, java.lang.String PremierFinale) {
-   return (Object) sagex.SageAPI.call("AddAiringDetailed", new Object[] {ShowExternalID,StationID,StartTime,Duration,PartNumber,TotalParts,ParentalRating,HDTV,Stereo,ClosedCaptioning,SAP,Subtitled,PremierFinale});
+  Object o = sagex.SageAPI.call("AddAiringDetailed", new Object[] {ShowExternalID,StationID,StartTime,Duration,PartNumber,TotalParts,ParentalRating,HDTV,Stereo,ClosedCaptioning,SAP,Subtitled,PremierFinale});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -617,7 +697,9 @@ Returns:
 the MediaFile object which corresponds to this Airing object, or null if it has no associated MediaFile
  */
 public static Object GetMediaFileForAiring (Object Airing) {
-   return (Object) sagex.SageAPI.call("GetMediaFileForAiring", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetMediaFileForAiring", new Object[] {Airing});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -629,7 +711,9 @@ Returns:
 the Airing on the same Channel that is on immediately after the passed in Airing
  */
 public static Object GetAiringOnAfter (Object Airing) {
-   return (Object) sagex.SageAPI.call("GetAiringOnAfter", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetAiringOnAfter", new Object[] {Airing});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -641,7 +725,9 @@ Returns:
 the Airing on the same Channel that is on immediately before the passed in Airing
  */
 public static Object GetAiringOnBefore (Object Airing) {
-   return (Object) sagex.SageAPI.call("GetAiringOnBefore", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("GetAiringOnBefore", new Object[] {Airing});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 

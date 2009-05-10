@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ChannelAPI.html'>ChannelAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -16,7 +16,9 @@ Returns:
 the longer descriptive name for the specified Channel
  */
 public static java.lang.String GetChannelDescription (Object Channel) {
-   return (java.lang.String) sagex.SageAPI.call("GetChannelDescription", new Object[] {Channel});
+  Object o = sagex.SageAPI.call("GetChannelDescription", new Object[] {Channel});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -28,7 +30,9 @@ Returns:
 the name (call sign) for the specified Channel
  */
 public static java.lang.String GetChannelName (Object Channel) {
-   return (java.lang.String) sagex.SageAPI.call("GetChannelName", new Object[] {Channel});
+  Object o = sagex.SageAPI.call("GetChannelName", new Object[] {Channel});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -40,7 +44,9 @@ Returns:
 the network name for the specified Channel
  */
 public static java.lang.String GetChannelNetwork (Object Channel) {
-   return (java.lang.String) sagex.SageAPI.call("GetChannelNetwork", new Object[] {Channel});
+  Object o = sagex.SageAPI.call("GetChannelNetwork", new Object[] {Channel});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -52,7 +58,9 @@ Returns:
 a channel number associated with this Channel
  */
 public static java.lang.String GetChannelNumber (Object Channel) {
-   return (java.lang.String) sagex.SageAPI.call("GetChannelNumber", new Object[] {Channel});
+  Object o = sagex.SageAPI.call("GetChannelNumber", new Object[] {Channel});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -66,7 +74,9 @@ Returns:
 the channel number for the specified Channel on the specified Lineup
  */
 public static java.lang.String GetChannelNumberForLineup (Object Channel, java.lang.String Lineup) {
-   return (java.lang.String) sagex.SageAPI.call("GetChannelNumberForLineup", new Object[] {Channel,Lineup});
+  Object o = sagex.SageAPI.call("GetChannelNumberForLineup", new Object[] {Channel,Lineup});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -81,7 +91,9 @@ Since:
 5.1
  */
 public static java.lang.String GetPhysicalChannelNumberForLineup (Object Channel, java.lang.String Lineup) {
-   return (java.lang.String) sagex.SageAPI.call("GetPhysicalChannelNumberForLineup", new Object[] {Channel,Lineup});
+  Object o = sagex.SageAPI.call("GetPhysicalChannelNumberForLineup", new Object[] {Channel,Lineup});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -93,7 +105,9 @@ Returns:
 true if there is a configured lineup for which this channel is viewable.
  */
 public static boolean IsChannelViewable (Object Channel) {
-   return (Boolean) sagex.SageAPI.call("IsChannelViewable", new Object[] {Channel});
+  Object o = sagex.SageAPI.call("IsChannelViewable", new Object[] {Channel});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -106,7 +120,9 @@ Returns:
 true if this Channel is viewable on the specified Lineup
  */
 public static boolean IsChannelViewableOnLineup (Object Channel, java.lang.String Lineup) {
-   return (Boolean) sagex.SageAPI.call("IsChannelViewableOnLineup", new Object[] {Channel,Lineup});
+  Object o = sagex.SageAPI.call("IsChannelViewableOnLineup", new Object[] {Channel,Lineup});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -120,7 +136,9 @@ Returns:
 true if this Channel is viewable on the specified Lineup on the specified channel number
  */
 public static boolean IsChannelViewableOnNumberOnLineup (Object Channel, java.lang.String ChannelNumber, java.lang.String Lineup) {
-   return (Boolean) sagex.SageAPI.call("IsChannelViewableOnNumberOnLineup", new Object[] {Channel,ChannelNumber,Lineup});
+  Object o = sagex.SageAPI.call("IsChannelViewableOnNumberOnLineup", new Object[] {Channel,ChannelNumber,Lineup});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -133,7 +151,7 @@ Returns:
 the channel numbers for the specified Channel on the specified Lineup
  */
 public static java.lang.String[] GetChannelNumbersForLineup (Object Channel, java.lang.String Lineup) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetChannelNumbersForLineup", new Object[] {Channel,Lineup});
+  return (java.lang.String[]) sagex.SageAPI.call("GetChannelNumbersForLineup", new Object[] {Channel,Lineup});
 }
 
 /**
@@ -144,7 +162,7 @@ Channel- the Channel object
 Lineup- the name of the Lineup
  */
 public static void ClearChannelMappingsOnLineup (Object Channel, java.lang.String Lineup) {
-    sagex.SageAPI.call("ClearChannelMappingsOnLineup", new Object[] {Channel,Lineup});
+   sagex.SageAPI.call("ClearChannelMappingsOnLineup", new Object[] {Channel,Lineup});
 }
 
 /**
@@ -157,7 +175,9 @@ Returns:
 true if the user has remapped this Channel to a different number than it's default on the specified Lineup
  */
 public static boolean IsChannelRemappedOnLineup (Object Channel, java.lang.String Lineup) {
-   return (Boolean) sagex.SageAPI.call("IsChannelRemappedOnLineup", new Object[] {Channel,Lineup});
+  Object o = sagex.SageAPI.call("IsChannelRemappedOnLineup", new Object[] {Channel,Lineup});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -169,7 +189,7 @@ Lineup- the name of the Lineup
 NewNumber- the new channel number to use for this Channel
  */
 public static void SetChannelMappingForLineup (Object Channel, java.lang.String Lineup, java.lang.String NewNumber) {
-    sagex.SageAPI.call("SetChannelMappingForLineup", new Object[] {Channel,Lineup,NewNumber});
+   sagex.SageAPI.call("SetChannelMappingForLineup", new Object[] {Channel,Lineup,NewNumber});
 }
 
 /**
@@ -183,7 +203,7 @@ Since:
 6.4.3
  */
 public static void SetChannelMappingsForLineup (Object Channel, java.lang.String Lineup, java.lang.String[] NewNumbers) {
-    sagex.SageAPI.call("SetChannelMappingsForLineup", new Object[] {Channel,Lineup,NewNumbers});
+   sagex.SageAPI.call("SetChannelMappingsForLineup", new Object[] {Channel,Lineup,NewNumbers});
 }
 
 /**
@@ -196,7 +216,7 @@ Since:
 5.1
  */
 public static void ClearPhysicalChannelMappingsOnLineup (Object Channel, java.lang.String Lineup) {
-    sagex.SageAPI.call("ClearPhysicalChannelMappingsOnLineup", new Object[] {Channel,Lineup});
+   sagex.SageAPI.call("ClearPhysicalChannelMappingsOnLineup", new Object[] {Channel,Lineup});
 }
 
 /**
@@ -211,7 +231,9 @@ Since:
 5.1
  */
 public static boolean IsPhysicalChannelRemappedOnLineup (Object Channel, java.lang.String Lineup) {
-   return (Boolean) sagex.SageAPI.call("IsPhysicalChannelRemappedOnLineup", new Object[] {Channel,Lineup});
+  Object o = sagex.SageAPI.call("IsPhysicalChannelRemappedOnLineup", new Object[] {Channel,Lineup});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -225,7 +247,7 @@ Since:
 5.1
  */
 public static void SetPhysicalChannelMappingForLineup (Object Channel, java.lang.String Lineup, java.lang.String NewNumber) {
-    sagex.SageAPI.call("SetPhysicalChannelMappingForLineup", new Object[] {Channel,Lineup,NewNumber});
+   sagex.SageAPI.call("SetPhysicalChannelMappingForLineup", new Object[] {Channel,Lineup,NewNumber});
 }
 
 /**
@@ -238,7 +260,9 @@ Returns:
 the station ID for the specified Channel
  */
 public static int GetStationID (Object Channel) {
-   return (Integer) sagex.SageAPI.call("GetStationID", new Object[] {Channel});
+  Object o = sagex.SageAPI.call("GetStationID", new Object[] {Channel});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -250,7 +274,9 @@ Returns:
 the logo image for the Channel
  */
 public static Object GetChannelLogo (Object Channel) {
-   return (Object) sagex.SageAPI.call("GetChannelLogo", new Object[] {Channel});
+  Object o = sagex.SageAPI.call("GetChannelLogo", new Object[] {Channel});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -262,7 +288,9 @@ Returns:
 true if the argument is a Channel object
  */
 public static boolean IsChannelObject (Object Channel) {
-   return (Boolean) sagex.SageAPI.call("IsChannelObject", new Object[] {Channel});
+  Object o = sagex.SageAPI.call("IsChannelObject", new Object[] {Channel});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -275,7 +303,7 @@ Lineup- the name of the Lineup
 Viewable- true if is viewable, false if it is not
  */
 public static void SetChannelViewabilityForChannelNumberOnLineup (Object Channel, java.lang.String ChannelNumber, java.lang.String Lineup, boolean Viewable) {
-    sagex.SageAPI.call("SetChannelViewabilityForChannelNumberOnLineup", new Object[] {Channel,ChannelNumber,Lineup,Viewable});
+   sagex.SageAPI.call("SetChannelViewabilityForChannelNumberOnLineup", new Object[] {Channel,ChannelNumber,Lineup,Viewable});
 }
 
 /**
@@ -287,7 +315,7 @@ Lineup- the name of the Lineup
 Viewable- true if is viewable, false if it is not
  */
 public static void SetChannelViewabilityForChannelOnLineup (Object Channel, java.lang.String Lineup, boolean Viewable) {
-    sagex.SageAPI.call("SetChannelViewabilityForChannelOnLineup", new Object[] {Channel,Lineup,Viewable});
+   sagex.SageAPI.call("SetChannelViewabilityForChannelOnLineup", new Object[] {Channel,Lineup,Viewable});
 }
 
 /**
@@ -300,7 +328,9 @@ Returns:
 the Channel with the specified station ID
  */
 public static Object GetChannelForStationID (int StationID) {
-   return (Object) sagex.SageAPI.call("GetChannelForStationID", new Object[] {StationID});
+  Object o = sagex.SageAPI.call("GetChannelForStationID", new Object[] {StationID});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -317,7 +347,9 @@ Returns:
 the newly created Channel object, if the station ID is already in use it will return the existing Channel object, but updated with the passed in values
  */
 public static Object AddChannel (java.lang.String CallSign, java.lang.String Name, java.lang.String Network, int StationID) {
-   return (Object) sagex.SageAPI.call("AddChannel", new Object[] {CallSign,Name,Network,StationID});
+  Object o = sagex.SageAPI.call("AddChannel", new Object[] {CallSign,Name,Network,StationID});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -327,7 +359,7 @@ Returns:
 all of the Channel objects that are defined in the system
  */
 public static Object[] GetAllChannels () {
-   return (Object[]) sagex.SageAPI.call("GetAllChannels", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetAllChannels", (Object[])null);
 }
 
 

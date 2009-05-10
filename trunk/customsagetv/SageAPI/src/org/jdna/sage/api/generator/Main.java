@@ -20,7 +20,7 @@ import sagex.api.AlbumAPI;
 public class Main {
 	private static final Logger log = Logger.getLogger(Main.class);
 
-	public class ClassMetadata {
+	public static class ClassMetadata {
 		public String name;
 		public List<SageMethod> methods;
         public String getName() {

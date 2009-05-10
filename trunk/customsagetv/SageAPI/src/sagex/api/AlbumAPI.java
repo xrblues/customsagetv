@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AlbumAPI.html'>AlbumAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -14,7 +14,7 @@ Returns:
 an array of the artists for the music files in the library
  */
 public static java.lang.String[] GetAllMusicArtists () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAllMusicArtists", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetAllMusicArtists", (Object[])null);
 }
 
 /**
@@ -24,7 +24,7 @@ Returns:
 an array of the genres for the music files in the library
  */
 public static java.lang.String[] GetAllMusicGenres () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAllMusicGenres", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetAllMusicGenres", (Object[])null);
 }
 
 /**
@@ -34,7 +34,7 @@ Returns:
 an array of all of the Album objects in the library
  */
 public static Object[] GetAlbums () {
-   return (Object[]) sagex.SageAPI.call("GetAlbums", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetAlbums", (Object[])null);
 }
 
 /**
@@ -47,7 +47,7 @@ Returns:
 an array of the Airings that correspond to music files by the specified artist
  */
 public static Object[] GetAllMusicForArtist (java.lang.String Artist) {
-   return (Object[]) sagex.SageAPI.call("GetAllMusicForArtist", new Object[] {Artist});
+  return (Object[]) sagex.SageAPI.call("GetAllMusicForArtist", new Object[] {Artist});
 }
 
 /**
@@ -60,7 +60,7 @@ Returns:
 an array of the Airings that correspond to music files by the specified genre
  */
 public static Object[] GetAllMusicForGenre (java.lang.String Genre) {
-   return (Object[]) sagex.SageAPI.call("GetAllMusicForGenre", new Object[] {Genre});
+  return (Object[]) sagex.SageAPI.call("GetAllMusicForGenre", new Object[] {Genre});
 }
 
 /**
@@ -73,7 +73,7 @@ Returns:
 an array of Airings which are the tracks on this Album
  */
 public static Object[] GetAlbumTracks (Object Album) {
-   return (Object[]) sagex.SageAPI.call("GetAlbumTracks", new Object[] {Album});
+  return (Object[]) sagex.SageAPI.call("GetAlbumTracks", new Object[] {Album});
 }
 
 /**
@@ -85,7 +85,9 @@ Returns:
 the number of tracks that are on the specified Album
  */
 public static int GetNumberOfTracks (Object Album) {
-   return (Integer) sagex.SageAPI.call("GetNumberOfTracks", new Object[] {Album});
+  Object o = sagex.SageAPI.call("GetNumberOfTracks", new Object[] {Album});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -98,7 +100,9 @@ Returns:
 the artist for the specified Album
  */
 public static java.lang.String GetAlbumArtist (Object Album) {
-   return (java.lang.String) sagex.SageAPI.call("GetAlbumArtist", new Object[] {Album});
+  Object o = sagex.SageAPI.call("GetAlbumArtist", new Object[] {Album});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -110,7 +114,9 @@ Returns:
 the album art for the specified Album, this can be fed into an Image Widget to display it
  */
 public static Object GetAlbumArt (Object Album) {
-   return (Object) sagex.SageAPI.call("GetAlbumArt", new Object[] {Album});
+  Object o = sagex.SageAPI.call("GetAlbumArt", new Object[] {Album});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -122,7 +128,9 @@ Returns:
 the name/title of the specified Album
  */
 public static java.lang.String GetAlbumName (Object Album) {
-   return (java.lang.String) sagex.SageAPI.call("GetAlbumName", new Object[] {Album});
+  Object o = sagex.SageAPI.call("GetAlbumName", new Object[] {Album});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -134,7 +142,9 @@ Returns:
 true if there is album art for this Album, false otherwise
  */
 public static boolean HasAlbumArt (Object Album) {
-   return (Boolean) sagex.SageAPI.call("HasAlbumArt", new Object[] {Album});
+  Object o = sagex.SageAPI.call("HasAlbumArt", new Object[] {Album});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -146,7 +156,9 @@ Returns:
 true if the passed in object is an Album object, false otherwise
  */
 public static boolean IsAlbumObject (java.lang.Object Album) {
-   return (Boolean) sagex.SageAPI.call("IsAlbumObject", new Object[] {Album});
+  Object o = sagex.SageAPI.call("IsAlbumObject", new Object[] {Album});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -158,7 +170,9 @@ Returns:
 the genre for the specified Album
  */
 public static java.lang.String GetAlbumGenre (Object Album) {
-   return (java.lang.String) sagex.SageAPI.call("GetAlbumGenre", new Object[] {Album});
+  Object o = sagex.SageAPI.call("GetAlbumGenre", new Object[] {Album});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -170,7 +184,9 @@ Returns:
 the year the specified album was recorded in
  */
 public static java.lang.String GetAlbumYear (Object Album) {
-   return (java.lang.String) sagex.SageAPI.call("GetAlbumYear", new Object[] {Album});
+  Object o = sagex.SageAPI.call("GetAlbumYear", new Object[] {Album});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 

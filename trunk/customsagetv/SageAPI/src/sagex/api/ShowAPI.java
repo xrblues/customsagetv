@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ShowAPI.html'>ShowAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -18,7 +18,9 @@ Returns:
 true if all Airings of this Show represent the same content, false otherwise
  */
 public static boolean IsShowEPGDataUnique (Object Show) {
-   return (Boolean) sagex.SageAPI.call("IsShowEPGDataUnique", new Object[] {Show});
+  Object o = sagex.SageAPI.call("IsShowEPGDataUnique", new Object[] {Show});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -31,7 +33,9 @@ Returns:
 the miscellaneous metadata for this Show
  */
 public static java.lang.String GetShowMisc (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowMisc", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowMisc", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -43,7 +47,9 @@ Returns:
 the category for the Show
  */
 public static java.lang.String GetShowCategory (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowCategory", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowCategory", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -55,7 +61,9 @@ Returns:
 the subcategory for the Show
  */
 public static java.lang.String GetShowSubCategory (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowSubCategory", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowSubCategory", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -67,7 +75,9 @@ Returns:
 the desccription for the Show
  */
 public static java.lang.String GetShowDescription (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowDescription", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowDescription", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -79,7 +89,9 @@ Returns:
 the episode name for the specified Show. For music files, this will be the name of the song. For imported videos, this will be the title of the file
  */
 public static java.lang.String GetShowEpisode (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowEpisode", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowEpisode", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -92,7 +104,9 @@ Returns:
 the expanded ratings for the Show
  */
 public static java.lang.String GetShowExpandedRatings (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowExpandedRatings", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowExpandedRatings", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -106,7 +120,9 @@ Returns:
 the parental rating info for this show
  */
 public static java.lang.String GetShowParentalRating (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowParentalRating", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowParentalRating", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -118,7 +134,9 @@ Returns:
 the MPAA rating for this Show, will be one of: G, PG, R, PG-13, etc.
  */
 public static java.lang.String GetShowRated (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowRated", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowRated", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -131,7 +149,9 @@ Returns:
 the duration in milliseconds of the specified Show, 0 if it is not set
  */
 public static long GetShowDuration (Object Show) {
-   return (Long) sagex.SageAPI.call("GetShowDuration", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowDuration", new Object[] {Show});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -143,7 +163,9 @@ Returns:
 the title of the specified Show
  */
 public static java.lang.String GetShowTitle (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowTitle", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowTitle", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -155,7 +177,9 @@ Returns:
 the year the specified Show was produced in
  */
 public static java.lang.String GetShowYear (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowYear", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowYear", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -167,7 +191,9 @@ Returns:
 the global unique ID which represents this Show
  */
 public static java.lang.String GetShowExternalID (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowExternalID", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowExternalID", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -179,7 +205,9 @@ Returns:
 the date that this Show was originally aired at, same units as java.lang.System.currentTimeMillis()
  */
 public static long GetOriginalAiringDate (Object Show) {
-   return (Long) sagex.SageAPI.call("GetOriginalAiringDate", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetOriginalAiringDate", new Object[] {Show});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -189,7 +217,7 @@ Returns:
 a list of all of the valid roles that people can have in a Show
  */
 public static java.lang.String[] GetRoleTypes () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetRoleTypes", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetRoleTypes", (Object[])null);
 }
 
 /**
@@ -203,7 +231,9 @@ Returns:
 a list of all of the people involved in this Show as a comma separated list
  */
 public static java.lang.String GetPeopleInShow (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetPeopleInShow", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetPeopleInShow", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -219,7 +249,7 @@ Since:
 5.1
  */
 public static java.lang.String[] GetPeopleListInShow (Object Show) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetPeopleListInShow", new Object[] {Show});
+  return (java.lang.String[]) sagex.SageAPI.call("GetPeopleListInShow", new Object[] {Show});
 }
 
 /**
@@ -233,7 +263,7 @@ Returns:
 a list of the roles for each of the people in the specified Show
  */
 public static java.lang.String[] GetRolesInShow (Object Show) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetRolesInShow", new Object[] {Show});
+  return (java.lang.String[]) sagex.SageAPI.call("GetRolesInShow", new Object[] {Show});
 }
 
 /**
@@ -246,7 +276,9 @@ Returns:
 the people in the specified Show in the specified Role
  */
 public static java.lang.String GetPeopleInShowInRole (Object Show, java.lang.String Role) {
-   return (java.lang.String) sagex.SageAPI.call("GetPeopleInShowInRole", new Object[] {Show,Role});
+  Object o = sagex.SageAPI.call("GetPeopleInShowInRole", new Object[] {Show,Role});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -259,7 +291,9 @@ Returns:
 the people in the specified Show in the specified Roles
  */
 public static java.lang.String GetPeopleInShowInRoles (Object Show, java.lang.String[] RoleList) {
-   return (java.lang.String) sagex.SageAPI.call("GetPeopleInShowInRoles", new Object[] {Show,RoleList});
+  Object o = sagex.SageAPI.call("GetPeopleInShowInRoles", new Object[] {Show,RoleList});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -274,7 +308,7 @@ Since:
 5.1
  */
 public static java.lang.String[] GetPeopleListInShowInRole (Object Show, java.lang.String Role) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetPeopleListInShowInRole", new Object[] {Show,Role});
+  return (java.lang.String[]) sagex.SageAPI.call("GetPeopleListInShowInRole", new Object[] {Show,Role});
 }
 
 /**
@@ -289,7 +323,7 @@ Since:
 5.1
  */
 public static java.lang.String[] GetPeopleListInShowInRoles (Object Show, java.lang.String[] RoleList) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetPeopleListInShowInRoles", new Object[] {Show,RoleList});
+  return (java.lang.String[]) sagex.SageAPI.call("GetPeopleListInShowInRoles", new Object[] {Show,RoleList});
 }
 
 /**
@@ -302,7 +336,9 @@ Returns:
 true if the passed in argument is a Show object, false otherwise
  */
 public static boolean IsShowObject (java.lang.Object Show) {
-   return (Boolean) sagex.SageAPI.call("IsShowObject", new Object[] {Show});
+  Object o = sagex.SageAPI.call("IsShowObject", new Object[] {Show});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -314,7 +350,9 @@ Returns:
 true if the specified Airing represents the first run of its Show content, false otherwise
  */
 public static boolean IsShowFirstRun (Object Airing) {
-   return (Boolean) sagex.SageAPI.call("IsShowFirstRun", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("IsShowFirstRun", new Object[] {Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -326,7 +364,9 @@ Returns:
 true if the specified Airing represents a rerun of its Show content, false otherwise
  */
 public static boolean IsShowReRun (Object Airing) {
-   return (Boolean) sagex.SageAPI.call("IsShowReRun", new Object[] {Airing});
+  Object o = sagex.SageAPI.call("IsShowReRun", new Object[] {Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -338,7 +378,9 @@ Returns:
 the language that the specified Show is in
  */
 public static java.lang.String GetShowLanguage (Object Show) {
-   return (java.lang.String) sagex.SageAPI.call("GetShowLanguage", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowLanguage", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -368,7 +410,9 @@ Returns:
 the newly created Show object
  */
 public static Object AddShow (java.lang.String Title, boolean IsFirstRun, java.lang.String Episode, java.lang.String Description, long Duration, java.lang.String Category, java.lang.String SubCategory, java.lang.String[] PeopleList, java.lang.String[] RolesListForPeopleList, java.lang.String Rated, java.lang.String[] ExpandedRatingsList, java.lang.String Year, java.lang.String ParentalRating, java.lang.String[] MiscList, java.lang.String ExternalID, java.lang.String Language, long OriginalAirDate) {
-   return (Object) sagex.SageAPI.call("AddShow", new Object[] {Title,IsFirstRun,Episode,Description,Duration,Category,SubCategory,PeopleList,RolesListForPeopleList,Rated,ExpandedRatingsList,Year,ParentalRating,MiscList,ExternalID,Language,OriginalAirDate});
+  Object o = sagex.SageAPI.call("AddShow", new Object[] {Title,IsFirstRun,Episode,Description,Duration,Category,SubCategory,PeopleList,RolesListForPeopleList,Rated,ExpandedRatingsList,Year,ParentalRating,MiscList,ExternalID,Language,OriginalAirDate});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -381,7 +425,7 @@ Returns:
 a list of all of the Airings for the specified Show starting after the specified time
  */
 public static Object[] GetAiringsForShow (Object Show, long StartingAfterTime) {
-   return (Object[]) sagex.SageAPI.call("GetAiringsForShow", new Object[] {Show,StartingAfterTime});
+  return (Object[]) sagex.SageAPI.call("GetAiringsForShow", new Object[] {Show,StartingAfterTime});
 }
 
 /**
@@ -395,7 +439,9 @@ Returns:
 the Show which corresponds to the specified externalID, or null if it isn't found in the database
  */
 public static Object GetShowForExternalID (java.lang.String ExternalID) {
-   return (Object) sagex.SageAPI.call("GetShowForExternalID", new Object[] {ExternalID});
+  Object o = sagex.SageAPI.call("GetShowForExternalID", new Object[] {ExternalID});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -410,7 +456,9 @@ Since:
 5.1
  */
 public static Object GetShowSeriesInfo (Object Show) {
-   return (Object) sagex.SageAPI.call("GetShowSeriesInfo", new Object[] {Show});
+  Object o = sagex.SageAPI.call("GetShowSeriesInfo", new Object[] {Show});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 
