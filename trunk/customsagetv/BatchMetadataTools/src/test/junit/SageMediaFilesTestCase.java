@@ -14,6 +14,8 @@ import sagex.SageAPI;
 import sagex.api.MediaFileAPI;
 import sagex.stub.StubSageAPI;
 
+import static test.junit.FilesTestCase.*;
+
 public class SageMediaFilesTestCase extends TestCase {
 
     public SageMediaFilesTestCase() {
@@ -22,6 +24,26 @@ public class SageMediaFilesTestCase extends TestCase {
 
     public SageMediaFilesTestCase(String name) {
         super(name);
+    }
+    
+    public void testSageMediaFileCreation() {
+        StubSageAPI provider = new StubSageAPI();
+        SageAPI.setProvider(provider);
+        MediaFileAPI.AddMediaFile(makeFile("test/sample.avi"), "Movie");
+        
+        SageMediaFile mf = new SageMediaFile(1);
+        assertEquals("SameMediaFile by id failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaObject()));
+        
+        mf = new SageMediaFile(getFile("test/sample.avi"));
+        assertEquals("SameMediaFile by file failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaObject()));
+        
+        Object smf = MediaFileAPI.GetMediaFileForID(1);
+        mf = new SageMediaFile(smf);
+        assertEquals("SameMediaFile by object failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaObject()));
+        
+        provider.addCall("IsAiringObject", true);
+        mf = new SageMediaFile("arigingObject");
+        assertEquals("Sage didn't think it was an airing", "arigingObject", mf.getSageMediaObject());
     }
     
     public void testSageMediaFile() throws Exception {
@@ -132,6 +154,4 @@ public class SageMediaFilesTestCase extends TestCase {
         smf.accept(crv);
         assertEquals("vistor count", 4, crv.getCount()); // 4 because of the visit to the folder itself
     }
-    
-    
 }
