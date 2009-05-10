@@ -26,7 +26,9 @@ public class SageMediaFile extends VirtualMediaFile {
     }
     
     public SageMediaFile(File file) {
-        this(MediaFileAPI.GetMediaFileForFilePath(file));
+        super(file.toURI());
+        log.debug("Creating SageMediaFile from File: " + file.getAbsolutePath());
+        init(MediaFileAPI.GetMediaFileForFilePath(file));
     }
     
     public SageMediaFile(int mediaFileId) {
@@ -37,7 +39,8 @@ public class SageMediaFile extends VirtualMediaFile {
     }
     
     public SageMediaFile(Object mediaFile) {
-        this(MediaFileAPI.GetMediaFileID(mediaFile));
+        super(sageURI(0));
+        init(mediaFile);
     }
     
     protected void init(Object mediaFile) {
