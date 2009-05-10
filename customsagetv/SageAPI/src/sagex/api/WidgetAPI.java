@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/WidgetAPI.html'>WidgetAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -16,7 +16,9 @@ Returns:
 true if it was succesful, otherwise an error string
  */
 public static java.lang.Object LoadSTVFile (java.io.File STVFile) {
-   return (java.lang.Object) sagex.SageAPI.call("LoadSTVFile", new Object[] {STVFile});
+  Object o = sagex.SageAPI.call("LoadSTVFile", new Object[] {STVFile});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -28,7 +30,9 @@ Returns:
 true if it was succesful, otherwise an error string
  */
 public static java.lang.Object ImportSTVFile (java.io.File STVFile) {
-   return (java.lang.Object) sagex.SageAPI.call("ImportSTVFile", new Object[] {STVFile});
+  Object o = sagex.SageAPI.call("ImportSTVFile", new Object[] {STVFile});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -40,7 +44,9 @@ Since:
 6.1
  */
 public static boolean IsSTVModified () {
-   return (Boolean) sagex.SageAPI.call("IsSTVModified", (Object[])null);
+  Object o = sagex.SageAPI.call("IsSTVModified", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -50,7 +56,7 @@ Returns:
 all of the Widgets that are in the currently loaded STV
  */
 public static Object[] GetAllWidgets () {
-   return (Object[]) sagex.SageAPI.call("GetAllWidgets", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetAllWidgets", (Object[])null);
 }
 
 /**
@@ -60,7 +66,7 @@ Returns:
 all of the Widgets that are in the currently loaded STV that are of the specified type
  */
 public static Object[] GetWidgetsByType (java.lang.String WidgetType) {
-   return (Object[]) sagex.SageAPI.call("GetWidgetsByType", new Object[] {WidgetType});
+  return (Object[]) sagex.SageAPI.call("GetWidgetsByType", new Object[] {WidgetType});
 }
 
 /**
@@ -72,7 +78,9 @@ Returns:
 the newly created Widget
  */
 public static Object AddWidget (java.lang.String WidgetType) {
-   return (Object) sagex.SageAPI.call("AddWidget", new Object[] {WidgetType});
+  Object o = sagex.SageAPI.call("AddWidget", new Object[] {WidgetType});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -82,7 +90,7 @@ Parameters:
 Widget- the Widget to remove
  */
 public static void RemoveWidget (Object Widget) {
-    sagex.SageAPI.call("RemoveWidget", new Object[] {Widget});
+   sagex.SageAPI.call("RemoveWidget", new Object[] {Widget});
 }
 
 /**
@@ -94,7 +102,7 @@ WidgetParent- the Widget that should be the parent in the relationship
 WidgetChild- the Widget that should be the child in the relationship
  */
 public static void AddWidgetChild (Object WidgetParent, Object WidgetChild) {
-    sagex.SageAPI.call("AddWidgetChild", new Object[] {WidgetParent,WidgetChild});
+   sagex.SageAPI.call("AddWidgetChild", new Object[] {WidgetParent,WidgetChild});
 }
 
 /**
@@ -107,7 +115,7 @@ WidgetChild- the Widget that should be the child in the relationship
 ChildIndex- the 0-based index in the parent's child relationships list that the new relationship should occupy
  */
 public static void InsertWidgetChild (Object WidgetParent, Object WidgetChild, int ChildIndex) {
-    sagex.SageAPI.call("InsertWidgetChild", new Object[] {WidgetParent,WidgetChild,ChildIndex});
+   sagex.SageAPI.call("InsertWidgetChild", new Object[] {WidgetParent,WidgetChild,ChildIndex});
 }
 
 /**
@@ -119,7 +127,7 @@ WidgetParent- the parent of the Widget relationship to break
 WidgetChild- the child of the Widget relationship to break
  */
 public static void RemoveWidgetChild (Object WidgetParent, Object WidgetChild) {
-    sagex.SageAPI.call("RemoveWidgetChild", new Object[] {WidgetParent,WidgetChild});
+   sagex.SageAPI.call("RemoveWidgetChild", new Object[] {WidgetParent,WidgetChild});
 }
 
 /**
@@ -132,7 +140,9 @@ Returns:
 true if the specified parent has a parent-child relationship with the specified child, false otherwise
  */
 public static boolean IsWidgetParentOf (Object WidgetParent, Object WidgetChild) {
-   return (Boolean) sagex.SageAPI.call("IsWidgetParentOf", new Object[] {WidgetParent,WidgetChild});
+  Object o = sagex.SageAPI.call("IsWidgetParentOf", new Object[] {WidgetParent,WidgetChild});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -144,7 +154,9 @@ Returns:
 the type name of the specified Widget
  */
 public static java.lang.String GetWidgetType (Object Widget) {
-   return (java.lang.String) sagex.SageAPI.call("GetWidgetType", new Object[] {Widget});
+  Object o = sagex.SageAPI.call("GetWidgetType", new Object[] {Widget});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -157,7 +169,9 @@ Returns:
 true if the specified Widget has a property defined with the specified name, false otherwise
  */
 public static boolean HasWidgetProperty (Object Widget, java.lang.String PropertyName) {
-   return (Boolean) sagex.SageAPI.call("HasWidgetProperty", new Object[] {Widget,PropertyName});
+  Object o = sagex.SageAPI.call("HasWidgetProperty", new Object[] {Widget,PropertyName});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -169,7 +183,7 @@ PropertyName- the name of the property to set in the Widget
 PropertyValue- the value to set the property to
  */
 public static void SetWidgetProperty (Object Widget, java.lang.String PropertyName, java.lang.String PropertyValue) {
-    sagex.SageAPI.call("SetWidgetProperty", new Object[] {Widget,PropertyName,PropertyValue});
+   sagex.SageAPI.call("SetWidgetProperty", new Object[] {Widget,PropertyName,PropertyValue});
 }
 
 /**
@@ -182,7 +196,9 @@ Returns:
 the value for a specified property in a Widget
  */
 public static java.lang.String GetWidgetProperty (Object Widget, java.lang.String PropertyName) {
-   return (java.lang.String) sagex.SageAPI.call("GetWidgetProperty", new Object[] {Widget,PropertyName});
+  Object o = sagex.SageAPI.call("GetWidgetProperty", new Object[] {Widget,PropertyName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -194,7 +210,9 @@ Returns:
 the name of the specified Widget
  */
 public static java.lang.String GetWidgetName (Object Widget) {
-   return (java.lang.String) sagex.SageAPI.call("GetWidgetName", new Object[] {Widget});
+  Object o = sagex.SageAPI.call("GetWidgetName", new Object[] {Widget});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -205,7 +223,7 @@ Widget- the Widget object
 Name- the value to set the name to for this Widget
  */
 public static void SetWidgetName (Object Widget, java.lang.String Name) {
-    sagex.SageAPI.call("SetWidgetName", new Object[] {Widget,Name});
+   sagex.SageAPI.call("SetWidgetName", new Object[] {Widget,Name});
 }
 
 /**
@@ -217,7 +235,7 @@ Returns:
 a list of Widgets which are all parents of the specified Widget
  */
 public static Object[] GetWidgetParents (Object Widget) {
-   return (Object[]) sagex.SageAPI.call("GetWidgetParents", new Object[] {Widget});
+  return (Object[]) sagex.SageAPI.call("GetWidgetParents", new Object[] {Widget});
 }
 
 /**
@@ -229,7 +247,7 @@ Returns:
 a list of Widgets which are all children of the specified Widget
  */
 public static Object[] GetWidgetChildren (Object Widget) {
-   return (Object[]) sagex.SageAPI.call("GetWidgetChildren", new Object[] {Widget});
+  return (Object[]) sagex.SageAPI.call("GetWidgetChildren", new Object[] {Widget});
 }
 
 /**
@@ -241,7 +259,9 @@ Returns:
 the value returned by the last executed Widget in the chain
  */
 public static java.lang.Object ExecuteWidgetChain (Object Widget) {
-   return (java.lang.Object) sagex.SageAPI.call("ExecuteWidgetChain", new Object[] {Widget});
+  Object o = sagex.SageAPI.call("ExecuteWidgetChain", new Object[] {Widget});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -251,7 +271,7 @@ Parameters:
 Widget- the Widget object to use for the launched menu, this must be a Menu type Widget
  */
 public static void LaunchMenuWidget (Object Widget) {
-    sagex.SageAPI.call("LaunchMenuWidget", new Object[] {Widget});
+   sagex.SageAPI.call("LaunchMenuWidget", new Object[] {Widget});
 }
 
 /**
@@ -261,7 +281,9 @@ Returns:
 the STV file that is currently loaded by the system
  */
 public static java.lang.String GetCurrentSTVFile () {
-   return (java.lang.String) sagex.SageAPI.call("GetCurrentSTVFile", (Object[])null);
+  Object o = sagex.SageAPI.call("GetCurrentSTVFile", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -276,7 +298,9 @@ Returns:
 the Widget child of the specified Widget of the specified type and name
  */
 public static Object GetWidgetChild (Object Widget, java.lang.String Type, java.lang.String Name) {
-   return (Object) sagex.SageAPI.call("GetWidgetChild", new Object[] {Widget,Type,Name});
+  Object o = sagex.SageAPI.call("GetWidgetChild", new Object[] {Widget,Type,Name});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -291,7 +315,9 @@ Returns:
 the Widget parent of the specified Widget of the specified type and name
  */
 public static Object GetWidgetParent (Object Widget, java.lang.String Type, java.lang.String Name) {
-   return (Object) sagex.SageAPI.call("GetWidgetParent", new Object[] {Widget,Type,Name});
+  Object o = sagex.SageAPI.call("GetWidgetParent", new Object[] {Widget,Type,Name});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -301,7 +327,9 @@ Returns:
 the Widget the defines the menu that is currently loaded by the system
  */
 public static Object GetCurrentMenuWidget () {
-   return (Object) sagex.SageAPI.call("GetCurrentMenuWidget", (Object[])null);
+  Object o = sagex.SageAPI.call("GetCurrentMenuWidget", (Object[])null);
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -311,7 +339,7 @@ Returns:
 a list of the Widgets that have defined the menus that were recently displayed in the UI
  */
 public static Object[] GetWidgetMenuHistory () {
-   return (Object[]) sagex.SageAPI.call("GetWidgetMenuHistory", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetWidgetMenuHistory", (Object[])null);
 }
 
 /**
@@ -327,7 +355,7 @@ Since:
 5.1
  */
 public static Object[] GetWidgetMenuBackHistory () {
-   return (Object[]) sagex.SageAPI.call("GetWidgetMenuBackHistory", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetWidgetMenuBackHistory", (Object[])null);
 }
 
 /**
@@ -340,7 +368,9 @@ Returns:
 the result of evaluating the specified expression
  */
 public static java.lang.Object EvaluateExpression (java.lang.String Expression) {
-   return (java.lang.Object) sagex.SageAPI.call("EvaluateExpression", new Object[] {Expression});
+  Object o = sagex.SageAPI.call("EvaluateExpression", new Object[] {Expression});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -353,7 +383,9 @@ Returns:
 true if successful, false if not
  */
 public static boolean SaveWidgetsAsXML (java.io.File File, boolean Overwrite) {
-   return (Boolean) sagex.SageAPI.call("SaveWidgetsAsXML", new Object[] {File,Overwrite});
+  Object o = sagex.SageAPI.call("SaveWidgetsAsXML", new Object[] {File,Overwrite});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -367,7 +399,9 @@ Since:
 6.4
  */
 public static java.lang.String GetWidgetSymbol (Object Widget) {
-   return (java.lang.String) sagex.SageAPI.call("GetWidgetSymbol", new Object[] {Widget});
+  Object o = sagex.SageAPI.call("GetWidgetSymbol", new Object[] {Widget});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -381,7 +415,9 @@ Since:
 6.4
  */
 public static Object FindWidgetBySymbol (java.lang.String Symbol) {
-   return (Object) sagex.SageAPI.call("FindWidgetBySymbol", new Object[] {Symbol});
+  Object o = sagex.SageAPI.call("FindWidgetBySymbol", new Object[] {Symbol});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -393,7 +429,9 @@ Since:
 6.4
  */
 public static java.io.File GetDefaultSTVFile () {
-   return (java.io.File) sagex.SageAPI.call("GetDefaultSTVFile", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDefaultSTVFile", (Object[])null);
+  if (o!=null) return (java.io.File) o;
+  return null;
 }
 
 

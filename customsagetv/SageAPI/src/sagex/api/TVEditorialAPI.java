@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/TVEditorialAPI.html'>TVEditorialAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -16,7 +16,7 @@ Since:
 5.1
  */
 public static Object[] GetAllTVEditorials () {
-   return (Object[]) sagex.SageAPI.call("GetAllTVEditorials", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetAllTVEditorials", (Object[])null);
 }
 
 /**
@@ -30,7 +30,9 @@ Since:
 5.1
  */
 public static java.lang.String GetEditorialTitle (Object TVEditorial) {
-   return (java.lang.String) sagex.SageAPI.call("GetEditorialTitle", new Object[] {TVEditorial});
+  Object o = sagex.SageAPI.call("GetEditorialTitle", new Object[] {TVEditorial});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -44,7 +46,9 @@ Since:
 5.1
  */
 public static java.lang.String GetEditorialShow (Object TVEditorial) {
-   return (java.lang.String) sagex.SageAPI.call("GetEditorialShow", new Object[] {TVEditorial});
+  Object o = sagex.SageAPI.call("GetEditorialShow", new Object[] {TVEditorial});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -58,7 +62,9 @@ Since:
 5.1
  */
 public static java.lang.String GetEditorialText (Object TVEditorial) {
-   return (java.lang.String) sagex.SageAPI.call("GetEditorialText", new Object[] {TVEditorial});
+  Object o = sagex.SageAPI.call("GetEditorialText", new Object[] {TVEditorial});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -72,7 +78,9 @@ Since:
 5.1
  */
 public static java.lang.String GetEditorialAirDate (Object TVEditorial) {
-   return (java.lang.String) sagex.SageAPI.call("GetEditorialAirDate", new Object[] {TVEditorial});
+  Object o = sagex.SageAPI.call("GetEditorialAirDate", new Object[] {TVEditorial});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -86,7 +94,9 @@ Since:
 5.1
  */
 public static java.lang.String GetEditorialNetwork (Object TVEditorial) {
-   return (java.lang.String) sagex.SageAPI.call("GetEditorialNetwork", new Object[] {TVEditorial});
+  Object o = sagex.SageAPI.call("GetEditorialNetwork", new Object[] {TVEditorial});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -100,7 +110,9 @@ Since:
 5.1
  */
 public static boolean HasEditorialImage (Object TVEditorial) {
-   return (Boolean) sagex.SageAPI.call("HasEditorialImage", new Object[] {TVEditorial});
+  Object o = sagex.SageAPI.call("HasEditorialImage", new Object[] {TVEditorial});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -114,7 +126,9 @@ Since:
 5.1
  */
 public static Object GetEditorialImage (Object TVEditorial) {
-   return (Object) sagex.SageAPI.call("GetEditorialImage", new Object[] {TVEditorial});
+  Object o = sagex.SageAPI.call("GetEditorialImage", new Object[] {TVEditorial});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 

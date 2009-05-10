@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/CaptureDeviceInputAPI.html'>CaptureDeviceInputAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -16,7 +16,9 @@ Returns:
 the name of the tuning plugin currently used for the specified CaptureDeviceInput
  */
 public static java.lang.String GetInfraredTuningPlugin (java.lang.String CaptureDeviceInput) {
-   return (java.lang.String) sagex.SageAPI.call("GetInfraredTuningPlugin", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetInfraredTuningPlugin", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -28,7 +30,9 @@ Returns:
 the port number of the tuning plugin currently used for the specified CaptureDeviceInput
  */
 public static int GetInfraredTuningPluginPortNumber (java.lang.String CaptureDeviceInput) {
-   return (Integer) sagex.SageAPI.call("GetInfraredTuningPluginPortNumber", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetInfraredTuningPluginPortNumber", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -43,7 +47,9 @@ Returns:
 true if the plugin was setup (if it requires hardware this validates the hardware is connected)
  */
 public static boolean SetInfraredTuningPluginAndPort (java.lang.String CaptureDeviceInput, java.lang.String PluginName, int PluginPortNumber) {
-   return (Boolean) sagex.SageAPI.call("SetInfraredTuningPluginAndPort", new Object[] {CaptureDeviceInput,PluginName,PluginPortNumber});
+  Object o = sagex.SageAPI.call("SetInfraredTuningPluginAndPort", new Object[] {CaptureDeviceInput,PluginName,PluginPortNumber});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -59,7 +65,9 @@ Returns:
 true if the hardware detected a signal on the specified channel
  */
 public static boolean AutoTuneChannelTest (java.lang.String CaptureDeviceInput, java.lang.String ChannelNumber) {
-   return (Boolean) sagex.SageAPI.call("AutoTuneChannelTest", new Object[] {CaptureDeviceInput,ChannelNumber});
+  Object o = sagex.SageAPI.call("AutoTuneChannelTest", new Object[] {CaptureDeviceInput,ChannelNumber});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -75,7 +83,9 @@ Returns:
 true if the hardware detected a signal on the specified channel
  */
 public static java.lang.String AutoScanChannelInfo (java.lang.String CaptureDeviceInput, java.lang.String ChannelNumber) {
-   return (java.lang.String) sagex.SageAPI.call("AutoScanChannelInfo", new Object[] {CaptureDeviceInput,ChannelNumber});
+  Object o = sagex.SageAPI.call("AutoScanChannelInfo", new Object[] {CaptureDeviceInput,ChannelNumber});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -87,7 +97,9 @@ Returns:
 the minimum channel number for the specified CaptureDeviceInput
  */
 public static int GetInputMinimumChannelNumber (java.lang.String CaptureDeviceInput) {
-   return (Integer) sagex.SageAPI.call("GetInputMinimumChannelNumber", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetInputMinimumChannelNumber", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -99,7 +111,9 @@ Returns:
 the maximum channel number for the specified CaptureDeviceInput
  */
 public static int GetInputMaximumChannelNumber (java.lang.String CaptureDeviceInput) {
-   return (Integer) sagex.SageAPI.call("GetInputMaximumChannelNumber", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetInputMaximumChannelNumber", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -110,7 +124,7 @@ CaptureDeviceInput- the name of the CaptureDeviceInput
 Value- the new value to set the brightness to, in the inclusive range 0-255. Use -1 to set it to the default.
  */
 public static void SetCaptureBrightness (java.lang.String CaptureDeviceInput, int Value) {
-    sagex.SageAPI.call("SetCaptureBrightness", new Object[] {CaptureDeviceInput,Value});
+   sagex.SageAPI.call("SetCaptureBrightness", new Object[] {CaptureDeviceInput,Value});
 }
 
 /**
@@ -121,7 +135,7 @@ CaptureDeviceInput- the name of the CaptureDeviceInput
 Value- the new value to set the saturation to, in the inclusive range 0-255. Use -1 to set it to the default.
  */
 public static void SetCaptureSaturation (java.lang.String CaptureDeviceInput, int Value) {
-    sagex.SageAPI.call("SetCaptureSaturation", new Object[] {CaptureDeviceInput,Value});
+   sagex.SageAPI.call("SetCaptureSaturation", new Object[] {CaptureDeviceInput,Value});
 }
 
 /**
@@ -132,7 +146,7 @@ CaptureDeviceInput- the name of the CaptureDeviceInput
 Value- the new value to set the hue to, in the inclusive range 0-255. Use -1 to set it to the default.
  */
 public static void SetCaptureHue (java.lang.String CaptureDeviceInput, int Value) {
-    sagex.SageAPI.call("SetCaptureHue", new Object[] {CaptureDeviceInput,Value});
+   sagex.SageAPI.call("SetCaptureHue", new Object[] {CaptureDeviceInput,Value});
 }
 
 /**
@@ -143,7 +157,7 @@ CaptureDeviceInput- the name of the CaptureDeviceInput
 Value- the new value to set the contrast to, in the inclusive range 0-255. Use -1 to set it to the default.
  */
 public static void SetCaptureContrast (java.lang.String CaptureDeviceInput, int Value) {
-    sagex.SageAPI.call("SetCaptureContrast", new Object[] {CaptureDeviceInput,Value});
+   sagex.SageAPI.call("SetCaptureContrast", new Object[] {CaptureDeviceInput,Value});
 }
 
 /**
@@ -155,7 +169,7 @@ CaptureDeviceInput- the name of the CaptureDeviceInput
 Value- the new value to set the sharpness to, in the inclusive range 0-255. Use -1 to set it to the default.
  */
 public static void SetCaptureSharpness (java.lang.String CaptureDeviceInput, int Value) {
-    sagex.SageAPI.call("SetCaptureSharpness", new Object[] {CaptureDeviceInput,Value});
+   sagex.SageAPI.call("SetCaptureSharpness", new Object[] {CaptureDeviceInput,Value});
 }
 
 /**
@@ -167,7 +181,9 @@ Returns:
 the brightness level for the specified CaptureDeviceInput in the inclusive range 0-255
  */
 public static int GetCaptureBrightness (java.lang.String CaptureDeviceInput) {
-   return (Integer) sagex.SageAPI.call("GetCaptureBrightness", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetCaptureBrightness", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -179,7 +195,9 @@ Returns:
 the saturation level for the specified CaptureDeviceInput in the inclusive range 0-255
  */
 public static int GetCaptureSaturation (java.lang.String CaptureDeviceInput) {
-   return (Integer) sagex.SageAPI.call("GetCaptureSaturation", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetCaptureSaturation", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -191,7 +209,9 @@ Returns:
 the hue level for the specified CaptureDeviceInput in the inclusive range 0-255
  */
 public static int GetCaptureHue (java.lang.String CaptureDeviceInput) {
-   return (Integer) sagex.SageAPI.call("GetCaptureHue", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetCaptureHue", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -203,7 +223,9 @@ Returns:
 the contrast level for the specified CaptureDeviceInput in the inclusive range 0-255
  */
 public static int GetCaptureContrast (java.lang.String CaptureDeviceInput) {
-   return (Integer) sagex.SageAPI.call("GetCaptureContrast", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetCaptureContrast", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -216,7 +238,9 @@ Returns:
 the sharpness level for the specified CaptureDeviceInput in the inclusive range 0-255
  */
 public static int GetCaptureSharpness (java.lang.String CaptureDeviceInput) {
-   return (Integer) sagex.SageAPI.call("GetCaptureSharpness", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetCaptureSharpness", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -227,7 +251,7 @@ CaptureDeviceInput- the name of the CaptureDeviceInput
 ExternalDeviceName- the name of the external device the IR tuning plugin is supposed to control This value should be obtained from a call to (@link Configuration#GetRemotesForInfraredTuningPlugin GetRemotesForInfraredTuningPlugin()}
  */
 public static void SetInfraredTunerRemoteName (java.lang.String CaptureDeviceInput, java.lang.String ExternalDeviceName) {
-    sagex.SageAPI.call("SetInfraredTunerRemoteName", new Object[] {CaptureDeviceInput,ExternalDeviceName});
+   sagex.SageAPI.call("SetInfraredTunerRemoteName", new Object[] {CaptureDeviceInput,ExternalDeviceName});
 }
 
 /**
@@ -239,7 +263,9 @@ Returns:
 the name of the external device codes used for the tuner plugin on the specified CaptureDeviceInput
  */
 public static java.lang.String GetInfraredTunerRemoteName (java.lang.String CaptureDeviceInput) {
-   return (java.lang.String) sagex.SageAPI.call("GetInfraredTunerRemoteName", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetInfraredTunerRemoteName", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -250,7 +276,7 @@ CaptureDeviceInput- the name of the CaptureDeviceInput
 Value- true if this input is connected to a Cable source, false if it uses Broadcast/Over-the-Air (OTA)
  */
 public static void SetRFSignalIsCableTV (java.lang.String CaptureDeviceInput, boolean Value) {
-    sagex.SageAPI.call("SetRFSignalIsCableTV", new Object[] {CaptureDeviceInput,Value});
+   sagex.SageAPI.call("SetRFSignalIsCableTV", new Object[] {CaptureDeviceInput,Value});
 }
 
 /**
@@ -262,7 +288,9 @@ Returns:
 true if this input is connected to a Cable source, false if it uses Broadcast/Over-the-Air (OTA)
  */
 public static boolean IsRFSignalCableTV (java.lang.String CaptureDeviceInput) {
-   return (Boolean) sagex.SageAPI.call("IsRFSignalCableTV", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("IsRFSignalCableTV", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -276,7 +304,9 @@ true if this input was created usingAddInputForRFChannel()
 method call
  */
 public static boolean IsExternallyTunedRFInput (java.lang.String CaptureDeviceInput) {
-   return (Boolean) sagex.SageAPI.call("IsExternallyTunedRFInput", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("IsExternallyTunedRFInput", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -289,7 +319,9 @@ Returns:
 the RF channel number used to receive the source signal on the specified CaptureDeviceInput
  */
 public static int GetConstantRFChannelInput (java.lang.String CaptureDeviceInput) {
-   return (Integer) sagex.SageAPI.call("GetConstantRFChannelInput", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetConstantRFChannelInput", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -301,7 +333,9 @@ Returns:
 true if this input captures both audio and video, false if it just captures video
  */
 public static boolean IsCaptureDeviceInputAudioVideo (java.lang.String CaptureDeviceInput) {
-   return (Boolean) sagex.SageAPI.call("IsCaptureDeviceInputAudioVideo", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("IsCaptureDeviceInputAudioVideo", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -313,7 +347,9 @@ Returns:
 the type of physical connector used for the specified CaptureDeviceInput
  */
 public static java.lang.String GetPhysicalInputType (java.lang.String CaptureDeviceInput) {
-   return (java.lang.String) sagex.SageAPI.call("GetPhysicalInputType", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetPhysicalInputType", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -328,7 +364,9 @@ Returns:
 the name of the specified CaptureDeviceInput connection without the CaptureDevice name prefixing it
  */
 public static java.lang.String GetCaptureDeviceInputName (java.lang.String CaptureDeviceInput) {
-   return (java.lang.String) sagex.SageAPI.call("GetCaptureDeviceInputName", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetCaptureDeviceInputName", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -341,7 +379,9 @@ Returns:
 true if the Lineup was successfully configured for the specified CaptureDeviceInput
  */
 public static boolean ConfigureInputForEPGDataLineup (java.lang.String CaptureDeviceInput, java.lang.String Lineup) {
-   return (Boolean) sagex.SageAPI.call("ConfigureInputForEPGDataLineup", new Object[] {CaptureDeviceInput,Lineup});
+  Object o = sagex.SageAPI.call("ConfigureInputForEPGDataLineup", new Object[] {CaptureDeviceInput,Lineup});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -353,7 +393,9 @@ Returns:
 true (the call will always succeed)
  */
 public static boolean ConfigureInputWithoutEPGData (java.lang.String CaptureDeviceInput) {
-   return (Boolean) sagex.SageAPI.call("ConfigureInputWithoutEPGData", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("ConfigureInputWithoutEPGData", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -364,7 +406,7 @@ Parameters:
 CaptureDeviceInput- the name of the CaptureDeviceInput to use
  */
 public static void ReleaseCaptureDeviceInput (java.lang.String CaptureDeviceInput) {
-    sagex.SageAPI.call("ReleaseCaptureDeviceInput", new Object[] {CaptureDeviceInput});
+   sagex.SageAPI.call("ReleaseCaptureDeviceInput", new Object[] {CaptureDeviceInput});
 }
 
 /**
@@ -374,7 +416,9 @@ Returns:
 the CaptureDeviceInput that is recording the MediaFile that is currently loaded by the MediaPlayer
  */
 public static java.lang.String GetCaptureDeviceInputBeingViewed () {
-   return (java.lang.String) sagex.SageAPI.call("GetCaptureDeviceInputBeingViewed", (Object[])null);
+  Object o = sagex.SageAPI.call("GetCaptureDeviceInputBeingViewed", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -386,7 +430,9 @@ Returns:
 the CaptureDeviceInput that is recording the specified MediaFile; null if that file is not being recorded currently
  */
 public static java.lang.String GetCaptureDeviceInputRecordingMediaFile (Object MediaFile) {
-   return (java.lang.String) sagex.SageAPI.call("GetCaptureDeviceInputRecordingMediaFile", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetCaptureDeviceInputRecordingMediaFile", new Object[] {MediaFile});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -398,7 +444,9 @@ Returns:
 the name of the lineups that is configured for use on the specified CaptureDeviceInput; returns null if the input is not configured
  */
 public static java.lang.String GetLineupForCaptureDeviceInput (java.lang.String CaptureDeviceInput) {
-   return (java.lang.String) sagex.SageAPI.call("GetLineupForCaptureDeviceInput", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetLineupForCaptureDeviceInput", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -410,7 +458,9 @@ Returns:
 the name of the CaptureDevice for the specified CaptureDeviceInput
  */
 public static java.lang.String GetCaptureDeviceForInput (java.lang.String CaptureDeviceInput) {
-   return (java.lang.String) sagex.SageAPI.call("GetCaptureDeviceForInput", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetCaptureDeviceForInput", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -423,7 +473,9 @@ Returns:
 the current signal strength on the specified CaptureDeviceInput
  */
 public static int GetSignalStrength (java.lang.String CaptureDeviceInput) {
-   return (Integer) sagex.SageAPI.call("GetSignalStrength", new Object[] {CaptureDeviceInput});
+  Object o = sagex.SageAPI.call("GetSignalStrength", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 

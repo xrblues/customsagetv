@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaPlayerAPI.html'>MediaPlayerAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -15,7 +15,9 @@ Returns:
 true if the MediaPlayer is fully loaded, false otherwise
  */
 public static boolean IsMediaPlayerFullyLoaded () {
-   return (Boolean) sagex.SageAPI.call("IsMediaPlayerFullyLoaded", (Object[])null);
+  Object o = sagex.SageAPI.call("IsMediaPlayerFullyLoaded", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -26,7 +28,9 @@ Returns:
 true if the MediaPlayer is loading, false otherwise
  */
 public static boolean IsMediaPlayerLoading () {
-   return (Boolean) sagex.SageAPI.call("IsMediaPlayerLoading", (Object[])null);
+  Object o = sagex.SageAPI.call("IsMediaPlayerLoading", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -34,7 +38,7 @@ Sets the playback rate of the MediaPlayer to be twice the current playback rate.
  on all platforms or with all media formats.
  */
 public static void PlayFaster () {
-    sagex.SageAPI.call("PlayFaster", (Object[])null);
+   sagex.SageAPI.call("PlayFaster", (Object[])null);
 }
 
 /**
@@ -42,7 +46,7 @@ Performs a time seek forward in the MediaPlayer. The amount of time skipped will
  to the value of the property videoframe/ff_time in milliseconds. (the default is 10 seconds)
  */
 public static void SkipForward () {
-    sagex.SageAPI.call("SkipForward", (Object[])null);
+   sagex.SageAPI.call("SkipForward", (Object[])null);
 }
 
 /**
@@ -50,7 +54,7 @@ Performs a time seek forward in the MediaPlayer. The amount of time skipped will
  to the value of the property videoframe/ff_time2 in milliseconds. (the default is 2 1/2 minutes)
  */
 public static void SkipForward2 () {
-    sagex.SageAPI.call("SkipForward2", (Object[])null);
+   sagex.SageAPI.call("SkipForward2", (Object[])null);
 }
 
 /**
@@ -62,14 +66,14 @@ Parameters:
 Time- the time to seek the MediaPlayer to in milliseconds
  */
 public static void Seek (long Time) {
-    sagex.SageAPI.call("Seek", new Object[] {Time});
+   sagex.SageAPI.call("Seek", new Object[] {Time});
 }
 
 /**
 Pauses playback in the MediaPlayer. If the MediaPlayer is currently paused this will perform a frame step.
  */
 public static void Pause () {
-    sagex.SageAPI.call("Pause", (Object[])null);
+   sagex.SageAPI.call("Pause", (Object[])null);
 }
 
 /**
@@ -77,7 +81,7 @@ Resumes playback in the MediaPlayer. If the MediaPlayer is playing at a speed ot
  reset to x1.
  */
 public static void Play () {
-    sagex.SageAPI.call("Play", (Object[])null);
+   sagex.SageAPI.call("Play", (Object[])null);
 }
 
 /**
@@ -85,7 +89,7 @@ Sets the playback rate of the MediaPlayer to be half the current playback rate. 
  on all platforms or with all media formats.
  */
 public static void PlaySlower () {
-    sagex.SageAPI.call("PlaySlower", (Object[])null);
+   sagex.SageAPI.call("PlaySlower", (Object[])null);
 }
 
 /**
@@ -93,7 +97,7 @@ Pauses playback of the MediaPlayer if it is currently playing or resumes playbac
  if it is currently paused.
  */
 public static void PlayPause () {
-    sagex.SageAPI.call("PlayPause", (Object[])null);
+   sagex.SageAPI.call("PlayPause", (Object[])null);
 }
 
 /**
@@ -101,7 +105,7 @@ Performs a time seek backwards in the MediaPlayer. The amount of time skipped wi
  to the value of the property videoframe/rew_time in milliseconds. (the default is 10 seconds)
  */
 public static void SkipBackwards () {
-    sagex.SageAPI.call("SkipBackwards", (Object[])null);
+   sagex.SageAPI.call("SkipBackwards", (Object[])null);
 }
 
 /**
@@ -109,7 +113,7 @@ Performs a time seek backwards in the MediaPlayer. The amount of time skipped wi
  to the value of the property videoframe/rew_time2 in milliseconds. (the default is 2 1/2 minutes)
  */
 public static void SkipBackwards2 () {
-    sagex.SageAPI.call("SkipBackwards2", (Object[])null);
+   sagex.SageAPI.call("SkipBackwards2", (Object[])null);
 }
 
 /**
@@ -120,7 +124,9 @@ Returns:
 the current playback rate of the MediaPlayer
  */
 public static float GetPlaybackRate () {
-   return (Float) sagex.SageAPI.call("GetPlaybackRate", (Object[])null);
+  Object o = sagex.SageAPI.call("GetPlaybackRate", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
 }
 
 /**
@@ -131,7 +137,7 @@ Parameters:
 PlaybackRate- the playback rate to set the MediaPlayer to
  */
 public static void SetPlaybackRate (float PlaybackRate) {
-    sagex.SageAPI.call("SetPlaybackRate", new Object[] {PlaybackRate});
+   sagex.SageAPI.call("SetPlaybackRate", new Object[] {PlaybackRate});
 }
 
 /**
@@ -139,7 +145,7 @@ Increases the volume in the MediaPlayer. This may also effect the 'system' volum
  configuration of SageTV.
  */
 public static void VolumeUp () {
-    sagex.SageAPI.call("VolumeUp", (Object[])null);
+   sagex.SageAPI.call("VolumeUp", (Object[])null);
 }
 
 /**
@@ -147,7 +153,7 @@ Decreases the volume in the MediaPlayer. This may also effect the 'system' volum
  configuration of SageTV.
  */
 public static void VolumeDown () {
-    sagex.SageAPI.call("VolumeDown", (Object[])null);
+   sagex.SageAPI.call("VolumeDown", (Object[])null);
 }
 
 /**
@@ -159,7 +165,9 @@ the current volume level of the MediaPlayer; if no MediaPlayer is loaded this wi
          the system volume. The value will be between 0.0 and 1.0
  */
 public static float GetVolume () {
-   return (Float) sagex.SageAPI.call("GetVolume", (Object[])null);
+  Object o = sagex.SageAPI.call("GetVolume", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
 }
 
 /**
@@ -167,7 +175,7 @@ Performs a logical channel up in the MediaPlayer. This only has effect if the co
  currently being viewed has the concept of channels, tracks, chapters, etc.
  */
 public static void ChannelUp () {
-    sagex.SageAPI.call("ChannelUp", (Object[])null);
+   sagex.SageAPI.call("ChannelUp", (Object[])null);
 }
 
 /**
@@ -175,7 +183,7 @@ Performs a logical channel down in the MediaPlayer. This only has effect if the 
  currently being viewed has the concept of channels, tracks, chapters, etc.
  */
 public static void ChannelDown () {
-    sagex.SageAPI.call("ChannelDown", (Object[])null);
+   sagex.SageAPI.call("ChannelDown", (Object[])null);
 }
 
 /**
@@ -186,7 +194,7 @@ Parameters:
 ChannelNumber- the new channel/track/chapter to playback
  */
 public static void ChannelSet (java.lang.String ChannelNumber) {
-    sagex.SageAPI.call("ChannelSet", new Object[] {ChannelNumber});
+   sagex.SageAPI.call("ChannelSet", new Object[] {ChannelNumber});
 }
 
 /**
@@ -198,7 +206,7 @@ Parameters:
 Amount- the amount to adjust the volume by
  */
 public static void VolumeAdjust (float Amount) {
-    sagex.SageAPI.call("VolumeAdjust", new Object[] {Amount});
+   sagex.SageAPI.call("VolumeAdjust", new Object[] {Amount});
 }
 
 /**
@@ -209,7 +217,7 @@ Parameters:
 Amount- the level to set the volume to
  */
 public static void SetVolume (float Amount) {
-    sagex.SageAPI.call("SetVolume", new Object[] {Amount});
+   sagex.SageAPI.call("SetVolume", new Object[] {Amount});
 }
 
 /**
@@ -225,7 +233,9 @@ Returns:
 true if the request was successful, a localized error message otherwise
  */
 public static java.lang.Object Watch (java.lang.Object Content) {
-   return (java.lang.Object) sagex.SageAPI.call("Watch", new Object[] {Content});
+  Object o = sagex.SageAPI.call("Watch", new Object[] {Content});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -243,7 +253,9 @@ Returns:
 true if the request was successful, a localized error message otherwise
  */
 public static java.lang.Object WatchLive (java.lang.String CaptureDeviceInput, long PauseBufferSize) {
-   return (java.lang.Object) sagex.SageAPI.call("WatchLive", new Object[] {CaptureDeviceInput,PauseBufferSize});
+  Object o = sagex.SageAPI.call("WatchLive", new Object[] {CaptureDeviceInput,PauseBufferSize});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -257,7 +269,9 @@ Since:
 6.4
  */
 public static java.lang.Object WatchLocalFile (java.io.File file) {
-   return (java.lang.Object) sagex.SageAPI.call("WatchLocalFile", new Object[] {file});
+  Object o = sagex.SageAPI.call("WatchLocalFile", new Object[] {file});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -268,7 +282,7 @@ Parameters:
 Playlist- the Playlist to being playback of
  */
 public static void StartPlaylist (Object Playlist) {
-    sagex.SageAPI.call("StartPlaylist", new Object[] {Playlist});
+   sagex.SageAPI.call("StartPlaylist", new Object[] {Playlist});
 }
 
 /**
@@ -280,7 +294,7 @@ Playlist- the Playlist to being playback of
 StartIndex- the index in the playlist to start playing at (1-based index)
  */
 public static void StartPlaylistAt (Object Playlist, int StartIndex) {
-    sagex.SageAPI.call("StartPlaylistAt", new Object[] {Playlist,StartIndex});
+   sagex.SageAPI.call("StartPlaylistAt", new Object[] {Playlist,StartIndex});
 }
 
 /**
@@ -288,7 +302,7 @@ Closes the file that is currently loaded by the MediaPlayer and waits for the Me
  completely free all of its resources before returning.
  */
 public static void CloseAndWaitUntilClosed () {
-    sagex.SageAPI.call("CloseAndWaitUntilClosed", (Object[])null);
+   sagex.SageAPI.call("CloseAndWaitUntilClosed", (Object[])null);
 }
 
 /**
@@ -298,7 +312,9 @@ Returns:
 true if the MediaPlayer is muted, false otherwise
  */
 public static boolean IsMuted () {
-   return (Boolean) sagex.SageAPI.call("IsMuted", (Object[])null);
+  Object o = sagex.SageAPI.call("IsMuted", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -308,7 +324,7 @@ Parameters:
 Muted- true if the MediaPlayer should be muted, false otherwise
  */
 public static void SetMute (boolean Muted) {
-    sagex.SageAPI.call("SetMute", new Object[] {Muted});
+   sagex.SageAPI.call("SetMute", new Object[] {Muted});
 }
 
 /**
@@ -318,7 +334,9 @@ Returns:
 the title of the content that is currently loaded by the MediaPlayer
  */
 public static java.lang.String GetCurrentMediaTitle () {
-   return (java.lang.String) sagex.SageAPI.call("GetCurrentMediaTitle", (Object[])null);
+  Object o = sagex.SageAPI.call("GetCurrentMediaTitle", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -331,7 +349,9 @@ Returns:
 the current playback time of the MediaPlayer in milliseconds
  */
 public static long GetMediaTime () {
-   return (Long) sagex.SageAPI.call("GetMediaTime", (Object[])null);
+  Object o = sagex.SageAPI.call("GetMediaTime", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -341,7 +361,9 @@ Returns:
 the duration of the currently loaded MediaFile in milliseconds
  */
 public static long GetMediaDuration () {
-   return (Long) sagex.SageAPI.call("GetMediaDuration", (Object[])null);
+  Object o = sagex.SageAPI.call("GetMediaDuration", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -351,7 +373,9 @@ Returns:
 the MediaFile object that is currently loaded (or loading) by the MediaPlayer
  */
 public static Object GetCurrentMediaFile () {
-   return (Object) sagex.SageAPI.call("GetCurrentMediaFile", (Object[])null);
+  Object o = sagex.SageAPI.call("GetCurrentMediaFile", (Object[])null);
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -361,7 +385,9 @@ Returns:
 true if the MediaPlayer currently has a file that is loading or loaded, false otherwise
  */
 public static boolean HasMediaFile () {
-   return (Boolean) sagex.SageAPI.call("HasMediaFile", (Object[])null);
+  Object o = sagex.SageAPI.call("HasMediaFile", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -371,7 +397,9 @@ Returns:
 true if the MediaPlayer has a file loading or loaded that has video content in it, false otherwise
  */
 public static boolean DoesCurrentMediaFileHaveVideo () {
-   return (Boolean) sagex.SageAPI.call("DoesCurrentMediaFileHaveVideo", (Object[])null);
+  Object o = sagex.SageAPI.call("DoesCurrentMediaFileHaveVideo", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -381,7 +409,9 @@ Returns:
 true if the MediaPlayer has a file loading or loaded, and that file is a music file
  */
 public static boolean IsCurrentMediaFileMusic () {
-   return (Boolean) sagex.SageAPI.call("IsCurrentMediaFileMusic", (Object[])null);
+  Object o = sagex.SageAPI.call("IsCurrentMediaFileMusic", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -391,7 +421,9 @@ Returns:
 true if the MediaPlayer has a file loading or loaded, and that file is a DVD
  */
 public static boolean IsCurrentMediaFileDVD () {
-   return (Boolean) sagex.SageAPI.call("IsCurrentMediaFileDVD", (Object[])null);
+  Object o = sagex.SageAPI.call("IsCurrentMediaFileDVD", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -401,7 +433,9 @@ Returns:
 true if the MediaPlayer has a file loading or loaded, and that file is currently being recorded
  */
 public static boolean IsCurrentMediaFileRecording () {
-   return (Boolean) sagex.SageAPI.call("IsCurrentMediaFileRecording", (Object[])null);
+  Object o = sagex.SageAPI.call("IsCurrentMediaFileRecording", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -411,7 +445,9 @@ Returns:
 true if the MediaPlayer is currently playing back content, false otherwise
  */
 public static boolean IsPlaying () {
-   return (Boolean) sagex.SageAPI.call("IsPlaying", (Object[])null);
+  Object o = sagex.SageAPI.call("IsPlaying", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -421,7 +457,9 @@ Returns:
 true if the MediaPlayer currently has DVD content loaded and that content is showing a DVD menu that can have user interaction, false otherwise
  */
 public static boolean IsShowingDVDMenu () {
-   return (Boolean) sagex.SageAPI.call("IsShowingDVDMenu", (Object[])null);
+  Object o = sagex.SageAPI.call("IsShowingDVDMenu", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -433,7 +471,9 @@ Returns:
 the current Playlist that is being played back by the MediaPlayer, null otherwise
  */
 public static Object GetCurrentPlaylist () {
-   return (Object) sagex.SageAPI.call("GetCurrentPlaylist", (Object[])null);
+  Object o = sagex.SageAPI.call("GetCurrentPlaylist", (Object[])null);
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -445,7 +485,9 @@ the 0-based index into the root Playlist that is currently being played back by 
            if no Playlist is currently being played back.
  */
 public static int GetCurrentPlaylistIndex () {
-   return (Integer) sagex.SageAPI.call("GetCurrentPlaylistIndex", (Object[])null);
+  Object o = sagex.SageAPI.call("GetCurrentPlaylistIndex", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -457,7 +499,9 @@ Returns:
 the earliest time that the current media can be seeked to in milliseconds
  */
 public static long GetAvailableSeekingStart () {
-   return (Long) sagex.SageAPI.call("GetAvailableSeekingStart", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAvailableSeekingStart", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -469,7 +513,9 @@ Returns:
 the latest time that the current media can be seeked to in milliseconds
  */
 public static long GetAvailableSeekingEnd () {
-   return (Long) sagex.SageAPI.call("GetAvailableSeekingEnd", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAvailableSeekingEnd", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -481,7 +527,9 @@ Returns:
 true if the specified ParentalLockCode matches the parental lock code SageTV is configured to use
  */
 public static boolean IsCorrectParentalLockCode (java.lang.String ParentalLockCode) {
-   return (Boolean) sagex.SageAPI.call("IsCorrectParentalLockCode", new Object[] {ParentalLockCode});
+  Object o = sagex.SageAPI.call("IsCorrectParentalLockCode", new Object[] {ParentalLockCode});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -491,21 +539,21 @@ Parameters:
 OnTop- true if the video window of SageTV should be on top of all other windows in the system, false otherwise
  */
 public static void SetVideoAlwaysOnTop (boolean OnTop) {
-    sagex.SageAPI.call("SetVideoAlwaysOnTop", new Object[] {OnTop});
+   sagex.SageAPI.call("SetVideoAlwaysOnTop", new Object[] {OnTop});
 }
 
 /**
 Informs the MediaPlayer to start playback of the next chapter in the current DVD content.
  */
 public static void DVDChapterNext () {
-    sagex.SageAPI.call("DVDChapterNext", (Object[])null);
+   sagex.SageAPI.call("DVDChapterNext", (Object[])null);
 }
 
 /**
 Informs the MediaPlayer to start playback of the previous chapter in the current DVD content.
  */
 public static void DVDChapterPrevious () {
-    sagex.SageAPI.call("DVDChapterPrevious", (Object[])null);
+   sagex.SageAPI.call("DVDChapterPrevious", (Object[])null);
 }
 
 /**
@@ -515,56 +563,56 @@ Parameters:
 ChapterNumber- the chapter number to start playback of in the current DVD
  */
 public static void DVDChapterSet (int ChapterNumber) {
-    sagex.SageAPI.call("DVDChapterSet", new Object[] {ChapterNumber});
+   sagex.SageAPI.call("DVDChapterSet", new Object[] {ChapterNumber});
 }
 
 /**
 Performs the 'Enter' operation when using a menu system in DVD content.
  */
 public static void DVDEnter () {
-    sagex.SageAPI.call("DVDEnter", (Object[])null);
+   sagex.SageAPI.call("DVDEnter", (Object[])null);
 }
 
 /**
 Performs the 'Menu' operation when playing back a DVD which should bring up the root menu of the DVD
  */
 public static void DVDMenu () {
-    sagex.SageAPI.call("DVDMenu", (Object[])null);
+   sagex.SageAPI.call("DVDMenu", (Object[])null);
 }
 
 /**
 Performs the 'Menu' operation when playing back a DVD which should bring up the title menu of the DVD
  */
 public static void DVDTitleMenu () {
-    sagex.SageAPI.call("DVDTitleMenu", (Object[])null);
+   sagex.SageAPI.call("DVDTitleMenu", (Object[])null);
 }
 
 /**
 Performs the 'Return' operation when playing back a DVD which should bring the user back to the last DVD menu they were at
  */
 public static void DVDReturn () {
-    sagex.SageAPI.call("DVDReturn", (Object[])null);
+   sagex.SageAPI.call("DVDReturn", (Object[])null);
 }
 
 /**
 Informs the MediaPlayer to start playback of the next title in the current DVD content.
  */
 public static void DVDTitleNext () {
-    sagex.SageAPI.call("DVDTitleNext", (Object[])null);
+   sagex.SageAPI.call("DVDTitleNext", (Object[])null);
 }
 
 /**
 Informs the MediaPlayer to start playback of the previous title in the current DVD content.
  */
 public static void DVDTitlePrevious () {
-    sagex.SageAPI.call("DVDTitlePrevious", (Object[])null);
+   sagex.SageAPI.call("DVDTitlePrevious", (Object[])null);
 }
 
 /**
 Toggles the state for subtitle display in the DVD content being played back.
  */
 public static void DVDSubtitleToggle () {
-    sagex.SageAPI.call("DVDSubtitleToggle", (Object[])null);
+   sagex.SageAPI.call("DVDSubtitleToggle", (Object[])null);
 }
 
 /**
@@ -577,7 +625,7 @@ Parameters:
 SubtitleNum- the 0-based index into the list of subtitles that should be displayed
  */
 public static void DVDSubtitleChange (int SubtitleNum) {
-    sagex.SageAPI.call("DVDSubtitleChange", new Object[] {SubtitleNum});
+   sagex.SageAPI.call("DVDSubtitleChange", new Object[] {SubtitleNum});
 }
 
 /**
@@ -590,7 +638,7 @@ Parameters:
 AudioNum- the 0-based index into the list of audio languages that should be used
  */
 public static void DVDAudioChange (int AudioNum) {
-    sagex.SageAPI.call("DVDAudioChange", new Object[] {AudioNum});
+   sagex.SageAPI.call("DVDAudioChange", new Object[] {AudioNum});
 }
 
 /**
@@ -603,7 +651,7 @@ Parameters:
 AngleNum- the 1-based index that indicates which angle should be used for playback
  */
 public static void DVDAngleChange (int AngleNum) {
-    sagex.SageAPI.call("DVDAngleChange", new Object[] {AngleNum});
+   sagex.SageAPI.call("DVDAngleChange", new Object[] {AngleNum});
 }
 
 /**
@@ -611,7 +659,7 @@ Reloads the current file that is loaded by the MediaPlayer. This is useful when 
  for the MediaPlayer and then showing playback with those changes.
  */
 public static void ReloadCurrentFile () {
-    sagex.SageAPI.call("ReloadCurrentFile", (Object[])null);
+   sagex.SageAPI.call("ReloadCurrentFile", (Object[])null);
 }
 
 /**
@@ -637,7 +685,7 @@ Param1- the first parameter for the control command (see above)
 Param2- the second parameter for the control command (see above)
  */
 public static void DirectPlaybackControl (int Code, long Param1, long Param2) {
-    sagex.SageAPI.call("DirectPlaybackControl", new Object[] {Code,Param1,Param2});
+   sagex.SageAPI.call("DirectPlaybackControl", new Object[] {Code,Param1,Param2});
 }
 
 /**
@@ -647,7 +695,9 @@ Returns:
 the current title number that is being played back for DVD content, 0 otherwise
  */
 public static int GetDVDCurrentTitle () {
-   return (Integer) sagex.SageAPI.call("GetDVDCurrentTitle", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDCurrentTitle", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -657,7 +707,9 @@ Returns:
 the total number of titles in the current DVD content
  */
 public static int GetDVDNumberOfTitles () {
-   return (Integer) sagex.SageAPI.call("GetDVDNumberOfTitles", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDNumberOfTitles", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -667,7 +719,9 @@ Returns:
 the current chapter number that is being played back for DVD content
  */
 public static int GetDVDCurrentChapter () {
-   return (Integer) sagex.SageAPI.call("GetDVDCurrentChapter", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDCurrentChapter", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -677,7 +731,9 @@ Returns:
 the total number of chapters in the current title in the current DVD content
  */
 public static int GetDVDNumberOfChapters () {
-   return (Integer) sagex.SageAPI.call("GetDVDNumberOfChapters", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDNumberOfChapters", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -688,7 +744,9 @@ the current 'domain' that the DVD playback is in, uses the following values:
          1 = DVD initialization, 2 = disc menus, 3 = title menus, 4 = playback, 5 = stopped
  */
 public static int GetDVDCurrentDomain () {
-   return (Integer) sagex.SageAPI.call("GetDVDCurrentDomain", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDCurrentDomain", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -698,7 +756,9 @@ Returns:
 the current angle number that is being played back for DVD content
  */
 public static int GetDVDCurrentAngle () {
-   return (Integer) sagex.SageAPI.call("GetDVDCurrentAngle", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDCurrentAngle", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -708,7 +768,9 @@ Returns:
 the total number of angles that are currently available to select from in the current DVD content
  */
 public static int GetDVDNumberOfAngles () {
-   return (Integer) sagex.SageAPI.call("GetDVDNumberOfAngles", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDNumberOfAngles", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -718,7 +780,9 @@ Returns:
 the current audio playback language that is being used for the current DVD content
  */
 public static java.lang.String GetDVDCurrentLanguage () {
-   return (java.lang.String) sagex.SageAPI.call("GetDVDCurrentLanguage", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDCurrentLanguage", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -728,7 +792,7 @@ Returns:
 a list of all of the audio languages that are currently available in the current DVD content
  */
 public static java.lang.String[] GetDVDAvailableLanguages () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetDVDAvailableLanguages", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetDVDAvailableLanguages", (Object[])null);
 }
 
 /**
@@ -738,7 +802,7 @@ Returns:
 the current subtitle that is being used for the current DVD content, null if subtitles are currently disabled
  */
 public static java.lang.String[] GetDVDCurrentSubpicture () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetDVDCurrentSubpicture", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetDVDCurrentSubpicture", (Object[])null);
 }
 
 /**
@@ -748,7 +812,7 @@ Returns:
 a list of all of the subtitles that are currently available in the current DVD content
  */
 public static java.lang.String[] GetDVDAvailableSubpictures () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetDVDAvailableSubpictures", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetDVDAvailableSubpictures", (Object[])null);
 }
 
 /**
@@ -759,7 +823,9 @@ Returns:
 the current state that MediaPlayer close captioning is set to use
  */
 public static java.lang.String GetMediaPlayerClosedCaptionState () {
-   return (java.lang.String) sagex.SageAPI.call("GetMediaPlayerClosedCaptionState", (Object[])null);
+  Object o = sagex.SageAPI.call("GetMediaPlayerClosedCaptionState", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -770,7 +836,7 @@ Parameters:
 CCType- the new state that MediaPlayer close captioning should use
  */
 public static void SetMediaPlayerClosedCaptionState (java.lang.String CCType) {
-    sagex.SageAPI.call("SetMediaPlayerClosedCaptionState", new Object[] {CCType});
+   sagex.SageAPI.call("SetMediaPlayerClosedCaptionState", new Object[] {CCType});
 }
 
 /**
@@ -781,7 +847,9 @@ Returns:
 true if the MediaPlayer detects signal loss from the source it's playing back, false otherwise
  */
 public static boolean IsMediaPlayerSignalLost () {
-   return (Boolean) sagex.SageAPI.call("IsMediaPlayerSignalLost", (Object[])null);
+  Object o = sagex.SageAPI.call("IsMediaPlayerSignalLost", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -792,7 +860,9 @@ Returns:
 a java.awt.image.BufferedImage which holds the last rendered video frame, or null if the call cannot be completed
  */
 public static java.awt.image.BufferedImage GetVideoSnapshot () {
-   return (java.awt.image.BufferedImage) sagex.SageAPI.call("GetVideoSnapshot", (Object[])null);
+  Object o = sagex.SageAPI.call("GetVideoSnapshot", (Object[])null);
+  if (o!=null) return (java.awt.image.BufferedImage) o;
+  return null;
 }
 
 

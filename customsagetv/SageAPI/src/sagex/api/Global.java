@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Global.html'>Global</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -11,7 +11,7 @@ public class Global {
 Re-evaluates and redraws all UI elements on the current menu
  */
 public static void Refresh () {
-    sagex.SageAPI.call("Refresh", (Object[])null);
+   sagex.SageAPI.call("Refresh", (Object[])null);
 }
 
 /**
@@ -21,14 +21,14 @@ Parameters:
 WidgetName- the name that a UI component's Widget must match, if null or zero length, then this is the same as callingRefresh()
  */
 public static void RefreshArea (java.lang.String WidgetName) {
-    sagex.SageAPI.call("RefreshArea", new Object[] {WidgetName});
+   sagex.SageAPI.call("RefreshArea", new Object[] {WidgetName});
 }
 
 /**
 Redraws all UI elements on the current menu
  */
 public static void Repaint () {
-    sagex.SageAPI.call("Repaint", (Object[])null);
+   sagex.SageAPI.call("Repaint", (Object[])null);
 }
 
 /**
@@ -38,7 +38,7 @@ Parameters:
 WidgetName- the name that a UI component's Widget must match, if null or zero length, then this is the same as callingRepaint()
  */
 public static void RepaintArea (java.lang.String WidgetName) {
-    sagex.SageAPI.call("RepaintArea", new Object[] {WidgetName});
+   sagex.SageAPI.call("RepaintArea", new Object[] {WidgetName});
 }
 
 /**
@@ -54,7 +54,9 @@ Name- the name to use for this 'static context' variable
 Value- the value to set this 'static context' variable to
  */
 public static java.lang.Object AddStaticContext (java.lang.String Name, java.lang.Object Value) {
-   return (java.lang.Object) sagex.SageAPI.call("AddStaticContext", new Object[] {Name,Value});
+  Object o = sagex.SageAPI.call("AddStaticContext", new Object[] {Name,Value});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -66,7 +68,9 @@ Name- the name to use for this 'global context' variable
 Value- the value to set this 'global context' variable to
  */
 public static java.lang.Object AddGlobalContext (java.lang.String Name, java.lang.Object Value) {
-   return (java.lang.Object) sagex.SageAPI.call("AddGlobalContext", new Object[] {Name,Value});
+  Object o = sagex.SageAPI.call("AddGlobalContext", new Object[] {Name,Value});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -76,7 +80,9 @@ Returns:
 true if there are unresolved scheduling conflicts, false otherwise
  */
 public static boolean AreThereUnresolvedConflicts () {
-   return (Boolean) sagex.SageAPI.call("AreThereUnresolvedConflicts", (Object[])null);
+  Object o = sagex.SageAPI.call("AreThereUnresolvedConflicts", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -86,7 +92,9 @@ Returns:
 true if SageTV is in the Sleep state
  */
 public static boolean IsAsleep () {
-   return (Boolean) sagex.SageAPI.call("IsAsleep", (Object[])null);
+  Object o = sagex.SageAPI.call("IsAsleep", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -96,7 +104,9 @@ Returns:
 the total diskspace available for television recording by SageTV (in bytes)
  */
 public static long GetTotalDiskspaceAvailable () {
-   return (Long) sagex.SageAPI.call("GetTotalDiskspaceAvailable", (Object[])null);
+  Object o = sagex.SageAPI.call("GetTotalDiskspaceAvailable", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -106,7 +116,9 @@ Returns:
 the total duration of all of the content in the media library in milliseconds
  */
 public static long GetTotalLibraryDuration () {
-   return (Long) sagex.SageAPI.call("GetTotalLibraryDuration", (Object[])null);
+  Object o = sagex.SageAPI.call("GetTotalLibraryDuration", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -116,7 +128,9 @@ Returns:
 the total duration of all of the recorded television content in milliseconds
  */
 public static long GetTotalVideoDuration () {
-   return (Long) sagex.SageAPI.call("GetTotalVideoDuration", (Object[])null);
+  Object o = sagex.SageAPI.call("GetTotalVideoDuration", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -126,7 +140,9 @@ Returns:
 the total number of bytes on disk used by the content in the imported video, picturees and music libraries
  */
 public static long GetUsedLibraryDiskspace () {
-   return (Long) sagex.SageAPI.call("GetUsedLibraryDiskspace", (Object[])null);
+  Object o = sagex.SageAPI.call("GetUsedLibraryDiskspace", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -136,7 +152,9 @@ Returns:
 the total number of bytes on disk used by recorded television content
  */
 public static long GetUsedVideoDiskspace () {
-   return (Long) sagex.SageAPI.call("GetUsedVideoDiskspace", (Object[])null);
+  Object o = sagex.SageAPI.call("GetUsedVideoDiskspace", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -150,7 +168,9 @@ Returns:
 true if two Airings represent the same Show, false otherwise
  */
 public static boolean AreAiringsSameShow (Object Airing1, Object Airing2) {
-   return (Boolean) sagex.SageAPI.call("AreAiringsSameShow", new Object[] {Airing1,Airing2});
+  Object o = sagex.SageAPI.call("AreAiringsSameShow", new Object[] {Airing1,Airing2});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -160,7 +180,9 @@ Returns:
 the last time that SageTV did an EPG update
  */
 public static long GetLastEPGDownloadTime () {
-   return (Long) sagex.SageAPI.call("GetLastEPGDownloadTime", (Object[])null);
+  Object o = sagex.SageAPI.call("GetLastEPGDownloadTime", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -172,7 +194,9 @@ Returns:
 the image object that corresponds to the specified name if one exists, the null image otherwise
  */
 public static Object GetLogo (java.lang.String LogoName) {
-   return (Object) sagex.SageAPI.call("GetLogo", new Object[] {LogoName});
+  Object o = sagex.SageAPI.call("GetLogo", new Object[] {LogoName});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -182,7 +206,9 @@ Returns:
 the amount of time in milliseconds until SageTV will perform an EPG update again. Zero if no update is planned
  */
 public static long GetTimeUntilNextEPGDownload () {
-   return (Long) sagex.SageAPI.call("GetTimeUntilNextEPGDownload", (Object[])null);
+  Object o = sagex.SageAPI.call("GetTimeUntilNextEPGDownload", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -192,7 +218,7 @@ Returns:
 a list of all the names of the EPG lineups in the system
  */
 public static java.lang.String[] GetAllLineups () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAllLineups", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetAllLineups", (Object[])null);
 }
 
 /**
@@ -204,7 +230,9 @@ Returns:
 true if the channel download has been completed on the specified lineup, false otherwise
  */
 public static boolean IsChannelDownloadComplete (java.lang.String Lineup) {
-   return (Boolean) sagex.SageAPI.call("IsChannelDownloadComplete", new Object[] {Lineup});
+  Object o = sagex.SageAPI.call("IsChannelDownloadComplete", new Object[] {Lineup});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -214,7 +242,7 @@ Returns:
 a list of all the possible United States local broadcast markets from the EPG server
  */
 public static java.lang.String[] GetLocalMarketsFromEPGServer () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetLocalMarketsFromEPGServer", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetLocalMarketsFromEPGServer", (Object[])null);
 }
 
 /**
@@ -226,7 +254,7 @@ Returns:
 a list from the EPG server of all the possible EPG lineups in the specified zip code
  */
 public static java.lang.String[] GetLineupsForZipCodeFromEPGServer (java.lang.String ZipCode) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetLineupsForZipCodeFromEPGServer", new Object[] {ZipCode});
+  return (java.lang.String[]) sagex.SageAPI.call("GetLineupsForZipCodeFromEPGServer", new Object[] {ZipCode});
 }
 
 /**
@@ -236,7 +264,7 @@ Returns:
 a list of all of the files that SageTV is currently recording
  */
 public static Object[] GetCurrentlyRecordingMediaFiles () {
-   return (Object[]) sagex.SageAPI.call("GetCurrentlyRecordingMediaFiles", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetCurrentlyRecordingMediaFiles", (Object[])null);
 }
 
 /**
@@ -249,7 +277,7 @@ Since:
 4.1
  */
 public static Object[] GetSuggestedIntelligentRecordings () {
-   return (Object[]) sagex.SageAPI.call("GetSuggestedIntelligentRecordings", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetSuggestedIntelligentRecordings", (Object[])null);
 }
 
 /**
@@ -259,7 +287,7 @@ Returns:
 a list of all of the Airings that SageTV is planning to record in the future
  */
 public static Object[] GetScheduledRecordings () {
-   return (Object[]) sagex.SageAPI.call("GetScheduledRecordings", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetScheduledRecordings", (Object[])null);
 }
 
 /**
@@ -271,7 +299,7 @@ Returns:
 a list of all of the Airings that SageTV is planning to record in the future on the specified CaptureDevice
  */
 public static Object[] GetScheduledRecordingsForDevice (java.lang.String CaptureDevice) {
-   return (Object[]) sagex.SageAPI.call("GetScheduledRecordingsForDevice", new Object[] {CaptureDevice});
+  return (Object[]) sagex.SageAPI.call("GetScheduledRecordingsForDevice", new Object[] {CaptureDevice});
 }
 
 /**
@@ -284,7 +312,7 @@ Returns:
 a list of all of the Airings that SageTV is planning on recording during the specified start-stop time window
  */
 public static Object[] GetScheduledRecordingsForTime (long StartTime, long StopTime) {
-   return (Object[]) sagex.SageAPI.call("GetScheduledRecordingsForTime", new Object[] {StartTime,StopTime});
+  return (Object[]) sagex.SageAPI.call("GetScheduledRecordingsForTime", new Object[] {StartTime,StopTime});
 }
 
 /**
@@ -298,7 +326,7 @@ Returns:
 a list of all of the Airings that SageTV is planning on recording during the specified start-stop time window on the specified CaptureDevice
  */
 public static Object[] GetScheduledRecordingsForDeviceForTime (java.lang.String CaptureDevice, long StartTime, long StopTime) {
-   return (Object[]) sagex.SageAPI.call("GetScheduledRecordingsForDeviceForTime", new Object[] {CaptureDevice,StartTime,StopTime});
+  return (Object[]) sagex.SageAPI.call("GetScheduledRecordingsForDeviceForTime", new Object[] {CaptureDevice,StartTime,StopTime});
 }
 
 /**
@@ -310,7 +338,7 @@ Returns:
 a list of all of the Airings that have been watched within the specified amount of time
  */
 public static Object[] GetRecentlyWatched (long DurationToLookBack) {
-   return (Object[]) sagex.SageAPI.call("GetRecentlyWatched", new Object[] {DurationToLookBack});
+  return (Object[]) sagex.SageAPI.call("GetRecentlyWatched", new Object[] {DurationToLookBack});
 }
 
 /**
@@ -320,14 +348,14 @@ Parameters:
 WaitUntilDone- if this parameter is true then this call will not return until SageTV has finished the import scan, otherwise it returns immediately
  */
 public static void RunLibraryImportScan (boolean WaitUntilDone) {
-    sagex.SageAPI.call("RunLibraryImportScan", new Object[] {WaitUntilDone});
+   sagex.SageAPI.call("RunLibraryImportScan", new Object[] {WaitUntilDone});
 }
 
 /**
 Causes the SageTV application to terminate. If this is called from the non-primary UI session then it will terminate the UI session it is called from.
  */
 public static void Exit () {
-    sagex.SageAPI.call("Exit", (Object[])null);
+   sagex.SageAPI.call("Exit", (Object[])null);
 }
 
 /**
@@ -339,7 +367,7 @@ Parameters:
 Command- the name of the Sage Command to execute
  */
 public static void SageCommand (java.lang.String Command) {
-    sagex.SageAPI.call("SageCommand", new Object[] {Command});
+   sagex.SageAPI.call("SageCommand", new Object[] {Command});
 }
 
 /**
@@ -349,7 +377,9 @@ Returns:
 true if any lineups were removed, false otherwise
  */
 public static boolean RemoveUnusedLineups () {
-   return (Boolean) sagex.SageAPI.call("RemoveUnusedLineups", (Object[])null);
+  Object o = sagex.SageAPI.call("RemoveUnusedLineups", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -359,7 +389,9 @@ Returns:
 the time that the SageTV application was instantiated
  */
 public static long GetApplicationLaunchTime () {
-   return (Long) sagex.SageAPI.call("GetApplicationLaunchTime", (Object[])null);
+  Object o = sagex.SageAPI.call("GetApplicationLaunchTime", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -370,7 +402,9 @@ Returns:
 true if there was a focused element and it's context was copied, false if there was no focused element found
  */
 public static boolean GetFocusContext () {
-   return (Boolean) sagex.SageAPI.call("GetFocusContext", (Object[])null);
+  Object o = sagex.SageAPI.call("GetFocusContext", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -378,7 +412,7 @@ Spawns a new thread of execution that will be used for further processing of Wid
  to continue execution of a widget chain in parallel to the current system execution.
  */
 public static void Fork () {
-    sagex.SageAPI.call("Fork", (Object[])null);
+   sagex.SageAPI.call("Fork", (Object[])null);
 }
 
 /**
@@ -392,7 +426,7 @@ CommandName- the name of the command to be sent
 RepeatFactor- the 'repeat factor' to use for sending the infrared command, 2 is the default
  */
 public static void TransmitCommandUsingInfraredTuningPlugin (java.lang.String TuningPlugin, int TuningPluginPort, java.lang.String RemoteName, java.lang.String CommandName, int RepeatFactor) {
-    sagex.SageAPI.call("TransmitCommandUsingInfraredTuningPlugin", new Object[] {TuningPlugin,TuningPluginPort,RemoteName,CommandName,RepeatFactor});
+   sagex.SageAPI.call("TransmitCommandUsingInfraredTuningPlugin", new Object[] {TuningPlugin,TuningPluginPort,RemoteName,CommandName,RepeatFactor});
 }
 
 /**
@@ -402,7 +436,7 @@ Parameters:
 DebugString- the string to print out
  */
 public static void DebugLog (java.lang.String DebugString) {
-    sagex.SageAPI.call("DebugLog", new Object[] {DebugString});
+   sagex.SageAPI.call("DebugLog", new Object[] {DebugString});
 }
 
 /**
@@ -413,7 +447,7 @@ Closes the last OptionsMenu that was shown and continues execution of the Action
  An example is confirming something they just did before it actually gets done.
  */
 public static void CloseOptionsMenu () {
-    sagex.SageAPI.call("CloseOptionsMenu", (Object[])null);
+   sagex.SageAPI.call("CloseOptionsMenu", (Object[])null);
 }
 
 /**
@@ -423,7 +457,9 @@ Returns:
 a list of the names of all of the SageTV commands that are available in the system
  */
 public static java.util.Vector GetSageCommandNames () {
-   return (java.util.Vector) sagex.SageAPI.call("GetSageCommandNames", (Object[])null);
+  Object o = sagex.SageAPI.call("GetSageCommandNames", (Object[])null);
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -434,7 +470,7 @@ Lineup- the name of the EPG lineup to modify
 ServiceLevel- the service level to apply to the lineup
  */
 public static void ApplyServiceLevelToLineup (java.lang.String Lineup, int ServiceLevel) {
-    sagex.SageAPI.call("ApplyServiceLevelToLineup", new Object[] {Lineup,ServiceLevel});
+   sagex.SageAPI.call("ApplyServiceLevelToLineup", new Object[] {Lineup,ServiceLevel});
 }
 
 /**
@@ -449,7 +485,9 @@ Returns:
 true if the focus was set
  */
 public static boolean SetFocusForVariable (java.lang.String Name, java.lang.Object Value) {
-   return (Boolean) sagex.SageAPI.call("SetFocusForVariable", new Object[] {Name,Value});
+  Object o = sagex.SageAPI.call("SetFocusForVariable", new Object[] {Name,Value});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -469,7 +507,9 @@ Returns:
 true if there was a matching variable found
  */
 public static boolean EnsureVisibilityForVariable (java.lang.String Name, java.lang.Object Value, int DisplayIndex) {
-   return (Boolean) sagex.SageAPI.call("EnsureVisibilityForVariable", new Object[] {Name,Value,DisplayIndex});
+  Object o = sagex.SageAPI.call("EnsureVisibilityForVariable", new Object[] {Name,Value,DisplayIndex});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -478,7 +518,7 @@ Should only be used in the Action chain from a Listener Widget. Normally SageTV 
  Listener then SageTV will not stop processing at the current Listener.
  */
 public static void PassiveListen () {
-    sagex.SageAPI.call("PassiveListen", (Object[])null);
+   sagex.SageAPI.call("PassiveListen", (Object[])null);
 }
 
 /**
@@ -491,7 +531,9 @@ Returns:
 the list of Airings that will not be recorded due to scheduling conflicts
  */
 public static java.util.Vector GetAiringsThatWontBeRecorded (boolean OnlyUnresolved) {
-   return (java.util.Vector) sagex.SageAPI.call("GetAiringsThatWontBeRecorded", new Object[] {OnlyUnresolved});
+  Object o = sagex.SageAPI.call("GetAiringsThatWontBeRecorded", new Object[] {OnlyUnresolved});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -501,7 +543,9 @@ Returns:
 true if this is an instance of SageTV Client, false otherwise
  */
 public static boolean IsClient () {
-   return (Boolean) sagex.SageAPI.call("IsClient", (Object[])null);
+  Object o = sagex.SageAPI.call("IsClient", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -514,7 +558,9 @@ Since:
 4.1
  */
 public static boolean IsRemoteUI () {
-   return (Boolean) sagex.SageAPI.call("IsRemoteUI", (Object[])null);
+  Object o = sagex.SageAPI.call("IsRemoteUI", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -527,7 +573,9 @@ Since:
 4.1.10
  */
 public static boolean IsDesktopUI () {
-   return (Boolean) sagex.SageAPI.call("IsDesktopUI", (Object[])null);
+  Object o = sagex.SageAPI.call("IsDesktopUI", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -542,7 +590,9 @@ Since:
 5.0.5
  */
 public static boolean IsServerUI () {
-   return (Boolean) sagex.SageAPI.call("IsServerUI", (Object[])null);
+  Object o = sagex.SageAPI.call("IsServerUI", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -552,7 +602,7 @@ Returns:
 a list of all the clients that are currently connected to this server.
  */
 public static java.lang.String[] GetConnectedClients () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetConnectedClients", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetConnectedClients", (Object[])null);
 }
 
 /**
@@ -569,7 +619,7 @@ Since:
 4.1
  */
 public static java.lang.String[] GetUIContextNames () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetUIContextNames", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetUIContextNames", (Object[])null);
 }
 
 /**
@@ -582,7 +632,9 @@ Since:
 5.1
  */
 public static java.lang.String GetUIContextName () {
-   return (java.lang.String) sagex.SageAPI.call("GetUIContextName", (Object[])null);
+  Object o = sagex.SageAPI.call("GetUIContextName", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -594,7 +646,9 @@ Since:
 6.4
  */
 public static java.lang.String GetRemoteClientVersion () {
-   return (java.lang.String) sagex.SageAPI.call("GetRemoteClientVersion", (Object[])null);
+  Object o = sagex.SageAPI.call("GetRemoteClientVersion", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -606,7 +660,9 @@ Since:
 6.4
  */
 public static java.lang.String GetRemoteUIType () {
-   return (java.lang.String) sagex.SageAPI.call("GetRemoteUIType", (Object[])null);
+  Object o = sagex.SageAPI.call("GetRemoteUIType", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -623,7 +679,9 @@ Returns:
 true if the creation of the timed recording succeeded, otherwise a localized error string is returned
  */
 public static java.lang.Object CreateTimedRecording (Object Channel, long StartTime, long StopTime, java.lang.String Recurrence) {
-   return (java.lang.Object) sagex.SageAPI.call("CreateTimedRecording", new Object[] {Channel,StartTime,StopTime,Recurrence});
+  Object o = sagex.SageAPI.call("CreateTimedRecording", new Object[] {Channel,StartTime,StopTime,Recurrence});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -633,7 +691,9 @@ Returns:
 true if SageTV is in full screen mode, false otherwise
  */
 public static boolean IsFullScreen () {
-   return (Boolean) sagex.SageAPI.call("IsFullScreen", (Object[])null);
+  Object o = sagex.SageAPI.call("IsFullScreen", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -643,7 +703,7 @@ Parameters:
 FullScreen- true if SageTV should be put into full screen mode, false if it should be put into windowed mode
  */
 public static void SetFullScreen (boolean FullScreen) {
-    sagex.SageAPI.call("SetFullScreen", new Object[] {FullScreen});
+   sagex.SageAPI.call("SetFullScreen", new Object[] {FullScreen});
 }
 
 /**
@@ -653,7 +713,9 @@ Returns:
 the hostname of the SageTV server if this is a client, otherwise it returns the name of the host SageTV is running on
  */
 public static java.lang.String GetServerAddress () {
-   return (java.lang.String) sagex.SageAPI.call("GetServerAddress", (Object[])null);
+  Object o = sagex.SageAPI.call("GetServerAddress", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -663,7 +725,9 @@ Returns:
 the name of the operating system that is being used
  */
 public static java.lang.String GetOS () {
-   return (java.lang.String) sagex.SageAPI.call("GetOS", (Object[])null);
+  Object o = sagex.SageAPI.call("GetOS", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -673,7 +737,9 @@ Returns:
 true if SageTV is currently running on a Windows operating system, false otherwise
  */
 public static boolean IsWindowsOS () {
-   return (Boolean) sagex.SageAPI.call("IsWindowsOS", (Object[])null);
+  Object o = sagex.SageAPI.call("IsWindowsOS", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -685,7 +751,9 @@ Since:
 6.0.20
  */
 public static boolean IsLinuxOS () {
-   return (Boolean) sagex.SageAPI.call("IsLinuxOS", (Object[])null);
+  Object o = sagex.SageAPI.call("IsLinuxOS", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -697,7 +765,9 @@ Since:
 6.0.20
  */
 public static boolean IsMacOS () {
-   return (Boolean) sagex.SageAPI.call("IsMacOS", (Object[])null);
+  Object o = sagex.SageAPI.call("IsMacOS", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -710,14 +780,16 @@ Returns:
 true if the burn process was successfully started, otherwise a localized error message string is returned
  */
 public static java.lang.Object DVDBurnTheBurnList (Object BurnList) {
-   return (java.lang.Object) sagex.SageAPI.call("DVDBurnTheBurnList", new Object[] {BurnList});
+  Object o = sagex.SageAPI.call("DVDBurnTheBurnList", new Object[] {BurnList});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
 Cancels a previous request that was made to perform DVD burning.
  */
 public static void DVDCancelBurn () {
-    sagex.SageAPI.call("DVDCancelBurn", (Object[])null);
+   sagex.SageAPI.call("DVDCancelBurn", (Object[])null);
 }
 
 /**
@@ -728,7 +800,9 @@ true if the DVD burning process is completed and was a success, "Error" if it co
           otherwise a localized status message indicating progress is returned
  */
 public static java.lang.Object DVDGetCurrentBurnStatus () {
-   return (java.lang.Object) sagex.SageAPI.call("DVDGetCurrentBurnStatus", (Object[])null);
+  Object o = sagex.SageAPI.call("DVDGetCurrentBurnStatus", (Object[])null);
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -741,14 +815,16 @@ Returns:
 true if the burn process was successfully started, otherwise a localized error message string is returned
  */
 public static java.lang.Object CDBurnTheBurnList (Object BurnList) {
-   return (java.lang.Object) sagex.SageAPI.call("CDBurnTheBurnList", new Object[] {BurnList});
+  Object o = sagex.SageAPI.call("CDBurnTheBurnList", new Object[] {BurnList});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
 Cancels a previous request that was made to perform CD burning.
  */
 public static void CDCancelBurn () {
-    sagex.SageAPI.call("CDCancelBurn", (Object[])null);
+   sagex.SageAPI.call("CDCancelBurn", (Object[])null);
 }
 
 /**
@@ -759,7 +835,9 @@ true if the CD burning process is completed and was a success, "Error" if it com
           otherwise a localized status message indicating progress is returned
  */
 public static java.lang.Object CDGetCurrentBurnStatus () {
-   return (java.lang.Object) sagex.SageAPI.call("CDGetCurrentBurnStatus", (Object[])null);
+  Object o = sagex.SageAPI.call("CDGetCurrentBurnStatus", (Object[])null);
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -773,14 +851,16 @@ Returns:
 true if the ripping process was successfully started, otherwise a localized error message string is returned
  */
 public static java.lang.Object CDRipToLibrary (java.io.File LibraryDir, java.lang.String BitrateKbps) {
-   return (java.lang.Object) sagex.SageAPI.call("CDRipToLibrary", new Object[] {LibraryDir,BitrateKbps});
+  Object o = sagex.SageAPI.call("CDRipToLibrary", new Object[] {LibraryDir,BitrateKbps});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
 Cancels a previous request that was made to perform CD ripping
  */
 public static void CDCancelRip () {
-    sagex.SageAPI.call("CDCancelRip", (Object[])null);
+   sagex.SageAPI.call("CDCancelRip", (Object[])null);
 }
 
 /**
@@ -791,7 +871,9 @@ true if the CD ripping process is completed and was a success, "Error" if it com
           otherwise a localized status message indicating progress is returned
  */
 public static java.lang.Object CDGetCurrentRipStatus () {
-   return (java.lang.Object) sagex.SageAPI.call("CDGetCurrentRipStatus", (Object[])null);
+  Object o = sagex.SageAPI.call("CDGetCurrentRipStatus", (Object[])null);
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -808,14 +890,16 @@ Returns:
 true if the copy process was successfully started, false if the file copy is unable to be performed
  */
 public static java.lang.Object StartFileCopy (java.lang.String Filename, java.lang.String SourceDirectory, java.io.File DestDirectory) {
-   return (java.lang.Object) sagex.SageAPI.call("StartFileCopy", new Object[] {Filename,SourceDirectory,DestDirectory});
+  Object o = sagex.SageAPI.call("StartFileCopy", new Object[] {Filename,SourceDirectory,DestDirectory});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
 Cancels a previous request that was made to perform a file copy
  */
 public static void CancelFileCopy () {
-    sagex.SageAPI.call("CancelFileCopy", (Object[])null);
+   sagex.SageAPI.call("CancelFileCopy", (Object[])null);
 }
 
 /**
@@ -826,7 +910,9 @@ true if the file copy process is completed and was a success, "Error" will be th
           otherwise a localized status message indicating progress is returned
  */
 public static java.lang.Object GetFileCopyStatus () {
-   return (java.lang.Object) sagex.SageAPI.call("GetFileCopyStatus", (Object[])null);
+  Object o = sagex.SageAPI.call("GetFileCopyStatus", (Object[])null);
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -844,7 +930,9 @@ Returns:
 true if the copy process was successfully started, false if the file doesn't exist on the server or it couldn't be contacted
  */
 public static boolean StartFileDownload (java.lang.String ServerAddress, java.lang.String SourceFile, java.io.File DestFile) {
-   return (Boolean) sagex.SageAPI.call("StartFileDownload", new Object[] {ServerAddress,SourceFile,DestFile});
+  Object o = sagex.SageAPI.call("StartFileDownload", new Object[] {ServerAddress,SourceFile,DestFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -866,14 +954,16 @@ Since:
 6.4
  */
 public static boolean StartCircularFileDownload (java.lang.String ServerAddress, java.lang.String SourceFile, java.io.File DestFile) {
-   return (Boolean) sagex.SageAPI.call("StartCircularFileDownload", new Object[] {ServerAddress,SourceFile,DestFile});
+  Object o = sagex.SageAPI.call("StartCircularFileDownload", new Object[] {ServerAddress,SourceFile,DestFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
 Cancels a previous request that was made to perform a file download
  */
 public static void CancelFileDownload () {
-    sagex.SageAPI.call("CancelFileDownload", (Object[])null);
+   sagex.SageAPI.call("CancelFileDownload", (Object[])null);
 }
 
 /**
@@ -884,7 +974,9 @@ true if the file download process is completed and was a success, "Error" will b
           otherwise a localized status message indicating progress is returned
  */
 public static java.lang.Object GetFileDownloadStatus () {
-   return (java.lang.Object) sagex.SageAPI.call("GetFileDownloadStatus", (Object[])null);
+  Object o = sagex.SageAPI.call("GetFileDownloadStatus", (Object[])null);
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -897,7 +989,9 @@ Since:
 6.3
  */
 public static long GetFileDownloadStreamTime () {
-   return (Long) sagex.SageAPI.call("GetFileDownloadStreamTime", (Object[])null);
+  Object o = sagex.SageAPI.call("GetFileDownloadStreamTime", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -912,7 +1006,9 @@ Since:
 6.3
  */
 public static boolean IsFileDownloadProgressivePlay () {
-   return (Boolean) sagex.SageAPI.call("IsFileDownloadProgressivePlay", (Object[])null);
+  Object o = sagex.SageAPI.call("IsFileDownloadProgressivePlay", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -931,7 +1027,9 @@ Since:
 4.1.7
  */
 public static boolean SetRemoteEventEncryptionEnabled (boolean EnableEncryption) {
-   return (Boolean) sagex.SageAPI.call("SetRemoteEventEncryptionEnabled", new Object[] {EnableEncryption});
+  Object o = sagex.SageAPI.call("SetRemoteEventEncryptionEnabled", new Object[] {EnableEncryption});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -942,7 +1040,7 @@ Since:
 4.1.13
  */
 public static void ReloadSystemHooks () {
-    sagex.SageAPI.call("ReloadSystemHooks", (Object[])null);
+   sagex.SageAPI.call("ReloadSystemHooks", (Object[])null);
 }
 
 /**
@@ -953,7 +1051,7 @@ Since:
 4.1.13
  */
 public static void UpdateLocatorServer () {
-    sagex.SageAPI.call("UpdateLocatorServer", (Object[])null);
+   sagex.SageAPI.call("UpdateLocatorServer", (Object[])null);
 }
 
 /**
@@ -965,7 +1063,9 @@ Since:
 5.1
  */
 public static int GetFullUIWidth () {
-   return (Integer) sagex.SageAPI.call("GetFullUIWidth", (Object[])null);
+  Object o = sagex.SageAPI.call("GetFullUIWidth", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -977,7 +1077,9 @@ Since:
 5.1
  */
 public static int GetFullUIHeight () {
-   return (Integer) sagex.SageAPI.call("GetFullUIHeight", (Object[])null);
+  Object o = sagex.SageAPI.call("GetFullUIHeight", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -989,7 +1091,9 @@ Since:
 5.1
  */
 public static int GetDisplayResolutionWidth () {
-   return (Integer) sagex.SageAPI.call("GetDisplayResolutionWidth", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDisplayResolutionWidth", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -1001,7 +1105,9 @@ Since:
 5.1
  */
 public static int GetDisplayResolutionHeight () {
-   return (Integer) sagex.SageAPI.call("GetDisplayResolutionHeight", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDisplayResolutionHeight", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -1013,7 +1119,9 @@ Since:
 6.3
  */
 public static java.lang.String GetDisplayResolution () {
-   return (java.lang.String) sagex.SageAPI.call("GetDisplayResolution", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDisplayResolution", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1026,7 +1134,7 @@ Since:
 6.0
  */
 public static java.lang.String[] GetDisplayResolutionOptions () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetDisplayResolutionOptions", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetDisplayResolutionOptions", (Object[])null);
 }
 
 /**
@@ -1039,7 +1147,7 @@ Since:
 6.3
  */
 public static java.lang.String[] GetPreferredDisplayResolutions () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetPreferredDisplayResolutions", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetPreferredDisplayResolutions", (Object[])null);
 }
 
 /**
@@ -1053,7 +1161,7 @@ Since:
 6.0
  */
 public static void SetDisplayResolution (java.lang.String Resolution) {
-    sagex.SageAPI.call("SetDisplayResolution", new Object[] {Resolution});
+   sagex.SageAPI.call("SetDisplayResolution", new Object[] {Resolution});
 }
 
 /**
@@ -1067,7 +1175,7 @@ Since:
 6.3
  */
 public static java.lang.String[] DiscoverSageTVServers (long Timeout) {
-   return (java.lang.String[]) sagex.SageAPI.call("DiscoverSageTVServers", new Object[] {Timeout});
+  return (java.lang.String[]) sagex.SageAPI.call("DiscoverSageTVServers", new Object[] {Timeout});
 }
 
 /**
@@ -1077,7 +1185,9 @@ Returns:
 a java.awt.Panel object which can be sized, made visible and have children added to it
  */
 public static java.awt.Panel GetEmbeddedPanel () {
-   return (java.awt.Panel) sagex.SageAPI.call("GetEmbeddedPanel", (Object[])null);
+  Object o = sagex.SageAPI.call("GetEmbeddedPanel", (Object[])null);
+  if (o!=null) return (java.awt.Panel) o;
+  return null;
 }
 
 /**
@@ -1092,21 +1202,23 @@ Since:
 6.4
  */
 public static void SetEmbeddedPanelBounds (float x, float y, float width, float height) {
-    sagex.SageAPI.call("SetEmbeddedPanelBounds", new Object[] {x,y,width,height});
+   sagex.SageAPI.call("SetEmbeddedPanelBounds", new Object[] {x,y,width,height});
 }
 
 /**
 Implemented on Linux only
  */
 public static java.lang.String GetAvailableUpdate () {
-   return (java.lang.String) sagex.SageAPI.call("GetAvailableUpdate", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAvailableUpdate", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
 Implemented on Linux only
  */
 public static void DeployAvailableUpdate (java.lang.String AvailableUpdate) {
-    sagex.SageAPI.call("DeployAvailableUpdate", new Object[] {AvailableUpdate});
+   sagex.SageAPI.call("DeployAvailableUpdate", new Object[] {AvailableUpdate});
 }
 
 /**
@@ -1118,7 +1230,7 @@ Returns:
 the standard tvtv provider id, { "601" }
  */
 public static java.lang.String[] GetLineupsForTvtv (java.lang.String Languages) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetLineupsForTvtv", new Object[] {Languages});
+  return (java.lang.String[]) sagex.SageAPI.call("GetLineupsForTvtv", new Object[] {Languages});
 }
 
 /**
@@ -1128,7 +1240,9 @@ Returns:
 the tvtv host,lang; default is "www.tvtv.de,de"
  */
 public static java.lang.String TvtvGetHost () {
-   return (java.lang.String) sagex.SageAPI.call("TvtvGetHost", (Object[])null);
+  Object o = sagex.SageAPI.call("TvtvGetHost", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1139,7 +1253,7 @@ Returns:
 all valid host/language
  */
 public static java.lang.String[] TvtvGetHostList () {
-   return (java.lang.String[]) sagex.SageAPI.call("TvtvGetHostList", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("TvtvGetHostList", (Object[])null);
 }
 
 /**
@@ -1149,7 +1263,7 @@ Launch default browser to tvtvHost.
  User can create an account, and then proceed to activate a Trial.
  */
 public static void TvtvCreateNewAccount () {
-    sagex.SageAPI.call("TvtvCreateNewAccount", (Object[])null);
+   sagex.SageAPI.call("TvtvCreateNewAccount", (Object[])null);
 }
 
 /**
@@ -1157,7 +1271,9 @@ Returns:
 username
  */
 public static java.lang.String TvtvGetUser () {
-   return (java.lang.String) sagex.SageAPI.call("TvtvGetUser", (Object[])null);
+  Object o = sagex.SageAPI.call("TvtvGetUser", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1169,7 +1285,7 @@ Password- (stored in encrypted form)
 Host- (one of TvtvGetHostList)
  */
 public static void TvtvConfigureUser (java.lang.String Username, java.lang.String Password, java.lang.String Host) {
-    sagex.SageAPI.call("TvtvConfigureUser", new Object[] {Username,Password,Host});
+   sagex.SageAPI.call("TvtvConfigureUser", new Object[] {Username,Password,Host});
 }
 
 /**
@@ -1181,7 +1297,9 @@ account status:
    ERROR (communication error, network error)
  */
 public static java.lang.String TvtvGetAccountStatus () {
-   return (java.lang.String) sagex.SageAPI.call("TvtvGetAccountStatus", (Object[])null);
+  Object o = sagex.SageAPI.call("TvtvGetAccountStatus", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1189,7 +1307,9 @@ Returns:
 a message about account status
  */
 public static java.lang.String TvtvGetAccountStatusMessage () {
-   return (java.lang.String) sagex.SageAPI.call("TvtvGetAccountStatusMessage", (Object[])null);
+  Object o = sagex.SageAPI.call("TvtvGetAccountStatusMessage", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1201,14 +1321,14 @@ Returns:
 String[] { serial, date, subject, message }
  */
 public static java.lang.String[] TvtvMessage (java.lang.String serial) {
-   return (java.lang.String[]) sagex.SageAPI.call("TvtvMessage", new Object[] {serial});
+  return (java.lang.String[]) sagex.SageAPI.call("TvtvMessage", new Object[] {serial});
 }
 
 /**
 Launch a browser in response to user click on TvTv logo.
  */
 public static void TvtvLogoLink () {
-    sagex.SageAPI.call("TvtvLogoLink", (Object[])null);
+   sagex.SageAPI.call("TvtvLogoLink", (Object[])null);
 }
 
 /**
@@ -1218,7 +1338,7 @@ Since:
 4.1
  */
 public static void TvtvCreateSpecificAccount () {
-    sagex.SageAPI.call("TvtvCreateSpecificAccount", (Object[])null);
+   sagex.SageAPI.call("TvtvCreateSpecificAccount", (Object[])null);
 }
 
 /**
@@ -1227,7 +1347,7 @@ Deprecated.
 Activate TvTv trial, if available, for the current user configuration.
  */
 public static void TvtvActivateTrial () {
-    sagex.SageAPI.call("TvtvActivateTrial", (Object[])null);
+   sagex.SageAPI.call("TvtvActivateTrial", (Object[])null);
 }
 
 /**
@@ -1237,14 +1357,16 @@ Parameters:
 CaptureDeviceInput-
  */
 public static void TvtvDownloadStations (java.lang.String CaptureDeviceInput) {
-    sagex.SageAPI.call("TvtvDownloadStations", new Object[] {CaptureDeviceInput});
+   sagex.SageAPI.call("TvtvDownloadStations", new Object[] {CaptureDeviceInput});
 }
 
 /**
 Deprecated. Use TvtvConfigureUser
  */
 public static boolean TvtvConfigureInput (java.lang.String CaptureDeviceInput, java.lang.String Username, java.lang.String Password) {
-   return (Boolean) sagex.SageAPI.call("TvtvConfigureInput", new Object[] {CaptureDeviceInput,Username,Password});
+  Object o = sagex.SageAPI.call("TvtvConfigureInput", new Object[] {CaptureDeviceInput,Username,Password});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1257,7 +1379,9 @@ Since:
 6.4
  */
 public static java.util.Map GetHotplugStorageMap () {
-   return (java.util.Map) sagex.SageAPI.call("GetHotplugStorageMap", (Object[])null);
+  Object o = sagex.SageAPI.call("GetHotplugStorageMap", (Object[])null);
+  if (o!=null) return (java.util.Map) o;
+  return null;
 }
 
 /**
@@ -1269,7 +1393,9 @@ Since:
 6.6
  */
 public static boolean IsDoingLibraryImportScan () {
-   return (Boolean) sagex.SageAPI.call("IsDoingLibraryImportScan", (Object[])null);
+  Object o = sagex.SageAPI.call("IsDoingLibraryImportScan", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1281,7 +1407,9 @@ Since:
 6.4
  */
 public static java.util.Set GetFailedNetworkMounts () {
-   return (java.util.Set) sagex.SageAPI.call("GetFailedNetworkMounts", (Object[])null);
+  Object o = sagex.SageAPI.call("GetFailedNetworkMounts", (Object[])null);
+  if (o!=null) return (java.util.Set) o;
+  return null;
 }
 
 

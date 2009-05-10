@@ -54,7 +54,7 @@ public class XmlEncoderHelper {
 		
 		// Sort First
 		if (sortby != "") {
-			Boolean reverseObj = new Boolean(reverse);
+			Boolean reverseObj = Boolean.valueOf(reverse);
 			String sortvalue = "";
             for ( int i=0; i<SORTING_OPTS.length;i++){
                 if ( SORTING_OPTS[i][1].equals(sortby)) {

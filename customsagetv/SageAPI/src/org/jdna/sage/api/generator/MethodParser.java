@@ -14,7 +14,7 @@ public class MethodParser extends URLSaxParser {
 		super(url);
 	}
 
-	public class MethodParam {
+	public static class MethodParam {
 		String dataType;
 		String varName;
         public String getDataType() {
@@ -31,7 +31,7 @@ public class MethodParser extends URLSaxParser {
         }
 	}
 
-	public class SageMethod {
+	public static class SageMethod {
 		public String comment;
 		public String returnType;
 		public String name;

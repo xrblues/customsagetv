@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SeriesInfoAPI.html'>SeriesInfoAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -16,7 +16,7 @@ Since:
 5.1
  */
 public static Object[] GetAllSeriesInfo () {
-   return (Object[]) sagex.SageAPI.call("GetAllSeriesInfo", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetAllSeriesInfo", (Object[])null);
 }
 
 /**
@@ -30,7 +30,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesTitle (Object SeriesInfo) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesTitle", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetSeriesTitle", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -44,7 +46,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesDescription (Object SeriesInfo) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesDescription", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetSeriesDescription", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -58,7 +62,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesHistory (Object SeriesInfo) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesHistory", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetSeriesHistory", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -72,7 +78,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesPremiereDate (Object SeriesInfo) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesPremiereDate", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetSeriesPremiereDate", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -86,7 +94,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesFinaleDate (Object SeriesInfo) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesFinaleDate", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetSeriesFinaleDate", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -100,7 +110,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesNetwork (Object SeriesInfo) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesNetwork", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetSeriesNetwork", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -114,7 +126,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesDayOfWeek (Object SeriesInfo) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesDayOfWeek", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetSeriesDayOfWeek", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -128,7 +142,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesHourAndMinuteTimeslot (Object SeriesInfo) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesHourAndMinuteTimeslot", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetSeriesHourAndMinuteTimeslot", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -142,7 +158,9 @@ Since:
 5.1
  */
 public static boolean HasSeriesImage (Object SeriesInfo) {
-   return (Boolean) sagex.SageAPI.call("HasSeriesImage", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("HasSeriesImage", new Object[] {SeriesInfo});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -156,7 +174,9 @@ Since:
 5.1
  */
 public static Object GetSeriesImage (Object SeriesInfo) {
-   return (Object) sagex.SageAPI.call("GetSeriesImage", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetSeriesImage", new Object[] {SeriesInfo});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -170,7 +190,9 @@ Since:
 5.1
  */
 public static int GetNumberOfCharactersInSeries (Object SeriesInfo) {
-   return (Integer) sagex.SageAPI.call("GetNumberOfCharactersInSeries", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetNumberOfCharactersInSeries", new Object[] {SeriesInfo});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -187,7 +209,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesActor (Object SeriesInfo, int Index) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesActor", new Object[] {SeriesInfo,Index});
+  Object o = sagex.SageAPI.call("GetSeriesActor", new Object[] {SeriesInfo,Index});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -201,7 +225,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesActorList (Object SeriesInfo) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesActorList", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetSeriesActorList", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -218,7 +244,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesCharacter (Object SeriesInfo, int Index) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesCharacter", new Object[] {SeriesInfo,Index});
+  Object o = sagex.SageAPI.call("GetSeriesCharacter", new Object[] {SeriesInfo,Index});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -232,7 +260,9 @@ Since:
 5.1
  */
 public static java.lang.String GetSeriesCharacterList (Object SeriesInfo) {
-   return (java.lang.String) sagex.SageAPI.call("GetSeriesCharacterList", new Object[] {SeriesInfo});
+  Object o = sagex.SageAPI.call("GetSeriesCharacterList", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 

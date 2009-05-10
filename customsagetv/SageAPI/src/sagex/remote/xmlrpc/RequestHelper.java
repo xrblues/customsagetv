@@ -20,7 +20,7 @@ public class RequestHelper {
 			return null;
 
 		if (args == null || args.length < argTypes.length) {
-			throw new RuntimeException(String.format("Too few args; Your Arg Count: %s; Required Arg Count: %s", args.length, argTypes.length));
+			throw new RuntimeException(String.format("Too few args; Your Arg Count: %s; Required Arg Count: %s", (args==null) ? 0 : args.length, argTypes.length));
 		}
 		if (args.length > argTypes.length) {
 			throw new RuntimeException(String.format("Too many args; Your Arg Count: %s; Required Arg Count: %s", args.length, argTypes.length));

@@ -4,7 +4,7 @@
 	
 	<property name="target" value="target"/>
 	<property name="name" value="sagex.api"/>
-	<property name="version" value="6.5.9-8"/>
+	<property name="version" value="6.5.15-0"/>
 	<property name="jarname" value="${name}.jar"/>
 
 	<path id="SageAPI.classpath">
@@ -54,6 +54,9 @@
 		<jar destfile="${target}/sage/JARs/${jarname}">
 			<fileset dir="target/classes" includes="sagex/**"></fileset>
 		</jar>
+		
+		<!-- update the MovieMetadata project, if it exists -->
+		<copy file="${target}/sage/JARs/${jarname}" todir="../MovieMetadataUpdater/libs/" failonerror="false"/>
 	</target>
 
     <target name="init">

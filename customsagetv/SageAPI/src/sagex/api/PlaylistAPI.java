@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/PlaylistAPI.html'>PlaylistAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -15,7 +15,7 @@ Playlist- the Playlist object to add the new item to
 NewItem- the new item to add to the Playlist; must be an Airing, Album, MediaFile or Playlist
  */
 public static void AddToPlaylist (Object Playlist, java.lang.Object NewItem) {
-    sagex.SageAPI.call("AddToPlaylist", new Object[] {Playlist,NewItem});
+   sagex.SageAPI.call("AddToPlaylist", new Object[] {Playlist,NewItem});
 }
 
 /**
@@ -27,7 +27,9 @@ Returns:
 the name of the specified Playlist
  */
 public static java.lang.String GetName (Object Playlist) {
-   return (java.lang.String) sagex.SageAPI.call("GetName", new Object[] {Playlist});
+  Object o = sagex.SageAPI.call("GetName", new Object[] {Playlist});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -39,7 +41,9 @@ Returns:
 the number of items in the specified Playlist
  */
 public static int GetNumberOfPlaylistItems (Object Playlist) {
-   return (Integer) sagex.SageAPI.call("GetNumberOfPlaylistItems", new Object[] {Playlist});
+  Object o = sagex.SageAPI.call("GetNumberOfPlaylistItems", new Object[] {Playlist});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -52,7 +56,9 @@ Returns:
 the item at the specified index in the Playlist; this will be an Airing, Album, Playlist or null
  */
 public static java.lang.Object GetPlaylistItemAt (Object Playlist, int Index) {
-   return (java.lang.Object) sagex.SageAPI.call("GetPlaylistItemAt", new Object[] {Playlist,Index});
+  Object o = sagex.SageAPI.call("GetPlaylistItemAt", new Object[] {Playlist,Index});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -65,7 +71,9 @@ Returns:
 the type of item at the specified index in the Playlist; one of "Airing", "Album", "Playlist" or "" ("Airing" is used for MediaFile items)
  */
 public static java.lang.String GetPlaylistItemTypeAt (Object Playlist, int Index) {
-   return (java.lang.String) sagex.SageAPI.call("GetPlaylistItemTypeAt", new Object[] {Playlist,Index});
+  Object o = sagex.SageAPI.call("GetPlaylistItemTypeAt", new Object[] {Playlist,Index});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -77,7 +85,7 @@ Returns:
 a list of the items in the specified Playlist
  */
 public static java.lang.Object[] GetPlaylistItems (Object Playlist) {
-   return (java.lang.Object[]) sagex.SageAPI.call("GetPlaylistItems", new Object[] {Playlist});
+  return (java.lang.Object[]) sagex.SageAPI.call("GetPlaylistItems", new Object[] {Playlist});
 }
 
 /**
@@ -89,7 +97,7 @@ InsertIndex- the 0-based index that the new item should be inserted at
 NewItem- the new item to insert into the Playlist; must be an Airing, Album, MediaFile or Playlist
  */
 public static void InsertIntoPlaylist (Object Playlist, int InsertIndex, java.lang.Object NewItem) {
-    sagex.SageAPI.call("InsertIntoPlaylist", new Object[] {Playlist,InsertIndex,NewItem});
+   sagex.SageAPI.call("InsertIntoPlaylist", new Object[] {Playlist,InsertIndex,NewItem});
 }
 
 /**
@@ -100,7 +108,7 @@ Playlist- the Playlist object
 Index- the position of the item to move up one in the playlist
  */
 public static void MovePlaylistItemUp (Object Playlist, int Index) {
-    sagex.SageAPI.call("MovePlaylistItemUp", new Object[] {Playlist,Index});
+   sagex.SageAPI.call("MovePlaylistItemUp", new Object[] {Playlist,Index});
 }
 
 /**
@@ -111,7 +119,7 @@ Playlist- the Playlist object
 Index- the position of the item to move down one in the playlist
  */
 public static void MovePlaylistItemDown (Object Playlist, int Index) {
-    sagex.SageAPI.call("MovePlaylistItemDown", new Object[] {Playlist,Index});
+   sagex.SageAPI.call("MovePlaylistItemDown", new Object[] {Playlist,Index});
 }
 
 /**
@@ -122,7 +130,7 @@ Playlist- the Playlist object
 Item- the item to remove from the Playlist, must be an Airing, MediaFile, Album or Playlist
  */
 public static void RemovePlaylistItem (Object Playlist, java.lang.Object Item) {
-    sagex.SageAPI.call("RemovePlaylistItem", new Object[] {Playlist,Item});
+   sagex.SageAPI.call("RemovePlaylistItem", new Object[] {Playlist,Item});
 }
 
 /**
@@ -133,7 +141,7 @@ Playlist- the Playlist object
 ItemIndex- the index of the item to remove from the Playlist
  */
 public static void RemovePlaylistItemAt (Object Playlist, int ItemIndex) {
-    sagex.SageAPI.call("RemovePlaylistItemAt", new Object[] {Playlist,ItemIndex});
+   sagex.SageAPI.call("RemovePlaylistItemAt", new Object[] {Playlist,ItemIndex});
 }
 
 /**
@@ -144,7 +152,7 @@ Playlist- the Playlist objecxt
 Name- the name to set for this Plyalist
  */
 public static void SetName (Object Playlist, java.lang.String Name) {
-    sagex.SageAPI.call("SetName", new Object[] {Playlist,Name});
+   sagex.SageAPI.call("SetName", new Object[] {Playlist,Name});
 }
 
 /**
@@ -156,7 +164,9 @@ Returns:
 true if the passed in argument is a Playlist object, false otherwise
  */
 public static boolean IsPlaylistObject (java.lang.Object Playlist) {
-   return (Boolean) sagex.SageAPI.call("IsPlaylistObject", new Object[] {Playlist});
+  Object o = sagex.SageAPI.call("IsPlaylistObject", new Object[] {Playlist});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -166,7 +176,7 @@ Returns:
 a list of all of the Playlists in the database
  */
 public static Object[] GetPlaylists () {
-   return (Object[]) sagex.SageAPI.call("GetPlaylists", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetPlaylists", (Object[])null);
 }
 
 /**
@@ -176,7 +186,7 @@ Parameters:
 Playlist- the Playlist object to remove
  */
 public static void RemovePlaylist (Object Playlist) {
-    sagex.SageAPI.call("RemovePlaylist", new Object[] {Playlist});
+   sagex.SageAPI.call("RemovePlaylist", new Object[] {Playlist});
 }
 
 /**
@@ -190,7 +200,9 @@ Since:
 5.1
  */
 public static boolean DoesPlaylistHaveVideo (Object Playlist) {
-   return (Boolean) sagex.SageAPI.call("DoesPlaylistHaveVideo", new Object[] {Playlist});
+  Object o = sagex.SageAPI.call("DoesPlaylistHaveVideo", new Object[] {Playlist});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -200,7 +212,9 @@ Parameters:
 Name- the name for the new Playlist
  */
 public static Object AddPlaylist (java.lang.String Name) {
-   return (Object) sagex.SageAPI.call("AddPlaylist", new Object[] {Name});
+  Object o = sagex.SageAPI.call("AddPlaylist", new Object[] {Name});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -214,7 +228,9 @@ Since:
 5.1
  */
 public static Object GetNowPlayingList () {
-   return (Object) sagex.SageAPI.call("GetNowPlayingList", (Object[])null);
+  Object o = sagex.SageAPI.call("GetNowPlayingList", (Object[])null);
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 

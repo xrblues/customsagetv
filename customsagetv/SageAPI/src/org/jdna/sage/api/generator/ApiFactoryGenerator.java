@@ -74,7 +74,7 @@ public class ApiFactoryGenerator {
 				for (SageMethod sm : sameMethods) {
 					int sig = getSignatureCount(sm);
 					String args = createParameterArgs(sm);
-					pw.printf("      if (parameters!=null && parameters.length == %d) {\n", sig, sig);
+					pw.printf("      if (parameters!=null && parameters.length == %d) {\n", sig);
 					pw.printf("         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, \"%s\", parameters, %s);\n", m.name, args);
 					pw.println("      }");
 				}

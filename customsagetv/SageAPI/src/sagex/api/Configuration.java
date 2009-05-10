@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Configuration.html'>Configuration</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -11,7 +11,7 @@ public class Configuration {
 Saves the Sage.properties file to disk
  */
 public static void SaveProperties () {
-    sagex.SageAPI.call("SaveProperties", (Object[])null);
+   sagex.SageAPI.call("SaveProperties", (Object[])null);
 }
 
 /**
@@ -21,7 +21,7 @@ Returns:
 the library import paths that are currently configured for all media types
  */
 public static java.io.File[] GetLibraryImportPaths () {
-   return (java.io.File[]) sagex.SageAPI.call("GetLibraryImportPaths", (Object[])null);
+  return (java.io.File[]) sagex.SageAPI.call("GetLibraryImportPaths", (Object[])null);
 }
 
 /**
@@ -31,7 +31,7 @@ Returns:
 the library import paths that are currently configured for picture files
  */
 public static java.io.File[] GetPictureLibraryImportPaths () {
-   return (java.io.File[]) sagex.SageAPI.call("GetPictureLibraryImportPaths", (Object[])null);
+  return (java.io.File[]) sagex.SageAPI.call("GetPictureLibraryImportPaths", (Object[])null);
 }
 
 /**
@@ -41,7 +41,7 @@ Returns:
 the library import paths that are currently configured for music files
  */
 public static java.io.File[] GetMusicLibraryImportPaths () {
-   return (java.io.File[]) sagex.SageAPI.call("GetMusicLibraryImportPaths", (Object[])null);
+  return (java.io.File[]) sagex.SageAPI.call("GetMusicLibraryImportPaths", (Object[])null);
 }
 
 /**
@@ -51,7 +51,7 @@ Returns:
 the library import paths that are currently configured for video files
  */
 public static java.io.File[] GetVideoLibraryImportPaths () {
-   return (java.io.File[]) sagex.SageAPI.call("GetVideoLibraryImportPaths", (Object[])null);
+  return (java.io.File[]) sagex.SageAPI.call("GetVideoLibraryImportPaths", (Object[])null);
 }
 
 /**
@@ -63,7 +63,9 @@ Returns:
 true if the legacy major/minor channel tuning is enabled
  */
 public static boolean IsMajorMinorDTVChannelTuningEnabled () {
-   return (Boolean) sagex.SageAPI.call("IsMajorMinorDTVChannelTuningEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsMajorMinorDTVChannelTuningEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -73,7 +75,9 @@ Returns:
 true if SageTV should attempt to autodial before accessing the Internet
  */
 public static boolean GetAutodialForInternet () {
-   return (Boolean) sagex.SageAPI.call("GetAutodialForInternet", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAutodialForInternet", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -83,7 +87,7 @@ Parameters:
 Autodial- true if SageTV should autodial before accessing the Internet
  */
 public static void SetAutodialForInternet (boolean Autodial) {
-    sagex.SageAPI.call("SetAutodialForInternet", new Object[] {Autodial});
+   sagex.SageAPI.call("SetAutodialForInternet", new Object[] {Autodial});
 }
 
 /**
@@ -95,7 +99,9 @@ Returns:
 true if the Provideo 256 Pentium 4 fix is enabled
  */
 public static boolean IsProvideoPentium4FixEnabled () {
-   return (Boolean) sagex.SageAPI.call("IsProvideoPentium4FixEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsProvideoPentium4FixEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -107,7 +113,7 @@ Parameters:
 Enabled- true if the Provideo 256 Pentium 4 fix should be enabled
  */
 public static void SetProvideoPentium4FixEnabled (boolean Enabled) {
-    sagex.SageAPI.call("SetProvideoPentium4FixEnabled", new Object[] {Enabled});
+   sagex.SageAPI.call("SetProvideoPentium4FixEnabled", new Object[] {Enabled});
 }
 
 /**
@@ -117,7 +123,7 @@ Returns:
 the list of infrared tuning plugins that are available for use with SageTV
  */
 public static java.lang.String[] GetInfraredTuningPlugins () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetInfraredTuningPlugins", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetInfraredTuningPlugins", (Object[])null);
 }
 
 /**
@@ -130,7 +136,7 @@ Returns:
 the names of the 'Remotes' which correspond to external devices that can be controlled by the specified plugin on the specified port
  */
 public static java.lang.String[] GetRemotesForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetRemotesForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber});
+  return (java.lang.String[]) sagex.SageAPI.call("GetRemotesForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber});
 }
 
 /**
@@ -145,7 +151,9 @@ Returns:
 the RemoteName parameter will be returned if a new 'Remote Control' is created, null will be returned if one already exists with that name
  */
 public static java.lang.String AddRemoteForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName) {
-   return (java.lang.String) sagex.SageAPI.call("AddRemoteForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  Object o = sagex.SageAPI.call("AddRemoteForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -161,7 +169,9 @@ Returns:
 true if the command was successfully learned, false otherwise
  */
 public static boolean LearnCommandForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName, java.lang.String CommandName) {
-   return (Boolean) sagex.SageAPI.call("LearnCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,CommandName});
+  Object o = sagex.SageAPI.call("LearnCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,CommandName});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -175,7 +185,7 @@ OldCommandName- the current name of the command
 NewCommandName- the new name to rename this command to
  */
 public static void RenameCommandForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName, java.lang.String OldCommandName, java.lang.String NewCommandName) {
-    sagex.SageAPI.call("RenameCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,OldCommandName,NewCommandName});
+   sagex.SageAPI.call("RenameCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,OldCommandName,NewCommandName});
 }
 
 /**
@@ -187,7 +197,7 @@ PluginPortNumber- the port number of the tuning plugin, 0 if there is no port fo
 RemoteName- the name of the 'Remote Control' to remove
  */
 public static void RemoveRemoteForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName) {
-    sagex.SageAPI.call("RemoveRemoteForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+   sagex.SageAPI.call("RemoveRemoteForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
 }
 
 /**
@@ -200,7 +210,7 @@ RemoteName- the name of the 'Remote Control'
 CommandName- the name of the command to remove
  */
 public static void RemoveCommandForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName, java.lang.String CommandName) {
-    sagex.SageAPI.call("RemoveCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,CommandName});
+   sagex.SageAPI.call("RemoveCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,CommandName});
 }
 
 /**
@@ -215,7 +225,7 @@ RemoteName- the name of the 'Remote Control'
 NumberOfDigits- the maximum number of digits needed to tune a channel using the specified remote on this plugin
  */
 public static void SetMaxChannelDigitsForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName, int NumberOfDigits) {
-    sagex.SageAPI.call("SetMaxChannelDigitsForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,NumberOfDigits});
+   sagex.SageAPI.call("SetMaxChannelDigitsForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,NumberOfDigits});
 }
 
 /**
@@ -231,7 +241,9 @@ Returns:
 the maximum number of digits needed to tune a channel using the specified remote on this plugin
  */
 public static int GetMaxChannelDigitsForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName) {
-   return (Integer) sagex.SageAPI.call("GetMaxChannelDigitsForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  Object o = sagex.SageAPI.call("GetMaxChannelDigitsForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -244,7 +256,7 @@ RemoteName- the name of the 'Remote Control'
 MsecDelay- the minimum required delay between commands in milliseconds
  */
 public static void SetButtonDelayForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName, int MsecDelay) {
-    sagex.SageAPI.call("SetButtonDelayForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,MsecDelay});
+   sagex.SageAPI.call("SetButtonDelayForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,MsecDelay});
 }
 
 /**
@@ -258,7 +270,9 @@ Returns:
 the minimum required delay between commands in milliseconds
  */
 public static int GetButtonDelayForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName) {
-   return (Integer) sagex.SageAPI.call("GetButtonDelayForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  Object o = sagex.SageAPI.call("GetButtonDelayForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -272,7 +286,9 @@ RemoteName- the name of the 'Remote Control'
 MsecDelay- the minimum delay in milliseconds between finishing one channel change sequence and starting another when using the specified 'Remote Control'
  */
 public static int SetSequenceDelayForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName, int MsecDelay) {
-   return (Integer) sagex.SageAPI.call("SetSequenceDelayForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,MsecDelay});
+  Object o = sagex.SageAPI.call("SetSequenceDelayForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,MsecDelay});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -287,7 +303,9 @@ Returns:
 the minimum delay in milliseconds between finishing one channel change sequence and starting another when using the specified 'Remote Control'
  */
 public static int GetSequenceDelayForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName) {
-   return (Integer) sagex.SageAPI.call("GetSequenceDelayForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  Object o = sagex.SageAPI.call("GetSequenceDelayForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -301,7 +319,7 @@ RemoteName- the name of the 'Remote Control'
 Command- the name of the command from this 'Remote Control' to use to confirm a channel change
  */
 public static void SetConfirmCommandForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName, java.lang.String Command) {
-    sagex.SageAPI.call("SetConfirmCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,Command});
+   sagex.SageAPI.call("SetConfirmCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,Command});
 }
 
 /**
@@ -317,7 +335,7 @@ Since:
 6.2
  */
 public static void SetPrefixCommandForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName, java.lang.String Command) {
-    sagex.SageAPI.call("SetPrefixCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,Command});
+   sagex.SageAPI.call("SetPrefixCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName,Command});
 }
 
 /**
@@ -332,7 +350,9 @@ Returns:
 the name of the command from this 'Remote Control' to use to confirm a channel change
  */
 public static java.lang.String GetConfirmCommandForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName) {
-   return (java.lang.String) sagex.SageAPI.call("GetConfirmCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  Object o = sagex.SageAPI.call("GetConfirmCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -349,7 +369,9 @@ Since:
 6.2
  */
 public static java.lang.String GetPrefixCommandForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName) {
-   return (java.lang.String) sagex.SageAPI.call("GetPrefixCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  Object o = sagex.SageAPI.call("GetPrefixCommandForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -363,7 +385,9 @@ Returns:
 the carrier frequency of the specified 'Remote Control', or zero if the plugin doesn't have that information
  */
 public static long GetCarrierFrequencyForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName) {
-   return (Long) sagex.SageAPI.call("GetCarrierFrequencyForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  Object o = sagex.SageAPI.call("GetCarrierFrequencyForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -377,7 +401,9 @@ Returns:
 the 'bit time' of the specified 'Remote Control', or zero if the plugin doesn't have that information
  */
 public static long GetBitTimeForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName) {
-   return (Long) sagex.SageAPI.call("GetBitTimeForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  Object o = sagex.SageAPI.call("GetBitTimeForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -391,7 +417,9 @@ Returns:
 the list of commands for the specified 'Remote Control' for the specified plugin
  */
 public static java.util.Vector GetCommandsForInfraredTuningPlugin (java.lang.String PluginName, int PluginPortNumber, java.lang.String RemoteName) {
-   return (java.util.Vector) sagex.SageAPI.call("GetCommandsForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  Object o = sagex.SageAPI.call("GetCommandsForInfraredTuningPlugin", new Object[] {PluginName,PluginPortNumber,RemoteName});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -410,7 +438,7 @@ Returns:
 the list of properties underneath the specified property that themselves contain further subproperties.
  */
 public static java.lang.String[] GetSubpropertiesThatAreBranches (java.lang.String PropertyName) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetSubpropertiesThatAreBranches", new Object[] {PropertyName});
+  return (java.lang.String[]) sagex.SageAPI.call("GetSubpropertiesThatAreBranches", new Object[] {PropertyName});
 }
 
 /**
@@ -429,7 +457,7 @@ Returns:
 the list of properties underneath the specified property that do not contain further subproperties
  */
 public static java.lang.String[] GetSubpropertiesThatAreLeaves (java.lang.String PropertyName) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetSubpropertiesThatAreLeaves", new Object[] {PropertyName});
+  return (java.lang.String[]) sagex.SageAPI.call("GetSubpropertiesThatAreLeaves", new Object[] {PropertyName});
 }
 
 /**
@@ -451,7 +479,7 @@ Since:
 6.1
  */
 public static java.lang.String[] GetServerSubpropertiesThatAreBranches (java.lang.String PropertyName) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetServerSubpropertiesThatAreBranches", new Object[] {PropertyName});
+  return (java.lang.String[]) sagex.SageAPI.call("GetServerSubpropertiesThatAreBranches", new Object[] {PropertyName});
 }
 
 /**
@@ -473,7 +501,7 @@ Since:
 6.1
  */
 public static java.lang.String[] GetServerSubpropertiesThatAreLeaves (java.lang.String PropertyName) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetServerSubpropertiesThatAreLeaves", new Object[] {PropertyName});
+  return (java.lang.String[]) sagex.SageAPI.call("GetServerSubpropertiesThatAreLeaves", new Object[] {PropertyName});
 }
 
 /**
@@ -487,7 +515,9 @@ Returns:
 the value of the specified property, or the DefaultValue if the property was not set prior to this call
  */
 public static java.lang.String GetProperty (java.lang.String PropertyName, java.lang.String DefaultValue) {
-   return (java.lang.String) sagex.SageAPI.call("GetProperty", new Object[] {PropertyName,DefaultValue});
+  Object o = sagex.SageAPI.call("GetProperty", new Object[] {PropertyName,DefaultValue});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -498,7 +528,7 @@ PropertyName- the name of the property to set
 PropertyValue- the value to set the property to
  */
 public static void SetProperty (java.lang.String PropertyName, java.lang.String PropertyValue) {
-    sagex.SageAPI.call("SetProperty", new Object[] {PropertyName,PropertyValue});
+   sagex.SageAPI.call("SetProperty", new Object[] {PropertyName,PropertyValue});
 }
 
 /**
@@ -513,7 +543,9 @@ Returns:
 the value of the specified property, or the DefaultValue if the property was not set prior to this call
  */
 public static java.lang.String GetServerProperty (java.lang.String PropertyName, java.lang.String DefaultValue) {
-   return (java.lang.String) sagex.SageAPI.call("GetServerProperty", new Object[] {PropertyName,DefaultValue});
+  Object o = sagex.SageAPI.call("GetServerProperty", new Object[] {PropertyName,DefaultValue});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -525,7 +557,7 @@ PropertyName- the name of the property to set
 PropertyValue- the value to set the property to
  */
 public static void SetServerProperty (java.lang.String PropertyName, java.lang.String PropertyValue) {
-    sagex.SageAPI.call("SetServerProperty", new Object[] {PropertyName,PropertyValue});
+   sagex.SageAPI.call("SetServerProperty", new Object[] {PropertyName,PropertyValue});
 }
 
 /**
@@ -535,7 +567,7 @@ Parameters:
 PropertyName- the name of the property to remove
  */
 public static void RemoveProperty (java.lang.String PropertyName) {
-    sagex.SageAPI.call("RemoveProperty", new Object[] {PropertyName});
+   sagex.SageAPI.call("RemoveProperty", new Object[] {PropertyName});
 }
 
 /**
@@ -545,7 +577,7 @@ Parameters:
 PropertyName- the name of the property that should be removed along with all of its subproperties
  */
 public static void RemovePropertyAndChildren (java.lang.String PropertyName) {
-    sagex.SageAPI.call("RemovePropertyAndChildren", new Object[] {PropertyName});
+   sagex.SageAPI.call("RemovePropertyAndChildren", new Object[] {PropertyName});
 }
 
 /**
@@ -558,7 +590,7 @@ Since:
 6.1
  */
 public static void RemoveServerProperty (java.lang.String PropertyName) {
-    sagex.SageAPI.call("RemoveServerProperty", new Object[] {PropertyName});
+   sagex.SageAPI.call("RemoveServerProperty", new Object[] {PropertyName});
 }
 
 /**
@@ -572,7 +604,7 @@ Since:
 6.1
  */
 public static void RemoveServerPropertyAndChildren (java.lang.String PropertyName) {
-    sagex.SageAPI.call("RemoveServerPropertyAndChildren", new Object[] {PropertyName});
+   sagex.SageAPI.call("RemoveServerPropertyAndChildren", new Object[] {PropertyName});
 }
 
 /**
@@ -582,7 +614,9 @@ Returns:
 the name of the default quality that is used to record television
  */
 public static java.lang.String GetDefaultRecordingQuality () {
-   return (java.lang.String) sagex.SageAPI.call("GetDefaultRecordingQuality", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDefaultRecordingQuality", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -592,7 +626,9 @@ Returns:
 true if the 'Intelligent Recording' feature of SageTV is disabled, false otherwise
  */
 public static boolean IsIntelligentRecordingDisabled () {
-   return (Boolean) sagex.SageAPI.call("IsIntelligentRecordingDisabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsIntelligentRecordingDisabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -603,7 +639,7 @@ Parameters:
 NewPath- the file path to add to the list of library import paths
  */
 public static void AddLibraryImportPath (java.lang.String NewPath) {
-    sagex.SageAPI.call("AddLibraryImportPath", new Object[] {NewPath});
+   sagex.SageAPI.call("AddLibraryImportPath", new Object[] {NewPath});
 }
 
 /**
@@ -614,7 +650,7 @@ Parameters:
 NewPath- the file path to add to the list of library import paths for picture files
  */
 public static void AddPictureLibraryImportPath (java.lang.String NewPath) {
-    sagex.SageAPI.call("AddPictureLibraryImportPath", new Object[] {NewPath});
+   sagex.SageAPI.call("AddPictureLibraryImportPath", new Object[] {NewPath});
 }
 
 /**
@@ -625,7 +661,7 @@ Parameters:
 NewPath- the file path to add to the list of library import paths for music files
  */
 public static void AddMusicLibraryImportPath (java.lang.String NewPath) {
-    sagex.SageAPI.call("AddMusicLibraryImportPath", new Object[] {NewPath});
+   sagex.SageAPI.call("AddMusicLibraryImportPath", new Object[] {NewPath});
 }
 
 /**
@@ -636,7 +672,7 @@ Parameters:
 NewPath- the file path to add to the list of library import paths for video files
  */
 public static void AddVideoLibraryImportPath (java.lang.String NewPath) {
-    sagex.SageAPI.call("AddVideoLibraryImportPath", new Object[] {NewPath});
+   sagex.SageAPI.call("AddVideoLibraryImportPath", new Object[] {NewPath});
 }
 
 /**
@@ -646,7 +682,7 @@ Parameters:
 RemovePath- the path to remove from the list of library import paths
  */
 public static void RemoveLibraryImportPath (java.io.File RemovePath) {
-    sagex.SageAPI.call("RemoveLibraryImportPath", new Object[] {RemovePath});
+   sagex.SageAPI.call("RemoveLibraryImportPath", new Object[] {RemovePath});
 }
 
 /**
@@ -656,7 +692,7 @@ Parameters:
 RemovePath- the path to remove from the list of library import paths for pictures
  */
 public static void RemovePictureLibraryImportPath (java.io.File RemovePath) {
-    sagex.SageAPI.call("RemovePictureLibraryImportPath", new Object[] {RemovePath});
+   sagex.SageAPI.call("RemovePictureLibraryImportPath", new Object[] {RemovePath});
 }
 
 /**
@@ -666,7 +702,7 @@ Parameters:
 RemovePath- the path to remove from the list of library import paths for music
  */
 public static void RemoveMusicLibraryImportPath (java.io.File RemovePath) {
-    sagex.SageAPI.call("RemoveMusicLibraryImportPath", new Object[] {RemovePath});
+   sagex.SageAPI.call("RemoveMusicLibraryImportPath", new Object[] {RemovePath});
 }
 
 /**
@@ -676,7 +712,7 @@ Parameters:
 RemovePath- the path to remove from the list of library import paths for videos
  */
 public static void RemoveVideoLibraryImportPath (java.io.File RemovePath) {
-    sagex.SageAPI.call("RemoveVideoLibraryImportPath", new Object[] {RemovePath});
+   sagex.SageAPI.call("RemoveVideoLibraryImportPath", new Object[] {RemovePath});
 }
 
 /**
@@ -686,7 +722,7 @@ Parameters:
 Quality- the name of the quality setting to use to record television by default
  */
 public static void SetDefaultRecordingQuality (java.lang.String Quality) {
-    sagex.SageAPI.call("SetDefaultRecordingQuality", new Object[] {Quality});
+   sagex.SageAPI.call("SetDefaultRecordingQuality", new Object[] {Quality});
 }
 
 /**
@@ -696,7 +732,7 @@ Parameters:
 Disabled- should be true to disable 'Intelligent Recording', false to enable it
  */
 public static void SetIntelligentRecordingDisabled (boolean Disabled) {
-    sagex.SageAPI.call("SetIntelligentRecordingDisabled", new Object[] {Disabled});
+   sagex.SageAPI.call("SetIntelligentRecordingDisabled", new Object[] {Disabled});
 }
 
 /**
@@ -708,7 +744,7 @@ Parameters:
 Enabled- true if SageTV should use legacy major-minor DTV channel tuning
  */
 public static void SetMajorMinorDTVChannelTuningEnabled (boolean Enabled) {
-    sagex.SageAPI.call("SetMajorMinorDTVChannelTuningEnabled", new Object[] {Enabled});
+   sagex.SageAPI.call("SetMajorMinorDTVChannelTuningEnabled", new Object[] {Enabled});
 }
 
 /**
@@ -719,7 +755,9 @@ Returns:
 true if SageTV will go to its screen saver when put to sleep, false otherwise
  */
 public static boolean IsScreenSaverOnSleepEnabled () {
-   return (Boolean) sagex.SageAPI.call("IsScreenSaverOnSleepEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsScreenSaverOnSleepEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -730,7 +768,7 @@ Parameters:
 Enabled- true if SageTV should go to the screen saver when put to sleep, false otherwise
  */
 public static void SetScreenSaverOnSleepEnabled (boolean Enabled) {
-    sagex.SageAPI.call("SetScreenSaverOnSleepEnabled", new Object[] {Enabled});
+   sagex.SageAPI.call("SetScreenSaverOnSleepEnabled", new Object[] {Enabled});
 }
 
 /**
@@ -741,7 +779,9 @@ Returns:
 true if SageTV should synchronize the system clock with the server
  */
 public static boolean IsSyncSystemClockWithServerEnabled () {
-   return (Boolean) sagex.SageAPI.call("IsSyncSystemClockWithServerEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsSyncSystemClockWithServerEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -752,7 +792,7 @@ Parameters:
 Enabled- true if SageTV should synchronize the system clock with the server
  */
 public static void SetSyncSystemClockWithServerEnabled (boolean Enabled) {
-    sagex.SageAPI.call("SetSyncSystemClockWithServerEnabled", new Object[] {Enabled});
+   sagex.SageAPI.call("SetSyncSystemClockWithServerEnabled", new Object[] {Enabled});
 }
 
 /**
@@ -762,7 +802,9 @@ Returns:
 the localized name of the aspect ratio mode currently in use
  */
 public static java.lang.String GetAspectRatioMode () {
-   return (java.lang.String) sagex.SageAPI.call("GetAspectRatioMode", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAspectRatioMode", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -772,7 +814,7 @@ Parameters:
 AspectRatioMode- the localized name of the aspect ratio mode that should currently be used
  */
 public static void SetAspectRatioMode (java.lang.String AspectRatioMode) {
-    sagex.SageAPI.call("SetAspectRatioMode", new Object[] {AspectRatioMode});
+   sagex.SageAPI.call("SetAspectRatioMode", new Object[] {AspectRatioMode});
 }
 
 /**
@@ -782,7 +824,7 @@ Returns:
 the list of localized names for the aspect ratio modes
  */
 public static java.lang.String[] GetAspectRatioModes () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAspectRatioModes", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetAspectRatioModes", (Object[])null);
 }
 
 /**
@@ -794,7 +836,9 @@ Since:
 5.1
  */
 public static float GetDisplayAspectRatio () {
-   return (Float) sagex.SageAPI.call("GetDisplayAspectRatio", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDisplayAspectRatio", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
 }
 
 /**
@@ -806,7 +850,7 @@ Since:
 5.1
  */
 public static void SetDisplayAspectRatio (float DisplayAspectRatio) {
-    sagex.SageAPI.call("SetDisplayAspectRatio", new Object[] {DisplayAspectRatio});
+   sagex.SageAPI.call("SetDisplayAspectRatio", new Object[] {DisplayAspectRatio});
 }
 
 /**
@@ -816,7 +860,9 @@ Returns:
 true if parental controls are enabled on the system
  */
 public static boolean IsParentalControlEnabled () {
-   return (Boolean) sagex.SageAPI.call("IsParentalControlEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsParentalControlEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -826,7 +872,7 @@ Parameters:
 Enabled- true if parental controls should be enabled, false otherwise
  */
 public static void SetParentalControlEnabled (boolean Enabled) {
-    sagex.SageAPI.call("SetParentalControlEnabled", new Object[] {Enabled});
+   sagex.SageAPI.call("SetParentalControlEnabled", new Object[] {Enabled});
 }
 
 /**
@@ -836,7 +882,9 @@ Returns:
 true if SageTV should mute the volume when media is played back at speeds besides x1, false otherwise
  */
 public static boolean IsMutedOnAlternateSpeedPlayback () {
-   return (Boolean) sagex.SageAPI.call("IsMutedOnAlternateSpeedPlayback", (Object[])null);
+  Object o = sagex.SageAPI.call("IsMutedOnAlternateSpeedPlayback", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -846,7 +894,7 @@ Parameters:
 Enabled- true if SageTV should mute the sound when media is played at a speed other x1, false otherwise
  */
 public static void SetMuteOnAlternateSpeedPlayback (boolean Enabled) {
-    sagex.SageAPI.call("SetMuteOnAlternateSpeedPlayback", new Object[] {Enabled});
+   sagex.SageAPI.call("SetMuteOnAlternateSpeedPlayback", new Object[] {Enabled});
 }
 
 /**
@@ -856,7 +904,9 @@ Returns:
 true if a parental lock code has been configured, false otherwise
  */
 public static boolean HasParentalLockCode () {
-   return (Boolean) sagex.SageAPI.call("HasParentalLockCode", (Object[])null);
+  Object o = sagex.SageAPI.call("HasParentalLockCode", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -867,7 +917,7 @@ Returns:
 the list of content ratings that are under parental lock
  */
 public static java.lang.String[] GetRatingsUnderParentalLock () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetRatingsUnderParentalLock", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetRatingsUnderParentalLock", (Object[])null);
 }
 
 /**
@@ -877,7 +927,9 @@ Returns:
 true if the specified rating is in the list that is under parental control, false otherwise
  */
 public static boolean IsRatingUnderParentalLock (java.lang.String Rating) {
-   return (Boolean) sagex.SageAPI.call("IsRatingUnderParentalLock", new Object[] {Rating});
+  Object o = sagex.SageAPI.call("IsRatingUnderParentalLock", new Object[] {Rating});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -887,7 +939,9 @@ Returns:
 the color that should be used for the video background
  */
 public static java.awt.Color GetVideoBackgroundColor () {
-   return (java.awt.Color) sagex.SageAPI.call("GetVideoBackgroundColor", (Object[])null);
+  Object o = sagex.SageAPI.call("GetVideoBackgroundColor", (Object[])null);
+  if (o!=null) return (java.awt.Color) o;
+  return null;
 }
 
 /**
@@ -897,7 +951,7 @@ Parameters:
 Color- the color that should be used for the video background
  */
 public static void SetVideoBackgroundColor (java.awt.Color Color) {
-    sagex.SageAPI.call("SetVideoBackgroundColor", new Object[] {Color});
+   sagex.SageAPI.call("SetVideoBackgroundColor", new Object[] {Color});
 }
 
 /**
@@ -908,7 +962,9 @@ Returns:
 the video orbiting duration in milliseconds
  */
 public static long GetVideoOrbitingDuration () {
-   return (Long) sagex.SageAPI.call("GetVideoOrbitingDuration", (Object[])null);
+  Object o = sagex.SageAPI.call("GetVideoOrbitingDuration", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -919,7 +975,7 @@ Parameters:
 Duration- the video orbiting duration in milliseconds
  */
 public static void SetVideoOrbitingDuration (long Duration) {
-    sagex.SageAPI.call("SetVideoOrbitingDuration", new Object[] {Duration});
+   sagex.SageAPI.call("SetVideoOrbitingDuration", new Object[] {Duration});
 }
 
 /**
@@ -931,7 +987,9 @@ Returns:
 the horizontal scale factor for the video for the specified aspect ratio mode
  */
 public static float GetVideoZoomX (java.lang.String AspectRatioMode) {
-   return (Float) sagex.SageAPI.call("GetVideoZoomX", new Object[] {AspectRatioMode});
+  Object o = sagex.SageAPI.call("GetVideoZoomX", new Object[] {AspectRatioMode});
+  if (o!=null) return (Float) o;
+  return 0.0f;
 }
 
 /**
@@ -942,7 +1000,7 @@ AspectRatioMode- the localized name of the aspect ratio mode
 ScaleFactor- the horizontal scale factor for the video for the specified aspect ratio mode
  */
 public static void SetVideoZoomX (java.lang.String AspectRatioMode, float ScaleFactor) {
-    sagex.SageAPI.call("SetVideoZoomX", new Object[] {AspectRatioMode,ScaleFactor});
+   sagex.SageAPI.call("SetVideoZoomX", new Object[] {AspectRatioMode,ScaleFactor});
 }
 
 /**
@@ -954,7 +1012,9 @@ Returns:
 the vertical scale factor for the video for the specified aspect ratio mode
  */
 public static float GetVideoZoomY (java.lang.String AspectRatioMode) {
-   return (Float) sagex.SageAPI.call("GetVideoZoomY", new Object[] {AspectRatioMode});
+  Object o = sagex.SageAPI.call("GetVideoZoomY", new Object[] {AspectRatioMode});
+  if (o!=null) return (Float) o;
+  return 0.0f;
 }
 
 /**
@@ -965,7 +1025,7 @@ AspectRatioMode- the localized name of the aspect ratio mode
 ScaleFactor- the vertical scale factor for the video for the specified aspect ratio mode
  */
 public static void SetVideoZoomY (java.lang.String AspectRatioMode, float ScaleFactor) {
-    sagex.SageAPI.call("SetVideoZoomY", new Object[] {AspectRatioMode,ScaleFactor});
+   sagex.SageAPI.call("SetVideoZoomY", new Object[] {AspectRatioMode,ScaleFactor});
 }
 
 /**
@@ -977,7 +1037,9 @@ Returns:
 the offset in pixels that should be applied horizontally to the video
  */
 public static int GetVideoOffsetX (java.lang.String AspectRatioMode) {
-   return (Integer) sagex.SageAPI.call("GetVideoOffsetX", new Object[] {AspectRatioMode});
+  Object o = sagex.SageAPI.call("GetVideoOffsetX", new Object[] {AspectRatioMode});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -988,7 +1050,7 @@ AspectRatioMode- the localized name of the aspect ratio mode
 PixelOffset- the offset in pixels that should be applied horizontally to the video
  */
 public static void SetVideoOffsetX (java.lang.String AspectRatioMode, int PixelOffset) {
-    sagex.SageAPI.call("SetVideoOffsetX", new Object[] {AspectRatioMode,PixelOffset});
+   sagex.SageAPI.call("SetVideoOffsetX", new Object[] {AspectRatioMode,PixelOffset});
 }
 
 /**
@@ -1000,7 +1062,9 @@ Returns:
 the offset in pixels that should be applied vertically to the video
  */
 public static int GetVideoOffsetY (java.lang.String AspectRatioMode) {
-   return (Integer) sagex.SageAPI.call("GetVideoOffsetY", new Object[] {AspectRatioMode});
+  Object o = sagex.SageAPI.call("GetVideoOffsetY", new Object[] {AspectRatioMode});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -1011,7 +1075,7 @@ AspectRatioMode- the localized name of the aspect ratio mode
 PixelOffset- the offset in pixels that should be applied vertically to the video
  */
 public static void SetVideoOffsetY (java.lang.String AspectRatioMode, int PixelOffset) {
-    sagex.SageAPI.call("SetVideoOffsetY", new Object[] {AspectRatioMode,PixelOffset});
+   sagex.SageAPI.call("SetVideoOffsetY", new Object[] {AspectRatioMode,PixelOffset});
 }
 
 /**
@@ -1021,7 +1085,7 @@ Parameters:
 ParentalLockCode- the new value to set the parental lock code to
  */
 public static void SetParentalLockCode (java.lang.String ParentalLockCode) {
-    sagex.SageAPI.call("SetParentalLockCode", new Object[] {ParentalLockCode});
+   sagex.SageAPI.call("SetParentalLockCode", new Object[] {ParentalLockCode});
 }
 
 /**
@@ -1031,7 +1095,7 @@ Returns:
 a list of the different recording quality names available in the system
  */
 public static java.lang.String[] GetRecordingQualities () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetRecordingQualities", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetRecordingQualities", (Object[])null);
 }
 
 /**
@@ -1043,7 +1107,9 @@ Returns:
 the estimated overall bitrate for the specified recording quality in Megabits per second
  */
 public static long GetRecordingQualityBitrate (java.lang.String Quality) {
-   return (Long) sagex.SageAPI.call("GetRecordingQualityBitrate", new Object[] {Quality});
+  Object o = sagex.SageAPI.call("GetRecordingQualityBitrate", new Object[] {Quality});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -1055,7 +1121,9 @@ Returns:
 the format for the specified recording quality
  */
 public static java.lang.String GetRecordingQualityFormat (java.lang.String Quality) {
-   return (java.lang.String) sagex.SageAPI.call("GetRecordingQualityFormat", new Object[] {Quality});
+  Object o = sagex.SageAPI.call("GetRecordingQualityFormat", new Object[] {Quality});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1065,7 +1133,7 @@ Returns:
 the list of directories that SageTV is configured to record television to
  */
 public static java.io.File[] GetVideoDirectories () {
-   return (java.io.File[]) sagex.SageAPI.call("GetVideoDirectories", (Object[])null);
+  return (java.io.File[]) sagex.SageAPI.call("GetVideoDirectories", (Object[])null);
 }
 
 /**
@@ -1078,7 +1146,9 @@ Returns:
 the diskspace rule for the specified video directory
  */
 public static java.lang.String GetDiskspaceRuleForVideoDirectory (java.io.File Directory) {
-   return (java.lang.String) sagex.SageAPI.call("GetDiskspaceRuleForVideoDirectory", new Object[] {Directory});
+  Object o = sagex.SageAPI.call("GetDiskspaceRuleForVideoDirectory", new Object[] {Directory});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1090,7 +1160,9 @@ Returns:
 the size (in bytes) that should be applied to the specified directory for its configured diskspace rule
  */
 public static long GetDiskspaceSizeForVideoDirectory (java.io.File Directory) {
-   return (Long) sagex.SageAPI.call("GetDiskspaceSizeForVideoDirectory", new Object[] {Directory});
+  Object o = sagex.SageAPI.call("GetDiskspaceSizeForVideoDirectory", new Object[] {Directory});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -1102,7 +1174,7 @@ Parameters:
 Directory- the directory that SageTV should no longer record television content to
  */
 public static void RemoveVideoDirectory (java.io.File Directory) {
-    sagex.SageAPI.call("RemoveVideoDirectory", new Object[] {Directory});
+   sagex.SageAPI.call("RemoveVideoDirectory", new Object[] {Directory});
 }
 
 /**
@@ -1116,7 +1188,7 @@ Rule- the diskspace rule to use for this directory seeGetVideoDiskspaceRules()
 Size- the size to use for the specified diskspace rule and directory
  */
 public static void AddVideoDirectory (java.lang.String Directory, java.lang.String Rule, long Size) {
-    sagex.SageAPI.call("AddVideoDirectory", new Object[] {Directory,Rule,Size});
+   sagex.SageAPI.call("AddVideoDirectory", new Object[] {Directory,Rule,Size});
 }
 
 /**
@@ -1130,7 +1202,7 @@ NewRule- the diskspace rule to use for this video directory, seeGetVideoDiskspac
 NewSize- the size to use for this diskspace rule
  */
 public static void ChangeVideoDirectory (java.io.File OldDirectory, java.io.File NewDirectory, java.lang.String NewRule, long NewSize) {
-    sagex.SageAPI.call("ChangeVideoDirectory", new Object[] {OldDirectory,NewDirectory,NewRule,NewSize});
+   sagex.SageAPI.call("ChangeVideoDirectory", new Object[] {OldDirectory,NewDirectory,NewRule,NewSize});
 }
 
 /**
@@ -1140,7 +1212,7 @@ Returns:
 the list of valid diskspace rules
  */
 public static java.lang.String[] GetVideoDiskspaceRules () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetVideoDiskspaceRules", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetVideoDiskspaceRules", (Object[])null);
 }
 
 /**
@@ -1153,7 +1225,7 @@ Returns:
 the infrared codes that are linked to the specified SageTV Command
  */
 public static long[] GetIRCodesLinkedToSageCommand (java.lang.String SageCommand) {
-   return (long[]) sagex.SageAPI.call("GetIRCodesLinkedToSageCommand", new Object[] {SageCommand});
+  return (long[]) sagex.SageAPI.call("GetIRCodesLinkedToSageCommand", new Object[] {SageCommand});
 }
 
 /**
@@ -1166,7 +1238,7 @@ Returns:
 the keystrokes that are linked to the specified SageTV Command
  */
 public static java.lang.String[] GetKeystrokesLinkedToSageCommand (java.lang.String SageCommand) {
-   return (java.lang.String[]) sagex.SageAPI.call("GetKeystrokesLinkedToSageCommand", new Object[] {SageCommand});
+  return (java.lang.String[]) sagex.SageAPI.call("GetKeystrokesLinkedToSageCommand", new Object[] {SageCommand});
 }
 
 /**
@@ -1176,7 +1248,9 @@ Parameters:
 IRCode- the IRCode to get the associated name for, seeSetNameForIRCode()
  */
 public static java.lang.String GetNameForIRCode (long IRCode) {
-   return (java.lang.String) sagex.SageAPI.call("GetNameForIRCode", new Object[] {IRCode});
+  Object o = sagex.SageAPI.call("GetNameForIRCode", new Object[] {IRCode});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1188,7 +1262,9 @@ Returns:
 the SageTV Command that is linked to the specified infrared code
  */
 public static java.lang.String GetSageCommandLinkedToIRCode (long IRCode) {
-   return (java.lang.String) sagex.SageAPI.call("GetSageCommandLinkedToIRCode", new Object[] {IRCode});
+  Object o = sagex.SageAPI.call("GetSageCommandLinkedToIRCode", new Object[] {IRCode});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1200,7 +1276,9 @@ Returns:
 the SageTV Command that is linked to the specified keystroke
  */
 public static java.lang.String GetSageCommandLinkedToKeystroke (java.lang.String Keystroke) {
-   return (java.lang.String) sagex.SageAPI.call("GetSageCommandLinkedToKeystroke", new Object[] {Keystroke});
+  Object o = sagex.SageAPI.call("GetSageCommandLinkedToKeystroke", new Object[] {Keystroke});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1211,7 +1289,7 @@ IRCode- the infrared code to attach a name to
 Name- the name to attach to the specified infrared code
  */
 public static void SetNameForIRCode (long IRCode, java.lang.String Name) {
-    sagex.SageAPI.call("SetNameForIRCode", new Object[] {IRCode,Name});
+   sagex.SageAPI.call("SetNameForIRCode", new Object[] {IRCode,Name});
 }
 
 /**
@@ -1222,7 +1300,7 @@ IRCode- the infrared code to link to the SageTV Command
 SageCommand- the SageTVCommand to link the infrared code to
  */
 public static void LinkIRCodeToSageCommand (long IRCode, java.lang.String SageCommand) {
-    sagex.SageAPI.call("LinkIRCodeToSageCommand", new Object[] {IRCode,SageCommand});
+   sagex.SageAPI.call("LinkIRCodeToSageCommand", new Object[] {IRCode,SageCommand});
 }
 
 /**
@@ -1233,7 +1311,7 @@ Keystroke- the name of the keystroke to link to the SageTV Command
 SageCommand- the SageTVCommand to link the keystroke to
  */
 public static void LinkKeystrokeToSageCommand (java.lang.String Keystroke, java.lang.String SageCommand) {
-    sagex.SageAPI.call("LinkKeystrokeToSageCommand", new Object[] {Keystroke,SageCommand});
+   sagex.SageAPI.call("LinkKeystrokeToSageCommand", new Object[] {Keystroke,SageCommand});
 }
 
 /**
@@ -1243,7 +1321,7 @@ Parameters:
 IRCode- the infrared code to unlink from any SageTV Commands that it is linked with
  */
 public static void UnlinkIRCodeFromSageCommands (long IRCode) {
-    sagex.SageAPI.call("UnlinkIRCodeFromSageCommands", new Object[] {IRCode});
+   sagex.SageAPI.call("UnlinkIRCodeFromSageCommands", new Object[] {IRCode});
 }
 
 /**
@@ -1253,7 +1331,7 @@ Parameters:
 Keystroke- the keystroke to unlink from any SageTV Commands that it is linked with
  */
 public static void UnlinkKeystrokeFromSageCommands (java.lang.String Keystroke) {
-    sagex.SageAPI.call("UnlinkKeystrokeFromSageCommands", new Object[] {Keystroke});
+   sagex.SageAPI.call("UnlinkKeystrokeFromSageCommands", new Object[] {Keystroke});
 }
 
 /**
@@ -1264,7 +1342,7 @@ Rating- the name of the rating
 Restricted- true if the specified Rating should be restricted by parental control, false otherwise
  */
 public static void SetRatingUnderParentalControl (java.lang.String Rating, boolean Restricted) {
-    sagex.SageAPI.call("SetRatingUnderParentalControl", new Object[] {Rating,Restricted});
+   sagex.SageAPI.call("SetRatingUnderParentalControl", new Object[] {Rating,Restricted});
 }
 
 /**
@@ -1274,7 +1352,9 @@ Returns:
 the name of the port that the infrared receiver is connected to; will be a value like: "COM1", "COM2" or "USB"
  */
 public static java.lang.String GetInfraredReceiverPort () {
-   return (java.lang.String) sagex.SageAPI.call("GetInfraredReceiverPort", (Object[])null);
+  Object o = sagex.SageAPI.call("GetInfraredReceiverPort", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1284,7 +1364,9 @@ Parameters:
 Port- the name of the port that the infrared receiver is connected to; should be a value like: "COM1", "COM2" or "USB"
  */
 public static boolean SetInfraredReceiverPort (java.lang.String Port) {
-   return (Boolean) sagex.SageAPI.call("SetInfraredReceiverPort", new Object[] {Port});
+  Object o = sagex.SageAPI.call("SetInfraredReceiverPort", new Object[] {Port});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1295,7 +1377,9 @@ Returns:
 the inactivity timeout in milliseconds
  */
 public static int GetInactivityTimeout () {
-   return (Integer) sagex.SageAPI.call("GetInactivityTimeout", (Object[])null);
+  Object o = sagex.SageAPI.call("GetInactivityTimeout", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -1306,7 +1390,7 @@ Parameters:
 Timeout- the inactivity timeout in milliseconds
  */
 public static void SetInactivityTimeout (int Timeout) {
-    sagex.SageAPI.call("SetInactivityTimeout", new Object[] {Timeout});
+   sagex.SageAPI.call("SetInactivityTimeout", new Object[] {Timeout});
 }
 
 /**
@@ -1317,7 +1401,9 @@ Returns:
 the screen saver timeout in milliseconds
  */
 public static int GetScreenSaverTimeout () {
-   return (Integer) sagex.SageAPI.call("GetScreenSaverTimeout", (Object[])null);
+  Object o = sagex.SageAPI.call("GetScreenSaverTimeout", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -1328,7 +1414,7 @@ Parameters:
 Timeout- the screen saver timeout in milliseconds
  */
 public static void SetScreenSaverTimeout (int Timeout) {
-    sagex.SageAPI.call("SetScreenSaverTimeout", new Object[] {Timeout});
+   sagex.SageAPI.call("SetScreenSaverTimeout", new Object[] {Timeout});
 }
 
 /**
@@ -1338,7 +1424,9 @@ Returns:
 true if the SageTV server is enabled, false otherwise
  */
 public static boolean IsSageTVServerEnabled () {
-   return (Boolean) sagex.SageAPI.call("IsSageTVServerEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsSageTVServerEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1349,7 +1437,7 @@ Parameters:
 Enabled- true if the SageTV server should be enabled, false otherwise
  */
 public static void SetSageTVServerEnabled (boolean Enabled) {
-    sagex.SageAPI.call("SetSageTVServerEnabled", new Object[] {Enabled});
+   sagex.SageAPI.call("SetSageTVServerEnabled", new Object[] {Enabled});
 }
 
 /**
@@ -1359,7 +1447,9 @@ Returns:
 true if 3D acceleration is enabled for the rendering engine
  */
 public static boolean IsAcceleratedDrawingEnabled () {
-   return (Boolean) sagex.SageAPI.call("IsAcceleratedDrawingEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsAcceleratedDrawingEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1370,7 +1460,9 @@ Parameters:
 Enabled- true if 3D acceleration should be enabled, false otherwise.
  */
 public static boolean SetAcceleratedDrawingEnabled (boolean Enabled) {
-   return (Boolean) sagex.SageAPI.call("SetAcceleratedDrawingEnabled", new Object[] {Enabled});
+  Object o = sagex.SageAPI.call("SetAcceleratedDrawingEnabled", new Object[] {Enabled});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1381,7 +1473,9 @@ Returns:
 the horizontal offset in pixles that should be applied to the UI to account for overscan, positive values move it to the right
  */
 public static int GetOverscanOffsetX () {
-   return (Integer) sagex.SageAPI.call("GetOverscanOffsetX", (Object[])null);
+  Object o = sagex.SageAPI.call("GetOverscanOffsetX", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -1392,7 +1486,9 @@ Returns:
 the vertical offset in pixles that should be applied to the UI to account for overscan, positive values move it down
  */
 public static int GetOverscanOffsetY () {
-   return (Integer) sagex.SageAPI.call("GetOverscanOffsetY", (Object[])null);
+  Object o = sagex.SageAPI.call("GetOverscanOffsetY", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -1403,7 +1499,9 @@ Returns:
 the horizontal scale factor that should be applied to the UI to account for overscan
  */
 public static float GetOverscanScaleWidth () {
-   return (Float) sagex.SageAPI.call("GetOverscanScaleWidth", (Object[])null);
+  Object o = sagex.SageAPI.call("GetOverscanScaleWidth", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
 }
 
 /**
@@ -1414,7 +1512,9 @@ Returns:
 the vertical scale factor that should be applied to the UI to account for overscan
  */
 public static float GetOverscanScaleHeight () {
-   return (Float) sagex.SageAPI.call("GetOverscanScaleHeight", (Object[])null);
+  Object o = sagex.SageAPI.call("GetOverscanScaleHeight", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
 }
 
 /**
@@ -1425,7 +1525,7 @@ Parameters:
 Amount- the horizontal offset in pixles that should be applied to the UI to account for overscan, positive values move it to the right
  */
 public static void SetOverscanOffsetX (int Amount) {
-    sagex.SageAPI.call("SetOverscanOffsetX", new Object[] {Amount});
+   sagex.SageAPI.call("SetOverscanOffsetX", new Object[] {Amount});
 }
 
 /**
@@ -1436,7 +1536,7 @@ Parameters:
 Amount- the vertical offset in pixles that should be applied to the UI to account for overscan, positive values move it down
  */
 public static void SetOverscanOffsetY (int Amount) {
-    sagex.SageAPI.call("SetOverscanOffsetY", new Object[] {Amount});
+   sagex.SageAPI.call("SetOverscanOffsetY", new Object[] {Amount});
 }
 
 /**
@@ -1447,7 +1547,7 @@ Parameters:
 Amount- the horizontal scale factor that should be applied to the UI to account for overscan
  */
 public static void SetOverscanScaleWidth (float Amount) {
-    sagex.SageAPI.call("SetOverscanScaleWidth", new Object[] {Amount});
+   sagex.SageAPI.call("SetOverscanScaleWidth", new Object[] {Amount});
 }
 
 /**
@@ -1458,7 +1558,7 @@ Parameters:
 Amount- the vertical scale factor that should be applied to the UI to account for overscan
  */
 public static void SetOverscanScaleHeight (float Amount) {
-    sagex.SageAPI.call("SetOverscanScaleHeight", new Object[] {Amount});
+   sagex.SageAPI.call("SetOverscanScaleHeight", new Object[] {Amount});
 }
 
 /**
@@ -1469,7 +1569,7 @@ Returns:
 the possible names for country selection
  */
 public static java.lang.String[] GetAvailableCountries () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAvailableCountries", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetAvailableCountries", (Object[])null);
 }
 
 /**
@@ -1482,7 +1582,9 @@ Returns:
 the passed in Country variable
  */
 public static java.lang.String SetCountry (java.lang.String Country) {
-   return (java.lang.String) sagex.SageAPI.call("SetCountry", new Object[] {Country});
+  Object o = sagex.SageAPI.call("SetCountry", new Object[] {Country});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1492,7 +1594,9 @@ Returns:
 the name of the country that SageTV is configured for
  */
 public static java.lang.String GetCountry () {
-   return (java.lang.String) sagex.SageAPI.call("GetCountry", (Object[])null);
+  Object o = sagex.SageAPI.call("GetCountry", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1502,7 +1606,7 @@ Parameters:
 Format- the analog video format that should be used for capture and playback; valid values are "NTSC" or "PAL"
  */
 public static void SetAnalogVideoFormat (java.lang.String Format) {
-    sagex.SageAPI.call("SetAnalogVideoFormat", new Object[] {Format});
+   sagex.SageAPI.call("SetAnalogVideoFormat", new Object[] {Format});
 }
 
 /**
@@ -1512,7 +1616,9 @@ Returns:
 the analog video format that should be used for capture and playback
  */
 public static java.lang.String GetAnalogVideoFormat () {
-   return (java.lang.String) sagex.SageAPI.call("GetAnalogVideoFormat", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAnalogVideoFormat", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1522,7 +1628,9 @@ Returns:
 the language that the user interface should be displayed in
  */
 public static java.lang.String GetUILanguage () {
-   return (java.lang.String) sagex.SageAPI.call("GetUILanguage", (Object[])null);
+  Object o = sagex.SageAPI.call("GetUILanguage", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1534,7 +1642,7 @@ Parameters:
 Language- the language that the user interface should be displayed in
  */
 public static void SetUILanguage (java.lang.String Language) {
-    sagex.SageAPI.call("SetUILanguage", new Object[] {Language});
+   sagex.SageAPI.call("SetUILanguage", new Object[] {Language});
 }
 
 /**
@@ -1544,7 +1652,7 @@ Returns:
 the list of languages that are available to be used for the user interface
  */
 public static java.lang.String[] GetAvailableUILanguages () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAvailableUILanguages", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetAvailableUILanguages", (Object[])null);
 }
 
 /**
@@ -1554,7 +1662,9 @@ Returns:
 the name of the time zone that the application is currently configured to use
  */
 public static java.lang.String GetTimeZone () {
-   return (java.lang.String) sagex.SageAPI.call("GetTimeZone", (Object[])null);
+  Object o = sagex.SageAPI.call("GetTimeZone", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1564,7 +1674,7 @@ Parameters:
 TimeZone- tha name of the time zone to use, seeGetAllTimeZones()
  */
 public static void SetTimeZone (java.lang.String TimeZone) {
-    sagex.SageAPI.call("SetTimeZone", new Object[] {TimeZone});
+   sagex.SageAPI.call("SetTimeZone", new Object[] {TimeZone});
 }
 
 /**
@@ -1574,7 +1684,9 @@ Returns:
 the list of all of the valid time zone names
  */
 public static java.util.Vector GetAllTimeZones () {
-   return (java.util.Vector) sagex.SageAPI.call("GetAllTimeZones", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAllTimeZones", (Object[])null);
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1589,7 +1701,7 @@ Since:
 5.1
  */
 public static java.lang.String[] GetDVBTRegions () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetDVBTRegions", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetDVBTRegions", (Object[])null);
 }
 
 /**
@@ -1602,7 +1714,7 @@ Since:
 5.1
  */
 public static void SetDVBTRegion (java.lang.String DVBTRegion) {
-    sagex.SageAPI.call("SetDVBTRegion", new Object[] {DVBTRegion});
+   sagex.SageAPI.call("SetDVBTRegion", new Object[] {DVBTRegion});
 }
 
 /**
@@ -1616,7 +1728,9 @@ Since:
 5.1
  */
 public static java.lang.String GetDVBTRegion () {
-   return (java.lang.String) sagex.SageAPI.call("GetDVBTRegion", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVBTRegion", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1631,7 +1745,7 @@ Since:
 5.1
  */
 public static java.lang.String[] GetDVBCRegions () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetDVBCRegions", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetDVBCRegions", (Object[])null);
 }
 
 /**
@@ -1644,7 +1758,7 @@ Since:
 5.1
  */
 public static void SetDVBCRegion (java.lang.String DVBCRegion) {
-    sagex.SageAPI.call("SetDVBCRegion", new Object[] {DVBCRegion});
+   sagex.SageAPI.call("SetDVBCRegion", new Object[] {DVBCRegion});
 }
 
 /**
@@ -1658,7 +1772,9 @@ Since:
 5.1
  */
 public static java.lang.String GetDVBCRegion () {
-   return (java.lang.String) sagex.SageAPI.call("GetDVBCRegion", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVBCRegion", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1673,7 +1789,7 @@ Since:
 5.1
  */
 public static java.lang.String[] GetDVBSRegions () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetDVBSRegions", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetDVBSRegions", (Object[])null);
 }
 
 /**
@@ -1686,7 +1802,7 @@ Since:
 5.1
  */
 public static void SetDVBSRegion (java.lang.String DVBSRegion) {
-    sagex.SageAPI.call("SetDVBSRegion", new Object[] {DVBSRegion});
+   sagex.SageAPI.call("SetDVBSRegion", new Object[] {DVBSRegion});
 }
 
 /**
@@ -1700,7 +1816,9 @@ Since:
 5.1
  */
 public static java.lang.String GetDVBSRegion () {
-   return (java.lang.String) sagex.SageAPI.call("GetDVBSRegion", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVBSRegion", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1713,7 +1831,9 @@ Since:
 6.3
  */
 public static boolean CanDoNativeOutputResolution () {
-   return (Boolean) sagex.SageAPI.call("CanDoNativeOutputResolution", (Object[])null);
+  Object o = sagex.SageAPI.call("CanDoNativeOutputResolution", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1725,7 +1845,9 @@ Since:
 6.3
  */
 public static boolean IsNativeOutputResolutionEnabled () {
-   return (Boolean) sagex.SageAPI.call("IsNativeOutputResolutionEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsNativeOutputResolutionEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1737,7 +1859,7 @@ Since:
 6.3
  */
 public static void SetNativeOutputResolutionEnabled (boolean Enabled) {
-    sagex.SageAPI.call("SetNativeOutputResolutionEnabled", new Object[] {Enabled});
+   sagex.SageAPI.call("SetNativeOutputResolutionEnabled", new Object[] {Enabled});
 }
 
 /**
@@ -1749,7 +1871,9 @@ Since:
 6.3
  */
 public static java.lang.String GetAudioOutput () {
-   return (java.lang.String) sagex.SageAPI.call("GetAudioOutput", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAudioOutput", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1762,7 +1886,7 @@ Since:
 6.3
  */
 public static java.lang.String[] GetAudioOutputOptions () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAudioOutputOptions", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetAudioOutputOptions", (Object[])null);
 }
 
 /**
@@ -1776,7 +1900,7 @@ Since:
 6.3
  */
 public static void SetAudioOutput (java.lang.String AudioOutput) {
-    sagex.SageAPI.call("SetAudioOutput", new Object[] {AudioOutput});
+   sagex.SageAPI.call("SetAudioOutput", new Object[] {AudioOutput});
 }
 
 /**
@@ -1788,7 +1912,9 @@ Since:
 6.3
  */
 public static java.lang.String GetHDMIAutodetectedConnector () {
-   return (java.lang.String) sagex.SageAPI.call("GetHDMIAutodetectedConnector", (Object[])null);
+  Object o = sagex.SageAPI.call("GetHDMIAutodetectedConnector", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1797,7 +1923,7 @@ Deprecated.
 Sets the DirectShow audio & video decoders on windows to accepetable values
  */
 public static void RunFilterAutoconfiguration () {
-    sagex.SageAPI.call("RunFilterAutoconfiguration", (Object[])null);
+   sagex.SageAPI.call("RunFilterAutoconfiguration", (Object[])null);
 }
 
 /**
@@ -1808,7 +1934,9 @@ Returns:
 the preferred DXVA MPEG Mode configuration setting
  */
 public static java.lang.String GetDXVAMpegMode () {
-   return (java.lang.String) sagex.SageAPI.call("GetDXVAMpegMode", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDXVAMpegMode", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1819,7 +1947,7 @@ Parameters:
 DXVAMode- the preferred DXVA MPEG Mode configuration setting, use the empty string or "Default" to disable this
  */
 public static void SetDXVAMpegMode (java.lang.String DXVAMode) {
-    sagex.SageAPI.call("SetDXVAMpegMode", new Object[] {DXVAMode});
+   sagex.SageAPI.call("SetDXVAMpegMode", new Object[] {DXVAMode});
 }
 
 /**
@@ -1830,7 +1958,9 @@ Returns:
 the preferred DXVA MPEG Mode configuration setting
  */
 public static java.lang.String GetDVDDXVAMpegMode () {
-   return (java.lang.String) sagex.SageAPI.call("GetDVDDXVAMpegMode", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDDXVAMpegMode", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1841,7 +1971,7 @@ Parameters:
 DXVAMode- the preferred DXVA MPEG Mode configuration setting, use the empty string or "Default" to disable this
  */
 public static void SetDVDDXVAMpegMode (java.lang.String DXVAMode) {
-    sagex.SageAPI.call("SetDVDDXVAMpegMode", new Object[] {DXVAMode});
+   sagex.SageAPI.call("SetDVDDXVAMpegMode", new Object[] {DXVAMode});
 }
 
 /**
@@ -1851,7 +1981,7 @@ Returns:
 the list of available DXVA MPEG Modes: {"A", "B", "C", "D"}
  */
 public static java.lang.String[] GetDXVAMpegModes () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetDXVAMpegModes", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetDXVAMpegModes", (Object[])null);
 }
 
 /**
@@ -1862,7 +1992,9 @@ Returns:
 the preferred DXVA Deinterlacing configuration setting
  */
 public static java.lang.String GetDXVADeinterlaceMode () {
-   return (java.lang.String) sagex.SageAPI.call("GetDXVADeinterlaceMode", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDXVADeinterlaceMode", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1873,7 +2005,7 @@ Parameters:
 DeinterlaceMode- the preferred DXVA Deinterlacing configuration setting
  */
 public static void SetDXVADeinterlaceMode (java.lang.String DeinterlaceMode) {
-    sagex.SageAPI.call("SetDXVADeinterlaceMode", new Object[] {DeinterlaceMode});
+   sagex.SageAPI.call("SetDXVADeinterlaceMode", new Object[] {DeinterlaceMode});
 }
 
 /**
@@ -1884,7 +2016,9 @@ Returns:
 the preferred DXVA Deinterlacing configuration setting
  */
 public static java.lang.String GetDVDDXVADeinterlaceMode () {
-   return (java.lang.String) sagex.SageAPI.call("GetDVDDXVADeinterlaceMode", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDDXVADeinterlaceMode", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1895,7 +2029,7 @@ Parameters:
 DeinterlaceMode- the preferred DXVA Deinterlacing configuration setting
  */
 public static void SetDVDDXVADeinterlaceMode (java.lang.String DeinterlaceMode) {
-    sagex.SageAPI.call("SetDVDDXVADeinterlaceMode", new Object[] {DeinterlaceMode});
+   sagex.SageAPI.call("SetDVDDXVADeinterlaceMode", new Object[] {DeinterlaceMode});
 }
 
 /**
@@ -1905,7 +2039,7 @@ Returns:
 the list of potential DXVA Deinterlacing Capabilities
  */
 public static java.lang.String[] GetDXVADeinterlaceModes () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetDXVADeinterlaceModes", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetDXVADeinterlaceModes", (Object[])null);
 }
 
 /**
@@ -1915,7 +2049,9 @@ Returns:
 the mode that DScaler is currently configured to run in when it is used
  */
 public static java.lang.String GetDscalerMode () {
-   return (java.lang.String) sagex.SageAPI.call("GetDscalerMode", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDscalerMode", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1925,7 +2061,7 @@ Parameters:
 DscalerMode- the mode that DScaler should be configured to run in when it is used
  */
 public static void SetDscalerMode (java.lang.String DscalerMode) {
-    sagex.SageAPI.call("SetDscalerMode", new Object[] {DscalerMode});
+   sagex.SageAPI.call("SetDscalerMode", new Object[] {DscalerMode});
 }
 
 /**
@@ -1935,7 +2071,7 @@ Returns:
 the list of the available modes that DScaler can be run in
  */
 public static java.lang.String[] GetDscalerModes () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetDscalerModes", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetDscalerModes", (Object[])null);
 }
 
 /**
@@ -1945,7 +2081,9 @@ Returns:
 the name of the DirectShow audio decoder filter that's used for MPEG2 playback
  */
 public static java.lang.String GetAudioDecoderFilter () {
-   return (java.lang.String) sagex.SageAPI.call("GetAudioDecoderFilter", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAudioDecoderFilter", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1955,7 +2093,7 @@ Parameters:
 FilterName- the name of the DirectShow audio decoder filter to use for MPEG2 playback
  */
 public static void SetAudioDecoderFilter (java.lang.String FilterName) {
-    sagex.SageAPI.call("SetAudioDecoderFilter", new Object[] {FilterName});
+   sagex.SageAPI.call("SetAudioDecoderFilter", new Object[] {FilterName});
 }
 
 /**
@@ -1965,7 +2103,9 @@ Returns:
 the name of the DirectShow audio decoder filter that's used for DVD playback
  */
 public static java.lang.String GetDVDAudioDecoderFilter () {
-   return (java.lang.String) sagex.SageAPI.call("GetDVDAudioDecoderFilter", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDAudioDecoderFilter", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1975,7 +2115,7 @@ Parameters:
 FilterName- the name of the DirectShow audio decoder filter to use for DVD playback
  */
 public static void SetDVDAudioDecoderFilter (java.lang.String FilterName) {
-    sagex.SageAPI.call("SetDVDAudioDecoderFilter", new Object[] {FilterName});
+   sagex.SageAPI.call("SetDVDAudioDecoderFilter", new Object[] {FilterName});
 }
 
 /**
@@ -1985,7 +2125,9 @@ Returns:
 the name of the DirectShow audio renderer filter that's used for playback except DVDs
  */
 public static java.lang.String GetAudioRenderFilter () {
-   return (java.lang.String) sagex.SageAPI.call("GetAudioRenderFilter", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAudioRenderFilter", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1995,7 +2137,7 @@ Parameters:
 FilterName- the name of the DirectShow audio renderer filter to use for playback except DVDs
  */
 public static void SetAudioRenderFilter (java.lang.String FilterName) {
-    sagex.SageAPI.call("SetAudioRenderFilter", new Object[] {FilterName});
+   sagex.SageAPI.call("SetAudioRenderFilter", new Object[] {FilterName});
 }
 
 /**
@@ -2005,7 +2147,9 @@ Returns:
 the name of the DirectShow audio renderer filter that's used for DVD playback
  */
 public static java.lang.String GetDVDAudioRenderFilter () {
-   return (java.lang.String) sagex.SageAPI.call("GetDVDAudioRenderFilter", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDAudioRenderFilter", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -2015,7 +2159,7 @@ Parameters:
 FilterName- the name of the DirectShow audio renderer filter to use for DVD playback
  */
 public static void SetDVDAudioRenderFilter (java.lang.String FilterName) {
-    sagex.SageAPI.call("SetDVDAudioRenderFilter", new Object[] {FilterName});
+   sagex.SageAPI.call("SetDVDAudioRenderFilter", new Object[] {FilterName});
 }
 
 /**
@@ -2026,7 +2170,9 @@ Returns:
 the video renderer filter that should be used for DVD playback
  */
 public static java.lang.String GetDVDVideoRenderFilter () {
-   return (java.lang.String) sagex.SageAPI.call("GetDVDVideoRenderFilter", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDVideoRenderFilter", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -2037,7 +2183,7 @@ Parameters:
 FilterName- the video renderer filter that should be used for DVD playback
  */
 public static void SetDVDVideoRenderFilter (java.lang.String FilterName) {
-    sagex.SageAPI.call("SetDVDVideoRenderFilter", new Object[] {FilterName});
+   sagex.SageAPI.call("SetDVDVideoRenderFilter", new Object[] {FilterName});
 }
 
 /**
@@ -2047,7 +2193,9 @@ Returns:
 the name of the DirectShow video decoder filter that's used for MPEG2 playback
  */
 public static java.lang.String GetVideoDecoderFilter () {
-   return (java.lang.String) sagex.SageAPI.call("GetVideoDecoderFilter", (Object[])null);
+  Object o = sagex.SageAPI.call("GetVideoDecoderFilter", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -2057,7 +2205,7 @@ Parameters:
 FilterName- the name of the DirectShow video decoder filter to use for MPEG2 playback
  */
 public static void SetVideoDecoderFilter (java.lang.String FilterName) {
-    sagex.SageAPI.call("SetVideoDecoderFilter", new Object[] {FilterName});
+   sagex.SageAPI.call("SetVideoDecoderFilter", new Object[] {FilterName});
 }
 
 /**
@@ -2067,7 +2215,9 @@ Returns:
 the name of the DirectShow video decoder filter that's used for DVD playback
  */
 public static java.lang.String GetDVDVideoDecoderFilter () {
-   return (java.lang.String) sagex.SageAPI.call("GetDVDVideoDecoderFilter", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDVDVideoDecoderFilter", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -2077,7 +2227,7 @@ Parameters:
 FilterName- the name of the DirectShow video decoder filter to use for DVD playback
  */
 public static void SetDVDVideoDecoderFilter (java.lang.String FilterName) {
-    sagex.SageAPI.call("SetDVDVideoDecoderFilter", new Object[] {FilterName});
+   sagex.SageAPI.call("SetDVDVideoDecoderFilter", new Object[] {FilterName});
 }
 
 /**
@@ -2087,7 +2237,9 @@ Returns:
 the audio delay in milliseconds to apply when playing back MPEG2 files
  */
 public static int GetAudioDelay () {
-   return (Integer) sagex.SageAPI.call("GetAudioDelay", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAudioDelay", (Object[])null);
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -2097,7 +2249,7 @@ Parameters:
 Delay- the audio delay in milliseconds to apply when playing back MPEG2 files
  */
 public static void SetAudioDelay (int Delay) {
-    sagex.SageAPI.call("SetAudioDelay", new Object[] {Delay});
+   sagex.SageAPI.call("SetAudioDelay", new Object[] {Delay});
 }
 
 /**
@@ -2107,7 +2259,7 @@ Returns:
 the list of the audio decoder filters that are available in the system for MPEG2 playback
  */
 public static java.lang.String[] GetAudioDecoderFilters () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetAudioDecoderFilters", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetAudioDecoderFilters", (Object[])null);
 }
 
 /**
@@ -2117,7 +2269,7 @@ Returns:
 the list of the video decoder filters that are available in the system for MPEG2 playback
  */
 public static java.lang.String[] GetVideoDecoderFilters () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetVideoDecoderFilters", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetVideoDecoderFilters", (Object[])null);
 }
 
 /**
@@ -2127,7 +2279,9 @@ Returns:
 true if software decoding is disabled
  */
 public static boolean IsSoftwareDecodingDisabled () {
-   return (Boolean) sagex.SageAPI.call("IsSoftwareDecodingDisabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsSoftwareDecodingDisabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2137,7 +2291,7 @@ Parameters:
 Disabled- true if software decoding is disabled
  */
 public static void SetSoftwareDecodingDisabled (boolean Disabled) {
-    sagex.SageAPI.call("SetSoftwareDecodingDisabled", new Object[] {Disabled});
+   sagex.SageAPI.call("SetSoftwareDecodingDisabled", new Object[] {Disabled});
 }
 
 /**
@@ -2147,7 +2301,9 @@ Returns:
 true if DScaler is set to double the refresh rate when used.
  */
 public static boolean IsDscalerDoubleRefresh () {
-   return (Boolean) sagex.SageAPI.call("IsDscalerDoubleRefresh", (Object[])null);
+  Object o = sagex.SageAPI.call("IsDscalerDoubleRefresh", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2157,7 +2313,7 @@ Parameters:
 Enabled- true if DScaler should double the refresh rate when used, false otherwise
  */
 public static void SetDscalerDoubleRefresh (boolean Enabled) {
-    sagex.SageAPI.call("SetDscalerDoubleRefresh", new Object[] {Enabled});
+   sagex.SageAPI.call("SetDscalerDoubleRefresh", new Object[] {Enabled});
 }
 
 /**
@@ -2167,7 +2323,9 @@ Returns:
 true if DScaler is configured to display the odd field first
  */
 public static boolean IsDscalerOddFieldFirst () {
-   return (Boolean) sagex.SageAPI.call("IsDscalerOddFieldFirst", (Object[])null);
+  Object o = sagex.SageAPI.call("IsDscalerOddFieldFirst", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2177,7 +2335,7 @@ Parameters:
 Enabled- true if DScaler should display the odd field first
  */
 public static void SetDscalerOddFieldFirst (boolean Enabled) {
-    sagex.SageAPI.call("SetDscalerOddFieldFirst", new Object[] {Enabled});
+   sagex.SageAPI.call("SetDscalerOddFieldFirst", new Object[] {Enabled});
 }
 
 /**
@@ -2187,7 +2345,9 @@ Returns:
 true if the system has a Hauppauge WinTV PVR-350 card installed which can produce a TV output
  */
 public static boolean HasPVR350TVOutput () {
-   return (Boolean) sagex.SageAPI.call("HasPVR350TVOutput", (Object[])null);
+  Object o = sagex.SageAPI.call("HasPVR350TVOutput", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2197,7 +2357,9 @@ Returns:
 true if the TV output on a Hauppauge WinTV PVR-350 card is enabled
  */
 public static boolean IsPVR350TVOutputEnabled () {
-   return (Boolean) sagex.SageAPI.call("IsPVR350TVOutputEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsPVR350TVOutputEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2207,7 +2369,7 @@ Parameters:
 Enabled- true if the TV output of a Hauppauge WinTV PVR-350 should be enabled
  */
 public static void SetPVR350TVOutputEnabled (boolean Enabled) {
-    sagex.SageAPI.call("SetPVR350TVOutputEnabled", new Object[] {Enabled});
+   sagex.SageAPI.call("SetPVR350TVOutputEnabled", new Object[] {Enabled});
 }
 
 /**
@@ -2217,7 +2379,9 @@ Returns:
 true if the user interface (OSD) display on a Hauppauge WinTV PVR-350 should be shown through the tv output
  */
 public static boolean IsPVR350OSDEnabled () {
-   return (Boolean) sagex.SageAPI.call("IsPVR350OSDEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsPVR350OSDEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2227,7 +2391,7 @@ Parameters:
 Enabled- true if the user interface (OSD) should be displayed on the TV output of a Hauppauge WinTV PVR-350, false otherwise
  */
 public static void SetPVR350OSDEnabled (boolean Enabled) {
-    sagex.SageAPI.call("SetPVR350OSDEnabled", new Object[] {Enabled});
+   sagex.SageAPI.call("SetPVR350OSDEnabled", new Object[] {Enabled});
 }
 
 /**
@@ -2237,7 +2401,9 @@ Returns:
 true if the DScaler deinterlacing filter is enabled
  */
 public static boolean IsDscalerEnabled () {
-   return (Boolean) sagex.SageAPI.call("IsDscalerEnabled", (Object[])null);
+  Object o = sagex.SageAPI.call("IsDscalerEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2247,7 +2413,7 @@ Parameters:
 Enabled- true if the DScaler deinterlacing filter should be used, false otherwise
  */
 public static void SetDscalerEnabled (boolean Enabled) {
-    sagex.SageAPI.call("SetDscalerEnabled", new Object[] {Enabled});
+   sagex.SageAPI.call("SetDscalerEnabled", new Object[] {Enabled});
 }
 
 /**
@@ -2257,7 +2423,9 @@ Returns:
 the plugin that DScaler is currently configured to use when it is in "Plugin" mode
  */
 public static java.lang.String GetDscalerPlugin () {
-   return (java.lang.String) sagex.SageAPI.call("GetDscalerPlugin", (Object[])null);
+  Object o = sagex.SageAPI.call("GetDscalerPlugin", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -2267,7 +2435,7 @@ Parameters:
 PluginName- the name of the plugin to use with DScaler
  */
 public static void SetDscalerPlugin (java.lang.String PluginName) {
-    sagex.SageAPI.call("SetDscalerPlugin", new Object[] {PluginName});
+   sagex.SageAPI.call("SetDscalerPlugin", new Object[] {PluginName});
 }
 
 /**
@@ -2277,7 +2445,7 @@ Returns:
 the list of plugins that are supported by DScaler
  */
 public static java.lang.String[] GetDscalerPlugins () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetDscalerPlugins", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetDscalerPlugins", (Object[])null);
 }
 
 /**
@@ -2287,7 +2455,9 @@ Returns:
 true if the system has DirectX 9 installed, false otherwise
  */
 public static boolean HasDirectX9 () {
-   return (Boolean) sagex.SageAPI.call("HasDirectX9", (Object[])null);
+  Object o = sagex.SageAPI.call("HasDirectX9", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2297,7 +2467,9 @@ Returns:
 true if the system has support for the Enhanced Video Renderer (EVR), false otherwise
  */
 public static boolean HasEVRSupport () {
-   return (Boolean) sagex.SageAPI.call("HasEVRSupport", (Object[])null);
+  Object o = sagex.SageAPI.call("HasEVRSupport", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2307,7 +2479,9 @@ Returns:
 true if the video renderer is configured to use the Overlay surface, false otherwise
  */
 public static boolean IsVideoRendererOverlay () {
-   return (Boolean) sagex.SageAPI.call("IsVideoRendererOverlay", (Object[])null);
+  Object o = sagex.SageAPI.call("IsVideoRendererOverlay", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2319,7 +2493,9 @@ Returns:
 true if the video renderer is configured to use VMR9, false otherwise
  */
 public static boolean IsVideoRendererVMR9 () {
-   return (Boolean) sagex.SageAPI.call("IsVideoRendererVMR9", (Object[])null);
+  Object o = sagex.SageAPI.call("IsVideoRendererVMR9", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2333,7 +2509,9 @@ Since:
 6.5
  */
 public static boolean IsVideoRendererEVR () {
-   return (Boolean) sagex.SageAPI.call("IsVideoRendererEVR", (Object[])null);
+  Object o = sagex.SageAPI.call("IsVideoRendererEVR", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2344,7 +2522,9 @@ Returns:
 true if the video renderer is configured to use the Default renderer
  */
 public static boolean IsVideoRendererDefault () {
-   return (Boolean) sagex.SageAPI.call("IsVideoRendererDefault", (Object[])null);
+  Object o = sagex.SageAPI.call("IsVideoRendererDefault", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2352,14 +2532,14 @@ Sets the video renderer to use the default renderer (Windows Only). This will us
  Renderer 7 if using Windows XP; but DirectShow ultimately decides this itself. Applies to all files except DVDs.
  */
 public static void SetVideoRendererToDefault () {
-    sagex.SageAPI.call("SetVideoRendererToDefault", (Object[])null);
+   sagex.SageAPI.call("SetVideoRendererToDefault", (Object[])null);
 }
 
 /**
 Sets the video renderer to use the video Overlay surface (Windows Only). Applies to all files except DVDs.
  */
 public static void SetVideoRendererToOverlay () {
-    sagex.SageAPI.call("SetVideoRendererToOverlay", (Object[])null);
+   sagex.SageAPI.call("SetVideoRendererToOverlay", (Object[])null);
 }
 
 /**
@@ -2368,7 +2548,7 @@ Sets the video renderer to use the Video Mixing Renderer 9 (Windows Only). This
  as the video renderer instead of VMR9. Applies to all files except DVDs.
  */
 public static void SetVideoRendererToVMR9 () {
-    sagex.SageAPI.call("SetVideoRendererToVMR9", (Object[])null);
+   sagex.SageAPI.call("SetVideoRendererToVMR9", (Object[])null);
 }
 
 /**
@@ -2380,7 +2560,7 @@ Since:
 6.5
  */
 public static void SetVideoRendererToEVR () {
-    sagex.SageAPI.call("SetVideoRendererToEVR", (Object[])null);
+   sagex.SageAPI.call("SetVideoRendererToEVR", (Object[])null);
 }
 
 /**
@@ -2390,7 +2570,9 @@ Returns:
 the list of DirectShow audio renderer filters that are available on the system
  */
 public static java.util.Vector GetAudioRendererFilters () {
-   return (java.util.Vector) sagex.SageAPI.call("GetAudioRendererFilters", (Object[])null);
+  Object o = sagex.SageAPI.call("GetAudioRendererFilters", (Object[])null);
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -2400,7 +2582,7 @@ Returns:
 the different input connectors that are available on the system sound mixer
  */
 public static java.lang.String[] GetMixerAudioInputPaths () {
-   return (java.lang.String[]) sagex.SageAPI.call("GetMixerAudioInputPaths", (Object[])null);
+  return (java.lang.String[]) sagex.SageAPI.call("GetMixerAudioInputPaths", (Object[])null);
 }
 
 

@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 23/04/09 7:39 AM
+ * Generated Date/Time: 10/05/09 8:03 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaFileAPI.html'>MediaFileAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -14,7 +14,7 @@ Returns:
 a list of all of the MediaFile objects in the database
  */
 public static Object[] GetMediaFiles () {
-   return (Object[]) sagex.SageAPI.call("GetMediaFiles", (Object[])null);
+  return (Object[]) sagex.SageAPI.call("GetMediaFiles", (Object[])null);
 }
 
 /**
@@ -30,7 +30,7 @@ Since:
 6.4
  */
 public static Object[] GetMediaFiles (java.lang.String MediaMask) {
-   return (Object[]) sagex.SageAPI.call("GetMediaFiles", new Object[] {MediaMask});
+  return (Object[]) sagex.SageAPI.call("GetMediaFiles", new Object[] {MediaMask});
 }
 
 /**
@@ -44,7 +44,9 @@ Returns:
 the newly added MediaFile object
  */
 public static Object AddMediaFile (java.io.File File, java.lang.String NamePrefix) {
-   return (Object) sagex.SageAPI.call("AddMediaFile", new Object[] {File,NamePrefix});
+  Object o = sagex.SageAPI.call("AddMediaFile", new Object[] {File,NamePrefix});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -59,7 +61,9 @@ Since:
 6.6
  */
 public static Object CreateTempMediaFile (java.lang.String FilePath) {
-   return (Object) sagex.SageAPI.call("CreateTempMediaFile", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("CreateTempMediaFile", new Object[] {FilePath});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -73,7 +77,9 @@ Returns:
 true if the operation succeeded, false otherwise; this operation will fail if the Airing is already linked to another MediaFile
  */
 public static boolean SetMediaFileAiring (Object MediaFile, Object Airing) {
-   return (Boolean) sagex.SageAPI.call("SetMediaFileAiring", new Object[] {MediaFile,Airing});
+  Object o = sagex.SageAPI.call("SetMediaFileAiring", new Object[] {MediaFile,Airing});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -90,7 +96,9 @@ Returns:
 true if the operation succeeded, false otherwise; this operation will fail only if one of the arguments is null
  */
 public static boolean SetMediaFileShow (Object MediaFile, Object Show) {
-   return (Boolean) sagex.SageAPI.call("SetMediaFileShow", new Object[] {MediaFile,Show});
+  Object o = sagex.SageAPI.call("SetMediaFileShow", new Object[] {MediaFile,Show});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -102,7 +110,9 @@ Returns:
 the MediaFile for the corresponding file path, or null if there is no corresponding MediaFile
  */
 public static Object GetMediaFileForFilePath (java.io.File FilePath) {
-   return (Object) sagex.SageAPI.call("GetMediaFileForFilePath", new Object[] {FilePath});
+  Object o = sagex.SageAPI.call("GetMediaFileForFilePath", new Object[] {FilePath});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -114,7 +124,9 @@ Returns:
 true if the specified MediaFile is local to this system (i.e. doesn't need to be streamed from a server), false otherwise
  */
 public static boolean IsLocalFile (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsLocalFile", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsLocalFile", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -127,7 +139,9 @@ Returns:
 true if the specified MediaFile has been either imported using a library path or if this is a television recording that has had the 'Move to Library' operation performed on it; false otherwise
  */
 public static boolean IsLibraryFile (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsLibraryFile", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsLibraryFile", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -140,7 +154,9 @@ Returns:
 true if SageTV considers this MediaFile a 'complete' recording
  */
 public static boolean IsCompleteRecording (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsCompleteRecording", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsCompleteRecording", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -152,7 +168,9 @@ Returns:
 true if this MediaFile represents DVD content, false otherwise
  */
 public static boolean IsDVD (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsDVD", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsDVD", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -166,7 +184,9 @@ Since:
 6.6
  */
 public static boolean IsBluRay (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsBluRay", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsBluRay", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -178,7 +198,9 @@ Returns:
 true if this MediaFile represents the physical DVD drive in the system, false otherwise
  */
 public static boolean IsDVDDrive (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsDVDDrive", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsDVDDrive", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -190,7 +212,9 @@ Returns:
 true if this MediaFile's content is audio only, false otherwise
  */
 public static boolean IsMusicFile (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsMusicFile", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsMusicFile", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -202,7 +226,9 @@ Returns:
 true if this MediaFile's content is an audio/video or video file (this will be false for DVD/BluRay content), false otherwise
  */
 public static boolean IsVideoFile (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsVideoFile", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsVideoFile", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -214,7 +240,9 @@ Returns:
 true if this MediaFile's content represents a picture file, false otherwise
  */
 public static boolean IsPictureFile (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsPictureFile", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsPictureFile", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -226,7 +254,9 @@ Returns:
 true if this MediaFile represents recorded television content, false otherwise
  */
 public static boolean IsTVFile (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsTVFile", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsTVFile", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -240,7 +270,7 @@ Returns:
 the list of files that make up this MediaFile object
  */
 public static java.io.File[] GetSegmentFiles (Object MediaFile) {
-   return (java.io.File[]) sagex.SageAPI.call("GetSegmentFiles", new Object[] {MediaFile});
+  return (java.io.File[]) sagex.SageAPI.call("GetSegmentFiles", new Object[] {MediaFile});
 }
 
 /**
@@ -252,7 +282,9 @@ Returns:
 the title for the specified MediaFile object
  */
 public static java.lang.String GetMediaTitle (Object MediaFile) {
-   return (java.lang.String) sagex.SageAPI.call("GetMediaTitle", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetMediaTitle", new Object[] {MediaFile});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -264,7 +296,9 @@ Returns:
 the directory that the files for this MediaFile are in
  */
 public static java.io.File GetParentDirectory (Object MediaFile) {
-   return (java.io.File) sagex.SageAPI.call("GetParentDirectory", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetParentDirectory", new Object[] {MediaFile});
+  if (o!=null) return (java.io.File) o;
+  return null;
 }
 
 /**
@@ -276,7 +310,9 @@ Returns:
 the total size in bytes of the files on disk that represent this MediaFile
  */
 public static long GetSize (Object MediaFile) {
-   return (Long) sagex.SageAPI.call("GetSize", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetSize", new Object[] {MediaFile});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -290,7 +326,9 @@ the MetaImage object which represents the picture file for this MediaFile. If th
            is not a picture file, then null is returned
  */
 public static Object GetFullImage (Object MediaFile) {
-   return (Object) sagex.SageAPI.call("GetFullImage", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetFullImage", new Object[] {MediaFile});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -304,7 +342,9 @@ Returns:
 the representative thumbnail image which should be used for iconic display of this MediaFile
  */
 public static Object GetThumbnail (Object MediaFile) {
-   return (Object) sagex.SageAPI.call("GetThumbnail", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetThumbnail", new Object[] {MediaFile});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -319,7 +359,9 @@ Since:
 6.1
  */
 public static boolean IsThumbnailLoaded (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsThumbnailLoaded", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsThumbnailLoaded", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -332,7 +374,9 @@ Returns:
 true if this MediaFile object has a thumbnail for it that is unique to the content itself, false otherwise
  */
 public static boolean HasSpecificThumbnail (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("HasSpecificThumbnail", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("HasSpecificThumbnail", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -345,7 +389,9 @@ Returns:
 true if this MediaFile object has a thumbnail representation of it, false otherwise
  */
 public static boolean HasAnyThumbnail (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("HasAnyThumbnail", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("HasAnyThumbnail", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -357,7 +403,9 @@ Returns:
 true if this MediaFile is currently in the process of recording, false otherwise
  */
 public static boolean IsFileCurrentlyRecording (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("IsFileCurrentlyRecording", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("IsFileCurrentlyRecording", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -372,7 +420,9 @@ Returns:
 true if the deletion succeeded, false otherwise. A deletion can fail because the file is currently being recorded or watched or because the native filesystem is unable to delete the file.
  */
 public static boolean DeleteFile (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("DeleteFile", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("DeleteFile", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -388,7 +438,9 @@ Returns:
 true if the deletion succeeded, false otherwise. A deletion can fail because the file is currently being recorded or watched or because the native filesystem is unable to delete the file.
  */
 public static boolean DeleteFileWithoutPrejudice (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("DeleteFileWithoutPrejudice", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("DeleteFileWithoutPrejudice", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -400,7 +452,9 @@ Returns:
 the total duration in milliseconds of the content in the specified MediaFile
  */
 public static long GetFileDuration (Object MediaFile) {
-   return (Long) sagex.SageAPI.call("GetFileDuration", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetFileDuration", new Object[] {MediaFile});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -413,7 +467,9 @@ Returns:
 the starting time for the content in the specified MediaFile
  */
 public static long GetFileStartTime (Object MediaFile) {
-   return (Long) sagex.SageAPI.call("GetFileStartTime", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetFileStartTime", new Object[] {MediaFile});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -426,7 +482,9 @@ Returns:
 the ending time for the content in the specified MediaFile
  */
 public static long GetFileEndTime (Object MediaFile) {
-   return (Long) sagex.SageAPI.call("GetFileEndTime", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetFileEndTime", new Object[] {MediaFile});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -438,7 +496,7 @@ MediaFile- the MediaFile object to download a copy of
 LocalFile- the destination file to store the MediaFile as on the local filesystem
  */
 public static void CopyToLocalFile (Object MediaFile, java.io.File LocalFile) {
-    sagex.SageAPI.call("CopyToLocalFile", new Object[] {MediaFile,LocalFile});
+   sagex.SageAPI.call("CopyToLocalFile", new Object[] {MediaFile,LocalFile});
 }
 
 /**
@@ -451,7 +509,9 @@ Returns:
 the duration in milliseconds for the specified segment number in this MediaFile
  */
 public static long GetDurationForSegment (Object MediaFile, int SegmentNumber) {
-   return (Long) sagex.SageAPI.call("GetDurationForSegment", new Object[] {MediaFile,SegmentNumber});
+  Object o = sagex.SageAPI.call("GetDurationForSegment", new Object[] {MediaFile,SegmentNumber});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -464,7 +524,9 @@ Returns:
 the ending time for a specified segment number in this MediaFile
  */
 public static long GetEndForSegment (Object MediaFile, int SegmentNumber) {
-   return (Long) sagex.SageAPI.call("GetEndForSegment", new Object[] {MediaFile,SegmentNumber});
+  Object o = sagex.SageAPI.call("GetEndForSegment", new Object[] {MediaFile,SegmentNumber});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -477,7 +539,9 @@ Returns:
 the starting time for a specified segment number in this MediaFile
  */
 public static long GetStartForSegment (Object MediaFile, int SegmentNumber) {
-   return (Long) sagex.SageAPI.call("GetStartForSegment", new Object[] {MediaFile,SegmentNumber});
+  Object o = sagex.SageAPI.call("GetStartForSegment", new Object[] {MediaFile,SegmentNumber});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**
@@ -490,7 +554,9 @@ Returns:
 the file that represents the specified segment number in this MediaFile
  */
 public static java.io.File GetFileForSegment (Object MediaFile, int SegmentNumber) {
-   return (java.io.File) sagex.SageAPI.call("GetFileForSegment", new Object[] {MediaFile,SegmentNumber});
+  Object o = sagex.SageAPI.call("GetFileForSegment", new Object[] {MediaFile,SegmentNumber});
+  if (o!=null) return (java.io.File) o;
+  return null;
 }
 
 /**
@@ -502,7 +568,9 @@ Returns:
 the number of segments in ths specified MediaFile
  */
 public static int GetNumberOfSegments (Object MediaFile) {
-   return (Integer) sagex.SageAPI.call("GetNumberOfSegments", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetNumberOfSegments", new Object[] {MediaFile});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -514,7 +582,7 @@ Returns:
 a list of all of the start times of the segments in the specified MediaFile
  */
 public static long[] GetStartTimesForSegments (Object MediaFile) {
-   return (long[]) sagex.SageAPI.call("GetStartTimesForSegments", new Object[] {MediaFile});
+  return (long[]) sagex.SageAPI.call("GetStartTimesForSegments", new Object[] {MediaFile});
 }
 
 /**
@@ -526,7 +594,7 @@ Parameters:
 MediaFile- the MediaFile ojbect
  */
 public static void MoveFileToLibrary (Object MediaFile) {
-    sagex.SageAPI.call("MoveFileToLibrary", new Object[] {MediaFile});
+   sagex.SageAPI.call("MoveFileToLibrary", new Object[] {MediaFile});
 }
 
 /**
@@ -539,7 +607,7 @@ Parameters:
 MediaFile- the MediaFile ojbect
  */
 public static void MoveTVFileOutOfLibrary (Object MediaFile) {
-    sagex.SageAPI.call("MoveTVFileOutOfLibrary", new Object[] {MediaFile});
+   sagex.SageAPI.call("MoveTVFileOutOfLibrary", new Object[] {MediaFile});
 }
 
 /**
@@ -551,7 +619,9 @@ Returns:
 true if the argument is a MediaFile object, false otherwise
  */
 public static boolean IsMediaFileObject (java.lang.Object Object) {
-   return (Boolean) sagex.SageAPI.call("IsMediaFileObject", new Object[] {Object});
+  Object o = sagex.SageAPI.call("IsMediaFileObject", new Object[] {Object});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -563,7 +633,9 @@ Returns:
 the Album object that corresponds to this MediaFile
  */
 public static Object GetAlbumForFile (Object MediaFile) {
-   return (Object) sagex.SageAPI.call("GetAlbumForFile", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetAlbumForFile", new Object[] {MediaFile});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -575,7 +647,9 @@ Returns:
 the encoding that was used to record this file
  */
 public static java.lang.String GetMediaFileEncoding (Object MediaFile) {
-   return (java.lang.String) sagex.SageAPI.call("GetMediaFileEncoding", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetMediaFileEncoding", new Object[] {MediaFile});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -587,7 +661,9 @@ Returns:
 the Airing object that represents the content metadata for this MediaFile
  */
 public static Object GetMediaFileAiring (Object MediaFile) {
-   return (Object) sagex.SageAPI.call("GetMediaFileAiring", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetMediaFileAiring", new Object[] {MediaFile});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -600,7 +676,9 @@ Returns:
 the unique ID used to identify this MediaFile
  */
 public static int GetMediaFileID (Object MediaFile) {
-   return (Integer) sagex.SageAPI.call("GetMediaFileID", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetMediaFileID", new Object[] {MediaFile});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -613,7 +691,9 @@ Returns:
 the MediaFile object that corresponds to the passed in ID
  */
 public static Object GetMediaFileForID (int id) {
-   return (Object) sagex.SageAPI.call("GetMediaFileForID", new Object[] {id});
+  Object o = sagex.SageAPI.call("GetMediaFileForID", new Object[] {id});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -627,7 +707,9 @@ Since:
 5.1
  */
 public static java.lang.String GetMediaFileFormatDescription (Object MediaFile) {
-   return (java.lang.String) sagex.SageAPI.call("GetMediaFileFormatDescription", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("GetMediaFileFormatDescription", new Object[] {MediaFile});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -643,7 +725,9 @@ Since:
 6.6
  */
 public static java.lang.String GetMediaFileMetadata (Object MediaFile, java.lang.String Name) {
-   return (java.lang.String) sagex.SageAPI.call("GetMediaFileMetadata", new Object[] {MediaFile,Name});
+  Object o = sagex.SageAPI.call("GetMediaFileMetadata", new Object[] {MediaFile,Name});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -659,7 +743,9 @@ Since:
 5.1
  */
 public static boolean RotatePictureFile (Object MediaFile, int Degrees) {
-   return (Boolean) sagex.SageAPI.call("RotatePictureFile", new Object[] {MediaFile,Degrees});
+  Object o = sagex.SageAPI.call("RotatePictureFile", new Object[] {MediaFile,Degrees});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -675,7 +761,9 @@ Since:
 5.1
  */
 public static boolean FlipPictureFile (Object MediaFile, boolean Horizontal) {
-   return (Boolean) sagex.SageAPI.call("FlipPictureFile", new Object[] {MediaFile,Horizontal});
+  Object o = sagex.SageAPI.call("FlipPictureFile", new Object[] {MediaFile,Horizontal});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -689,7 +777,9 @@ Since:
 6.4
  */
 public static boolean CanAutorotatePictureFile (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("CanAutorotatePictureFile", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("CanAutorotatePictureFile", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -703,7 +793,9 @@ Since:
 6.4
  */
 public static boolean AutorotatePictureFile (Object MediaFile) {
-   return (Boolean) sagex.SageAPI.call("AutorotatePictureFile", new Object[] {MediaFile});
+  Object o = sagex.SageAPI.call("AutorotatePictureFile", new Object[] {MediaFile});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -716,7 +808,7 @@ Since:
 6.4
  */
 public static void RegeneratePictureThumbnail (Object MediaFile) {
-    sagex.SageAPI.call("RegeneratePictureThumbnail", new Object[] {MediaFile});
+   sagex.SageAPI.call("RegeneratePictureThumbnail", new Object[] {MediaFile});
 }
 
 
