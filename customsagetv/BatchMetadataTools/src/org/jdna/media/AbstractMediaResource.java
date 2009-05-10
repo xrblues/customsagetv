@@ -9,6 +9,10 @@ public abstract class AbstractMediaResource implements IMediaResource {
         this.uri = uri;
     }
     
+    protected void setLocationUri(URI uri) {
+        this.uri=uri;
+    }
+    
     public String getTitle() {
         String name = getBasename();
         if (name != null) return name.replaceAll("[^A-Za-z0-9']", " ");

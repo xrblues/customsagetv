@@ -11,6 +11,7 @@ import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageMediaFolder;
 
 import sagex.SageAPI;
+import sagex.api.MediaFileAPI;
 import sagex.stub.StubSageAPI;
 
 public class SageMediaFilesTestCase extends TestCase {
@@ -25,18 +26,15 @@ public class SageMediaFilesTestCase extends TestCase {
     
     public void testSageMediaFile() throws Exception {
         StubSageAPI provider = new StubSageAPI();
-        provider.setDebugCalls(false);
-        provider.addCall("IsMediaFileObject",true);
-        provider.addCall("IsAiringObject",false);
-        provider.addCall("GetMediaFileForID", "sagemf");
-        provider.addCall("IsVideoFile", true);
-        provider.addCall("GetFileForSegment", new File("/tmp/movie cd1.avi"));
         SageAPI.setProvider(provider);
+        provider.addCall("IsVideoFile", true);
+        File f = new File("/tmp/movie cd1.avi");
+        Object sageMF = MediaFileAPI.AddMediaFile(f, "Movie");
         
-        IMediaFile mf = new SageMediaFile(1200);
+        IMediaFile mf = new SageMediaFile(sageMF);
         assertEquals("getBasename()","movie cd1",mf.getBasename());
         assertEquals("getExtension()","avi",mf.getExtension());
-        assertEquals("getLocationUri()","sage://id/1200",mf.getLocationUri().toASCIIString());
+        assertEquals("getLocationUri()",f.toURI(),mf.getLocationUri());
         assertEquals("getName()","movie cd1.avi",mf.getName());
         assertEquals("getTitle()","movie cd1",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());
@@ -46,16 +44,16 @@ public class SageMediaFilesTestCase extends TestCase {
     public void testSageDVDFile() throws Exception {
         StubSageAPI provider = new StubSageAPI();
         provider.setDebugCalls(false);
-        provider.addCall("IsMediaFileObject",true);
         provider.addCall("IsDVD",true);
-        provider.addCall("GetMediaFileForID", "sagemf");
-        provider.addCall("GetFileForSegment", new File("/tmp/movie cd1.avi"));
         SageAPI.setProvider(provider);
+
+        File f = new File("/tmp/movie cd1.avi");
+        Object sageMF = MediaFileAPI.AddMediaFile(f, "Movie");
         
-        IMediaFile mf = new SageMediaFile(1200);
+        IMediaFile mf = new SageMediaFile(sageMF);
         assertEquals("getBasename()","movie cd1",mf.getBasename());
         assertEquals("getExtension()","avi",mf.getExtension());
-        assertEquals("getLocationUri()","sage://id/1200",mf.getLocationUri().toASCIIString());
+        assertEquals("getLocationUri()",f.toURI(),mf.getLocationUri());
         assertEquals("getName()","movie cd1.avi",mf.getName());
         assertEquals("getTitle()","movie cd1",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());
@@ -65,16 +63,16 @@ public class SageMediaFilesTestCase extends TestCase {
     public void testSageBlurayFile() throws Exception {
         StubSageAPI provider = new StubSageAPI();
         provider.setDebugCalls(false);
-        provider.addCall("IsMediaFileObject",true);
         provider.addCall("IsBluRay",true);
-        provider.addCall("GetMediaFileForID", "sagemf");
-        provider.addCall("GetFileForSegment", new File("/tmp/movie cd1.avi"));
         SageAPI.setProvider(provider);
+
+        File f = new File("/tmp/movie cd1.avi");
+        Object sageMF = MediaFileAPI.AddMediaFile(f, "Movie");
         
-        IMediaFile mf = new SageMediaFile(1200);
+        IMediaFile mf = new SageMediaFile(sageMF);
         assertEquals("getBasename()","movie cd1",mf.getBasename());
         assertEquals("getExtension()","avi",mf.getExtension());
-        assertEquals("getLocationUri()","sage://id/1200",mf.getLocationUri().toASCIIString());
+        assertEquals("getLocationUri()",f.toURI(),mf.getLocationUri());
         assertEquals("getName()","movie cd1.avi",mf.getName());
         assertEquals("getTitle()","movie cd1",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());
@@ -105,6 +103,10 @@ public class SageMediaFilesTestCase extends TestCase {
         provider.setDebugCalls(false);
         SageAPI.setProvider(provider);
 
+        MediaFileAPI.AddMediaFile(new File("/tmp/file1.avi"), "TV");
+        MediaFileAPI.AddMediaFile(new File("/tmp/file2.avi"), "TV");
+        MediaFileAPI.AddMediaFile(new File("/tmp/file3.avi"), "TV");
+        
         try {
             SageMediaFolder smf = new SageMediaFolder("sagex://find");
             fail("SageMediaFolder should only access sage:// uris");
@@ -112,8 +114,7 @@ public class SageMediaFilesTestCase extends TestCase {
         }
         
         // create a folder with a static set of items
-        Object items[] = new Object[] {"m1","m2","m3"};
-        SageMediaFolder smf = new SageMediaFolder(items);
+        SageMediaFolder smf = new SageMediaFolder(MediaFileAPI.GetMediaFiles());
         assertEquals("size", 3, smf.members().size());
         
         for (IMediaResource mr : smf.members()) {
@@ -121,16 +122,15 @@ public class SageMediaFilesTestCase extends TestCase {
         }
         
         // create a sage media folder with a sage uri lookup
-        provider.addCall("GetMediaFiles", new Object[] {"1","2"}); 
         smf = new SageMediaFolder("sage://query/TV");
         assertEquals("uri command", "query", smf.getUriCommand());
         assertEquals("uri command Args", "TV", smf.getSageQueryTypes());
-        assertEquals("size", 2, smf.members().size());
+        assertEquals("size", 3, smf.members().size());
         
         // test visitors
         CountResourceVisitor crv = new CountResourceVisitor();
         smf.accept(crv);
-        assertEquals("vistor count", 3, crv.getCount()); // 3 because of the visit to the folder itself
+        assertEquals("vistor count", 4, crv.getCount()); // 4 because of the visit to the folder itself
     }
     
     

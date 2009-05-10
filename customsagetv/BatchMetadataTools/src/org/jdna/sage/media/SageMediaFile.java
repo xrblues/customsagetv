@@ -60,6 +60,7 @@ public class SageMediaFile extends VirtualMediaFile {
             } else {
                 setContentType(ContentType.UNKNOWN);
             }
+            setLocationUri(MediaFileAPI.GetFileForSegment(mediaFile, 0).toURI());
         }
     }
 

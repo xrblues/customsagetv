@@ -39,6 +39,13 @@ public class FilesTestCase extends TestCase {
         return f;
     }
     
+    public static File getFile(String path) {
+        File f = new File("target/junit/");
+        f = new File(f, path);
+        assertEquals("Missing File: " + f.getAbsolutePath(), true, f.exists());
+        return f;
+    }
+    
     public void testFileDelete() {
         makeFile("test1/test/1.avi");
         makeFile("test1/test/2.avi");

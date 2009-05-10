@@ -2,8 +2,6 @@ package org.jdna.media.metadata.impl.sage;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.HashMap;
