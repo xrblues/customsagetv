@@ -7,11 +7,11 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.jdna.configuration.ConfigurationManager;
+import org.jdna.media.FileMediaFolder;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
-import org.jdna.media.MediaResourceFactory;
-import org.jdna.media.impl.MovieResourceFilter;
+import org.jdna.media.MovieResourceFilter;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.PersistenceOptions;
@@ -137,7 +137,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             if (o != null) {
                 mr = new SageMediaFile(o);
             } else {
-                mr = MediaResourceFactory.getInstance().createResource(file.toURI());
+                mr = FileMediaFolder.createResource(file);
             }
             if (filter.accept(mr)) {
                 debug("BatchMetadataTools " + Version.VERSION + "; Handling File: " + file.getAbsolutePath() + "; arg: " + arg);

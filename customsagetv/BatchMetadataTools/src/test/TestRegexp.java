@@ -8,8 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jdna.configuration.ConfigurationManager;
-import org.jdna.media.impl.CDStackingModel;
-import org.jdna.media.impl.MediaFile;
+import org.jdna.media.CDStackingModel;
+import org.jdna.media.FileMediaFile;
 import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.metadataupdater.MetadataUpdater;
 
@@ -209,7 +209,7 @@ public class TestRegexp {
     }
 
     public static void testStack(String s) {
-        MediaFile mf = new MediaFile(new File(s).toURI());
+        FileMediaFile mf = new FileMediaFile(new File(s).toURI());
         System.out.printf("String: %s; Name; %s, Basename: %s; Stacked: %s\n", s, mf.getTitle(), mf.getBasename(), CDStackingModel.INSTANCE.getStackedTitle(mf));
 
         Pattern p = Pattern.compile(ConfigurationManager.getInstance().getMediaConfiguration().getStackingModelRegex(), Pattern.CASE_INSENSITIVE);

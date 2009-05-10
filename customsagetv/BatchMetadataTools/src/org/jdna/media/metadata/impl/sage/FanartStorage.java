@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
+import org.jdna.media.StackedMediaFile;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.MediaMetadataUtils;
@@ -59,8 +60,8 @@ public class FanartStorage {
     }
 
     private void saveLocalFanartForTypes(IMediaFile mediaFileParent, IMediaMetadata md, PersistenceOptions options, MediaArtifactType[] artTypes) {
-        if (mediaFileParent.isStacked()) {
-            for (IMediaResource mf : mediaFileParent.getParts()) {
+        if (mediaFileParent instanceof StackedMediaFile) {
+            for (IMediaResource mf : ((StackedMediaFile) mediaFileParent).getStackedFiles()) {
                 for (MediaArtifactType mt : artTypes) {
                     try {
                         saveLocalFanart((IMediaFile) mf, md, mt, options);
@@ -81,17 +82,13 @@ public class FanartStorage {
     }
 
     private void saveLocalFanart(IMediaFile mediaFileParent, IMediaMetadata md, MediaArtifactType mt, PersistenceOptions options) throws IOException {
-        try {
-            File mediaFile = new File(new URI(mediaFileParent.getLocationUri()));
+        File mediaFile = new File(mediaFileParent.getLocationUri());
 
-            // media type is not important for local fanart
-            File imageFile = FanartUtil.getLocalFanartForFile(mediaFile, MediaType.MOVIE, mt);
-            IMediaArt ma[] = md.getMediaArt(mt);
-            if (ma != null && ma.length > 0) {
-                downloadAndSaveFanart(mt, ma[0], imageFile, options, false);
-            }
-        } catch (URISyntaxException e) {
-            log.error("Failed to save media art: " + mt + " for file: " + mediaFileParent.getLocationUri(), e);
+        // media type is not important for local fanart
+        File imageFile = FanartUtil.getLocalFanartForFile(mediaFile, MediaType.MOVIE, mt);
+        IMediaArt ma[] = md.getMediaArt(mt);
+        if (ma != null && ma.length > 0) {
+            downloadAndSaveFanart(mt, ma[0], imageFile, options, false);
         }
     }
 

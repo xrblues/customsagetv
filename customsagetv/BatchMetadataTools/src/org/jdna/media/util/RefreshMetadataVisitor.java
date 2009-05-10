@@ -25,7 +25,7 @@ public class RefreshMetadataVisitor implements IMediaResourceVisitor {
     }
 
     public void visit(IMediaResource resource) {
-        if (resource.getType() == IMediaFile.TYPE_FILE) {
+        if (resource.getType() == IMediaResource.Type.File) {
             try {
                 log.debug("Refreshing MetaData for: " + resource.getLocationUri());
                 // if we have a dataProviderUrl and id, then refresh the

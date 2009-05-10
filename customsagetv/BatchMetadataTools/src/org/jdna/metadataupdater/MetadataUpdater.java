@@ -15,10 +15,11 @@ import org.jdna.cmdline.CommandLine;
 import org.jdna.cmdline.CommandLineArg;
 import org.jdna.cmdline.CommandLineProcess;
 import org.jdna.configuration.ConfigurationManager;
+import org.jdna.media.FileMediaFolder;
 import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
-import org.jdna.media.MediaResourceFactory;
+import org.jdna.media.VirtualMediaFolder;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
@@ -37,7 +38,6 @@ import org.jdna.media.util.CompositeResourceVisitor;
 import org.jdna.media.util.CountResourceVisitor;
 import org.jdna.media.util.MissingMetadataVisitor;
 import org.jdna.media.util.RefreshMetadataVisitor;
-import org.jdna.metadataupdater.gui.BatchMetadataToolsGUI;
 import org.jdna.util.LoggerConfiguration;
 
 import sagex.SageAPI;
@@ -233,23 +233,19 @@ public class MetadataUpdater {
             if (!file.exists() && offline == false) {
                 System.out.println("File Not Found: " + file.getAbsolutePath() + "\nConsider adding --offline=true if you want to create an offline video.");
             } else {
-                resources.add(MediaResourceFactory.getInstance().createResource(file.toURI()));
+                resources.add(FileMediaFolder.createResource(file));
             }
         }
 
         // put all the videos/folders in a virtual top level folder for
         // processing
-        if (resources.size() == 1 && resources.get(0).getType() == IMediaFolder.TYPE_FOLDER) {
+        if (resources.size() == 1 && resources.get(0).getType() == IMediaResource.Type.Folder) {
             parentFolder = (IMediaFolder) resources.get(0);
         } else {
-            parentFolder = MediaResourceFactory.getInstance().createVirtualFolder("Videos", resources);
+            parentFolder = new VirtualMediaFolder("bmt:/root/videos");
+            ((VirtualMediaFolder)parentFolder).addResources(resources);
         }
 
-        if (gui==true) {
-           BatchMetadataToolsGUI.runApp(this); 
-           return; 
-        }
-        
         // if there are no parent folders to process, the just do nothing...
         if (parentFolder.members().size() == 0) {
             System.out.println("No Files to process.");
@@ -332,7 +328,8 @@ public class MetadataUpdater {
             if (config.isAutomaticUpdate() && prompt && autoNotFound.getCollection().size() > 0) {
                 // now process all the files that autoupdater could not process
                 // automatically
-                IMediaFolder mf = MediaResourceFactory.getInstance().createVirtualFolder("manualUpdate", autoNotFound.getCollection());
+                VirtualMediaFolder mf = new VirtualMediaFolder("bmt://actions/manualUpdate");
+                mf.addResources(autoNotFound.getCollection());
                 mf.accept(manualUpdater, false);
             } else if (autoNotFound.getCollection().size() > 0) {
                 // dump out the skipped entries that were not automatically updated

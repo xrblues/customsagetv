@@ -1,4 +1,4 @@
-package org.jdna.media.impl;
+package org.jdna.media;
 
 import org.jdna.persistence.annotations.Field;
 import org.jdna.persistence.annotations.Table;

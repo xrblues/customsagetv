@@ -1,25 +1,18 @@
 package org.jdna.media;
 
+import java.net.URI;
+
 
 public interface IMediaResource extends Comparable<IMediaResource> {
-    public static final int CONTENT_TYPE_UNKNOWN = 0;
-    public static final int CONTENT_TYPE_MOVIE   = 1;
-    public static final int CONTENT_TYPE_DVD     = 2;
-    public static final int CONTENT_TYPE_TV      = 3;
-
+    public static enum Type {File, Folder};
+    
     public void accept(IMediaResourceVisitor visitor);
 
-    public void copy();
-
-    public void delete();
-
     public String getTitle();
-
+    
     public String getName();
 
-    public String getLocationUri();
-
-    public String getPath();
+    public URI getLocationUri();
 
     public String getBasename();
 
@@ -34,8 +27,8 @@ public interface IMediaResource extends Comparable<IMediaResource> {
     public long lastModified();
 
     public void touch();
+    
+    public void delete();
 
-    public int getType();
-
-    public int getContentType();
+    public Type getType();
 }

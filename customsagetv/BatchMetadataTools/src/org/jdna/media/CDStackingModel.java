@@ -1,12 +1,10 @@
-package org.jdna.media.impl;
+package org.jdna.media;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
-import org.jdna.media.IMediaResource;
-import org.jdna.media.IMediaStackModel;
 
 /**
  * As Taken from http://xbmc.org/wiki/?title=Stacking

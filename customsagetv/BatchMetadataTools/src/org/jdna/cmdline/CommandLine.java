@@ -318,15 +318,11 @@ public class CommandLine {
 
         CommandLineProcess clp = o.getClass().getAnnotation(CommandLineProcess.class);
         if (clp==null) {
-            System.out.println("Class does not contain a CommandLineProcess annotation.  Help cannot be generated for class: " + this.getClass().getName());
+            System.out.println("help() called on non-annotated class:" + o.getClass().getName() + ".\nBe sure to add @CommandLineProcess and @CommandLineArg annotations to to your class.");
             return;
         }
         System.out.printf("%s\n", clp.description());
 
-        if (clp == null) {
-            System.out.println("help() called on non-annotated class:" + o.getClass().getName() + ".\nBe sure to add @CommandLineProcess and @CommandLineArg annotations to to your class.");
-            return;
-        }
         if (e != null) {
             System.out.printf("ERROR: %s\n", e.getMessage());
             e.printStackTrace();
