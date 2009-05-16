@@ -5,6 +5,7 @@ import java.io.File;
 import sagex.api.AiringAPI;
 import sagex.api.ChannelAPI;
 import sagex.api.MediaFileAPI;
+import sagex.api.PlaylistAPI;
 import sagex.api.ShowAPI;
 import sagex.remote.RemoteObjectRef;
 import sagex.remote.RemoteRequest;
@@ -83,6 +84,21 @@ public class RequestHelper {
 					retObj = ShowAPI.GetShowForExternalID(cargs[1]);
 				} catch (Exception e) { }
 				return retObj;
+            } else if (str.startsWith("playlist")){
+                String cargs[] = str.split(":");
+                Object retObj = new Object();
+                try {
+                    Object all[] = PlaylistAPI.GetPlaylists();
+                    if (all==null) return retObj;
+                    for (Object o : all) {
+                        String name = PlaylistAPI.GetName(o);
+                        if (name.equals(cargs[1])) {
+                            return o;
+                        }
+                    }
+                    return retObj;
+                } catch (Exception e) { }
+                return retObj;
 			} else {
 				int p = str.indexOf(":");
 				if (p != -1) {

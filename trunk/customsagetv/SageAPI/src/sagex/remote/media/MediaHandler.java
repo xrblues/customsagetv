@@ -5,12 +5,12 @@ import java.awt.image.RenderedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -22,186 +22,144 @@ import sagex.api.Utility;
 import sagex.remote.SagexServlet.SageHandler;
 
 public class MediaHandler implements SageHandler {
+    public static final String                   SERVLET_PATH = "media";
+    private Map<String, SageMediaRequestHandler> handlers     = new HashMap<String, SageMediaRequestHandler>();
 
-	public static final String SERVLET_PATH = "media";
+    public MediaHandler() {
+        System.out.println("Media Servlet Handler Created.");
+        handlers.put("properties", new PropertiesSageRequestHandler());
+        handlers.put("thumbnail", new ThumbnailRequestHandler());
+        handlers.put("mediafile", new MediaFileRequestHandler());
 
-	public MediaHandler() {
-		System.out.println("Media Servlet Handler Created.");
-	}
+        handlers.put("poster", new ProxySageMediaRequestHandler("sagex.phoenix.fanart.FanartMediaRequestHandler", "poster"));
+        handlers.put("background", new ProxySageMediaRequestHandler("sagex.phoenix.fanart.FanartMediaRequestHandler", "background"));
+        handlers.put("banner", new ProxySageMediaRequestHandler("sagex.phoenix.fanart.FanartMediaRequestHandler", "banner"));
+    }
 
-	public void hanleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 0 - null
-		// 1 - media
-		// 2 - mediafile|thumbnail|debug
-		// 3 - media id 
-		if (args.length<3) {
-			throw new ServletException("media missing one of 'thumbnail' or 'mediafile'");
-		}
-		
-		try {
-		if ("debug".equals(args[2])) {
-			debug(args[3], resp);
-		} else if ("mediafile".equals(args[2])) {
-			writeMediaFile(args[3], resp);
-		} else if ("thumbnail".equals(args[2])) {
-			String file = req.getParameter("mediafile");
-			if (file==null) {
-				writeImage(args[3], resp);
-			} else {
-				writeImageForFile(file, resp);
-			}
-		} else if ("sagethumbnail".equals(args[2])) {
-			writeSageImage(args[3], resp);
-		} else if ("properties".equals(args[2])) {
-			writeProperties(args[3], resp);
-		} else {
-			resp.sendError(404, "Invalid Media Type: " + args[2]);
-		}
-		} catch (Exception e) {
-			resp.sendError(500, "Failed to process media request!");
-		}
-	}
+    public void hanleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 0 - null
+        // 1 - media
+        // 2 - mediafile|thumbnail|debug
+        // 3 - media id
+        try {
+            if (args.length < 3) {
+                throw new ServletException("missing media artifact type (ie, thumbnail, poster, etc)");
+            }
+            
+            String mediaFileId = req.getParameter("mediafile");
+            if (mediaFileId == null) {
+                mediaFileId = args[3];
+            }
+            
+            if (mediaFileId == null) {
+                help(resp, "Missing mediafile");
+            }
+            
+            Object sageMedia = getMediaFile(mediaFileId);
 
-	private void writeProperties(String mediaFileId, HttpServletResponse resp) throws Exception {
-		try {
-			// get the media file that we are going to be using
-			Object sagefile = MediaFileAPI.GetMediaFileForID(Integer.parseInt(mediaFileId));
-			File file = MediaFileAPI.GetFileForSegment(sagefile, 0);
+            SageMediaRequestHandler handler = handlers.get(args[2]);
+            if (handler != null) {
+                handler.processRequest(req, resp, sageMedia);
+            } else {
+                help(resp, "Unknown Media Command: " + args[2]);
+            }
+        } catch (Exception e) {
+            help(resp, e);
+        }
+    }
+    
+    private void help(HttpServletResponse resp, String msg) throws IOException {
+        help(resp, msg, null);
+    }
 
-			File pFile = null;
-			pFile = new File(file.getParentFile(), file.getName() + ".properties");
-			if (pFile==null || !pFile.exists()) throw new FileNotFoundException(pFile.getAbsolutePath());
-			
-			resp.setContentType("text/plain");
-			resp.setHeader("Content-Length", String.valueOf(pFile.length()));
-			OutputStream os = resp.getOutputStream();
-			copyStream(new FileInputStream(pFile), os);
-			os.flush();
-		} catch (Exception e) {
-			resp.sendError(404, "Properties Not Found: " + mediaFileId + "; " + e.getMessage());
-		}
-	}
+    private void help(HttpServletResponse resp, Throwable t) throws IOException {
+        help(resp, t.getMessage(), t);
+    }
+    
+    private void help(HttpServletResponse resp, String msg, Throwable t) throws IOException {
+        PrintWriter w = resp.getWriter();
+        w.printf("<h1>sagex.api (%s): Media Handler Error</H1>\n", sagex.api.Version.GetVersion());
+        w.printf("<h2>%s</H2>", msg);
+        if (t!=null) {
+            w.println("<pre>");
+            t.printStackTrace(w);
+            w.println("</pre>");
+        }
+        w.println("<br/>");
+        w.println("<h2>Usage</h2>");
+        w.println("<pre>");
+        w.println("/sagex/media/<b>COMMAND</b>/<b>MEDIA_FILE</b>");
+        w.println("or");
+        w.println("/sagex/media/<b>COMMAND</b>?mediafile=<b>MEDIA_FILE</b>\n");
+        w.print("Where <b>COMMAND</b> is one of ");
+        for (String s : handlers.keySet()) {
+            w.print("<i>"+s+"</i>");
+            w.print(", ");
+        }
+        w.println();
+        w.println("And <b>MEDIA_FILE</b> is a Sage MediaFileId or File Path");
+        w.println("</pre>");
+        w.println("<br/>");
+        w.println("<h2>Examples</h2>");
+        w.println("<pre>");
+        w.println("/sagex/media/thumbnail/3212321");
+        w.println("/sagex/media/mediafile/3212321");
+        w.println("/sagex/media/mediafile?mediafile=/sagetv/vidoes/tv/futurama.avi");
+        w.println("/sagex/media/background/3212321");
+        w.println("NOTE: background, banner, and poster all require Phoenix Fanart APIs build 30 (1.30) or later.");
+        w.println("</pre>");
+        w.flush();
+    }
+    
+    public Object getMediaFile(String id) throws Exception {
+        try {
+            int mfid = Integer.parseInt(id);
+            Object o  = MediaFileAPI.GetMediaFileForID(mfid);
+            if (o==null) {
+                throw new Exception("Unknown MediaFile: " + id);
+            }
+            return o;
+        } catch (Exception e) {
+            File f = new File(id);
+            if (f.exists()) {
+                Object o = MediaFileAPI.GetMediaFileForFilePath(f);
+                if (o==null) {
+                    throw new Exception("Unknown MediaFile: " + id);
+                }
+                return o;
+            } else {
+                throw new Exception("Not A MediaFile: " + id); 
+            }
+        }
+    }
 
-	private void debug(String mediaFileId, HttpServletResponse resp) throws Exception {
-		resp.setContentType("text/plain");
- 	    resp.getWriter().write("debug");
-	}
+    public static void copyStream(InputStream is, OutputStream os) throws IOException {
+        byte buf[] = new byte[4096];
+        BufferedInputStream bis = new BufferedInputStream(is);
+        BufferedOutputStream bos = new BufferedOutputStream(os);
 
-	// This one writes an image, but the colorspace is off... not sure why...
-	private void writeMediaFile(String mediaFileId, HttpServletResponse resp) throws Exception {
-		try {
-			// get the media file that we are going to be using
-			Object sagefile = MediaFileAPI.GetMediaFileForID(Integer.parseInt(mediaFileId));
-			File file = MediaFileAPI.GetFileForSegment(sagefile, 0);
-	
-			if (!file.exists()) throw new FileNotFoundException(file.getAbsolutePath());
-			
-			resp.setHeader("Content-Length", String.valueOf(file.length()));
-			resp.setContentType("video/mpeg");
-			
-			OutputStream os = resp.getOutputStream();
-			copyStream(new FileInputStream(file), os);
-			os.flush();
-		} catch (Throwable e) {
-			resp.sendError(404, "MediaFile Not Found: " + mediaFileId);
-		}
-	}
-	
-	private void writeImage(String mediaFileId, HttpServletResponse resp) throws Exception {
-		try {
-			// get the media file that we are going to be using
-			Object sagefile = MediaFileAPI.GetMediaFileForID(Integer.parseInt(mediaFileId));
-			File file = MediaFileAPI.GetFileForSegment(sagefile, 0);
+        try {
+            int s;
+            while ((s = bis.read(buf)) > 0) {
+                bos.write(buf, 0, s);
+            }
+        } finally {
+            try {
+                bos.flush();
+            } catch (Exception x) {
+            }
+        }
+        bis.close();
+    }
 
-			File thFile = null;
-			if (MediaFileAPI.IsDVD(sagefile)) {
-				if (file.isDirectory()) {
-					thFile = new File(file.getParentFile(), file.getName() + ".jpg");
-					if (!thFile.exists()) {
-						thFile = new File(file, "folder.jpg");
-					}
-					if (!thFile.exists()) {
-						thFile = new File(file, "VIDEO_TS/folder.jpg");
-					}
-					if (!thFile.exists()) {
-						thFile = new File(file, "folder.jpg");
-					}
-				} else {
-					String name = file.getName();
-					name = name.substring(0,name.lastIndexOf('.'));
-					name += ".jpg";
-					thFile = new File(file.getParentFile(), name);
-				}
-			} else {
-				String name = file.getName();
-				name = name.substring(0,name.lastIndexOf('.'));
-				name += ".jpg";
-				thFile = new File(file.getParentFile(), name);
-			}
-			
-			// write sage thumbnail for this file
-			if (thFile==null || !thFile.exists()) {
-				writeSageImage(mediaFileId, resp);
-				return;
-			}
-			
-			resp.setContentType("image/jpeg");
-			resp.setHeader("Content-Length", String.valueOf(thFile.length()));
-			OutputStream os = resp.getOutputStream();
-			copyStream(new FileInputStream(thFile), os);
-			os.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-			resp.sendError(404, "Image Not Found: " + mediaFileId);
-		}
-	}
-
-	private void writeImageForFile(String fileUri, HttpServletResponse resp) throws Exception {
-	   // check for dvd folders
-	   File f = new File(new URI(fileUri));
-	   if (f.isDirectory()) {
-		   File ts = new File(f, "VIDEO_TS");
-		   if (ts.exists() && ts.isDirectory()) {
-			   f = ts;
-		   }
-	   }
-	   
-	   Object sageMediaFile = MediaFileAPI.GetMediaFileForFilePath(f);
-	   if (sageMediaFile==null) {
-		   throw new Exception("No Sage MediaFile for uri: " + fileUri + "; Unable to get thumbnail.");
-	   }
-	   
-	   writeImage(String.valueOf(MediaFileAPI.GetMediaFileID(sageMediaFile)), resp);
-	}
-
-
-	public static void copyStream(InputStream is, OutputStream os) throws IOException {
-		byte buf[] = new byte[4096];
-		BufferedInputStream bis = new BufferedInputStream(is);
-		BufferedOutputStream bos = new BufferedOutputStream(os);
-		
-		try {
-			int s;
-			while ((s = bis.read(buf))>0) {
-				bos.write(buf, 0, s);
-			}
-		} finally {
-			try {
-				bos.flush();
-			} catch (Exception x) {
-			}
-		}
-	}
-	
-	private void writeSageImage(String mediaFileId, HttpServletResponse resp) throws Exception {
-		// get the media file that we are going to be using
-		// TODO: Maybe cache this for performance reasons
-		Object sagefile = MediaFileAPI.GetMediaFileForID(Integer.parseInt(mediaFileId));
-		Object sageImage = MediaFileAPI.GetThumbnail(sagefile);
-		BufferedImage img =Utility.GetImageAsBufferedImage(sageImage);
-		resp.setContentType("image/png");
-		OutputStream os = resp.getOutputStream();
-		ImageIO.write((RenderedImage) img, "png", os);
-		os.flush();
-	}
+    public static void writeSageImage(Object sagefile, HttpServletResponse resp) throws Exception {
+        // get the media file that we are going to be using
+        // TODO: Maybe cache this for performance reasons
+        Object sageImage = MediaFileAPI.GetThumbnail(sagefile);
+        BufferedImage img = Utility.GetImageAsBufferedImage(sageImage);
+        resp.setContentType("image/png");
+        OutputStream os = resp.getOutputStream();
+        ImageIO.write((RenderedImage) img, "png", os);
+        os.flush();
+    }
 }

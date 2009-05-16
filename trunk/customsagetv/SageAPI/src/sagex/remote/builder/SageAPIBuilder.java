@@ -97,7 +97,7 @@ public class SageAPIBuilder {
     }
 
     public void buildPlaylist(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("Playlist", MediaFileAPI.class, parent, handler, null);
+        buildObject("Playlist", PlaylistAPI.class, parent, handler, null);
     }
 
     public void buildObject(String objectName, Class staticObjectClass, Object parent, BuilderHandler handler, String[] ignoreMethods) throws Exception {
@@ -108,7 +108,7 @@ public class SageAPIBuilder {
                 Object result = m.invoke(null, parent);
                 build(m.getName(), result, handler, false);
             } catch (Exception e) {
-                handler.handleError("Failed while Calling "+objectName+" Method: " + m.getName(), e);
+                handler.handleError("Failed while Calling "+objectName+" Method: " + m.getName() + " on Object: " + objectName + "; (Sage Object: "+ parent+")", e);
             }
         }
         handler.endObject(makeName(objectName));
@@ -125,20 +125,7 @@ public class SageAPIBuilder {
                 if (meth.getName().startsWith("Get") || meth.getName().startsWith("Is")) {
                     Class p[] = meth.getParameterTypes();
                     if (p!=null && p.length==1 && p[0].equals(Object.class) &&!ignoreMethod(meth.getName(), ignoreMethods)) {
-                        //System.out.println("OK Method: " + meth.getName());
-                        
                         methods.add(meth);
-                        /*
-                    } else {
-                        System.out.println("Skip Method: " + meth.getName());
-                        System.out.println("Null: " + p==null);
-                        if (p!=null) {
-                            System.out.println(" Len: " + p.length);
-                            if (p.length==1) {
-                                System.out.println("Type: " + p[0].getName());
-                            }
-                        }
-                        */
                     }
                 }
             }
