@@ -8,8 +8,27 @@ import sagex.ISageAPIProvider;
 public class StubSageAPI implements ISageAPIProvider {
     private boolean debugCalls = false;
     private Map<String,Object> calls = new HashMap<String, Object>();
-
+    private Map<String, StubAPIProxy> proxies = new HashMap<String, StubAPIProxy>();
+    private MediaFileAPIProxy mediaFileProxy = null;
+    private PropertiesStubAPIProxy props = null;
+    
     public StubSageAPI() {
+        defaultProxies();
+        defaultMediaFileAPI();
+    }
+    
+    private void defaultProxies() {
+        props = new PropertiesStubAPIProxy();
+        props.attach(this);
+    }
+    
+    private void defaultMediaFileAPI() {
+        mediaFileProxy = new MediaFileAPIProxy();
+        mediaFileProxy.attach(this);
+    }
+
+    public void addProxy(String cmd, StubAPIProxy proxy) {
+        proxies.put(cmd, proxy);
     }
     
     public void addCall(String call, Object result) {
@@ -25,11 +44,20 @@ public class StubSageAPI implements ISageAPIProvider {
     			}
     		}
 	    }
-	    Object o = calls.get(name);
-	    if (o==null) {
-	        System.out.printf("provider.addCall(\"%s\",\"\"); // call %s not set\n", name, name);
+        Object o = calls.get(name);
+        if (o==null) {
+            System.out.printf("provider.addCall(\"%s\",\"\"); // call %s not set\n", name, name);
+        } else {
+            return o;
+        }
+
+        StubAPIProxy proxy = proxies.get(name);
+	    if (proxy!=null) {
+	        return proxy.call(name, args);
+	    } else {
+            System.out.printf("provider.addProxy(\"%s\",StubAPIProxy); // proxy %s not set\n", name, name);
+            return null;
 	    }
-		return o;
 	}
 
 	public String toString() {
@@ -42,5 +70,12 @@ public class StubSageAPI implements ISageAPIProvider {
 
     public void setDebugCalls(boolean debugCalls) {
         this.debugCalls = debugCalls;
+    }
+    
+    public void reset() {
+        proxies.clear();
+        calls.clear();
+        defaultProxies();
+        defaultMediaFileAPI();
     }
 }

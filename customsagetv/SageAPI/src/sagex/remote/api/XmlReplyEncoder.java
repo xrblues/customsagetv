@@ -11,7 +11,7 @@ import sagex.remote.builder.SimpleXmlBuilder;
 public class XmlReplyEncoder implements ReplyEncoder {
     public String encodeError(Exception ex) {
         StringWriter sw = new StringWriter();
-        sw.append("<error>");
+        sw.append("<error sagex-version=\""+ sagex.api.Version.GetVersion() +"\">");
         sw.append("<message><![CDATA[").append(ex.getMessage()).append("]]></message>");
         sw.append("<exception><![CDATA[");
         ex.printStackTrace(new PrintWriter(sw));

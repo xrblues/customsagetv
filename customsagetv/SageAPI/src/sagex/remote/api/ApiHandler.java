@@ -59,7 +59,7 @@ public class ApiHandler implements SageHandler {
     private Map<String, ReplyEncoder> encoders        = new HashMap<String, ReplyEncoder>();
 
     public ApiHandler() {
-        System.out.println("Sagex Api 2.0 Servlet Created.");
+        System.out.println("Sagex ApiServlet Created for version: " + sagex.api.Version.GetVersion());
         encoders.put(DEFAULT_ENCODER, new XmlReplyEncoder());
         encoders.put("json", new JsonReplyEncoder());
         encoders.put("nielm", new NielmXmlReplyEncoder());
@@ -189,7 +189,8 @@ public class ApiHandler implements SageHandler {
             });
         }
 
-        pw.println("<h1>Sage API</h1>");
+        pw.println("<head><title>Sage API - "+ sagex.api.Version.GetVersion() +"</title></head>");
+        pw.println("<h1>Sage API - "+ sagex.api.Version.GetVersion() +"</h1>");
         pw.println("<style>");
         pw.println(".l{font-weight: bold;}");
         pw.println(".ll{font-weight: bold; font-style: italic;}");
@@ -209,6 +210,10 @@ public class ApiHandler implements SageHandler {
         pw.println("<tr><td class=l>Example</td><td>/sagex/api?c=GetMediaFiles&1=T&encoder=nielm</td></tr>");
         pw.println("<tr><td class=l>Example</td><td>/sagex/api?c=EvaluateExpression&1=Sort(GetMediaFiles(\"T\"),false,\"Intelligent\")</td></tr>");
         pw.println("<tr><td colspan=2><hr/></td></tr>");
+        
+        pw.println("<p><b><i>NOTE: If the command arg expects a sage object, such mediafile, ariing, playlist, channel, show, etc, then you can still pass a reference to sage object, using mediafile:MEDIAFILE_ID, airing:AIRING_ID, playlist:PLAYLIST_NAME, etc.</i></b></p>");
+        pw.println("<p>Example: /sages/api?c=IsMediaFileObject&1=mediafile:3231112");
+        pw.println("<br/>");
 
         List<JSONObject> apis = null;
         

@@ -13,6 +13,7 @@ public class JsonReplyEncoder implements ReplyEncoder {
     public String encodeError(Exception e) {
         try {
             JSONObject jo = new JSONObject();
+            jo.put("sagexVersion", sagex.api.Version.GetVersion());
             jo.put("error", e.getMessage());
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
