@@ -1,4 +1,14 @@
 #summary External Command Tuner for Linux and SageTV
 #labels SageTV,Featured
 
-Allows SageTV to use an external command, under Linux, to change channels on a remote tuner.
+This plugin is an irtunerplugin and is allows you to control your STB channel changes using an external program.
+
+=Installation=
+Download and unzip the contents to the SageTV server location.  The ExtTunerPlugin.so should automatically be extracted to the irtunerplugins/ dir.
+
+A file, ext-command-tuner-remotes.cfg, will be placed in the root of the SageTV server.  This configuration file is where you configure the remote for your STB.
+
+The configuration file can have more than one remote configured.  A configuraration entry for a remote looks like 
+[code]
+Remote 1, /usr/local/bin/irsend %s arg1 arg2, dish-301-remote-keys.txt
+[/code]
