@@ -1,7 +1,7 @@
 /**
  * Simple External Command Tuner Plugin for SageTV
- * 
- * 
+ *
+ *
  */
 
 #include <stdio.h>
@@ -26,6 +26,8 @@
 
 // used by the macro tune to hold the command of the last loaded remote
 static char loadedDevName[256];
+static int canMacroTune = 0;
+static char macroTuneSepChar=NULL;
 
 /**
  * Simply non-efficient logger.
@@ -56,7 +58,7 @@ void _log(char *pref, char *fmt, ...) {
  */
 char *alloc_string(char *str) {
 	if (str==NULL) return NULL;
-	char *newStr = (char *)malloc(strlen(str)+1); 
+	char *newStr = (char *)malloc(strlen(str)+1);
 	strcpy(newStr, str);
 	return newStr;
 }
@@ -145,9 +147,9 @@ void chomp (char* s) {
 int LoadRemoteKeys(char *keyFile, struct remote *Remote) {
 	char buf[1024];
 	char key[40];
-	
+
 	INFO2("Loading Keys %s for Remote %s", keyFile, Remote->name);
-	
+
 	FILE *f1 = fopen(keyFile, "r");
 	if (f1==NULL) {
 		ERROR1("Failed to open remotes key file %s", keyFile);
@@ -155,11 +157,11 @@ int LoadRemoteKeys(char *keyFile, struct remote *Remote) {
 	}
 	command *head= NULL;
 	command *newCmd;
-	
+
 	while (fgets(buf, 1024, f1)) {
 		if (buf==NULL) break;
 		chomp(buf);
-		
+
 		// ignore comments and empty lines
 		if (buf[0]=='#' || strlen(buf)==0) continue;
 		sscanf(buf,"%s",key);
@@ -167,63 +169,83 @@ int LoadRemoteKeys(char *keyFile, struct remote *Remote) {
 		if (head==NULL) {
 			head=Remote->command;
 		}
-		
+
 		AddCommand(newCmd, &head);
 	}
-	
+
 	fclose(f1);
-	
+
 	return 0;
 }
 
 remote* LoadRemotes(const char* pszPathName) {
 	char buf[1024];
-	
+
 	if (pszPathName==NULL) {
 		INFO("LoadRemotes Called");
 	} else {
-		INFO1("LoadRemoted(%s)", pszPathName);
+		INFO1("LoadRemote(%s)", pszPathName);
 	}
 
-	
-	
+
+
 	remote *head= NULL;
 	INFO1("Loading Remotes from %s", CONFIG_FILE);
-	
+
 	FILE *f1 = fopen(CONFIG_FILE, "r");
 	if (f1==NULL) {
 		ERROR1("Failed to open remotes config file %s", CONFIG_FILE);
 		return NULL;
 	}
-	
+
 	char *name;
 	char *cmd;
 	char *remoteFile;
-	
+
 	remote *newRemote;
 	command *newCmd;
 	while (fgets(buf, 1024, f1)) {
 		if (buf==NULL) break;
-		
+
 		// eat the newline
 		chomp(buf);
-		
+
 		// ignore comments and empty lines
 		if (buf[0]==' ' || buf[0]=='#' || buf[0]=='\t' || strlen(buf)==0) continue;
-		
+
 		// Remote name
 		name=buf;
-		
+
+		// process set commands...
+		if (strncasecmp(name,"set ",4)==0) {
+			INFO1("Processing Set Command: %s", name);
+			char setCmd[100], setValue[500];
+			if (sscanf(name, "set %s %s",setCmd, setValue)==2) {
+				INFO2("Processing Set Command: %s: %s", setCmd, setValue);
+				if (strcasecmp(setCmd, "MacroTune")==0 && strcasecmp(setValue,"true")==0) {
+					INFO("MacroTune is Enabled.  Macro Tune can only work when a Single Remote is defined.");
+					canMacroTune = 1;
+				} else if (strcasecmp(setCmd, "MacroTuneSepChar")==0) {
+					sscanf(setValue, "%d", &macroTuneSepChar);
+					INFO1("Using MacroTuneSepChar: '%c'", macroTuneSepChar);
+					canMacroTune = 1;
+				}
+			} else {
+				ERROR1("Invalid Set Command: %s", name);
+			}
+			continue;
+		}
+
 		// Remote command
 		cmd = strchr(buf, ',');
-		
+
 		// invalid line
 		if (cmd==NULL) continue;
-		
+
 		*cmd = 0;
 		cmd++;
 		while (*cmd == ' ') cmd++;
-		
+
 		// check for the a remote key file
 		remoteFile = strchr(cmd,',');
 		if (remoteFile!=NULL) {
@@ -233,31 +255,31 @@ remote* LoadRemotes(const char* pszPathName) {
 		}
 
 		newRemote = CreateRemote(alloc_string(name));
-		
+
 		// store the command to execute in the remote structure's command list...
 		// this is not what it's supposed to be used for... but that's the only
 		// place I could store it without creating a separate storage area
 		newCmd = CreateCommand(alloc_string(cmd));
-		
+
 		// used by macro tune to hold the last loaded command
 		strcpy(loadedDevName, cmd);
-		
+
 		newRemote->command = newCmd;
-		
+
 		// load the remote keys
 		if (remoteFile!=NULL) {
 			LoadRemoteKeys(remoteFile, newRemote);
 		}
-		
+
 		if (head==NULL) {
 			head = newRemote;
 		} else {
 			AddRemote(newRemote, &head);
 		}
 	}
-	
+
 	fclose(f1);
-	
+
 	return head;
 }
 
@@ -291,6 +313,7 @@ void PlayCommand(int devHandle, remote *remote, unsigned char *name, int tx_repe
 	INFO3("PlayCommand Called: Remote: %s; Command: %s; Repeats: %d", remote->name, name, tx_repeats);
     char cmd[1024];
     sprintf(cmd,remote->command->name, name);
+    INFO1("SysCommand: %s" , cmd);
     if (system(cmd)!=0) {
     	ERROR1("Failed to execute Tuner Command: %s", cmd);
     } else {
@@ -345,15 +368,27 @@ void DumpRemotes(remote *head) {
 int CanMacroTune(void) {
 	// TODO: Set using property
 	INFO("CanMacroTune");
-	return 0;
+	return canMacroTune;
 }
 void MacroTune(int devHandle, int channel) {
-	INFO2("MacroTune: Handle: %d,Channel %d",devHandle,channel);
-	
+	INFO2("MacroTune: Handle: %d, Channel %d",devHandle,channel);
+
 	char cmd[1024];
 	char    channelStr[10];  // if more than 10 digits, we have problems
-	sprintf(channelStr, "%d", channel);   
-    sprintf(cmd,loadedDevName, channelStr);
+	char    channelBuffer[21]; // buffer holds twice the digits, because of the sep char
+	sprintf(channelStr, "%d", channel);
+	if (macroTuneSepChar!=NULL) {
+		int s = strlen(channelStr);
+		int i=0;
+		for (i=0;i<s;i++) {
+			channelBuffer[i*2]=channelStr[i];
+			channelBuffer[(i*2)+1] = macroTuneSepChar;
+			channelBuffer[(i*2)+2] = NULL;
+		}
+	} else {
+		strcpy(channelBuffer, channelStr);
+	}
+    sprintf(cmd,loadedDevName, channelBuffer);
     if (system(cmd)!=0) {
     	ERROR1("Failed to execute MacroTune Command: %s", cmd);
     } else {
