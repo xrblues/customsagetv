@@ -63,7 +63,7 @@ Java 5 or later
 = Installation =
 Download the zip and extract into a new directory or the SageTV root directory, if you are running this as a plugin.  As with any tool/plugin, if you extract into an existing directory, then make sure you clean the libs directories and ensure that there are no duplicate jars with different versions.
 
-NOTE: As of 2.0 there metadata-updater.jar and sagex-api.jar do not contain a versions in their filenames.  This was done to make future upgrades of the 2.x releases less painful.  But, if you do extract a 2.x release over a 1.x release, then you must clean out the jars area and remove the metadata-updater-VERSION.jar and sagex.api-VERSION.jar but leave the jars that do not contain a version.
+_NOTE: As of 2.0 there metadata-updater.jar and sagex-api.jar do not contain a versions in their filenames.  This was done to make future upgrades of the 2.x releases less painful.  But, if you do extract a 2.x release over a 1.x release, then you must clean out the jars area and remove the metadata-updater-VERSION.jar and sagex.api-VERSION.jar but leave the jars that do not contain a version._
 
 If you are running this from the commandline, then it will clean the jar area automatically, and notify you about duplicate jars.  So, even if you are installing this as a plugin, it's best to run,
 
@@ -71,7 +71,7 @@ If you are running this from the commandline, then it will clean the jar area au
 # java -jar MetadataTool.jar
 }}}
 
-Just so that it can clean your JARs area, by removing duplicate jars that will cause runtime issues.
+Just so that it can clean your JARs area, by removing duplicate jars that will cause runtime issues.  Only the help will be displayed, but it will have removed any duplicate jars.
 
 == STV / Automated Metadata Fetching Installation ==
 
@@ -79,21 +79,25 @@ Shutdown your Sage client/server process.
 
 Download the zip and unzip at the root of the SageTV server directory.
 
-Once you unzip, check the JARs directory, and remove any duplicate jar files that have different versions.  For example, if you see sagex.api-6.4.8-11.jar and sagex.api-6.4.8-9.jar, then remove the -9 version of the Jar file.  Having more than one version of jar file in the directory will be very troublesome.  Also make sure that you have only one copy of the metadata-updater.jar.  If you find that you have a metadata-updater-VERSION.jar then remove the versioned jar file.
+Restart your Sage client / server so that the new jars are picked up by SageTV.
 
-Restart your Sage client / server.
 
 === Default STV ===
+If you running the default STV, then do this.
+
 Import the MetadataFanartTools-DefaultSTV.stvi into the default stv.  This will add a new Metadata/Fanart configuration option to the Detailed Setup menu.  From there you can enable the central fanart and set the central fanart location.  You can also enable the automated metadata lookup.  If you enable the automated metadata lookup, you will need to restart the server process for this change to be picked up by sage.
 
 You can also configure the metadata providers that you want to use for searching for new metadata/fanart.  By default it should come with pretty much everything enabled.
 
 === SageMC ===
+If you are running SageMC, then do this.
+
 In SageMC import the MetadataFanartTools-SageMC.xml.  This will add a Metadata/Fanart configuration section to the "Extras" section in the SageMC configuration screens.
 
-From there, like with the default stv, you can enable the automated lookups and configure which providers you want to use.
+From there, like with the default stv, you can enable the automated lookups and configure which providers you want to use.  To configure the Central Fanart folder, use the SageMC fanart configuration options.
 
 === Manual Installation ===
+Only do this if you want to manualy install/configure the automatic plugin.
 
 The Sage.properties.metadataupdater is the property that you need to update/edit in the Sage.properties.
 
