@@ -1,0 +1,13 @@
+<project name="ExternalCommandTunerPlugin" default="package">
+	<property name="version" value="1.5"/>
+	<target name="package">
+		<delete dir="target"/>
+		<mkdir dir="target/plugin/irtunerplugins/"/>
+		<copy file="ExtTunerPlugin.so" todir="target/plugin/irtunerplugins/"/>
+		<copy file="ext-command-tuner-remotes.cfg" todir="target/plugin/"/>
+		<copy file="dish-301-remote-keys.txt" todir="target/plugin/"/>
+		<zip destfile="target/ExternalCommandTunerPlugin-${version}.zip" basedir="target/plugin/">
+			<!-- <fileset dir="target/plugin/"/> -->
+		</zip>
+	</target>
+</project>
