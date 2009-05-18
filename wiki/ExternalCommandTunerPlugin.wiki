@@ -19,7 +19,7 @@ Field2 is the command to be executed to change the channel. %s will be replaced 
 
 Field3 is an optional file that contains the keys for the remote.
 
-=MacroTune=
+=Macro Tune (all digits at once)=
 SageTV can tune channels by issuing a single digit at a time, or by sending the complete channel at once.  When the complete channel is sent it is called MacroTune.  Depending on the script you are using to change channels, you may want your script to be called once for each channel digit, or you may want to pass the complete channel digits to the script at once.
 
 You can enable MacroTune in the configuration by setting the following in the configuration file.
