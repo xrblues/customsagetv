@@ -12,7 +12,7 @@
  * Can provide custom services via server side javascript
  * Can access media information, such as media files, posters, thumbnails, backgrounds, etc.
 
-If you are looking for the Rest API documentation, then read the install documentation from this page and then go to [http://code.google.com/p/customsagetv/wiki/XmlRPCQuickStart Rest Services Quickstart Guide]. Or Check out the [http://code.google.com/p/customsagetv/wiki/RemoteHttpApiForSageTV newer Api format]
+Check out the [http://code.google.com/p/customsagetv/wiki/RemoteHttpApiForSageTV newer Api format] which includes support for a variety of API options, media handlers, services, etc.
 
 = Background =
 
