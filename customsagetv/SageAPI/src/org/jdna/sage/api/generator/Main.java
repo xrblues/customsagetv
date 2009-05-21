@@ -14,8 +14,6 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.configuration.PropertiesConfigurationProvider;
 import org.jdna.sage.api.generator.MethodParser.SageMethod;
 
-import sagex.api.AlbumAPI;
-
 @CommandLineProcess(acceptExtraArgs = false, description = "Generates a Typed Sage API from the SageTV JavaDoc.")
 public class Main {
 	private static final Logger log = Logger.getLogger(Main.class);

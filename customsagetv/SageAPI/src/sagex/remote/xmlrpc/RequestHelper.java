@@ -56,62 +56,69 @@ public class RequestHelper {
 		} else  if (File.class.equals(typeClass)) {
 		    return new File(str);
 		} else {
-			if (str.startsWith("channel")){
-				String cargs[] = str.split(":");
-				Object retObj = new Object();
-				try {
-					retObj = ChannelAPI.GetChannelForStationID(Integer.parseInt(cargs[1]));
-				} catch (Exception e) { }
-				return retObj;
-			} else if (str.startsWith("airing")){
-				String cargs[] = str.split(":");
-				Object retObj = new Object();
-				try {
-					retObj = AiringAPI.GetAiringForID(Integer.parseInt(cargs[1]));
-				} catch (Exception e) { }
-				return retObj;
-			} else if (str.startsWith("mediafile")){
-				String cargs[] = str.split(":");
-				Object retObj = new Object();
-				try {
-					retObj = MediaFileAPI.GetMediaFileForID(Integer.parseInt(cargs[1]));
-				} catch (Exception e) { }
-				return retObj;
-			} else if (str.startsWith("show")){
-				String cargs[] = str.split(":");
-				Object retObj = new Object();
-				try {
-					retObj = ShowAPI.GetShowForExternalID(cargs[1]);
-				} catch (Exception e) { }
-				return retObj;
-            } else if (str.startsWith("playlist")){
-                String cargs[] = str.split(":");
-                Object retObj = new Object();
-                try {
-                    Object all[] = PlaylistAPI.GetPlaylists();
-                    if (all==null) return retObj;
-                    for (Object o : all) {
-                        String name = PlaylistAPI.GetName(o);
-                        if (name.equals(cargs[1])) {
-                            return o;
-                        }
-                    }
-                    return retObj;
-                } catch (Exception e) { }
-                return retObj;
+		    Object retObj = makeSageObject(str);
+		    if (retObj!=null) return retObj;
+
+		    // else assume an array.
+			int p = str.indexOf(":");
+			if (p != -1) {
+				// array index object ref
+				String id = str.substring(0, p);
+				int idx = Integer.parseInt(str.substring(p + 1));
+				return new RemoteObjectRef(id, idx);
 			} else {
-				int p = str.indexOf(":");
-				if (p != -1) {
-					// array index object ref
-					String id = str.substring(0, p);
-					int idx = Integer.parseInt(str.substring(p + 1));
-					return new RemoteObjectRef(id, idx);
-				} else {
-					// object ref
-					return new RemoteObjectRef(str);
-				}
+				// object ref
+				return new RemoteObjectRef(str);
 			}
 		}
 		return null;
+	}
+	
+	public static Object makeSageObject(String str) {
+        if (str.startsWith("channel")){
+            String cargs[] = str.split(":");
+            Object retObj = new Object();
+            try {
+                retObj = ChannelAPI.GetChannelForStationID(Integer.parseInt(cargs[1]));
+            } catch (Exception e) { }
+            return retObj;
+        } else if (str.startsWith("airing")){
+            String cargs[] = str.split(":");
+            Object retObj = new Object();
+            try {
+                retObj = AiringAPI.GetAiringForID(Integer.parseInt(cargs[1]));
+            } catch (Exception e) { }
+            return retObj;
+        } else if (str.startsWith("mediafile")){
+            String cargs[] = str.split(":");
+            Object retObj = new Object();
+            try {
+                retObj = MediaFileAPI.GetMediaFileForID(Integer.parseInt(cargs[1]));
+            } catch (Exception e) { }
+            return retObj;
+        } else if (str.startsWith("show")){
+            String cargs[] = str.split(":");
+            Object retObj = new Object();
+            try {
+                retObj = ShowAPI.GetShowForExternalID(cargs[1]);
+            } catch (Exception e) { }
+            return retObj;
+        } else if (str.startsWith("playlist")){
+            String cargs[] = str.split(":");
+            Object retObj = new Object();
+            try {
+                Object all[] = PlaylistAPI.GetPlaylists();
+                if (all==null) return retObj;
+                for (Object o : all) {
+                    String name = PlaylistAPI.GetName(o);
+                    if (name.equals(cargs[1])) {
+                        return o;
+                    }
+                }
+                return retObj;
+            } catch (Exception e) { }
+            return retObj;
+        }
+        return null;
 	}
 }

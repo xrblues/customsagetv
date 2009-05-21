@@ -19,7 +19,7 @@ public class SageAPI {
 		if (provider == null) {
 		    try {
 		        setProvider(new EmbeddedSageAPIProvider());
-		    } catch (Exception e) {
+		    } catch (Throwable t) {
 		        setProvider(getRemoteProvider());
 		    }
 		}
