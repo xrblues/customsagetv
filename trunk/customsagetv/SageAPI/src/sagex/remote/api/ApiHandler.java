@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,16 +52,26 @@ public class ApiHandler implements SageHandler {
     public static final String        SAGE_RPC_PATH   = "api";
     private static final String       DEFAULT_ENCODER = "xml";
 
+    Pattern apiPattern = Pattern.compile("([^\\.]+)\\.(.*)");
+    Pattern servicePattern = Pattern.compile("([^:]+):(.*)");
+
     private JSONObject                jsonApi         = null;
     private List<JSONObject>          jsonApiList     = null;
 
     private Map<String, ReplyEncoder> encoders        = new HashMap<String, ReplyEncoder>();
+    private ServiceFactory serviceFactory = null;
 
     public ApiHandler() {
         System.out.println("Sagex ApiServlet Created for version: " + sagex.api.Version.GetVersion());
         encoders.put(DEFAULT_ENCODER, new XmlReplyEncoder());
         encoders.put("json", new JsonReplyEncoder());
         encoders.put("nielm", new NielmXmlReplyEncoder());
+        try {
+            serviceFactory =new ServiceFactory();
+        } catch (Throwable t) {
+            System.out.println("sagex.api: Unable to load javascript service factory.  Javascript Services are now disabled.");
+            t.printStackTrace();
+        }
     }
 
     public void hanleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -91,22 +100,11 @@ public class ApiHandler implements SageHandler {
             }
 
             resp.setContentType(replyEncoder.getContentType());
-
+            
             String command = req.getParameter("command");
             if (command == null) command = req.getParameter("c");
             if (command == null || command.trim().length() == 0) {
                 throw new IOException("Missing Command Argument; Use 'command' or 'c' to specify the command.");
-            }
-            
-
-            // parse the api from the command, if it exists, ie,
-            // MediaFileAPI.GetMediaFiles
-            String api = null;
-            Pattern p = Pattern.compile("([^\\.])+\\.(.*)");
-            Matcher m = p.matcher(command);
-            if (m.find()) {
-                api = m.group(1);
-                command = m.group(2);
             }
 
             // ui context, if it's used
@@ -119,20 +117,29 @@ public class ApiHandler implements SageHandler {
                 if (v == null) break;
                 argsList.add(v);
             }
-
-            // find the command with the given signature
             args = argsList.toArray(new String[argsList.size()]);
-            RemoteRequest request = SageRPCRequestFactory.createRequest(context, api, command, args);
-
-            System.out.printf("Calling: Api: %s; Command: %s;\n", api, command);
-
-            // invoke the sage api
+            
             Object oreply = null;
-            if (request.getContext() != null) {
-                oreply = SageAPI.call(request.getContext(), request.getCommand(), request.getParameters());
+
+            
+            String servicePackage = null;
+            String serviceName = null;
+            Matcher m = servicePattern.matcher(command);
+            if (m.find()) {
+                servicePackage = m.group(1);
+                serviceName = m.group(2);
+                oreply = callService(context, servicePackage, serviceName, args);
             } else {
-                oreply = SageAPI.call(request.getCommand(), request.getParameters());
-            }
+                // parse the api from the command, if it exists, ie,
+                // MediaFileAPI.GetMediaFiles
+                String api = null;
+                m = apiPattern.matcher(command);
+                if (m.find()) {
+                    api = m.group(1);
+                    command = m.group(2);
+                }
+                oreply = callSageAPI(context, api, command, args);
+            }            
 
             // do range checking....
             if (oreply != null && oreply.getClass().isArray()) {
@@ -163,6 +170,33 @@ public class ApiHandler implements SageHandler {
         pw.flush();
     }
 
+    private Object callService(String context, String packageName, String serviceName, String[] args) {
+        if (serviceFactory!=null) {
+            try {
+                return serviceFactory.callService(context, packageName, serviceName, args);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        throw new RuntimeException("Javascript Service Factory is disabled.");
+    }
+
+    private Object callSageAPI(String context, String api, String command, String args[]) {
+        // find the command with the given signature
+        RemoteRequest request = SageRPCRequestFactory.createRequest(context, api, command, args);
+
+        System.out.printf("Calling: Api: %s; Command: %s;\n", api, command);
+
+        // invoke the sage api
+        Object oreply = null;
+        if (request.getContext() != null) {
+            oreply = SageAPI.call(request.getContext(), request.getCommand(), request.getParameters());
+        } else {
+            oreply = SageAPI.call(request.getCommand(), request.getParameters());
+        }
+        return oreply;
+    }
+    
     private void doApiSearch(String search, HttpServletRequest req, HttpServletResponse resp, PrintWriter pw) throws Exception {
         if (jsonApi == null) {
             // first time, build up the api index

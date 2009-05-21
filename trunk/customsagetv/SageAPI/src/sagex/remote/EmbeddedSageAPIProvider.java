@@ -1,15 +1,14 @@
 package sagex.remote;
 
-import java.lang.reflect.InvocationTargetException;
-
 import sagex.ISageAPIProvider;
 
 public class EmbeddedSageAPIProvider implements ISageAPIProvider {
     public EmbeddedSageAPIProvider() {
         try {
-            Class.forName("sage.SageTV");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            callService("GetOS", null);
+        } catch (Throwable t) {
+            System.out.println("Embedded SageAPI is not functional.  We are most likely running remotely.");
+            throw new RuntimeException("Embedded SageAPI is not functional, probably because we are running remotely.", t);
         }
     }
     

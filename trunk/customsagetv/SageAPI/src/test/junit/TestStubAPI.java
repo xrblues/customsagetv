@@ -1,9 +1,9 @@
 package test.junit;
 
+import junit.framework.TestCase;
 import sagex.SageAPI;
 import sagex.api.Configuration;
 import sagex.stub.StubSageAPI;
-import junit.framework.TestCase;
 
 public class TestStubAPI extends TestCase {
 

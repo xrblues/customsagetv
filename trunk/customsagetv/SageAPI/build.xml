@@ -4,7 +4,7 @@
 	
 	<property name="target" value="target"/>
 	<property name="name" value="sagex.api"/>
-	<property name="version" value="6.5.15-1"/>
+	<property name="version" value="6.5.15-5"/>
 	<property name="jarname" value="${name}.jar"/>
 
 	<path id="SageAPI.classpath">
@@ -22,7 +22,9 @@
 	
 	<target name="package" depends="init,build,makeJar,javadoc">
 		<mkdir dir="${target}/sage/jetty/contexts/"/>
+		<mkdir dir="${target}/sage/sagex/services/"/>
 		<copy file="jetty/contexts/sagex.xml" todir="${target}/sage/jetty/contexts/"/>
+		<copy file="sagex/services/sagex.js" todir="${target}/sage/sagex/services/" />
 		<zip file="${target}/${name}-${version}.zip">
 			<fileset dir="${target}/sage" includes="**/**"/>
 		</zip>
