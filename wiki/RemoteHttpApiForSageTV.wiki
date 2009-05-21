@@ -132,3 +132,29 @@ Return the TV media files (first 10) in Niel's format
 {{{
 /sagex/api?c=GetMediaFiles&size=10&encoder=nielm
 }}}
+
+
+
+=Media Handler=
+In addition to the api handler, there are a number of media handlers for fetching the media file, poster, background, banner and thumbnail.
+
+You can get a help page for the media handler using
+ /sagex/media
+
+==Media Handler Format==
+ /sagex/media/COMMAND/MEDIA_ID
+ * COMMAND - one of thumbnail, mediafile, poster, banner, background
+ * MEDIA_ID - MediaFile ID
+
+The alternate format is 
+ /sagex/media/COMMAND?mediafile=MEDIAFILE_ID
+
+==Phoenix APIs=
+If you have 1.26 or later of the Phoenix APIs installed, then you can user poster, banner, or background.  These will not work without the phoenix apis.
+
+Also, if you have Phoenix APIs instaled, you can dynamically apply any image tranformation by passing it in as a *transform* arg.
+
+ie,
+ /sagex/media/poster?mediafile=2313223&transform=[{name:scale, height:100},{name:reflection}]
+
+This will fetch the poster for the mediafile and scale the poster to 100px height, and then apply a reflection to the poster.
