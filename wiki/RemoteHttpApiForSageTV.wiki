@@ -142,15 +142,22 @@ Return the TV media files (first 10) in Niel's format
 In addition to the api handler, there are a number of media handlers for fetching the media file, poster, background, banner and thumbnail.
 
 You can get a help page for the media handler using
+{{{
  /sagex/media
+}}}
 
 ==Media Handler Format==
+{{{
  /sagex/media/COMMAND/MEDIA_ID
+}}}
+
  * COMMAND - one of thumbnail, mediafile, poster, banner, background
  * MEDIA_ID - MediaFile ID
 
 The alternate format is 
+{{{
  /sagex/media/COMMAND?mediafile=MEDIAFILE_ID
+}}}
 
 ==Phoenix APIs=
 If you have 1.26 or later of the Phoenix APIs installed, then you can user poster, banner, or background.  These will not work without the phoenix apis.
@@ -158,6 +165,44 @@ If you have 1.26 or later of the Phoenix APIs installed, then you can user poste
 Also, if you have Phoenix APIs instaled, you can dynamically apply any image tranformation by passing it in as a *transform* arg.
 
 ie,
+{{{
  /sagex/media/poster?mediafile=2313223&transform=[{name:scale, height:100},{name:reflection}]
+}}}
 
 This will fetch the poster for the mediafile and scale the poster to 100px height, and then apply a reflection to the poster.
+
+=Custom Services=
+The Sage API Handler can also call custom services that you write using javascript.  If you write a services file, you can place it in the sagex/services/ directory and then you can access it using the api url.
+
+for example, if you write a services file called *test.js* and put it in the *sagex/services* directory on the server, containing the following test code.
+{{{
+function TestHello(name) {
+	return "Hello " + name;
+}
+}}}
+ 
+You can now call this service using
+{{{
+sagex/api?c=test:TestHello&1=Bill
+}}}
+
+This will return 
+{{{
+<result>Hello: Bill</result>
+}}}
+
+A Custom Service has complete access to All SageAPI calls. For example, if you added the following to your test.js file,
+{{{
+function GetAllTV() {
+	return MediaFileAPI.GetMediaFiles("T");
+}
+}}}
+
+You can then call it using
+{{{
+sagex/api?c=test:GetAllTV
+}}}
+
+This feature allows you add your own .js files to the server that will allow you to offload complex tasks to javascript.  A Service contains a FILENAME:METHOD where FILENAME is your javascript filename, less the .js extension, and METHOD is the method that you want to call from your javascript file.
+
+If you are writing a plugin, then you automatically deploy your services by ensuring that your service file gets extracted into sagex/services.  Deploying a new service file or making changing to it, does not require a server restart.
