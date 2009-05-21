@@ -9,6 +9,8 @@
  * Complete access to the Sage API via Rest services
  * Rest API can pass ui context
  * Java API now supports ui context
+ * Can provide custom services via server side javascript
+ * Can access media information, such as media files, posters, thumbnails, backgrounds, etc.
 
 If you are looking for the Rest API documentation, then read the install documentation from this page and then go to [http://code.google.com/p/customsagetv/wiki/XmlRPCQuickStart Rest Services Quickstart Guide]. Or Check out the [http://code.google.com/p/customsagetv/wiki/RemoteHttpApiForSageTV newer Api format]
 
@@ -57,6 +59,8 @@ Here is a list of current http enabled providers
  * /sagex/rpcXml - Default xml provider.  Returns results as xml.
  * /sagex/rpcXbmc - Another Xml providers that returns more verbose xml results
  * /sagex/rpcJson - Json/JsonP provider that returns results as in JSON format
+ * /sagex/api - New API Handler
+ * /sagex/media - New Media Handler
 
 ==== Installation for Niel's Web Server ====
 To install this Provider....
