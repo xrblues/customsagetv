@@ -1,6 +1,9 @@
 #summary Xml and JSON Api Overview (2.0)
 #labels Featured,Phase-Implementation
 
+<wiki:toc max_depth="6" />
+
+
 = Introduction =
 
 If you haven't done so, install the remote api services using the documentation on [http://code.google.com/p/customsagetv/wiki/SageTVapi this page].
