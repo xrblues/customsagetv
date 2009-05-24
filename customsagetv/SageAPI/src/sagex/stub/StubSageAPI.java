@@ -61,7 +61,7 @@ public class StubSageAPI implements ISageAPIProvider {
 	}
 
 	public String toString() {
-		return "sage://stub";
+		return "stub://sage";
 	}
 
 	public Object callService(String context, String name, Object[] args) throws Exception {

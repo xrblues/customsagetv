@@ -7,6 +7,8 @@ import sagex.remote.EmbeddedSageAPIProvider;
 import sagex.remote.javarpc.SageAPIRemote;
 import sagex.remote.rmi.RMISageAPI;
 import sagex.remote.server.SimpleDatagramClient;
+import sagex.stub.NullSageAPIProvider;
+import sagex.stub.StubSageAPI;
 
 public class SageAPI {
     private static ISageAPIProvider remoteProvider = null;
@@ -20,7 +22,13 @@ public class SageAPI {
 		    try {
 		        setProvider(new EmbeddedSageAPIProvider());
 		    } catch (Throwable t) {
-		        setProvider(getRemoteProvider());
+		        try {
+		            System.out.println("Attempting to set Remote API Provider...");
+		            setProvider(getRemoteProvider());
+		        } catch (Throwable tt) {
+                    System.out.println("No Remote Provider, using Null API Provider (this is ok).");
+		            setProvider(new NullSageAPIProvider());
+		        }
 		    }
 		}
 		return provider;
@@ -42,6 +50,10 @@ public class SageAPI {
                     URI u = new URI(remoteUrl);
                     if ("rmi".equals(u.getScheme())) {
                         remoteProvider = (new RMISageAPI(u.getHost(), u.getPort()));
+                    } else if ("null".equals(u.getScheme())) {
+                        remoteProvider = new NullSageAPIProvider(); 
+                    } else if ("stub".equals(u.getScheme())) {
+                        remoteProvider = new StubSageAPI(); 
                     } else {
                         remoteProviderProperties = new Properties();
                         remoteProviderProperties.put("server", u.getHost());
@@ -50,7 +62,6 @@ public class SageAPI {
                     }
                 }
             } catch (Throwable t) {
-                t.printStackTrace();
                 throw new RuntimeException(t);
             }
 	    }

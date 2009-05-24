@@ -17,6 +17,13 @@ public class RMISageAPI implements ISageAPIProvider {
     public RMISageAPI(String host, int port) {
         this.host = host;
         this.port = port;
+        
+        try {
+            callService("GetOS", null);
+        } catch (Throwable t) {
+            System.out.println("Remote SageAPI is not functional.  Can't use server: " + toString());
+            throw new RuntimeException("Remote SageAPI is not functional.  Can't use server: " + toString(), t);
+        }
     }
 
     public Object callService(String context, String name, Object[] args) throws Exception {
