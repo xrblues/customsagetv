@@ -1,6 +1,8 @@
 #summary New API for SageTV include RPC features
 #labels Featured
 
+<wiki:toc max_depth="6" />
+
 = Feature Set =
  * Complete access to the Sage API from Java
  * Java code can run remotely and access the Sage Server (Java RPC over RMI and HTTP)
