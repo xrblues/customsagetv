@@ -9,12 +9,10 @@ import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfXmlFile;
 import org.jdna.media.metadata.impl.dvdproflocal.IDVDProfMovieNodeVisitor;
 import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
-import org.jdna.metadataupdater.MetadataUpdater;
 import org.w3c.dom.Element;
 
 public class TestLocalDVDProfiler {
     public static void main(String args[]) throws Exception {
-        MetadataUpdater.initConfiguration();
         DVDProfXmlFile file = new DVDProfXmlFile(new File("/home/seans/DevelopmentProjects/workspaces/sage/MovieMetadataUpdater/testing/DVDProfiler/dvd.xml"));
         IDVDProfMovieNodeVisitor visitor = new IDVDProfMovieNodeVisitor() {
             public void visitMovie(Element el) {
@@ -27,8 +25,6 @@ public class TestLocalDVDProfiler {
     }
 
     public static void main2(String args[]) throws Exception {
-        MetadataUpdater.initConfiguration();
-
         IMediaMetadataProvider prov = new LocalDVDProfMetaDataProvider();
         List<IMediaSearchResult> results = prov.search(new SearchQuery("Batman Begins"));
 

@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
@@ -13,6 +12,8 @@ import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
+
+import sagex.phoenix.Phoenix;
 
 public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
     private static final Logger                 log               = Logger.getLogger(MyMoviesMetadataProvider.class);
@@ -29,6 +30,9 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
     private MyMoviesXmlFile                      xmlFileTool;
 
     private boolean                             initialized       = false;
+    
+    private MyMoviesConfiguration cfg = new MyMoviesConfiguration();
+    
     private static MyMoviesMetadataProvider instance          = new MyMoviesMetadataProvider();
     
     private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
@@ -68,10 +72,10 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
     }
 
     private void initialize() throws Exception {
-        String indexDir = ConfigurationManager.getInstance().getMyMoviesConfiguration().getIndexDir();
+        String indexDir = cfg.getIndexDir();
         MyMoviesIndex.getInstance().setIndexDir(indexDir);
 
-        String xml = ConfigurationManager.getInstance().getMyMoviesConfiguration().getXmlFile();
+        String xml = cfg.getXmlFile();
         if (xml == null) {
             throw new Exception("Missing xml.  Please Set MyMovies Xml Location.");
         }
@@ -89,7 +93,7 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
     }
     
     private boolean isXmlModified() {
-        return xmlFile.lastModified() > ConfigurationManager.getInstance().getMyMoviesConfiguration().getXmlFileLastModified();
+        return xmlFile.lastModified() > cfg.getXmlFileLastModified();
     }
 
     private void rebuildIndexes() throws Exception {
@@ -100,8 +104,8 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
         xmlFileTool.visitMovies(MyMoviesIndex.getInstance());
         MyMoviesIndex.getInstance().endIndexing();
         
-        ConfigurationManager.getInstance().getMyMoviesConfiguration().setXmlFileLastModified(xmlFile.lastModified());
-        ConfigurationManager.getInstance().updated(ConfigurationManager.getInstance().getMyMoviesConfiguration());
+        cfg.setXmlFileLastModified(xmlFile.lastModified());
+        Phoenix.getInstance().getConfigurationManager().save();
     }
 
     private boolean shouldRebuildIndexes() {

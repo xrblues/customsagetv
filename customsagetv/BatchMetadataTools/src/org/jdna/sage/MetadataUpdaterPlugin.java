@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.FileMediaFolder;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
@@ -14,16 +13,16 @@ import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.MovieResourceFilter;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
+import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
 import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 import org.jdna.media.util.NullResourceVisitor;
-import org.jdna.metadataupdater.MetadataUpdater;
+import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.metadataupdater.Version;
 import org.jdna.sage.media.SageMediaFile;
-import org.jdna.util.LoggerConfiguration;
 
 import sage.MediaFileMetadataParser;
 import sagex.api.Configuration;
@@ -43,14 +42,10 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
     private static MovieResourceFilter            filter;
     private static IMediaMetadataPersistence      persistence;
     private static PersistenceOptions             options;
-
-    static {
-        try {
-            LoggerConfiguration.configurePlugin();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    
+    private MetadataUpdaterConfiguration metadataUpdaterConfig = new MetadataUpdaterConfiguration();
+    private MetadataConfiguration metadataConfig = new MetadataConfiguration();
+    private DVDProfilerLocalConfiguration dvdProfConfig =new DVDProfilerLocalConfiguration();
 
     public MetadataUpdaterPlugin() {
     }
@@ -79,12 +74,8 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 }
                 debug("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
 
-                // do any upgrades
-                MetadataUpdater.upgrade();
-
-                String providerId = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
+                String providerId = metadataConfig.getDefaultProviderId();
                 debug("** Batch Metadata Plugin; Using ProviderId: " + providerId);
-                debug("** Configuration for Metadata Plugin: " + ConfigurationManager.getInstance().getConfigFileLocation());
 
                 persistence = MetadataPluginOptions.getAutomaticUpdaterPersistence();
                 options = MetadataPluginOptions.getPersistenceOptions();
@@ -104,14 +95,14 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             // sync our settings with the sage stv settings for central
             // fanart...
             if (phoenix.api.IsFanartEnabled()) {
-                ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setFanartEnabled(phoenix.api.IsFanartEnabled());
-                ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
+                metadataUpdaterConfig.setFanartEnabled(phoenix.api.IsFanartEnabled());
+                metadataUpdaterConfig.setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
             }
 
             // check if the dvd profiler info is not set, and if not set, then
             // use the sagemc defaults
-            if (ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId().contains(LocalDVDProfMetaDataProvider.PROVIDER_ID)) {
-                DVDProfilerLocalConfiguration dvdprof = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration();
+            if (metadataConfig.getDefaultProviderId().contains(LocalDVDProfMetaDataProvider.PROVIDER_ID)) {
+                DVDProfilerLocalConfiguration dvdprof = dvdProfConfig;
                 if (StringUtils.isEmpty(dvdprof.getImageDir())) {
                     if (!StringUtils.isEmpty(Configuration.GetProperty("sagemc/DVDProfiler_Root", null))) {
                         dvdprof.setImageDir(Configuration.GetProperty("sagemc/DVDProfiler_Root", null) + File.separator + "Images");

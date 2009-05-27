@@ -1,9 +1,5 @@
 package test;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.jdna.media.util.FileNameUtils;
 
 
 

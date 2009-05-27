@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 
 public class MovieResourceFilter implements IMediaResourceFilter {
     private static final Logger             log               = Logger.getLogger(MovieResourceFilter.class);
@@ -12,13 +11,15 @@ public class MovieResourceFilter implements IMediaResourceFilter {
 
     private Pattern                         filePattern       = null;
     private Pattern                         dirExcludePattern = null;
+    
+    private MediaConfiguration cfg = new MediaConfiguration();
 
     public MovieResourceFilter(String dirFilterRegex) {
-        init(dirFilterRegex, ConfigurationManager.getInstance().getMediaConfiguration().getVideoExtensionsRegex());
+        init(dirFilterRegex, cfg.getVideoExtensionsRegex());
     }
 
     public MovieResourceFilter() {
-        init(ConfigurationManager.getInstance().getMediaConfiguration().getExcludeVideoDirsRegex(), ConfigurationManager.getInstance().getMediaConfiguration().getVideoExtensionsRegex());
+        init(cfg.getExcludeVideoDirsRegex(), cfg.getVideoExtensionsRegex());
     }
     
     private void init(String dirFilter, String fileFilter) {

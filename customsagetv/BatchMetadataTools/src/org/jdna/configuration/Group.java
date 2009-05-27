@@ -1,4 +1,4 @@
-package org.jdna.persistence.annotations;
+package org.jdna.configuration;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -6,11 +6,8 @@ import java.lang.annotation.Target;
 
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(value = java.lang.annotation.ElementType.TYPE)
-public @interface Table {
-    String name();
+public @interface Group {
+    String path();
     String label();
-
-    boolean requiresKey() default true;
-
     String description() default "";
 }

@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
@@ -19,6 +19,7 @@ import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import org.jdna.media.util.BackgroundMetadataUpdater;
+import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.sage.MetadataPluginOptions;
 import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageMediaFolder;
@@ -40,6 +41,8 @@ import sagex.phoenix.fanart.IMetadataSupport;
 public class BMTMetadataSupport implements IMetadataSupport {
     private static final Logger log = Logger.getLogger(BMTMetadataSupport.class);
     private PersistenceOptions options;
+    private MetadataUpdaterConfiguration updaterConfig = new MetadataUpdaterConfiguration();
+    private MetadataConfiguration metadataConfig = new MetadataConfiguration();
     
     public BMTMetadataSupport() {
         log.info("Using BMTMetadataSupport: " + bmt.api.GetVersion());
@@ -80,8 +83,8 @@ public class BMTMetadataSupport implements IMetadataSupport {
         // first we need to update the central fanart properties based on the ui
         // settings
         try {
-            ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
-            ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setFanartEnabled(phoenix.api.IsFanartEnabled());
+            updaterConfig.setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
+            updaterConfig.setFanartEnabled(phoenix.api.IsFanartEnabled());
             IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(result.getProviderId());
             IMediaMetadata md = prov.getMetaData((IMediaSearchResult) result);
             return SageTVPropertiesPersistence.getSageTVMetadataMap(md);
@@ -107,8 +110,8 @@ public class BMTMetadataSupport implements IMetadataSupport {
         try {
             // first we need to update the central fanart properties based on
             // the ui settings
-            ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
-            ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setFanartEnabled(phoenix.api.IsFanartEnabled());
+            updaterConfig.setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
+            updaterConfig.setFanartEnabled(phoenix.api.IsFanartEnabled());
 
             IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(result.getProviderId());
             IMediaMetadata md = prov.getMetaData((IMediaSearchResult) result);
@@ -131,7 +134,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
             persistence.storeMetaData(md, smf, options);
             
             if (MediaFileAPI.IsMediaFileObject(media)) {
-                if (ConfigurationManager.getInstance().getMetadataConfiguration().isImportTVAsRecordedShows()) {
+                if (metadataConfig.isImportTVAsRecordedShows()) {
                     log.debug("Importing Show as a SageRecording....");
                     SageShowPeristence sp = new SageShowPeristence();
                     sp.storeMetaData(md, smf, options);
@@ -157,7 +160,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
         }
         
         if (providerId==null) {
-            providerId = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId(); 
+            providerId = metadataConfig.getDefaultProviderId(); 
         }
 
         try {
@@ -193,7 +196,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
     public void startMetadataScan(String provider, Object[] sageMediaFiles) {
         try {
             if (provider==null) {
-                provider = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
+                provider = metadataConfig.getDefaultProviderId();
             }
             BackgroundMetadataUpdater.startScan(new SageMediaFolder(sageMediaFiles), provider, MetadataPluginOptions.getOnDemandUpdaterPersistence(), MetadataPluginOptions.getPersistenceOptions());
         } catch (Exception e) {

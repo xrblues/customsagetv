@@ -1,5 +1,9 @@
 package test.junit;
 
+import static test.junit.FilesTestCase.getFile;
+import static test.junit.FilesTestCase.makeDir;
+import static test.junit.FilesTestCase.makeFile;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,11 +18,11 @@ import javax.imageio.ImageIO;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.impl.StubMetadataProvider;
 import org.jdna.media.metadata.impl.sage.SageProperty;
@@ -29,8 +33,6 @@ import sagex.api.MediaFileAPI;
 import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
 import sagex.stub.StubSageAPI;
-
-import static test.junit.FilesTestCase.*;
 
 public class BMTPhoenixTestCase extends TestCase {
     private MediaMetadataFactory factory  = MediaMetadataFactory.getInstance();
@@ -146,7 +148,7 @@ public class BMTPhoenixTestCase extends TestCase {
         provider.reset();
         
         // use the stub provider
-        ConfigurationManager.getInstance().getMetadataConfiguration().setDefaultProviderId(StubMetadataProvider.PROVIDER_ID);
+        new MetadataConfiguration().setDefaultProviderId(StubMetadataProvider.PROVIDER_ID);
 
         // add in a movie to the stub provider
         MediaSearchResult res = new MediaSearchResult(StubMetadataProvider.PROVIDER_ID, 0.9f);

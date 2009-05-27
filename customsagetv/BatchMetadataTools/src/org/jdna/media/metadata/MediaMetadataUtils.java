@@ -15,11 +15,11 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
+import org.jdna.configuration.GroupProxy;
 import org.jdna.media.CDStackingModel;
+import org.jdna.url.UrlConfiguration;
 
 public class MediaMetadataUtils {
-
     private static final Logger log = Logger.getLogger(MediaMetadataUtils.class);
 
     public static void writeImageFromUrl(String url, File out) throws IOException {
@@ -29,7 +29,7 @@ public class MediaMetadataUtils {
         URL u = new URL(url);
         URLConnection conn = u.openConnection();
         if (conn instanceof HttpURLConnection) {
-            conn.setRequestProperty("User-Agent", ConfigurationManager.getInstance().getUrlConfiguration().getHttpUserAgent());
+            conn.setRequestProperty("User-Agent", GroupProxy.get(UrlConfiguration.class).getHttpUserAgent());
         }
 
         BufferedImage img = ImageIO.read(conn.getInputStream());
@@ -44,7 +44,7 @@ public class MediaMetadataUtils {
         URL u = new URL(url);
         URLConnection conn = u.openConnection();
         if (conn instanceof HttpURLConnection) {
-            conn.setRequestProperty("User-Agent", ConfigurationManager.getInstance().getUrlConfiguration().getHttpUserAgent());
+            conn.setRequestProperty("User-Agent", GroupProxy.get(UrlConfiguration.class).getHttpUserAgent());
         }
         
         log.debug("Scaling was requested: " + scaleWidth);
@@ -100,7 +100,7 @@ public class MediaMetadataUtils {
      * </pre>
      */
     public static String cleanSearchCriteria(String s, boolean removeYear) {
-        String wordTokens[] = ConfigurationManager.getInstance().getMetadataConfiguration().getWordsToClean().split(",");
+        String wordTokens[] = GroupProxy.get(MetadataConfiguration.class).getWordsToClean().split(",");
 
         s = CDStackingModel.INSTANCE.getStackedTitle(s);
         log.debug("Cleaning Search Criteria: " + s);

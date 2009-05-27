@@ -1,7 +1,6 @@
 package org.jdna.media.util;
 
 import org.apache.commons.lang.StringUtils;
-import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;

@@ -12,12 +12,6 @@ public class LoggerConfiguration {
             Logger.getLogger(LoggerConfiguration.class).info("Logging Configured using: /org/jdna/metadataupdater/log4j.properties");
         }
     }
-    public static void configurePlugin() {
-        if (!useDefaultLoggers()) {
-            PropertyConfigurator.configure(LoggerConfiguration.class.getResource("/bmt/log4j.properties"));
-            Logger.getLogger(LoggerConfiguration.class).info("Plugin Logging Configured using: /bmt/log4j.properties");
-        }
-    }
     
     public static boolean useDefaultLoggers() {
         File f = new File("log4j.properties");

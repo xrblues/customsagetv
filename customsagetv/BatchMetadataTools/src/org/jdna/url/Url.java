@@ -8,9 +8,9 @@ import java.net.URLConnection;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 
 public class Url implements IUrl {
+    private UrlConfiguration cfg = new UrlConfiguration();
     private Logger log      = Logger.getLogger(Url.class);
 
     private String url      = null;
@@ -51,7 +51,7 @@ public class Url implements IUrl {
         if (conn instanceof HttpURLConnection) {
             log.debug("Setting Follow Redirects: " + followRedirects);
             ((HttpURLConnection) conn).setInstanceFollowRedirects(followRedirects);
-            conn.setRequestProperty("User-Agent", ConfigurationManager.getInstance().getUrlConfiguration().getHttpUserAgent());
+            conn.setRequestProperty("User-Agent", cfg.getHttpUserAgent());
         }
         sendCookies(u, conn, handler);
 

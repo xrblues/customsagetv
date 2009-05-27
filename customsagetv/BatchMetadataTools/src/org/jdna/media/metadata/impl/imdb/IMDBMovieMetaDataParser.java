@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.MediaArt;
@@ -317,7 +316,7 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
             // we now have the image for the poster
             String u = atts.getValue("src");
             if (u != null) {
-                IMDBConfiguration conf = ConfigurationManager.getInstance().getIMDBConfiguration();
+                IMDBConfiguration conf = new IMDBConfiguration();
                 if (conf.getForcedIMDBImageSize() > 0) {
                     log.debug("Forcing IMDB Thumbnail Size: " + conf.getForcedIMDBImageSize());
                     u = u.replaceFirst("\\_SX[0-9]+\\_SY[0-9]+\\_", "_SX" + conf.getForcedIMDBImageSize() + "_SY" + conf.getForcedIMDBImageSize() + "_");

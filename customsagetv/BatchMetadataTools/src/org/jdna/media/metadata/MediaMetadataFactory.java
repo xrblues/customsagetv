@@ -9,11 +9,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
 import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
 import org.jdna.media.metadata.impl.composite.MetadataProviderContainer;
-import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
 import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.mymovies.MyMoviesMetadataProvider;
@@ -26,6 +24,8 @@ public class MediaMetadataFactory {
 
     private static MediaMetadataFactory instance = null;
     private static final Logger         log      = Logger.getLogger(MediaMetadataFactory.class);
+    
+    private MetadataConfiguration metadataCfg = new MetadataConfiguration();
 
     public static MediaMetadataFactory getInstance() {
         if (instance == null) instance = new MediaMetadataFactory();
@@ -38,7 +38,7 @@ public class MediaMetadataFactory {
     public MediaMetadataFactory() {
         // create the default provider list
         try {
-            String providers = ConfigurationManager.getInstance().getMetadataConfiguration().getMediaMetadataProviders();
+            String providers = metadataCfg.getMediaMetadataProviders();
             String mdps[] = providers.split(",");
             for (String p : mdps) {
                 p = p.trim();
@@ -147,7 +147,7 @@ public class MediaMetadataFactory {
     }
 
     public IMediaMetadataProvider getProvider(String providerId) {
-        if (providerId==null) providerId=ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
+        if (providerId==null) providerId=metadataCfg.getDefaultProviderId();
         if (!StringUtils.isEmpty(providerId) && providerId.contains(",")) {
             MetadataProviderContainer container = new MetadataProviderContainer(providerId);
             log.debug("Multiple Provider Ids were passed; " + providerId + "; Creating a MetadataProviderContainer for them...");
@@ -199,9 +199,8 @@ public class MediaMetadataFactory {
     }
     
     public boolean isGoodSearch(List<IMediaSearchResult> results) {
-    	float goodScore = ConfigurationManager.getInstance().getMetadataConfiguration().getGoodScoreThreshold();
+    	float goodScore = metadataCfg.getGoodScoreThreshold();
     	return results!=null && (results.size() > 0 && results.get(0).getScore() >= goodScore);
-        //return results!=null && (results.size() > 0 && (results.get(0).getResultType() == SearchResultType.POPULAR || results.get(0).getResultType() == SearchResultType.EXACT));
     }
 
 }
