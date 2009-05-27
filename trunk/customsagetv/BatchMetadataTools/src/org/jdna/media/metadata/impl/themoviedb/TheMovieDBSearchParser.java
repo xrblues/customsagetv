@@ -14,9 +14,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.SearchQuery;
@@ -36,6 +36,9 @@ public class TheMovieDBSearchParser {
     private IUrl                                url;
     private List<IMediaSearchResult>            results    = new ArrayList<IMediaSearchResult>();
     private String								searchTitle;
+    
+    public MetadataConfiguration cfg = new MetadataConfiguration();
+    
     private Comparator<IMediaSearchResult> sorter              = new Comparator<IMediaSearchResult>() {
 
         public int compare(IMediaSearchResult o1, IMediaSearchResult o2) {
@@ -97,7 +100,7 @@ public class TheMovieDBSearchParser {
         sr.setScore(getScore(title));
 
         // add alternate title scoring...
-        if (ConfigurationManager.getInstance().getMetadataConfiguration().isScoreAlternateTitles()) {
+        if (cfg.isScoreAlternateTitles()) {
             log.debug("Looking for alternate Titles");
             List<ScoredTitle> scoredTitles = new LinkedList<ScoredTitle>();
             NodeList nl = item.getElementsByTagName("alternative_title");

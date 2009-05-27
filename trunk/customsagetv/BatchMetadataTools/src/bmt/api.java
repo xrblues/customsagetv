@@ -7,23 +7,23 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
+import org.jdna.configuration.GroupProxy;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.metadata.impl.sage.SagePropertyType;
+import org.jdna.metadataupdater.MetadataUpdater;
+import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.metadataupdater.Version;
 import org.jdna.util.LoggerConfiguration;
 
 import sagex.api.Configuration;
+import sagex.phoenix.Phoenix;
 
 public class api {
     private static final Logger log = Logger.getLogger(api.class);
-    static {
-        LoggerConfiguration.configurePlugin();
-        log.info("Metadata Tools API: " + GetVersion() + "; Using Phoenix: " + phoenix.api.GetVersion());
-    }
     
     public static String GetVersion() {
         return Version.VERSION;
@@ -98,7 +98,7 @@ public class api {
     
     public static String GetCurrentMetadataProviderIds() {
         try {
-            return ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
+            return GroupProxy.get(MetadataConfiguration.class).getDefaultProviderId();
         } catch (Exception e) {
             return "";
         }
@@ -106,19 +106,17 @@ public class api {
 
     public static void SetCurrentProvidersIds(String list) {
         System.out.println("Setting New Current Metadata Providers to: " + list);
-        ConfigurationManager.getInstance().getMetadataConfiguration().setDefaultProviderId(list);
+        GroupProxy.get(MetadataConfiguration.class).setDefaultProviderId(list);
         SaveMetadataProviderConfiguration();
     }
     
     public static void SaveMetadataProviderConfiguration() {
         try {
             // update central fanart locations from phoenix
-            ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setFanartEnabled(phoenix.api.IsFanartEnabled());
-            ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
+            GroupProxy.get(MetadataUpdaterConfiguration.class).setFanartEnabled(phoenix.api.IsFanartEnabled());
+            GroupProxy.get(MetadataUpdaterConfiguration.class).setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
 
-            // update and save
-            ConfigurationManager.getInstance().updated(ConfigurationManager.getInstance().getMetadataConfiguration());
-            ConfigurationManager.getInstance().save();
+            Phoenix.getInstance().getConfigurationManager().save();
             System.out.println("Metadata Configuration is peristed.");
         } catch (Exception e) {
             e.printStackTrace();
@@ -257,11 +255,11 @@ public class api {
     }
     
     public static boolean IsImportShowAsSageRecordingEnabled() {
-        return ConfigurationManager.getInstance().getMetadataConfiguration().isImportTVAsRecordedShows();
+        return GroupProxy.get(MetadataConfiguration.class).isImportTVAsRecordedShows();
     }
     
     public static void SetImportShowAsSageRecordingEnabled(boolean b) {
-        ConfigurationManager.getInstance().getMetadataConfiguration().setImportTVAsRecordedShows(b);
+        GroupProxy.get(MetadataConfiguration.class).setImportTVAsRecordedShows(b);
         SaveMetadataProviderConfiguration();
     }
 }

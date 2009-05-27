@@ -1,7 +1,7 @@
 package org.jdna.url;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
+import org.jdna.configuration.GroupProxy;
 
 public class UrlFactory implements IUrlFactory {
     private static final Logger log = Logger.getLogger(UrlFactory.class);
@@ -22,7 +22,7 @@ public class UrlFactory implements IUrlFactory {
 
     private static void createFactory() {
         try {
-            String cl = ConfigurationManager.getInstance().getUrlConfiguration().getUrlFactoryClass();
+            String cl = GroupProxy.get(UrlConfiguration.class).getUrlFactoryClass();
             factory = (IUrlFactory) Class.forName(cl).newInstance();
         } catch (Throwable t) {
             log.error("Failed to create IUrlFactory! Using Default.", t);

@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
@@ -13,6 +12,8 @@ import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
+
+import sagex.phoenix.Phoenix;
 
 public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     private static final Logger                 log               = Logger.getLogger(LocalDVDProfMetaDataProvider.class);
@@ -32,6 +33,8 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     private static LocalDVDProfMetaDataProvider instance          = new LocalDVDProfMetaDataProvider();
     
     private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
+    
+    private DVDProfilerLocalConfiguration cfg = new DVDProfilerLocalConfiguration();
 
     public LocalDVDProfMetaDataProvider() {
     }
@@ -68,10 +71,10 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     }
 
     private void initialize() throws Exception {
-        String indexDir = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getIndexDir();
+        String indexDir = cfg.getIndexDir();
         LocalMovieIndex.getInstance().setIndexDir(indexDir);
 
-        String xml = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getXmlFile();
+        String xml = cfg.getXmlFile();
         if (xml == null) {
             throw new Exception("Missing xml.  Please Set DVDProfiler Xml Location.");
         }
@@ -83,7 +86,7 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
         
         log.debug("DVD Profiler Xml: " + xmlFile.getAbsolutePath());
 
-        String strImageDir = ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getImageDir();
+        String strImageDir = cfg.getImageDir();
         if (strImageDir == null) {
             log.warn("DVD Profiler Image dir is not set, will use a relative Images path.");
             this.imageDir = new File(xmlFile.getParentFile(), "Images");
@@ -101,7 +104,7 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     }
     
     private boolean isXmlModified() {
-        return xmlFile.lastModified() > ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().getXmlFileLastModified();
+        return xmlFile.lastModified() > cfg.getXmlFileLastModified();
     }
 
     private void rebuildIndexes() throws Exception {
@@ -112,8 +115,8 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
         xmlFileTool.visitMovies(LocalMovieIndex.getInstance());
         LocalMovieIndex.getInstance().endIndexing();
         
-        ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration().setXmlFileLastModified(xmlFile.lastModified());
-        ConfigurationManager.getInstance().updated(ConfigurationManager.getInstance().getDVDProfilerLocalConfiguration());
+        cfg.setXmlFileLastModified(xmlFile.lastModified());
+        Phoenix.getInstance().getConfigurationManager().save();
     }
 
     private boolean shouldRebuildIndexes() {

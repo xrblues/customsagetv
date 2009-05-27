@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 
 /**
  * As Taken from http://xbmc.org/wiki/?title=Stacking
@@ -21,9 +20,10 @@ public class CDStackingModel implements IMediaStackModel {
     private static final Logger         log      = Logger.getLogger(CDStackingModel.class);
     public static final CDStackingModel INSTANCE = new CDStackingModel();
     private Pattern                     pattern  = null;
+    private MediaConfiguration cfg = new MediaConfiguration();
 
     public CDStackingModel() {
-        String pat = ConfigurationManager.getInstance().getMediaConfiguration().getStackingModelRegex();
+        String pat = cfg.getStackingModelRegex();
         log.debug("CD Stacking Regex: " + pat);
         pattern = Pattern.compile(pat, Pattern.CASE_INSENSITIVE);
     }

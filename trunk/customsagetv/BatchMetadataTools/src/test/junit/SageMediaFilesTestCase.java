@@ -1,5 +1,8 @@
 package test.junit;
 
+import static test.junit.FilesTestCase.getFile;
+import static test.junit.FilesTestCase.makeFile;
+
 import java.io.File;
 
 import junit.framework.TestCase;
@@ -13,8 +16,6 @@ import org.jdna.sage.media.SageMediaFolder;
 import sagex.SageAPI;
 import sagex.api.MediaFileAPI;
 import sagex.stub.StubSageAPI;
-
-import static test.junit.FilesTestCase.*;
 
 public class SageMediaFilesTestCase extends TestCase {
 

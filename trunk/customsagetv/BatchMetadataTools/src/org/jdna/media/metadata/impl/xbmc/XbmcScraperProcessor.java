@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,25 +34,21 @@ public class XbmcScraperProcessor {
     Map<String, String>         options           = new HashMap<String, String>();
     
     private static final int PATTERN_OPTIONS = Pattern.MULTILINE + Pattern.CASE_INSENSITIVE + Pattern.DOTALL;
+    
+    private XbmcScraperConfiguration cfg = new XbmcScraperConfiguration();
 
     public XbmcScraperProcessor(XbmcScraper scraper) {
         if (scraper==null) throw new RuntimeException("Scraper cannot be null!");
         
         this.scraper = scraper;
 
-        mergeOptions(this.options, loadOptions());
+        mergeOptions(this.options);
 
         log.debug("XbmcScraperProcessor created using Scraper: " + scraper.getName() + "; Content: " + scraper.getContent() + "; Complete Logging: " + !truncateLogging);
         
         clearBuffers();
     }
     
-    
-    private Map<String, String> loadOptions() {
-        XbmcScraperConfiguration cfg = ConfigurationManager.getInstance().getScraperConfiguration(scraper.getId());
-        return cfg.getSettings();
-    }
-
     private XbmcScraperProcessor(XbmcScraper scraper, Map<String, String> options, String[] buffers) {
         this.scraper=scraper;
         this.options=options;
@@ -67,11 +62,9 @@ public class XbmcScraperProcessor {
         }
     }
 
-    private void mergeOptions(Map<String, String> dest, Map<String, String> src) {
+    private void mergeOptions(Map<String, String> dest) {
         try {
             if (!containsFunction(FUNCTION_SETTINGS)) {
-                if (src == null) return;
-                dest.putAll(src);
                 return;
             } else {
                 String xmlString = executeFunction(FUNCTION_SETTINGS, null);
@@ -92,16 +85,9 @@ public class XbmcScraperProcessor {
                             String defValue = e.getAttribute("default");
                             if (StringUtils.isEmpty(defValue)) continue;
                             log.debug("Default Option: " + scraper.getId() +"; " + id + "; " + defValue);
-                            dest.put(id, defValue);
+                            dest.put(id, cfg.getScraperProperty(scraper.getId(), id, defValue));
                         }
                     }
-                }
-            }
-
-            if (src != null) {
-                for (String k : src.keySet()) {
-                    log.debug("Set Override Option: " + k + "; value: " + src.get(k));
-                    dest.put(k, src.get(k));
                 }
             }
         } catch (Exception e) {

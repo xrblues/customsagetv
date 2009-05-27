@@ -7,16 +7,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.CDStackingModel;
 import org.jdna.media.FileMediaFile;
+import org.jdna.media.MediaConfiguration;
 import org.jdna.media.metadata.MediaMetadataUtils;
-import org.jdna.metadataupdater.MetadataUpdater;
 
 public class TestRegexp {
     public static void main(String args[]) throws IOException {
-        MetadataUpdater.initConfiguration();
-
         String reg = "avi|mpg|divx|mkv";
         String s = "avi";
 
@@ -212,7 +209,7 @@ public class TestRegexp {
         FileMediaFile mf = new FileMediaFile(new File(s).toURI());
         System.out.printf("String: %s; Name; %s, Basename: %s; Stacked: %s\n", s, mf.getTitle(), mf.getBasename(), CDStackingModel.INSTANCE.getStackedTitle(mf));
 
-        Pattern p = Pattern.compile(ConfigurationManager.getInstance().getMediaConfiguration().getStackingModelRegex(), Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile(new MediaConfiguration().getStackingModelRegex(), Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(mf.getTitle());
         if (m.find()) {
             System.out.printf("Regex: %s; Start Char: %s; Data: %s\n", p.pattern(), m.start(), mf.getTitle().substring(0, m.start()));

@@ -1,18 +1,16 @@
 package test.junit;
 
+import static test.junit.FilesTestCase.makeDir;
+import static test.junit.FilesTestCase.makeFile;
+
 import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.filefilter.FileFileFilter;
-import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.jdna.media.CDStackingModel;
 import org.jdna.media.FileHDFolderMediaFile;
 import org.jdna.media.FileMediaFile;
@@ -26,9 +24,6 @@ import org.jdna.media.StackedMediaFolder;
 import org.jdna.media.VirtualMediaFile;
 import org.jdna.media.VirtualMediaFolder;
 import org.jdna.util.DirectoryScanner;
-
-import static test.junit.FilesTestCase.makeDir;
-import static test.junit.FilesTestCase.makeFile;
 
 public class MediaResourcesTestCase extends TestCase {
     private static class Counter {

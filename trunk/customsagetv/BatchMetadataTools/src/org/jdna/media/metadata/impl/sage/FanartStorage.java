@@ -2,8 +2,6 @@ package org.jdna.media.metadata.impl.sage;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,7 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.StackedMediaFile;
@@ -23,6 +20,7 @@ import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
+import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.util.StoredStringSet;
 
 import sagex.phoenix.fanart.FanartUtil;
@@ -32,18 +30,21 @@ import sagex.phoenix.fanart.FanartUtil.MediaType;
 public class FanartStorage {
     private static final FanartStorage instance = new FanartStorage();
     private static final Logger        log      = Logger.getLogger(FanartStorage.class);
+    
+    private MetadataUpdaterConfiguration updaterConfig = new MetadataUpdaterConfiguration();
+    private MetadataConfiguration metadataConfig = new MetadataConfiguration();
 
     public void saveFanart(IMediaFile mediaFileParent, String title, IMediaMetadata md, PersistenceOptions options) {
         MediaArtifactType[] localArtTypes = null;
         boolean localFanart = false;
-        if (ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isFanartEnabled() && !StringUtils.isEmpty(ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder())) {
-            log.info("Using Central Fanart: " + ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder());
+        if (updaterConfig.isFanartEnabled() && !StringUtils.isEmpty(updaterConfig.getFanartCentralFolder())) {
+            log.info("Using Central Fanart: " + updaterConfig.getFanartCentralFolder());
             for (MediaArtifactType mt : MediaArtifactType.values()) {
                 saveCentralFanart(title, md, mt, options);
             }
             localArtTypes = new MediaArtifactType[] { MediaArtifactType.POSTER };
-            localFanart = ConfigurationManager.getInstance().getMetadataConfiguration().isEnableDefaultSTVPosterCompatibility();
-        } else if (ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isFanartEnabled()) {
+            localFanart = metadataConfig.isEnableDefaultSTVPosterCompatibility();
+        } else if (updaterConfig.isFanartEnabled()) {
             log.info("Using Local Fanart; The central fanart folder is not set.");
             localArtTypes = MediaArtifactType.values();
             localFanart = true;
@@ -118,7 +119,7 @@ public class FanartStorage {
     }
 
     private int getScale(MediaArtifactType mt) {
-        MetadataConfiguration mc = ConfigurationManager.getInstance().getMetadataConfiguration();
+        MetadataConfiguration mc = metadataConfig;
         int scale = -1;
         if (mc == null) return scale;
         if (mt == MediaArtifactType.BACKGROUND) {
@@ -136,7 +137,7 @@ public class FanartStorage {
     private boolean shouldSkipFile(File imageFile) {
         boolean skip = false;
         // only do this if we are using the central fanart
-        if ((ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isFanartEnabled() && !StringUtils.isEmpty(ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder()))) {
+        if ((updaterConfig.isFanartEnabled() && !StringUtils.isEmpty(updaterConfig.getFanartCentralFolder()))) {
             try {
                 File storedFile = new File(imageFile.getParentFile(), "images");
                 StoredStringSet set = new StoredStringSet();
@@ -165,7 +166,7 @@ public class FanartStorage {
     }
 
     private void saveCentralFanart(String title, IMediaMetadata md, MediaArtifactType mt, PersistenceOptions options) {
-        String centralFolder = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().getFanartCentralFolder();
+        String centralFolder = updaterConfig.getFanartCentralFolder();
         if (centralFolder == null) {
             throw new RuntimeException("Central Fanart Support is enabled, but no central folder location is set!");
         }
@@ -192,7 +193,7 @@ public class FanartStorage {
 
     private void downloadAndSageCentralFanart(MediaArtifactType mt, File fanartDir, IMediaArt artwork[], PersistenceOptions options) {
         int downloaded = 0;
-        int max = ConfigurationManager.getInstance().getMetadataConfiguration().getMaxDownloadableImages();
+        int max = metadataConfig.getMaxDownloadableImages();
         if (max == -1) max = 99;
         if (artwork != null && artwork.length > 0) {
             max = Math.min(max, artwork.length);

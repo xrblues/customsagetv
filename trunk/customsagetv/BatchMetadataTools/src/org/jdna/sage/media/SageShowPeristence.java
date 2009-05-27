@@ -8,11 +8,11 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
+import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
@@ -31,6 +31,7 @@ import sagex.api.ShowAPI;
  */
 public class SageShowPeristence implements IMediaMetadataPersistence {
     private static final Logger log = Logger.getLogger(SageShowPeristence.class);
+    private MetadataConfiguration cfg = new MetadataConfiguration();
 
     public String getDescription() {
         return "Loads/Save metadata directly to a Sage Show Object";
@@ -56,7 +57,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             return;
         }
 
-        if (!ConfigurationManager.getInstance().getMetadataConfiguration().isImportTVAsRecordedShows()) {
+        if (!cfg.isImportTVAsRecordedShows()) {
             log.info("Import Shows as Sage Recordings is currently disabled.");
             return;
         }

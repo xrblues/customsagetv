@@ -3,9 +3,9 @@ package test.junit;
 import java.io.File;
 import java.io.IOException;
 
-import org.jdna.util.FileCleaner;
-
 import junit.framework.TestCase;
+
+import org.jdna.util.FileCleaner;
 
 public class FilesTestCase extends TestCase {
 

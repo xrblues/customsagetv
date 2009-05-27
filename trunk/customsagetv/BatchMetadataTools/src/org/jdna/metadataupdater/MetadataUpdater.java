@@ -1,7 +1,6 @@
 package org.jdna.metadataupdater;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.jdna.cmdline.CommandLine;
 import org.jdna.cmdline.CommandLineArg;
 import org.jdna.cmdline.CommandLineProcess;
+import org.jdna.configuration.BMTConfigurationMetadataProvider;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.FileMediaFolder;
 import org.jdna.media.IMediaFolder;
@@ -24,11 +24,10 @@ import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.impl.composite.CompositeMetadataConfiguration;
-import org.jdna.media.metadata.impl.composite.CompositeMetadataProvider;
 import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence;
@@ -43,6 +42,9 @@ import org.jdna.util.LoggerConfiguration;
 import sagex.SageAPI;
 import sagex.api.Global;
 import sagex.api.WidgetAPI;
+import sagex.phoenix.Phoenix;
+import sagex.phoenix.configuration.IConfigurationElement;
+import sagex.phoenix.configuration.IConfigurationMetadataVisitor;
 
 /**
  * This is an engine that will process one of more directories and files and
@@ -55,11 +57,27 @@ import sagex.api.WidgetAPI;
 @CommandLineProcess(acceptExtraArgs = true, description = "Import/Update Movie MetaData from a MetaData Provider.")
 public class MetadataUpdater {
     public static final Logger APPLOG = Logger.getLogger(MetadataUpdater.class.getName() + ".APPLOG");
-    
     private static final Logger log = Logger.getLogger(MetadataUpdater.class);
-    
 
-    private static MetadataUpdaterConfiguration config = null;
+    private MetadataUpdaterConfiguration config = null;
+    private MetadataConfiguration metadataConfig = null;
+    private BMTSageAPIProvider proxyAPI = null;
+
+    private String[] files;
+    private boolean  listMovies     = false;
+    private boolean  listProvders   = false;
+    private boolean  offline        = false;
+    private boolean  showMetadata   = false;
+    private boolean  showProperties = false;
+    private boolean  prompt         = true;
+    private boolean showSupportedMetadata = false;
+
+    private PersistenceOptions options = null;
+    private IMediaMetadataPersistence persistence = null;
+
+    private boolean tvSearch;
+    private String reportType;
+
     
     /**
      * This method only needs to be called from the command line. All other
@@ -71,19 +89,31 @@ public class MetadataUpdater {
      * @throws Exception
      */
     public static void main(String args[]) throws Exception {
+        new MetadataUpdater().run(args);
+    }
+
+    public void run(String args[]) throws Exception {
         LoggerConfiguration.configure();
         upgrade();
+
+        // set the SageAPI provider to be ourself, so that we can 
+        // intercept all Sage Commands
+        proxyAPI = new BMTSageAPIProvider();
+        SageAPI.setProvider(proxyAPI);
+        
+        // init config objects
+        config = new MetadataUpdaterConfiguration();
+        metadataConfig = new MetadataConfiguration();
+        options = new PersistenceOptions();
+        persistence = new SageTVPropertiesWithCentralFanartPersistence();
+        
+        // add bmt metadata configuration
+        Phoenix.getInstance().getConfigurationMetadataManager().addMetadata(new BMTConfigurationMetadataProvider());
         
         try {
-
             String title = "Batch MetaData Tools (" + Version.VERSION + ")";
             System.out.println(title);
 
-            // init the configuration before we process, since some command line
-            // vars can
-            // override default configuration settings
-            initConfiguration();
-            
             logMetadataEnvironment();
 
             // process the command line
@@ -91,21 +121,20 @@ public class MetadataUpdater {
             cl.process();
 
             // apply the command line args to this instance.
-            MetadataUpdater mdu = new MetadataUpdater();
             try {
-                cl.applyToAnnotated(mdu);
+                cl.applyToAnnotated(this);
 
                 // check for help
                 if (cl.hasArg("help") || args==null || args.length==0) {
-                    cl.help(mdu);
+                    cl.help(this);
                     return;
                 }
             } catch (Exception e) {
-                cl.help(mdu, e);
+                cl.help(this, e);
                 return;
             }
 
-            mdu.process();
+            this.process();
             
         } catch (Exception e) {
             log.error("Failed to process Video MetaData!", e);
@@ -113,7 +142,7 @@ public class MetadataUpdater {
         }
     }
 
-    public static void logMetadataEnvironment() {
+    public void logMetadataEnvironment() {
         log.debug("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
         log.debug("   BMT Version:  " + Version.VERSION);
         log.debug(" Sagex Version:  " + sagex.api.Version.GetVersion());
@@ -150,22 +179,6 @@ public class MetadataUpdater {
         return removed;
     }
 
-    private String[] files;
-    private boolean  listMovies     = false;
-    private boolean  listProvders   = false;
-    private boolean  offline        = false;
-    private boolean  showMetadata   = false;
-    private boolean  showProperties = false;
-    private boolean  prompt         = true;
-    private boolean showSupportedMetadata = false;
-    private boolean gui = false;
-
-    private PersistenceOptions options = new PersistenceOptions();
-    private IMediaMetadataPersistence persistence = new SageTVPropertiesWithCentralFanartPersistence();
-
-    private boolean tvSearch;
-    private String reportType;
-
     /**
      * This is the entry into the tool. This will process() all files/dirs that
      * are passed.
@@ -174,7 +187,7 @@ public class MetadataUpdater {
      *             if processing fails for some unknown reason.
      */
     public void process() throws Exception {
-        String provider = ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId();
+        String provider = metadataConfig.getDefaultProviderId();
         log.debug("Using Providers: " + provider);
         
         if (!config.isAutomaticUpdate()) {
@@ -184,7 +197,17 @@ public class MetadataUpdater {
         // dump our properties
         if (showProperties) {
             PrintWriter pw = new PrintWriter(System.out);
-            ConfigurationManager.getInstance().dumpProperties(pw);
+            Phoenix.getInstance().getConfigurationMetadataManager().getMetadata().visit(new IConfigurationMetadataVisitor() {
+                public void accept(IConfigurationElement el) {
+                    if (el.getElementType() == el.GROUP) {
+                        System.out.println("# -- Group: " + el.getLabel());
+                    }
+                    if (el.getElementType() == el.FIELD) {
+                        System.out.printf("# %s\n", el.getDescription());
+                        System.out.printf("%s=%s\n\n", el.getId(), phoenix.api.GetProperty(el.getId()));
+                    }
+                }
+            });
             pw.flush();
             pw.close();
             System.out.flush();
@@ -310,7 +333,7 @@ public class MetadataUpdater {
             CompositeResourceVisitor manualUpdated  = new CompositeResourceVisitor(updatedDisplay, manualUpdatedCount);
             
             // Main visitor for manual interactive searching
-            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(provider, persistence, options, searchType, manualUpdated, manualSkippedCount, config.getSearchResultDisplaySize());
+            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(this, provider, persistence, options, searchType, manualUpdated, manualSkippedCount, config.getSearchResultDisplaySize());
 
             // Main visitor that only does files that a missing metadata
             MissingMetadataVisitor missingMetadata = new MissingMetadataVisitor(persistence, config.isAutomaticUpdate() ? autoUpdater : manualUpdater, new CompositeResourceVisitor(up2dateDisplay, config.isAutomaticUpdate() ? autoSkippedCount : manualSkippedCount));
@@ -345,7 +368,7 @@ public class MetadataUpdater {
                 log.warn("Manual Searched will not be saved, since /metadataUpdater/rememberSelectedSearches=false");
             }
             
-            ConfigurationManager.getInstance().save();
+            Phoenix.getInstance().getConfigurationManager().save();
             
             // Render stats
             System.out.println("\n\nMetaData Stats...");
@@ -356,9 +379,10 @@ public class MetadataUpdater {
         if (config.isRefreshSageTV()) {
             try {
                 System.out.println("Notifying Sage to Refresh Imported Media");
-                SageAPI.setProvider(SageAPI.getRemoteProvider());
+                proxyAPI.enableRemoteAPI(true);
                 Global.RunLibraryImportScan(false);
             } catch (Throwable t) {
+                log.error("Failed while calling RunLibraryImportScan()", t);
             }
         }
     }
@@ -372,53 +396,14 @@ public class MetadataUpdater {
         }
     }
 
-    /**
-     * Attempts to load the configuration properties from the following
-     * locations.... -Dmetadataupdater.properties=file or
-     * ./metedataupdater.properties
-     * 
-     * @throws IOException
-     */
-    public static void initConfiguration() throws IOException {
-        log.debug("Attempting to load metadataupdater from default locations....");
-        ConfigurationManager.getInstance();
-
-        List<CompositeMetadataConfiguration> otherProviders = ConfigurationManager.getInstance().getCompositeMetadataConfiguration();
-        for (CompositeMetadataConfiguration c : otherProviders) {
-            CompositeMetadataProvider p = new CompositeMetadataProvider(c);
-            MediaMetadataFactory.getInstance().addMetaDataProvider(p);
-        }
-        
-        config = ConfigurationManager.getInstance().getMetadataUpdaterConfiguration();
-    }
-    
-    
-    public static void upgrade() {
+    public void upgrade() {
         deleteFile(new File("scrapers/xbmc/video/tvcom.xml"));
         deleteFile(new File("scrapers/xbmc/video/tvcom.png"));
         deleteFile(new File("scrapers/xbmc/video/tvdb.xml"));
         deleteFile(new File("scrapers/xbmc/video/tvdb.png"));
-        
-//        MetadataConfiguration mc = ConfigurationManager.getInstance().getMetadataConfiguration();
-//        String s = mc.getDefaultProviderId();
-//        if (!StringUtils.isEmpty(s)) {
-//            Object ids[] = s.split(",");
-//            if (ArrayUtils.contains(ids, "tvcom.xml")) {
-//                log.debug("removing tvcom.xml provider");
-//                ids=ArrayUtils.removeElement(ids, "tvcom.xml");
-//            }
-//            int ind = ArrayUtils.indexOf(ids, "tvdb.xml");
-//            if (ind!=-1) {
-//                log.debug("replacing xbmc tvdb provider with native tvdb provider");
-//                ids[ind] = "tvdb";
-//            } else {
-//                log.warn("TVDB is not installed.  Hope that's intentional.  If not, then add tvdb to your default provider ids");
-//            }
-//        }
-        
     }
     
-    private static void deleteFile(File f) {
+    private void deleteFile(File f) {
         if (f.exists()) {
             log.debug("Deleted File: " + f.getAbsolutePath() + "; Deleted: " + f.delete());
         }
@@ -550,8 +535,8 @@ public class MetadataUpdater {
     @CommandLineArg(name = "provider", description = "Set the metadata provider. (default imdb)")
     public void setMetadataProvicer(String s) {
         log.info("Setting the default provider: " + s);
-        ConfigurationManager.getInstance().getMetadataConfiguration().setDefaultProviderId(s);
-        log.debug("Default Provider Set: " + ConfigurationManager.getInstance().getMetadataConfiguration().getDefaultProviderId());
+        metadataConfig.setDefaultProviderId(s);
+        log.debug("Default Provider Set: " + metadataConfig.getDefaultProviderId());
     }
 
     /**
@@ -626,7 +611,7 @@ public class MetadataUpdater {
             if (n == null || v == null) {
                 throw new RuntimeException("Malformed Property: " + propAndVal);
             }
-            ConfigurationManager.getInstance().setProperty(n, v);
+            Phoenix.getInstance().getConfigurationManager().setClientProperty(n, v);
         } else {
             throw new RuntimeException("Invalid Property: " + propAndVal);
         }
@@ -640,16 +625,6 @@ public class MetadataUpdater {
     @CommandLineArg(name = "refreshSageTV", description = "Notify SageTV to refresh it's Media Library. (default false)")
     public void setRefreshSageTV(boolean b) {
         config.setRefreshSageTV(b);
-    }
-
-    /**
-     * Notify SageTV to refresh it's media
-     * 
-     * @param s
-     */
-    @CommandLineArg(name = "gui", description = "Enable/Disable gui (default true)")
-    public void setEnableGUI(boolean b) {
-        this.gui = b;
     }
 
     /**
@@ -680,14 +655,14 @@ public class MetadataUpdater {
         return files;
     }
 
-    public static void exit(String string) {
+    public void exit(String string) {
         System.out.println(string);
         try {
-            if (ConfigurationManager.getInstance().getMetadataUpdaterConfiguration().isRememberSelectedSearches()) {
+            if (config.isRememberSelectedSearches()) {
                 ConfigurationManager.getInstance().saveTitleMappings();
             }
             
-            ConfigurationManager.getInstance().save();
+            Phoenix.getInstance().getConfigurationManager().save();
         } catch (Exception e) {
             log.error("Failed to save configuration before exit.", e);
         }

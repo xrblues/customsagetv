@@ -13,7 +13,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.util.PropertiesUtils;
 
 public class CachedUrl extends Url implements IUrl {
@@ -25,6 +24,7 @@ public class CachedUrl extends Url implements IUrl {
     private Properties          props           = null;
     public File                 urlCacheDir     = null;
     private boolean             followRedirects = false;
+    private UrlConfiguration cfg =new UrlConfiguration();
 
     public CachedUrl(String url) throws IOException {
         super(url);
@@ -69,7 +69,7 @@ public class CachedUrl extends Url implements IUrl {
     }
 
     private boolean isExpired(File cachedFile) {
-        long secs = ConfigurationManager.getInstance().getUrlConfiguration().getCacheExpiryInSeconds();
+        long secs = cfg.getCacheExpiryInSeconds();
         long diff = (System.currentTimeMillis() / 1000) - cachedFile.lastModified();
         if (diff > secs) {
             return true;
@@ -79,7 +79,7 @@ public class CachedUrl extends Url implements IUrl {
 
     private File getCacheDir() {
         if (urlCacheDir == null) {
-            urlCacheDir = new File(ConfigurationManager.getInstance().getUrlConfiguration().getCacheDir());
+            urlCacheDir = new File(cfg.getCacheDir());
             if (!urlCacheDir.exists()) urlCacheDir.mkdirs();
         }
         return urlCacheDir;
@@ -128,7 +128,7 @@ public class CachedUrl extends Url implements IUrl {
             HttpURLConnection conn = (HttpURLConnection) c;
             conn.setInstanceFollowRedirects(followRedirects);
             log.debug("User Agent: " + System.getProperty("http.agent"));
-            conn.setRequestProperty("User-Agent", ConfigurationManager.getInstance().getUrlConfiguration().getHttpUserAgent());
+            conn.setRequestProperty("User-Agent", cfg.getHttpUserAgent());
             InputStream is = conn.getInputStream();
             int rc = conn.getResponseCode();
             if (rc == HttpURLConnection.HTTP_MOVED_PERM || rc == HttpURLConnection.HTTP_MOVED_TEMP) {

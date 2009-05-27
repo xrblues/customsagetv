@@ -1,148 +1,152 @@
 package org.jdna.media.metadata;
 
+import org.jdna.configuration.Field;
+import org.jdna.configuration.FieldProxy;
+import org.jdna.configuration.Group;
+import org.jdna.configuration.GroupProxy;
 import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.mymovies.MyMoviesMetadataProvider;
 import org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider;
 import org.jdna.media.metadata.impl.tvdb.TVDBMetadataProvider;
-import org.jdna.persistence.annotations.Field;
-import org.jdna.persistence.annotations.Table;
 
-@Table(label="Metadata Configuration", name = "metadata", requiresKey = false, description = "Configuration for Metadata")
-public class MetadataConfiguration {
+@Group(label="Metadata Configuration", path = "bmt/metadata", description = "Configuration for Metadata")
+public class MetadataConfiguration extends GroupProxy {
     @Field(label="Persistence Classname", description = "Default class name for storing metadata")
-    private String persistenceClass       = org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence.class.getName();
+    private FieldProxy<String> persistenceClass       = new FieldProxy<String>(org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence.class.getName());
 
     @Field(label="Registered Providers", description = "Comma separated list of known metadata providers (ie, can be used for searching for metadata)")
-    private String videoMetadataProviders = TVDBMetadataProvider.class.getName()+","+IMDBMetaDataProvider.class.getName() + "," + NielmIMDBMetaDataProvider.class.getName() + "," + "," + LocalDVDProfMetaDataProvider.class.getName() + "," + TheMovieDBMetadataProvider.class.getName() + "," + MyMoviesMetadataProvider.class.getName();
+    private FieldProxy<String> videoMetadataProviders = new FieldProxy<String>(TVDBMetadataProvider.class.getName()+","+IMDBMetaDataProvider.class.getName() + "," + NielmIMDBMetaDataProvider.class.getName() + "," + "," + LocalDVDProfMetaDataProvider.class.getName() + "," + TheMovieDBMetadataProvider.class.getName() + "," + MyMoviesMetadataProvider.class.getName());
 
     @Field(label="Ignore Words in Title", description = "Comma separated list of words that will be removed from a title when doing a search")
-    private String wordsToClean           = "1080p,720p,480p,1080i,720i,480i,dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv,HDTV,x264";
+    private FieldProxy<String> wordsToClean           = new FieldProxy<String>("1080p,720p,480p,1080i,720i,480i,dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv,HDTV,x264");
 
     @Field(label="Metadata Provider(s)", description = "Default provider id to use (comma separate, if more than 1)")
-    private String defaultProviderId      = "tvdb,themoviedb.org,themoviedb.org-2,imdb.xml,imdb";
+    private FieldProxy<String> defaultProviderId      = new FieldProxy<String>("tvdb,themoviedb.org,themoviedb.org-2,imdb.xml,imdb");
     
     @Field(label="Good Score Threshold", description = "Score which must be exceeded to consider a result a good match")
-    private float goodScoreThreshold = 0.9f;
+    private FieldProxy<Float> goodScoreThreshold = new FieldProxy<Float>(0.9f);
 
     @Field(label="Score Alternate Titles", description = "If true, then providers will check alternate titles for matches.")
-    private boolean scoreAlternateTitles = true;
+    private FieldProxy<Boolean> scoreAlternateTitles = new FieldProxy<Boolean>(true);
 
     @Field(label="Poster width", description="Resize poster to scale using the specified max width")
-    private int posterImageWidth = 200;
+    private FieldProxy<Integer> posterImageWidth = new FieldProxy<Integer>(200);
 
     @Field(label="Banner width", description="Resize banner to scale using the specified max width")
-    private int bannerImageWidth = -1;
+    private FieldProxy<Integer> bannerImageWidth = new FieldProxy<Integer>(-1);
 
     @Field(label="Background width", description="Resize backgrond to scale using the specified max width")
-    private int backgroundImageWidth = -1;
+    private FieldProxy<Integer> backgroundImageWidth = new FieldProxy<Integer>(-1);
     
     @Field(label="Max Images to Download", description="Maximum # of images within each fanart type to download.")
-    private int maxDownloadableImages = 5;
+    private FieldProxy<Integer> maxDownloadableImages = new FieldProxy<Integer>(5);
     
     @Field(label="Default STV Poster Compatibility", description="When writing fanart, if this is enabled, an additional poster file will be written that is compatible with the default stv.")
-    private boolean enableDefaultSTVPosterCompatibility = false;
+    private FieldProxy<Boolean> enableDefaultSTVPosterCompatibility = new FieldProxy<Boolean>(false);
     
     @Field(label="Import TV as Sage Recordings", description="When importing TV Shows, try to add them into the Sage Recordings.")
-    private boolean importTVAsRecordedShows = false;
+    private FieldProxy<Boolean> importTVAsRecordedShows = new FieldProxy<Boolean>(false);
     
     public MetadataConfiguration() {
+        super();
+        init(this);
     }
 
     public String getPersistenceClass() {
-        return persistenceClass;
+        return persistenceClass.getString();
     }
 
     public void setPersistenceClass(String persistenceClass) {
-        this.persistenceClass = persistenceClass;
+        this.persistenceClass.set(persistenceClass);
     }
 
     public String getMediaMetadataProviders() {
-        return videoMetadataProviders;
+        return videoMetadataProviders.getString();
     }
 
     public void setVideoMetadataProviders(String videoMetadataProviders) {
-        this.videoMetadataProviders = videoMetadataProviders;
+        this.videoMetadataProviders.set(videoMetadataProviders);
     }
 
     public String getWordsToClean() {
-        return wordsToClean;
+        return wordsToClean.getString();
     }
 
     public void setWordsToClean(String wordsToClean) {
-        this.wordsToClean = wordsToClean;
+        this.wordsToClean.set(wordsToClean);
     }
 
     public String getDefaultProviderId() {
-        return defaultProviderId;
+        return defaultProviderId.getString();
     }
 
     public void setDefaultProviderId(String defaultProviderId) {
-        this.defaultProviderId = defaultProviderId;
+        this.defaultProviderId.set(defaultProviderId);
     }
     
     public float getGoodScoreThreshold(){
-    	return goodScoreThreshold;
+    	return goodScoreThreshold.getFloat();
     }
     
     public void setGoodScoreThreshold(float goodScoreThreshold){
-    	this.goodScoreThreshold = goodScoreThreshold;
+    	this.goodScoreThreshold.set(goodScoreThreshold);
     }
 
     public boolean isScoreAlternateTitles() {
-        return scoreAlternateTitles;
+        return scoreAlternateTitles.getBoolean();
     }
 
     public void setScoreAlternateTitles(boolean scoreAlternateTitles) {
-        this.scoreAlternateTitles = scoreAlternateTitles;
+        this.scoreAlternateTitles.set(scoreAlternateTitles);
     }
 
     public int getPosterImageWidth() {
-        return posterImageWidth;
+        return posterImageWidth.getInt();
     }
 
     public void setPosterImageWidth(int posterImageWidth) {
-        this.posterImageWidth = posterImageWidth;
+        this.posterImageWidth.set(posterImageWidth);
     }
 
     public int getBannerImageWidth() {
-        return bannerImageWidth;
+        return bannerImageWidth.getInt();
     }
 
     public void setBannerImageWidth(int bannerImageWidth) {
-        this.bannerImageWidth = bannerImageWidth;
+        this.bannerImageWidth.set(bannerImageWidth);
     }
 
     public int getBackgroundImageWidth() {
-        return backgroundImageWidth;
+        return backgroundImageWidth.getInt();
     }
 
     public void setBackgroundImageWidth(int backgroundImageWidth) {
-        this.backgroundImageWidth = backgroundImageWidth;
+        this.backgroundImageWidth.set(backgroundImageWidth);
     }
 
     public int getMaxDownloadableImages() {
-        return maxDownloadableImages;
+        return maxDownloadableImages.getInt();
     }
 
     public void setMaxDownloadableImages(int maxDownloadableImages) {
-        this.maxDownloadableImages = maxDownloadableImages;
+        this.maxDownloadableImages.set(maxDownloadableImages);
     }
 
     public boolean isEnableDefaultSTVPosterCompatibility() {
-        return enableDefaultSTVPosterCompatibility;
+        return enableDefaultSTVPosterCompatibility.getBoolean();
     }
 
     public void setEnableDefaultSTVPosterCompatibility(boolean enableDefaultSTVPosterCompatibility) {
-        this.enableDefaultSTVPosterCompatibility = enableDefaultSTVPosterCompatibility;
+        this.enableDefaultSTVPosterCompatibility.set(enableDefaultSTVPosterCompatibility);
     }
 
     public boolean isImportTVAsRecordedShows() {
-        return importTVAsRecordedShows;
+        return importTVAsRecordedShows.getBoolean();
     }
 
     public void setImportTVAsRecordedShows(boolean importTVAsRecordedShows) {
-        this.importTVAsRecordedShows = importTVAsRecordedShows;
+        this.importTVAsRecordedShows.set(importTVAsRecordedShows);
     }
 }

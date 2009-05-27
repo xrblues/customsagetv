@@ -12,8 +12,6 @@ import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaSearchResult;
-import org.jdna.media.metadata.MetadataID;
-import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
@@ -22,14 +20,18 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
     private static final Logger log         = Logger.getLogger(ManualConsoleSearchMetadataVisitor.class);
 
     private int                 displaySize = 10;
+    
+    private MetadataUpdater updater = null;
 
-    public ManualConsoleSearchMetadataVisitor(String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
+    public ManualConsoleSearchMetadataVisitor(MetadataUpdater updater, String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
         super(providerId, persistence, options, defaultSearchType, updatedVisitor, notFoundHandler);
+        this.updater=updater;
     }
 
-    public ManualConsoleSearchMetadataVisitor(String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler, int displaySize) {
+    public ManualConsoleSearchMetadataVisitor(MetadataUpdater updater, String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler, int displaySize) {
         super(providerId, persistence, options, defaultSearchType, updatedVisitor, notFoundHandler);
         this.displaySize = displaySize;
+        this.updater=updater;
     }
 
     protected void fetchMetaData(IMediaFile file, SearchQuery query) throws Exception {
@@ -49,7 +51,7 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
         try {
             if ("q".equalsIgnoreCase(data)) {
                 log.info("User selected 'q'.  Aboring.");
-                MetadataUpdater.exit("User Exited.");
+                updater.exit("User Exited.");
             } else if ("n".equalsIgnoreCase(data)) {
                 log.info("User Selected 'n'. Moving next item.");
                 getNotFoundVisitor().visit(file);

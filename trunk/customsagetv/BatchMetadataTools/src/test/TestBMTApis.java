@@ -2,12 +2,12 @@ package test;
 
 import java.io.File;
 
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageShowPeristence;
@@ -21,7 +21,7 @@ import sagex.phoenix.fanart.IMetadataSearchResult;
 
 public class TestBMTApis {
     public static void main(String args[]) throws Exception {
-        LoggerConfiguration.configurePlugin();
+        LoggerConfiguration.configure();
         SageAPI.setProvider(SageAPI.getRemoteProvider());
         // testFindSearchResults();
         //testRemoveShowMetadata();
@@ -43,7 +43,7 @@ public class TestBMTApis {
         IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(results[0].getProviderId());
         IMediaMetadata md = prov.getMetaData((IMediaSearchResult) results[0]);
 
-        ConfigurationManager.getInstance().getMetadataConfiguration().setImportTVAsRecordedShows(true);
+        new MetadataConfiguration().setImportTVAsRecordedShows(true);
         
         SageShowPeristence sp = new SageShowPeristence();
         PersistenceOptions options = new PersistenceOptions();
