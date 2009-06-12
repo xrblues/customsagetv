@@ -33,6 +33,7 @@ public class FileCleaner extends DirectoryWalker {
         directory.delete();
     }
 
+    @Override
     protected void handleFile(File file, int depth, Collection results) {
         // delete file and add to list of deleted
         file.delete();

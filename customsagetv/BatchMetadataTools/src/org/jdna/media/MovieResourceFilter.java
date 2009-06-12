@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import sagex.phoenix.configuration.proxy.GroupProxy;
+
 public class MovieResourceFilter implements IMediaResourceFilter {
     private static final Logger             log               = Logger.getLogger(MovieResourceFilter.class);
     public static final MovieResourceFilter INSTANCE          = new MovieResourceFilter();
@@ -12,7 +14,7 @@ public class MovieResourceFilter implements IMediaResourceFilter {
     private Pattern                         filePattern       = null;
     private Pattern                         dirExcludePattern = null;
     
-    private MediaConfiguration cfg = new MediaConfiguration();
+    private MediaConfiguration cfg = GroupProxy.get(MediaConfiguration.class);
 
     public MovieResourceFilter(String dirFilterRegex) {
         init(dirFilterRegex, cfg.getVideoExtensionsRegex());

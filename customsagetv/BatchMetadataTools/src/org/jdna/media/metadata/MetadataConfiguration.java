@@ -1,9 +1,5 @@
 package org.jdna.media.metadata;
 
-import org.jdna.configuration.Field;
-import org.jdna.configuration.FieldProxy;
-import org.jdna.configuration.Group;
-import org.jdna.configuration.GroupProxy;
 import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.mymovies.MyMoviesMetadataProvider;
@@ -11,47 +7,52 @@ import org.jdna.media.metadata.impl.nielm.NielmIMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.themoviedb.TheMovieDBMetadataProvider;
 import org.jdna.media.metadata.impl.tvdb.TVDBMetadataProvider;
 
-@Group(label="Metadata Configuration", path = "bmt/metadata", description = "Configuration for Metadata")
+import sagex.phoenix.configuration.proxy.AField;
+import sagex.phoenix.configuration.proxy.AGroup;
+import sagex.phoenix.configuration.proxy.FieldProxy;
+import sagex.phoenix.configuration.proxy.GroupProxy;
+
+@AGroup(label="Metadata Configuration", path = "bmt/metadata", description = "Configuration for Metadata")
 public class MetadataConfiguration extends GroupProxy {
-    @Field(label="Persistence Classname", description = "Default class name for storing metadata")
+    @AField(label="Persistence Classname", description = "Default class name for storing metadata")
     private FieldProxy<String> persistenceClass       = new FieldProxy<String>(org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence.class.getName());
 
-    @Field(label="Registered Providers", description = "Comma separated list of known metadata providers (ie, can be used for searching for metadata)")
+    @AField(label="Registered Providers", description = "Comma separated list of known metadata providers (ie, can be used for searching for metadata)", editor="array")
     private FieldProxy<String> videoMetadataProviders = new FieldProxy<String>(TVDBMetadataProvider.class.getName()+","+IMDBMetaDataProvider.class.getName() + "," + NielmIMDBMetaDataProvider.class.getName() + "," + "," + LocalDVDProfMetaDataProvider.class.getName() + "," + TheMovieDBMetadataProvider.class.getName() + "," + MyMoviesMetadataProvider.class.getName());
 
-    @Field(label="Ignore Words in Title", description = "Comma separated list of words that will be removed from a title when doing a search")
+    @AField(label="Ignore Words in Title", description = "Comma separated list of words that will be removed from a title when doing a search", editor="array")
     private FieldProxy<String> wordsToClean           = new FieldProxy<String>("1080p,720p,480p,1080i,720i,480i,dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv,HDTV,x264");
 
-    @Field(label="Metadata Provider(s)", description = "Default provider id to use (comma separate, if more than 1)")
+    @AField(label="Metadata Provider(s)", description = "Default provider id to use (comma separate, if more than 1)", editor="array")
     private FieldProxy<String> defaultProviderId      = new FieldProxy<String>("tvdb,themoviedb.org,themoviedb.org-2,imdb.xml,imdb");
     
-    @Field(label="Good Score Threshold", description = "Score which must be exceeded to consider a result a good match")
+    @AField(label="Good Score Threshold", description = "Score which must be exceeded to consider a result a good match")
     private FieldProxy<Float> goodScoreThreshold = new FieldProxy<Float>(0.9f);
 
-    @Field(label="Score Alternate Titles", description = "If true, then providers will check alternate titles for matches.")
+    @AField(label="Score Alternate Titles", description = "If true, then providers will check alternate titles for matches.")
     private FieldProxy<Boolean> scoreAlternateTitles = new FieldProxy<Boolean>(true);
 
-    @Field(label="Poster width", description="Resize poster to scale using the specified max width")
+    @AField(label="Poster width", description="Resize poster to scale using the specified max width")
     private FieldProxy<Integer> posterImageWidth = new FieldProxy<Integer>(200);
 
-    @Field(label="Banner width", description="Resize banner to scale using the specified max width")
+    @AField(label="Banner width", description="Resize banner to scale using the specified max width")
     private FieldProxy<Integer> bannerImageWidth = new FieldProxy<Integer>(-1);
 
-    @Field(label="Background width", description="Resize backgrond to scale using the specified max width")
+    @AField(label="Background width", description="Resize backgrond to scale using the specified max width")
     private FieldProxy<Integer> backgroundImageWidth = new FieldProxy<Integer>(-1);
     
-    @Field(label="Max Images to Download", description="Maximum # of images within each fanart type to download.")
+    @AField(label="Max Images to Download", description="Maximum # of images within each fanart type to download.")
     private FieldProxy<Integer> maxDownloadableImages = new FieldProxy<Integer>(5);
     
-    @Field(label="Default STV Poster Compatibility", description="When writing fanart, if this is enabled, an additional poster file will be written that is compatible with the default stv.")
+    @AField(label="Default STV Poster Compatibility", description="When writing fanart, if this is enabled, an additional poster file will be written that is compatible with the default stv.")
     private FieldProxy<Boolean> enableDefaultSTVPosterCompatibility = new FieldProxy<Boolean>(false);
     
-    @Field(label="Import TV as Sage Recordings", description="When importing TV Shows, try to add them into the Sage Recordings.")
+    @AField(label="Import TV as Sage Recordings", description="When importing TV Shows, try to add them into the Sage Recordings.")
     private FieldProxy<Boolean> importTVAsRecordedShows = new FieldProxy<Boolean>(false);
     
     public MetadataConfiguration() {
         super();
-        init(this);
+        init();
     }
 
     public String getPersistenceClass() {

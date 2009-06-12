@@ -1,42 +1,42 @@
 package org.jdna.media.metadata.impl.sage;
 
-import org.jdna.configuration.Field;
-import org.jdna.configuration.FieldProxy;
-import org.jdna.configuration.Group;
-import org.jdna.configuration.GroupProxy;
+import sagex.phoenix.configuration.proxy.AField;
+import sagex.phoenix.configuration.proxy.AGroup;
+import sagex.phoenix.configuration.proxy.FieldProxy;
+import sagex.phoenix.configuration.proxy.GroupProxy;
 
-@Group(label="Sage Persistence", path = "bmt/sageMetadata", description = "Configuration for the SageTV Metadata Persistence")
+@AGroup(label="Sage Persistence", path = "bmt/sageMetadata", description = "Configuration for the SageTV Metadata Persistence")
 public class SageMetadataConfiguration extends GroupProxy {
-    @Field(label="Actor Mask", description = "How each Actor will be written.  This mask will be applied to each actor, and then appeneded into a single line for the properties file. {0} - Actor Name, {1} - Actor Role")
+    @AField(label="Actor Mask", description = "How each Actor will be written.  This mask will be applied to each actor, and then appeneded into a single line for the properties file. {0} - Actor Name, {1} - Actor Role")
     private FieldProxy<String> actorMask        = new FieldProxy<String>("{0} -- {1};\n");
 
-    @Field(label="Description Mask", description = "Description Mask (note ${PROP_FIELD_NAME} field names are looked up in the property file)")
+    @AField(label="Description Mask", description = "Description Mask (note ${PROP_FIELD_NAME} field names are looked up in the property file)")
     private FieldProxy<String> descriptionMask  = new FieldProxy<String>("${"+SageProperty.DESCRIPTION.sageKey+"}\nUser Rating: ${"+SageProperty.USER_RATING.sageKey+"}\n");
 
-    @Field(label="Multi CD Title Mask", description = "Title to use for multi volume vidoes (_disc is disc # 1,2,3,etc)")
+    @AField(label="Multi CD Title Mask", description = "Title to use for multi volume vidoes (_disc is disc # 1,2,3,etc)")
     private FieldProxy<String> multiCDTitleMask = new FieldProxy<String>("${"+SageProperty.DISPLAY_TITLE.sageKey+"} Disc ${"+SageProperty.DISC.sageKey+"}");
 
-    @Field(label="Single CD Title Mask", description = "Title to use for single volume vidoes")
+    @AField(label="Single CD Title Mask", description = "Title to use for single volume vidoes")
     private FieldProxy<String> titleMask        = new FieldProxy<String>("${"+SageProperty.DISPLAY_TITLE.sageKey+"}");
 
-    @Field(label="Genre Levels", description = "Number genre levels to write.  -1 means all levels.")
+    @AField(label="Genre Levels", description = "Number genre levels to write.  -1 means all levels.")
     private FieldProxy<Integer>    genreLevels      = new FieldProxy<Integer>(1);
     
-    @Field(label="TV Title Mask", description="Title mask to use for TV Files")
+    @AField(label="TV Title Mask", description="Title mask to use for TV Files")
     private FieldProxy<String> tvTitleMask = new FieldProxy<String>("${"+SageProperty.DISPLAY_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}E${"+SageProperty.EPISODE_NUMBER.sageKey+"} - ${"+SageProperty.EPISODE_TITLE.sageKey+"}");
     
-    @Field(label="TV DVD Title Mask", description="Title mask to use for TV on Dvd")
+    @AField(label="TV DVD Title Mask", description="Title mask to use for TV on Dvd")
     private FieldProxy<String> tvDvdTitleMask = new FieldProxy<String>("${"+SageProperty.DISPLAY_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}D${"+SageProperty.DISC.sageKey+"}");
     
-    @Field(label="Rewrite Titles", description="Rewrite titles so that 'A Big Adventure' becomes 'Big Adventure, A'")
+    @AField(label="Rewrite Titles", description="Rewrite titles so that 'A Big Adventure' becomes 'Big Adventure, A'")
     private FieldProxy<Boolean> rewriteTitle = new FieldProxy<Boolean>(false);
     
-    @Field(label="Rewrite Title Regexp", description="A Search/Replace Regex containing 2 groups that will rewrite the title")
+    @AField(label="Rewrite Title Regexp", description="A Search/Replace Regex containing 2 groups that will rewrite the title")
     private FieldProxy<String> rewriteTitleRegex = new FieldProxy<String>("^(in\\s+the|in\\s+a|i\\s+am|in|the|a|an|i|am),?\\s+(.*)");
 
     public SageMetadataConfiguration() {
         super();
-        init(this);
+        init();
     }
     
     public String getActorMask() {

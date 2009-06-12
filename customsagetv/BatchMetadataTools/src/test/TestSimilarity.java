@@ -19,6 +19,6 @@ public class TestSimilarity {
         System.out.println("   S1: " + s1);
         System.out.println("   S2: " + s2);
         System.out.println("Score: " + Similarity.getInstance().compareStrings(s1, s2) + "\n");
-        System.out.println("Float: " + (float)Similarity.getInstance().compareStrings(s1, s2) + "\n");
+        System.out.println("Float: " + Similarity.getInstance().compareStrings(s1, s2) + "\n");
     }
 }

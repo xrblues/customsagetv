@@ -51,6 +51,7 @@ public class SearchQuery {
         return fields.get(field);
     }
     
+    @Override
     public String toString() {
        StringBuffer sb =  new StringBuffer("SearchQuery; Type: ").append(type.name()).append("; ");;
        for (Field k : fields.keySet()) {

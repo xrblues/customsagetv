@@ -1,42 +1,42 @@
 package org.jdna.metadataupdater;
 
-import org.jdna.configuration.Field;
-import org.jdna.configuration.FieldProxy;
-import org.jdna.configuration.Group;
-import org.jdna.configuration.GroupProxy;
+import sagex.phoenix.configuration.proxy.AField;
+import sagex.phoenix.configuration.proxy.AGroup;
+import sagex.phoenix.configuration.proxy.FieldProxy;
+import sagex.phoenix.configuration.proxy.GroupProxy;
 
-@Group(label="Application Configuration", path = "bmt/metadataUpdater", description = "Configuration for Main Metadata Updater")
+@AGroup(label="Application Configuration", path = "bmt/metadataUpdater", description = "Configuration for Main Metadata Updater")
 public class MetadataUpdaterConfiguration extends GroupProxy {
-    @Field(label="Default Media Folder", description = "Default Folder to Scan when Doing an interactive scan from the Web UI", hidden=true)
+    @AField(label="Default Media Folder", description = "Default Folder to Scan when Doing an interactive scan from the Web UI", hidden=true)
     private FieldProxy<String> guiFolderToScan = new FieldProxy<String>(null);
     
-    @Field(label="Display Results Size", description = "Number of results to display in the search results", hidden=true)
+    @AField(label="Display Results Size", description = "Number of results to display in the search results", hidden=true)
     private FieldProxy<Integer> searchResultDisplaySize = new FieldProxy<Integer>(10);
 
-    @Field(label="Refresh SageTV", description="Once Scanning is Complete, notify SageTV of the changes. (commandline only)", hidden=true)
+    @AField(label="Refresh SageTV", description="Once Scanning is Complete, notify SageTV of the changes. (commandline only)", hidden=true)
     private FieldProxy<Boolean> refreshSageTV = new FieldProxy<Boolean>(false);
     
-    @Field(label="Automatic Update", description="Automatically update by auto selecting 'best' search result. (commandline only)", hidden=true)
+    @AField(label="Automatic Update", description="Automatically update by auto selecting 'best' search result. (commandline only)", hidden=true)
     private FieldProxy<Boolean> automaticUpdate = new FieldProxy<Boolean>(true);
     
-    @Field(label="Process Sub-Folders", description="Recursively process sub folders", hidden=true)
+    @AField(label="Process Sub-Folders", description="Recursively process sub folders", hidden=true)
     private FieldProxy<Boolean> recurseFolders = new FieldProxy<Boolean>(false);
     
-    @Field(label="Process Missing Metadata Only", description="Only process files that is missing metadata. (commandline only)", hidden=true)
+    @AField(label="Process Missing Metadata Only", description="Only process files that is missing metadata. (commandline only)", hidden=true)
     private FieldProxy<Boolean> processMissingMetadataOnly = new FieldProxy<Boolean>(true);
     
-    @Field(label="Fanart Enabled", description="Enable Fanart downloading", fullKey="phoenix/mediametadata/fanartEnabled")
+    @AField(label="Fanart Enabled", description="Enable Fanart downloading", fullKey="phoenix/mediametadata/fanartEnabled")
     private FieldProxy<Boolean> fanartEnabled = new FieldProxy<Boolean>(true);
     
-    @Field(label="Central Fanart Folder", description="Location of the central fanart folder", fullKey="phoenix/mediametadata/fanartCentralFolder")
+    @AField(label="Central Fanart Folder", description="Location of the central fanart folder", fullKey="phoenix/mediametadata/fanartCentralFolder", editor="dirChooser")
     private FieldProxy<String> fanartCentralFolder = new FieldProxy<String>(null);
     
-    @Field(label="Remember Selected Searches", description="Remember a search result when you select it form a list, for use in later searches.")
+    @AField(label="Remember Selected Searches", description="Remember a search result when you select it form a list, for use in later searches.")
     private FieldProxy<Boolean> rememberSelectedSearches = new FieldProxy<Boolean>(true);
 
     public MetadataUpdaterConfiguration() {
         super();
-        init(this);
+        init();
     }
     
     public String getFanartCentralFolder() {

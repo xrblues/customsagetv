@@ -1,14 +1,14 @@
 package test.junit;
 
+import java.io.File;
 import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.jdna.configuration.BMTConfigurationMetadataProvider;
+import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.url.UrlConfiguration;
 
 import sagex.SageAPI;
-import sagex.api.Configuration;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.ConfigurationManager;
 import sagex.phoenix.configuration.ConfigurationMetadataManager;
@@ -16,10 +16,10 @@ import sagex.phoenix.configuration.Field;
 import sagex.phoenix.configuration.Group;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.IConfigurationMetadataVisitor;
+import sagex.phoenix.configuration.XmlMetadataProvider;
 import sagex.stub.StubSageAPI;
 
 public class BMTMetadataTestCase extends TestCase {
-
     public BMTMetadataTestCase() {
     }
 
@@ -28,15 +28,10 @@ public class BMTMetadataTestCase extends TestCase {
     }
 
     public void testFieldProxy() {
-        StubSageAPI api = new StubSageAPI();
-        api.setDebugCalls(false);
-        SageAPI.setProvider(api);
-        Configuration.SetProperty("phoenix/homeDir", "target/junit/Phoenix/");
-
         performObjectTest();
-
         ConfigurationManager cm = Phoenix.getInstance().getConfigurationManager();
-        assertTrue("There is no metadata, Should be a String", cm.getClientProperty("bmt/urlconfiguration/cacheExpiryInSeconds", "45") instanceof String);
+        assertTrue(cm.getClientProperty("bmt/urlconfiguration/cacheExpiryInSeconds", "45") instanceof Integer);
+        assertTrue(cm.getClientProperty("bmt/urlconfiguration/cacheExpiryInSecondsXXXX", "45") instanceof String);
     }
     
     private void performObjectTest() {
@@ -51,7 +46,7 @@ public class BMTMetadataTestCase extends TestCase {
         
         c.setCacheExpiryInSeconds(30);
         assertEquals("Set Failed (int)", 30, c.getCacheExpiryInSeconds());
-        assertEquals("30", cm.getClientProperty("bmt/urlconfiguration/cacheExpiryInSeconds", "45"));
+        assertEquals(30, cm.getClientProperty("bmt/urlconfiguration/cacheExpiryInSeconds", "45"));
         
         c.setCacheDir("tmp");
         assertEquals("Set Failed (String)", "tmp", c.getCacheDir() );
@@ -65,15 +60,10 @@ public class BMTMetadataTestCase extends TestCase {
     }
 
     public void testBMTMetadata() throws Exception {
-        StubSageAPI api = new StubSageAPI();
-        api.setDebugCalls(false);
-        SageAPI.setProvider(api);
-        Configuration.SetProperty("phoenix/homeDir", "target/junit/Phoenix/");
-        
         ConfigurationManager cm = Phoenix.getInstance().getConfigurationManager();
         ConfigurationMetadataManager cmm = Phoenix.getInstance().getConfigurationMetadataManager();
         
-        BMTConfigurationMetadataProvider md = new BMTConfigurationMetadataProvider();
+        XmlMetadataProvider md = new XmlMetadataProvider(new File("resources/config/bmt.xml"));
         Group root[];
         try {
             root = md.load();
@@ -92,7 +82,7 @@ public class BMTMetadataTestCase extends TestCase {
                 assertNotNull("Missing Description: " + el.getLabel(), el.getDescription());
             }
         });
-        assertEquals("Child count does not match.  If you've added new child groups to the configuration, the update the test case.", 8, main.getChildren().length);
+        assertEquals("Child count does not match.  If you've added new child groups to the configuration, the update the test case.", 9, main.getChildren().length);
         
         cmm.addMetadata(md);
         Field el = (Field) cmm.getConfigurationElement("bmt/urlconfiguration/cacheExpiryInSeconds");
@@ -104,5 +94,15 @@ public class BMTMetadataTestCase extends TestCase {
         el = (Field) cmm.getConfigurationElement("phoenix/mediametadata/fanartEnabled");
         assertNotNull(el);
         assertEquals("boolean", el.getType());
+    }
+ 
+    public void testMetadataObjects() {
+        MetadataConfiguration cfg =new MetadataConfiguration();
+        assertNotNull(cfg.getDefaultProviderId());
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        InitBMT.initBMT();
     }
 }

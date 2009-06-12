@@ -12,6 +12,8 @@ import org.jdna.media.FileMediaFile;
 import org.jdna.media.MediaConfiguration;
 import org.jdna.media.metadata.MediaMetadataUtils;
 
+import sagex.phoenix.configuration.proxy.GroupProxy;
+
 public class TestRegexp {
     public static void main(String args[]) throws IOException {
         String reg = "avi|mpg|divx|mkv";
@@ -209,7 +211,7 @@ public class TestRegexp {
         FileMediaFile mf = new FileMediaFile(new File(s).toURI());
         System.out.printf("String: %s; Name; %s, Basename: %s; Stacked: %s\n", s, mf.getTitle(), mf.getBasename(), CDStackingModel.INSTANCE.getStackedTitle(mf));
 
-        Pattern p = Pattern.compile(new MediaConfiguration().getStackingModelRegex(), Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile(GroupProxy.get(MediaConfiguration.class).getStackingModelRegex(), Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(mf.getTitle());
         if (m.find()) {
             System.out.printf("Regex: %s; Start Char: %s; Data: %s\n", p.pattern(), m.start(), mf.getTitle().substring(0, m.start()));

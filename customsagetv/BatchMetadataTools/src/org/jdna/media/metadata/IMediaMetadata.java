@@ -1,6 +1,6 @@
 package org.jdna.media.metadata;
 
-import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
+import sagex.phoenix.fanart.MediaArtifactType;
 
 public interface IMediaMetadata {
     /**

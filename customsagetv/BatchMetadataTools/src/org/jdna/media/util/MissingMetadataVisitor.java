@@ -14,12 +14,7 @@ import org.jdna.media.metadata.IMediaMetadataPersistence;
  */
 public class MissingMetadataVisitor implements IMediaResourceVisitor {
     private IMediaResourceVisitor missingVisitor;
-    private IMediaResourceVisitor skippedVisitor;
     private IMediaMetadataPersistence persistence=null;
-
-    public MissingMetadataVisitor(IMediaMetadataPersistence persistence, IMediaResourceVisitor missingVisitor) {
-        this(persistence, missingVisitor, null);
-    }
 
     /**
      * 
@@ -27,25 +22,16 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
      *            Where to load the metadata (required)
      * @param missingVisitor
      *            visitor to receive the missing metadata resources (optional)
-     * @param skippedVisitor
-     *            visitor to receive the skipped metadata resources (optional)
      */
-    public MissingMetadataVisitor(IMediaMetadataPersistence persistence, IMediaResourceVisitor missingVisitor, IMediaResourceVisitor skippedVisitor) {
+    public MissingMetadataVisitor(IMediaMetadataPersistence persistence, IMediaResourceVisitor missingVisitor) {
         this.persistence=persistence;
-        this.missingVisitor = missingVisitor;
-        this.skippedVisitor = skippedVisitor;
-    }
-
-    public MissingMetadataVisitor() {
-        this(null, null);
+        this.missingVisitor=missingVisitor;
     }
 
     public void visit(IMediaResource resource) {
         if (resource.getType() == IMediaResource.Type.File) {
             if (isMissingMetadata(persistence, resource)) {
-                if (missingVisitor != null) missingVisitor.visit(resource);
-            } else {
-                if (skippedVisitor != null) skippedVisitor.visit(resource);
+                missingVisitor.visit(resource);
             }
         }
     }
@@ -69,9 +55,5 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
 
     protected IMediaResourceVisitor getMissingVisitor() {
         return missingVisitor;
-    }
-
-    protected IMediaResourceVisitor getSkippedVisitor() {
-        return skippedVisitor;
     }
 }

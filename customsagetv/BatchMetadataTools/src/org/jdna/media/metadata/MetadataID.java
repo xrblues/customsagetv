@@ -4,13 +4,22 @@ import java.io.Serializable;
 
 // TODO: Make this contain a map of ids
 public class MetadataID implements Serializable {
+    public static String[] getMetadataIdParts(String id) {
+        if (id==null) return null;
+        String parts[] = id.split(":");
+        if (parts==null || parts.length!=2) {
+            return new String[] {id};
+        }
+        return parts;
+    }
+    
     private String key, id;
     public MetadataID(String key, String id) {
         this.key=key;
         this.id=id;
     }
     public MetadataID(String id) {
-        String parts[] = MetadataUtil.getMetadataIdParts(id);
+        String parts[] = getMetadataIdParts(id);
         if (parts==null || parts.length !=2) {
             // TODO: Error
         } else {
@@ -39,6 +48,7 @@ public class MetadataID implements Serializable {
         return key + ":" + id;
     }
     
+    @Override
     public String toString() {
         return toIDString();
     }

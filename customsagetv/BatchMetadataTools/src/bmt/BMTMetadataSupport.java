@@ -24,10 +24,12 @@ import org.jdna.sage.MetadataPluginOptions;
 import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageMediaFolder;
 import org.jdna.sage.media.SageShowPeristence;
+import org.jdna.util.ProgressTracker;
 
 import sagex.api.AiringAPI;
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
+import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataProviderInfo;
 import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.IMetadataSupport;
@@ -41,8 +43,8 @@ import sagex.phoenix.fanart.IMetadataSupport;
 public class BMTMetadataSupport implements IMetadataSupport {
     private static final Logger log = Logger.getLogger(BMTMetadataSupport.class);
     private PersistenceOptions options;
-    private MetadataUpdaterConfiguration updaterConfig = new MetadataUpdaterConfiguration();
-    private MetadataConfiguration metadataConfig = new MetadataConfiguration();
+    private MetadataUpdaterConfiguration updaterConfig = GroupProxy.get(MetadataUpdaterConfiguration.class);
+    private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
     
     public BMTMetadataSupport() {
         log.info("Using BMTMetadataSupport: " + bmt.api.GetVersion());
@@ -186,7 +188,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
     }
 
     public float getMetadataScanComplete() {
-        return BackgroundMetadataUpdater.getCompleted();
+        return (float) BackgroundMetadataUpdater.getInstance().getTracker().internalWorked();
     }
 
     public boolean isMetadataScanRunning() {
@@ -198,7 +200,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
             if (provider==null) {
                 provider = metadataConfig.getDefaultProviderId();
             }
-            BackgroundMetadataUpdater.startScan(new SageMediaFolder(sageMediaFiles), provider, MetadataPluginOptions.getOnDemandUpdaterPersistence(), MetadataPluginOptions.getPersistenceOptions());
+            BackgroundMetadataUpdater.startScan(new SageMediaFolder(sageMediaFiles), provider, MetadataPluginOptions.getOnDemandUpdaterPersistence(), MetadataPluginOptions.getPersistenceOptions(), new ProgressTracker<IMediaFile>());
         } catch (Exception e) {
             log.error("Scan Failed!", e);
         }

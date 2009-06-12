@@ -5,7 +5,6 @@ import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
-import org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence;
 import org.jdna.sage.media.SageCustomMetadataPersistence;
 
 public class MetadataPluginOptions {
@@ -38,13 +37,6 @@ public class MetadataPluginOptions {
             fanartOnlyPersistence = new CompositeMediaMetadataPersistence(new SageCustomMetadataPersistence(), new CentralFanartPersistence());
         }
         return fanartOnlyPersistence;
-    }
-    
-    public static IMediaMetadataPersistence getAutomaticUpdaterPersistence() {
-        if (automaticUpdaterPersistence==null) {
-            automaticUpdaterPersistence = new SageTVPropertiesWithCentralFanartPersistence();
-        }
-        return automaticUpdaterPersistence;
     }
     
     public static PersistenceOptions getPersistenceOptions() {

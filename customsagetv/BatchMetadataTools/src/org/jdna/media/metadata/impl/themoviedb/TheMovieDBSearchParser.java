@@ -27,6 +27,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import sagex.phoenix.configuration.proxy.GroupProxy;
+
 public class TheMovieDBSearchParser {
     private static final Logger                 log        = Logger.getLogger(TheMovieDBMetadataProvider.class);
     private static final String                 SEARCH_URL = "http://api.themoviedb.org/2.0/Movie.search?title=%s&api_key=%s";
@@ -37,7 +39,7 @@ public class TheMovieDBSearchParser {
     private List<IMediaSearchResult>            results    = new ArrayList<IMediaSearchResult>();
     private String								searchTitle;
     
-    public MetadataConfiguration cfg = new MetadataConfiguration();
+    public MetadataConfiguration cfg = GroupProxy.get(MetadataConfiguration.class);
     
     private Comparator<IMediaSearchResult> sorter              = new Comparator<IMediaSearchResult>() {
 

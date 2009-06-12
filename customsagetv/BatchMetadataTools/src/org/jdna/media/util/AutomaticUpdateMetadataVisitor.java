@@ -16,39 +16,39 @@ import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
+import org.jdna.util.ProgressTracker;
 
 public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     private static final Logger    log = Logger.getLogger(AutomaticUpdateMetadataVisitor.class);
 
-    private IMediaResourceVisitor  updatedHandler;
     private IMediaMetadataProvider provider;
-    private IMediaResourceVisitor  notFoundHandler;
-    
     private IMediaMetadataPersistence persistence;
     private PersistenceOptions options;
 
     private SearchQuery.Type defaultSearchType;
+    
+    private ProgressTracker<IMediaFile> tracker;
 
-    public AutomaticUpdateMetadataVisitor(String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
+    public AutomaticUpdateMetadataVisitor(String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, ProgressTracker<IMediaFile> tracker) {
         this.provider = MediaMetadataFactory.getInstance().getProvider(providerId);
-        this.updatedHandler = updatedVisitor;
-        this.notFoundHandler = notFoundHandler;
         this.options = options;
         this.persistence =  persistence;
         this.defaultSearchType=defaultSearchType;
+        this.tracker=tracker;
     }
 
-    /**
-     * 
-     */
     public void visit(IMediaResource resource) {
+        if (tracker.isCancelled()) return;
+        
         if (resource.getType() == IMediaResource.Type.File) {
+            tracker.setTaskName("Scanning: " + resource.getLocationUri());
             try {
                 fetchMetaData((IMediaFile) resource);
             } catch (Exception e) {
                 log.error("Failed to find/update metadata for resource: " + resource.getLocationUri(), e);
-                notFoundHandler.visit(resource);
+                tracker.addFailed((IMediaFile) resource, "Failed to find/update metadata for resource: " + resource.getLocationUri(), e);
             }
+            tracker.worked(1);
         }
     }
 
@@ -109,22 +109,14 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
         if (result!=null) {
             log.info("Automatically Selecting Search Result: " + result.getTitle() + "; Score: " + result.getScore());
             persistence.storeMetaData(provider.getMetaData(result), file, options);
-            if (updatedHandler != null) updatedHandler.visit(file);
+            tracker.addSuccess(file);
         } else {
             handleNotFoundResults(file, query, results);
         }
     }
 
     protected void handleNotFoundResults(IMediaFile file, SearchQuery query, List<IMediaSearchResult> results) {
-        if (notFoundHandler != null) notFoundHandler.visit(file);
-    }
-
-    protected IMediaResourceVisitor getNotFoundVisitor() {
-        return notFoundHandler;
-    }
-
-    protected IMediaResourceVisitor getUpdatedVisitor() {
-        return updatedHandler;
+        tracker.addFailed(file, "Nothing Found for Query: " + query);
     }
 
     protected IMediaMetadataProvider getProvider() {
@@ -137,5 +129,9 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     
     public IMediaMetadataPersistence getPersistence() {
         return persistence;
+    }
+    
+    public ProgressTracker<IMediaFile> getProgressTracker() {
+        return tracker;
     }
 }

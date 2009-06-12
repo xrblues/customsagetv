@@ -31,6 +31,7 @@ public class FileToucher extends DirectoryWalker {
         directory.setLastModified(time);
     }
 
+    @Override
     protected void handleFile(File file, int depth, Collection results) {
         file.setLastModified(time);
     }

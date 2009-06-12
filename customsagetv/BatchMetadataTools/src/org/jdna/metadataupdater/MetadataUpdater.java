@@ -13,14 +13,12 @@ import org.apache.log4j.Logger;
 import org.jdna.cmdline.CommandLine;
 import org.jdna.cmdline.CommandLineArg;
 import org.jdna.cmdline.CommandLineProcess;
-import org.jdna.configuration.BMTConfigurationMetadataProvider;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.FileMediaFolder;
+import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
-import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.VirtualMediaFolder;
-import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
@@ -32,12 +30,11 @@ import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
-import org.jdna.media.util.CollectorResourceVisitor;
-import org.jdna.media.util.CompositeResourceVisitor;
-import org.jdna.media.util.CountResourceVisitor;
 import org.jdna.media.util.MissingMetadataVisitor;
 import org.jdna.media.util.RefreshMetadataVisitor;
 import org.jdna.util.LoggerConfiguration;
+import org.jdna.util.ProgressTracker;
+import org.jdna.util.ProgressTracker.FailedItem;
 
 import sagex.SageAPI;
 import sagex.api.Global;
@@ -45,6 +42,8 @@ import sagex.api.WidgetAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.IConfigurationMetadataVisitor;
+import sagex.phoenix.configuration.XmlMetadataProvider;
+import sagex.phoenix.configuration.proxy.GroupProxy;
 
 /**
  * This is an engine that will process one of more directories and files and
@@ -102,13 +101,13 @@ public class MetadataUpdater {
         SageAPI.setProvider(proxyAPI);
         
         // init config objects
-        config = new MetadataUpdaterConfiguration();
-        metadataConfig = new MetadataConfiguration();
+        config = GroupProxy.get(MetadataUpdaterConfiguration.class);
+        metadataConfig = GroupProxy.get(MetadataConfiguration.class);
         options = new PersistenceOptions();
         persistence = new SageTVPropertiesWithCentralFanartPersistence();
         
         // add bmt metadata configuration
-        Phoenix.getInstance().getConfigurationMetadataManager().addMetadata(new BMTConfigurationMetadataProvider());
+        //Phoenix.getInstance().getConfigurationMetadataManager().addMetadata(new Direcot);
         
         try {
             String title = "Batch MetaData Tools (" + Version.VERSION + ")";
@@ -199,10 +198,10 @@ public class MetadataUpdater {
             PrintWriter pw = new PrintWriter(System.out);
             Phoenix.getInstance().getConfigurationMetadataManager().getMetadata().visit(new IConfigurationMetadataVisitor() {
                 public void accept(IConfigurationElement el) {
-                    if (el.getElementType() == el.GROUP) {
+                    if (el.getElementType() == IConfigurationElement.GROUP) {
                         System.out.println("# -- Group: " + el.getLabel());
                     }
-                    if (el.getElementType() == el.FIELD) {
+                    if (el.getElementType() == IConfigurationElement.FIELD) {
                         System.out.printf("# %s\n", el.getDescription());
                         System.out.printf("%s=%s\n\n", el.getId(), phoenix.api.GetProperty(el.getId()));
                     }
@@ -286,57 +285,28 @@ public class MetadataUpdater {
             }
             
             // collectors and counters for automatic updating
-            CollectorResourceVisitor autoHandled = new CollectorResourceVisitor();
-            CollectorResourceVisitor autoSkipped = new CollectorResourceVisitor();
             if (!config.isProcessMissingMetadataOnly()) {
-                parentFolder.accept(new RefreshMetadataVisitor(persistence, options, autoHandled, autoSkipped));
+                parentFolder.accept(new RefreshMetadataVisitor(persistence, options, new ProgressTracker<IMediaFile>()));
                 return;
             }
 
-            IMediaResourceVisitor updatedDisplay = new IMediaResourceVisitor() {
-                public void visit(IMediaResource resource) {
-                    IMediaMetadata md = persistence.loadMetaData(resource);
-                    String title = resource.getTitle();
-                    if (md!=null) {
-                        title=md.getMediaTitle();
-                    }
-                    System.out.printf("Updated: %s; %s\n", title, resource.getLocationUri());
-                    
-                    // touch the resource, so that Sage will reload.
-                    resource.touch();
-                }
-            };
-
-            IMediaResourceVisitor up2dateDisplay = new IMediaResourceVisitor() {
-                public void visit(IMediaResource resource) {
-                    System.out.println("Skipping: " + resource.getLocationUri());
-                }
-            };
-            
-            CollectorResourceVisitor autoNotFound = new CollectorResourceVisitor();
-            CountResourceVisitor autoUpdatedCount = new CountResourceVisitor();
-            CountResourceVisitor autoSkippedCount = new CountResourceVisitor();
-            CompositeResourceVisitor autoUpdated  = new CompositeResourceVisitor(updatedDisplay, autoUpdatedCount);
-            
             SearchQuery.Type searchType=null;
             if (isTVSearch()) {
                 log.debug("Forcing Search TV Search");
                 searchType=SearchQuery.Type.TV;
             }
             
-            // Main visitor for automatic updating
-            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, persistence, options, searchType, autoUpdated, autoNotFound);
+            ProgressTracker<IMediaFile> automaticProgress = new ConsoleProgressTracker(persistence);
+            ProgressTracker<IMediaFile> manualProgress = new ConsoleProgressTracker(persistence);
             
-            // collectors and counters for manual updating
-            CountResourceVisitor manualUpdatedCount = new CountResourceVisitor();
-            CountResourceVisitor manualSkippedCount = new CountResourceVisitor();
-            CompositeResourceVisitor manualUpdated  = new CompositeResourceVisitor(updatedDisplay, manualUpdatedCount);
+            // Main visitor for automatic updating
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(provider, persistence, options, searchType, automaticProgress);
             
             // Main visitor for manual interactive searching
-            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(this, provider, persistence, options, searchType, manualUpdated, manualSkippedCount, config.getSearchResultDisplaySize());
+            ManualConsoleSearchMetadataVisitor manualUpdater = new ManualConsoleSearchMetadataVisitor(this, provider, persistence, options, searchType, manualProgress, config.getSearchResultDisplaySize());
 
             // Main visitor that only does files that a missing metadata
-            MissingMetadataVisitor missingMetadata = new MissingMetadataVisitor(persistence, config.isAutomaticUpdate() ? autoUpdater : manualUpdater, new CompositeResourceVisitor(up2dateDisplay, config.isAutomaticUpdate() ? autoSkippedCount : manualSkippedCount));
+            MissingMetadataVisitor missingMetadata = new MissingMetadataVisitor(persistence, config.isAutomaticUpdate() ? autoUpdater : manualUpdater);
             
             if (options.isOverwriteFanart() || options.isOverwriteMetadata()) {
                 // do all videos... no matter what
@@ -348,17 +318,19 @@ public class MetadataUpdater {
 
             // lastly, if the user wants, let's prompt for any that could not be
             // found.
-            if (config.isAutomaticUpdate() && prompt && autoNotFound.getCollection().size() > 0) {
+            if (config.isAutomaticUpdate() && prompt && automaticProgress.getFailedItems().size() > 0) {
                 // now process all the files that autoupdater could not process
                 // automatically
                 VirtualMediaFolder mf = new VirtualMediaFolder("bmt://actions/manualUpdate");
-                mf.addResources(autoNotFound.getCollection());
+                for (FailedItem<IMediaFile> f : automaticProgress.getFailedItems()) {
+                    mf.addMember(f.getItem());
+                }
                 mf.accept(manualUpdater, false);
-            } else if (autoNotFound.getCollection().size() > 0) {
+            } else if (automaticProgress.getFailedItems().size() > 0) {
                 // dump out the skipped entries that were not automatically updated
                 System.out.println("\nThe Following Media Entries could not be updated.");
-                for (IMediaResource r : autoNotFound.getCollection()) {
-                    System.out.println(r.getLocationUri());
+                for (FailedItem<IMediaFile> f : automaticProgress.getFailedItems()) {
+                    System.out.printf("Failed: %s; Message: %s\n", f.getItem().getLocationUri(), f.getMessage());
                 }
             }
 
@@ -372,7 +344,7 @@ public class MetadataUpdater {
             
             // Render stats
             System.out.println("\n\nMetaData Stats...");
-            System.out.printf("Auto Updated: %d; Auto Skipped: %d; Manual Updated:%d; Manual Skipped: %d; \n\n", autoUpdatedCount.getCount(), autoSkippedCount.getCount(), manualUpdatedCount.getCount(), manualSkippedCount.getCount());
+            System.out.printf("Auto Updated: %d; Auto Failed: %d; Manual Updated:%d; Manual Skipped: %d; \n\n", automaticProgress.getSuccessfulItems().size(), automaticProgress.getFailedItems().size(), manualProgress.getSuccessfulItems().size(), manualProgress.getFailedItems().size());
         }
 
         // check if we need to refresh sage tv
@@ -645,6 +617,16 @@ public class MetadataUpdater {
     @CommandLineArg(name = "report", description = "Perform a 'quick' or 'detailed' report on fanart.")
     public void setPerformTests(String reportType) {
         this.reportType = reportType;
+    }
+
+    /**
+     * Enable SageTV remote configuration 
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "remote", description = "Enable sagex Remote APIs for configuration.")
+    public void setPerformTests(boolean remote) {
+        proxyAPI.enableRemoteAPI(remote);
     }
     
     public boolean isTVSearch() {

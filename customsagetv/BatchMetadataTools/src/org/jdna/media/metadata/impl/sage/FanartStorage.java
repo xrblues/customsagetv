@@ -23,16 +23,17 @@ import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.util.StoredStringSet;
 
+import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.FanartUtil;
-import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
-import sagex.phoenix.fanart.FanartUtil.MediaType;
+import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.fanart.MediaType;
 
 public class FanartStorage {
     private static final FanartStorage instance = new FanartStorage();
     private static final Logger        log      = Logger.getLogger(FanartStorage.class);
     
-    private MetadataUpdaterConfiguration updaterConfig = new MetadataUpdaterConfiguration();
-    private MetadataConfiguration metadataConfig = new MetadataConfiguration();
+    private MetadataUpdaterConfiguration updaterConfig = GroupProxy.get(MetadataUpdaterConfiguration.class);
+    private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
 
     public void saveFanart(IMediaFile mediaFileParent, String title, IMediaMetadata md, PersistenceOptions options) {
         MediaArtifactType[] localArtTypes = null;

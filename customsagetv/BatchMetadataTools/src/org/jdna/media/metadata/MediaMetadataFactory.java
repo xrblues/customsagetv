@@ -20,12 +20,14 @@ import org.jdna.media.metadata.impl.xbmc.XbmcMetadataProvider;
 import org.jdna.media.metadata.impl.xbmc.XbmcScraper;
 import org.jdna.media.metadata.impl.xbmc.XbmcScraperParser;
 
+import sagex.phoenix.configuration.proxy.GroupProxy;
+
 public class MediaMetadataFactory {
 
     private static MediaMetadataFactory instance = null;
     private static final Logger         log      = Logger.getLogger(MediaMetadataFactory.class);
     
-    private MetadataConfiguration metadataCfg = new MetadataConfiguration();
+    private MetadataConfiguration metadataCfg = GroupProxy.get(MetadataConfiguration.class);
 
     public static MediaMetadataFactory getInstance() {
         if (instance == null) instance = new MediaMetadataFactory();

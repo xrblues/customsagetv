@@ -30,13 +30,12 @@ import org.jdna.sage.MetadataUpdaterPlugin;
 
 import sagex.SageAPI;
 import sagex.api.MediaFileAPI;
+import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataSearchResult;
-import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
+import sagex.phoenix.fanart.MediaArtifactType;
 import sagex.stub.StubSageAPI;
 
 public class BMTPhoenixTestCase extends TestCase {
-    private MediaMetadataFactory factory  = MediaMetadataFactory.getInstance();
-    
     public BMTPhoenixTestCase() {
     }
 
@@ -53,8 +52,6 @@ public class BMTPhoenixTestCase extends TestCase {
         }
         File fanartDir = makeDir("test/Fanart");
         
-        StubSageAPI api = new StubSageAPI();
-        SageAPI.setProvider(api);
         Object mf = MediaFileAPI.AddMediaFile(makeFile("test/Movies/Terminator.avi"), "Movies");
         assertEquals("mediafile not added", "Terminator.avi", MediaFileAPI.GetMediaTitle(mf));
         
@@ -99,8 +96,6 @@ public class BMTPhoenixTestCase extends TestCase {
         }
         File fanartDir = makeDir("test/Fanart");
         
-        StubSageAPI api = new StubSageAPI();
-        SageAPI.setProvider(api);
         Object mf = MediaFileAPI.AddMediaFile(makeFile("test/Movies/Terminator.avi"), "Movies");
         assertEquals("mediafile not added", "Terminator.avi", MediaFileAPI.GetMediaTitle(mf));
         
@@ -136,6 +131,8 @@ public class BMTPhoenixTestCase extends TestCase {
     }
     
     private void setStubProvider() throws MalformedURLException {
+        MediaMetadataFactory factory  = MediaMetadataFactory.getInstance();
+
         StubMetadataProvider provider= (StubMetadataProvider) factory.getProvider(StubMetadataProvider.PROVIDER_ID);
         if (provider == null) {
             provider = new StubMetadataProvider();
@@ -148,7 +145,7 @@ public class BMTPhoenixTestCase extends TestCase {
         provider.reset();
         
         // use the stub provider
-        new MetadataConfiguration().setDefaultProviderId(StubMetadataProvider.PROVIDER_ID);
+        GroupProxy.get(MetadataConfiguration.class).setDefaultProviderId(StubMetadataProvider.PROVIDER_ID);
 
         // add in a movie to the stub provider
         MediaSearchResult res = new MediaSearchResult(StubMetadataProvider.PROVIDER_ID, 0.9f);
@@ -190,4 +187,9 @@ public class BMTPhoenixTestCase extends TestCase {
         provider.addMetadata(res, md);
     }
 
+    @Override
+    protected void setUp() throws Exception {
+        InitBMT.initBMT();
+    }
+    
 }

@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import sagex.phoenix.configuration.proxy.GroupProxy;
+
 /**
  * As Taken from http://xbmc.org/wiki/?title=Stacking
  * 
@@ -20,7 +22,7 @@ public class CDStackingModel implements IMediaStackModel {
     private static final Logger         log      = Logger.getLogger(CDStackingModel.class);
     public static final CDStackingModel INSTANCE = new CDStackingModel();
     private Pattern                     pattern  = null;
-    private MediaConfiguration cfg = new MediaConfiguration();
+    private MediaConfiguration cfg = GroupProxy.get(MediaConfiguration.class);
 
     public CDStackingModel() {
         String pat = cfg.getStackingModelRegex();

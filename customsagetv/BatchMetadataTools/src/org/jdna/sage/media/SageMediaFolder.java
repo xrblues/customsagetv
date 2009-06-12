@@ -8,12 +8,25 @@ import org.jdna.media.VirtualMediaFolder;
 
 import sagex.api.MediaFileAPI;
 
+/**
+ * Virtual Folder for Saage Media Items
+ * 
+ * @author seans
+ *
+ */
 public class SageMediaFolder extends VirtualMediaFolder {
     private static final Logger log = Logger.getLogger(SageMediaFolder.class);
     private Object[] initList=null;
     private String uriCommand = null;
     private String sageQueryTypes = null;
-    
+   
+    /**
+     * The Sage uri is in the form, sage://query/SAGE_TYPES, where SAGE_TYPES is T for TV, D for DVD, V for Vidoe, B for Bluray.
+     * ie, sage://query/DV, for DVD and VIDEO media types
+     * 
+     * @param uri
+     * @throws URISyntaxException
+     */
     public SageMediaFolder(String uri) throws URISyntaxException {
         this(new URI(uri));
     }
