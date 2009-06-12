@@ -1,0 +1,91 @@
+/** Add css rules here for your application. */
+
+
+/** Example rules used by the template application (remove for your app) */
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  color: #777777;
+  margin: 40px 0px 70px;
+  text-align: center;
+}
+
+.form-label {
+	font-weight: bold;
+}
+
+/** Most GWT widgets already have a style name defined */
+.gwt-DialogBox {
+  width: 400px;
+}
+
+.dialogVPanel {
+  margin: 5px;
+}
+
+/** Set ids using widget.getElement().setId("idOfElement") */
+#closeButton {
+  margin: 15px 6px 6px;
+}
+
+.bmt-PrefPanelTitle, .StatusBox-Title {
+  	font-size: 1.2em;
+	font-weight: bold;
+    margin-bottom: 10px;
+  	color: #777777;
+}
+
+.StatusBox-Title {
+  	font-size: 1.2em;
+  	text-decoration: underline;
+}
+
+.warn {
+	color: #E8691B;
+}
+
+.error {
+	color: #CD1315;
+}
+
+.AppPanel-Header, .AppPanel-Header a, .AppPanel-Header a:link, .AppPanel-Header a:visited {
+	background-color: black;
+	color: white;
+}
+
+.AppPanel-Title {
+  	font-size: 1.8em;
+	font-weight: bold;
+	color: white;
+}
+
+.Row-Even {
+}
+
+.Row-Odd {
+	background-color: #F3F3F3;
+}
+
+.MediaItem {
+	border: 1px solid black;
+	cursor: pointer;
+}
+
+.MediaItem_hover {
+	background-color: #F3F3F3;
+}
+
+.MissingImage {
+	border: 3px solid black;
+	background-color: #F3F3F3;
+}
+
+.Arrow {
+	background:transparent url(listArrow.png) no-repeat scroll right center;
+	color:inherit;
+	display:block;
+	background-color: black;
+}
+
+
+
