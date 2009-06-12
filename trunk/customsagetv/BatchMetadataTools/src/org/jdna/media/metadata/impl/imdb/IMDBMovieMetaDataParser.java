@@ -15,7 +15,7 @@ import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
+import sagex.phoenix.fanart.MediaArtifactType;
 
 /**
  * State Machine parser that will crawl the Title Information page and extract

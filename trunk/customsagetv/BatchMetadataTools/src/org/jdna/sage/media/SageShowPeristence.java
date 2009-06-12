@@ -12,6 +12,7 @@ import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
+import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
@@ -22,6 +23,7 @@ import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
 import sagex.api.ShowAPI;
+import sagex.phoenix.configuration.proxy.GroupProxy;
 
 /**
  * Updates the Sage Show Metadata for a TV Episode.
@@ -31,7 +33,7 @@ import sagex.api.ShowAPI;
  */
 public class SageShowPeristence implements IMediaMetadataPersistence {
     private static final Logger log = Logger.getLogger(SageShowPeristence.class);
-    private MetadataConfiguration cfg = new MetadataConfiguration();
+    private MetadataConfiguration cfg = GroupProxy.get(MetadataConfiguration.class);
 
     public String getDescription() {
         return "Loads/Save metadata directly to a Sage Show Object";
@@ -42,8 +44,46 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
     }
 
     public IMediaMetadata loadMetaData(IMediaResource mediaFile) {
-        log.debug("loadMetadata() not yet supported.");
-        return null;
+        MediaMetadata md = new MediaMetadata();
+        
+        Object file = SageMediaFile.getSageMediaFileObject(mediaFile);
+        if (file==null) {
+            log.error("Can only load Sage Metadata For Sage MediaFiles");
+            return md;
+        }
+        
+        Object airing = MediaFileAPI.GetMediaFileAiring(file);
+        Object show = AiringAPI.GetShow(airing);
+        
+        //md.set(MetadataKey.BACKGROUND_ART);
+        //md.set(MetadataKey.BANNER_ART, value);
+        //md.set(MetadataKey.CAST_MEMBER_LIST, value);
+        md.set(MetadataKey.COMMENT,"");
+        md.set(MetadataKey.COMPANY,"");
+        md.set(MetadataKey.DESCRIPTION, ShowAPI.GetShowDescription(show));
+        md.set(MetadataKey.DISPLAY_TITLE, MediaFileAPI.GetMediaTitle(file));
+        md.set(MetadataKey.DURATION, String.valueOf(AiringAPI.GetAiringDuration(airing)));
+        md.set(MetadataKey.DVD_DISC, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.DISC.sageKey));
+        md.set(MetadataKey.EPISODE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.EPISODE_NUMBER.sageKey));
+        md.set(MetadataKey.EPISODE_TITLE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.EPISODE_TITLE.sageKey));
+        //md.set(MetadataKey.GENRE_LIST);
+        //md.set(MetadataKey.LANGUAGE);
+        //md.set(MetadataKey.MEDIA_ART_LIST);
+        md.set(MetadataKey.MEDIA_TITLE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.MEDIA_TITLE.sageKey));
+        md.set(MetadataKey.MEDIA_PROVIDER_DATA_ID, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.METADATA_PROVIDER_ID.sageKey));
+        md.set(MetadataKey.MEDIA_TYPE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.MEDIA_TYPE.sageKey));
+        //md.set(MetadataKey.METADATA_PROVIDER_DATA_URL);
+        md.set(MetadataKey.METADATA_PROVIDER_ID, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.METADATA_PROVIDER_ID.sageKey));
+        //md.set(MetadataKey.MPAA_RATING);
+        //md.set(MetadataKey.MPAA_RATING_DESCRIPTION, value);
+        //md.set(MetadataKey.POSTER_ART);
+        //md.set(MetadataKey.RELEASE_DATE);
+        //md.set(MetadataKey.RUNNING_TIME);
+        //md.set(MetadataKey.SEASON);
+        //md.set(MetadataKey.USER_RATING);
+        //md.set(MetadataKey.YEAR);
+        
+        return md;
     }
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
@@ -63,7 +103,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         }
         
         log.debug("Storing Sage Metdata directly to the Sage SHOW object");
-        Object sageMF = ((SageMediaFile) mediaFile).getSageMediaObject();
+        Object sageMF = SageMediaFile.getSageMediaFileObject(mediaFile);
         Object airing = MediaFileAPI.GetMediaFileAiring(sageMF);
         Object origShow = AiringAPI.GetShow(airing);
 

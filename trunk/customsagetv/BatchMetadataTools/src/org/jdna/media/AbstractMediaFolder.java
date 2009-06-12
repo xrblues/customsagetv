@@ -4,7 +4,10 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public abstract class AbstractMediaFolder extends AbstractMediaResource implements IMediaFolder {
+    private static final Logger log =  Logger.getLogger(AbstractMediaFolder.class);
     private List<IMediaResource> members = new LinkedList<IMediaResource>();
     private boolean loaded = false;
     
@@ -24,6 +27,22 @@ public abstract class AbstractMediaFolder extends AbstractMediaResource implemen
             if (recurse || r.getType() == IMediaResource.Type.File) {
                 r.accept(visitor);
             }
+        }
+    }
+    
+    public IMediaFolder filter(IMediaResourceFilter filter) {
+        try {
+            VirtualMediaFolder mf = new VirtualMediaFolder("filter:/" + filter.toString());
+            List<IMediaResource> m = members();
+            for (IMediaResource r : m) {
+                if (filter.accept(r)) {
+                    mf.addMember(r);
+                }
+            }
+            return mf;
+        } catch (Throwable e) {
+            log.error("Failed to create filtered view!", e);
+            return null;
         }
     }
 

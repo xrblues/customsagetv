@@ -17,7 +17,7 @@ import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBMovieMetaDataParser;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 
-import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
+import sagex.phoenix.fanart.MediaArtifactType;
 
 public class NeilmIMDBMetaDataParser {
     private static final Logger log         = Logger.getLogger(NeilmIMDBMetaDataParser.class);

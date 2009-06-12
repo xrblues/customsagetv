@@ -33,18 +33,18 @@ public class SageMediaFilesTestCase extends TestCase {
         MediaFileAPI.AddMediaFile(makeFile("test/sample.avi"), "Movie");
         
         SageMediaFile mf = new SageMediaFile(1);
-        assertEquals("SameMediaFile by id failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaObject()));
+        assertEquals("SameMediaFile by id failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaFileObject(mf)));
         
         mf = new SageMediaFile(getFile("test/sample.avi"));
-        assertEquals("SameMediaFile by file failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaObject()));
+        assertEquals("SameMediaFile by file failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaFileObject(mf)));
         
         Object smf = MediaFileAPI.GetMediaFileForID(1);
         mf = new SageMediaFile(smf);
-        assertEquals("SameMediaFile by object failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaObject()));
+        assertEquals("SameMediaFile by object failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaFileObject(mf)));
         
         provider.addCall("IsAiringObject", true);
         mf = new SageMediaFile("arigingObject");
-        assertEquals("Sage didn't think it was an airing", "arigingObject", mf.getSageMediaObject());
+        assertEquals("Sage didn't think it was an airing", "arigingObject", mf.getSageMediaFileObject(mf));
     }
     
     public void testSageMediaFile() throws Exception {

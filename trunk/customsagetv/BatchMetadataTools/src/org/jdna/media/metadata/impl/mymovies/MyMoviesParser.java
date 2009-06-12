@@ -20,7 +20,7 @@ import org.jdna.util.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
+import sagex.phoenix.fanart.MediaArtifactType;
 
 public class MyMoviesParser {
     private static final Logger      log         = Logger.getLogger(MyMoviesParser.class);

@@ -1,0 +1,14 @@
+<configuration id="bmt" label="Metadata Tools">
+	<description>Metadata Tools Configuration</description>
+
+	<group class="org.jdna.metadataupdater.MetadataUpdaterConfiguration"/>
+	<group class="org.jdna.media.metadata.MetadataConfiguration"/>
+	<group class="org.jdna.media.MediaConfiguration"/>
+	<group class="org.jdna.url.UrlConfiguration"/>
+	<group class="org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration"/>
+	<group class="org.jdna.media.metadata.impl.imdb.IMDBConfiguration"/>
+	<group class="org.jdna.media.metadata.impl.mymovies.MyMoviesConfiguration"/>
+	<group class="org.jdna.media.metadata.impl.sage.SageMetadataConfiguration"/>
+	<group class="org.jdna.sage.PluginConfiguration"/>
+	
+</configuration>

@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
+import org.jdna.media.IMediaResource;
 import org.jdna.media.VirtualMediaFile;
 
 import sagex.api.AiringAPI;
@@ -63,26 +64,40 @@ public class SageMediaFile extends VirtualMediaFile {
             } else {
                 setContentType(ContentType.UNKNOWN);
             }
-            setLocationUri(MediaFileAPI.GetFileForSegment(mediaFile, 0).toURI());
+            Object mf = MediaFileAPI.GetFileForSegment(mediaFile, 0);
+            if (mf==null) {
+                try {
+                    log.warn("Media File does not have a File associated with it: " + mediaFile);
+                    setLocationUri(new URI("sage:/id/" + MediaFileAPI.GetMediaFileID(mediaFile)));
+                } catch (URISyntaxException e) {
+                    log.error("Failed to set ID Location URI for mediafile: " + mediaFile);
+                }
+            } else {
+                setLocationUri(((File)mf).toURI());
+            }
         }
     }
 
+    @Override
     public void delete() {
         if (mediaFile!=null) {
             MediaFileAPI.DeleteFileWithoutPrejudice(mediaFile);
         }
     }
 
+    @Override
     public boolean exists() {
         if (airing!=null) return false;
         return true;
     }
 
+    @Override
     public boolean isReadOnly() {
         if (airing!=null) return true;
         return false;
     }
 
+    @Override
     public long lastModified() {
         if (mediaFile!=null) {
             File f = getFile();
@@ -103,6 +118,7 @@ public class SageMediaFile extends VirtualMediaFile {
         }
     }
     
+    @Override
     public void touch() {
         // TODO: Can we simply tell sage to "refersh this file"
         File f = getFile();
@@ -111,16 +127,25 @@ public class SageMediaFile extends VirtualMediaFile {
         }
     }
     
-    public Object getSageMediaObject() {
+    protected Object getInternalSageMediaObject() {
         return (mediaFile!=null)?mediaFile:airing;
     }
+    
+    public static Object getSageMediaFileObject(IMediaResource res) {
+        if (res instanceof SageMediaFile) {
+            return ((SageMediaFile)res).getInternalSageMediaObject();
+        } else {
+            return null;
+        }
+    }
 
+    @Override
     public String getName() {
         File f = getFile();
         if (f!=null) {
             return f.getName();
         } else {
-            return AiringAPI.GetAiringTitle(getSageMediaObject());
+            return AiringAPI.GetAiringTitle(getSageMediaFileObject(this));
         }
     }
 }

@@ -19,6 +19,7 @@ public class FileHDFolderMediaFile extends FileMediaFile {
         this(new File(uri));
     }
 
+    @Override
     public ContentType getContentType() {
         return ContentType.HDFOLDER;
     }

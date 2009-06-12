@@ -7,10 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-
-import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
+import sagex.phoenix.fanart.MediaArtifactType;
 
 public class MediaMetadata implements IMediaMetadata, Serializable {
     private static final long        serialVersionUID = 1;
@@ -182,19 +179,20 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
     }
 
     public void addGenre(String genre) {
-        if (StringUtils.isEmpty(genre)) return;
+        if (genre==null || genre.trim().length()==0) return;
         
         // TODO: Not very efficient
         String genres[] = getGenres();
         if (genres == null) {
             genres = new String[] { genre };
         } else {
-            genres = Arrays.copyOf(genres, genres.length + 1);
-            genres[genres.length - 1] = genre;
+            List<String> genList = new ArrayList<String>(Arrays.asList(genres));
+            genList.add(genre);
+            genres = genList.toArray(new String[genList.size()]);
         }
         setGenres(genres);
     }
-
+    
     public void addCastMember(ICastMember cm) {
         if (containsCastMember(cm)) return;
         
@@ -203,8 +201,9 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         if (cast == null) {
             cast = new ICastMember[] { cm };
         } else {
-            cast = Arrays.copyOf(cast, cast.length + 1);
-            cast[cast.length - 1] = cm;
+            List<ICastMember> list = new ArrayList<ICastMember>(Arrays.asList(cast));
+            list.add(cm);
+            cast = list.toArray(new ICastMember[list.size()]);
         }
         setCastMembers(cast);
     }
@@ -230,8 +229,9 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         if (art == null) {
             art = new IMediaArt[] { ma };
         } else {
-            art = Arrays.copyOf(art, art.length + 1);
-            art[art.length - 1] = ma;
+            List<IMediaArt> list = new ArrayList<IMediaArt>(Arrays.asList(art));
+            list.add(ma);
+            art = list.toArray(new IMediaArt[list.size()]);
         }
         setMediaArt(art);
     }
@@ -253,12 +253,20 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
             // manipulate some fields
             if (key == MetadataKey.SEASON || key == MetadataKey.EPISODE || key == MetadataKey.DVD_DISC) {
                 if (value instanceof String) {
-                    int n = NumberUtils.toInt((String)value);
+                    int n = toInt((String)value);
                     value = String.valueOf(n);
                 }
             }
             
             store.put(key, value);
+        }
+    }
+
+    private int toInt(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception e){
+            return 0;
         }
     }
 

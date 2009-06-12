@@ -37,6 +37,7 @@ public class FileMediaFolder extends AbstractMediaFolder {
         return createResource(f);
     }
 
+    @Override
     protected void loadMembers() {
        File fs[] = file.listFiles();
        for (File f : fs) {

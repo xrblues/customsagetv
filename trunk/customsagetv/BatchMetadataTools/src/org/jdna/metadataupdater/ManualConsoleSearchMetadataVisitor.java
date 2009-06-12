@@ -8,13 +8,13 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
-import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
+import org.jdna.util.ProgressTracker;
 
 public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataVisitor {
     private static final Logger log         = Logger.getLogger(ManualConsoleSearchMetadataVisitor.class);
@@ -23,18 +23,21 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
     
     private MetadataUpdater updater = null;
 
-    public ManualConsoleSearchMetadataVisitor(MetadataUpdater updater, String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler) {
-        super(providerId, persistence, options, defaultSearchType, updatedVisitor, notFoundHandler);
+    public ManualConsoleSearchMetadataVisitor(MetadataUpdater updater, String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, ProgressTracker<IMediaFile> tracker) {
+        super(providerId, persistence, options, defaultSearchType, tracker);
         this.updater=updater;
     }
 
-    public ManualConsoleSearchMetadataVisitor(MetadataUpdater updater, String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, IMediaResourceVisitor updatedVisitor, IMediaResourceVisitor notFoundHandler, int displaySize) {
-        super(providerId, persistence, options, defaultSearchType, updatedVisitor, notFoundHandler);
+    public ManualConsoleSearchMetadataVisitor(MetadataUpdater updater, String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, ProgressTracker<IMediaFile> tracker, int displaySize) {
+        super(providerId, persistence, options, defaultSearchType, tracker);
         this.displaySize = displaySize;
         this.updater=updater;
     }
 
+    @Override
     protected void fetchMetaData(IMediaFile file, SearchQuery query) throws Exception {
+        if (getProgressTracker().isCancelled()) return;
+        
         // in manual mode, it always passes off to the show list
         handleNotFoundResults(file, query, getSearchResultsForTitle(query));
     }
@@ -51,10 +54,11 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
         try {
             if ("q".equalsIgnoreCase(data)) {
                 log.info("User selected 'q'.  Aboring.");
+                getProgressTracker().setCancelled(true);
                 updater.exit("User Exited.");
             } else if ("n".equalsIgnoreCase(data)) {
                 log.info("User Selected 'n'. Moving next item.");
-                getNotFoundVisitor().visit(file);
+                getProgressTracker().addFailed(file, "User Skipped Item");
             } else if (data.startsWith("s:")) {
                 String buf = data.replaceFirst("s:", "");
                 log.info("User Changed Search Text: " + buf);
@@ -76,10 +80,10 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
 
                 // remember the selected title
                 ConfigurationManager.getInstance().setMetadataIdForTitle(query.get(SearchQuery.Field.TITLE), sr.getMetadataId());
-                if (getUpdatedVisitor() != null) getUpdatedVisitor().visit(file);
+                getProgressTracker().addSuccess(file);
             }
         } catch (Exception e) {
-            getNotFoundVisitor().visit(file);
+            getProgressTracker().addFailed(file, e.getMessage(), e);
             log.error("Failed to manually fetch metadata for media file: " + file.getLocationUri(), e);
             throw new RuntimeException(e);
         }

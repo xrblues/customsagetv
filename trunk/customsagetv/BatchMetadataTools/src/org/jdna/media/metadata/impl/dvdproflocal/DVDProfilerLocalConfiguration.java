@@ -1,27 +1,27 @@
 package org.jdna.media.metadata.impl.dvdproflocal;
 
-import org.jdna.configuration.Field;
-import org.jdna.configuration.FieldProxy;
-import org.jdna.configuration.Group;
-import org.jdna.configuration.GroupProxy;
+import sagex.phoenix.configuration.proxy.AField;
+import sagex.phoenix.configuration.proxy.AGroup;
+import sagex.phoenix.configuration.proxy.FieldProxy;
+import sagex.phoenix.configuration.proxy.GroupProxy;
 
-@Group(label="DVD Profiler", path = "bmt/dvdprofilerLocal", description = "Configuration for the Local DVD Profiler provider (ie, uses local DVD Profiler, not Urls)")
+@AGroup(label="DVD Profiler", path = "bmt/dvdprofilerLocal", description = "Configuration for the Local DVD Profiler provider (ie, uses local DVD Profiler, not Urls)")
 public class DVDProfilerLocalConfiguration extends GroupProxy {
-    @Field(label="Cache/Index Dir", description = "Directory where the local dvd profiler data will be indexed")
+    @AField(label="Cache/Index Dir", description = "Directory where the local dvd profiler data will be indexed", editor="dirChooser")
     private FieldProxy<String>  indexDir     = new FieldProxy<String>("cache/indexDVDProfLocal/");
 
-    @Field(label="DVD Profiler Image Dir", description = "Local DVD Profiler image directory")
+    @AField(label="DVD Profiler Image Dir", description = "Local DVD Profiler image directory", editor="dirChooser")
     private FieldProxy<String>  imageDir = new FieldProxy<String>(null);
 
-    @Field(label="DVD Profiler Xml", description = "Local DVD Profiler xml file")
+    @AField(label="DVD Profiler Xml", description = "Local DVD Profiler xml file", editor="fileChooser")
     private FieldProxy<String>  xmlFile = new FieldProxy<String>(null);
 
-    @Field(label="DVD Profiler Xml last modified date/time", description = "Data/Time the xml file was modified as a long value.  Should not be set directly.")
+    @AField(label="DVD Profiler Xml last modified date/time", description = "Data/Time the xml file was modified as a long value.  Should not be set directly.")
     private FieldProxy<Long> xmlFileLastModified = new FieldProxy<Long>(0l);
 
     public DVDProfilerLocalConfiguration() {
         super();
-        init(this);
+        init();
     }
 
     public String getIndexDir() {

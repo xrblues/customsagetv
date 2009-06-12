@@ -1,10 +1,10 @@
 package org.jdna.media.metadata;
 
-import sagex.phoenix.fanart.FanartUtil;
+import sagex.phoenix.fanart.MediaArtifactType;
 
 public interface IMediaArt {
     public String getProviderId();
-    public FanartUtil.MediaArtifactType getType();
+    public MediaArtifactType getType();
     public String getDownloadUrl();
     public String getLabel();
     public int getSeason();

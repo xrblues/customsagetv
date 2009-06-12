@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.jdna.configuration.GroupProxy;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.StackedMediaFile;
@@ -34,7 +33,8 @@ import org.jdna.util.PropertiesUtils;
 import org.jdna.util.Singleton;
 import org.jdna.util.SortedProperties;
 
-import sagex.phoenix.fanart.FanartUtil.MediaArtifactType;
+import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.fanart.MediaArtifactType;
 
 public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     private static final Logger                                   log              = Logger.getLogger(SageTVPropertiesPersistence.class);
@@ -194,7 +194,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     }
 
     private void setFanartImageUrl(PersistenceOptions options, Map<String,String> props, IMediaArt fanart, SageProperty key) {
-        if ((options!=null && options.isOverwriteFanart()) || ((props.get(key.sageKey) == null || ((String)props.get(key.sageKey)).trim().length() == 0) && fanart != null && !StringUtils.isEmpty(fanart.getDownloadUrl()))) {
+        if ((options!=null && options.isOverwriteFanart()) || ((props.get(key.sageKey) == null || (props.get(key.sageKey)).trim().length() == 0) && fanart != null && !StringUtils.isEmpty(fanart.getDownloadUrl()))) {
 
             if (fanart != null && !StringUtils.isEmpty(fanart.getDownloadUrl())) {
                 props.put(key.sageKey, encodeString(fanart.getDownloadUrl()));

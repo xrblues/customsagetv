@@ -97,14 +97,17 @@ public class CachedUrl extends Url implements IUrl {
         return new File(props.getProperty("file"));
     }
 
+    @Override
     public boolean hasMoved() {
         return Boolean.parseBoolean(props.getProperty("moved", "false"));
     }
 
+    @Override
     public URL getMovedUrl() throws IOException {
         return new URL(props.getProperty("movedUrl"));
     }
 
+    @Override
     public URL getUrl() throws IOException {
         return getUrl(null);
     }
@@ -210,6 +213,7 @@ public class CachedUrl extends Url implements IUrl {
         }
     }
     
+    @Override
     public String toString() {
         return "CachedUrl: " + (props!=null ? props.getProperty("url") : "N/A") + "; UrlId: " + urlId;
     }

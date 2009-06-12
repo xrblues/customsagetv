@@ -1,6 +1,7 @@
 package org.jdna.media.util;
 
 import org.apache.log4j.Logger;
+import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;
@@ -8,19 +9,18 @@ import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.PersistenceOptions;
+import org.jdna.util.ProgressTracker;
 
 public class RefreshMetadataVisitor implements IMediaResourceVisitor {
     private static final Logger   log = Logger.getLogger(RefreshMetadataVisitor.class);
-    private IMediaResourceVisitor onUpdateVisitor;
-    private IMediaResourceVisitor onSkipMediaResourceVisitor;
     private PersistenceOptions options;
     private IMediaMetadataPersistence persistence;
+    private ProgressTracker<IMediaFile> tracker;
 
-    public RefreshMetadataVisitor(IMediaMetadataPersistence persistence, PersistenceOptions options, IMediaResourceVisitor onUpdateVisitor, IMediaResourceVisitor onSkipMediaResourceVisitor) {
+    public RefreshMetadataVisitor(IMediaMetadataPersistence persistence, PersistenceOptions options, ProgressTracker<IMediaFile> tracker) {
         this.options=options;
         this.persistence=persistence;
-        this.onUpdateVisitor = onUpdateVisitor;
-        this.onSkipMediaResourceVisitor = onSkipMediaResourceVisitor;
+        this.tracker=tracker;
     }
 
     public void visit(IMediaResource resource) {
@@ -44,18 +44,15 @@ public class RefreshMetadataVisitor implements IMediaResourceVisitor {
                     IMediaMetadata updated = provider.getMetaDataByUrl(md.getProviderDataUrl());
                     persistence.storeMetaData(updated, resource, options);
 
-                    onUpdateVisitor.visit(resource);
+                    tracker.addSuccess((IMediaFile) resource);
                 } else {
                     log.debug("Skipping: " + resource.getLocationUri() + "; MetaData does not contain providerId or providerDataUrl");
-                    onSkipMediaResourceVisitor.visit(resource);
+                    tracker.addFailed((IMediaFile) resource, "MetaData does not contain provider Id or provider Data Url");
                 }
             } catch (Exception e) {
                 log.error("Failed to refresh resource: " + resource.getLocationUri(), e);
-                onSkipMediaResourceVisitor.visit(resource);
+                tracker.addFailed((IMediaFile) resource,"Failed!", e);
             }
-        } else {
-            onSkipMediaResourceVisitor.visit(resource);
         }
     }
-
 }

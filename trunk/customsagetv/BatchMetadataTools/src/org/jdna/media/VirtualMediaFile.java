@@ -25,6 +25,7 @@ public class VirtualMediaFile extends AbstractMediaFile implements IMediaFile {
         return null;
     }
 
+    @Override
     public Type getType() {
         return IMediaResource.Type.File;
     }

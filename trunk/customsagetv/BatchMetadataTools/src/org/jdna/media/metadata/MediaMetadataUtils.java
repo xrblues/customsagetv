@@ -15,9 +15,10 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.GroupProxy;
 import org.jdna.media.CDStackingModel;
 import org.jdna.url.UrlConfiguration;
+
+import sagex.phoenix.configuration.proxy.GroupProxy;
 
 public class MediaMetadataUtils {
     private static final Logger log = Logger.getLogger(MediaMetadataUtils.class);

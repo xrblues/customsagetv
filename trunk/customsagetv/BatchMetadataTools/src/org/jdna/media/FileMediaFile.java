@@ -29,6 +29,7 @@ public class FileMediaFile extends AbstractMediaFile implements IMediaFile {
         return new FileMediaFile(file.getParentFile());
     }
 
+    @Override
     public Type getType() {
         return Type.File;
     }

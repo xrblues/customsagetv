@@ -1,7 +1,8 @@
 package org.jdna.url;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.GroupProxy;
+
+import sagex.phoenix.configuration.proxy.GroupProxy;
 
 public class UrlFactory implements IUrlFactory {
     private static final Logger log = Logger.getLogger(UrlFactory.class);

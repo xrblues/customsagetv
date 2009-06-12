@@ -43,7 +43,7 @@ public class SageCustomMetadataPersistence implements IMediaMetadataPersistence 
                 if (p.propertyType == SagePropertyType.EXTENDED) {
                     Object val = md.get(p.metadataKey);
                     if (val instanceof String && !StringUtils.isEmpty((String) val)) {
-                        SageFanartUtil.SetMediaFileMetadata(smf.getSageMediaObject(), p.sageKey, (String) val);
+                        SageFanartUtil.SetMediaFileMetadata(smf.getSageMediaFileObject(smf), p.sageKey, (String) val);
                     }
                 }
             }
