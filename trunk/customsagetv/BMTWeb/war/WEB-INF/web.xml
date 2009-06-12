@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>BMTWeb.html</welcome-file>
+  </welcome-file-list>
+  
+  <!-- Servlets -->
+  <servlet>
+    <servlet-name>preferences</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.PreferencesServiceImpl</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>filechooser</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.FileChooserServicesImpl</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>status</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.StatusServicesImpl</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>browser</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.BrowserServicesImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>media</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.MediaHandlerServlet</servlet-class>
+  </servlet>
+  
+  
+  <servlet-mapping>
+    <servlet-name>media</servlet-name>
+    <url-pattern>/media/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>preferences</servlet-name>
+    <url-pattern>/bmtweb/preferences</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>filechooser</servlet-name>
+    <url-pattern>/bmtweb/filechooser</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>status</servlet-name>
+    <url-pattern>/bmtweb/status</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>browser</servlet-name>
+    <url-pattern>/bmtweb/browser</url-pattern>
+  </servlet-mapping>
+
+</web-app>
