@@ -20,12 +20,17 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
-public class MediaEditorWidget extends Composite implements HasClickHandlers, MouseOutHandler, MouseOverHandler {
+public class MediaEditorWidget extends Composite implements HasClickHandlers, MouseOutHandler, MouseOverHandler, ClickHandler {
     private MediaResult mediaResult;
     
     private HorizontalPanel panel = new HorizontalPanel();
     private Image thumb = null;
     private int imageHeight=40;
+    
+    // Not typically a good idea, but given this can only be run in
+    // a single UI, then it's ok. i guess.
+    // holds a reference to the currently selected widget in a list of widgets
+    private static MediaEditorWidget currentSelectedItem = null;
     
     public MediaEditorWidget(MediaResult item) {
         this.mediaResult=item;
@@ -71,6 +76,7 @@ public class MediaEditorWidget extends Composite implements HasClickHandlers, Mo
         
         addDomHandler(this, MouseOverEvent.getType());
         addDomHandler(this, MouseOutEvent.getType());
+        addDomHandler(this, ClickEvent.getType());
     }
     
     public HandlerRegistration addClickHandler(ClickHandler handler) {
@@ -87,5 +93,16 @@ public class MediaEditorWidget extends Composite implements HasClickHandlers, Mo
 
     public MediaResult getMediaItem() {
         return mediaResult;
+    }
+
+    public void onClick(ClickEvent event) {
+        if (currentSelectedItem!=null) {
+            try {
+                currentSelectedItem.removeStyleName("MediaItem_selected");
+            } catch (Exception e) {
+            }
+        }
+        this.currentSelectedItem = this;
+        this.addStyleName("MediaItem_selected");
     }
 }

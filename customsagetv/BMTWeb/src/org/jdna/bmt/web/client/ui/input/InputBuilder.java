@@ -1,6 +1,7 @@
 package org.jdna.bmt.web.client.ui.input;
 
 
+import org.htmlparser.filters.IsEqualFilter;
 import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.Property;
 import org.jdna.bmt.web.client.util.StringUtils;
@@ -10,6 +11,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -71,6 +73,13 @@ public class InputBuilder<W, T> {
             Log.error("Widget is not a HasValue widget! " + widget);
         }
         
+        return this;
+    }
+    
+    public InputBuilder<W, T> readonly() {
+        if (widget instanceof FocusWidget) {
+            ((FocusWidget)widget).setEnabled(false);
+        }
         return this;
     }
     

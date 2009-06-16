@@ -36,6 +36,8 @@ public class Simple2ColFormLayoutPanel extends Composite {
         grid.setWidget(i, 0, label);
         grid.setWidget(i, 1, editor);
         grid.getCellFormatter().setHorizontalAlignment(i, 1, HorizontalPanel.ALIGN_RIGHT);
+        grid.getCellFormatter().setWidth(i, 0, "10%");
+        grid.getCellFormatter().setWordWrap(i, 0, false);
         
         grid.getRowFormatter().addStyleName(i, rowStyleNames[i%2]);
     }
@@ -53,5 +55,16 @@ public class Simple2ColFormLayoutPanel extends Composite {
     
     public void addRowStyle(String name) {
         grid.getRowFormatter().addStyleName(grid.getRowCount()-1, name);
+    }
+
+    public String getLabelStyle() {
+        return labelStyle;
+    }
+    
+    public Label createLabel(String lab) {
+        Label label = new Label(lab);
+        label.addStyleName(labelStyle);
+        label.setWordWrap(false);
+        return label;
     }
 }

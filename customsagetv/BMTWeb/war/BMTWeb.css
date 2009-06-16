@@ -48,10 +48,16 @@ h1 {
 	color: #CD1315;
 }
 
+.AppPanel-Header {
+	background-image: url("header_back2.png");
+	background-repeat: repeat-x;
+}
+
 .AppPanel-Header, .AppPanel-Header a, .AppPanel-Header a:link, .AppPanel-Header a:visited {
-	background-color: black;
+	background-color: transparent;
 	color: white;
 }
+
 
 .AppPanel-Title {
   	font-size: 1.8em;
@@ -73,6 +79,10 @@ h1 {
 
 .MediaItem_hover {
 	background-color: #F3F3F3;
+}
+
+.MediaItem_selected {
+	background-color: #909090;
 }
 
 .MissingImage {
