@@ -17,4 +17,8 @@ public abstract class AbstractCompositeResourceFilter implements IMediaResourceF
     public void addFilter(IMediaResourceFilter filter) {
         filters.add(filter);
     }
+    
+    public int getFilterCount() {
+        return filters.size();
+    }
 }

@@ -9,6 +9,7 @@ import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataKey;
 
 import sagex.phoenix.fanart.MediaArtifactType;
@@ -46,47 +47,47 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
         } else {
             col2("--- BEGIN:", name);
             col2("Movie:", name);
-            col2("Title:", md.getMediaTitle());
-            col2("Plot:", md.getDescription());
-            col2("Genres:", toGenreString(md.getGenres()));
+            col2("Title:", MetadataAPI.getMediaTitle(md));
+            col2("Plot:", MetadataAPI.getDescription(md));
+            col2("Genres:", toGenreString(MetadataAPI.getGenres(md)));
             col2("MPAA Rating:", (String) md.get(MetadataKey.MPAA_RATING));
             col2("MPAA Rating Full:", (String) md.get(MetadataKey.MPAA_RATING_DESCRIPTION));
-            col2("User Rating:", md.getUserRating());
+            col2("User Rating:", MetadataAPI.getUserRating(md));
             col2("Company:", (String) md.get(MetadataKey.COMPANY));
-            col2("Year:", md.getYear());
-            col2("Release Date:", md.getReleaseDate());
-            col2("Runtime:", md.getRuntime());
+            col2("Year:", MetadataAPI.getYear(md));
+            col2("Release Date:", MetadataAPI.getReleaseDate(md));
+            col2("Runtime:", MetadataAPI.getRuntime(md));
             col2("Aspect Ratio:", (String) md.get(MetadataKey.ASPECT_RATIO));
-            col2("Provider DataId:", (md.getProviderDataId()==null?"Not Set":md.getProviderDataId().toIDString()));
-            col2("Provider Url:", md.getProviderDataUrl());
-            col2("Provider Id:", md.getProviderId());
-            if (md.getMediaArt(MediaArtifactType.POSTER) != null) {
-                IMediaArt maArr[] = md.getMediaArt(MediaArtifactType.POSTER);
+            col2("Provider DataId:", (MetadataAPI.getProviderDataId(md)==null?"Not Set":MetadataAPI.getProviderDataId(md).toIDString()));
+            col2("Provider Url:", MetadataAPI.getProviderDataUrl(md));
+            col2("Provider Id:", MetadataAPI.getProviderId(md));
+            if (MetadataAPI.getMediaArt(md, MediaArtifactType.POSTER) != null) {
+                IMediaArt maArr[] = MetadataAPI.getMediaArt(md, MediaArtifactType.POSTER);
                 for (int i=0;i<maArr.length;i++) {
                     col2(String.format("Poster %s:", i+1), maArr[i].getDownloadUrl());
                 }
             } else {
                 col2("Poster:", "No Poster");
             }
-            if (md.getMediaArt(MediaArtifactType.BACKGROUND) != null) {
-                IMediaArt maArr[] = md.getMediaArt(MediaArtifactType.BACKGROUND);
+            if (MetadataAPI.getMediaArt(md, MediaArtifactType.BACKGROUND) != null) {
+                IMediaArt maArr[] = MetadataAPI.getMediaArt(md, MediaArtifactType.BACKGROUND);
                 for (int i=0;i<maArr.length;i++) {
                     col2(String.format("Background %s:", i+1), maArr[i].getDownloadUrl());
                 }
             } else {
                 col2("Background:", "No Background");
             }
-            if (md.getMediaArt(MediaArtifactType.BANNER) != null) {
-                IMediaArt maArr[] = md.getMediaArt(MediaArtifactType.BANNER);
+            if (MetadataAPI.getMediaArt(md, MediaArtifactType.BANNER) != null) {
+                IMediaArt maArr[] = MetadataAPI.getMediaArt(md, MediaArtifactType.BANNER);
                 for (int i=0;i<maArr.length;i++) {
                     col2(String.format("Banner %s:", i+1), maArr[i].getDownloadUrl());
                 }
             } else {
                 col2("Banner:", "No Banner");
             }
-            col2("Directors:", toSimpleCastString(md.getCastMembers(ICastMember.DIRECTOR)));
-            col2("Writers:", toSimpleCastString(md.getCastMembers(ICastMember.WRITER)));
-            ICastMember actors[] = md.getCastMembers(ICastMember.ACTOR);
+            col2("Directors:", toSimpleCastString(MetadataAPI.getCastMembers(md, ICastMember.DIRECTOR)));
+            col2("Writers:", toSimpleCastString(MetadataAPI.getCastMembers(md, ICastMember.WRITER)));
+            ICastMember actors[] = MetadataAPI.getCastMembers(md, ICastMember.ACTOR);
             if (actors != null) {
                 col2("Actors:", "-----------");
                 for (ICastMember cm : actors) {

@@ -27,8 +27,11 @@ public class CompositeMediaMetadataPersistence implements IMediaMetadataPersiste
     }
 
     public IMediaMetadata loadMetaData(IMediaResource mediaFile) {
-        // TODO Auto-generated method stub
-        return null;
+        MediaMetadata md = new MediaMetadata();
+        for (IMediaMetadataPersistence p : persistence) {
+            MetadataAPI.copyNonNull(p.loadMetaData(mediaFile), md);
+        }
+        return md;
     }
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {

@@ -16,6 +16,7 @@ import org.jdna.media.StackedMediaFile;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.MediaMetadataUtils;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
@@ -88,7 +89,7 @@ public class FanartStorage {
 
         // media type is not important for local fanart
         File imageFile = FanartUtil.getLocalFanartForFile(mediaFile, MediaType.MOVIE, mt);
-        IMediaArt ma[] = md.getMediaArt(mt);
+        IMediaArt ma[] = MetadataAPI.getMediaArt(md,mt);
         if (ma != null && ma.length > 0) {
             downloadAndSaveFanart(mt, ma[0], imageFile, options, false);
         }
@@ -187,7 +188,7 @@ public class FanartStorage {
             }
 
             File fanartFile = FanartUtil.getCentralFanartArtifact(mediaType, mt, title, centralFolder, extraMD);
-            IMediaArt artwork[] = md.getMediaArt(mt);
+            IMediaArt artwork[] = MetadataAPI.getMediaArt(md, mt);
             downloadAndSageCentralFanart(mt, fanartFile, artwork, options);
         }
     }
@@ -221,9 +222,9 @@ public class FanartStorage {
         // do the series level artwork
         Map<String, String> emptyMap = Collections.emptyMap();
         File fanartFile = FanartUtil.getCentralFanartArtifact(MediaType.TV, mt, title, centralFolder, emptyMap);
-        IMediaArt artwork[] = md.getMediaArt(mt);
+        IMediaArt artwork[] = MetadataAPI.getMediaArt(md,mt);
         if (artwork == null || artwork.length == 0) {
-            log.debug("No TV " + mt.name() + " MediaArt for " + md.getMediaTitle());
+            log.debug("No TV " + mt.name() + " MediaArt for " + MetadataAPI.getMediaTitle(md));
             return;
         }
         List<IMediaArt> l = new LinkedList<IMediaArt>();
@@ -233,7 +234,7 @@ public class FanartStorage {
             }
         }
         if (l.size() == 0) {
-            log.debug("No Series Level TV " + mt.name() + " MediaArt for " + md.getMediaTitle());
+            log.debug("No Series Level TV " + mt.name() + " MediaArt for " + MetadataAPI.getMediaTitle(md));
         } else {
             downloadAndSageCentralFanart(mt, fanartFile, l.toArray(new IMediaArt[l.size()]), options);
         }
@@ -243,9 +244,9 @@ public class FanartStorage {
         if (!StringUtils.isEmpty((String) md.get(MetadataKey.SEASON))) {
             extraMD.put(SageProperty.SEASON_NUMBER.sageKey, (String) md.get(MetadataKey.SEASON));
             fanartFile = FanartUtil.getCentralFanartArtifact(MediaType.TV, mt, title, centralFolder, extraMD);
-            artwork = md.getMediaArt(mt);
+            artwork = MetadataAPI.getMediaArt(md, mt);
             if (artwork == null || artwork.length == 0) {
-                log.debug("No TV " + mt.name() + " MediaArt for " + md.getMediaTitle());
+                log.debug("No TV " + mt.name() + " MediaArt for " + MetadataAPI.getMediaTitle(md));
                 return;
             }
 
@@ -256,7 +257,7 @@ public class FanartStorage {
                 }
             }
             if (l.size() == 0) {
-                log.debug("No Season Level TV " + mt.name() + " MediaArt for " + md.getMediaTitle());
+                log.debug("No Season Level TV " + mt.name() + " MediaArt for " + MetadataAPI.getMediaTitle(md));
             } else {
                 downloadAndSageCentralFanart(mt, fanartFile, l.toArray(new IMediaArt[l.size()]), options);
             }
@@ -281,10 +282,10 @@ public class FanartStorage {
     }
 
     public static void downloadFanart(IMediaMetadata md, PersistenceOptions options) {
-        instance.saveFanart(null, md.getMediaTitle(), md, options);
+        instance.saveFanart(null, MetadataAPI.getMediaTitle(md), md, options);
     }
 
     public static void downloadFanart(IMediaFile mediaFile, IMediaMetadata md, PersistenceOptions options) {
-        instance.saveFanart(mediaFile, md.getMediaTitle(), md, options);
+        instance.saveFanart(mediaFile, MetadataAPI.getMediaTitle(md), md, options);
     }
 }

@@ -38,7 +38,10 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     }
 
     public void visit(IMediaResource resource) {
-        if (tracker.isCancelled()) return;
+        if (tracker.isCancelled()) {
+            log.debug("Tracker is cancelled; Won't accept file: " + resource.getLocationUri());
+            return;
+        }
         
         if (resource.getType() == IMediaResource.Type.File) {
             tracker.setTaskName("Scanning: " + resource.getLocationUri());
@@ -49,6 +52,8 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
                 tracker.addFailed((IMediaFile) resource, "Failed to find/update metadata for resource: " + resource.getLocationUri(), e);
             }
             tracker.worked(1);
+        } else {
+            log.debug("Not a Media File: " + resource.getLocationUri());
         }
     }
 
@@ -116,6 +121,7 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     }
 
     protected void handleNotFoundResults(IMediaFile file, SearchQuery query, List<IMediaSearchResult> results) {
+        log.debug("Nothing Found for query: " + query + "; File: " + file.getLocationUri());
         tracker.addFailed(file, "Nothing Found for Query: " + query);
     }
 

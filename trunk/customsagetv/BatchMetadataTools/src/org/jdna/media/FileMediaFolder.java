@@ -3,6 +3,8 @@ package org.jdna.media;
 import java.io.File;
 import java.net.URI;
 
+import sagex.phoenix.fanart.FanartUtil;
+
 
 public class FileMediaFolder extends AbstractMediaFolder {
     private static final IMediaResourceFilter mediaFilter = MovieResourceFilter.INSTANCE;
@@ -66,11 +68,11 @@ public class FileMediaFolder extends AbstractMediaFolder {
 
     public static IMediaResource createResource(File f) {
         if (f.isDirectory()) {
-            if("VIDEO_TS".equalsIgnoreCase(f.getName()) || "BDMV".equalsIgnoreCase(f.getName())) {
+            if (FanartUtil.isDVDFolder(f)) {
                 // NOTE: this is added because Sage will pass the DVD as VIDEO_TS
-                return new FileHDFolderMediaFile(f.getParentFile());
+                return new FileHDFolderMediaFile(FanartUtil.resolveMediaFile(f));
             } else if (FileHDFolderMediaFile.isDVD(f)) {
-                return new FileHDFolderMediaFile(f);
+                return new FileHDFolderMediaFile(FanartUtil.resolveMediaFile(f));
             } else {
                 return new FileMediaFolder(f);
             }

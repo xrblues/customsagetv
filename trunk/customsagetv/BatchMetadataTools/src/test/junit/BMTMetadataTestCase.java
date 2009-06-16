@@ -78,11 +78,10 @@ public class BMTMetadataTestCase extends TestCase {
             public void accept(IConfigurationElement el) {
                 System.out.println(el.getId());
                 assertNotNull("Missing Label: " + el, el.getLabel());
-                assertNotNull("Missing ID: " + el.getLabel(), el.getId());
                 assertNotNull("Missing Description: " + el.getLabel(), el.getDescription());
             }
         });
-        assertEquals("Child count does not match.  If you've added new child groups to the configuration, the update the test case.", 9, main.getChildren().length);
+        assertEquals("Child count does not match.  If you've added new child groups to the configuration, the update the test case.", 10, main.getChildren().length);
         
         cmm.addMetadata(md);
         Field el = (Field) cmm.getConfigurationElement("bmt/urlconfiguration/cacheExpiryInSeconds");

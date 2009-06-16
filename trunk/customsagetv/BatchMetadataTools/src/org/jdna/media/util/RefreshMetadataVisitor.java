@@ -8,6 +8,7 @@ import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.util.ProgressTracker;
 
@@ -34,14 +35,14 @@ public class RefreshMetadataVisitor implements IMediaResourceVisitor {
                 // from the existing metadata
                 IMediaMetadata md = persistence.loadMetaData(resource);
 
-                if (md!=null && md.getProviderDataId() != null) {
-                    IMediaMetadataProvider provider = MediaMetadataFactory.getInstance().getProvider(md.getProviderId());
+                if (md!=null && MetadataAPI.getProviderDataId(md) != null) {
+                    IMediaMetadataProvider provider = MediaMetadataFactory.getInstance().getProvider(MetadataAPI.getProviderId(md));
                     if (provider == null) {
-                        throw new Exception("Provider Not Registered: " + md.getProviderDataId());
+                        throw new Exception("Provider Not Registered: " + MetadataAPI.getProviderDataId(md));
                     }
 
                     log.debug("Refreshing: " + resource.getLocationUri());
-                    IMediaMetadata updated = provider.getMetaDataByUrl(md.getProviderDataUrl());
+                    IMediaMetadata updated = provider.getMetaDataByUrl(MetadataAPI.getProviderDataUrl(md));
                     persistence.storeMetaData(updated, resource, options);
 
                     tracker.addSuccess((IMediaFile) resource);

@@ -1,8 +1,11 @@
 package org.jdna.media.metadata;
 
+import java.io.Serializable;
+
 import sagex.phoenix.fanart.MediaArtifactType;
 
-public class MediaArt implements IMediaArt {
+public class MediaArt implements IMediaArt, Serializable {
+    private static final long serialVersionUID = 1L;
     private String downloadUrl;
     private String providerId;
     private MediaArtifactType type;
@@ -10,7 +13,6 @@ public class MediaArt implements IMediaArt {
     private int season;
 
     public MediaArt() {
-        super();
     }
 
     public MediaArt(IMediaArt ma) {

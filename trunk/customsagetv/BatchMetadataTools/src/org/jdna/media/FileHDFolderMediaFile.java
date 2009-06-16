@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 import org.jdna.util.FileCleaner;
 import org.jdna.util.FileToucher;
 
+import sagex.phoenix.fanart.FanartUtil;
+
 public class FileHDFolderMediaFile extends FileMediaFile {
     private static Pattern dvdFileExtPattern = Pattern.compile("\\.vob$|\\.ifo$|\\.bup$", Pattern.CASE_INSENSITIVE);
 
@@ -31,14 +33,7 @@ public class FileHDFolderMediaFile extends FileMediaFile {
     
     public static boolean isDVD(File f) {
         if (f.isDirectory()) {
-            File vts = new File(f,"VIDEO_TS");
-            if (vts.exists() && vts.isDirectory()) {
-                return true;
-            }
-
-            // check for bluray
-            File br = new File(f, "BDMV");
-            if (br.exists() && br.isDirectory()) {
+            if (FanartUtil.isDVDFolder(f)) {
                 return true;
             }
 

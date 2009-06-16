@@ -29,7 +29,9 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         if (md!=null) {
             // TODO: Maybe do a deep clone on objects
             for (MetadataKey k : MetadataKey.values()) {
-                set(k, md.get(k));
+                if (md.get(k)!=null) {
+                    set(k, md.get(k));
+                }
             }
         }
     }
@@ -308,5 +310,9 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
 
     public void setProviderId(String id) {
         set(MetadataKey.METADATA_PROVIDER_ID, id);
+    }
+    
+    public Map<MetadataKey, Object> getStore() {
+        return store;
     }
 }

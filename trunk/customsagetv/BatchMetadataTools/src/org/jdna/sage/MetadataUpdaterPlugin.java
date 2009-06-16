@@ -72,6 +72,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
 
         if (file==null) {
             log.error("File is Null!");
+            return null;
         }
 
         log.debug("Automatic Plugin is Processing File: " + file.getAbsolutePath());
@@ -126,10 +127,11 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 mr = new SageMediaFile(o);
             } else {
                 log.warn("Can't Handle MediaItem: " + file.getAbsolutePath());
+                return null;
             }
             
             if (filter.accept(mr)) {
-                log.debug("MediaFile: " + file.getAbsolutePath() + "; arg: " + arg + "; Providers: " + metadataConfig.getDefaultProviderId());
+                log.debug("Scanning MediaFile: " + file.getAbsolutePath() + "; arg: " + arg + "; Providers: " + metadataConfig.getDefaultProviderId());
 
                 IMediaMetadata md = persistence.loadMetaData(mr);
                 if (md != null) {

@@ -24,6 +24,7 @@ import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataUtils;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
@@ -34,6 +35,7 @@ import org.jdna.util.Singleton;
 import org.jdna.util.SortedProperties;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.fanart.FanartUtil;
 import sagex.phoenix.fanart.MediaArtifactType;
 
 public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
@@ -57,8 +59,12 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
 
     private File getPropertyFile(IMediaResource mediaFile) {
         File f = new File(mediaFile.getLocationUri());
-        f = new File(f.getParent(), f.getName() + ".properties");
-        return f;
+        if (!f.exists()) {
+            log.error("Property File Location does not exist: " + f.getAbsolutePath() + "; for MediaFile: " + mediaFile.getLocationUri());
+            return null;
+        }
+        
+        return FanartUtil.resolvePropertiesFile(f);
     }
 
     /**
@@ -82,7 +88,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     }
 
     public Map<String, String> getMetadataProperties(IMediaResource mediaFile, IMediaMetadata md, PersistenceOptions options) throws IOException {
-        if (md.getMediaTitle() == null) throw new IOException("MetaData doesn't contain title.  Will not Save/Update.");
+        if (MetadataAPI.getMediaTitle(md) == null) throw new IOException("MetaData doesn't contain title.  Will not Save/Update.");
 
         if (mediaFile.getType() != IMediaResource.Type.File) {
             throw new IOException("Can only store metadata for IMedaiFile.TYPE_FILE objects.  Not a valid file: " + mediaFile.getLocationUri());
@@ -119,29 +125,29 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
 
             // handle special cases
             if (p == SageProperty.ACTORS) {
-                props.put(p.sageKey, encodeString(encodeActors(md.getCastMembers(ICastMember.ACTOR), cfg.getActorMask())));
+                props.put(p.sageKey, encodeString(encodeActors(MetadataAPI.getCastMembers(md, ICastMember.ACTOR), cfg.getActorMask())));
             } else if (p == SageProperty.DIRECTORS) {
-                props.put(p.sageKey, encodeString(encodeDirectors(md.getCastMembers(ICastMember.DIRECTOR))));
+                props.put(p.sageKey, encodeString(encodeDirectors(MetadataAPI.getCastMembers(md,ICastMember.DIRECTOR))));
             } else if (p == SageProperty.WRITERS) {
-                props.put(p.sageKey, encodeString(encodeWriters(md.getCastMembers(ICastMember.WRITER))));
+                props.put(p.sageKey, encodeString(encodeWriters(MetadataAPI.getCastMembers(md,ICastMember.WRITER))));
             } else if (p == SageProperty.GENRES) {
-                props.put(p.sageKey, encodeString(encodeGenres(md.getGenres())));
+                props.put(p.sageKey, encodeString(encodeGenres(MetadataAPI.getGenres(md))));
             } else if (p == SageProperty.SERIALIZED_GENRES) {
-                props.put(p.sageKey, encodeString(serializeStrings(md.getGenres())));
+                props.put(p.sageKey, encodeString(serializeStrings(MetadataAPI.getGenres(md))));
             } else if (p == SageProperty.SERIALIZED_CAST) {
-                props.put(p.sageKey, encodeString(serializeCast(md.getCastMembers(ICastMember.ALL))));
+                props.put(p.sageKey, encodeString(serializeCast(MetadataAPI.getCastMembers(md,ICastMember.ALL))));
             } else if (p == SageProperty.FANART_BACKGROUND) {
-                setFanartImageUrl(options, props, md.getBackground(), p);
+                setFanartImageUrl(options, props, MetadataAPI.getBackground(md), p);
             } else if (p == SageProperty.FANART_BANNER) {
-                setFanartImageUrl(options, props, md.getBanner(), p);
+                setFanartImageUrl(options, props, MetadataAPI.getBanner(md), p);
             } else if (p == SageProperty.FANART_POSTER) {
-                setFanartImageUrl(options, props, md.getPoster(), p);
+                setFanartImageUrl(options, props, MetadataAPI.getPoster(md), p);
             } else if (p == SageProperty.SEASON_NUMBER) {
                 props.put(p.sageKey, encodeNumberString(md.get(MetadataKey.SEASON)));
             } else if (p == SageProperty.EPISODE_NUMBER) {
                 props.put(p.sageKey, encodeNumberString(md.get(MetadataKey.EPISODE)));
             } else if (p == SageProperty.DISPLAY_TITLE) {
-                props.put(p.sageKey, rewriteTitle(encodeString(md.getMediaTitle())));
+                props.put(p.sageKey, rewriteTitle(encodeString(MetadataAPI.getMediaTitle(md))));
             } else if (p == SageProperty.PROVIDER_DATA_ID) {
                 if (md.get(p.metadataKey)!=null) {
                     props.put(p.sageKey, md.get(p.metadataKey).toString());
@@ -265,7 +271,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
                 // Update the title with the title mask before saving multi
                 // part movies
                 // store the title
-                props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(md.getMediaTitle()));
+                props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(MetadataAPI.getMediaTitle(md)));
                 // set the disc # in the props
                 props.put(SageProperty.DISC.sageKey, String.valueOf(i++));
                 // update it using the mask
@@ -276,7 +282,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
             }
         } else {
             // store the title
-            props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(md.getMediaTitle()));
+            props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(MetadataAPI.getMediaTitle(md)));
             // update it using the mask
             if (!StringUtils.isEmpty(props.get(SageProperty.SEASON_NUMBER.sageKey))) {
                 // assume TV
@@ -510,7 +516,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
             options.setOverwriteMetadata(true);
             return Singleton.get(SageTVPropertiesPersistence.class).getMetadataProperties(md, props, options);
         } catch (IOException e) {
-            log.error("Unable to load metadata for: " + md.getMediaTitle(), e);
+            log.error("Unable to load metadata for: " + MetadataAPI.getMediaTitle(md), e);
         }
         return null;
     }
@@ -529,7 +535,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     
     public static void updatePropertiesForDisplay(Map<String, String> props, IMediaMetadata md) {
         // store the title
-        props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(md.getMediaTitle()));
+        props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(MetadataAPI.getMediaTitle(md)));
         // update it using the mask
         if (!StringUtils.isEmpty(props.get(SageProperty.SEASON_NUMBER.sageKey))) {
             // assume TV

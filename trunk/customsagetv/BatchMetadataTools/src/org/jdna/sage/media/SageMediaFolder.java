@@ -2,10 +2,13 @@ package org.jdna.sage.media;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.jdna.media.VirtualMediaFolder;
 
+import sagex.api.Database;
 import sagex.api.MediaFileAPI;
 
 /**
@@ -19,6 +22,7 @@ public class SageMediaFolder extends VirtualMediaFolder {
     private Object[] initList=null;
     private String uriCommand = null;
     private String sageQueryTypes = null;
+    private String titleFilter = null;
    
     /**
      * The Sage uri is in the form, sage://query/SAGE_TYPES, where SAGE_TYPES is T for TV, D for DVD, V for Vidoe, B for Bluray.
@@ -41,6 +45,16 @@ public class SageMediaFolder extends VirtualMediaFolder {
         uriCommand = uri.getHost();
         if ("query".equals(uriCommand)) {
             sageQueryTypes = parseLeadingSlash(uri.getPath());
+            String q = uri.getQuery();
+            if (q!=null) {
+                Pattern argPattern = Pattern.compile("([^=]+)=([^&$]+)");
+                Matcher argMatcher = argPattern.matcher(q);
+                while (argMatcher.find()) {
+                    if (argMatcher.group(1).equals("filterTitle")) {
+                        titleFilter = argMatcher.group(2);
+                    }
+                }
+            }
         }
     }
     
@@ -65,7 +79,12 @@ public class SageMediaFolder extends VirtualMediaFolder {
         } else {
             // do a query lookup (sage://query/TVMDB)
             if ("query".equals(uriCommand)) {
-                loadSageMediaFiles(MediaFileAPI.GetMediaFiles(sageQueryTypes));
+                log.debug("SageMediaFolder: Types: " + sageQueryTypes + "; Filter: " + titleFilter);
+                if (titleFilter==null) {
+                    loadSageMediaFiles(MediaFileAPI.GetMediaFiles(sageQueryTypes));
+                } else {
+                    loadSageMediaFiles(Database.SearchByText(titleFilter, sageQueryTypes));
+                }
             } else {
                 log.warn("No Action for SageURI: " + getLocationUri().toString());
             }

@@ -35,7 +35,6 @@ public class MediaMetadataFactory {
     }
 
     private List<IMediaMetadataProvider> metadataProviders = new ArrayList<IMediaMetadataProvider>();
-    private List<ICoverProvider>         coverProviders    = new ArrayList<ICoverProvider>();
 
     public MediaMetadataFactory() {
         // create the default provider list
@@ -177,22 +176,10 @@ public class MediaMetadataFactory {
         return provider;
     }
 
-    public List<ICoverProvider> getCoverProviders() {
-        return coverProviders;
-    }
-
-    public void addCoverProvider(ICoverProvider provider) {
-        log.info("Adding Cover Provider: " + provider.getInfo().getName());
-        coverProviders.add(provider);
-    }
-
-    public void removeCoverProvider(ICoverProvider cprovider) {
-        coverProviders.remove(cprovider);
-    }
-    
     public boolean canProviderAcceptQuery(IMediaMetadataProvider provider, SearchQuery query) {
+       if (provider.getSupportedSearchTypes()==null) return true;
+
        boolean accept =false;
-       
        for (SearchQuery.Type t : provider.getSupportedSearchTypes()) {
            if (t == query.getType()) return true;
        }

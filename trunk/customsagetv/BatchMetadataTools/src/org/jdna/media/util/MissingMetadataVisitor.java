@@ -5,6 +5,7 @@ import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
+import org.jdna.media.metadata.MetadataAPI;
 
 /**
  * Resource Visitor that collects ONLY resources that contain missing metadata.
@@ -43,7 +44,7 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
 
               // TODO: Use Phoenix_HasFanart() to check for missing fanart
                 
-                if (md == null || StringUtils.isEmpty(md.getMediaTitle())) {
+                if (md == null || StringUtils.isEmpty(MetadataAPI.getMediaTitle(md))) {
                     return true;
                 }
             } catch (Exception e) {

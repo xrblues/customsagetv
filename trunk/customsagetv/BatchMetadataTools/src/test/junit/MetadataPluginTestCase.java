@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Properties;
 
@@ -18,6 +19,7 @@ import javax.imageio.ImageIO;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
+import org.jdna.media.VirtualMediaFile;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataFactory;
@@ -27,6 +29,7 @@ import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.impl.StubMetadataProvider;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.sage.MetadataUpdaterPlugin;
+import org.jdna.sage.ScanningStatus;
 
 import sagex.SageAPI;
 import sagex.api.MediaFileAPI;
@@ -35,11 +38,11 @@ import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaArtifactType;
 import sagex.stub.StubSageAPI;
 
-public class BMTPhoenixTestCase extends TestCase {
-    public BMTPhoenixTestCase() {
+public class MetadataPluginTestCase extends TestCase {
+    public MetadataPluginTestCase() {
     }
 
-    public BMTPhoenixTestCase(String name) {
+    public MetadataPluginTestCase(String name) {
         super(name);
     }
     
@@ -185,6 +188,29 @@ public class BMTPhoenixTestCase extends TestCase {
         }
         
         provider.addMetadata(res, md);
+    }
+    
+    public void testScanningStatus() throws URISyntaxException {
+        ScanningStatus status = new ScanningStatus();
+        assertEquals(0, status.getTotalScanned());
+        assertEquals(0, status.getTotalFailed());
+        
+        VirtualMediaFile m1 = new VirtualMediaFile("test:/test1");
+        VirtualMediaFile m2 = new VirtualMediaFile("test:/test2");
+        VirtualMediaFile m3 = new VirtualMediaFile("test:/test3");
+        VirtualMediaFile m4 = new VirtualMediaFile("test:/test4");
+        status.addSuccess(m1);
+        status.addSuccess(m2);
+        assertEquals(1, status.getSuccessfulItems().size());
+        
+        status.addFailed(m3, "fail1");
+        status.addFailed(m4, "fail2");
+        assertEquals(2, status.getFailedItems().size());
+        
+        for (int i=0;i<10;i++) {
+            status.addFailed(m1, "fail");
+        }
+        assertEquals(5, status.getFailedItems().size());
     }
 
     @Override

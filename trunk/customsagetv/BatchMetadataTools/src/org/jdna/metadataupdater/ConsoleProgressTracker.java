@@ -3,6 +3,7 @@ package org.jdna.metadataupdater;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.util.ProgressTracker;
 
 public class ConsoleProgressTracker extends ProgressTracker<IMediaFile> {
@@ -26,7 +27,7 @@ public class ConsoleProgressTracker extends ProgressTracker<IMediaFile> {
         IMediaMetadata md = persistence.loadMetaData(item);
         String title = item.getTitle();
         if (md!=null) {
-            title=md.getMediaTitle();
+            title=MetadataAPI.getMediaTitle(md);
         }
         
         System.out.printf("Updated: %s; %s\n", title, item.getLocationUri());

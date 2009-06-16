@@ -11,6 +11,7 @@ import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.ProviderInfo;
@@ -145,8 +146,8 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         }
 
         // set the pimary to be the searcher
-        md.setProviderDataUrl(pri.getProviderDataUrl());
-        md.setProviderDataId(pri.getProviderDataId());
+        MetadataAPI.setProviderDataUrl(md, MetadataAPI.getProviderDataUrl(pri));
+        MetadataAPI.setProviderDataId(md, MetadataAPI.getProviderDataId(pri));
         return md;
     }
 
@@ -170,13 +171,13 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         IMediaMetadata searcher = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaDataByUrl(url);
         IMediaMetadata details = null;
         try {
-            if (searcher.getProviderDataId() != null) {
-                details = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaDataById(searcher.getProviderDataId());
+            if (MetadataAPI.getProviderDataId(searcher) != null) {
+                details = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaDataById(MetadataAPI.getProviderDataId(searcher));
             }
         } catch (Exception e) {
-            log.error("Failed to find details using searcher's metadataid: " + searcher.getProviderDataId() + " will try using title search", e);
+            log.error("Failed to find details using searcher's metadataid: " + MetadataAPI.getProviderDataId(searcher) + " will try using title search", e);
         }
-        details = searchDetailsByTitle(searcher.getMediaTitle());
+        details = searchDetailsByTitle(MetadataAPI.getMediaTitle(searcher));
         return mergeDetails(details, searcher);
     }
 }
