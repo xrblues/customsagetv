@@ -1,5 +1,11 @@
 package org.jdna.media;
 
+/**
+ * Return true if ANY of the filters return true
+ * 
+ * @author seans
+ *
+ */
 public class CompositeOrResourceFilter extends AbstractCompositeResourceFilter {
 
     public CompositeOrResourceFilter() {

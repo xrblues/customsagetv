@@ -3,6 +3,7 @@ package test;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaSearchResult;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataKey;
 
 public class TestUtils {
@@ -22,28 +23,16 @@ public class TestUtils {
     }
 
     public static void dumpMetaData(IMediaMetadata md) {
-        System.out.println("MetaData Begin");
-        System.out.printf("     Title: %s\n", md.getMediaTitle());
-        System.out.printf("      Year: %s\n", md.getYear());
-        if (md.getPoster() != null) {
-            System.out.printf("    Poster: %s\n", md.getPoster().getDownloadUrl());
+        for (MetadataKey k : MetadataKey.values()) {
+            Object o  =md.get(k);
+            if (o!=null) {
+                if (k.equals(MetadataKey.CAST_MEMBER_LIST)) {
+                    dumpCastMember((ICastMember[]) o);
+                } else {
+                    System.out.printf("%20s: %s\n", k, o);
+                }
+            }
         }
-        if (md.getBackground() != null) {
-            System.out.printf("Background: %s\n", md.getBackground().getDownloadUrl());
-        }
-        System.out.printf("UserRating: %s\n", md.getUserRating());
-        System.out.printf("ReleaseDate: %s\n", md.getReleaseDate());
-        for (String s : md.getGenres()) {
-            System.out.printf("Genre: %s\n", s);
-        }
-        System.out.printf("       Plot: %s\n", md.getDescription());
-        System.out.printf("MPAA Rating: %s\n", md.get(MetadataKey.MPAA_RATING));
-        System.out.printf("    Runtime: %s\n", md.getRuntime());
-        System.out.printf("Aspect Ratio: %s\n", md.get(MetadataKey.ASPECT_RATIO));
-        System.out.printf("    Company: %s\n", md.get(MetadataKey.COMPANY));
-        System.out.printf("Cast:\n");
-        dumpCastMember(md.getCastMembers(ICastMember.ALL));
-        System.out.println("MetaData End");
     }
 
     public static void dumpCastMember(ICastMember[] members) {

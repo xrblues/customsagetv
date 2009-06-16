@@ -21,7 +21,7 @@ public class MissingMetadataFilter implements IMediaResourceFilter {
     public boolean accept(IMediaResource resource) {
         if (resource instanceof SageMediaFile) {
             Object mf = SageMediaFile.getSageMediaFileObject(resource);
-            return !StringUtils.isEmpty(MediaFileAPI.GetMediaFileMetadata(mf, SageProperty.MEDIA_TITLE.sageKey)) && !StringUtils.isEmpty(MediaFileAPI.GetMediaFileMetadata(mf, SageProperty.MEDIA_TYPE.sageKey));
+            return StringUtils.isEmpty(MediaFileAPI.GetMediaFileMetadata(mf, SageProperty.MEDIA_TITLE.sageKey)) || StringUtils.isEmpty(MediaFileAPI.GetMediaFileMetadata(mf, SageProperty.MEDIA_TYPE.sageKey));
         }
         return false;
     }

@@ -10,6 +10,8 @@ import org.jdna.media.VirtualMediaFile;
 
 import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
+import sagex.phoenix.fanart.SageFanartUtil;
+import sagex.phoenix.fanart.SimpleMediaFile;
 
 public class SageMediaFile extends VirtualMediaFile {
     private static final Logger log = Logger.getLogger(SageMediaFile.class);
@@ -147,5 +149,28 @@ public class SageMediaFile extends VirtualMediaFile {
         } else {
             return AiringAPI.GetAiringTitle(getSageMediaFileObject(this));
         }
+    }
+
+    @Override
+    public URI getLocationUri() {
+        File f = getFile();
+        if (f!=null) {
+            return f.toURI();
+        } else {
+            return super.getLocationUri();
+        }
+    }
+
+    @Override
+    public String getTitle() {
+        // Sage Handles DVD Tiles a little differently, so let the FanartUtils figure out the title for us
+        if (mediaFile!=null && SageFanartUtil.IsDVDFile(mediaFile)) {
+            SimpleMediaFile smf = SageFanartUtil.GetSimpleMediaFile(mediaFile);
+            if (smf!=null) {
+                return smf.getTitle();
+            }
+        }
+        
+        return super.getTitle();
     }
 }

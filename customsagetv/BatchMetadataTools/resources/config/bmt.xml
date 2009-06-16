@@ -11,4 +11,30 @@
 	<group class="org.jdna.media.metadata.impl.sage.SageMetadataConfiguration"/>
 	<group class="org.jdna.sage.PluginConfiguration"/>
 	
+	<!-- Some Phoenix Configuration Items, but we duplicate them here because they are related metadata/fanart -->
+	<group label="Fanart">
+		<description>Fanart Configuration</description>
+		
+		<field key="phoenix/mediametadata/fanartSupportClass" label="Fanart Class" defaultValue="sagex.phoenix.fanart.PhoenixFanartSupport">
+			<description>Fanart Implementation (Do Not Change this unless you KNOW what you are doing)</description>
+		</field>
+
+		<field key="phoenix/mediametadata/mediaMetadataSupportClass" label="Metadata Implemenation" defaultValue="bmt.BMTMetadataSupport">
+			<description>Phoenix Metadata Implementation.  Default is Metadata Tools (bmt), don't change unless you KNOW what you are doing.</description>
+		</field>
+		
+		
+		<field key="phoenix/mediametadata/parseMediaFileForTVSeries" label="Parse Display Title for TV Series Name" defaultValue="false" type="boolean">
+			<description>This should never need to be enabled.  But if it is, then it parse the Display Title for the TV Series Name</description>
+		</field>
+
+		<field key="phoenix/mediametadata/tvSeriesRegex" label="TV Series Regexp" defaultValue=".*[\\/](.*)s([0-9]{1,2})\s*[exd]([[0-9]]{1,2})" editor="regex">
+			<description>Regex to use when parsing the Series Name from the Display Title</description>
+		</field>
+		
+		<field key="phoenix/mediametadata/tvSeasonRegex" label="TV Season Regexp" defaultValue=".*[\\/].*s([0-9]{1,2})\s*[exd]([[0-9]]{1,2})" editor="regex">
+			<description>Regex to use when parsing the Season Number from the Display Title</description>
+		</field>
+	</group>
+	
 </configuration>

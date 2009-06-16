@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 // TODO: Make this contain a map of ids
 public class MetadataID implements Serializable {
+    private static final long serialVersionUID = 1L;
     public static String[] getMetadataIdParts(String id) {
         if (id==null) return null;
         String parts[] = id.split(":");
@@ -11,6 +12,9 @@ public class MetadataID implements Serializable {
             return new String[] {id};
         }
         return parts;
+    }
+
+    public MetadataID() {
     }
     
     private String key, id;

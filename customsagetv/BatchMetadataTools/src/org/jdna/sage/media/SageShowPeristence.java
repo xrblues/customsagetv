@@ -1,5 +1,6 @@
 package org.jdna.sage.media;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
@@ -12,7 +13,9 @@ import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
+import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
@@ -24,6 +27,7 @@ import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
 import sagex.api.ShowAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.fanart.MediaArtifactType;
 
 /**
  * Updates the Sage Show Metadata for a TV Episode.
@@ -55,33 +59,67 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         Object airing = MediaFileAPI.GetMediaFileAiring(file);
         Object show = AiringAPI.GetShow(airing);
         
-        //md.set(MetadataKey.BACKGROUND_ART);
-        //md.set(MetadataKey.BANNER_ART, value);
+        String paths[] = phoenix.api.GetFanartBackgrounds(file);
+        if (paths!=null) {
+            for (String path : paths) {
+                MediaArt ma = new MediaArt();
+                ma.setDownloadUrl(new File(path).toURI().toString());
+                ma.setType(MediaArtifactType.BACKGROUND);
+                md.addMediaArt(ma);
+            }
+        }
+
+        paths = phoenix.api.GetFanartPosters(file);
+        if (paths!=null) {
+            for (String path : paths) {
+                MediaArt ma = new MediaArt();
+                ma.setDownloadUrl(new File(path).toURI().toString());
+                ma.setType(MediaArtifactType.POSTER);
+                md.addMediaArt(ma);
+            }
+        }
+
+        paths = phoenix.api.GetFanartBanners(file);
+        if (paths!=null) {
+            for (String path : paths) {
+                MediaArt ma = new MediaArt();
+                ma.setDownloadUrl(new File(path).toURI().toString());
+                ma.setType(MediaArtifactType.BANNER);
+                md.addMediaArt(ma);
+            }
+        }
+        
         //md.set(MetadataKey.CAST_MEMBER_LIST, value);
+        //md.set(MetadataKey.GENRE_LIST);
         md.set(MetadataKey.COMMENT,"");
         md.set(MetadataKey.COMPANY,"");
         md.set(MetadataKey.DESCRIPTION, ShowAPI.GetShowDescription(show));
         md.set(MetadataKey.DISPLAY_TITLE, MediaFileAPI.GetMediaTitle(file));
         md.set(MetadataKey.DURATION, String.valueOf(AiringAPI.GetAiringDuration(airing)));
+        
+        //md.set(MetadataKey.METADATA_PROVIDER_DATA_URL, "sage://"+MediaFileAPI.GetMediaFileID(file));
+        //md.set(MetadataKey.METADATA_PROVIDER_ID, String.valueOf(MediaFileAPI.GetMediaFileID(file)));
+        md.set(MetadataKey.MPAA_RATING, ShowAPI.GetShowRated(show));
+        //md.set(MetadataKey.MPAA_RATING_DESCRIPTION, value);
+        md.set(MetadataKey.LANGUAGE, ShowAPI.GetShowLanguage(show));
+        md.set(MetadataKey.RUNNING_TIME, AiringAPI.GetAiringDuration(airing));
+        md.set(MetadataKey.YEAR, ShowAPI.GetShowYear(show));
+
+        /*
+         * these now comming the SageCustomMetadataPersistence
+         */
+        /*
         md.set(MetadataKey.DVD_DISC, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.DISC.sageKey));
         md.set(MetadataKey.EPISODE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.EPISODE_NUMBER.sageKey));
         md.set(MetadataKey.EPISODE_TITLE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.EPISODE_TITLE.sageKey));
-        //md.set(MetadataKey.GENRE_LIST);
-        //md.set(MetadataKey.LANGUAGE);
-        //md.set(MetadataKey.MEDIA_ART_LIST);
         md.set(MetadataKey.MEDIA_TITLE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.MEDIA_TITLE.sageKey));
         md.set(MetadataKey.MEDIA_PROVIDER_DATA_ID, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.METADATA_PROVIDER_ID.sageKey));
         md.set(MetadataKey.MEDIA_TYPE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.MEDIA_TYPE.sageKey));
-        //md.set(MetadataKey.METADATA_PROVIDER_DATA_URL);
-        md.set(MetadataKey.METADATA_PROVIDER_ID, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.METADATA_PROVIDER_ID.sageKey));
-        //md.set(MetadataKey.MPAA_RATING);
-        //md.set(MetadataKey.MPAA_RATING_DESCRIPTION, value);
-        //md.set(MetadataKey.POSTER_ART);
-        //md.set(MetadataKey.RELEASE_DATE);
-        //md.set(MetadataKey.RUNNING_TIME);
-        //md.set(MetadataKey.SEASON);
-        //md.set(MetadataKey.USER_RATING);
-        //md.set(MetadataKey.YEAR);
+        md.set(MetadataKey.SEASON, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.SEASON_NUMBER.sageKey));
+        md.set(MetadataKey.USER_RATING, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.USER_RATING.sageKey));
+        md.set(MetadataKey.RELEASE_DATE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.ORIGINAL_AIR_DATE.sageKey));
+        */
+        
         
         return md;
     }
@@ -118,7 +156,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         log.debug("*** Title: " + title);
         boolean firstRun = ShowAPI.IsShowFirstRun(airing);
         String episode = (String) md.get(MetadataKey.EPISODE_TITLE);
-        String description = md.getDescription();
+        String description = MetadataAPI.getDescription(md);
         long duration = AiringAPI.GetAiringDuration(airing);
         String cat1 = ShowAPI.GetShowCategory(origShow);
         String cat2 = ShowAPI.GetShowSubCategory(origShow);
@@ -164,7 +202,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             duration = MediaFileAPI.GetDurationForSegment(sageMF, 0);
         }
         
-        String genre[] = md.getGenres();
+        String genre[] = MetadataAPI.getGenres(md);
         if (genre != null && genre.length > 0) {
             cat1 = genre[0];
         }
@@ -180,20 +218,20 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             mpaaExpandedRatings = new String[] { (String) md.get(MetadataKey.MPAA_RATING_DESCRIPTION) };
         }
 
-        if (md.getCastMembers(ICastMember.ALL) != null) {
+        if (MetadataAPI.getCastMembers(md, ICastMember.ALL) != null) {
             List<String> l = new LinkedList<String>();
             List<String> rl = new LinkedList<String>();
-            for (ICastMember cm : md.getCastMembers(ICastMember.ACTOR)) {
+            for (ICastMember cm : MetadataAPI.getCastMembers(md, ICastMember.ACTOR)) {
                 log.debug("Adding CastMember: " + cm.getName());
                 l.add(cm.getName());
                 rl.add("Actor");
             }
-            for (ICastMember cm : md.getCastMembers(ICastMember.DIRECTOR)) {
+            for (ICastMember cm : MetadataAPI.getCastMembers(md, ICastMember.DIRECTOR)) {
                 log.debug("Adding Director: " + cm.getName());
                 l.add(cm.getName());
                 rl.add("Director");
             }
-            for (ICastMember cm : md.getCastMembers(ICastMember.WRITER)) {
+            for (ICastMember cm : MetadataAPI.getCastMembers(md, ICastMember.WRITER)) {
                 log.debug("Adding Writer: " + cm.getName());
                 l.add(cm.getName());
                 rl.add("Writer");

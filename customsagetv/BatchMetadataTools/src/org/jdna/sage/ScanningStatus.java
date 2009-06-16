@@ -38,7 +38,11 @@ public class ScanningStatus extends ProgressTracker<IMediaFile> {
     public void addFailed(IMediaFile item, String msg, Throwable t) {
         totalFailed++;
         lastScanTime=System.currentTimeMillis();
-        getFailedItems().add(totalFailed%MAX, new FailedItem<IMediaFile>(item, msg, t));
+        if (getFailedItems().size()<MAX) {
+            getFailedItems().add(new FailedItem<IMediaFile>(item, msg, t));
+        } else {
+            getFailedItems().set(totalFailed%MAX, new FailedItem<IMediaFile>(item, msg, t));
+        }
     }
 
     /**
@@ -47,7 +51,11 @@ public class ScanningStatus extends ProgressTracker<IMediaFile> {
     @Override
     public void addSuccess(IMediaFile item) {
         lastScanTime=System.currentTimeMillis();
-        getSuccessfulItems().add(0, item);
+        if (getSuccessfulItems().size()==0) {
+            getSuccessfulItems().add(0, item);
+        } else {
+            getSuccessfulItems().set(0, item);
+        }
     }
 
     @Override
