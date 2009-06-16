@@ -30,6 +30,11 @@
     <servlet-name>browser</servlet-name>
     <servlet-class>org.jdna.bmt.web.server.BrowserServicesImpl</servlet-class>
   </servlet>
+
+  <servlet>
+    <servlet-name>sage</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.SageServicesImpl</servlet-class>
+  </servlet>
   
   <servlet>
     <servlet-name>media</servlet-name>
@@ -37,6 +42,11 @@
   </servlet>
   
   
+  <servlet-mapping>
+    <servlet-name>sage</servlet-name>
+    <url-pattern>/bmtweb/sage</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>media</servlet-name>
     <url-pattern>/media/*</url-pattern>

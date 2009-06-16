@@ -5,9 +5,8 @@ import org.jdna.bmt.web.client.ui.browser.MediaResult;
 import org.jdna.bmt.web.client.ui.browser.ScanOptionsPanel;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesPanel;
 import org.jdna.bmt.web.client.ui.status.StatusPanel;
+import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.util.Log;
-import org.jdna.media.metadata.MediaMetadata;
-import org.jdna.media.metadata.MetadataKey;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -24,10 +23,10 @@ import com.google.gwt.user.client.ui.Widget;
 public class AppPanel extends Composite {
     private DockPanel dp = new DockPanel();
     private Widget curPanel = null;
-    private MetadataKey key = MetadataKey.ALBUM;
     
     public AppPanel() {
         dp.setWidth("100%");
+        dp.setHeight("100%");
         
         Hyperlink status = new Hyperlink("Status", "status");
         status.addClickHandler(new ClickHandler(){
@@ -51,6 +50,13 @@ public class AppPanel extends Composite {
             }
         });
 
+        Hyperlink refresh = new Hyperlink("Refresh Library", "refresh");
+        refresh.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                setRefreshPanel();
+            }
+        });
+
         Grid header = new Grid(1,2);
         header.setWidth("100%");
         header.addStyleName("AppPanel-Header");
@@ -65,6 +71,7 @@ public class AppPanel extends Composite {
         hp.add(status);
         hp.add(configure);
         hp.add(scan);
+        hp.add(refresh);
         
         header.setWidget(0,1,hp);
         header.getCellFormatter().setHorizontalAlignment(0,1,HasHorizontalAlignment.ALIGN_RIGHT);
@@ -75,11 +82,6 @@ public class AppPanel extends Composite {
         initWidget(dp);
         
         setStatusPanel();
-        
-        System.out.println("********" + key);
-        MediaMetadata md = new MediaMetadata();
-        System.out.println("*********** CREATED MEDIA METADATA");
-        
     }
     
     protected void setScanPanel() {
@@ -89,9 +91,17 @@ public class AppPanel extends Composite {
             }
 
             public void onSuccess(MediaResult[] result) {
-                setPanel(new MediaEditor(result));
+                if (result == null || result.length==0) {
+                    Dialogs.showMessage("No Matches");
+                } else {
+                    setPanel(new MediaEditor(result));
+                }
             }
         });
+    }
+
+    protected void setRefreshPanel() {
+        RefreshOptionsPanel.showDialog();
     }
 
     protected void setConfigurePanel() {
@@ -107,6 +117,7 @@ public class AppPanel extends Composite {
             dp.remove(curPanel);
         }
         dp.add(panel, DockPanel.CENTER);
+        dp.setCellHeight(panel, "100%");
         curPanel = panel;
     }
 }

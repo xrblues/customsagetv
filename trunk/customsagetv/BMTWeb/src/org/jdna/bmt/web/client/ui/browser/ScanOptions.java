@@ -5,15 +5,17 @@ import java.io.Serializable;
 import org.jdna.bmt.web.client.util.Property;
 
 public class ScanOptions implements Serializable {
-    private Property<Boolean> scanAll = new Property<Boolean>(Boolean.FALSE);
-    private Property<Boolean> scanDVD = new Property<Boolean>(Boolean.TRUE);
-    private Property<Boolean> scanVideo = new Property<Boolean>(Boolean.TRUE);
-    private Property<Boolean> scanTV = new Property<Boolean>(Boolean.TRUE);
+    private Property<String> filter = new Property<String>();
+    
+    private Property<Boolean> scanAll = new Property<Boolean>(Boolean.TRUE);
+    private Property<Boolean> scanDVD = new Property<Boolean>(Boolean.FALSE);
+    private Property<Boolean> scanVideo = new Property<Boolean>(Boolean.FALSE);
+    private Property<Boolean> scanTV = new Property<Boolean>(Boolean.FALSE);
 
-    private Property<Boolean> scanMissingMetadata = new Property<Boolean>(Boolean.TRUE);
-    private Property<Boolean> scanMissingPoster = new Property<Boolean>(Boolean.TRUE);
-    private Property<Boolean> scanMissingBackground = new Property<Boolean>(Boolean.TRUE);
-    private Property<Boolean> scanMissingBanner = new Property<Boolean>(Boolean.TRUE);
+    private Property<Boolean> scanMissingMetadata = new Property<Boolean>(Boolean.FALSE);
+    private Property<Boolean> scanMissingPoster = new Property<Boolean>(Boolean.FALSE);
+    private Property<Boolean> scanMissingBackground = new Property<Boolean>(Boolean.FALSE);
+    private Property<Boolean> scanMissingBanner = new Property<Boolean>(Boolean.FALSE);
     
     private Property<Boolean> updateMetadata = new Property<Boolean>(Boolean.TRUE);
     private Property<Boolean> importTV = new Property<Boolean>(Boolean.FALSE);
@@ -68,5 +70,8 @@ public class ScanOptions implements Serializable {
     }
     public Property<Boolean> getOverwriteFanart() {
         return overwriteFanart;
+    }
+    public Property<String> getFilter() {
+        return filter;
     }
 }

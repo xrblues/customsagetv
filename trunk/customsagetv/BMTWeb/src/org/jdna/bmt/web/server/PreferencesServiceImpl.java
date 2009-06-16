@@ -147,7 +147,7 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
         String parts[] = level.split(",");
         prefs.setLevel(parts[0]);
         prefs.setFile(props.getProperty("log4j.appender.log.File", "sage-plugins-log4j.log"));
-        prefs.setPattern(props.getProperty("log4j.appender.log.layout.ConversionPattern", "%d{ISO8601} %5p [%t] %C - %m%n"));
+        prefs.setPattern(props.getProperty("log4j.appender.log.layout.ConversionPattern", "%5r %-5p [%t] %c - %m%n"));
         
         prefs.setBmtLevel(props.getProperty("log4j.logger.bmt", "info"));
         prefs.setPhoenixLevel(props.getProperty("log4j.logger.phoenix", "info"));
@@ -165,7 +165,7 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
         props.setProperty("log4j.appender.log.layout.ConversionPattern", prefs.getPattern().get());
         
         props.setProperty("log4j.appender.log","org.apache.log4j.DailyRollingFileAppender");
-        props.setProperty("log4j.appender.log.DatePattern","'.'yyyy-MM-dd-a");
+        props.setProperty("log4j.appender.log.DatePattern","'.'yyyy-MM-dd");
         props.setProperty("log4j.appender.log.layout","org.apache.log4j.PatternLayout");
         
         props.setProperty("log4j.logger.org.jdna",prefs.getBmtLevel().get());

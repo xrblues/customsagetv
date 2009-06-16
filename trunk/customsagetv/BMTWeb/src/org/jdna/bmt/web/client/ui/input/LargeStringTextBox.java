@@ -6,6 +6,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class LargeStringTextBox extends EditorTextBox {
+    private boolean readonly;
+
     private static class TextAreaPanel extends TextEditorPanel {
         public TextAreaPanel() {
             super(new TextArea());
@@ -15,6 +17,10 @@ public class LargeStringTextBox extends EditorTextBox {
             // set our preferred width in px for the dialog
             setPreferredWidth("450px");
         }
+
+        public void setReadOnly(boolean readonly) {
+            ((TextArea)getHasValueWidget()).setReadOnly(readonly);
+        }
     }
 
     public LargeStringTextBox(TextBox tb, String caption) {
@@ -23,6 +29,13 @@ public class LargeStringTextBox extends EditorTextBox {
     
     @Override
     protected TextEditorPanel createEditorPanel() {
-        return new TextAreaPanel();
+        TextAreaPanel text = new TextAreaPanel();
+        text.setReadOnly(readonly);
+        return text;
+    }
+    
+    public void setReadOnly(boolean readonly) {
+        this.readonly=readonly;
+        getTextBox().setReadOnly(readonly);
     }
 }

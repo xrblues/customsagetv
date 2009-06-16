@@ -69,6 +69,9 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
             status.add(new StatusValue("Required Version", phoenix.api.GetRequiredSageVersion(), warn(!phoenix.api.IsAtLeastVersion(SageTV.getSageVersion(), phoenix.api.GetRequiredSageVersion()))));
             status.add(new StatusValue("Java Version", System.getProperty("java.version")));
             status.add(new StatusValue("Server", String.valueOf(!Global.IsClient()), warn(Global.IsClient()), "BMT Web UI should be running on the SageTV server."));
+
+            status.add(new StatusValue("Recordings Used Diskspace", String.format("%,.2fG", ((float)Global.GetUsedVideoDiskspace())/1000.0f/1000.0f/1000.0f)));
+            status.add(new StatusValue("Library Import Scan in Progress", String.valueOf(Global.IsDoingLibraryImportScan())));
         } else {
             status.add(new StatusValue("Unknown Status", statusType, StatusValue.ERROR));
         }
