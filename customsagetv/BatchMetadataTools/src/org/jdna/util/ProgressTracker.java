@@ -1,7 +1,6 @@
 package org.jdna.util;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class ProgressTracker<T> implements IProgressMonitor {
     public static class FailedItem<T2> {
@@ -31,8 +30,8 @@ public class ProgressTracker<T> implements IProgressMonitor {
     }
     
     private IProgressMonitor monitor = null;
-    private List<T> success = new LinkedList<T>();
-    private List<FailedItem<T>> failed = new LinkedList<FailedItem<T>>();
+    private LinkedList<T> success = new LinkedList<T>();
+    private LinkedList<FailedItem<T>> failed = new LinkedList<FailedItem<T>>();
     
     public ProgressTracker() {
         this(new BasicProgressMonitor());
@@ -54,11 +53,16 @@ public class ProgressTracker<T> implements IProgressMonitor {
         failed.add(new FailedItem<T>(item, msg, t));
     }
     
-    public List<T> getSuccessfulItems() {
+    /**
+     * LinkedList is used as the return type because we want to access the list as a List and Queue, depending on the scenario.
+     * 
+     * @return
+     */
+    public LinkedList<T> getSuccessfulItems() {
         return success;
     }
     
-    public List<FailedItem<T>> getFailedItems() {
+    public LinkedList<FailedItem<T>> getFailedItems() {
         return failed;
     }
 
@@ -92,5 +96,17 @@ public class ProgressTracker<T> implements IProgressMonitor {
 
     public void setTaskName(String name) {
         monitor.setTaskName(name);
+    }
+
+    public boolean isDone() {
+        return monitor.isDone();
+    }
+
+    public int getTotalWork() {
+        return monitor.getTotalWork();
+    }
+
+    public int getWorked() {
+        return monitor.getWorked();
     }
 }

@@ -59,11 +59,6 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
 
     private File getPropertyFile(IMediaResource mediaFile) {
         File f = new File(mediaFile.getLocationUri());
-        if (!f.exists()) {
-            log.error("Property File Location does not exist: " + f.getAbsolutePath() + "; for MediaFile: " + mediaFile.getLocationUri());
-            return null;
-        }
-        
         return FanartUtil.resolvePropertiesFile(f);
     }
 

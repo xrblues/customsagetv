@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jdna.media.FileMediaFolder;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.MovieResourceFilter;
@@ -126,18 +127,25 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             if (o != null) {
                 mr = new SageMediaFile(o);
             } else {
-                log.warn("Can't Handle MediaItem: " + file.getAbsolutePath());
-                return null;
+                log.warn("Not and existing Sage Media File: " + file.getAbsolutePath() + "; Treating it as a regular File Media File.");
+                mr = FileMediaFolder.createResource(file);
             }
             
             if (filter.accept(mr)) {
                 log.debug("Scanning MediaFile: " + file.getAbsolutePath() + "; arg: " + arg + "; Providers: " + metadataConfig.getDefaultProviderId());
 
-                IMediaMetadata md = persistence.loadMetaData(mr);
-                if (md != null) {
-                    Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
-                    log.info("Reusing existing metadata for MediaFile: " + file.getAbsolutePath());
-                    return props;
+                IMediaMetadata md = null;
+                
+                // don't overwrite metadata, unless we are asked to
+                if (!pluginConfig.getOverwriteMetadata()) {
+                    md = persistence.loadMetaData(mr);
+                    if (md != null) {
+                        Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
+                        log.info("Reusing existing metadata for MediaFile: " + file.getAbsolutePath());
+                        status.addSuccess((IMediaFile) mr);
+                        status.worked(1);
+                        return props;
+                    }
                 }
 
                 // update the metadata and download fanart...
@@ -152,7 +160,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                     return props;
                 } else {
                     log.error("Failed to Fetch Metadata for Media: " + file.getAbsolutePath());
-                    status.addFailed((IMediaFile) mr, "Scan did not produce a Property File.");
+                    //status.addFailed((IMediaFile) mr, "Scan did not produce a Property File.");
                 }
             } else {
                 log.info("Type not recognized.  Can't perform metadata/fanart lookup on file file: " + file.getAbsolutePath());
@@ -162,6 +170,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             status.addFailed((IMediaFile) mr, "Failed with an error, while doing Automatic Metadata/Fanart lookup", e);
         } finally {
             status.done();
+            System.out.println("BMT: Processed File: " + file.getAbsolutePath());
         }
 
         log.debug("Returning NULL Properties for File: " + file.getAbsolutePath());

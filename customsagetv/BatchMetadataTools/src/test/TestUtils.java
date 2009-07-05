@@ -3,7 +3,6 @@ package test;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaSearchResult;
-import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataKey;
 
 public class TestUtils {

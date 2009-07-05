@@ -40,7 +40,7 @@ public class ProgressMonitorTestCase extends TestCase {
         assertEquals(1, track.getSuccessfulItems().size());
         assertEquals(1, track.getFailedItems().size());
         
-        FailedItem<String> item =  track.getFailedItems().get(0);
+        FailedItem<String> item =  track.getFailedItems().peek();
         assertEquals("TestFailed", item.getItem());
     }
 }

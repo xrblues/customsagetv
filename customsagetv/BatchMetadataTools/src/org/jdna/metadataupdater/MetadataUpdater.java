@@ -42,7 +42,6 @@ import sagex.api.WidgetAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.IConfigurationMetadataVisitor;
-import sagex.phoenix.configuration.XmlMetadataProvider;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 
 /**

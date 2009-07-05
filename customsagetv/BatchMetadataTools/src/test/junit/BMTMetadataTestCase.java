@@ -8,7 +8,6 @@ import junit.framework.TestCase;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.url.UrlConfiguration;
 
-import sagex.SageAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.ConfigurationManager;
 import sagex.phoenix.configuration.ConfigurationMetadataManager;
@@ -17,7 +16,6 @@ import sagex.phoenix.configuration.Group;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.IConfigurationMetadataVisitor;
 import sagex.phoenix.configuration.XmlMetadataProvider;
-import sagex.stub.StubSageAPI;
 
 public class BMTMetadataTestCase extends TestCase {
     public BMTMetadataTestCase() {

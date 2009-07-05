@@ -2,12 +2,12 @@ package test.junit;
 
 import java.io.File;
 
+import junit.framework.TestCase;
 import sagex.SageAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.ConfigurationMetadataManager;
 import sagex.phoenix.configuration.XmlMetadataProvider;
 import sagex.stub.StubSageAPI;
-import junit.framework.TestCase;
 
 public class InitBMT extends TestCase {
     private static StubSageAPI api = null;

@@ -21,10 +21,13 @@ public interface IProgressMonitor {
     
     public void setCancelled(boolean cancel);
     public boolean isCancelled();
+    public boolean isDone();
     
     /**
      * Return the % complete, ie, a number from 0.0 to 1.0 representing the amount of work complete.
      * @return
      */
     public double internalWorked();
+    public int getWorked();
+    public int getTotalWork();
 }

@@ -45,5 +45,10 @@
 			defaultValue="false" type="boolean">
 			<description>???</description>
 		</field>
+
+		<field key="thread_debug" label="Thread Debug"
+			defaultValue="false" type="boolean">
+			<description>helps w/ support issues when using multiple clients</description>
+		</field>
 	</group>
 </configuration>

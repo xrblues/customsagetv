@@ -70,14 +70,13 @@ public class SageMediaFilesTestCase extends TestCase {
         provider.addCall("IsDVD",true);
         SageAPI.setProvider(provider);
 
-        File f = new File("/tmp/movie cd1.avi");
+        File f = new File("/tmp/movie cd1");
         Object sageMF = MediaFileAPI.AddMediaFile(f, "Movie");
         
         IMediaFile mf = new SageMediaFile(sageMF);
         assertEquals("getBasename()","movie cd1",mf.getBasename());
-        assertEquals("getExtension()","avi",mf.getExtension());
         assertEquals("getLocationUri()",f.toURI(),mf.getLocationUri());
-        assertEquals("getName()","movie cd1.avi",mf.getName());
+        assertEquals("getName()","movie cd1",mf.getName());
         assertEquals("getTitle()","movie cd1",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());
         assertEquals("getContentType()", ContentType.HDFOLDER, mf.getContentType());
@@ -89,14 +88,13 @@ public class SageMediaFilesTestCase extends TestCase {
         provider.addCall("IsBluRay",true);
         SageAPI.setProvider(provider);
 
-        File f = new File("/tmp/movie cd1.avi");
+        File f = new File("/tmp/movie cd1/");
         Object sageMF = MediaFileAPI.AddMediaFile(f, "Movie");
         
         IMediaFile mf = new SageMediaFile(sageMF);
         assertEquals("getBasename()","movie cd1",mf.getBasename());
-        assertEquals("getExtension()","avi",mf.getExtension());
         assertEquals("getLocationUri()",f.toURI(),mf.getLocationUri());
-        assertEquals("getName()","movie cd1.avi",mf.getName());
+        assertEquals("getName()","movie cd1",mf.getName());
         assertEquals("getTitle()","movie cd1",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());
         assertEquals("getContentType()", ContentType.HDFOLDER, mf.getContentType());

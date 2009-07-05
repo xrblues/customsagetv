@@ -12,8 +12,10 @@ public class BasicProgressMonitor implements IProgressMonitor {
     private int totalWork;
     private int worked;
     private int unknownTotal=1000;
+    private boolean done = false;
     
     public BasicProgressMonitor() {
+        totalWork=IProgressMonitor.UNKNOWN;
     }
     
     public void beginTask(String name, int worked) {
@@ -22,6 +24,7 @@ public class BasicProgressMonitor implements IProgressMonitor {
     }
 
     public void done() {
+        done=true;
     }
 
     public boolean isCancelled() {
@@ -54,5 +57,17 @@ public class BasicProgressMonitor implements IProgressMonitor {
 
     public void setTaskName(String name) {
         this.task = name;
+    }
+    
+    public boolean isDone() {
+        return done;
+    }
+
+    public int getTotalWork() {
+        return totalWork;
+    }
+
+    public int getWorked() {
+        return worked;
     }
 }

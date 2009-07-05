@@ -74,6 +74,7 @@ public class SageMediaFolder extends VirtualMediaFolder {
 
     @Override
     protected void loadMembers() {
+        log.debug("Beging Loading Sage Media List");
         if (initList!=null) {
             loadSageMediaFiles(initList);
         } else {
@@ -89,6 +90,7 @@ public class SageMediaFolder extends VirtualMediaFolder {
                 log.warn("No Action for SageURI: " + getLocationUri().toString());
             }
         }
+        log.debug("Finished Loading Sage Media List");
     }
     
     private String parseLeadingSlash(String path) {
@@ -103,9 +105,7 @@ public class SageMediaFolder extends VirtualMediaFolder {
     }
 
     protected void loadSageMediaFiles(Object[] list) {
-        for (Object o: list) {
-            addMember(new SageMediaFile(o));
-        }
+        members = new SageMediaList(list);
     }
 
     public String getUriCommand() {

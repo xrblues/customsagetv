@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 public abstract class AbstractMediaFolder extends AbstractMediaResource implements IMediaFolder {
     private static final Logger log =  Logger.getLogger(AbstractMediaFolder.class);
-    private List<IMediaResource> members = new LinkedList<IMediaResource>();
+    protected List<IMediaResource> members = new LinkedList<IMediaResource>();
     private boolean loaded = false;
     
     public AbstractMediaFolder(URI uri) {
