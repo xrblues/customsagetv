@@ -12,5 +12,5 @@
     <SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml
   </Set>
   <Set name="extractWAR">true</Set>
-  <Set name="copyWebDir">false</Set>
+  <Set name="copyWebDir">true</Set>
 </Configure>

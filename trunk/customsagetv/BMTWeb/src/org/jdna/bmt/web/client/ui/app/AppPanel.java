@@ -85,14 +85,13 @@ public class AppPanel extends Composite {
     }
     
     protected void setScanPanel() {
-        ScanOptionsPanel.showDialog(new AsyncCallback<MediaResult[]>() {
+        ScanOptionsPanel.showDialog(new AsyncCallback<String>() {
             public void onFailure(Throwable caught) {
                 Log.error("Service return an error", caught);
             }
-
-            public void onSuccess(MediaResult[] result) {
-                if (result == null || result.length==0) {
-                    Dialogs.showMessage("No Matches");
+            public void onSuccess(String result) {
+                if (result==null) {
+                    Log.error("No Results");
                 } else {
                     setPanel(new MediaEditor(result));
                 }

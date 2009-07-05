@@ -1,7 +1,6 @@
 package org.jdna.bmt.web.client.ui.input;
 
 
-import org.htmlparser.filters.IsEqualFilter;
 import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.Property;
 import org.jdna.bmt.web.client.util.StringUtils;

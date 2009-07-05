@@ -23,7 +23,7 @@ public class ScanOptionsPanel extends Composite {
     private ScanOptions options = new ScanOptions();
     private final BrowserServiceAsync browserService = GWT.create(BrowserService.class);
 
-    public ScanOptionsPanel(final AsyncCallback<MediaResult[]> scanHandler, final ClickHandler closeHandler) {
+    public ScanOptionsPanel(final AsyncCallback<String> scanHandler, final ClickHandler closeHandler) {
         VerticalPanel panel = new VerticalPanel();
         Simple2ColFormLayoutPanel propPanel1 = new Simple2ColFormLayoutPanel();
         Simple2ColFormLayoutPanel propPanel2 = new Simple2ColFormLayoutPanel();
@@ -41,15 +41,15 @@ public class ScanOptionsPanel extends Composite {
             public void onClick(ClickEvent event) {
                 closeHandler.onClick(event);
                 final PopupPanel wait = Dialogs.showWaitingPopup("Scanning...");
-                browserService.scan(options, new AsyncCallback<MediaResult[]>() {
+                browserService.scan(options, new AsyncCallback<String>() {
                     public void onFailure(Throwable caught) {
                         wait.hide();
                         scanHandler.onFailure(caught);
                     }
 
-                    public void onSuccess(MediaResult[] result) {
+                    public void onSuccess(String scanId) {
                         wait.hide();
-                        scanHandler.onSuccess(result);
+                        scanHandler.onSuccess(scanId);
                     }
                 });
             }
@@ -64,14 +64,13 @@ public class ScanOptionsPanel extends Composite {
         panel.add(buttons);
         panel.setCellHorizontalAlignment(buttons, HasHorizontalAlignment.ALIGN_RIGHT);
         
-        propPanel1.add("Scan Entire Collection", InputBuilder.checkbox().bind(options.getScanAll()).widget());
-        propPanel1.add("-- Scan DVDs", InputBuilder.checkbox().bind(options.getScanDVD()).widget());
-        propPanel1.add("-- Scan Vidoes", InputBuilder.checkbox().bind(options.getScanVideo()).widget());
-        propPanel1.add("-- Scan Recordings", InputBuilder.checkbox().bind(options.getScanTV()).widget());
-        propPanel1.add("Include Missing Metadata", InputBuilder.checkbox().bind(options.getScanMissingMetadata()).widget());
-        propPanel1.add("Include Missing Posters", InputBuilder.checkbox().bind(options.getScanMissingPoster()).widget());
-        propPanel1.add("Include Missing Backgrounds", InputBuilder.checkbox().bind(options.getScanMissingBackground()).widget());
-        propPanel1.add("Include Missing Banners", InputBuilder.checkbox().bind(options.getScanMissingBanner()).widget());
+        propPanel1.add("Scan DVDs", InputBuilder.checkbox().bind(options.getScanDVD()).widget());
+        propPanel1.add("Scan Vidoes", InputBuilder.checkbox().bind(options.getScanVideo()).widget());
+        propPanel1.add("Scan Recordings", InputBuilder.checkbox().bind(options.getScanTV()).widget());
+        propPanel1.add("-- Missing Metadata", InputBuilder.checkbox().bind(options.getScanMissingMetadata()).widget());
+        propPanel1.add("-- Missing Posters", InputBuilder.checkbox().bind(options.getScanMissingPoster()).widget());
+        propPanel1.add("-- Missing Backgrounds", InputBuilder.checkbox().bind(options.getScanMissingBackground()).widget());
+        propPanel1.add("-- Missing Banners", InputBuilder.checkbox().bind(options.getScanMissingBanner()).widget());
         propPanel2.add("Search for Metadata", InputBuilder.checkbox().bind(options.getUpdateMetadata()).widget());
         propPanel2.add("Search for Fanart", InputBuilder.checkbox().bind(options.getUpdateFanart()).widget());
         propPanel2.add("Overwrite Existing Metadata", InputBuilder.checkbox().bind(options.getOverwriteMetadata()).widget());
@@ -82,7 +81,6 @@ public class ScanOptionsPanel extends Composite {
         propPanel2.add(new HTML("<hr/>"), new HTML("<hr/>"));
         
         propPanel2.add("Don't Update Anything, Just Scan", InputBuilder.checkbox().bind(options.getDontUpdate()).widget());
-        propPanel2.add("Run in Background", InputBuilder.checkbox().bind(options.getRunInBackground()).widget());
         
         HorizontalPanel fp = new HorizontalPanel();
         fp.setSpacing(5);
@@ -95,15 +93,15 @@ public class ScanOptionsPanel extends Composite {
         initWidget(panel);
     }
     
-    public static void showDialog(final AsyncCallback<MediaResult[]> callback) {
+    public static void showDialog(final AsyncCallback<String> callback) {
         final DialogBox dialog = new DialogBox(false, true);
         dialog.setText("New Metadata Scan");
-        dialog.setWidget(new ScanOptionsPanel(new AsyncCallback<MediaResult[]>() {
+        dialog.setWidget(new ScanOptionsPanel(new AsyncCallback<String>() {
             public void onFailure(Throwable caught) {
                 dialog.hide();
                 callback.onFailure(caught);
             }
-            public void onSuccess(MediaResult[] result) {
+            public void onSuccess(String result) {
                 dialog.hide();
                 callback.onSuccess(result);
             }

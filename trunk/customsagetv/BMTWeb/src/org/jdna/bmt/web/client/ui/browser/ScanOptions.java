@@ -7,7 +7,6 @@ import org.jdna.bmt.web.client.util.Property;
 public class ScanOptions implements Serializable {
     private Property<String> filter = new Property<String>();
     
-    private Property<Boolean> scanAll = new Property<Boolean>(Boolean.TRUE);
     private Property<Boolean> scanDVD = new Property<Boolean>(Boolean.FALSE);
     private Property<Boolean> scanVideo = new Property<Boolean>(Boolean.FALSE);
     private Property<Boolean> scanTV = new Property<Boolean>(Boolean.FALSE);
@@ -21,14 +20,10 @@ public class ScanOptions implements Serializable {
     private Property<Boolean> importTV = new Property<Boolean>(Boolean.FALSE);
     private Property<Boolean> updateFanart = new Property<Boolean>(Boolean.TRUE);
     private Property<Boolean> dontUpdate = new Property<Boolean>(Boolean.FALSE);
-    private Property<Boolean> runInBackground = new Property<Boolean>(Boolean.FALSE);
 
     private Property<Boolean> overwriteMetadata = new Property<Boolean>(Boolean.FALSE);
     private Property<Boolean> overwriteFanart = new Property<Boolean>(Boolean.FALSE);
     
-    public Property<Boolean> getScanAll() {
-        return scanAll;
-    }
     public Property<Boolean> getScanDVD() {
         return scanDVD;
     }
@@ -61,9 +56,6 @@ public class ScanOptions implements Serializable {
     }
     public Property<Boolean> getDontUpdate() {
         return dontUpdate;
-    }
-    public Property<Boolean> getRunInBackground() {
-        return runInBackground;
     }
     public Property<Boolean> getOverwriteMetadata() {
         return overwriteMetadata;
