@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1580,6 +1580,20 @@ public static java.lang.String CalculateMD5Sum (java.io.File FilePath) {
   Object o = sagex.SageAPI.call("CalculateMD5Sum", new Object[] {FilePath});
   if (o!=null) return (java.lang.String) o;
   return null;
+}
+
+/**
+Returns the amount of time in milliseconds since the last user input occurred for this UI (used for doing things while the user is idle)
+
+Returns:
+the amount of time in milliseconds since the last user input occurred
+Since:
+6.6
+ */
+public static long GetTimeSinceLastInput () {
+  Object o = sagex.SageAPI.call("GetTimeSinceLastInput", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 

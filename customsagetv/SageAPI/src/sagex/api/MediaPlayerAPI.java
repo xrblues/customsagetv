@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaPlayerAPI.html'>MediaPlayerAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -254,6 +254,24 @@ true if the request was successful, a localized error message otherwise
  */
 public static java.lang.Object WatchLive (java.lang.String CaptureDeviceInput, long PauseBufferSize) {
   Object o = sagex.SageAPI.call("WatchLive", new Object[] {CaptureDeviceInput,PauseBufferSize});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+Instructs SageTV to take control of the specified CaptureDeviceInput. The device may then be used
+ for channel scanning. This will cause any prompts to occur that are a result of taking control of the device.
+ When done using it; CloseAndWaitUntilClosed() should be called.
+
+Parameters:
+CaptureDeviceInput- the capture input to control
+Returns:
+true if the request was successful, a localized error message otherwise
+Since:
+6.6
+ */
+public static java.lang.Object LockTuner (java.lang.String CaptureDeviceInput) {
+  Object o = sagex.SageAPI.call("LockTuner", new Object[] {CaptureDeviceInput});
   if (o!=null) return (java.lang.Object) o;
   return null;
 }
@@ -850,6 +868,64 @@ public static boolean IsMediaPlayerSignalLost () {
   Object o = sagex.SageAPI.call("IsMediaPlayerSignalLost", (Object[])null);
   if (o!=null) return (Boolean) o;
   return false;
+}
+
+/**
+Gets the delay in milliseconds that is applied to external subtitle files when they are used during playback (can be positive or negative)
+
+Returns:
+the delay in milliseconds that is applied to external subtitle files when they are used during playback.
+Since:
+6.6
+ */
+public static long GetSubtitleDelay () {
+  Object o = sagex.SageAPI.call("GetSubtitleDelay", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
+}
+
+/**
+Sets the delay in milliseconds that is applied to external subtitle files when they are used during playback (can be positive or negative)
+
+Parameters:
+DelayMsec- the delay in milliseconds that is applied to external subtitle files when they are used during playback
+Since:
+6.6
+ */
+public static void SetSubtitleDelay (long DelayMsec) {
+   sagex.SageAPI.call("SetSubtitleDelay", new Object[] {DelayMsec});
+}
+
+/**
+Returns true if the subtitles for the currently loaded file can have their timing adjusted. This is true for subtitles
+ that come from external files
+
+Returns:
+true if the subtitles for the currently loaded file can have their timing adjusted; false otherwise
+Since:
+6.6
+ */
+public static boolean CanAdjustSubtitleTiming () {
+  Object o = sagex.SageAPI.call("CanAdjustSubtitleTiming", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Adjusts the timing for subtitle display by increasing/decreasing the delay so that the sub at the relative SubCount position
+ would be currently displayed.
+
+Parameters:
+SubCount- the relative position from the current sub of the sub that should be displayed now
+Returns:
+the value in milliseconds of the current subtitle delay (same as return from GetSubtitleDelay())
+Since:
+6.6
+ */
+public static long ApplyRelativeSubtitleAdjustment (int SubCount) {
+  Object o = sagex.SageAPI.call("ApplyRelativeSubtitleAdjustment", new Object[] {SubCount});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**

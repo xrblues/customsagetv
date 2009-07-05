@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaFileAPIFactory.html'>MediaFileAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -169,6 +169,9 @@ public class MediaFileAPIFactory {
    }
    if (command.equals("GetMediaFileMetadata")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMediaFileMetadata",parameters,Object.class,java.lang.String.class);
+   }
+   if (command.equals("SetMediaFileMetadata")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetMediaFileMetadata",parameters,Object.class,java.lang.String.class,java.lang.String.class);
    }
    if (command.equals("RotatePictureFile")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"RotatePictureFile",parameters,Object.class,int.class);

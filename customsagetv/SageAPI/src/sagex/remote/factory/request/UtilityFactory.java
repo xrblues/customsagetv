@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/UtilityFactory.html'>UtilityFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -309,6 +309,9 @@ public class UtilityFactory {
    }
    if (command.equals("CalculateMD5Sum")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CalculateMD5Sum",parameters,java.io.File.class);
+   }
+   if (command.equals("GetTimeSinceLastInput")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetTimeSinceLastInput",parameters,null);
    }
    throw new RuntimeException("Invalid UtilityFactory Command: "+command);
    }

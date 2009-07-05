@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/GlobalFactory.html'>GlobalFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -18,6 +18,9 @@ public class GlobalFactory {
    }
    if (command.equals("RefreshArea")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"RefreshArea",parameters,java.lang.String.class);
+   }
+   if (command.equals("RefreshAreaForVariable")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"RefreshAreaForVariable",parameters,java.lang.String.class,java.lang.Object.class);
    }
    if (command.equals("Repaint")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"Repaint",parameters,null);
@@ -252,6 +255,12 @@ public class GlobalFactory {
    }
    if (command.equals("SetRemoteEventEncryptionEnabled")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetRemoteEventEncryptionEnabled",parameters,boolean.class);
+   }
+   if (command.equals("CachePlaceshifterLogin")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CachePlaceshifterLogin",parameters,null);
+   }
+   if (command.equals("CanCachePlaceshifterLogin")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CanCachePlaceshifterLogin",parameters,null);
    }
    if (command.equals("ReloadSystemHooks")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"ReloadSystemHooks",parameters,null);

@@ -4,7 +4,7 @@
 	
 	<property name="target" value="target"/>
 	<property name="name" value="sagex.api"/>
-	<property name="version" value="6.5.15-5"/>
+	<property name="version" value="6.5.19"/>
 	<property name="jarname" value="${name}.jar"/>
 
 	<path id="SageAPI.classpath">

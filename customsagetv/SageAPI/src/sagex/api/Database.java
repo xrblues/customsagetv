@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Database.html'>Database</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -32,7 +32,7 @@ Filters data by a method. Each element in the 'Data' has the 'Method' executed o
  For Maps & Collections this is done in place. For Arrays a new Array is created.
 
 Parameters:
-Data- the data that is to be filtered; this can be a java.util.Collection, java.util.Map or an Array. For Maps & Collections the filtering is done IN-PLACE.
+Data- the data that is to be filtered; this can be a java.util.Collection, java.util.Map or an Array. For Maps & Collections the filtering is done IN-PLACE. For Maps the keys are used for the filtering.
 Method- This is what is evaluated with an element as the only argument. This can be a list of methods to test against separated by the '|' character.
 MatchValue- the value to test the return value of Method against
 MatchedPasses- if true then matches are included in the return data, if false then everything that doesn't match is returned

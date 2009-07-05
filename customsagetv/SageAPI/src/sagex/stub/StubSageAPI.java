@@ -46,7 +46,7 @@ public class StubSageAPI implements ISageAPIProvider {
 	    }
         Object o = calls.get(name);
         if (o==null) {
-            System.out.printf("provider.addCall(\"%s\",\"\"); // call %s not set\n", name, name);
+            if (debugCalls) System.out.printf("provider.addCall(\"%s\",\"\"); // call %s not set\n", name, name);
         } else {
             return o;
         }
@@ -55,7 +55,7 @@ public class StubSageAPI implements ISageAPIProvider {
 	    if (proxy!=null) {
 	        return proxy.call(name, args);
 	    } else {
-            System.out.printf("provider.addProxy(\"%s\",StubAPIProxy); // proxy %s not set\n", name, name);
+            if (debugCalls) System.out.printf("provider.addProxy(\"%s\",StubAPIProxy); // proxy %s not set\n", name, name);
             return null;
 	    }
 	}

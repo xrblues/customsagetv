@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ChannelAPIFactory.html'>ChannelAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -43,8 +43,8 @@ public class ChannelAPIFactory {
    if (command.equals("GetChannelNumbersForLineup")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetChannelNumbersForLineup",parameters,Object.class,java.lang.String.class);
    }
-   if (command.equals("ClearChannelMappingsOnLineup")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"ClearChannelMappingsOnLineup",parameters,Object.class,java.lang.String.class);
+   if (command.equals("ClearChannelMappingOnLineup")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"ClearChannelMappingOnLineup",parameters,Object.class,java.lang.String.class);
    }
    if (command.equals("IsChannelRemappedOnLineup")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsChannelRemappedOnLineup",parameters,Object.class,java.lang.String.class);

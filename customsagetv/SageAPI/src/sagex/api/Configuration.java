@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Configuration.html'>Configuration</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -2583,6 +2583,33 @@ the different input connectors that are available on the system sound mixer
  */
 public static java.lang.String[] GetMixerAudioInputPaths () {
   return (java.lang.String[]) sagex.SageAPI.call("GetMixerAudioInputPaths", (Object[])null);
+}
+
+/**
+Sets whether or not placeshifter connections should be allowed to cache their login information. Disabling
+ this setting will clear the current authentication cache on the server.
+
+Parameters:
+Enabled- true if the server should allow caching of placeshifter logins; false otherwise (false also clears the cache)
+Since:
+6.6
+ */
+public static void SetAllowPlaceshifterLoginCaching (boolean Enabled) {
+   sagex.SageAPI.call("SetAllowPlaceshifterLoginCaching", new Object[] {Enabled});
+}
+
+/**
+Returns true if this server allows caching of placeshifter logins, false otherwise
+
+Returns:
+true if this server allows caching of placeshifter logins, false otherwise
+Since:
+6.6
+ */
+public static boolean IsPlaceshifterLoginCachingAllowed () {
+  Object o = sagex.SageAPI.call("IsPlaceshifterLoginCachingAllowed", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 

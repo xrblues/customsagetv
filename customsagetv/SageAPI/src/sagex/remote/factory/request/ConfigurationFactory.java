@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ConfigurationFactory.html'>ConfigurationFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -642,6 +642,12 @@ public class ConfigurationFactory {
    }
    if (command.equals("GetMixerAudioInputPaths")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMixerAudioInputPaths",parameters,null);
+   }
+   if (command.equals("SetAllowPlaceshifterLoginCaching")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetAllowPlaceshifterLoginCaching",parameters,boolean.class);
+   }
+   if (command.equals("IsPlaceshifterLoginCachingAllowed")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsPlaceshifterLoginCachingAllowed",parameters,null);
    }
    throw new RuntimeException("Invalid ConfigurationFactory Command: "+command);
    }

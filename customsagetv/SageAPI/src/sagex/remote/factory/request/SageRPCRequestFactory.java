@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -141,7 +141,7 @@ static {
    commands.put("IsChannelViewableOnLineup","ChannelAPI");
    commands.put("IsChannelViewableOnNumberOnLineup","ChannelAPI");
    commands.put("GetChannelNumbersForLineup","ChannelAPI");
-   commands.put("ClearChannelMappingsOnLineup","ChannelAPI");
+   commands.put("ClearChannelMappingOnLineup","ChannelAPI");
    commands.put("IsChannelRemappedOnLineup","ChannelAPI");
    commands.put("SetChannelMappingForLineup","ChannelAPI");
    commands.put("SetChannelMappingsForLineup","ChannelAPI");
@@ -366,6 +366,8 @@ static {
    commands.put("SetVideoRendererToEVR","Configuration");
    commands.put("GetAudioRendererFilters","Configuration");
    commands.put("GetMixerAudioInputPaths","Configuration");
+   commands.put("SetAllowPlaceshifterLoginCaching","Configuration");
+   commands.put("IsPlaceshifterLoginCachingAllowed","Configuration");
    commands.put("FilterByBoolMethod","Database");
    commands.put("FilterByMethod","Database");
    commands.put("FilterByMethodRegex","Database");
@@ -464,6 +466,7 @@ static {
    commands.put("AddFavorite","FavoriteAPI");
    commands.put("Refresh","Global");
    commands.put("RefreshArea","Global");
+   commands.put("RefreshAreaForVariable","Global");
    commands.put("Repaint","Global");
    commands.put("RepaintArea","Global");
    commands.put("AddStaticContext","Global");
@@ -542,6 +545,8 @@ static {
    commands.put("GetFileDownloadStreamTime","Global");
    commands.put("IsFileDownloadProgressivePlay","Global");
    commands.put("SetRemoteEventEncryptionEnabled","Global");
+   commands.put("CachePlaceshifterLogin","Global");
+   commands.put("CanCachePlaceshifterLogin","Global");
    commands.put("ReloadSystemHooks","Global");
    commands.put("UpdateLocatorServer","Global");
    commands.put("GetFullUIWidth","Global");
@@ -623,6 +628,7 @@ static {
    commands.put("GetMediaFileForID","MediaFileAPI");
    commands.put("GetMediaFileFormatDescription","MediaFileAPI");
    commands.put("GetMediaFileMetadata","MediaFileAPI");
+   commands.put("SetMediaFileMetadata","MediaFileAPI");
    commands.put("RotatePictureFile","MediaFileAPI");
    commands.put("FlipPictureFile","MediaFileAPI");
    commands.put("CanAutorotatePictureFile","MediaFileAPI");
@@ -652,6 +658,7 @@ static {
    commands.put("SetVolume","MediaPlayerAPI");
    commands.put("Watch","MediaPlayerAPI");
    commands.put("WatchLive","MediaPlayerAPI");
+   commands.put("LockTuner","MediaPlayerAPI");
    commands.put("WatchLocalFile","MediaPlayerAPI");
    commands.put("StartPlaylist","MediaPlayerAPI");
    commands.put("StartPlaylistAt","MediaPlayerAPI");
@@ -704,6 +711,10 @@ static {
    commands.put("GetMediaPlayerClosedCaptionState","MediaPlayerAPI");
    commands.put("SetMediaPlayerClosedCaptionState","MediaPlayerAPI");
    commands.put("IsMediaPlayerSignalLost","MediaPlayerAPI");
+   commands.put("GetSubtitleDelay","MediaPlayerAPI");
+   commands.put("SetSubtitleDelay","MediaPlayerAPI");
+   commands.put("CanAdjustSubtitleTiming","MediaPlayerAPI");
+   commands.put("ApplyRelativeSubtitleAdjustment","MediaPlayerAPI");
    commands.put("GetVideoSnapshot","MediaPlayerAPI");
    commands.put("AddToPlaylist","PlaylistAPI");
    commands.put("GetName","PlaylistAPI");
@@ -769,6 +780,20 @@ static {
    commands.put("GetAiringsForShow","ShowAPI");
    commands.put("GetShowForExternalID","ShowAPI");
    commands.put("GetShowSeriesInfo","ShowAPI");
+   commands.put("GetSystemAlertLevel","SystemMessageAPI");
+   commands.put("GetSystemMessages","SystemMessageAPI");
+   commands.put("ResetSystemAlertLevel","SystemMessageAPI");
+   commands.put("DeleteAllSystemMessages","SystemMessageAPI");
+   commands.put("DeleteSystemMessage","SystemMessageAPI");
+   commands.put("GetSystemMessageString","SystemMessageAPI");
+   commands.put("GetSystemMessageTime","SystemMessageAPI");
+   commands.put("GetSystemMessageEndTime","SystemMessageAPI");
+   commands.put("GetSystemMessageRepeatCount","SystemMessageAPI");
+   commands.put("GetSystemMessageTypeName","SystemMessageAPI");
+   commands.put("GetSystemMessageTypeCode","SystemMessageAPI");
+   commands.put("GetSystemMessageLevel","SystemMessageAPI");
+   commands.put("GetSystemMessageVariable","SystemMessageAPI");
+   commands.put("PostSystemMessage","SystemMessageAPI");
    commands.put("GetTranscodeFormats","TranscodeAPI");
    commands.put("GetTranscodeFormatDetails","TranscodeAPI");
    commands.put("AddTranscodeFormat","TranscodeAPI");
@@ -894,6 +919,7 @@ static {
    commands.put("GetUIRefreshLock","Utility");
    commands.put("ReleaseUIRefreshLock","Utility");
    commands.put("CalculateMD5Sum","Utility");
+   commands.put("GetTimeSinceLastInput","Utility");
    commands.put("LoadSTVFile","WidgetAPI");
    commands.put("ImportSTVFile","WidgetAPI");
    commands.put("IsSTVModified","WidgetAPI");
@@ -975,6 +1001,9 @@ static {
       }
       if ("ShowAPI".equals(api)) {
          return ShowAPIFactory.createRequest(context, command, parameters);
+      }
+      if ("SystemMessageAPI".equals(api)) {
+         return SystemMessageAPIFactory.createRequest(context, command, parameters);
       }
       if ("TranscodeAPI".equals(api)) {
          return TranscodeAPIFactory.createRequest(context, command, parameters);

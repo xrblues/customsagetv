@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaFileAPI.html'>MediaFileAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -714,7 +714,8 @@ public static java.lang.String GetMediaFileFormatDescription (Object MediaFile) 
 
 /**
 Returns a string for the corresponding metadata property in the MediaFile's format. These are set during format detection/import.
- Only names set in the property "custom_metadata_properties" (which is a semicolon/comma delimited list) will be available.
+ Only names set in the property "custom_metadata_properties" (which is a semicolon/comma delimited list) will be available; and any names
+ used must not match standard attributes that SageTV imports (i.e. title, description, actor, etc.)
 
 Parameters:
 MediaFile- the MediaFile object
@@ -728,6 +729,23 @@ public static java.lang.String GetMediaFileMetadata (Object MediaFile, java.lang
   Object o = sagex.SageAPI.call("GetMediaFileMetadata", new Object[] {MediaFile,Name});
   if (o!=null) return (java.lang.String) o;
   return null;
+}
+
+/**
+Sets the corresponding metadata property in the MediaFile's format. These are set in the database and are also exported
+ to the corresponding .properties file for that MediaFile. When it exports it will append these updates to the .properties file.
+ It will also update the property "custom_metadata_properties" (which is a semicolon/comma delimited list) which tracks the extra
+ metadata properties that should be retained. Names used must not match standard attributes that SageTV imports (i.e. title, description, actor, etc.)
+
+Parameters:
+MediaFile- the MediaFile object
+Name- the name of the property to set
+Value- the value of the property to set
+Since:
+6.6
+ */
+public static void SetMediaFileMetadata (Object MediaFile, java.lang.String Name, java.lang.String Value) {
+   sagex.SageAPI.call("SetMediaFileMetadata", new Object[] {MediaFile,Name,Value});
 }
 
 /**

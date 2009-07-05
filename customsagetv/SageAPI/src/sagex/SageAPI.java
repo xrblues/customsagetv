@@ -3,6 +3,7 @@ package sagex;
 import java.net.URI;
 import java.util.Properties;
 
+import sagex.api.Version;
 import sagex.remote.EmbeddedSageAPIProvider;
 import sagex.remote.javarpc.SageAPIRemote;
 import sagex.remote.rmi.RMISageAPI;
@@ -23,10 +24,10 @@ public class SageAPI {
 		        setProvider(new EmbeddedSageAPIProvider());
 		    } catch (Throwable t) {
 		        try {
-		            System.out.println("Attempting to set Remote API Provider...");
+		            System.out.println("INFO: Attempting to set Remote API Provider...");
 		            setProvider(getRemoteProvider());
 		        } catch (Throwable tt) {
-                    System.out.println("No Remote Provider, using Null API Provider (this is ok).");
+                    System.out.println("ERROR: No Remote Provider, using Null API Provider (this is ok most times).");
 		            setProvider(new NullSageAPIProvider());
 		        }
 		    }
@@ -69,7 +70,7 @@ public class SageAPI {
 	}
 
 	public static void setProvider(ISageAPIProvider provider) {
-		System.out.println("Sage Provider Implementation: " + provider.getClass().getName() + "; " + provider.toString());
+		System.out.println("Sage Provider Implementation: " + provider.getClass().getName() + "; " + provider.toString() + "; Version: " + Version.VERSION);
 		SageAPI.provider = provider;
 	}
 
@@ -122,7 +123,7 @@ public class SageAPI {
 	 * @return
 	 */
 	public static boolean isRemote() {
-		return (provider == null || !(provider instanceof EmbeddedSageAPIProvider));
+		return (getProvider() == null || !(getProvider() instanceof EmbeddedSageAPIProvider));
 	}
 	
 	/**
