@@ -7,4 +7,9 @@
    <Arg>sagex.remote.SagexServlet</Arg>
    <Arg>/*</Arg>
  </Call>
+ 
+  <!-- Initialize the RMI Services on Startup, for Jetty -->
+  <Call class="sagex.remote.SagexServlet" name="initServices">
+    <Arg>jetty</Arg>
+ </Call>
 </Configure>

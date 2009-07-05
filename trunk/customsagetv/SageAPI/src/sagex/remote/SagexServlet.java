@@ -135,7 +135,8 @@ public class SagexServlet extends HttpServlet {
 								jettyPort = props.getProperty("jetty.port");
 							}
 						} catch (Throwable e) {
-							System.out.println("Wasn't able to laod the jetty properties");
+							System.out.println("Wasn't able to laod the jetty properties, using neilm's webserver");
+		                    serverInfo.put("http.port", Configuration.GetProperty("nielm/webserver/port", "8080"));
 						}
 					}
 					serverInfo.put("http.port", jettyPort);

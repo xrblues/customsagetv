@@ -21,6 +21,12 @@ public class PropertiesStubAPIProxy implements StubAPIProxy {
             return null;
         }
         
+        if ("AddGlobalContext".equals(cmd) || "AddStaticContext".equals(cmd)) {
+            props.setProperty((String)args[0], (String)args[1]);
+            System.out.printf("AddXXXContext: %s; Value: %s\n", args[0], args[1]);
+            return null;
+        }
+        
         System.out.println("PropertiesStubAPIProxy: Not Handled: " + cmd);
         return null;
     }
@@ -34,5 +40,7 @@ public class PropertiesStubAPIProxy implements StubAPIProxy {
         api.addProxy("GetServerProperty", this);
         api.addProxy("SetProperty", this);
         api.addProxy("SetServerProperty", this);
+        api.addProxy("AddStaticContext", this);
+        api.addProxy("AddGlobalContext", this);
     }
 }

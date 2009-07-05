@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ChannelAPI.html'>ChannelAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -161,8 +161,8 @@ Parameters:
 Channel- the Channel object
 Lineup- the name of the Lineup
  */
-public static void ClearChannelMappingsOnLineup (Object Channel, java.lang.String Lineup) {
-   sagex.SageAPI.call("ClearChannelMappingsOnLineup", new Object[] {Channel,Lineup});
+public static void ClearChannelMappingOnLineup (Object Channel, java.lang.String Lineup) {
+   sagex.SageAPI.call("ClearChannelMappingOnLineup", new Object[] {Channel,Lineup});
 }
 
 /**

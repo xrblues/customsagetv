@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaPlayerAPIFactory.html'>MediaPlayerAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -84,6 +84,9 @@ public class MediaPlayerAPIFactory {
    }
    if (command.equals("WatchLive")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"WatchLive",parameters,java.lang.String.class,long.class);
+   }
+   if (command.equals("LockTuner")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"LockTuner",parameters,java.lang.String.class);
    }
    if (command.equals("WatchLocalFile")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"WatchLocalFile",parameters,java.io.File.class);
@@ -240,6 +243,18 @@ public class MediaPlayerAPIFactory {
    }
    if (command.equals("IsMediaPlayerSignalLost")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsMediaPlayerSignalLost",parameters,null);
+   }
+   if (command.equals("GetSubtitleDelay")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSubtitleDelay",parameters,null);
+   }
+   if (command.equals("SetSubtitleDelay")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetSubtitleDelay",parameters,long.class);
+   }
+   if (command.equals("CanAdjustSubtitleTiming")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CanAdjustSubtitleTiming",parameters,null);
+   }
+   if (command.equals("ApplyRelativeSubtitleAdjustment")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"ApplyRelativeSubtitleAdjustment",parameters,int.class);
    }
    if (command.equals("GetVideoSnapshot")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetVideoSnapshot",parameters,null);

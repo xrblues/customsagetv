@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/CaptureDeviceInputAPI.html'>CaptureDeviceInputAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -55,6 +55,7 @@ public static boolean SetInfraredTuningPluginAndPort (java.lang.String CaptureDe
 /**
 Tunes the CaptureDeviceInput to the specified physical channel and indicates whether or not a signal is present. This call should only
  be used if the CaptureDeviceInput is already under live control (i.e.WatchLive()
+orLockTuner()
 was called on it) or
  if the input has not been configured for use yet. Otherwise this call may interfere with what is currently being recorded.
 
@@ -73,6 +74,7 @@ public static boolean AutoTuneChannelTest (java.lang.String CaptureDeviceInput, 
 /**
 Tunes the CaptureDeviceInput to the specified physical channel and returns a list of the available channels. This call should only
  be used if the CaptureDeviceInput is already under live control (i.e.WatchLive()
+orLockTuner()
 was called on it) or
  if the input has not been configured for use yet. Otherwise this call may interfere with what is currently being recorded.
 

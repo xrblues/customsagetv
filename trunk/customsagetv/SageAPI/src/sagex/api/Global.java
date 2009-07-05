@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 21/05/09 6:34 PM
+ * Generated Date/Time: 04/07/09 10:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Global.html'>Global</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -22,6 +22,20 @@ WidgetName- the name that a UI component's Widget must match, if null or zero le
  */
 public static void RefreshArea (java.lang.String WidgetName) {
    sagex.SageAPI.call("RefreshArea", new Object[] {WidgetName});
+}
+
+/**
+Searches all visible UI elements in the current menu finding any that have a variable with the specified name 
+ matching the specified value. For any elements it finds, it will re-evaluate and redraws its UI elements, and its children
+
+Parameters:
+Name- the name of the variable to match
+Value- the value of the variable to match on
+Since:
+6.6
+ */
+public static void RefreshAreaForVariable (java.lang.String Name, java.lang.Object Value) {
+   sagex.SageAPI.call("RefreshAreaForVariable", new Object[] {Name,Value});
 }
 
 /**
@@ -1028,6 +1042,32 @@ Since:
  */
 public static boolean SetRemoteEventEncryptionEnabled (boolean EnableEncryption) {
   Object o = sagex.SageAPI.call("SetRemoteEventEncryptionEnabled", new Object[] {EnableEncryption});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+This is used to store an authentication block on the current client that it can use in the future to automatically
+ connect to this server w/out having to login. The channel must be encrypted when this call is made. See the API call
+ SetRemoteEventEncryptionEnabled for more details on that.
+
+Since:
+6.6
+ */
+public static void CachePlaceshifterLogin () {
+   sagex.SageAPI.call("CachePlaceshifterLogin", (Object[])null);
+}
+
+/**
+This indicates whether the server and the client both support caching of placeshifter logins.
+
+Returns:
+true if both the server and client support caching of placeshifter login information
+Since:
+6.6
+ */
+public static boolean CanCachePlaceshifterLogin () {
+  Object o = sagex.SageAPI.call("CanCachePlaceshifterLogin", (Object[])null);
   if (o!=null) return (Boolean) o;
   return false;
 }
