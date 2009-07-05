@@ -43,17 +43,19 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
             return;
         }
         
-        if (resource.getType() == IMediaResource.Type.File) {
-            tracker.setTaskName("Scanning: " + resource.getLocationUri());
-            try {
+        try {
+            if (resource.getType() == IMediaResource.Type.File) {
+                tracker.setTaskName("Scanning: " + resource.getLocationUri());
                 fetchMetaData((IMediaFile) resource);
-            } catch (Exception e) {
-                log.error("Failed to find/update metadata for resource: " + resource.getLocationUri(), e);
-                tracker.addFailed((IMediaFile) resource, "Failed to find/update metadata for resource: " + resource.getLocationUri(), e);
+            } else {
+                log.debug("Not a Media File: " + resource.getLocationUri());
             }
+        } catch (Exception e) {
+            log.error("Failed to find/update metadata for resource: " + resource.getLocationUri(), e);
+            tracker.addFailed((IMediaFile) resource, "Failed to find/update metadata for resource: " + resource.getLocationUri(), e);
+            log.error("Failed to visit MediaResource: " + resource.getLocationUri(), e);
+        } finally {
             tracker.worked(1);
-        } else {
-            log.debug("Not a Media File: " + resource.getLocationUri());
         }
     }
 

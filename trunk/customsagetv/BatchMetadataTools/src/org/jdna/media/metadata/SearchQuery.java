@@ -1,9 +1,10 @@
 package org.jdna.media.metadata;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SearchQuery {
+public class SearchQuery implements Serializable {
     public enum Field { TITLE, SEASON, EPISODE, DISC, EPISODE_TITLE, EPISODE_DATE };
     public enum Type { TV, MOVIE, MUSIC };
     

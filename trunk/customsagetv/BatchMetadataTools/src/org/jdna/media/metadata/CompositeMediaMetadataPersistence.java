@@ -6,6 +6,7 @@ import org.jdna.media.IMediaResource;
 
 public class CompositeMediaMetadataPersistence implements IMediaMetadataPersistence {
     public IMediaMetadataPersistence[] persistence = null;
+    
     public CompositeMediaMetadataPersistence(IMediaMetadataPersistence... persistence) {
         this.persistence = persistence;
     }

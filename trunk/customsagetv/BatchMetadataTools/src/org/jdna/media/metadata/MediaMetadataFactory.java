@@ -156,7 +156,13 @@ public class MediaMetadataFactory {
             Matcher m = p.matcher(providerId);
             while (m.find()) {
                 String id = m.group(1).trim();
-                container.add(getProvider(id));
+                IMediaMetadataProvider provider = getProvider(id);
+                if (provider==null) {
+                    log.error("Skipping Provider because it does not exist: " + id);
+                } else {
+                    log.info("Added Provider: " + id + " to the Provider Search Container");
+                    container.add(provider);
+                }
             }
             return container;
         }

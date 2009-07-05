@@ -12,7 +12,7 @@ public class ScanningStatus extends ProgressTracker<IMediaFile> {
     
     private int MAX=5;
     private long lastScanTime=0;
-    private int totalScannedFiles=0;
+    private int totalSuccess=0;
     private int totalFailed = 0;
     
     public long getLastScanTime() {
@@ -20,11 +20,15 @@ public class ScanningStatus extends ProgressTracker<IMediaFile> {
     }
     
     public int getTotalScanned() {
-        return totalScannedFiles;
+        return totalFailed + totalSuccess;
     }
     
     public int getTotalFailed() {
         return totalFailed;
+    }
+    
+    public int getTotalSuccess() {
+        return totalSuccess;
     }
     
     public int getMaxFailed() {
@@ -44,12 +48,13 @@ public class ScanningStatus extends ProgressTracker<IMediaFile> {
             getFailedItems().set(totalFailed%MAX, new FailedItem<IMediaFile>(item, msg, t));
         }
     }
-
+    
     /**
      *  Only tracks the Last Item for the Success Scan
      */
     @Override
     public void addSuccess(IMediaFile item) {
+        totalSuccess++;
         lastScanTime=System.currentTimeMillis();
         if (getSuccessfulItems().size()==0) {
             getSuccessfulItems().add(0, item);
@@ -61,7 +66,6 @@ public class ScanningStatus extends ProgressTracker<IMediaFile> {
     @Override
     public void worked(int worked) {
         super.worked(worked);
-        totalScannedFiles+=worked;
         lastScanTime=System.currentTimeMillis();
     }
 

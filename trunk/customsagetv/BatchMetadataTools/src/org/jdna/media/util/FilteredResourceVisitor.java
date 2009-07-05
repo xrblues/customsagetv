@@ -31,6 +31,14 @@ public class FilteredResourceVisitor implements IMediaResourceVisitor {
     public IMediaResourceFilter getFilter() {
         return filter;
     }
+
+    public void setVisitor(IMediaResourceVisitor visitor) {
+        this.visitor = visitor;
+    }
+
+    public void setFilter(IMediaResourceFilter filter) {
+        this.filter = filter;
+    }
     
     
 }

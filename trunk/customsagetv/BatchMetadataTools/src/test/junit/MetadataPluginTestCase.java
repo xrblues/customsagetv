@@ -31,12 +31,10 @@ import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.sage.MetadataUpdaterPlugin;
 import org.jdna.sage.ScanningStatus;
 
-import sagex.SageAPI;
 import sagex.api.MediaFileAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaArtifactType;
-import sagex.stub.StubSageAPI;
 
 public class MetadataPluginTestCase extends TestCase {
     public MetadataPluginTestCase() {
@@ -56,7 +54,7 @@ public class MetadataPluginTestCase extends TestCase {
         File fanartDir = makeDir("test/Fanart");
         
         Object mf = MediaFileAPI.AddMediaFile(makeFile("test/Movies/Terminator.avi"), "Movies");
-        assertEquals("mediafile not added", "Terminator.avi", MediaFileAPI.GetMediaTitle(mf));
+        assertEquals("mediafile not added", "Terminator", MediaFileAPI.GetMediaTitle(mf));
         
         phoenix.api.SetFanartCentralFolder(fanartDir);
         phoenix.api.SetIsFanartEnabled(true);
@@ -100,7 +98,7 @@ public class MetadataPluginTestCase extends TestCase {
         File fanartDir = makeDir("test/Fanart");
         
         Object mf = MediaFileAPI.AddMediaFile(makeFile("test/Movies/Terminator.avi"), "Movies");
-        assertEquals("mediafile not added", "Terminator.avi", MediaFileAPI.GetMediaTitle(mf));
+        assertEquals("mediafile not added", "Terminator", MediaFileAPI.GetMediaTitle(mf));
         
         phoenix.api.SetFanartCentralFolder(fanartDir);
         phoenix.api.SetIsFanartEnabled(true);
