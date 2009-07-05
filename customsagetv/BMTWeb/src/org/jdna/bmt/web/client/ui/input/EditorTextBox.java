@@ -41,7 +41,7 @@ public abstract class EditorTextBox extends Composite implements HasValue<String
             Button b = new Button("Ok");
             b.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    EditorDialog.this.editor.setValue(EditorDialog.this.panel.getValue());
+                    EditorDialog.this.editor.setValue(EditorDialog.this.panel.getValue(), true);
                     EditorDialog.this.hide();
                 }
             });

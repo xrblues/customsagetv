@@ -32,7 +32,7 @@ public class Dialogs {
         Log.debug("dialog: " + message + "; time: " + time);
     }
 
-    public static DecoratedPopupPanel showWaitingPopup(String message) {
+    public static PopupPanel showWaitingPopup(String message) {
         DecoratedPopupPanel pop = new DecoratedPopupPanel(true);
         pop.setAnimationEnabled(true);
         pop.center();

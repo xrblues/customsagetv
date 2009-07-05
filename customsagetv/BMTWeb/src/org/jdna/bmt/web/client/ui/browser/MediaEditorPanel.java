@@ -4,14 +4,59 @@ import org.jdna.bmt.web.client.ui.browser.MediaItem.NonEditField;
 import org.jdna.bmt.web.client.ui.input.InputBuilder;
 import org.jdna.bmt.web.client.ui.input.LargeStringTextBox;
 import org.jdna.bmt.web.client.ui.layout.Simple2ColFormLayoutPanel;
+import org.jdna.bmt.web.client.util.Log;
 import org.jdna.media.metadata.MetadataKey;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MediaEditorPanel extends Composite {
-    @SuppressWarnings("unchecked")
+    private MediaItem item = null;
+    private VerticalPanel vp = new VerticalPanel();
+
     public MediaEditorPanel(MediaItem md) {
+        vp.setWidth("100%");
+        vp.setSpacing(5);
+        initWidget(vp);
+
+        init(md);
+    }
+    
+    private void init(MediaItem md) {
+        item = md;
+
+        vp.clear();
+        
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.setSpacing(5);
+        
+        Hyperlink link = new Hyperlink("Find Metadata","md");
+        link.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                MetadataSearchResultsPanel.searchMetadataDialog(item, new AsyncCallback<MediaItem>() {
+                    public void onFailure(Throwable caught) {
+                        Log.error("Failed to update metadata!", caught);
+                    }
+
+                    public void onSuccess(MediaItem result) {
+                        init(result);
+                    }
+                });
+            }
+        });
+        
+        hp.add(link);
+        
+        vp.add(hp);
+        vp.setCellHorizontalAlignment(hp, HasHorizontalAlignment.ALIGN_RIGHT);
+        
         Simple2ColFormLayoutPanel panel = new Simple2ColFormLayoutPanel();
         panel.setWidth("100%");
         
@@ -63,7 +108,7 @@ public class MediaEditorPanel extends Composite {
         tb.setReadOnly(true);
         panel.add("Banners Folder", tb);
         
-        initWidget(panel);
+        vp.add(panel);
         
         System.out.println("Sage Media File: " + md.getSageMediaItemString());
     }
