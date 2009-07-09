@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.ui.filechooser.FileChooserServices;
 import org.jdna.bmt.web.client.ui.filechooser.JSFile;
 import org.jdna.bmt.web.client.ui.filechooser.JSFileResult;
@@ -15,28 +16,29 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @SuppressWarnings("serial")
 public class FileChooserServicesImpl extends RemoteServiceServlet implements FileChooserServices {
+    private static final Logger log = Logger.getLogger(FileChooserServicesImpl.class);
     public FileChooserServicesImpl() {
         ServicesInit.init();
     }
 
     public JSFileResult listFiles(String base) {
-        System.out.println("listFiles("+base+")");
+        log.debug("listFiles("+base+")");
         File f = null;
         if (base==null || base.trim().length()==0) {
             f = new File(".");
         } else {
             f = new File(base);
             if (!f.exists()) {
-                System.out.println("Does not exist: " + base);
+                log.warn("Does not exist: " + base);
                 f = new File(".");
             }
         }
         try {
             if (!f.isDirectory()) f = f.getCanonicalFile().getParentFile();
-            System.out.println("listFiles("+f.getAbsolutePath()+")");
+            log.debug("listFiles("+f.getAbsolutePath()+")");
             return listFiles(toJSFile(f));
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.error("listFiles failed!", t);
             throw new RuntimeException(t);
         }
     }

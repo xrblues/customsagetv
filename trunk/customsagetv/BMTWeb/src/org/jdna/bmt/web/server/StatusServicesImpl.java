@@ -5,9 +5,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.ui.status.StatusServices;
 import org.jdna.bmt.web.client.ui.status.StatusValue;
-import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.StringUtils;
 import org.jdna.media.IMediaFile;
 import org.jdna.sage.ScanningStatus;
@@ -24,6 +24,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @SuppressWarnings("serial")
 public class StatusServicesImpl extends RemoteServiceServlet implements StatusServices {
+    private static final Logger log  = Logger.getLogger(StatusServicesImpl.class);
+    
     public StatusServicesImpl() {
         ServicesInit.init();
     }
@@ -54,7 +56,9 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
                     if (succ.size() > 0) {
                         for (int i = 0; i < succ.size(); i++) {
                             IMediaFile mf = succ.get(i);
-                            status.add(new StatusValue("Last Scanned MediaFile", mf.getTitle()));
+                            if (mf!=null) {
+                                status.add(new StatusValue("Last Scanned MediaFile", mf.getTitle()));
+                            }
                         }
                     }
                 }
@@ -65,7 +69,13 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
                     if (ScanningStatus.getInstance().getTotalFailed() > 0) {
                         for (int i = 0; i < failed.size(); i++) {
                             FailedItem<IMediaFile> fi = failed.get(i);
-                            status.add(new StatusValue("(" + (i + 1) + ") Failed MediaFile", fi.getItem().getName(), StatusValue.ERROR, fi.getMessage()));
+                            if (fi!=null) {
+                                if (fi.getItem()!=null) {
+                                    status.add(new StatusValue("(" + (i + 1) + ") Failed MediaFile", fi.getItem().getName(), StatusValue.ERROR, fi.getMessage()));
+                                } else {
+                                    status.add(new StatusValue("(" + (i + 1) + ") Failed MediaFile", "No Name", StatusValue.ERROR, fi.getMessage()));
+                                }
+                            } 
                         }
                     }
                 }
@@ -94,7 +104,7 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
             }
             return status;
         } catch (Throwable t) {
-            Log.error("Status Failed!", t);
+            log.error("Status Failed:  " + statusType, t);
             throw new RuntimeException(t);
         }
     }

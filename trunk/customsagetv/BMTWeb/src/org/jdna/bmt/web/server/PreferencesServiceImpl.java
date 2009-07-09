@@ -28,6 +28,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @SuppressWarnings("serial")
 public class PreferencesServiceImpl extends RemoteServiceServlet implements PreferencesService {
+    private static final Logger log = Logger.getLogger(PreferencesServiceImpl.class);
+    
     private Map<String, Group> groups = null;
 
     public PreferencesServiceImpl() {
@@ -48,19 +50,19 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
             }
 
             if (group == null) {
-                System.out.println("No Configuration For: " + parent.getKey());
+                log.warn("No Configuration For: " + parent.getKey());
                 return null;
             }
 
             return createChildenArray(group);
         } catch (Throwable t) {
-            t.printStackTrace();
+            log.error("getPreferences failed!", t);
             return null;
         }
     }
 
     public PrefItem searchPreferences(String search) {
-        System.out.println("*** Search: " + search);
+        log.debug("*** Search: " + search);
         PrefItem pi = new PrefItem();
         pi.setLabel("Search: " + search);
         pi.setChildren(createChildenArray(phoenix.api.AddConfigurationSearch(search)));
@@ -78,9 +80,9 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
             pi.setLabel(g.getLabel());
             pi.setDescription(g.getDescription());
             pi.setKey(g.getId());
-            System.out.println("Item: " + g.getId());
+            log.debug("Item: " + g.getId());
             if (g.getElementType() == Group.GROUP || g.getElementType() == Group.APPLICATION) {
-                System.out.println("Group: " + true);
+                log.debug("Group: " + true);
                 pi.setGroup(true);
                 pi.setKey(String.valueOf(g.hashCode()));
                 groups.put(pi.getKey(), (Group) g);
@@ -106,13 +108,13 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
         BasicConfigurator.configure();
         PreferencesServiceImpl impl = new PreferencesServiceImpl();
         for (PrefItem pi : impl.getPreferences(null)) {
-            System.out.println("Label: " + pi.getLabel());
+            log.debug("Label: " + pi.getLabel());
         }
     }
 
     public boolean savePreferences(PrefItem[] preferences) {
         for (PrefItem pi : preferences) {
-            System.out.printf("Saving Preference (%s): %s=%s\n", pi.getLabel(), pi.getKey(), pi.getValue());
+            log.info(String.format("Saving Preference (%s): %s=%s\n", pi.getLabel(), pi.getKey(), pi.getValue()));
             phoenix.api.SetProperty(pi.getKey(), pi.getValue());
         }
         return true;
@@ -136,8 +138,7 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
         PropertiesUtils.store(props, f, "log4j configuration created using BMT Web UI");
         
         PropertyConfigurator.configure(props);
-        System.out.println("Logging is reconfigured");
-        Logger.getLogger(PreferencesServiceImpl.class).info("logging is reconfigured.");
+        log.info("logging is reconfigured.");
     }
 
     public Log4jPrefs getLog4jPreferences() {
@@ -155,7 +156,7 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
     }
 
     public String saveLog4jPreferences(Log4jPrefs prefs) {
-        System.out.println("Saving Preferences");
+        log.info("Saving Preferences");
         
         Properties props = getLogProperties();
         String defaultLog = "log";
