@@ -38,7 +38,16 @@ import sagex.phoenix.fanart.MediaArtifactType;
 public class SageShowPeristence implements IMediaMetadataPersistence {
     private static final Logger log = Logger.getLogger(SageShowPeristence.class);
     private MetadataConfiguration cfg = GroupProxy.get(MetadataConfiguration.class);
+    private boolean importAsTV = false;;
 
+    public SageShowPeristence() {
+        importAsTV = cfg.isImportTVAsRecordedShows();
+    }
+    
+    public SageShowPeristence(boolean importAsTV) {
+        this.importAsTV  = importAsTV;
+    }
+    
     public String getDescription() {
         return "Loads/Save metadata directly to a Sage Show Object";
     }
@@ -135,7 +144,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             return;
         }
 
-        if (!cfg.isImportTVAsRecordedShows()) {
+        if (!importAsTV) {
             log.info("Import Shows as Sage Recordings is currently disabled.");
             return;
         }
