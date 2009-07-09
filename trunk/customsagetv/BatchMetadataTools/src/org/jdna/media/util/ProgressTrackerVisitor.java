@@ -11,11 +11,17 @@ import org.jdna.util.ProgressTracker;
  * 
  * @author seans
  */
-public class ProgressTrackerVisitor extends ProgressTracker<IMediaFile> implements IMediaResourceVisitor {
+public class ProgressTrackerVisitor implements IMediaResourceVisitor {
+    private ProgressTracker<IMediaFile> tracker;
+
+    public ProgressTrackerVisitor(ProgressTracker<IMediaFile> tracker) {
+        this.tracker=tracker;
+    }
+    
     public void visit(IMediaResource resource) {
         if (resource.getType() == IMediaResource.Type.File) {
-            addSuccess((IMediaFile) resource);
-            worked(1);
+            tracker.addSuccess((IMediaFile) resource);
+            tracker.worked(1);
         }
     }
 }
