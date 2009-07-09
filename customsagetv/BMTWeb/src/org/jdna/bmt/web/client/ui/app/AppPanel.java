@@ -1,11 +1,9 @@
 package org.jdna.bmt.web.client.ui.app;
 
 import org.jdna.bmt.web.client.ui.browser.MediaEditor;
-import org.jdna.bmt.web.client.ui.browser.MediaResult;
 import org.jdna.bmt.web.client.ui.browser.ScanOptionsPanel;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesPanel;
 import org.jdna.bmt.web.client.ui.status.StatusPanel;
-import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.event.dom.client.ClickEvent;

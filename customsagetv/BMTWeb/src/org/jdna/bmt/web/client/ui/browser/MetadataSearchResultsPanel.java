@@ -4,10 +4,8 @@ import java.util.List;
 
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.util.Log;
-import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Field;
-import org.jdna.media.metadata.SearchQuery.Type;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

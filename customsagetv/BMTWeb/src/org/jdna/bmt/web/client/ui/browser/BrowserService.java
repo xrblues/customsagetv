@@ -4,8 +4,6 @@ package org.jdna.bmt.web.client.ui.browser;
 
 import java.util.List;
 
-import org.jdna.media.metadata.SearchQuery;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 

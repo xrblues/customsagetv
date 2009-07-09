@@ -6,6 +6,7 @@ public class MediaResult implements Serializable {
     private int mediaId;
     private String mediaTitle;
     private String posterUrl;
+    private String message;
     
     public MediaResult() {
     }
@@ -33,4 +34,13 @@ public class MediaResult implements Serializable {
     public void setPosterUrl(String posterUrl) {
         this.posterUrl = posterUrl;
     }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+    
 }
