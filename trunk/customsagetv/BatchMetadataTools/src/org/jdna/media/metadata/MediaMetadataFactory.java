@@ -47,6 +47,10 @@ public class MediaMetadataFactory {
                     try {
                         Class<IMediaMetadataProvider> cl = (Class<IMediaMetadataProvider>) Class.forName(p);
                         addMetaDataProvider(cl.newInstance());
+                    } catch (NoClassDefFoundError cnfe) {
+                        log.warn("No Class Implementation for provider: " + p);
+                    } catch (ClassNotFoundException cnfe) {
+                        log.warn("No Class Implementation for provider: " + p);
                     } catch (Throwable e) {
                         log.error("Failed to register new Metadata Provider: " + p, e);
                     }
@@ -62,11 +66,13 @@ public class MediaMetadataFactory {
         }
         
         // Now add in a couple of composite providers
-        
-        // This provider uses the imdb for searching and themoviedb.com for details
         addCompositeProvider(IMDBMetaDataProvider.PROVIDER_ID, TheMovieDBMetadataProvider.PROVIDER_ID, "IMDb plus TheMovieDB.org provider");
         addCompositeProvider(LocalDVDProfMetaDataProvider.PROVIDER_ID, TheMovieDBMetadataProvider.PROVIDER_ID, "DVDProfiler plus TheMovieDB.org provider");
         addCompositeProvider(MyMoviesMetadataProvider.PROVIDER_ID, TheMovieDBMetadataProvider.PROVIDER_ID, "MyMovies plus TheMovieDB.org provider");
+        
+        // for legacy compatibility, create the themoviedb-2 (which is an alias for imdb-2)
+        addCompositeProvider(TheMovieDBMetadataProvider.PROVIDER_ID + "-2", IMDBMetaDataProvider.PROVIDER_ID, TheMovieDBMetadataProvider.PROVIDER_ID, "Legacy Alias for the newer IMDb-2 provider");
+        
         
         // now let's find all the xbmc scrapers and add them as well...
         File videos = new File("scrapers/xbmc/video");
@@ -94,16 +100,21 @@ public class MediaMetadataFactory {
             }
         }
     }
-    
-    protected void addCompositeProvider(String searcher, String details, String description) {
+
+    protected void addCompositeProvider(String id, String searcher, String details, String description) {
         IMediaMetadataProvider sprov = getProvider(searcher);
         IMediaMetadataProvider dprov = getProvider(details);
         IMediaMetadataProvider newProv = null;
         String newId = null;
         if (sprov!=null) {
             newId = sprov.getInfo().getId() +"-2";
-            newProv = getProvider(newId);
         }
+        
+        if (id!=null) {
+            newId = id;
+        }
+        
+        newProv = getProvider(newId);
         
         if (newProv == null && getProvider(searcher)!=null && getProvider(details)!=null) {
             CompositeMetadataConfiguration cmc = new CompositeMetadataConfiguration();
@@ -117,6 +128,10 @@ public class MediaMetadataFactory {
 
             addMetaDataProvider(new CompositeMetadataProvider(cmc));
         }
+    }
+
+    protected void addCompositeProvider(String searcher, String details, String description) {
+        addCompositeProvider(null, searcher, details, description);
     }
 
     public List<IMediaMetadataProvider> getMetaDataProviders() {

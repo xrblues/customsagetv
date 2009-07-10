@@ -66,7 +66,7 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
         try {
             return LocalMovieIndex.getInstance().searchTitle(arg);
         } catch (Exception e) {
-            throw new Exception("Failed to find: " + arg);
+            throw new Exception("Failed to find: " + arg, e);
         }
     }
 
@@ -95,7 +95,7 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
         }
         
         if (!this.imageDir.exists()) {
-            throw new Exception("Imagedir does not exist: " + strImageDir);
+            log.warn("Imagedir does not exist: " + strImageDir + "; Will not use DVD Profiler Covers");
         }
 
         xmlFileTool = new DVDProfXmlFile(xmlFile);

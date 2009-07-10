@@ -161,6 +161,8 @@ public class LocalDVDProfParser {
     }
 
     public IMediaArt getMediaArtImage(String type) {
+        if (provider.getImagesDir()==null || !provider.getImagesDir().isDirectory()) return null;
+        
         File f = new File(provider.getImagesDir(), id + type + ".jpg");
         if (!f.exists()) {
             log.warn("Missing Cover for Movie: " + id + "; " + getTitle());
