@@ -24,7 +24,7 @@ public class MetadataConfiguration extends GroupProxy {
     private FieldProxy<String> wordsToClean           = new FieldProxy<String>("1080p,720p,480p,1080i,720i,480i,dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv,HDTV,x264");
 
     @AField(label="Metadata Provider(s)", description = "Default provider id to use (comma separate, if more than 1)", editor="array")
-    private FieldProxy<String> defaultProviderId      = new FieldProxy<String>("tvdb,themoviedb.org,themoviedb.org-2,imdb.xml,imdb");
+    private FieldProxy<String> defaultProviderId      = new FieldProxy<String>("tvdb,imdb-2,themoviedb.org,imdb.xml");
     
     @AField(label="Good Score Threshold", description = "Score which must be exceeded to consider a result a good match")
     private FieldProxy<Float> goodScoreThreshold = new FieldProxy<Float>(0.9f);
