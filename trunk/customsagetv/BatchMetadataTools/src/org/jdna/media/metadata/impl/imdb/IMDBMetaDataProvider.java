@@ -22,7 +22,8 @@ import org.xml.sax.SAXException;
 public class IMDBMetaDataProvider implements IMediaMetadataProvider {
     private static final Logger  log               = Logger.getLogger(IMDBMetaDataProvider.class);
 
-    public static final String   IMDB_FIND_URL     = "http://www.imdb.com/find?s=tt&q={0}&x=0&y=0";
+    public static final String IMDB_TITLE_URL     = "http://{0}/find?s=tt&q={1}&x=0&y=0";
+    
     public static final String   PROVIDER_ID       = "imdb";
     public static final String   PROVIDER_NAME     = "IMDb";
     public static final String   PROVIDER_ICON_URL = "http://i.media-imdb.com/images/nb15/logo2.gif";
@@ -31,6 +32,11 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
     private static IProviderInfo info              = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_ICON_URL);
     private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
 
+    private IMDBConfiguration cfg = new IMDBConfiguration();
+    
+    public IMDBMetaDataProvider() {
+    }
+    
     public String getIconUrl() {
         return PROVIDER_ICON_URL;
     }
@@ -49,7 +55,7 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
         if (query.getType() == SearchQuery.Type.MOVIE) {
             String arg = query.get(SearchQuery.Field.TITLE);
             String eArg = URLEncoder.encode(arg);
-            String url = MessageFormat.format(IMDB_FIND_URL, eArg);
+            String url = MessageFormat.format(IMDB_TITLE_URL, cfg.getIMDbDomain(), eArg);
             log.debug("IMDB Search Url: " + url);
             IMDBSearchResultParser parser = new IMDBSearchResultParser(url, arg);
             // don't follow the redirected urls
@@ -107,7 +113,7 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
-        return getMetaDataByUrl(String.format(IMDBSearchResultParser.TITLE_URL, id));
+        return getMetaDataByUrl(String.format(IMDB_TITLE_URL, cfg.getIMDbDomain(), id));
     }
 
     public IMediaMetadata getMetaDataByUrl(String url) throws Exception {

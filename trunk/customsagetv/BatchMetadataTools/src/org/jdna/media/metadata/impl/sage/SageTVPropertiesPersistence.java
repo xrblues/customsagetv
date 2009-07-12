@@ -322,7 +322,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
                 }
             }
 
-            PropertiesUtils.store(props, partFile, "Sage Video Metadata for " + mf.getLocationUri());
+            PropertiesUtils.store(props, partFile, "Generator: Batch Metadata Tools ("+ bmt.api.GetVersion() + "); MediaFile: " + mf.getLocationUri());
         } catch (IOException e) {
             log.error("Failed to save properties: " + partFile.getAbsolutePath(), e);
         }

@@ -8,5 +8,4 @@ public class DataObject {
     public Property get(String key) {
         return data.get(key);
     }
-    
 }

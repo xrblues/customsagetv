@@ -20,6 +20,7 @@ public class FileToucher extends DirectoryWalker {
     
     public void touchFiles(File startDirectory, long time) {
         try {
+            this.time=time;
             walk(startDirectory, Collections.EMPTY_LIST);
         } catch (IOException e) {
             e.printStackTrace();

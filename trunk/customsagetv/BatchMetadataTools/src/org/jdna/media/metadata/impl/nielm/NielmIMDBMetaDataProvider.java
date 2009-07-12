@@ -24,6 +24,7 @@ import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
+import org.jdna.media.metadata.impl.imdb.IMDBConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBSearchResultParser;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
@@ -41,6 +42,8 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
     private ImdbWebBackend       db                    = null;
     private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
 
+    private IMDBConfiguration cfg = new IMDBConfiguration();
+    
     public NielmIMDBMetaDataProvider() {
         db = new ImdbWebBackend();
     }
@@ -119,7 +122,7 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
-        return getMetaDataByUrl(String.format(IMDBSearchResultParser.TITLE_URL, id));
+        return getMetaDataByUrl(String.format(IMDBSearchResultParser.IMDB_TITLE_URL, cfg.getIMDbDomain(), id));
     }
 
     public IMediaMetadata getMetaDataByUrl(String url) throws Exception {

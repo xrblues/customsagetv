@@ -81,7 +81,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
         // do the work....
         IMediaResource mr = null;
         try {
-            if (!pluginConfig.getEnabled().get()) {
+            if (!pluginConfig.getEnabled()) {
                 log.info("Plugin Disabled; File: " + file.getAbsolutePath());
                 return null;
             }
@@ -157,7 +157,13 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                     // return the props
                     Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
                     log.info("New Metadata Imported for: " + file.getAbsolutePath());
-                    return props;
+                    
+                    // as a work around for when sagetv sometimes will not hang on import and not scan all movies
+                    if (pluginConfig.getReturnNullMetadata()) {
+                        return null;
+                    } else {
+                        return props;
+                    }
                 } else {
                     log.error("Failed to Fetch Metadata for Media: " + file.getAbsolutePath());
                     //status.addFailed((IMediaFile) mr, "Scan did not produce a Property File.");
