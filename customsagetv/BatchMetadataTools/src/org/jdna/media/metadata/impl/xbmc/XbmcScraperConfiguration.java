@@ -12,7 +12,12 @@ public class XbmcScraperConfiguration {
     }
 
     public String getScraperProperty(String scraperId, String key, String defValue) {
-        return (String) phoenix.api.GetProperty(String.format("bmt/xbmc/%s/%s",scraperId,key), defValue);
+        Object o = phoenix.api.GetProperty(String.format("bmt/xbmc/%s/%s",scraperId,key), defValue);
+        if (o==null) {
+            return defValue;
+        } else {
+            return String.valueOf(o);
+        }
     }
 
     public void setScraperProperty(String scraperId, String key, String value) {

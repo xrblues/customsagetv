@@ -114,22 +114,6 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         md.set(MetadataKey.RUNNING_TIME, AiringAPI.GetAiringDuration(airing));
         md.set(MetadataKey.YEAR, ShowAPI.GetShowYear(show));
 
-        /*
-         * these now comming the SageCustomMetadataPersistence
-         */
-        /*
-        md.set(MetadataKey.DVD_DISC, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.DISC.sageKey));
-        md.set(MetadataKey.EPISODE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.EPISODE_NUMBER.sageKey));
-        md.set(MetadataKey.EPISODE_TITLE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.EPISODE_TITLE.sageKey));
-        md.set(MetadataKey.MEDIA_TITLE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.MEDIA_TITLE.sageKey));
-        md.set(MetadataKey.MEDIA_PROVIDER_DATA_ID, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.METADATA_PROVIDER_ID.sageKey));
-        md.set(MetadataKey.MEDIA_TYPE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.MEDIA_TYPE.sageKey));
-        md.set(MetadataKey.SEASON, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.SEASON_NUMBER.sageKey));
-        md.set(MetadataKey.USER_RATING, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.USER_RATING.sageKey));
-        md.set(MetadataKey.RELEASE_DATE, MediaFileAPI.GetMediaFileMetadata(file, SageProperty.ORIGINAL_AIR_DATE.sageKey));
-        */
-        
-        
         return md;
     }
 

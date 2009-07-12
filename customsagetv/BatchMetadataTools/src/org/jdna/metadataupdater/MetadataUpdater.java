@@ -1,6 +1,7 @@
 package org.jdna.metadataupdater;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,6 +76,7 @@ public class MetadataUpdater {
 
     private boolean tvSearch;
     private String reportType;
+    private boolean touch = false;
 
     
     /**
@@ -201,7 +203,7 @@ public class MetadataUpdater {
                         System.out.println("# -- Group: " + el.getLabel());
                     }
                     if (el.getElementType() == IConfigurationElement.FIELD) {
-                        System.out.printf("# %s\n", el.getDescription());
+                        System.out.printf("# %s\n", (el.getDescription()==null?el.getLabel():el.getDescription()));
                         System.out.printf("%s=%s\n\n", el.getId(), phoenix.api.GetProperty(el.getId()));
                     }
                 }
@@ -283,6 +285,13 @@ public class MetadataUpdater {
                 return;
             }
             
+            // we are just touching files...
+            if (touch) {
+                parentFolder.touch();
+                System.out.println("Touched File(s)");
+                return;
+            }
+            
             // collectors and counters for automatic updating
             if (!config.isProcessMissingMetadataOnly()) {
                 parentFolder.accept(new RefreshMetadataVisitor(persistence, options, new ProgressTracker<IMediaFile>()));
@@ -334,7 +343,11 @@ public class MetadataUpdater {
             }
 
             if (config.isRememberSelectedSearches()) {
-                ConfigurationManager.getInstance().saveTitleMappings();
+                try {
+                    ConfigurationManager.getInstance().saveTitleMappings();
+                } catch (IOException e) {
+                    log.error("Failed to store/create the title mappings file!", e);
+                }
             } else {
                 log.warn("Manual Searched will not be saved, since /metadataUpdater/rememberSelectedSearches=false");
             }
@@ -498,13 +511,26 @@ public class MetadataUpdater {
         this.offline = b;
     }
 
+    
+    /**
+     * enable/disable offline video support. Offline videos are empty video
+     * files with metadata and thumbnails. A user would create these if the
+     * video did exist in his/her collection but they are currently offline.
+     * 
+     * @param b
+     */
+    @CommandLineArg(name = "touch", description = "Touch (update timestamp) on a given file/folder")
+    public void setTouch(boolean b) {
+        this.touch  = b;
+    }
+
     /**
      * Set a new default metadata provider.
      * 
      * @param s
      */
     @CommandLineArg(name = "provider", description = "Set the metadata provider. (default imdb)")
-    public void setMetadataProvicer(String s) {
+    public void setMetadataProvider(String s) {
         log.info("Setting the default provider: " + s);
         metadataConfig.setDefaultProviderId(s);
         log.debug("Default Provider Set: " + metadataConfig.getDefaultProviderId());
