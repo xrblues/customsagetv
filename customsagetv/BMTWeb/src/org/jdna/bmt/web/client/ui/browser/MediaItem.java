@@ -33,7 +33,7 @@ public class MediaItem implements IMediaMetadata, Serializable {
                 Object o = metadata.get(k);
                 if (o!=null) {
                     if (!(o instanceof String)) {
-                        System.out.println("**** Should be a string: " + k + "; " + o.getClass().getName() + "; " + o);
+                        System.out.println("**** BMTUI: Should be a string: " + k + "; " + o.getClass().getName() + "; " + o);
                     }
                     
                     // GWT has issues with non string data, even Long, Integer etc, can cause issues

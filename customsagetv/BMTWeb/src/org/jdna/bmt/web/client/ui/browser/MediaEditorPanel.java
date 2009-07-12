@@ -67,7 +67,7 @@ public class MediaEditorPanel extends Composite {
         
         panel.add("Display Title", InputBuilder.textbox().bind(md.getProperty(MetadataKey.DISPLAY_TITLE)).widget());
         panel.add("Fanart Title", InputBuilder.textbox().bind(md.getProperty(MetadataKey.MEDIA_TITLE)).widget());
-        panel.add("Fanart Type", InputBuilder.textbox().bind(md.getProperty(MetadataKey.MEDIA_TYPE)).widget());
+        panel.add("Fanart Type", InputBuilder.combo(",Movie,TV").bind(md.getProperty(MetadataKey.MEDIA_TYPE)).widget());
 
         panel.add("Description", new LargeStringTextBox(InputBuilder.textbox().bind(md.getProperty(MetadataKey.DESCRIPTION)).widget(), ""));
 
