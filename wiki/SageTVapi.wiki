@@ -95,8 +95,7 @@ In your client code, you simply need to invoke the SageTV api and it should find
 ==== Installation for Jetty Server ====
 
  * Install Jreichen's [http://forums.sagetv.com/forums/downloads.php?do=file&id=233 Jetty Plugin]
- * Install the sagex-api-VERSION.jar file into the SAGE_HOME/JARs directory
- * Install this [http://customsagetv.googlecode.com/svn/trunk/customsagetv/SageAPI/jetty/contexts/sagex.xml jetty context file] into the SAGE_HOME/jetty/contexts directory
+ * Install the sagex-api-VERSION.zip file into the SAGE_HOME directory
  * restart sage
 
 === StubSageAPIProvider ===
