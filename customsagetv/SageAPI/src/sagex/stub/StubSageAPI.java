@@ -30,6 +30,10 @@ public class StubSageAPI implements ISageAPIProvider {
     public void addProxy(String cmd, StubAPIProxy proxy) {
         proxies.put(cmd, proxy);
     }
+
+    public StubAPIProxy getProxy(String cmd) {
+        return proxies.get(cmd);
+    }
     
     public void addCall(String call, Object result) {
         calls.put(call, result);
@@ -77,5 +81,9 @@ public class StubSageAPI implements ISageAPIProvider {
         calls.clear();
         defaultProxies();
         defaultMediaFileAPI();
+    }
+
+    public boolean isDebugEnabled() {
+        return debugCalls;
     }
 }
