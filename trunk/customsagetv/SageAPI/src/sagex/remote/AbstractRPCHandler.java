@@ -3,6 +3,7 @@ package sagex.remote;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import sagex.SageAPI;
 
@@ -75,9 +76,23 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 
 			// convert the sage reply to something serializable, ie, convert the
 			// sage references to object references..
+			// TODO: Broken for Lists and Maps because we need to check for sage types inside those lists/maps.
 			Object finalReply = null;
 			RemoteObjectRef replyRef = null;
 			if (oreply != null) {
+			    // Handle Sage Vector Replies
+			    if (oreply instanceof Vector && ((Vector)oreply).size()>0 && !isSerializable(((Vector)oreply).get(0))) {
+			        Vector v = (Vector)oreply;
+			        Vector newV = new Vector(v.size());
+			        for (Object o : v) {
+			            RemoteObjectRef ror = new RemoteObjectRef();
+			            setReference(ror, o);
+			            newV.add(ror);
+			        }
+			        oreply = newV;
+			    }
+			    
+			    
 				if (oreply.getClass().isArray()) {
 					if (oreply.getClass().getComponentType().isPrimitive() || Serializable.class.isAssignableFrom(oreply.getClass().getComponentType())) {
 						// we can send back primitives and serialiable arrays
@@ -92,11 +107,11 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 					}
 				} else {
 					// standard objects/etc
-					if (oreply.getClass().isPrimitive() || Serializable.class.isAssignableFrom(oreply.getClass())) {
+				    if (isSerializable(oreply)) {
 						// serializiable stuff... ok with that.
 						finalReply = oreply;
 					} else {
-						System.out.println("Converting Sage Object into a Remote Object Reference.");
+					    System.out.println("Converting Sage Object into a Remote Object Reference.");
 						// non primitive / non serializable objects - convert to
 						// object reference
 						replyRef = new RemoteObjectRef();
@@ -117,6 +132,20 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 			t.printStackTrace(System.out);
 			response.setError(404, "Command Failed: " + (request != null ? request.getCommand() : ""), t);
 		}
+	}
+	
+	protected boolean isSerializable(Object oreply) {
+	    if (oreply==null) return false;
+	    if (oreply.getClass().isPrimitive() || Serializable.class.isAssignableFrom(oreply.getClass())) {
+	        //if (List.class.isAssignableFrom(oreply.getClass())) {
+	        //    List l = (List)oreply;
+	        //    if (l.size()==-0) return true;
+	        //    // assume if the first element is serializable, then we are serialable, flawed.
+	        //    return isSerializable(l.get(0));
+	        //}
+	        return true;
+	    }
+	    return false;
 	}
 
 	public Object getReference(RemoteObjectRef ref) {

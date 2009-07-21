@@ -1,29 +1,33 @@
 package sagex.stub;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class PropertiesStubAPIProxy implements StubAPIProxy {
-    private Properties props = new Properties();
+    private boolean debug = false;
+    private Map<Object, Object> props = new HashMap<Object, Object>();
     
     public Object call(String cmd, Object[] args) {
         if ("GetProperty".equals(cmd) || "GetServerProperty".equals(cmd)) {
-            String prop = props.getProperty((String)args[0], (String)(args.length>1 ? args[1] : null));
-            if (prop!=null) {
-                props.setProperty((String)args[0], prop);
+            Object prop = props.get(args[0]);
+            if (prop==null) {
+                prop=args[1];
+                props.put(args[0], prop);
             }
-            System.out.printf("GetProperty: %s; Value: %s\n", args[0], prop);
+            if (debug) System.out.printf("GetProperty: %s; Value: %s\n", args[0], prop);
             return prop;
         }
         
         if ("SetProperty".equals(cmd) || "SetServerProperty".equals(cmd)) {
-            props.setProperty((String)args[0], (String)args[1]);
-            System.out.printf("SetProperty: %s; Value: %s\n", args[0], args[1]);
+            props.put(args[0], args[1]);
+            if (debug) System.out.printf("SetProperty: %s; Value: %s\n", args[0], args[1]);
             return null;
         }
         
         if ("AddGlobalContext".equals(cmd) || "AddStaticContext".equals(cmd)) {
-            props.setProperty((String)args[0], (String)args[1]);
-            System.out.printf("AddXXXContext: %s; Value: %s\n", args[0], args[1]);
+            props.put(args[0], args[1]);
+            if (debug) System.out.printf("Add Global/Static Context: %s; Value: %s\n", args[0], args[1]);
             return null;
         }
         
@@ -31,11 +35,12 @@ public class PropertiesStubAPIProxy implements StubAPIProxy {
         return null;
     }
     
-    public Properties getProperties() {
+    public Map<Object, Object> getProperties() {
         return props;
     }
     
     public void attach(StubSageAPI api) {
+        debug = api.isDebugEnabled();
         api.addProxy("GetProperty", this);
         api.addProxy("GetServerProperty", this);
         api.addProxy("SetProperty", this);
