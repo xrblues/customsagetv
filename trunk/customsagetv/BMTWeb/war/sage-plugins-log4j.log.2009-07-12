@@ -1,0 +1,458 @@
+2009-07-12 20:38:39,803 DEBUG [main] org.apache.jasper.servlet.JspServlet - JspServlet.destroy()
+2009-07-12 20:38:39,876 DEBUG [main] org.apache.jasper.compiler.JspRuntimeContext - Parent class loader is: ContextLoader@null
+2009-07-12 20:38:39,877 DEBUG [main] org.apache.jasper.servlet.JspServlet - Scratch dir for the JSP engine is: /tmp/Jetty_0_0_0_0_8080_war____ut4fm1/jsp
+2009-07-12 20:38:39,877 DEBUG [main] org.apache.jasper.servlet.JspServlet - IMPORTANT: Do not modify the generated servlets
+2009-07-12 20:38:58,994 ERROR [btpool0-15] sagex.phoenix.configuration.XmlMetadataProvider - Missing Configuration File: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/Phoenix.xml
+2009-07-12 20:38:58,994  WARN [btpool0-15] sagex.phoenix.configuration.ConfigurationMetadataManager - No Configuration Metadata for: XmlMetadataProvider[/home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/Phoenix.xml]
+2009-07-12 20:38:58,995  INFO [btpool0-15] sagex.phoenix.DirectoryMetadataLoader - Loading Configurations from directory: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext
+2009-07-12 20:38:58,996  INFO [btpool0-15] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/Sage.xml
+2009-07-12 20:38:59,010  INFO [btpool0-15] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/log4j.xml
+2009-07-12 20:38:59,012  INFO [btpool0-15] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/bmt.xml
+2009-07-12 20:38:59,062  INFO [btpool0-15] sagex.phoenix.configuration.impl.SageConfigurationProvider - SageConfigurationProvider does not use load()
+2009-07-12 20:38:59,097 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: TVDB; Filter: alien
+2009-07-12 20:38:59,099 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 20:38:59,099 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: TVDB; Filter: alien
+2009-07-12 20:38:59,145 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - Finished Loading Sage Media List
+2009-07-12 20:38:59,146 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Folder Items: 70
+2009-07-12 20:38:59,149 DEBUG [btpool0-15] org.jdna.util.ProgressTrackerManager - Runnable Progress has been started and managed: Tracking:[id:, 10001, thread:,Thread[Thread-35,5,main]]
+2009-07-12 20:38:59,149 DEBUG [Thread-35] org.jdna.util.ProgressTrackerManager$1 - Starting a new runnable progress: Tracking:[id:, 10001, thread:,Thread[Thread-35,5,main]]
+2009-07-12 20:38:59,203 DEBUG [Thread-35] org.jdna.bmt.web.server.BrowserServicesImpl$Scanner - Scanning 70 items
+2009-07-12 20:38:59,750 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@39274b
+2009-07-12 20:38:59,759 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:0];
+2009-07-12 20:38:59,759 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@83695e
+2009-07-12 20:38:59,820 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@38acbe
+2009-07-12 20:38:59,824 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:2];
+2009-07-12 20:38:59,824 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@99b3f0
+2009-07-12 20:38:59,829 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:3];
+2009-07-12 20:38:59,830 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@150786e
+2009-07-12 20:38:59,834 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:4];
+2009-07-12 20:38:59,835 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@879847
+2009-07-12 20:38:59,851 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@b05b5f
+2009-07-12 20:38:59,856 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:6];
+2009-07-12 20:38:59,856 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@5c2dcb
+2009-07-12 20:38:59,861 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:7];
+2009-07-12 20:38:59,862 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1969b78
+2009-07-12 20:38:59,865 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:8];
+2009-07-12 20:38:59,866 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1646fec
+2009-07-12 20:38:59,878 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:9];
+2009-07-12 20:39:00,154 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@b73688
+2009-07-12 20:39:00,160 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:10];
+2009-07-12 20:39:00,161 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1a11084
+2009-07-12 20:39:00,167 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:11];
+2009-07-12 20:39:00,168 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@13a8e9a
+2009-07-12 20:39:00,173 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:12];
+2009-07-12 20:39:00,173 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1d4fe1c
+2009-07-12 20:39:00,179 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:13];
+2009-07-12 20:39:00,180 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@11dc4fd
+2009-07-12 20:39:00,185 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:14];
+2009-07-12 20:39:00,185 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@17ff300
+2009-07-12 20:39:00,191 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:15];
+2009-07-12 20:39:00,191 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1eb04da
+2009-07-12 20:39:00,197 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:16];
+2009-07-12 20:39:00,197 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@157684b
+2009-07-12 20:39:00,202 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:17];
+2009-07-12 20:39:00,203 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@a76525
+2009-07-12 20:39:00,208 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:18];
+2009-07-12 20:39:00,209 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1cd1b87
+2009-07-12 20:39:00,214 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[2202705:19];
+2009-07-12 20:39:11,360 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: TVDB; Filter: alien
+2009-07-12 20:39:11,361 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 20:39:11,361 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: TVDB; Filter: alien
+2009-07-12 20:39:11,403 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - Finished Loading Sage Media List
+2009-07-12 20:39:11,404 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Folder Items: 70
+2009-07-12 20:39:11,404 DEBUG [btpool0-15] org.jdna.util.ProgressTrackerManager - Runnable Progress has been started and managed: Tracking:[id:, 10002, thread:,Thread[Thread-36,5,main]]
+2009-07-12 20:39:11,404 DEBUG [Thread-36] org.jdna.util.ProgressTrackerManager$1 - Starting a new runnable progress: Tracking:[id:, 10002, thread:,Thread[Thread-36,5,main]]
+2009-07-12 20:39:11,405 DEBUG [Thread-36] org.jdna.bmt.web.server.BrowserServicesImpl$Scanner - Scanning 70 items
+2009-07-12 20:39:11,843 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@13cc624
+2009-07-12 20:39:11,846 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:0];
+2009-07-12 20:39:11,847 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@129221f
+2009-07-12 20:39:11,879 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@159b944
+2009-07-12 20:39:11,884 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:2];
+2009-07-12 20:39:11,884 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@18306b0
+2009-07-12 20:39:11,889 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:3];
+2009-07-12 20:39:11,889 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1717c60
+2009-07-12 20:39:11,893 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:4];
+2009-07-12 20:39:11,894 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@377a79
+2009-07-12 20:39:11,913 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1793ca7
+2009-07-12 20:39:11,918 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:6];
+2009-07-12 20:39:11,919 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@14ceda8
+2009-07-12 20:39:11,922 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:7];
+2009-07-12 20:39:11,923 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@43d5cc
+2009-07-12 20:39:11,928 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:8];
+2009-07-12 20:39:11,928 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@11fbb17
+2009-07-12 20:39:11,934 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:9];
+2009-07-12 20:39:12,242 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@55d206
+2009-07-12 20:39:12,247 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:10];
+2009-07-12 20:39:12,248 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1dc68e6
+2009-07-12 20:39:12,253 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:11];
+2009-07-12 20:39:12,253 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@f47b5a
+2009-07-12 20:39:12,259 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:12];
+2009-07-12 20:39:12,259 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1fee598
+2009-07-12 20:39:12,264 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:13];
+2009-07-12 20:39:12,264 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@107be84
+2009-07-12 20:39:12,270 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:14];
+2009-07-12 20:39:12,270 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@7ea326
+2009-07-12 20:39:12,276 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:15];
+2009-07-12 20:39:12,276 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@4301a
+2009-07-12 20:39:12,282 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:16];
+2009-07-12 20:39:12,282 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@15b351a
+2009-07-12 20:39:12,287 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:17];
+2009-07-12 20:39:12,288 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@32d420
+2009-07-12 20:39:12,295 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:18];
+2009-07-12 20:39:12,295 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@746c61
+2009-07-12 20:39:12,300 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[1861111:19];
+2009-07-12 20:39:20,768 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: TVDB; Filter: alien
+2009-07-12 20:39:20,769 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 20:39:20,769 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: TVDB; Filter: alien
+2009-07-12 20:39:20,809 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - Finished Loading Sage Media List
+2009-07-12 20:39:20,809 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Folder Items: 70
+2009-07-12 20:39:20,810 DEBUG [Thread-37] org.jdna.util.ProgressTrackerManager$1 - Starting a new runnable progress: Tracking:[id:, 10003, thread:,Thread[Thread-37,5,main]]
+2009-07-12 20:39:20,810 DEBUG [Thread-37] org.jdna.bmt.web.server.BrowserServicesImpl$Scanner - Scanning 70 items
+2009-07-12 20:39:20,810 DEBUG [btpool0-15] org.jdna.util.ProgressTrackerManager - Runnable Progress has been started and managed: Tracking:[id:, 10003, thread:,Thread[Thread-37,5,main]]
+2009-07-12 20:39:21,255 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@c87575
+2009-07-12 20:39:21,259 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:0];
+2009-07-12 20:39:21,259 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@6a198c
+2009-07-12 20:39:21,280 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@763743
+2009-07-12 20:39:21,286 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:2];
+2009-07-12 20:39:21,286 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@139ed0a
+2009-07-12 20:39:21,291 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:3];
+2009-07-12 20:39:21,292 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@4f5ec
+2009-07-12 20:39:21,296 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:4];
+2009-07-12 20:39:21,296 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@b1e55f
+2009-07-12 20:39:21,313 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1d986e5
+2009-07-12 20:39:21,318 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:6];
+2009-07-12 20:39:21,318 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@a8d842
+2009-07-12 20:39:21,323 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:7];
+2009-07-12 20:39:21,323 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@5e3e5a
+2009-07-12 20:39:21,329 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:8];
+2009-07-12 20:39:21,329 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@63b079
+2009-07-12 20:39:21,334 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:9];
+2009-07-12 20:39:21,677 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@2eb0d5
+2009-07-12 20:39:21,684 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:10];
+2009-07-12 20:39:21,684 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@f7f86c
+2009-07-12 20:39:21,689 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:11];
+2009-07-12 20:39:21,689 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@4ac51a
+2009-07-12 20:39:21,694 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:12];
+2009-07-12 20:39:21,695 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1b41131
+2009-07-12 20:39:21,700 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:13];
+2009-07-12 20:39:21,700 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1c950db
+2009-07-12 20:39:21,705 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:14];
+2009-07-12 20:39:21,705 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@16838f1
+2009-07-12 20:39:21,711 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:15];
+2009-07-12 20:39:21,711 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1f47a0b
+2009-07-12 20:39:21,716 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:16];
+2009-07-12 20:39:21,716 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@18d42db
+2009-07-12 20:39:21,721 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:17];
+2009-07-12 20:39:21,721 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@7886d2
+2009-07-12 20:39:21,727 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:18];
+2009-07-12 20:39:21,727 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1343930
+2009-07-12 20:39:21,732 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[16094898:19];
+2009-07-12 20:40:30,070 DEBUG [main] org.apache.jasper.servlet.JspServlet - JspServlet.destroy()
+2009-07-12 20:40:30,097 DEBUG [main] org.apache.jasper.compiler.JspRuntimeContext - Parent class loader is: ContextLoader@null
+2009-07-12 20:40:30,098 DEBUG [main] org.apache.jasper.servlet.JspServlet - Scratch dir for the JSP engine is: /tmp/Jetty_0_0_0_0_8080_war____ut4fm1/jsp
+2009-07-12 20:40:30,098 DEBUG [main] org.apache.jasper.servlet.JspServlet - IMPORTANT: Do not modify the generated servlets
+2009-07-12 20:40:35,741 ERROR [btpool0-15] sagex.phoenix.configuration.XmlMetadataProvider - Missing Configuration File: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/Phoenix.xml
+2009-07-12 20:40:35,741  WARN [btpool0-15] sagex.phoenix.configuration.ConfigurationMetadataManager - No Configuration Metadata for: XmlMetadataProvider[/home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/Phoenix.xml]
+2009-07-12 20:40:35,742  INFO [btpool0-15] sagex.phoenix.DirectoryMetadataLoader - Loading Configurations from directory: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext
+2009-07-12 20:40:35,743  INFO [btpool0-15] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/Sage.xml
+2009-07-12 20:40:35,756  INFO [btpool0-15] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/log4j.xml
+2009-07-12 20:40:35,758  INFO [btpool0-15] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/bmt.xml
+2009-07-12 20:40:35,812  INFO [btpool0-15] sagex.phoenix.configuration.impl.SageConfigurationProvider - SageConfigurationProvider does not use load()
+2009-07-12 20:40:35,935  INFO [btpool0-17] bmt.BMTMetadataSupport - Using BMTMetadataSupport: 3.0-beta-9
+2009-07-12 20:40:50,594 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: V; Filter: alien
+2009-07-12 20:40:50,597 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 20:40:50,597 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: V; Filter: alien
+2009-07-12 20:40:50,607 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - Finished Loading Sage Media List
+2009-07-12 20:40:50,608 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Folder Items: 2
+2009-07-12 20:40:50,611 DEBUG [Thread-43] org.jdna.util.ProgressTrackerManager$1 - Starting a new runnable progress: Tracking:[id:, 10001, thread:,Thread[Thread-43,5,main]]
+2009-07-12 20:40:50,611 DEBUG [Thread-43] org.jdna.bmt.web.server.BrowserServicesImpl$Scanner - Scanning 2 items
+2009-07-12 20:40:50,614 DEBUG [btpool0-15] org.jdna.util.ProgressTrackerManager - Runnable Progress has been started and managed: Tracking:[id:, 10001, thread:,Thread[Thread-43,5,main]]
+2009-07-12 20:40:51,084 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@ce6178
+2009-07-12 20:40:51,090 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[29442754:0];
+2009-07-12 20:40:51,091 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@ee57f4
+2009-07-12 20:40:51,126 DEBUG [btpool0-15] org.jdna.bmt.web.server.MediaHandlerServlet - BMT Media Servlet Created
+2009-07-12 20:40:51,126 DEBUG [btpool0-15] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684159?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:40:56,742 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: TVDB; Filter: alien
+2009-07-12 20:40:56,742 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 20:40:56,743 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: TVDB; Filter: alien
+2009-07-12 20:40:56,783 DEBUG [btpool0-15] org.jdna.sage.media.SageMediaFolder - Finished Loading Sage Media List
+2009-07-12 20:40:56,783 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Folder Items: 70
+2009-07-12 20:40:56,788 DEBUG [btpool0-15] org.jdna.util.ProgressTrackerManager - Runnable Progress has been started and managed: Tracking:[id:, 10002, thread:,Thread[Thread-44,5,main]]
+2009-07-12 20:40:56,789 DEBUG [Thread-44] org.jdna.util.ProgressTrackerManager$1 - Starting a new runnable progress: Tracking:[id:, 10002, thread:,Thread[Thread-44,5,main]]
+2009-07-12 20:40:56,790 DEBUG [Thread-44] org.jdna.bmt.web.server.BrowserServicesImpl$Scanner - Scanning 70 items
+2009-07-12 20:40:57,252 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@d2304e
+2009-07-12 20:40:57,258 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:0];
+2009-07-12 20:40:57,258 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@555dd4
+2009-07-12 20:40:57,277 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1a78947
+2009-07-12 20:40:57,282 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:2];
+2009-07-12 20:40:57,282 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@4d644e
+2009-07-12 20:40:57,306 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:3];
+2009-07-12 20:40:57,307 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1f7ab36
+2009-07-12 20:40:57,312 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:4];
+2009-07-12 20:40:57,312 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1cfb4aa
+2009-07-12 20:40:57,335 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@151aa80
+2009-07-12 20:40:57,344 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:6];
+2009-07-12 20:40:57,344 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@b7152f
+2009-07-12 20:40:57,350 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:7];
+2009-07-12 20:40:57,350 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1a8c52e
+2009-07-12 20:40:57,355 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:8];
+2009-07-12 20:40:57,355 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@160958b
+2009-07-12 20:40:57,360 DEBUG [btpool0-15] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:9];
+2009-07-12 20:40:57,390 DEBUG [btpool0-15] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3661168?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:40:57,401 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3676259?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:40:57,613 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@2834e0
+2009-07-12 20:40:57,618 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:10];
+2009-07-12 20:40:57,618 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@6bf7da
+2009-07-12 20:40:57,624 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:11];
+2009-07-12 20:40:57,624 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@733c00
+2009-07-12 20:40:57,630 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:12];
+2009-07-12 20:40:57,630 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@10aff98
+2009-07-12 20:40:57,635 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:13];
+2009-07-12 20:40:57,635 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@9b303c
+2009-07-12 20:40:57,638 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:14];
+2009-07-12 20:40:57,639 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@4e4a8b
+2009-07-12 20:40:57,642 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:15];
+2009-07-12 20:40:57,642 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@7dbe86
+2009-07-12 20:40:57,645 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:16];
+2009-07-12 20:40:57,646 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@120b35e
+2009-07-12 20:40:57,649 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:17];
+2009-07-12 20:40:57,650 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1d19174
+2009-07-12 20:40:57,655 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:18];
+2009-07-12 20:40:57,655 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@873fac
+2009-07-12 20:40:57,660 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Excluding Invalid Item: RemoteObjectRef[23849120:19];
+2009-07-12 20:43:25,953 DEBUG [main] org.apache.jasper.servlet.JspServlet - JspServlet.destroy()
+2009-07-12 20:43:25,979 DEBUG [main] org.apache.jasper.compiler.JspRuntimeContext - Parent class loader is: ContextLoader@null
+2009-07-12 20:43:25,980 DEBUG [main] org.apache.jasper.servlet.JspServlet - Scratch dir for the JSP engine is: /tmp/Jetty_0_0_0_0_8080_war____ut4fm1/jsp
+2009-07-12 20:43:25,980 DEBUG [main] org.apache.jasper.servlet.JspServlet - IMPORTANT: Do not modify the generated servlets
+2009-07-12 20:43:30,325 ERROR [btpool0-17] sagex.phoenix.configuration.XmlMetadataProvider - Missing Configuration File: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/Phoenix.xml
+2009-07-12 20:43:30,326  WARN [btpool0-17] sagex.phoenix.configuration.ConfigurationMetadataManager - No Configuration Metadata for: XmlMetadataProvider[/home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/Phoenix.xml]
+2009-07-12 20:43:30,326  INFO [btpool0-17] sagex.phoenix.DirectoryMetadataLoader - Loading Configurations from directory: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext
+2009-07-12 20:43:30,327  INFO [btpool0-17] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/Sage.xml
+2009-07-12 20:43:30,341  INFO [btpool0-17] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/log4j.xml
+2009-07-12 20:43:30,343  INFO [btpool0-17] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/bmt.xml
+2009-07-12 20:43:30,397  INFO [btpool0-17] sagex.phoenix.configuration.impl.SageConfigurationProvider - SageConfigurationProvider does not use load()
+2009-07-12 20:43:30,476  INFO [btpool0-17] bmt.BMTMetadataSupport - Using BMTMetadataSupport: 3.0-beta-9
+2009-07-12 20:43:43,038 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: L; Filter: null
+2009-07-12 20:43:43,040 DEBUG [btpool0-17] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 20:43:43,040 DEBUG [btpool0-17] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: L; Filter: null
+2009-07-12 20:43:43,047 DEBUG [btpool0-17] org.jdna.sage.media.SageMediaFolder - Finished Loading Sage Media List
+2009-07-12 20:43:43,047 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Folder Items: 0
+2009-07-12 20:43:43,049 DEBUG [btpool0-17] org.jdna.util.ProgressTrackerManager - Runnable Progress has been started and managed: Tracking:[id:, 10001, thread:,Thread[Thread-49,5,main]]
+2009-07-12 20:43:43,049 DEBUG [Thread-49] org.jdna.util.ProgressTrackerManager$1 - Starting a new runnable progress: Tracking:[id:, 10001, thread:,Thread[Thread-49,5,main]]
+2009-07-12 20:43:43,050 DEBUG [Thread-49] org.jdna.bmt.web.server.BrowserServicesImpl$Scanner - Scanning 0 items
+2009-07-12 20:44:00,729 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: LV; Filter: null
+2009-07-12 20:44:00,730 DEBUG [btpool0-17] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 20:44:00,730 DEBUG [btpool0-17] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: LV; Filter: null
+2009-07-12 20:44:00,737 DEBUG [btpool0-17] org.jdna.sage.media.SageMediaFolder - Finished Loading Sage Media List
+2009-07-12 20:44:00,738 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Folder Items: 27
+2009-07-12 20:44:00,738 DEBUG [btpool0-17] org.jdna.util.ProgressTrackerManager - Runnable Progress has been started and managed: Tracking:[id:, 10002, thread:,Thread[Thread-50,5,main]]
+2009-07-12 20:44:00,738 DEBUG [Thread-50] org.jdna.util.ProgressTrackerManager$1 - Starting a new runnable progress: Tracking:[id:, 10002, thread:,Thread[Thread-50,5,main]]
+2009-07-12 20:44:00,739 DEBUG [Thread-50] org.jdna.bmt.web.server.BrowserServicesImpl$Scanner - Scanning 27 items
+2009-07-12 20:44:01,212 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1eaf0e7
+2009-07-12 20:44:01,224 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@3d6195
+2009-07-12 20:44:01,244 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@15cbbe0
+2009-07-12 20:44:01,261 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@6d3e90
+2009-07-12 20:44:01,275 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@185b079
+2009-07-12 20:44:01,302 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@a67ab5
+2009-07-12 20:44:01,315 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@ad1e07
+2009-07-12 20:44:01,326 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@101d65c
+2009-07-12 20:44:01,342 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@16d782b
+2009-07-12 20:44:01,354 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@b92d9c
+2009-07-12 20:44:01,393 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - BMT Media Servlet Created
+2009-07-12 20:44:01,393 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684155?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:01,403 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684159?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:01,436 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684163?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:01,790 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684167?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:01,829 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684171?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:01,847 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684179?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:01,875 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684187?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:01,907 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684195?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:01,939 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684213?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:01,975 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684175?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:01,978 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1654afc
+2009-07-12 20:44:01,993 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@4b131c
+2009-07-12 20:44:02,008 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1ded4ff
+2009-07-12 20:44:02,015 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@cffab2
+2009-07-12 20:44:02,020 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@25d7a
+2009-07-12 20:44:02,041 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@a239f9
+2009-07-12 20:44:02,043 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@ed5c1d
+2009-07-12 20:44:02,054 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@178dbf3
+2009-07-12 20:44:02,059 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1b49477
+2009-07-12 20:44:02,066 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@28bfc2
+2009-07-12 20:44:02,072 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@7433a1
+2009-07-12 20:44:02,080 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@cd47eb
+2009-07-12 20:44:02,085 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@4dc971
+2009-07-12 20:44:02,094 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@15928ef
+2009-07-12 20:44:02,097 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1ed5ce5
+2009-07-12 20:44:02,127 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@2349b1
+2009-07-12 20:44:02,127 DEBUG [btpool0-17] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@bb245c
+2009-07-12 20:44:02,161 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684259?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,191 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684291?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,203 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684326?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,252 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684354?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,288 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684390?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,313 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684402?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,321 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684463?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,347 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684219?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,388 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684229?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,416 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684265?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,431 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684287?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,454 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684314?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,505 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684351?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,507 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684387?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,549 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684393?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,558 DEBUG [btpool0-17] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684250?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:02,602 DEBUG [btpool0-19] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684454?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 20:44:28,506 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: LT; Filter: null
+2009-07-12 20:44:28,506 DEBUG [btpool0-19] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 20:44:28,506 DEBUG [btpool0-19] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: LT; Filter: null
+2009-07-12 20:44:28,512 DEBUG [btpool0-19] org.jdna.sage.media.SageMediaFolder - Finished Loading Sage Media List
+2009-07-12 20:44:28,512 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Folder Items: 0
+2009-07-12 20:44:28,513 DEBUG [btpool0-19] org.jdna.util.ProgressTrackerManager - Runnable Progress has been started and managed: Tracking:[id:, 10003, thread:,Thread[Thread-51,5,main]]
+2009-07-12 20:44:28,513 DEBUG [Thread-51] org.jdna.util.ProgressTrackerManager$1 - Starting a new runnable progress: Tracking:[id:, 10003, thread:,Thread[Thread-51,5,main]]
+2009-07-12 20:44:28,514 DEBUG [Thread-51] org.jdna.bmt.web.server.BrowserServicesImpl$Scanner - Scanning 0 items
+2009-07-12 20:44:38,926 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: LT; Filter: null
+2009-07-12 20:44:38,926 DEBUG [btpool0-19] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 20:44:38,926 DEBUG [btpool0-19] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: LT; Filter: null
+2009-07-12 20:44:38,932 DEBUG [btpool0-19] org.jdna.sage.media.SageMediaFolder - Finished Loading Sage Media List
+2009-07-12 20:44:38,932 DEBUG [btpool0-19] org.jdna.bmt.web.server.BrowserServicesImpl - Folder Items: 0
+2009-07-12 20:44:38,933 DEBUG [Thread-52] org.jdna.util.ProgressTrackerManager$1 - Starting a new runnable progress: Tracking:[id:, 10004, thread:,Thread[Thread-52,5,main]]
+2009-07-12 20:44:38,933 DEBUG [Thread-52] org.jdna.bmt.web.server.BrowserServicesImpl$Scanner - Scanning 0 items
+2009-07-12 20:44:38,933 DEBUG [btpool0-19] org.jdna.util.ProgressTrackerManager - Runnable Progress has been started and managed: Tracking:[id:, 10004, thread:,Thread[Thread-52,5,main]]
+2009-07-12 21:01:45,786 DEBUG [main] org.apache.jasper.servlet.JspServlet - JspServlet.destroy()
+2009-07-12 21:01:46,039 DEBUG [main] org.apache.jasper.compiler.JspRuntimeContext - Parent class loader is: ContextLoader@null
+2009-07-12 21:01:46,040 DEBUG [main] org.apache.jasper.servlet.JspServlet - Scratch dir for the JSP engine is: /tmp/Jetty_0_0_0_0_8080_war____ut4fm1/jsp
+2009-07-12 21:01:46,041 DEBUG [main] org.apache.jasper.servlet.JspServlet - IMPORTANT: Do not modify the generated servlets
+2009-07-12 21:02:03,748 DEBUG [main] org.apache.jasper.servlet.JspServlet - JspServlet.destroy()
+2009-07-12 21:02:03,775 DEBUG [main] org.apache.jasper.compiler.JspRuntimeContext - Parent class loader is: ContextLoader@null
+2009-07-12 21:02:03,775 DEBUG [main] org.apache.jasper.servlet.JspServlet - Scratch dir for the JSP engine is: /tmp/Jetty_0_0_0_0_8080_war____ut4fm1/jsp
+2009-07-12 21:02:03,775 DEBUG [main] org.apache.jasper.servlet.JspServlet - IMPORTANT: Do not modify the generated servlets
+2009-07-12 21:02:12,322 ERROR [btpool0-19] sagex.phoenix.configuration.XmlMetadataProvider - Missing Configuration File: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/Phoenix.xml
+2009-07-12 21:02:12,322  WARN [btpool0-19] sagex.phoenix.configuration.ConfigurationMetadataManager - No Configuration Metadata for: XmlMetadataProvider[/home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/Phoenix.xml]
+2009-07-12 21:02:12,323  INFO [btpool0-19] sagex.phoenix.DirectoryMetadataLoader - Loading Configurations from directory: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext
+2009-07-12 21:02:12,324  INFO [btpool0-19] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/Sage.xml
+2009-07-12 21:02:12,338  INFO [btpool0-19] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/log4j.xml
+2009-07-12 21:02:12,340  INFO [btpool0-19] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/bmt.xml
+2009-07-12 21:02:12,832  INFO [btpool0-19] sagex.phoenix.configuration.impl.SageConfigurationProvider - SageConfigurationProvider does not use load()
+2009-07-12 21:02:13,446  INFO [btpool0-21] bmt.BMTMetadataSupport - Using BMTMetadataSupport: 3.0-beta-9
+2009-07-12 21:02:23,146 DEBUG [btpool0-21] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: LT; Filter: null
+2009-07-12 21:02:23,149 DEBUG [btpool0-21] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 21:02:23,149 DEBUG [btpool0-21] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: LT; Filter: null
+2009-07-12 21:02:23,219 ERROR [btpool0-21] org.jdna.bmt.web.server.BrowserServicesImpl - 
+java.lang.NullPointerException
+	at org.jdna.sage.media.SageMediaFolder.loadMembers(SageMediaFolder.java:92)
+	at org.jdna.media.AbstractMediaFolder.members(AbstractMediaFolder.java:79)
+	at org.jdna.bmt.web.server.BrowserServicesImpl.scan(BrowserServicesImpl.java:183)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at com.google.gwt.user.server.rpc.RPC.invokeAndEncodeResponse(RPC.java:527)
+	at com.google.gwt.user.server.rpc.RemoteServiceServlet.processCall(RemoteServiceServlet.java:166)
+	at com.google.gwt.user.server.rpc.RemoteServiceServlet.doPost(RemoteServiceServlet.java:86)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:637)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:717)
+	at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:487)
+	at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:362)
+	at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+	at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:181)
+	at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:729)
+	at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:405)
+	at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+	at org.mortbay.jetty.handler.RequestLogHandler.handle(RequestLogHandler.java:49)
+	at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+	at org.mortbay.jetty.Server.handle(Server.java:324)
+	at org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:505)
+	at org.mortbay.jetty.HttpConnection$RequestHandler.content(HttpConnection.java:843)
+	at org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:647)
+	at org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:211)
+	at org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:380)
+	at org.mortbay.io.nio.SelectChannelEndPoint.run(SelectChannelEndPoint.java:395)
+	at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:488)
+2009-07-12 21:05:30,730 DEBUG [main] org.apache.jasper.servlet.JspServlet - JspServlet.destroy()
+2009-07-12 21:05:30,759 DEBUG [main] org.apache.jasper.compiler.JspRuntimeContext - Parent class loader is: ContextLoader@null
+2009-07-12 21:05:30,760 DEBUG [main] org.apache.jasper.servlet.JspServlet - Scratch dir for the JSP engine is: /tmp/Jetty_0_0_0_0_8080_war____ut4fm1/jsp
+2009-07-12 21:05:30,760 DEBUG [main] org.apache.jasper.servlet.JspServlet - IMPORTANT: Do not modify the generated servlets
+2009-07-12 21:05:37,567 ERROR [btpool0-21] sagex.phoenix.configuration.XmlMetadataProvider - Missing Configuration File: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/Phoenix.xml
+2009-07-12 21:05:37,568  WARN [btpool0-21] sagex.phoenix.configuration.ConfigurationMetadataManager - No Configuration Metadata for: XmlMetadataProvider[/home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/Phoenix.xml]
+2009-07-12 21:05:37,568  INFO [btpool0-21] sagex.phoenix.DirectoryMetadataLoader - Loading Configurations from directory: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext
+2009-07-12 21:05:37,569  INFO [btpool0-21] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/Sage.xml
+2009-07-12 21:05:37,585  INFO [btpool0-21] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/log4j.xml
+2009-07-12 21:05:37,586  INFO [btpool0-21] sagex.phoenix.DirectoryMetadataLoader - Loading Xml Metadata: /home/seans/DevelopmentProjects/workspaces/sage/BMTWeb/war/testing/Phoenix/Configuration/ext/bmt.xml
+2009-07-12 21:05:37,637  INFO [btpool0-21] sagex.phoenix.configuration.impl.SageConfigurationProvider - SageConfigurationProvider does not use load()
+2009-07-12 21:05:37,730  INFO [btpool0-21] bmt.BMTMetadataSupport - Using BMTMetadataSupport: 3.0-beta-9
+2009-07-12 21:05:48,923 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: LV; Filter: null
+2009-07-12 21:05:48,926 DEBUG [btpool0-23] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 21:05:48,927 DEBUG [btpool0-23] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: LV; Filter: null
+2009-07-12 21:05:48,950 DEBUG [btpool0-23] org.jdna.sage.media.SageMediaFolder - Finished Loading Sage Media List
+2009-07-12 21:05:48,951 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Folder Items: 27
+2009-07-12 21:05:48,955 DEBUG [Thread-65] org.jdna.util.ProgressTrackerManager$1 - Starting a new runnable progress: Tracking:[id:, 10001, thread:,Thread[Thread-65,5,main]]
+2009-07-12 21:05:48,955 DEBUG [Thread-65] org.jdna.bmt.web.server.BrowserServicesImpl$Scanner - Scanning 27 items
+2009-07-12 21:05:48,959 DEBUG [btpool0-23] org.jdna.util.ProgressTrackerManager - Runnable Progress has been started and managed: Tracking:[id:, 10001, thread:,Thread[Thread-65,5,main]]
+2009-07-12 21:05:49,472 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1a1f5f8
+2009-07-12 21:05:49,488 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@c2f0d4
+2009-07-12 21:05:49,514 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@872687
+2009-07-12 21:05:49,531 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@9ff046
+2009-07-12 21:05:49,547 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@12fae03
+2009-07-12 21:05:49,562 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1391ccd
+2009-07-12 21:05:49,583 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@d4f3f7
+2009-07-12 21:05:49,602 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@10ed81d
+2009-07-12 21:05:49,619 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1e40151
+2009-07-12 21:05:49,637 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1f07016
+2009-07-12 21:05:49,744 DEBUG [btpool0-23] org.jdna.bmt.web.server.MediaHandlerServlet - BMT Media Servlet Created
+2009-07-12 21:05:49,745 DEBUG [btpool0-23] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684155?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:49,756 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684159?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:49,788 DEBUG [btpool0-23] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684163?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:49,802 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684167?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:49,837 DEBUG [btpool0-23] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684171?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:49,840 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684175?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:49,879 DEBUG [btpool0-24] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684179?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:49,882 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684187?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:49,934 DEBUG [btpool0-24] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684195?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:49,935 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684213?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,005 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@82ce1b
+2009-07-12 21:05:50,023 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@154a9f1
+2009-07-12 21:05:50,041 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1265ef3
+2009-07-12 21:05:50,057 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@132dd13
+2009-07-12 21:05:50,087 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@11c7ec4
+2009-07-12 21:05:50,103 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1e96c22
+2009-07-12 21:05:50,115 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@112f1ca
+2009-07-12 21:05:50,132 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1b84b6
+2009-07-12 21:05:50,141 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@f3febe
+2009-07-12 21:05:50,150 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@aacd39
+2009-07-12 21:05:50,191 DEBUG [btpool0-24] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684219?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,202 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684229?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,245 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684250?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,249 DEBUG [btpool0-24] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684259?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,278 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684265?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,306 DEBUG [btpool0-24] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684287?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,317 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684291?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,353 DEBUG [btpool0-24] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684314?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,355 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684326?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,426 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@16ed016
+2009-07-12 21:05:50,427 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684351?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,451 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@14f6964
+2009-07-12 21:05:50,464 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@ea088e
+2009-07-12 21:05:50,480 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@1720809
+2009-07-12 21:05:50,502 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@17194ae
+2009-07-12 21:05:50,520 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@dc704c
+2009-07-12 21:05:50,537 DEBUG [btpool0-24] org.jdna.bmt.web.server.BrowserServicesImpl - Handing Resources: org.jdna.sage.media.SageMediaFile@11066de
+2009-07-12 21:05:50,568 DEBUG [btpool0-24] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684354?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,579 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684387?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,609 DEBUG [btpool0-24] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684390?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,612 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684393?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,644 DEBUG [btpool0-24] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684402?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,681 DEBUG [btpool0-21] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684454?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:05:50,695 DEBUG [btpool0-23] org.jdna.bmt.web.server.MediaHandlerServlet - Proxy Media: http://mediaserver:8081/sagex/media/poster/3684463?transform=[{name:scale,height:40},{name:%20reflection}]
+2009-07-12 21:06:12,914 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Getting MediaFile for: LTV; Filter: null
+2009-07-12 21:06:12,915 DEBUG [btpool0-23] org.jdna.sage.media.SageMediaFolder - Beging Loading Sage Media List
+2009-07-12 21:06:12,915 DEBUG [btpool0-23] org.jdna.sage.media.SageMediaFolder - SageMediaFolder: Types: LTV; Filter: null
+2009-07-12 21:06:12,963 DEBUG [btpool0-23] org.jdna.sage.media.SageMediaFolder - Finished Loading Sage Media List
+2009-07-12 21:06:12,963 DEBUG [btpool0-23] org.jdna.bmt.web.server.BrowserServicesImpl - Folder Items: 0
+2009-07-12 21:06:12,964 DEBUG [btpool0-23] org.jdna.util.ProgressTrackerManager - Runnable Progress has been started and managed: Tracking:[id:, 10002, thread:,Thread[Thread-66,5,main]]
+2009-07-12 21:06:12,964 DEBUG [Thread-66] org.jdna.util.ProgressTrackerManager$1 - Starting a new runnable progress: Tracking:[id:, 10002, thread:,Thread[Thread-66,5,main]]
+2009-07-12 21:06:12,972 DEBUG [Thread-66] org.jdna.bmt.web.server.BrowserServicesImpl$Scanner - Scanning 0 items
+2009-07-12 21:13:08,217 DEBUG [main] org.apache.jasper.servlet.JspServlet - JspServlet.destroy()
+2009-07-12 21:13:08,243 DEBUG [main] org.apache.jasper.compiler.JspRuntimeContext - Parent class loader is: ContextLoader@null
+2009-07-12 21:13:08,244 DEBUG [main] org.apache.jasper.servlet.JspServlet - Scratch dir for the JSP engine is: /tmp/Jetty_0_0_0_0_8080_war____ut4fm1/jsp
+2009-07-12 21:13:08,244 DEBUG [main] org.apache.jasper.servlet.JspServlet - IMPORTANT: Do not modify the generated servlets

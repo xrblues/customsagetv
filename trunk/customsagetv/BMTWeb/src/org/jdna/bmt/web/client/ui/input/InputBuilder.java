@@ -41,6 +41,10 @@ public class InputBuilder<W, T> {
         }
         return new InputBuilder<ListBox, String>(lb);
     }
+
+    public InputBuilder<W, T> bind(T propString) {
+        return bind(new Property<T>(propString));
+    }
     
     public InputBuilder<W, T> bind(final Property<T> prop) {
         if (widget instanceof HasValue) {
