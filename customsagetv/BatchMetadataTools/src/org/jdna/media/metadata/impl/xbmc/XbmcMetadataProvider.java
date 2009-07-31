@@ -24,6 +24,7 @@ import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
@@ -117,7 +118,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         // we can't make a valid MEDIA_PROVIDER_ID using the xbmc scrapers
         String imdbId = IMDBUtils.parseIMDBID(providerDataUrl);
         if (imdbId != null) {
-            md.set(MetadataKey.MEDIA_PROVIDER_DATA_ID, new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, imdbId));
+            md.setString(MetadataKey.MEDIA_PROVIDER_DATA_ID, MetadataAPI.createMetadataIDString(IMDBMetaDataProvider.PROVIDER_ID, imdbId));
         }
 
         XbmcMovieProcessor processor = new XbmcMovieProcessor(scraper);

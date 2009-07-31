@@ -27,7 +27,7 @@ public class RefreshMetadataVisitor implements IMediaResourceVisitor {
     public void visit(IMediaResource resource) {
         if (resource.getType() == IMediaResource.Type.File) {
             try {
-                log.debug("Refreshing MetaData for: " + resource.getLocationUri());
+                log.debug("Refreshing MetaData for: " + resource.getLocation());
                 // if we have a dataProviderUrl and id, then refresh the
                 // metadata, or
                 // if we only have title, then call the searchMetaData() using
@@ -41,17 +41,17 @@ public class RefreshMetadataVisitor implements IMediaResourceVisitor {
                         throw new Exception("Provider Not Registered: " + MetadataAPI.getProviderDataId(md));
                     }
 
-                    log.debug("Refreshing: " + resource.getLocationUri());
+                    log.debug("Refreshing: " + resource.getLocation());
                     IMediaMetadata updated = provider.getMetaDataByUrl(MetadataAPI.getProviderDataUrl(md));
                     persistence.storeMetaData(updated, resource, options);
 
                     tracker.addSuccess((IMediaFile) resource);
                 } else {
-                    log.debug("Skipping: " + resource.getLocationUri() + "; MetaData does not contain providerId or providerDataUrl");
+                    log.debug("Skipping: " + resource.getLocation() + "; MetaData does not contain providerId or providerDataUrl");
                     tracker.addFailed((IMediaFile) resource, "MetaData does not contain provider Id or provider Data Url");
                 }
             } catch (Exception e) {
-                log.error("Failed to refresh resource: " + resource.getLocationUri(), e);
+                log.error("Failed to refresh resource: " + resource.getLocation(), e);
                 tracker.addFailed((IMediaFile) resource,"Failed!", e);
             }
         }

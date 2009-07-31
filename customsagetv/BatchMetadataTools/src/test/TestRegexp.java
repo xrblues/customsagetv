@@ -208,7 +208,7 @@ public class TestRegexp {
     }
 
     public static void testStack(String s) {
-        FileMediaFile mf = new FileMediaFile(new File(s).toURI());
+        FileMediaFile mf = new FileMediaFile(new File(s));
         System.out.printf("String: %s; Name; %s, Basename: %s; Stacked: %s\n", s, mf.getTitle(), mf.getBasename(), CDStackingModel.INSTANCE.getStackedTitle(mf));
 
         Pattern p = Pattern.compile(GroupProxy.get(MediaConfiguration.class).getStackingModelRegex(), Pattern.CASE_INSENSITIVE);

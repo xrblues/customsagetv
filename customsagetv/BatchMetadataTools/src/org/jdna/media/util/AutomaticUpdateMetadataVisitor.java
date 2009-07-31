@@ -39,21 +39,21 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
 
     public void visit(IMediaResource resource) {
         if (tracker.isCancelled()) {
-            log.debug("Tracker is cancelled; Won't accept file: " + resource.getLocationUri());
+            log.debug("Tracker is cancelled; Won't accept file: " + resource.getLocation());
             return;
         }
         
         try {
             if (resource.getType() == IMediaResource.Type.File) {
-                tracker.setTaskName("Scanning: " + resource.getLocationUri());
+                tracker.setTaskName("Scanning: " + resource.getLocation());
                 fetchMetaData((IMediaFile) resource);
             } else {
-                log.debug("Not a Media File: " + resource.getLocationUri());
+                log.debug("Not a Media File: " + resource.getLocation());
             }
         } catch (Exception e) {
-            log.error("Failed to find/update metadata for resource: " + resource.getLocationUri(), e);
-            tracker.addFailed((IMediaFile) resource, "Failed to find/update metadata for resource: " + resource.getLocationUri(), e);
-            log.error("Failed to visit MediaResource: " + resource.getLocationUri(), e);
+            log.error("Failed to find/update metadata for resource: " + resource.getLocation(), e);
+            tracker.addFailed((IMediaFile) resource, "Failed to find/update metadata for resource: " + resource.getLocation(), e);
+            log.error("Failed to visit MediaResource: " + resource.getLocation(), e);
         } finally {
             tracker.worked(1);
         }
@@ -123,7 +123,7 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     }
 
     protected void handleNotFoundResults(IMediaFile file, SearchQuery query, List<IMediaSearchResult> results) {
-        log.debug("Nothing Found for query: " + query + "; File: " + file.getLocationUri());
+        log.debug("Nothing Found for query: " + query + "; File: " + file.getLocation());
         tracker.addFailed(file, "Nothing Found for Query: " + query);
     }
 

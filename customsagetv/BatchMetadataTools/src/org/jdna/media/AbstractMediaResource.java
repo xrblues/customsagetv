@@ -1,15 +1,14 @@
 package org.jdna.media;
 
-import java.net.URI;
 
 public abstract class AbstractMediaResource implements IMediaResource {
-    private URI uri = null;
+    private IPath uri = null;
     
-    public AbstractMediaResource(URI uri) {
+    public AbstractMediaResource(IPath uri) {
         this.uri = uri;
     }
     
-    protected void setLocationUri(URI uri) {
+    protected void setLocationUri(IPath uri) {
         this.uri=uri;
     }
     
@@ -20,7 +19,7 @@ public abstract class AbstractMediaResource implements IMediaResource {
     }
 
     public int compareTo(IMediaResource o) {
-        return this.getLocationUri().compareTo(o.getLocationUri());
+        return this.getLocation().compareTo(o.getLocation());
     }
 
     public String getExtension() {
@@ -49,12 +48,12 @@ public abstract class AbstractMediaResource implements IMediaResource {
         visitor.visit(this);
     }
 
-    public URI getLocationUri() {
+    public IPath getLocation() {
         return uri;
     }
     
     public String getName() {
-        String u = getLocationUri().getPath();
+        String u = getLocation().getPath();
         if (u==null) return null;
         if (u.endsWith("/")) {
             u = u.substring(0, u.length()-1);

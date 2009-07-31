@@ -17,7 +17,7 @@ public class PluginConfiguration extends GroupProxy {
     private FieldProxy<Boolean> overwriteFanart = new FieldProxy<Boolean>(false);
     
     @AField(label="Missing Media Items Workaround", description="Enable this if you notice that some of your media items are not showing up when you do a SageTV Referesh.  This is a workaround until the problem is solved.")
-    private FieldProxy<Boolean> returnNullMetadata = new FieldProxy<Boolean>(false);
+    private FieldProxy<Boolean> returnNullMetadata = new FieldProxy<Boolean>(true);
 
     public PluginConfiguration() {
         super();

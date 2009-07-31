@@ -23,13 +23,9 @@ public class TestUtils {
 
     public static void dumpMetaData(IMediaMetadata md) {
         for (MetadataKey k : MetadataKey.values()) {
-            Object o  =md.get(k);
+            String o  =md.getString(k);
             if (o!=null) {
-                if (k.equals(MetadataKey.CAST_MEMBER_LIST)) {
-                    dumpCastMember((ICastMember[]) o);
-                } else {
-                    System.out.printf("%20s: %s\n", k, o);
-                }
+                System.out.printf("%20s: %s\n", k, o);
             }
         }
     }

@@ -1,16 +1,14 @@
 package org.jdna.media;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class VirtualMediaFile extends AbstractMediaFile implements IMediaFile {
     private long lastUpdated = 0;
     
-    public VirtualMediaFile(String uri) throws URISyntaxException {
-        super(new URI(uri));
+    public VirtualMediaFile(String uri) throws Exception {
+        super(new Path(uri));
     }
 
-    public VirtualMediaFile(URI uri) {
+    public VirtualMediaFile(IPath uri) {
         super(uri);
     }
 

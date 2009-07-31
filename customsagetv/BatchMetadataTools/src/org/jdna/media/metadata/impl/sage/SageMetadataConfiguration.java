@@ -11,7 +11,7 @@ public class SageMetadataConfiguration extends GroupProxy {
     private FieldProxy<String> actorMask        = new FieldProxy<String>("{0} -- {1};\n");
 
     @AField(label="Description Mask", description = "Description Mask (note ${PROP_FIELD_NAME} field names are looked up in the property file)")
-    private FieldProxy<String> descriptionMask  = new FieldProxy<String>("${"+SageProperty.DESCRIPTION.sageKey+"}\nUser Rating: ${"+SageProperty.USER_RATING.sageKey+"}\n");
+    private FieldProxy<String> descriptionMask  = new FieldProxy<String>("${"+SageProperty.DESCRIPTION.sageKey+"}");
 
     @AField(label="Multi CD Title Mask", description = "Title to use for multi volume vidoes (_disc is disc # 1,2,3,etc)")
     private FieldProxy<String> multiCDTitleMask = new FieldProxy<String>("${"+SageProperty.DISPLAY_TITLE.sageKey+"} Disc ${"+SageProperty.DISC.sageKey+"}");

@@ -6,7 +6,7 @@
 
 	<property name="targetDir" value="target" />
 	<property name="name" value="metadata-updater" />
-	<property name="version" value="3.0-beta-8" />
+	<property name="version" value="3.0-beta-9" />
 	<property name="jarname" value="${name}.jar" />
 	<property name="launcher" value="MetadataTool" />
 	<property name="mainClass" value="org.jdna.metadataupdater.MetadataUpdater" />
@@ -19,7 +19,7 @@
 		<mkdir dir="bin/gwt"/>
 
 		<copy toDir="bin/gwt/src" failonerror="true">
-			<fileset dir="src" includes="org/jdna/media/metadata/SearchQuery.java,org/jdna/metadataupdater/Version.java,org/jdna/media/metadata/MetadataID.java,org/jdna/media/metadata/MetadataKey.java,org/jdna/media/metadata/IMediaMetadata.java,org/jdna/media/metadata/ICastMember.java,org/jdna/media/metadata/IMediaArt.java">
+			<fileset dir="src" includes="org/jdna/media/metadata/PersistenceOptions.java,org/jdna/media/metadata/SearchQuery.java,org/jdna/metadataupdater/Version.java,org/jdna/media/metadata/MetadataID.java,org/jdna/media/metadata/MetadataKey.java,org/jdna/media/IMediaFolder.java,org/jdna/media/metadata/ICastMember.java,org/jdna/media/metadata/IMediaMetadata.java,org/jdna/media/metadata/IMediaArt.java,org/jdna/media/metadata/IProviderInfo.java,org/jdna/media/metadata/IMediaMetadataPersistence.java,org/jdna/media/metadata/IMediaMetadataProvider.java,org/jdna/media/metadata/IMediaSearchResult.java,org/jdna/media/IMediaResource.java,org/jdna/media/IMediaResourceFilter.java,org/jdna/media/IMediaStackModel.java,org/jdna/media/IMediaFile.java,org/jdna/media/IMediaResourceVisitor.java,org/jdna/media/IPath.java">
 				<exclude name="**/impl/**" />
 			</fileset>
 		</copy>

@@ -21,6 +21,7 @@ import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
+import org.jdna.media.util.PathUtils;
 import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.util.StoredStringSet;
 
@@ -69,7 +70,7 @@ public class FanartStorage {
                     try {
                         saveLocalFanart((IMediaFile) mf, md, mt, options);
                     } catch (Exception e) {
-                        log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocationUri(), e);
+                        log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocation(), e);
                     }
                 }
             }
@@ -78,20 +79,20 @@ public class FanartStorage {
                 try {
                     saveLocalFanart(mediaFileParent, md, mt, options);
                 } catch (Exception e) {
-                    log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocationUri(), e);
+                    log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocation(), e);
                 }
             }
         }
     }
 
     private void saveLocalFanart(IMediaFile mediaFileParent, IMediaMetadata md, MediaArtifactType mt, PersistenceOptions options) throws IOException {
-        File mediaFile = new File(mediaFileParent.getLocationUri());
+        File mediaFile = PathUtils.toFile(mediaFileParent.getLocation());
 
         // media type is not important for local fanart
         File imageFile = FanartUtil.getLocalFanartForFile(mediaFile, MediaType.MOVIE, mt);
-        IMediaArt ma[] = MetadataAPI.getMediaArt(md,mt);
-        if (ma != null && ma.length > 0) {
-            downloadAndSaveFanart(mt, ma[0], imageFile, options, false);
+        List<IMediaArt> ma = MetadataAPI.getMediaArt(md,mt);
+        if (ma != null && ma.size() > 0) {
+            downloadAndSaveFanart(mt, ma.get(0), imageFile, options, false);
         }
     }
 
@@ -183,22 +184,22 @@ public class FanartStorage {
             } else if (isMusic(md)) {
                 mediaType = MediaType.MUSIC;
             } else {
-                log.error("Unsupported MediaFile Type: " + md.get(MetadataKey.MEDIA_TYPE));
+                log.error("Unsupported MediaFile Type: " + md.getString(MetadataKey.MEDIA_TYPE));
                 return;
             }
 
             File fanartFile = FanartUtil.getCentralFanartArtifact(mediaType, mt, title, centralFolder, extraMD);
-            IMediaArt artwork[] = MetadataAPI.getMediaArt(md, mt);
+            List<IMediaArt> artwork = MetadataAPI.getMediaArt(md, mt);
             downloadAndSageCentralFanart(mt, fanartFile, artwork, options);
         }
     }
 
-    private void downloadAndSageCentralFanart(MediaArtifactType mt, File fanartDir, IMediaArt artwork[], PersistenceOptions options) {
+    private void downloadAndSageCentralFanart(MediaArtifactType mt, File fanartDir, List<IMediaArt> artwork, PersistenceOptions options) {
         int downloaded = 0;
         int max = metadataConfig.getMaxDownloadableImages();
         if (max == -1) max = 99;
-        if (artwork != null && artwork.length > 0) {
-            max = Math.min(max, artwork.length);
+        if (artwork != null && artwork.size() > 0) {
+            max = Math.min(max, artwork.size());
             for (IMediaArt ma : artwork) {
                 try {
                     downloadAndSaveFanart(mt, ma, fanartDir, options, true);
@@ -222,8 +223,8 @@ public class FanartStorage {
         // do the series level artwork
         Map<String, String> emptyMap = Collections.emptyMap();
         File fanartFile = FanartUtil.getCentralFanartArtifact(MediaType.TV, mt, title, centralFolder, emptyMap);
-        IMediaArt artwork[] = MetadataAPI.getMediaArt(md,mt);
-        if (artwork == null || artwork.length == 0) {
+        List<IMediaArt> artwork = MetadataAPI.getMediaArt(md,mt);
+        if (artwork == null || artwork.size() == 0) {
             log.debug("No TV " + mt.name() + " MediaArt for " + MetadataAPI.getMediaTitle(md));
             return;
         }
@@ -236,16 +237,16 @@ public class FanartStorage {
         if (l.size() == 0) {
             log.debug("No Series Level TV " + mt.name() + " MediaArt for " + MetadataAPI.getMediaTitle(md));
         } else {
-            downloadAndSageCentralFanart(mt, fanartFile, l.toArray(new IMediaArt[l.size()]), options);
+            downloadAndSageCentralFanart(mt, fanartFile, l, options);
         }
 
         // do the season level artwork
         Map<String, String> extraMD = new HashMap<String, String>();
-        if (!StringUtils.isEmpty((String) md.get(MetadataKey.SEASON))) {
-            extraMD.put(SageProperty.SEASON_NUMBER.sageKey, (String) md.get(MetadataKey.SEASON));
+        if (!StringUtils.isEmpty(md.getString(MetadataKey.SEASON))) {
+            extraMD.put(SageProperty.SEASON_NUMBER.sageKey, md.getString(MetadataKey.SEASON));
             fanartFile = FanartUtil.getCentralFanartArtifact(MediaType.TV, mt, title, centralFolder, extraMD);
             artwork = MetadataAPI.getMediaArt(md, mt);
-            if (artwork == null || artwork.length == 0) {
+            if (artwork == null || artwork.size() == 0) {
                 log.debug("No TV " + mt.name() + " MediaArt for " + MetadataAPI.getMediaTitle(md));
                 return;
             }
@@ -259,7 +260,7 @@ public class FanartStorage {
             if (l.size() == 0) {
                 log.debug("No Season Level TV " + mt.name() + " MediaArt for " + MetadataAPI.getMediaTitle(md));
             } else {
-                downloadAndSageCentralFanart(mt, fanartFile, l.toArray(new IMediaArt[l.size()]), options);
+                downloadAndSageCentralFanart(mt, fanartFile, l, options);
             }
         }
     }
@@ -270,11 +271,11 @@ public class FanartStorage {
     }
 
     private boolean isTV(IMediaMetadata md) {
-        return MetadataUtil.TV_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
+        return MetadataUtil.TV_MEDIA_TYPE.equals(md.getString(MetadataKey.MEDIA_TYPE));
     }
 
     private boolean isMovie(IMediaMetadata md) {
-        return md == null || MetadataUtil.MOVIE_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE));
+        return md == null || MetadataUtil.MOVIE_MEDIA_TYPE.equals(md.getString(MetadataKey.MEDIA_TYPE));
     }
 
     public static void downloadFanart(String title, IMediaMetadata md, PersistenceOptions options) {

@@ -12,6 +12,7 @@ import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.util.StringUtils;
@@ -43,10 +44,10 @@ public class LocalDVDProfParser {
 
     public MediaMetadata getMetaData() {
         metadata = new MediaMetadata();
-        metadata.setCastMembers(getCastMembers().toArray(new CastMember[castMembers.size()]));
+        metadata.getCastMembers().addAll(getCastMembers());
         metadata.setAspectRatio(getAspectRatio());
         metadata.setCompany(getCompany());
-        metadata.setGenres(getGenres().toArray(new String[genres.size()]));
+        metadata.getGenres().addAll(getGenres());
         metadata.setMPAARating(getMPAARating());
         metadata.setDescription(getPlot());
         metadata.setReleaseDate(getReleaseDate());
@@ -68,7 +69,7 @@ public class LocalDVDProfParser {
         metadata.setYear(getYear());
 
         metadata.setProviderId(LocalDVDProfMetaDataProvider.PROVIDER_ID);
-        metadata.setProviderDataId(new MetadataID(LocalDVDProfMetaDataProvider.PROVIDER_ID, getProviderUrl()));
+        metadata.setProviderDataId(MetadataAPI.createMetadataIDString(LocalDVDProfMetaDataProvider.PROVIDER_ID, getProviderUrl()));
         metadata.setProviderDataUrl(id);
         return metadata;
     }

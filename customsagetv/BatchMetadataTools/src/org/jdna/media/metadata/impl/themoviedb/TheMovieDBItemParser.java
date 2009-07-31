@@ -15,6 +15,7 @@ import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.url.IUrl;
@@ -67,9 +68,9 @@ public class TheMovieDBItemParser {
                 theMovieDBID = getElementValue(movie, "id");
                 List<ICastMember> cast = getPeople(movie);
                 if (cast != null) {
-                    md.setCastMembers(cast.toArray(new ICastMember[cast.size()]));
+                    md.getCastMembers().addAll(cast);
                 }
-                md.setGenres(getGenres(movie));
+                md.getGenres().addAll(getGenres(movie));
                 md.setDescription(getElementValue(movie, "short_overview"));
                 md.setReleaseDate(getElementValue(movie, "release"));
                 md.setRuntime(MetadataUtil.convertTimeToMillissecondsForSage(getElementValue(movie, "runtime")));
@@ -85,7 +86,7 @@ public class TheMovieDBItemParser {
 
                 md.setProviderDataUrl(origUrl);
                 md.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
-                md.setProviderDataId(new MetadataID("themoviedb", theMovieDBID));
+                md.setProviderDataId(MetadataAPI.createMetadataIDString("themoviedb", theMovieDBID));
             } catch (Exception e) {
                 log.error("Failed while parsing: " + url, e);
                 md = null;
@@ -121,7 +122,7 @@ public class TheMovieDBItemParser {
         return cast;
     }
 
-    private String[] getGenres(Element movie) {
+    private List<String> getGenres(Element movie) {
         List<String> l = new ArrayList<String>();
 
         NodeList nl = movie.getElementsByTagName("category");
@@ -129,7 +130,7 @@ public class TheMovieDBItemParser {
             Element e = (Element) nl.item(i);
             l.add(getElementValue(e, "name"));
         }
-        return l.toArray(new String[l.size()]);
+        return l;
     }
 
     private void addBanners(MediaMetadata md, Element movie) {

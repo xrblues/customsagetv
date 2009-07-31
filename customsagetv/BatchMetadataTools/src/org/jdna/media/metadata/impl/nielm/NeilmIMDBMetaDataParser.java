@@ -1,5 +1,9 @@
 package org.jdna.media.metadata.impl.nielm;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 
 import net.sf.sageplugins.sageimdb.DbTitleObject;
@@ -11,6 +15,7 @@ import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
@@ -24,7 +29,7 @@ public class NeilmIMDBMetaDataParser {
 
     private ImdbWebBackend      db          = null;
     private DbTitleObject       data        = null;
-    private CastMember[]        castMembers = null;
+    private List<ICastMember>    castMembers = null;
 
     public NeilmIMDBMetaDataParser(ImdbWebBackend db, DbTitleObject data) {
         this.data = data;
@@ -34,8 +39,10 @@ public class NeilmIMDBMetaDataParser {
     public MediaMetadata getMetaData() {
         MediaMetadata md = new MediaMetadata();
 
-        md.setCastMembers(getCastMembers());
-        md.setGenres(data.getGenres());
+        md.getCastMembers().addAll(getCastMembers());
+        if (data.getGenres()!=null) {
+            md.getGenres().addAll(Arrays.asList(data.getGenres()));
+        }
         md.setMPAARating(data.getMPAArating());
         md.set(MetadataKey.MPAA_RATING_DESCRIPTION, IMDBMovieMetaDataParser.parseMPAARating(data.getMPAArating()));
         md.setDescription(data.getSummaries());
@@ -57,16 +64,16 @@ public class NeilmIMDBMetaDataParser {
 
         md.setProviderId(NielmIMDBMetaDataProvider.PROVIDER_ID);
         md.setProviderDataUrl(data.getImdbUrl());
-        md.setProviderDataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, IMDBUtils.parseIMDBID(data.getImdbUrl())));
+        md.setProviderDataId(MetadataAPI.createMetadataIDString(IMDBMetaDataProvider.PROVIDER_ID, IMDBUtils.parseIMDBID(data.getImdbUrl())));
         return md;
     }
 
-    public ICastMember[] getCastMembers() {
+    public List<ICastMember> getCastMembers() {
         if (castMembers == null) {
             Vector<Role> cast = data.getCast();
             if (cast != null && cast.size() > 0) {
                 int s = cast.size();
-                castMembers = new CastMember[s];
+                castMembers = new ArrayList<ICastMember>(s);
 
                 for (int i = 0; i < s; i++) {
                     Role role = cast.get(i);
@@ -74,10 +81,11 @@ public class NeilmIMDBMetaDataParser {
                     cm.setId(role.getName().getName());
                     cm.setName(role.getName().getName());
                     cm.setPart(role.getPart());
-                    castMembers[i] = cm;
+                    castMembers.add(cm);
                 }
             }
         }
+        if (castMembers==null) castMembers = Collections.EMPTY_LIST;
         return castMembers;
     }
 }

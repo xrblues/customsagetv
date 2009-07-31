@@ -84,7 +84,7 @@ public class ManualConsoleSearchMetadataVisitor extends AutomaticUpdateMetadataV
             }
         } catch (Exception e) {
             getProgressTracker().addFailed(file, e.getMessage(), e);
-            log.error("Failed to manually fetch metadata for media file: " + file.getLocationUri(), e);
+            log.error("Failed to manually fetch metadata for media file: " + file.getLocation(), e);
             throw new RuntimeException(e);
         }
     }

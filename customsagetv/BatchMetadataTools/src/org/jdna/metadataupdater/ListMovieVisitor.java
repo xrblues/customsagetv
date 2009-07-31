@@ -1,10 +1,11 @@
 package org.jdna.metadataupdater;
 
-import java.net.URI;
+import java.util.List;
 
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
+import org.jdna.media.IPath;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
@@ -32,16 +33,16 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
                 IMediaMetadata md = persistence.loadMetaData(resource);
                 IMediaFile mediaFile = (IMediaFile) resource;
                 String code = ((md == null) ? "-" : " ");
-                System.out.printf("%s %-40s (%s)\n", code, mediaFile.getTitle(), mediaFile.getLocationUri());
+                System.out.printf("%s %-40s (%s)\n", code, mediaFile.getTitle(), mediaFile.getLocation());
             }
         }
     }
 
     public void showMetadata(IMediaFile mf) {
-        printMetadata(persistence.loadMetaData(mf), mf.getName(), mf.getLocationUri());
+        printMetadata(persistence.loadMetaData(mf), mf.getName(), mf.getLocation());
     }
     
-    public static void printMetadata(IMediaMetadata md, String name, URI location) {
+    public static void printMetadata(IMediaMetadata md, String name, IPath location) {
         if (md == null) {
             System.out.println("No Metadata for: " + location);
         } else {
@@ -50,44 +51,44 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
             col2("Title:", MetadataAPI.getMediaTitle(md));
             col2("Plot:", MetadataAPI.getDescription(md));
             col2("Genres:", toGenreString(MetadataAPI.getGenres(md)));
-            col2("MPAA Rating:", (String) md.get(MetadataKey.MPAA_RATING));
-            col2("MPAA Rating Full:", (String) md.get(MetadataKey.MPAA_RATING_DESCRIPTION));
+            col2("MPAA Rating:", md.getString(MetadataKey.MPAA_RATING));
+            col2("MPAA Rating Full:", md.getString(MetadataKey.MPAA_RATING_DESCRIPTION));
             col2("User Rating:", MetadataAPI.getUserRating(md));
-            col2("Company:", (String) md.get(MetadataKey.COMPANY));
+            col2("Company:", md.getString(MetadataKey.COMPANY));
             col2("Year:", MetadataAPI.getYear(md));
             col2("Release Date:", MetadataAPI.getReleaseDate(md));
             col2("Runtime:", MetadataAPI.getRuntime(md));
-            col2("Aspect Ratio:", (String) md.get(MetadataKey.ASPECT_RATIO));
-            col2("Provider DataId:", (MetadataAPI.getProviderDataId(md)==null?"Not Set":MetadataAPI.getProviderDataId(md).toIDString()));
+            col2("Aspect Ratio:", md.getString(MetadataKey.ASPECT_RATIO));
+            col2("Provider DataId:", (MetadataAPI.getProviderDataId(md)==null?"Not Set":MetadataAPI.getProviderDataId(md)));
             col2("Provider Url:", MetadataAPI.getProviderDataUrl(md));
             col2("Provider Id:", MetadataAPI.getProviderId(md));
             if (MetadataAPI.getMediaArt(md, MediaArtifactType.POSTER) != null) {
-                IMediaArt maArr[] = MetadataAPI.getMediaArt(md, MediaArtifactType.POSTER);
-                for (int i=0;i<maArr.length;i++) {
-                    col2(String.format("Poster %s:", i+1), maArr[i].getDownloadUrl());
+                List<IMediaArt> maArr = MetadataAPI.getMediaArt(md, MediaArtifactType.POSTER);
+                for (int i=0;i<maArr.size();i++) {
+                    col2(String.format("Poster %s:", i+1), maArr.get(i).getDownloadUrl());
                 }
             } else {
                 col2("Poster:", "No Poster");
             }
             if (MetadataAPI.getMediaArt(md, MediaArtifactType.BACKGROUND) != null) {
-                IMediaArt maArr[] = MetadataAPI.getMediaArt(md, MediaArtifactType.BACKGROUND);
-                for (int i=0;i<maArr.length;i++) {
-                    col2(String.format("Background %s:", i+1), maArr[i].getDownloadUrl());
+                List<IMediaArt> maArr = MetadataAPI.getMediaArt(md, MediaArtifactType.BACKGROUND);
+                for (int i=0;i<maArr.size();i++) {
+                    col2(String.format("Background %s:", i+1), maArr.get(i).getDownloadUrl());
                 }
             } else {
                 col2("Background:", "No Background");
             }
             if (MetadataAPI.getMediaArt(md, MediaArtifactType.BANNER) != null) {
-                IMediaArt maArr[] = MetadataAPI.getMediaArt(md, MediaArtifactType.BANNER);
-                for (int i=0;i<maArr.length;i++) {
-                    col2(String.format("Banner %s:", i+1), maArr[i].getDownloadUrl());
+                List<IMediaArt> maArr = MetadataAPI.getMediaArt(md, MediaArtifactType.BANNER);
+                for (int i=0;i<maArr.size();i++) {
+                    col2(String.format("Banner %s:", i+1), maArr.get(i).getDownloadUrl());
                 }
             } else {
                 col2("Banner:", "No Banner");
             }
             col2("Directors:", toSimpleCastString(MetadataAPI.getCastMembers(md, ICastMember.DIRECTOR)));
             col2("Writers:", toSimpleCastString(MetadataAPI.getCastMembers(md, ICastMember.WRITER)));
-            ICastMember actors[] = MetadataAPI.getCastMembers(md, ICastMember.ACTOR);
+            List<ICastMember> actors = MetadataAPI.getCastMembers(md, ICastMember.ACTOR);
             if (actors != null) {
                 col2("Actors:", "-----------");
                 for (ICastMember cm : actors) {
@@ -101,7 +102,7 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
         }
     }
 
-    private static String toSimpleCastString(ICastMember[] cast) {
+    private static String toSimpleCastString(List<ICastMember> cast) {
         if (cast == null) return "-- NONE --";
         StringBuffer sb = new StringBuffer();
         for (ICastMember cm : cast) {
@@ -110,7 +111,7 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
         return sb.toString();
     }
 
-    private static String toGenreString(String[] genres) {
+    private static String toGenreString(List<String> genres) {
         if (genres == null) return "-- NONE --";
         StringBuffer sb = new StringBuffer();
         for (String s : genres) {

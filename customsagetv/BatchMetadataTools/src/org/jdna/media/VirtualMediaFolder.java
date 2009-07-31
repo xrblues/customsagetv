@@ -1,17 +1,15 @@
 package org.jdna.media;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 public class VirtualMediaFolder extends AbstractMediaFolder {
     private long lastUpdated = 0;
     
-    public VirtualMediaFolder(String uri) throws URISyntaxException {
-        this(new URI(uri));
+    public VirtualMediaFolder(String uri) throws Exception {
+        this(new Path(uri));
     }
     
-    public VirtualMediaFolder(URI uri) {
+    public VirtualMediaFolder(IPath uri) {
         super(uri);
     }
     

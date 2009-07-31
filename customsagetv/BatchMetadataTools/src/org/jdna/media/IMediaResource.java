@@ -1,6 +1,5 @@
 package org.jdna.media;
 
-import java.net.URI;
 
 
 public interface IMediaResource extends Comparable<IMediaResource> {
@@ -12,7 +11,7 @@ public interface IMediaResource extends Comparable<IMediaResource> {
     
     public String getName();
 
-    public URI getLocationUri();
+    public IPath getLocation();
 
     public String getBasename();
 

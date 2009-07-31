@@ -1,6 +1,5 @@
 package org.jdna.media;
 
-import java.net.URI;
 import java.util.List;
 
 public abstract class DecoratedMediaFolder implements IMediaFolder {
@@ -35,8 +34,8 @@ public abstract class DecoratedMediaFolder implements IMediaFolder {
     public String getExtension() {
         return folder.getExtension();
     }
-    public URI getLocationUri() {
-        return folder.getLocationUri();
+    public IPath getLocation() {
+        return folder.getLocation();
     }
     public String getName() {
         return folder.getName();

@@ -17,7 +17,5 @@ public class TestJSONObjectWrapper {
         ma.setDownloadUrl("test://dets");
         md.addMediaArt(ma);
 
-        JSONObject o = new JSONObject(md.getStore());
-        System.out.println(o.toString());
     }
 }
