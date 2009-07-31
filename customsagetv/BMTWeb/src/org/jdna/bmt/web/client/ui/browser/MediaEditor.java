@@ -2,6 +2,8 @@ package org.jdna.bmt.web.client.ui.browser;
 
 import java.util.List;
 
+import org.jdna.bmt.web.client.media.GWTMediaFile;
+import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.util.Log;
 
@@ -38,7 +40,7 @@ public class MediaEditor extends Composite {
     private ScrollPanel               scrollItems     = null;
     private ScrollPanel               scrollDetails   = null;
 
-    private MediaEditorPanel          details         = null;
+    private MediaEditorMetadataPanel          details         = null;
 
     private String                    progressScanId;
     private Timer                     timer           = null;
@@ -98,31 +100,51 @@ public class MediaEditor extends Composite {
                 System.out.println("Scanning For Progress for: " + progressScanId);
                 browserService.getStatus(progressScanId, new AsyncCallback<ProgressStatus>() {
                     public void onFailure(Throwable caught) {
-                        Log.error("Failed to udpate status");
-                        timer.cancel();
-                        itemStatusPanel.remove(statusIndicator);
+                        cancelTimer(caught);
                     }
 
                     public void onSuccess(ProgressStatus result) {
                         if (result != null) {
-                            if (result.isCancelled()) timer.cancel();
-                            if (result.isDone() && result.getItems().size() == 0) {
-                                timer.cancel();
-                                itemStatusPanel.remove(statusIndicator);
+                            if ((result.isDone() || result.isCancelled()) && (result.getItems()==null || result.getItems().size()==0)) {
+                                result.setStatus(result.getTotalWork() + " Items");
+                                cancelTimer(result);
+                            } else {
+                                statusIndicator.updateProgress(result);
+                                addResults(result.getItems());
                             }
-                            statusIndicator.updateProgress(result);
-                            addResults(result.getItems());
                         } else {
-                            timer.cancel();
-                            Log.error("Failed to get progress results");
+                            cancelTimer("No Results");
                         }
                     }
+
                 });
             }
         };
         timer.scheduleRepeating(400);
 
         onWindowResized(Window.getClientWidth(), Window.getClientHeight());
+    }
+
+    private void cancelTimer(String string) {
+        ProgressStatus status = new ProgressStatus();
+        status.setStatus(string);
+        status.setIsDone(true);
+        status.setIsCancelled(true);
+        cancelTimer(status);
+    }
+    
+    private void cancelTimer(Throwable t) {
+        Log.error("Failed!", t);
+        ProgressStatus status = new ProgressStatus();
+        status.setStatus("Failed: " + t.getMessage());
+        status.setIsDone(true);
+        status.setIsCancelled(true);
+        cancelTimer(status);
+    }
+    
+    private void cancelTimer(ProgressStatus status) {
+        timer.cancel();
+        statusIndicator.updateProgress(status);
     }
 
     public void onWindowResized(int windowWidth, int windowHeight) {
@@ -176,11 +198,11 @@ public class MediaEditor extends Composite {
         scrollItems.setHeight(scrollHeight + "px");
     }
 
-    protected void addResults(List<MediaResult> items) {
+    protected void addResults(List<GWTMediaFile> items) {
         if (items != null) {
             successCount += items.size();
             for (int i = 0; i < items.size(); i++) {
-                final MediaEditorWidget item = new MediaEditorWidget(items.get(i));
+                final MediaEditorMediaFileWidget item = new MediaEditorMediaFileWidget(items.get(i));
                 item.setWidth("100%");
                 item.addClickHandler(new ClickHandler() {
                     public void onClick(ClickEvent event) {
@@ -197,24 +219,25 @@ public class MediaEditor extends Composite {
         });
     }
 
-    protected void updateMediaEditorPanel(MediaEditorWidget item) {
-        MediaResult mi = item.getMediaItem();
-        final PopupPanel waiting = Dialogs.showWaitingPopup("Getting details for " + mi.getMediaTitle());
-        browserService.getMediaItem(mi, new AsyncCallback<MediaItem>() {
+    protected void updateMediaEditorPanel(MediaEditorMediaFileWidget item) {
+        final GWTMediaFile mi = item.getMediaFile();
+        final PopupPanel waiting = Dialogs.showWaitingPopup("Getting details for " + mi.getTitle());
+        browserService.loadMetadata(mi, new AsyncCallback<GWTMediaMetadata>() {
             public void onFailure(Throwable caught) {
                 Dialogs.hidePopup(waiting, 1000);
                 editor.clear();
                 Log.error("Failed to load metadata.", caught);
             }
 
-            public void onSuccess(MediaItem result) {
+            public void onSuccess(GWTMediaMetadata result) {
                 Dialogs.hidePopup(waiting, 1000);
-                updateEditorPanel(result);
+                mi.attachMetadata(result);
+                updateEditorPanel(mi);
             }
         });
     }
 
-    protected void updateEditorPanel(MediaItem result) {
+    protected void updateEditorPanel(GWTMediaFile mediaFile) {
         DeferredCommand.addCommand(new Command() {
             public void execute() {
                 onWindowResized(Window.getClientWidth(), Window.getClientHeight());
@@ -222,7 +245,7 @@ public class MediaEditor extends Composite {
         });
         
         editor.clear();
-        details = new MediaEditorPanel(result);
+        details = new MediaEditorMetadataPanel(mediaFile);
         scrollDetails = new ScrollPanel();
         scrollDetails.setWidth("100%");
         scrollDetails.setHeight("100%");

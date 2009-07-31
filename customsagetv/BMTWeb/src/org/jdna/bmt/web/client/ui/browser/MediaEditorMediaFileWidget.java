@@ -1,5 +1,8 @@
 package org.jdna.bmt.web.client.ui.browser;
 
+import org.jdna.bmt.web.client.media.GWTMediaFile;
+import org.jdna.bmt.web.client.util.Log;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
@@ -19,9 +22,10 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class MediaEditorWidget extends Composite implements HasClickHandlers, MouseOutHandler, MouseOverHandler, ClickHandler {
-    private MediaResult mediaResult;
+public class MediaEditorMediaFileWidget extends Composite implements HasClickHandlers, MouseOutHandler, MouseOverHandler, ClickHandler {
+    private GWTMediaFile mediaItem;
     
     private HorizontalPanel panel = new HorizontalPanel();
     private Image thumb = null;
@@ -30,10 +34,10 @@ public class MediaEditorWidget extends Composite implements HasClickHandlers, Mo
     // Not typically a good idea, but given this can only be run in
     // a single UI, then it's ok. i guess.
     // holds a reference to the currently selected widget in a list of widgets
-    private static MediaEditorWidget currentSelectedItem = null;
+    private static MediaEditorMediaFileWidget currentSelectedItem = null;
     
-    public MediaEditorWidget(MediaResult item) {
-        this.mediaResult=item;
+    public MediaEditorMediaFileWidget(GWTMediaFile item) {
+        this.mediaItem=item;
         
         panel.setWidth("100%");
         panel.setHeight(imageHeight+"px");
@@ -44,6 +48,7 @@ public class MediaEditorWidget extends Composite implements HasClickHandlers, Mo
         thumb.setHeight(imageHeight+"px");
         thumb.addErrorHandler(new ErrorHandler() {
             public void onError(ErrorEvent event) {
+                Log.debug("No Thumb: " + thumb.getUrl());
                 panel.remove(thumb);
             }
         });
@@ -61,9 +66,24 @@ public class MediaEditorWidget extends Composite implements HasClickHandlers, Mo
         panel.setCellHorizontalAlignment(thumb, HasAlignment.ALIGN_CENTER);
         panel.setCellWidth(thumb, (imageHeight*.75)+"px");
         
-        Label title = new Label(item.getMediaTitle());
-        panel.add(title);
-        panel.setCellHorizontalAlignment(title, HasAlignment.ALIGN_LEFT);
+        VerticalPanel titlePanel = new VerticalPanel();
+        Label title = new Label(item.getTitle());
+        title.addStyleName("MediaItem-PrimaryTitle");
+        titlePanel.add(title);
+        titlePanel.setCellHorizontalAlignment(title, HasAlignment.ALIGN_LEFT);
+        titlePanel.setCellWidth(title, "100%");
+        
+        if (item.getMinorTitle()!=null) {
+            Label title2 = new Label(item.getMinorTitle());
+            title2.addStyleName("MediaItem-MinorTitle");
+            titlePanel.add(title2);
+            titlePanel.setCellHorizontalAlignment(title2, HasAlignment.ALIGN_LEFT);
+            titlePanel.setCellWidth(title2, "100%");
+        }
+        
+        panel.add(titlePanel);
+        panel.setCellVerticalAlignment(titlePanel, HasAlignment.ALIGN_MIDDLE);
+        panel.setCellHorizontalAlignment(titlePanel, HasAlignment.ALIGN_LEFT);
         panel.setCellWidth(title, "100%");
         
         Image arrow = new Image("listArrow.png");
@@ -91,8 +111,8 @@ public class MediaEditorWidget extends Composite implements HasClickHandlers, Mo
         panel.addStyleName("MediaItem_hover");
     }
 
-    public MediaResult getMediaItem() {
-        return mediaResult;
+    public GWTMediaFile getMediaFile() {
+        return mediaItem;
     }
 
     public void onClick(ClickEvent event) {

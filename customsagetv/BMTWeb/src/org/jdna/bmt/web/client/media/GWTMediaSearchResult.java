@@ -1,18 +1,21 @@
-package org.jdna.bmt.web.client.ui.browser;
+package org.jdna.bmt.web.client.media;
 
 import java.io.Serializable;
 
+import org.jdna.media.IMediaFile;
+import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
 
-public class MediaSearchResult implements Serializable {
+public class GWTMediaSearchResult implements Serializable, IMediaSearchResult {
     private String url;
     private String providerId;
     private float score;
     private String title;
     private String year;
     private MetadataID id;
+    private int mediaFileId;
     
-    public MediaSearchResult() {
+    public GWTMediaSearchResult() {
     }
 
     public String getUrl() {
@@ -61,5 +64,17 @@ public class MediaSearchResult implements Serializable {
 
     public void setId(MetadataID id) {
         this.id = id;
+    }
+
+    public MetadataID getMetadataId() {
+        return getId();
+    }
+
+    public int getMediaFileId() {
+        return mediaFileId;
+    }
+    
+    public void setMediaFileId(int id) {
+        this.mediaFileId=id;
     }
 }
