@@ -8,6 +8,7 @@ import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
@@ -82,27 +83,10 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
     public IMDBMovieMetaDataParser(String url) {
         super(url);
         // These are the Metadata Fields that we support
-        metadata = new MediaMetadata(new MetadataKey[] {
-                MetadataKey.ASPECT_RATIO,
-                MetadataKey.CAST_MEMBER_LIST,
-                MetadataKey.COMPANY,
-                MetadataKey.DESCRIPTION,
-                MetadataKey.DURATION,
-                MetadataKey.GENRE_LIST,
-                MetadataKey.MEDIA_ART_LIST,
-                MetadataKey.MPAA_RATING,
-                MetadataKey.MPAA_RATING_DESCRIPTION,
-                MetadataKey.POSTER_ART,
-                MetadataKey.MEDIA_PROVIDER_DATA_ID,
-                MetadataKey.RELEASE_DATE,
-                MetadataKey.RUNNING_TIME,
-                MetadataKey.MEDIA_TITLE,
-                MetadataKey.USER_RATING,
-                MetadataKey.YEAR });
-        
+        metadata = new MediaMetadata();
         metadata.setProviderId(IMDBMetaDataProvider.PROVIDER_ID);
         metadata.setProviderDataUrl(url);
-        metadata.setProviderDataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID,IMDBUtils.parseIMDBID(url)));
+        metadata.setProviderDataId(MetadataAPI.createMetadataIDString(IMDBMetaDataProvider.PROVIDER_ID,IMDBUtils.parseIMDBID(url)));
     }
 
     public MediaMetadata getMetatData() {

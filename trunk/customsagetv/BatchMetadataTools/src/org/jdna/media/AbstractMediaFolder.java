@@ -1,6 +1,5 @@
 package org.jdna.media;
 
-import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,7 +10,7 @@ public abstract class AbstractMediaFolder extends AbstractMediaResource implemen
     protected List<IMediaResource> members = new LinkedList<IMediaResource>();
     private boolean loaded = false;
     
-    public AbstractMediaFolder(URI uri) {
+    public AbstractMediaFolder(IPath uri) {
         super(uri);
     }
     

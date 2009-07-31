@@ -1,9 +1,8 @@
 package org.jdna.media;
 
-import java.net.URI;
 
 public abstract class AbstractMediaFile extends AbstractMediaResource implements IMediaFile {
-    public AbstractMediaFile(URI uri) {
+    public AbstractMediaFile(IPath uri) {
         super(uri);
     }
 

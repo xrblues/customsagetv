@@ -43,7 +43,7 @@ public class MediaResourcesTestCase extends TestCase {
         IMediaFile mf = new FileMediaFile(mfile);
         assertEquals("getBasename()","movie cd1",mf.getBasename());
         assertEquals("getExtension()","avi",mf.getExtension());
-        assertEquals("getLocationUri()",mfile.toURI(),mf.getLocationUri());
+        assertEquals("getLocationUri()",mfile.toURI().toASCIIString(),mf.getLocation().toURI());
         assertEquals("getName()","movie cd1.avi",mf.getName());
         assertEquals("getTitle()","movie cd1",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());
@@ -57,7 +57,7 @@ public class MediaResourcesTestCase extends TestCase {
         IMediaFolder mf = (IMediaFolder)FileMediaFolder.createResource(mfile);
         assertEquals("getBasename()","folder 1",mf.getBasename());
         assertEquals("getExtension()",null,mf.getExtension());
-        assertEquals("getLocationUri()",mfile.toURI(),mf.getLocationUri());
+        assertEquals("getLocationUri()",mfile.toURI().toASCIIString(),mf.getLocation().toURI());
         assertEquals("getName()","folder 1",mf.getName());
         assertEquals("getTitle()","folder 1",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.Folder,mf.getType());
@@ -76,7 +76,7 @@ public class MediaResourcesTestCase extends TestCase {
 
         assertEquals("getBasename()","virtual folder",vmf.getBasename());
         assertEquals("getExtension()",null,vmf.getExtension());
-        assertEquals("getLocationUri()","test:/my/virtual%20folder",vmf.getLocationUri().toString());
+        assertEquals("getLocationUri()","test:/my/virtual%20folder",vmf.getLocation().toURI());
         assertEquals("getName()","virtual folder",vmf.getName());
         assertEquals("getTitle()","virtual folder",vmf.getTitle());
         assertEquals("getType()",IMediaResource.Type.Folder,vmf.getType());

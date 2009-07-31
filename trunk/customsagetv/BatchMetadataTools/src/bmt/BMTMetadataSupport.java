@@ -11,6 +11,7 @@ import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
@@ -119,6 +120,9 @@ public class BMTMetadataSupport implements IMetadataSupport {
             IMediaMetadata md = prov.getMetaData((IMediaSearchResult) result);
             IMediaMetadataPersistence persistence = null; 
 
+            IMediaFile smf = new SageMediaFile(media);
+            MetadataAPI.normalizeMetadata(smf, md);
+            
             if (AiringAPI.IsAiringObject(media)) {
                 if (AiringAPI.GetMediaFileForAiring(media)==null) {
                     persistence = MetadataPluginOptions.getFanartOnlyPersistence();
@@ -131,7 +135,6 @@ public class BMTMetadataSupport implements IMetadataSupport {
                 persistence = MetadataPluginOptions.getOnDemandUpdaterPersistence();
             }
             
-            IMediaFile smf = new SageMediaFile(media);
             // Save the sage properties, the update sage's wiz.bin, then download the fanart.
             persistence.storeMetaData(md, smf, options);
             

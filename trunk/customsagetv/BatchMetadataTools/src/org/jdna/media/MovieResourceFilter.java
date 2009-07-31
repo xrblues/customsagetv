@@ -42,7 +42,7 @@ public class MovieResourceFilter implements IMediaResourceFilter {
 
         // check dir pattern
         if (dirExcludePattern != null) {
-            String uri = resource.getLocationUri().toString();
+            String uri = resource.getLocation().toString();
             Matcher m = dirExcludePattern.matcher(uri);
             if (m.find()) {
                 return false;

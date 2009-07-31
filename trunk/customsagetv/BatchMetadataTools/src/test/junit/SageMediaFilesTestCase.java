@@ -7,9 +7,11 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.BasicConfigurator;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaFile.ContentType;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageMediaFolder;
 
@@ -18,7 +20,10 @@ import sagex.api.MediaFileAPI;
 import sagex.stub.StubSageAPI;
 
 public class SageMediaFilesTestCase extends TestCase {
-
+    static {
+        BasicConfigurator.configure();
+    }
+    
     public SageMediaFilesTestCase() {
         super();
     }
@@ -57,7 +62,7 @@ public class SageMediaFilesTestCase extends TestCase {
         IMediaFile mf = new SageMediaFile(sageMF);
         assertEquals("getBasename()","movie cd1",mf.getBasename());
         assertEquals("getExtension()","avi",mf.getExtension());
-        assertEquals("getLocationUri()",f.toURI(),mf.getLocationUri());
+        assertEquals("getLocationUri()",f.toURI().toASCIIString(),mf.getLocation().toURI());
         assertEquals("getName()","movie cd1.avi",mf.getName());
         assertEquals("getTitle()","movie cd1",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());
@@ -75,7 +80,7 @@ public class SageMediaFilesTestCase extends TestCase {
         
         IMediaFile mf = new SageMediaFile(sageMF);
         assertEquals("getBasename()","movie cd1",mf.getBasename());
-        assertEquals("getLocationUri()",f.toURI(),mf.getLocationUri());
+        assertEquals("getLocationUri()",f.toURI().toASCIIString(),mf.getLocation().toURI());
         assertEquals("getName()","movie cd1",mf.getName());
         assertEquals("getTitle()","movie cd1",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());
@@ -93,7 +98,7 @@ public class SageMediaFilesTestCase extends TestCase {
         
         IMediaFile mf = new SageMediaFile(sageMF);
         assertEquals("getBasename()","movie cd1",mf.getBasename());
-        assertEquals("getLocationUri()",f.toURI(),mf.getLocationUri());
+        assertEquals("getLocationUri()",f.toURI().toASCIIString(),mf.getLocation().toURI());
         assertEquals("getName()","movie cd1",mf.getName());
         assertEquals("getTitle()","movie cd1",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());
@@ -112,7 +117,7 @@ public class SageMediaFilesTestCase extends TestCase {
         IMediaFile mf = new SageMediaFile(1200);
         assertEquals("getBasename()","TVShow",mf.getBasename());
         assertEquals("getExtension()",null,mf.getExtension());
-        assertEquals("getLocationUri()","sage://id/1200",mf.getLocationUri().toASCIIString());
+        assertEquals("getLocationUri()","sage://id/1200",mf.getLocation().toURI());
         assertEquals("getName()","TVShow",mf.getName());
         assertEquals("getTitle()","TVShow",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());
@@ -124,9 +129,9 @@ public class SageMediaFilesTestCase extends TestCase {
         provider.setDebugCalls(false);
         SageAPI.setProvider(provider);
 
-        MediaFileAPI.AddMediaFile(new File("/tmp/file1.avi"), "TV");
-        MediaFileAPI.AddMediaFile(new File("/tmp/file2.avi"), "TV");
-        MediaFileAPI.AddMediaFile(new File("/tmp/file3.avi"), "TV");
+        MediaFileAPI.AddMediaFile(makeFile("tmp/file1.avi"), "V");
+        MediaFileAPI.AddMediaFile(makeFile("tmp/file2.avi"), "V");
+        MediaFileAPI.AddMediaFile(makeFile("tmp/file3.avi"), "V");
         
         try {
             SageMediaFolder smf = new SageMediaFolder("sagex://find");
@@ -143,14 +148,27 @@ public class SageMediaFilesTestCase extends TestCase {
         }
         
         // create a sage media folder with a sage uri lookup
-        smf = new SageMediaFolder("sage://query/TV");
+        smf = new SageMediaFolder("sage://query/V");
         assertEquals("uri command", "query", smf.getUriCommand());
-        assertEquals("uri command Args", "TV", smf.getSageQueryTypes());
+        assertEquals("uri command Args", "V", smf.getSageQueryTypes());
         assertEquals("size", 3, smf.members().size());
         
         // test visitors
         CountResourceVisitor crv = new CountResourceVisitor();
         smf.accept(crv);
         assertEquals("vistor count", 4, crv.getCount()); // 4 because of the visit to the folder itself
+    }
+    
+    public void testMultiCD() {
+        StubSageAPI provider = new StubSageAPI();
+        provider.setDebugCalls(false);
+        SageAPI.setProvider(provider);
+
+        SageMediaFile smf1 = new SageMediaFile(MediaFileAPI.AddMediaFile(makeFile("tmp/movies/The Terminator cd1.avi"), "Movie1"));
+        SageMediaFile smf2 = new SageMediaFile(MediaFileAPI.AddMediaFile(makeFile("tmp/movies/The Terminator cd2.avi"), "Movie2"));
+        SageMediaFile smf3 = new SageMediaFile(MediaFileAPI.AddMediaFile(makeFile("tmp/movies/Finding Nemo.avi"), "Movie3"));
+        assertEquals("1", MetadataAPI.getCDFromMediaFile(smf1));
+        assertEquals("2", MetadataAPI.getCDFromMediaFile(smf2));
+        assertEquals(null, MetadataAPI.getCDFromMediaFile(smf3));
     }
 }

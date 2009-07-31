@@ -22,6 +22,7 @@ public enum SageProperty {
     FANART_BANNER("x-Fanart-BannerUrl", MetadataKey.BANNER_ART, SagePropertyType.BMT),
     SERIALIZED_CAST("x-ser-Cast", MetadataKey.CAST_MEMBER_LIST, SagePropertyType.BMT),
     SERIALIZED_GENRES("x-ser-Genres", MetadataKey.GENRE_LIST, SagePropertyType.BMT),
+    SERIALIZED_FANART("x-ser-Fanart", MetadataKey.MEDIA_ART_LIST, SagePropertyType.BMT),
     SERIALIZED_DESCRIPTION("x-ser-Description", MetadataKey.DESCRIPTION, SagePropertyType.BMT),
     COMMENT("", MetadataKey.COMMENT, SagePropertyType.CORE),
     COMPANY("x-Company", MetadataKey.COMPANY, SagePropertyType.BMT),

@@ -12,6 +12,7 @@ import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
@@ -46,11 +47,11 @@ public class MyMoviesParser {
     public MediaMetadata getMetaData() {
         metadata = new MediaMetadata();
 
-        metadata.setCastMembers(getCastMembers().toArray(new CastMember[castMembers.size()]));
+        metadata.getCastMembers().addAll(getCastMembers());
 
         metadata.setAspectRatio(getAspectRatio());
         metadata.setCompany(getCompany());
-        metadata.setGenres(getGenres().toArray(new String[genres.size()]));
+        metadata.getGenres().addAll(getGenres());
         updateMPAARating(metadata);
         metadata.setDescription(getPlot());
         metadata.setReleaseDate(getReleaseDate());
@@ -65,7 +66,7 @@ public class MyMoviesParser {
         metadata.setYear(getYear());
 
         metadata.setProviderId(MyMoviesMetadataProvider.PROVIDER_ID);
-        metadata.setProviderDataId(new MetadataID(MyMoviesMetadataProvider.PROVIDER_ID, getProviderUrl()));
+        metadata.setProviderDataId(MetadataAPI.createMetadataIDString(MyMoviesMetadataProvider.PROVIDER_ID, getProviderUrl()));
         metadata.setProviderDataUrl(id);
         return metadata;
     }

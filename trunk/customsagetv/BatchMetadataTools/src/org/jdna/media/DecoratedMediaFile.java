@@ -1,6 +1,5 @@
 package org.jdna.media;
 
-import java.net.URI;
 
 
 public class DecoratedMediaFile implements IMediaFile {
@@ -47,8 +46,8 @@ public class DecoratedMediaFile implements IMediaFile {
         return file.getExtension();
     }
 
-    public URI getLocationUri() {
-        return file.getLocationUri();
+    public IPath getLocation() {
+        return file.getLocation();
     }
 
     public String getName() {

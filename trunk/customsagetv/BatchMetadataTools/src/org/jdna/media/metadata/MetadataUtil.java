@@ -44,11 +44,11 @@ public class MetadataUtil {
     public static void updateMetadataMediaType(IMediaMetadata md) {
         if (md==null) return;
         // set the media type, if it's not set
-        if (StringUtils.isEmpty((String) md.get(MetadataKey.MEDIA_TYPE))) {
-            if (StringUtils.isEmpty((String) md.get(MetadataKey.SEASON))) {
-                md.set(MetadataKey.MEDIA_TYPE, MOVIE_MEDIA_TYPE);
+        if (StringUtils.isEmpty((String) md.getString(MetadataKey.MEDIA_TYPE))) {
+            if (StringUtils.isEmpty((String) md.getString(MetadataKey.SEASON))) {
+                md.setString(MetadataKey.MEDIA_TYPE, MOVIE_MEDIA_TYPE);
             } else {
-                md.set(MetadataKey.MEDIA_TYPE, TV_MEDIA_TYPE);
+                md.setString(MetadataKey.MEDIA_TYPE, TV_MEDIA_TYPE);
             }
         }
     }
@@ -105,16 +105,16 @@ public class MetadataUtil {
             Date in = dateInParser.parse(strDate);
             String out = dateOutFormat.format(in);
 
-            md.set(MetadataKey.RELEASE_DATE, out);
+            md.setString(MetadataKey.RELEASE_DATE, out);
         } catch (Exception e) {
             log.error("Failed to parse/format release dates; dateIn: " + strDate + "; dateInFormat: " + dateInFormat, e);
-            md.set(MetadataKey.RELEASE_DATE, null);
+            md.setString(MetadataKey.RELEASE_DATE, null);
         }
     }
     
     public static Date getReleaseDate(IMediaMetadata md) {
         if (md==null) return null;
-        String date = (String) md.get(MetadataKey.RELEASE_DATE);
+        String date = md.getString(MetadataKey.RELEASE_DATE);
         if (date==null) return null;
         
         try {

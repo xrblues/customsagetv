@@ -28,6 +28,7 @@ import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.impl.StubMetadataProvider;
 import org.jdna.media.metadata.impl.sage.SageProperty;
+import org.jdna.media.util.PathUtils;
 import org.jdna.sage.MetadataUpdaterPlugin;
 import org.jdna.sage.ScanningStatus;
 
@@ -193,10 +194,10 @@ public class MetadataPluginTestCase extends TestCase {
         assertEquals(0, status.getTotalScanned());
         assertEquals(0, status.getTotalFailed());
         
-        VirtualMediaFile m1 = new VirtualMediaFile("test:/test1");
-        VirtualMediaFile m2 = new VirtualMediaFile("test:/test2");
-        VirtualMediaFile m3 = new VirtualMediaFile("test:/test3");
-        VirtualMediaFile m4 = new VirtualMediaFile("test:/test4");
+        VirtualMediaFile m1 = new VirtualMediaFile(PathUtils.createPath("test:/test1"));
+        VirtualMediaFile m2 = new VirtualMediaFile(PathUtils.createPath("test:/test2"));
+        VirtualMediaFile m3 = new VirtualMediaFile(PathUtils.createPath("test:/test3"));
+        VirtualMediaFile m4 = new VirtualMediaFile(PathUtils.createPath("test:/test4"));
         status.addSuccess(m1);
         status.addSuccess(m2);
         assertEquals(1, status.getSuccessfulItems().size());

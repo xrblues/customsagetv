@@ -17,6 +17,7 @@ import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaSearchResult;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
@@ -93,7 +94,7 @@ public class TVDBItemParser {
 
                 md.setProviderDataUrl(origUrl);
                 md.setProviderId(TVDBMetadataProvider.PROVIDER_ID);
-                md.setProviderDataId(new MetadataID("tvdb", seriesId));
+                md.setProviderDataId(MetadataAPI.createMetadataIDString("tvdb", seriesId));
             } catch (Exception e) {
                 log.error("Failed while parsing series: " + origUrl, e);
                 md = null;

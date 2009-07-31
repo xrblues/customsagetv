@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -23,66 +22,112 @@ import sagex.phoenix.configuration.proxy.GroupProxy;
 public class MediaMetadataUtils {
     private static final Logger log = Logger.getLogger(MediaMetadataUtils.class);
 
-    public static void writeImageFromUrl(String url, File out) throws IOException {
-        // make the directory, if it doesn't exist.
-        out.getParentFile().mkdirs();
-        
-        URL u = new URL(url);
-        URLConnection conn = u.openConnection();
-        if (conn instanceof HttpURLConnection) {
-            conn.setRequestProperty("User-Agent", GroupProxy.get(UrlConfiguration.class).getHttpUserAgent());
-        }
+    public static void writeImageFromUrl(String url, File out) {
+        try {
+            if (url == null) {
+                log.error("WriteImageFromUrl called with null url");
+                return;
+            }
 
-        BufferedImage img = ImageIO.read(conn.getInputStream());
-        ImageIO.write(img, "jpg", out);
-        log.debug("Wrote standard image: " + out.getAbsolutePath());
+            if (out == null) {
+                log.error("writeImageFromUrl called with null output file for image: " + url);
+            }
+
+            log.debug("Writing Image; Url: " + url + "; ToFile: " + out.getAbsolutePath());
+
+            // make the directory, if it doesn't exist.
+            out.getParentFile().mkdirs();
+
+            URL u = new URL(url);
+            URLConnection conn = u.openConnection();
+            if (conn instanceof HttpURLConnection) {
+                conn.setRequestProperty("User-Agent", GroupProxy.get(UrlConfiguration.class).getHttpUserAgent());
+            }
+
+            BufferedImage img = ImageIO.read(conn.getInputStream());
+            if (img == null) {
+                log.warn("Failed to download image (image was null): " + url);
+                return;
+            }
+            ImageIO.write(img, "jpg", out);
+        } catch (Throwable t) {
+            log.error("Failed to write image: " + url + "; to file: " + out.getAbsolutePath(), t);
+        } finally {
+            if (out.exists() && out.length() == 0) {
+                log.info("Removing 0 byte file: " + out.getAbsolutePath() + "; for url: " + url);
+                out.delete();
+            }
+        }
     }
 
-    public static void writeImageFromUrl(String url, File out, int scaleWidth) throws IOException {
-        // make the directory, if it doesn't exist.
-        out.getParentFile().mkdirs();
-        
-        URL u = new URL(url);
-        URLConnection conn = u.openConnection();
-        if (conn instanceof HttpURLConnection) {
-            conn.setRequestProperty("User-Agent", GroupProxy.get(UrlConfiguration.class).getHttpUserAgent());
-        }
-        
-        log.debug("Scaling was requested: " + scaleWidth);
+    public static void writeImageFromUrl(String url, File out, int scaleWidth) {
+        try {
+            if (url == null) {
+                log.error("WriteImageFromUrl called with null url");
+                return;
+            }
 
-        BufferedImage imageSrc = ImageIO.read(conn.getInputStream());
-        if (scaleWidth>0 && imageSrc.getWidth()>scaleWidth) {
-            // scale
-            int width = imageSrc.getWidth();
-            int height = imageSrc.getHeight();
+            if (out == null) {
+                log.error("writeImageFromUrl called with null output file for image: " + url);
+            }
 
-            int thumbWidth = scaleWidth;
-            float div = (float)width/thumbWidth;
-            height = (int)(height/div);
+            log.debug("Writing Image; Url: " + url + "; ToFile: " + out.getAbsolutePath() + "; WithScale: " + scaleWidth);
 
-            log.warn(String.format("Scaling Poster from %sx%s to %sx%s", imageSrc.getWidth(), imageSrc.getHeight(), thumbWidth, height));
-            Image img = imageSrc.getScaledInstance(thumbWidth, height ,Image.SCALE_SMOOTH);
+            // make the directory, if it doesn't exist.
+            out.getParentFile().mkdirs();
 
-            BufferedImage bi = new BufferedImage(thumbWidth, height, BufferedImage.TYPE_INT_RGB);
-            Graphics2D biContext = bi.createGraphics();
-            biContext.drawImage(img, 0, 0, null);
+            URL u = new URL(url);
+            URLConnection conn = u.openConnection();
+            if (conn instanceof HttpURLConnection) {
+                conn.setRequestProperty("User-Agent", GroupProxy.get(UrlConfiguration.class).getHttpUserAgent());
+            }
+
+            BufferedImage imageSrc = ImageIO.read(conn.getInputStream());
+            if (imageSrc==null) {
+                log.warn("writeImageFromUrl(): Failed to download image: " + url + "; ToFile: " + out.getAbsolutePath());
+                return;
+            }
             
-            imageSrc = bi;
-        } else {
-            log.debug("Scaling was not used because image was smaller than the scale width");
+            if (scaleWidth > 0 && imageSrc.getWidth() > scaleWidth) {
+                // scale
+                int width = imageSrc.getWidth();
+                int height = imageSrc.getHeight();
+
+                int thumbWidth = scaleWidth;
+                float div = (float) width / thumbWidth;
+                height = (int) (height / div);
+
+                log.warn(String.format("Scaling Poster from %sx%s to %sx%s", imageSrc.getWidth(), imageSrc.getHeight(), thumbWidth, height));
+                Image img = imageSrc.getScaledInstance(thumbWidth, height, Image.SCALE_SMOOTH);
+                BufferedImage bi = new BufferedImage(thumbWidth, height, BufferedImage.TYPE_INT_RGB);
+                Graphics2D biContext = bi.createGraphics();
+                biContext.drawImage(img, 0, 0, null);            log.debug("Wrote scaled image: " + out.getAbsolutePath());
+
+
+                imageSrc = bi;
+            } else {
+                log.debug("Scaling was not used because image was smaller than the scale width");
+            }
+            ImageIO.write(imageSrc, "jpg", out);
+        } catch (Throwable t) {
+            log.error("Failed to write image: " + url + "; to file: " + out.getAbsolutePath() + "; with scale: " + scaleWidth, t);
+        } finally {
+            if (out.exists() && out.length() == 0) {
+                log.info("Removing 0 byte file: " + out.getAbsolutePath() + "; for url: " + url);
+                out.delete();
+            }
         }
-        ImageIO.write(imageSrc, "jpg", out);
-        log.debug("Wrote scaled image: " + out.getAbsolutePath());
     }
-    
+
     /**
-     * For the purposes of searching it will, keep only alpha numeric characters and '
+     * For the purposes of searching it will, keep only alpha numeric characters
+     * and '
      * 
      * @param s
      * @return
      */
     public static String removeNonSearchCharacters(String s) {
-        if (s==null) return null;
+        if (s == null) return null;
         return (s.replaceAll("[^A-Za-z0-9']", " ")).replaceAll("[\\ ]+", " ");
     }
 
@@ -177,8 +222,8 @@ public class MediaMetadataUtils {
             sb.append(s.substring(lastStart, m.start()));
             lastStart = m.end();
             String key = token.substring(2, token.length() - 1);
-            String val = (String)props.get(key);
-            if (val==null) val="";
+            String val = (String) props.get(key);
+            if (val == null) val = "";
             sb.append(val);
         }
 

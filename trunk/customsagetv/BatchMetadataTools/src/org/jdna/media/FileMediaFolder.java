@@ -2,6 +2,7 @@ package org.jdna.media;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import sagex.phoenix.fanart.FanartUtil;
 
@@ -11,13 +12,17 @@ public class FileMediaFolder extends AbstractMediaFolder {
     private File file = null;
     
 
-    protected FileMediaFolder(URI uri) {
+    protected FileMediaFolder(IPath uri) {
         super(uri);
-        this.file=new File(uri);
+        try {
+            this.file=new File(new URI(uri.toURI()));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     protected FileMediaFolder(File file) {
-        super(file.toURI());
+        super(new Path(file.toURI().toString()));
         this.file=file;
     }
     

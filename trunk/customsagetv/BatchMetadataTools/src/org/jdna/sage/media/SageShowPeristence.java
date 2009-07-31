@@ -9,7 +9,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
+import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
@@ -99,7 +101,33 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         }
         
         //md.set(MetadataKey.CAST_MEMBER_LIST, value);
+        String people[] = ShowAPI.GetPeopleListInShowInRole(show, "Writer");
+        if (people!=null) {
+            for (String s : people) {
+                CastMember cm = new CastMember(ICastMember.WRITER);
+                cm.setName(s);
+            }
+        }
+        people = ShowAPI.GetPeopleListInShowInRole(show, "Director");
+        if (people!=null) {
+            for (String s : people) {
+                CastMember cm = new CastMember(ICastMember.DIRECTOR);
+                cm.setName(s);
+            }
+        }
+        people = ShowAPI.GetPeopleListInShowInRole(show, "Actor");
+        if (people!=null) {
+            for (String s : people) {
+                CastMember cm = new CastMember(ICastMember.ACTOR);
+                cm.setName(s);
+            }
+        }
+        
         //md.set(MetadataKey.GENRE_LIST);
+        String genre = ShowAPI.GetShowCategory(show);
+        if (genre!=null) {
+            md.getGenres().add(genre);
+        }
         md.set(MetadataKey.COMMENT,"");
         md.set(MetadataKey.COMPANY,"");
         md.set(MetadataKey.DESCRIPTION, ShowAPI.GetShowDescription(show));
@@ -111,7 +139,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         md.set(MetadataKey.MPAA_RATING, ShowAPI.GetShowRated(show));
         //md.set(MetadataKey.MPAA_RATING_DESCRIPTION, value);
         md.set(MetadataKey.LANGUAGE, ShowAPI.GetShowLanguage(show));
-        md.set(MetadataKey.RUNNING_TIME, AiringAPI.GetAiringDuration(airing));
+        md.set(MetadataKey.RUNNING_TIME, String.valueOf(AiringAPI.GetAiringDuration(airing)));
         md.set(MetadataKey.YEAR, ShowAPI.GetShowYear(show));
 
         return md;
@@ -122,9 +150,11 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             log.error("Currently the Sage Show Persistence can only work on native Sage Media files.");
             return;
         }
+        
+        MetadataAPI.normalizeMetadata((IMediaFile)mediaFile, md);
 
-        if (!MetadataUtil.TV_MEDIA_TYPE.equals(md.get(MetadataKey.MEDIA_TYPE))) {
-            log.warn("SageShowPersistence can only be used for TV media types; This type is: " + md.get(MetadataKey.MEDIA_TYPE));
+        if (!MetadataUtil.TV_MEDIA_TYPE.equals(md.getString(MetadataKey.MEDIA_TYPE))) {
+            log.warn("SageShowPersistence can only be used for TV media types; This type is: " + md.getString(MetadataKey.MEDIA_TYPE));
             return;
         }
 
@@ -140,24 +170,20 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
 
         log.debug("Setting default values");
 
-        // need to update the displayable items
-        Map<String, String> props = SageTVPropertiesPersistence.getSageTVMetadataMap(md);
-        SageTVPropertiesPersistence.updatePropertiesForDisplay(props, md);
-
-        String title = props.get(SageProperty.DISPLAY_TITLE.sageKey);
+        String title = MetadataAPI.getDisplayTitle(md);
 
         log.debug("*** Title: " + title);
         boolean firstRun = ShowAPI.IsShowFirstRun(airing);
-        String episode = (String) md.get(MetadataKey.EPISODE_TITLE);
+        String episode = md.getString(MetadataKey.EPISODE_TITLE);
         String description = MetadataAPI.getDescription(md);
         long duration = AiringAPI.GetAiringDuration(airing);
         String cat1 = ShowAPI.GetShowCategory(origShow);
         String cat2 = ShowAPI.GetShowSubCategory(origShow);
         String actors[] = null;
         String roles[] = null;
-        String mpaaRated = (String) md.get(MetadataKey.MPAA_RATING);
+        String mpaaRated = md.getString(MetadataKey.MPAA_RATING);
         String mpaaExpandedRatings[] = null;
-        String year = (String) md.get(MetadataKey.YEAR);
+        String year = md.getString(MetadataKey.YEAR);
         String parentRating = ShowAPI.GetShowParentalRating(origShow);
         String[] miscList = null;
         String externalID = null;
@@ -195,20 +221,20 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             duration = MediaFileAPI.GetDurationForSegment(sageMF, 0);
         }
         
-        String genre[] = MetadataAPI.getGenres(md);
-        if (genre != null && genre.length > 0) {
-            cat1 = genre[0];
+        List<String> genre = MetadataAPI.getGenres(md);
+        if (genre != null && genre.size() > 0) {
+            cat1 = genre.get(0);
         }
-        if (genre != null && genre.length > 1) {
-            cat2 = genre[1];
+        if (genre != null && genre.size() > 1) {
+            cat2 = genre.get(1);
         }
 
-        if (!StringUtils.isEmpty((String) md.get(MetadataKey.MPAA_RATING_DESCRIPTION))) {
+        if (!StringUtils.isEmpty(md.getString(MetadataKey.MPAA_RATING_DESCRIPTION))) {
             // NOTE: Even though you set them as an array, when you get them,
             // they show up as Nudity, Violence, and Language, we'll need a
             // parser to
             // get back the original values
-            mpaaExpandedRatings = new String[] { (String) md.get(MetadataKey.MPAA_RATING_DESCRIPTION) };
+            mpaaExpandedRatings = new String[] { md.getString(MetadataKey.MPAA_RATING_DESCRIPTION) };
         }
 
         if (MetadataAPI.getCastMembers(md, ICastMember.ALL) != null) {

@@ -17,7 +17,7 @@ public class ConsoleProgressTracker extends ProgressTracker<IMediaFile> {
     @Override
     public void addFailed(IMediaFile item, String msg, Throwable t) {
         super.addFailed(item, msg, t);
-        System.out.println("Skipping: " + item.getLocationUri() + "; Message: " + msg);
+        System.out.println("Skipping: " + item.getLocation() + "; Message: " + msg);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class ConsoleProgressTracker extends ProgressTracker<IMediaFile> {
             title=MetadataAPI.getMediaTitle(md);
         }
         
-        System.out.printf("Updated: %s; %s\n", title, item.getLocationUri());
+        System.out.printf("Updated: %s; %s\n", title, item.getLocation());
         
         // touch the resource, so that Sage will reload.
         item.touch();

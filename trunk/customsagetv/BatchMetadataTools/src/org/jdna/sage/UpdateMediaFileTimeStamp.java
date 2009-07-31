@@ -25,7 +25,7 @@ public class UpdateMediaFileTimeStamp implements IMediaMetadataPersistence {
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
         if (mediaFile!=null) {
-            log.debug("Updating datetime stamp for: " + mediaFile.getLocationUri());
+            log.debug("Updating datetime stamp for: " + mediaFile.getLocation());
             mediaFile.touch();
         }
     }

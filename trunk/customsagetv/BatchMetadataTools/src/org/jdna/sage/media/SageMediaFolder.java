@@ -2,11 +2,13 @@ package org.jdna.sage.media;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.jdna.media.VirtualMediaFolder;
+import org.jdna.media.util.PathUtils;
 
 import sagex.api.Database;
 import sagex.api.MediaFileAPI;
@@ -36,7 +38,7 @@ public class SageMediaFolder extends VirtualMediaFolder {
     }
 
     public SageMediaFolder(URI uri) {
-        super(uri);
+        super(PathUtils.createPath(uri));
         
         if (!"sage".equals(uri.getScheme())) {
             throw new RuntimeException("Can only accept SageURIs");
@@ -68,7 +70,7 @@ public class SageMediaFolder extends VirtualMediaFolder {
     }
     
     public SageMediaFolder(Object media[]) {
-        super(sageURI("list"));
+        super(PathUtils.createPath(sageURI("list")));
         this.initList=media;
     }
 
@@ -82,12 +84,31 @@ public class SageMediaFolder extends VirtualMediaFolder {
             if ("query".equals(uriCommand)) {
                 log.debug("SageMediaFolder: Types: " + sageQueryTypes + "; Filter: " + titleFilter);
                 if (titleFilter==null) {
-                    loadSageMediaFiles(MediaFileAPI.GetMediaFiles(sageQueryTypes));
+                    if (sageQueryTypes.contains("T")) {
+                        // special handler for TV files because otherwise, they get missed.
+                        Object files1 = MediaFileAPI.GetMediaFiles(sageQueryTypes);
+                        Object files2 = MediaFileAPI.GetMediaFiles("T");
+                        Vector files3 = Database.DataUnion(files1, files2);
+                        if (files3!=null) {
+                            loadSageMediaFiles(files3.toArray());
+                        }
+                    } else {
+                        loadSageMediaFiles(MediaFileAPI.GetMediaFiles(sageQueryTypes));
+                    }
                 } else {
-                    loadSageMediaFiles(Database.SearchByText(titleFilter, sageQueryTypes));
+                    if (sageQueryTypes.contains("T")) {
+                        Object files1 = Database.SearchByText(titleFilter, sageQueryTypes);
+                        Object files2 = Database.SearchByText(titleFilter, "T");
+                        Vector files3 = Database.DataUnion(files1, files2);
+                        if (files3!=null) {
+                            loadSageMediaFiles(files3.toArray());
+                        }
+                    } else {
+                        loadSageMediaFiles(Database.SearchByText(titleFilter, sageQueryTypes));
+                    }
                 }
             } else {
-                log.warn("No Action for SageURI: " + getLocationUri().toString());
+                log.warn("No Action for SageURI: " + getLocation().toString());
             }
         }
         log.debug("Finished Loading Sage Media List");

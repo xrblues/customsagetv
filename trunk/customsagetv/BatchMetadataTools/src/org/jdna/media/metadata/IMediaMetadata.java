@@ -1,5 +1,7 @@
 package org.jdna.media.metadata;
 
+import java.util.List;
+
 
 public interface IMediaMetadata {
     /**
@@ -10,7 +12,7 @@ public interface IMediaMetadata {
      *            MetadataKey enum
      * @return metadata object value
      */
-    public Object get(MetadataKey key);
+    //public Object get(MetadataKey key);
 
     /**
      * Puts a Metadata Object value into the metadata store.
@@ -20,12 +22,15 @@ public interface IMediaMetadata {
      * @param value
      *            Object that needs to be put into the store
      */
-    public void set(MetadataKey key, Object value);
+    //public void set(MetadataKey key, Object value);
 
-    /**
-     * Returns a String array of the Supported Metadata fields.
-     * 
-     * @return
-     */
-    public MetadataKey[] getSupportedKeys();
+    public void setString(MetadataKey key, String value);
+
+    public String getString(MetadataKey key);
+    public int getInt(MetadataKey key, int defValue);
+    public float getFloat(MetadataKey key, float defValue);
+    
+    public List<ICastMember> getCastMembers();
+    public List<String> getGenres();
+    public List<IMediaArt> getFanart();
 }

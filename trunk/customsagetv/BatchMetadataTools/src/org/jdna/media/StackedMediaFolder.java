@@ -30,7 +30,7 @@ public class StackedMediaFolder extends DecoratedMediaFolder {
         
         List<IMediaResource> curMembers = getUndecoratedFolder().members();
         if (curMembers == null || curMembers.size() == 0) {
-            log.debug("Cannot get stacked members for non empty Folder: " + getLocationUri());
+            log.debug("Cannot get stacked members for non empty Folder: " + getLocation());
             return members;
         }
 

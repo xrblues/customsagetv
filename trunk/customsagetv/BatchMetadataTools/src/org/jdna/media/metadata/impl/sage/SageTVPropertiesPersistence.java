@@ -3,8 +3,12 @@ package org.jdna.media.metadata.impl.sage;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -25,11 +29,11 @@ import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.media.metadata.MetadataAPI;
-import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
+import org.jdna.media.util.PathUtils;
 import org.jdna.util.PropertiesUtils;
 import org.jdna.util.Singleton;
 import org.jdna.util.SortedProperties;
@@ -58,7 +62,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     }
 
     private File getPropertyFile(IMediaResource mediaFile) {
-        File f = new File(mediaFile.getLocationUri());
+        File f = PathUtils.toFile(mediaFile.getLocation());
         return FanartUtil.resolvePropertiesFile(f);
     }
 
@@ -86,7 +90,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         if (MetadataAPI.getMediaTitle(md) == null) throw new IOException("MetaData doesn't contain title.  Will not Save/Update.");
 
         if (mediaFile.getType() != IMediaResource.Type.File) {
-            throw new IOException("Can only store metadata for IMedaiFile.TYPE_FILE objects.  Not a valid file: " + mediaFile.getLocationUri());
+            throw new IOException("Can only store metadata for IMedaiFile.TYPE_FILE objects.  Not a valid file: " + mediaFile.getLocation());
         }
         
         // set the media type, if it's not set
@@ -102,7 +106,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
 
         // add the filename and file uri
         props.put(SageProperty.FILENAME.sageKey, mediaFile.getName());
-        props.put(SageProperty.FILEURI.sageKey, mediaFile.getLocationUri().toString());
+        props.put(SageProperty.FILEURI.sageKey, mediaFile.getLocation().toString());
         
         props = getMetadataProperties(md, props, options);
         return props;
@@ -131,34 +135,26 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
                 props.put(p.sageKey, encodeString(serializeStrings(MetadataAPI.getGenres(md))));
             } else if (p == SageProperty.SERIALIZED_CAST) {
                 props.put(p.sageKey, encodeString(serializeCast(MetadataAPI.getCastMembers(md,ICastMember.ALL))));
-            } else if (p == SageProperty.FANART_BACKGROUND) {
-                setFanartImageUrl(options, props, MetadataAPI.getBackground(md), p);
-            } else if (p == SageProperty.FANART_BANNER) {
-                setFanartImageUrl(options, props, MetadataAPI.getBanner(md), p);
-            } else if (p == SageProperty.FANART_POSTER) {
-                setFanartImageUrl(options, props, MetadataAPI.getPoster(md), p);
+            } else if (p == SageProperty.SERIALIZED_FANART) {
+                props.put(p.sageKey, encodeFanart(MetadataAPI.getMediaArt(md)));
             } else if (p == SageProperty.SEASON_NUMBER) {
-                props.put(p.sageKey, encodeNumberString(md.get(MetadataKey.SEASON)));
+                props.put(p.sageKey, encodeNumberString(md.getString(MetadataKey.SEASON)));
             } else if (p == SageProperty.EPISODE_NUMBER) {
-                props.put(p.sageKey, encodeNumberString(md.get(MetadataKey.EPISODE)));
+                props.put(p.sageKey, encodeNumberString(md.getString(MetadataKey.EPISODE)));
             } else if (p == SageProperty.DISPLAY_TITLE) {
                 props.put(p.sageKey, rewriteTitle(encodeString(MetadataAPI.getMediaTitle(md))));
             } else if (p == SageProperty.PROVIDER_DATA_ID) {
-                if (md.get(p.metadataKey)!=null) {
-                    props.put(p.sageKey, md.get(p.metadataKey).toString());
+                if (md.getString(p.metadataKey)!=null) {
+                    props.put(p.sageKey, md.getString(p.metadataKey));
                 }
             } else if (p == SageProperty.USER_RATING) {
-                props.put(p.sageKey, IMDBUtils.parseUserRating((String)md.get(p.metadataKey)));
+                props.put(p.sageKey, IMDBUtils.parseUserRating(md.getString(p.metadataKey)));
             } else {
                 // should just be normal string data
-                Object o = md.get(p.metadataKey);
+                String o = md.getString(p.metadataKey);
                 if (o == null) continue;
-                if (o instanceof String) {
-                    if (!StringUtils.isEmpty((String) o)) {
-                        props.put(p.sageKey, String.valueOf(o));
-                    }
-                } else {
-                    log.error("Cannot Perist Metadata Key " + p.metadataKey + "; A special case is needed.");
+                if (!StringUtils.isEmpty((String) o)) {
+                    props.put(p.sageKey, String.valueOf(o));
                 }
             }
         }
@@ -190,6 +186,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     }
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
+        MetadataAPI.normalizeMetadata((IMediaFile)mediaFile, md);
         // do the actual save
         save((IMediaFile) mediaFile, md, getMetadataProperties(mediaFile, md, options), options);
     }
@@ -225,11 +222,11 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         }
     }
 
-    private String serializeCast(ICastMember[] members) {
-        if (members != null && members.length > 0) {
-            String cast[] = new String[members.length];
-            for (int i = 0; i < members.length; i++) {
-                cast[i] = serializeCastMember(members[i]);
+    private String serializeCast(List<ICastMember> members) {
+        if (members != null && members.size() > 0) {
+            List<String> cast = new ArrayList();
+            for (int i = 0; i < members.size(); i++) {
+                cast.add(serializeCastMember(members.get(i)));
             }
             return serializeStrings(cast);
         } else {
@@ -244,7 +241,12 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         return sb.toString();
     }
 
-    private String serializeStrings(String[] strings) {
+    private String encodeFanart(List<IMediaArt> mediaArt) {
+        log.debug("TODO: Implement Serialized Fanart");
+        return null;
+    }
+
+    private String serializeStrings(List<String> strings) {
         if (strings == null) return null;
 
         StringBuffer sb = new StringBuffer();
@@ -294,7 +296,11 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
                     props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(cfg.getTvDvdTitleMask(), mod));
                 }
             } else {
-                props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(cfg.getTitleMask(), props));
+                if (StringUtils.isEmpty(MetadataAPI.getDisc(md))) {
+                    props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(cfg.getTitleMask(), props));
+                } else {
+                    props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(cfg.getMultiCDTitleMask(), props));
+                }
             }
             saveSingle(props, mediaFileParent, md, options);
         }
@@ -322,7 +328,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
                 }
             }
 
-            PropertiesUtils.store(props, partFile, "Generator: Batch Metadata Tools ("+ bmt.api.GetVersion() + "); MediaFile: " + mf.getLocationUri());
+            PropertiesUtils.store(props, partFile, "Generator: Batch Metadata Tools ("+ bmt.api.GetVersion() + "); MediaFile: " + mf.getLocation());
         } catch (IOException e) {
             log.error("Failed to save properties: " + partFile.getAbsolutePath(), e);
         }
@@ -337,7 +343,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         }
     }
 
-    private static String encodeWriters(ICastMember[] writers) {
+    private static String encodeWriters(List<ICastMember> writers) {
         if (writers == null) return "";
         StringBuffer sb = new StringBuffer();
         for (ICastMember c : writers) {
@@ -346,7 +352,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         return sb.toString();
     }
 
-    private static String encodeDirectors(ICastMember[] directors) {
+    private static String encodeDirectors(List<ICastMember> directors) {
         if (directors == null) return "";
 
         StringBuffer sb = new StringBuffer();
@@ -356,11 +362,11 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         return sb.toString();
     }
 
-    private static String encodeActors(ICastMember[] actors, String mask) {
+    private static String encodeActors(List<ICastMember> actors, String mask) {
         if (actors == null) return "";
 
         if (actors != null) {
-            log.debug("Encoding Actors: " + actors.length);
+            log.debug("Encoding Actors: " + actors.size());
         }
         
         if (mask == null) mask = "{0} -- {1};";
@@ -381,17 +387,17 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         return MediaMetadataUtils.format(mask, props);
     }
 
-    private static String encodeGenres(String[] genres) {
+    private static String encodeGenres(List<String> genres) {
         if (genres == null) return "";
 
         int genreLevels = GroupProxy.get(SageMetadataConfiguration.class).getGenreLevels();
-        if (genreLevels == -1) genreLevels = genres.length;
-        int max = Math.min(genres.length, genreLevels);
+        if (genreLevels == -1) genreLevels = genres.size();
+        int max = Math.min(genres.size(), genreLevels);
 
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < max; i++) {
             if (i > 0) sb.append("/");
-            sb.append(genres[i]);
+            sb.append(genres.get(i));
         }
 
         return sb.toString();
@@ -415,14 +421,14 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
                 // handle special cases
                 if (p == SageProperty.ACTORS) {
                 } else if (p == SageProperty.PROVIDER_DATA_ID) {
-                    md.set(p.metadataKey, new MetadataID(props.get(p.sageKey)));
+                    md.setString(p.metadataKey, props.get(p.sageKey));
                 } else if (p == SageProperty.DIRECTORS) {
                 } else if (p == SageProperty.WRITERS) {
                 } else if (p == SageProperty.GENRES) {
                 } else if (p == SageProperty.SERIALIZED_GENRES) {
-                    md.setGenres(deserializeStrings(StringUtils.defaultIfEmpty(props.get(p.sageKey), props.get(SageProperty.GENRES.sageKey))));
+                    md.getGenres().addAll(deserializeStrings(StringUtils.defaultIfEmpty(props.get(p.sageKey), props.get(SageProperty.GENRES.sageKey))));
                 } else if (p == SageProperty.SERIALIZED_CAST) {
-                    md.setCastMembers(deserializeCast(props.get(p.sageKey)));
+                    md.getCastMembers().addAll(deserializeCast(props.get(p.sageKey)));
                 } else if (p == SageProperty.FANART_BACKGROUND) {
                     String img = props.get(p.sageKey);
                     if (img != null && img.length() > 0) {
@@ -464,24 +470,29 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         }
     }
 
-    private String[] deserializeStrings(String s) {
-        if (s == null) return null;
-        return s.split(";");
+    private List<String> deserializeStrings(String s) {
+        if (s == null) return Collections.EMPTY_LIST;
+        String[] ss=  s.split(";");
+        if (ss==null) {
+            return Collections.EMPTY_LIST;
+        } else {
+            return Arrays.asList(ss);
+        }
     }
 
-    private CastMember[] deserializeCast(String s) {
-        if (s == null) return null;
+    private List<CastMember> deserializeCast(String s) {
+        if (s == null) return Collections.EMPTY_LIST;
         try {
-            String m[] = deserializeStrings(s);
-            CastMember all[] = new CastMember[m.length];
-            for (int i = 0; i < m.length; i++) {
-                all[i] = deserializeCastMember(m[i]);
+            List<String> m = deserializeStrings(s);
+            List<CastMember> all = new ArrayList<CastMember>();
+            for (int i = 0; i < m.size(); i++) {
+                all.add(deserializeCastMember(m.get(i)));
             }
 
             return all;
         } catch (Exception e) {
             log.error("Failed to deserialize the string: " + s, e);
-            return null;
+            return Collections.EMPTY_LIST;
         }
     }
 
@@ -523,31 +534,8 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
             options.setOverwriteMetadata(true);
             return Singleton.get(SageTVPropertiesPersistence.class).getMetadataProperties(mediaFile, md, options);
         } catch (IOException e) {
-            log.error("Unabled to get Metadata Properties for: " + mediaFile.getLocationUri(), e);
+            log.error("Unabled to get Metadata Properties for: " + mediaFile.getLocation(), e);
         }
         return null;
-    }
-    
-    public static void updatePropertiesForDisplay(Map<String, String> props, IMediaMetadata md) {
-        // store the title
-        props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(MetadataAPI.getMediaTitle(md)));
-        // update it using the mask
-        if (!StringUtils.isEmpty(props.get(SageProperty.SEASON_NUMBER.sageKey))) {
-            // assume TV
-            if (!StringUtils.isEmpty(props.get(SageProperty.EPISODE_NUMBER.sageKey))) {
-                // cough hack - need to format the season and episode so that it look liks 01, 02, etc.
-                Map<String, String> mod = new HashMap(props);
-                mod.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(props.get(SageProperty.SEASON_NUMBER.sageKey), 2));
-                mod.put(SageProperty.EPISODE_NUMBER.sageKey, zeroPad(props.get(SageProperty.EPISODE_NUMBER.sageKey), 2));
-                props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(GroupProxy.get(SageMetadataConfiguration.class).getTvTitleMask(), mod));
-            } else {
-                Map mod = new HashMap(props);
-                mod.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(props.get(SageProperty.SEASON_NUMBER.sageKey), 2));
-                mod.put(SageProperty.DISC.sageKey, zeroPad(props.get(SageProperty.DISC.sageKey), 2));
-                props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(GroupProxy.get(SageMetadataConfiguration.class).getTvDvdTitleMask(), mod));
-            }
-        } else {
-            props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(GroupProxy.get(SageMetadataConfiguration.class).getTitleMask(), props));
-        }
     }
 }

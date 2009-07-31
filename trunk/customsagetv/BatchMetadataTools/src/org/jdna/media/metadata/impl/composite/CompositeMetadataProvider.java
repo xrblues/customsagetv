@@ -1,6 +1,5 @@
 package org.jdna.media.metadata.impl.composite;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -27,7 +26,6 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
     private IProviderInfo                  info;
     private String                         searcherProviderId;
     private String                         detailsProviderId;
-    private CompositeMetadataConfiguration conf;
     private int                            mode                 = 0;
 
     public CompositeMetadataProvider(CompositeMetadataConfiguration conf) {
@@ -35,7 +33,6 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         this.searcherProviderId = conf.getSearchProviderId();
         this.detailsProviderId = conf.getDetailProviderId();
         this.mode = conf.getCompositeMode();
-        this.conf = conf;
         log.debug("Composite Provider Created with id: " + getInfo().getId() + "; search: " + searcherProviderId + "; details: " + detailsProviderId + "; mode: " + mode);
     }
 
@@ -119,28 +116,32 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         // now find all fields that null in the primary, and set them from the
         // seconday
         for (MetadataKey k : MetadataKey.values()) {
-            if (k == MetadataKey.MEDIA_ART_LIST) {
-                List<IMediaArt> all = new LinkedList<IMediaArt>();
-                // merge the list into a single list
-                Object o = pri.get(k);
-                if (o != null) {
-                    for (IMediaArt ma : (IMediaArt[]) o) {
-                        all.add(ma);
-                    }
+            String o = pri.getString(k);
+            if (isEmpty(o)) {
+                md.set(k, sec.getString(k));
+            }
+        }
+
+        if (sec.getFanart()!=null) {
+            List<IMediaArt> l1 = md.getFanart();
+            for (IMediaArt ma : sec.getFanart()) {
+                if (!l1.contains(ma)) {
+                    l1.add(ma);
                 }
-                o = sec.get(k);
-                if (o != null) {
-                    for (IMediaArt ma : (IMediaArt[]) o) {
-                        all.add(ma);
-                    }
-                }
-                if (all.size() > 0) {
-                    md.set(k, all.toArray(new IMediaArt[all.size()]));
-                }
-            } else {
-                Object o = pri.get(k);
-                if (isEmpty(o)) {
-                    md.set(k, sec.get(k));
+            }
+        }
+
+        if (sec.getCastMembers()!=null) {
+            if (md.getCastMembers()==null || md.getCastMembers().size()==0) {
+                md.getCastMembers().addAll(sec.getCastMembers());
+            }
+        }
+
+        if (sec.getGenres()!=null) {
+            List<String> l3 = md.getGenres();
+            for (String s : sec.getGenres()) {
+                if (!l3.contains(s)) {
+                    l3.add(s);
                 }
             }
         }
@@ -172,7 +173,7 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         IMediaMetadata details = null;
         try {
             if (MetadataAPI.getProviderDataId(searcher) != null) {
-                details = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaDataById(MetadataAPI.getProviderDataId(searcher));
+                details = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaDataById(new MetadataID(MetadataAPI.getProviderDataId(searcher)));
             }
         } catch (Exception e) {
             log.error("Failed to find details using searcher's metadataid: " + MetadataAPI.getProviderDataId(searcher) + " will try using title search", e);

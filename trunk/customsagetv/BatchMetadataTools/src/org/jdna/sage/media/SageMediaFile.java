@@ -6,7 +6,9 @@ import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 import org.jdna.media.IMediaResource;
+import org.jdna.media.IPath;
 import org.jdna.media.VirtualMediaFile;
+import org.jdna.media.util.PathUtils;
 
 import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
@@ -29,20 +31,20 @@ public class SageMediaFile extends VirtualMediaFile {
     }
     
     public SageMediaFile(File file) {
-        super(file.toURI());
+        super(PathUtils.createPath(file));
         log.debug("Creating SageMediaFile from File: " + file.getAbsolutePath());
         init(MediaFileAPI.GetMediaFileForFilePath(file));
     }
     
     public SageMediaFile(int mediaFileId) {
-        super(sageURI(mediaFileId));
+        super(PathUtils.createPath(sageURI(mediaFileId)));
 
         log.debug("Creating SageMediaFile from ID: " + mediaFileId);
         init(MediaFileAPI.GetMediaFileForID(mediaFileId));
     }
     
     public SageMediaFile(Object mediaFile) {
-        super(sageURI(0));
+        super(PathUtils.createPath(sageURI(0)));
         init(mediaFile);
     }
     
@@ -70,12 +72,12 @@ public class SageMediaFile extends VirtualMediaFile {
             if (mf==null) {
                 try {
                     log.warn("Media File does not have a File associated with it: " + mediaFile);
-                    setLocationUri(new URI("sage:/id/" + MediaFileAPI.GetMediaFileID(mediaFile)));
+                    setLocationUri(PathUtils.createPath(new URI("sage:/id/" + MediaFileAPI.GetMediaFileID(mediaFile))));
                 } catch (URISyntaxException e) {
                     log.error("Failed to set ID Location URI for mediafile: " + mediaFile);
                 }
             } else {
-                setLocationUri(((File)mf).toURI());
+                setLocationUri(PathUtils.createPath((File)mf));
             }
         }
     }
@@ -152,12 +154,12 @@ public class SageMediaFile extends VirtualMediaFile {
     }
 
     @Override
-    public URI getLocationUri() {
+    public IPath getLocation() {
         File f = getFile();
         if (f!=null) {
-            return f.toURI();
+            return PathUtils.createPath(f);
         } else {
-            return super.getLocationUri();
+            return super.getLocation();
         }
     }
 

@@ -7,10 +7,12 @@ import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MediaMetadata;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.metadata.impl.sage.SagePropertyType;
 
+import sagex.api.MediaFileAPI;
 import sagex.phoenix.fanart.SageFanartUtil;
 
 /**
@@ -53,9 +55,10 @@ public class SageCustomMetadataPersistence implements IMediaMetadataPersistence 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
         if (mediaFile instanceof SageMediaFile) {
             SageMediaFile smf = (SageMediaFile) mediaFile;
+            MetadataAPI.normalizeMetadata(smf, md);
             for (SageProperty p : SageProperty.values()) {
                 if (p.propertyType == SagePropertyType.EXTENDED) {
-                    Object val = md.get(p.metadataKey);
+                    String val = md.getString(p.metadataKey);
                     if (val instanceof String && !StringUtils.isEmpty((String) val)) {
                         SageFanartUtil.SetMediaFileMetadata(smf.getSageMediaFileObject(smf), p.sageKey, (String) val);
                     }

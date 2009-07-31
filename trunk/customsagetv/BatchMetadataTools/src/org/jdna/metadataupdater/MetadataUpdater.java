@@ -338,7 +338,7 @@ public class MetadataUpdater {
                 // dump out the skipped entries that were not automatically updated
                 System.out.println("\nThe Following Media Entries could not be updated.");
                 for (FailedItem<IMediaFile> f : automaticProgress.getFailedItems()) {
-                    System.out.printf("Failed: %s; Message: %s\n", f.getItem().getLocationUri(), f.getMessage());
+                    System.out.printf("Failed: %s; Message: %s\n", f.getItem().getLocation(), f.getMessage());
                 }
             }
 

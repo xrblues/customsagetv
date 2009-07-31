@@ -11,6 +11,7 @@ import org.jdna.media.IMediaResource;
 import org.jdna.media.MovieResourceFilter;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
+import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
@@ -127,7 +128,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             if (o != null) {
                 mr = new SageMediaFile(o);
             } else {
-                log.warn("Not and existing Sage Media File: " + file.getAbsolutePath() + "; Treating it as a regular File Media File.");
+                log.warn("Not an existing Sage Media File: " + file.getAbsolutePath() + "; Treating it as a regular File Media File.");
                 mr = FileMediaFolder.createResource(file);
             }
             
@@ -140,11 +141,17 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 if (!pluginConfig.getOverwriteMetadata()) {
                     md = persistence.loadMetaData(mr);
                     if (md != null) {
+                        // normalize the properties
+                        md = MetadataAPI.normalizeMetadata((IMediaFile)mr, md);
                         Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
                         log.info("Reusing existing metadata for MediaFile: " + file.getAbsolutePath());
                         status.addSuccess((IMediaFile) mr);
                         status.worked(1);
-                        return props;
+                        if (pluginConfig.getReturnNullMetadata()) {
+                            return null;
+                        } else {
+                            return props;
+                        }
                     }
                 }
 
@@ -154,6 +161,9 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 // now load the props and pass back to sage
                 md = persistence.loadMetaData(mr);
                 if (md != null) {
+                    // normalize the properties
+                    md = MetadataAPI.normalizeMetadata((IMediaFile)mr, md);
+                    
                     // return the props
                     Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
                     log.info("New Metadata Imported for: " + file.getAbsolutePath());
@@ -166,7 +176,6 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                     }
                 } else {
                     log.error("Failed to Fetch Metadata for Media: " + file.getAbsolutePath());
-                    //status.addFailed((IMediaFile) mr, "Scan did not produce a Property File.");
                 }
             } else {
                 log.info("Type not recognized.  Can't perform metadata/fanart lookup on file file: " + file.getAbsolutePath());
