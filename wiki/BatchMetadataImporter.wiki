@@ -1,5 +1,5 @@
 #summary Batch Metadata Tools for SageTV
-#labels Phase-Design,Featured,Phase-Requirements
+#labels Phase-Design,Deprecated,Phase-Requirements
 
 <wiki:toc max_depth="6" />
 
