@@ -1,4 +1,5 @@
 #summary Metadata/Fanart Tools for SageTV 3.0
+#labels Featured
 
 <wiki:toc max_depth="6" /> 
 
