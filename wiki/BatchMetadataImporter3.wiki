@@ -3,13 +3,13 @@
 <wiki:toc max_depth="6" /> 
 
 = Introduction =
-Batch Metadata Tools (aka BMT) is a set of metadata tools for SageTV, that helps in the fetching of metadata and fanart for movies and tv shows (downloaded or recorded).
+Batch Metadata Tools (aka BMT) is a set of metadata tools for SageTV, that helps in the fetching of metadata and fanart for movies and tv shows (downloaded or recorded).  Using the BMT WebUI, you can scan you movie collection and edit metadata for your SageTV media files.
 
 Metadata refers to the attributes of a media file. ie, Title, Description, Plot, Release Date, MPAA Rating, etc.
 
 Fanart refers to images related to the media, such a banners, posters, and backgrounds.
 
-Metadata sources, ie, imdb, tvdb, etc, are called Metadata Providers because they are sources that provide metadata. BMT ships a few different providers, including [http://www.imdb.com/ IMDb], [http://TheTVDB.com/ TheTVDB.com], [http://themoviedb.org/ TheMovieDB.org], [http://www.invelos.com/ DVD Profiler], and [http://www.mymovies.dk/ MyMovies].
+Metadata sources are called *Metadata Providers* because they are sources that provide metadata. BMT ships a few different providers, including [http://www.imdb.com/ IMDb], [http://TheTVDB.com/ TheTVDB.com], [http://themoviedb.org/ TheMovieDB.org], [http://www.invelos.com/ DVD Profiler], and [http://www.mymovies.dk/ MyMovies].
 
 = Installation =
 Before you install BMT, install the [http://forums.sagetv.com/forums/downloads.php?do=file&id=233 Jetty Server plugin for SageTV] and ensure that it is running correctly.  If this plugin is installed, then you can configure most aspects of BMT using a Web UI.  Jetty is not required for BMT, but it is highly recommended, especially so that you can take advantage of the Web UI for configuration/management.
