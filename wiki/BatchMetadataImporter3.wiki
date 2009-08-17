@@ -1,0 +1,29 @@
+#summary Metadata/Fanart Tools for SageTV 3.0
+
+#sidebar TableOfContents 
+
+= Introduction =
+Batch Metadata Tools (aka BMT) is a set of metadata tools for SageTV, that helps in the fetching of metadata and fanart for movies and tv shows (downloaded or recorded).
+
+Metadata refers to the attributes of a media file. ie, Title, Description, Plot, Release Date, MPAA Rating, etc.
+
+Fanart refers to images related to the media, such a banners, posters, and backgrounds.
+
+Metadata sources, ie, imdb, tvdb, etc, are called Metadata Providers because they are sources that provide metadata. BMT ships a few different providers, including IMDb, TheTVDB.com, themoviedb.org, DVD Profiler, and MyMovies.
+
+= Installation =
+Before you install BMT, install the [http://forums.sagetv.com/forums/downloads.php?do=file&id=233 Jetty Server plugin for SageTV] and ensure that it is running correctly.  If this plugin is installed, then you can configure most aspects of BMT using a Web UI.  Jetty is not required for BMT, but it is highly recommended, especially so that you can take advantage of the Web UI for configuration/management.
+
+Be sure to stop the SageTV server before installation/updating.
+
+To install BMT, simply download the latest build from the downloads section and then extract the .zip file into the SageTV home directory.  This should put some .jar files in the JARs directory put the web ui applications (bmtweb) into the jetty webapps area.
+
+Once you've extraced the files, you can restart the SageTV server.  Once the server is started, you can now access the BMT Web UI using a browser and continue to configure the tool and perform a scan of your collection.
+
+To access the UI, you will use the following URL
+{{{
+ http://JETTY_SERVER:JETTY_PORT/bmt/
+}}}
+Where JETTY_SERVER is the ip adress of your SageTV Server and the JETTY_PORT is the port that you used to install Jetty.
+
+After you upgrade a BMT release, be sure to refresh BMT Web UI in your browser by hitting the Shift+Reload button in your browser.  This will force your browser to reload the newer files, in the event that your browser is still caching them.
