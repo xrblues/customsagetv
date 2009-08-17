@@ -1,6 +1,6 @@
 #summary Metadata/Fanart Tools for SageTV 3.0
 
-#sidebar TableOfContents 
+<wiki:toc max_depth="6" /> 
 
 = Introduction =
 Batch Metadata Tools (aka BMT) is a set of metadata tools for SageTV, that helps in the fetching of metadata and fanart for movies and tv shows (downloaded or recorded).
@@ -24,6 +24,6 @@ To access the UI, you will use the following URL
 {{{
  http://JETTY_SERVER:JETTY_PORT/bmt/
 }}}
-Where JETTY_SERVER is the ip adress of your SageTV Server and the JETTY_PORT is the port that you used to install Jetty.
+Where *JETTY_SERVER* is the ip address/hostname of your SageTV Server and the *JETTY_PORT* is the port that you used to install Jetty.
 
-After you upgrade a BMT release, be sure to refresh BMT Web UI in your browser by hitting the Shift+Reload button in your browser.  This will force your browser to reload the newer files, in the event that your browser is still caching them.
+After you upgrade a BMT release, be sure to refresh BMT Web UI in your browser by hitting the *Shift+Reload* button in your browser.  This will force your browser to reload the newer files, in the event that your browser is still caching them.
