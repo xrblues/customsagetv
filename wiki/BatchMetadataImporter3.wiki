@@ -27,3 +27,14 @@ To access the UI, you will use the following URL
 Where *JETTY_SERVER* is the ip address/hostname of your SageTV Server and the *JETTY_PORT* is the port that you used to install Jetty.
 
 After you upgrade a BMT release, be sure to refresh BMT Web UI in your browser by hitting the *Shift+Reload* button in your browser.  This will force your browser to reload the newer files, in the event that your browser is still caching them.
+
+== Load the STV Plugin for On-Demand Lookups ==
+BMT provides a basic On-Demand search for Movies and TV Shows, that enables you to download metadata/fanart for a given SageTV media file, using the SageTV TV interface.
+
+Depending on if you are running the SageMC STV UI or the Default STV, do one of the following. (if you don't know, then you are probably running the default stv)
+
+=== Default STV ===
+From the Default STV setup menu, import the *MetadataFanartTools-DefaultSTV.stvi* into the default STV.
+
+=== SageMC ===
+From the SageMC settings menu, import the *MetadataFanartTools-SageMC.xml*.  This will add a Metadata/Fanart configuration section to the "Extras" section in the SageMC configuration screens.
