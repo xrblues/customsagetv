@@ -3,7 +3,6 @@ package org.jdna.bmt.web.server;
 import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.ui.app.SageService;
 
-import sagex.SageAPI;
 import sagex.api.Configuration;
 import sagex.api.Global;
 
@@ -33,7 +32,7 @@ public class SageServicesImpl extends RemoteServiceServlet implements SageServic
         } else {
             msg = "Sage is looking for new media";
         }
-        SageAPI.call("RunLibraryImportScan", new Object[] {false});
+        Global.RunLibraryImportScan(false);
         log.debug(msg);
         return msg;
     }

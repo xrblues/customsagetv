@@ -3,22 +3,21 @@ package org.jdna.bmt.web.client.ui.prefs;
 import org.jdna.bmt.web.client.ui.input.ArrayEditorTextBox;
 import org.jdna.bmt.web.client.ui.input.InputFactory;
 import org.jdna.bmt.web.client.ui.input.LargeStringTextBox;
+import org.jdna.bmt.web.client.ui.util.HelpLabel;
 
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PreferenceItemEditor extends Composite {
-    private Label    label  = new Label();
+    private HelpLabel  label  = null;
     private Widget   editor = null;
     private PrefItem item   = null;
 
     public PreferenceItemEditor(final PrefItem item) {
         this.item = item;
-        this.label = new Label(item.getLabel());
-        this.label.setTitle(item.getDescription());
+        this.label = new HelpLabel(item.getLabel(), createHelpText(item));
 
         if (item.getEditor() != null) {
             this.editor = EditorFactory.createEditor(item.getEditor(), InputFactory.bind(new TextBox(), item), item.getLabel());
@@ -45,7 +44,11 @@ public class PreferenceItemEditor extends Composite {
         }
     }
 
-    public Label getLabel() {
+    private String createHelpText(PrefItem item2) {
+        return "<div class=\"HelpLabel-Property\">Sage Property: " +item2.getKey() + "</div><div class=\"HelpLabel-HelpText\">" + item2.getDescription() + "</div>";
+    }
+
+    public Widget getLabel() {
         return label;
     }
 

@@ -16,5 +16,5 @@ public interface BrowserServiceAsync {
     void getMetadata(GWTMediaSearchResult result, AsyncCallback<GWTMediaMetadata> callback);
     void searchForMetadata(GWTMediaFile item, String provider, AsyncCallback<List<GWTMediaSearchResult>> jsonReply);
     void getStatus(String id, AsyncCallback<ProgressStatus> status);
-    void saveMetadata(GWTMediaFile file, AsyncCallback<ServiceReply> result);
+    void saveMetadata(GWTMediaFile file, AsyncCallback<ServiceReply<GWTMediaFile>> result);
 }

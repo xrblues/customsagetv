@@ -2,6 +2,7 @@ package org.jdna.bmt.web.client.ui.layout;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Widget;
@@ -15,6 +16,10 @@ public class FlowGrid extends Composite {
         this.cols=cols;
         initWidget(grid);
         System.out.println("=================================================");
+    }
+
+    public void add(String text) {
+        add(new HTML(text));
     }
     
     public void add(Widget w) {

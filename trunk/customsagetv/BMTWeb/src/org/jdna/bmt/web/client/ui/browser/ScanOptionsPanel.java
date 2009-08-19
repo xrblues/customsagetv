@@ -65,7 +65,7 @@ public class ScanOptionsPanel extends Composite {
         panel.setCellHorizontalAlignment(buttons, HasHorizontalAlignment.ALIGN_RIGHT);
         
         propPanel1.add("Scan DVDs", InputBuilder.checkbox().bind(options.getScanDVD()).widget());
-        propPanel1.add("Scan Vidoes", InputBuilder.checkbox().bind(options.getScanVideo()).widget());
+        propPanel1.add("Scan Videos", InputBuilder.checkbox().bind(options.getScanVideo()).widget());
         propPanel1.add("Scan Recordings", InputBuilder.checkbox().bind(options.getScanTV()).widget());
         propPanel1.add("-- Missing Metadata", InputBuilder.checkbox().bind(options.getScanMissingMetadata()).widget());
         propPanel1.add("-- Missing Posters", InputBuilder.checkbox().bind(options.getScanMissingPoster()).widget());

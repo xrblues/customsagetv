@@ -53,6 +53,10 @@ public class MediaItemWidget extends Composite implements HasClickHandlers {
         
         initWidget(panel);
         addStyleName("MediaItem");
+        if (item.getMessage()!=null) {
+            panel.setTitle(item.getMessage());
+            panel.addStyleName("MediItem-Error");
+        }
     }
     
     public HandlerRegistration addClickHandler(ClickHandler handler) {

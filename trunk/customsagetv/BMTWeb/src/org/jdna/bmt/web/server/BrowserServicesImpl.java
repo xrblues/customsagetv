@@ -1,7 +1,12 @@
 package org.jdna.bmt.web.server;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 
@@ -16,12 +21,10 @@ import org.jdna.bmt.web.client.ui.browser.BrowserService;
 import org.jdna.bmt.web.client.ui.browser.ProgressStatus;
 import org.jdna.bmt.web.client.ui.browser.ScanOptions;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
-import org.jdna.media.CompositeOrResourceFilter;
+import org.jdna.media.ConditionalResourceFilter;
 import org.jdna.media.IMediaFile;
-import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
-import org.jdna.media.IMediaResourceFilter;
-import org.jdna.media.IMediaResourceVisitor;
+import org.jdna.media.MovieResourceFilter;
 import org.jdna.media.metadata.CompositeMediaMetadataPersistence;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaArt;
@@ -52,13 +55,14 @@ import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageMediaFolder;
 import org.jdna.sage.media.SageShowPeristence;
 import org.jdna.util.IProgressMonitor;
-import org.jdna.util.IRunnableWithProgress;
+import org.jdna.util.MediaScanner;
 import org.jdna.util.ProgressTracker;
 import org.jdna.util.ProgressTrackerManager;
 import org.jdna.util.ProgressTracker.FailedItem;
 
 import sagex.SageAPI;
 import sagex.api.AiringAPI;
+import sagex.api.Global;
 import sagex.api.MediaFileAPI;
 import sagex.api.ShowAPI;
 import sagex.phoenix.fanart.MediaArtifactType;
@@ -90,42 +94,6 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
         }
     }
 
-    public class Scanner implements IRunnableWithProgress<ProgressTracker<IMediaFile>> {
-        private IMediaFolder          folder;
-        private IMediaResourceVisitor visitor;
-
-        public Scanner(IMediaFolder folder, IMediaResourceVisitor visitor) {
-            this.folder = folder;
-            this.visitor = visitor;
-        }
-
-        public void run(ProgressTracker<IMediaFile> monitor) {
-            try {
-                log.debug("Scanning " + folder.members().size() + " items");
-                monitor.beginTask("Scanning Media Items", folder.members().size());
-                folder.accept(visitor);
-            } finally {
-                monitor.done();
-            }
-        }
-
-        public IMediaFolder getFolder() {
-            return folder;
-        }
-
-        public void setFolder(IMediaFolder folder) {
-            this.folder = folder;
-        }
-
-        public IMediaResourceVisitor getVisitor() {
-            return visitor;
-        }
-
-        public void setVisitor(IMediaResourceVisitor visitor) {
-            this.visitor = visitor;
-        }
-    }
-
     public BrowserServicesImpl() {
         ServicesInit.init();
     }
@@ -151,31 +119,24 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
             }
 
             // setup the filters
-            CompositeOrResourceFilter filter = new CompositeOrResourceFilter();
+            ConditionalResourceFilter filter = new ConditionalResourceFilter();
             if (options.getScanMissingMetadata().get()) {
-                filter.addFilter(new MissingMetadataFilter());
+                filter.or(new MissingMetadataFilter());
             }
 
             if (options.getScanMissingPoster().get()) {
-                filter.addFilter(new MissingFanartFilter(MediaArtifactType.POSTER));
+                filter.or(new MissingFanartFilter(MediaArtifactType.POSTER));
             }
 
             if (options.getScanMissingBackground().get()) {
-                filter.addFilter(new MissingFanartFilter(MediaArtifactType.BACKGROUND));
+                filter.or(new MissingFanartFilter(MediaArtifactType.BACKGROUND));
             }
 
             if (options.getScanMissingBanner().get()) {
-                filter.addFilter(new MissingFanartFilter(MediaArtifactType.BANNER));
+                filter.or(new MissingFanartFilter(MediaArtifactType.BANNER));
             }
 
-            if (filter.getFilterCount() == 0) {
-                // add in an inclusive filter
-                filter.addFilter(new IMediaResourceFilter() {
-                    public boolean accept(IMediaResource resource) {
-                        return true;
-                    }
-                });
-            }
+            filter.and(new MovieResourceFilter());
 
             // do the work
             log.debug("Getting MediaFile for: " + types.toString() + "; Filter: " + options.getFilter().get());
@@ -227,7 +188,7 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
                 scanVisitor = new FilteredResourceVisitor(filter, autoUpdater);
             }
 
-            Scanner scanner = new Scanner(folder, scanVisitor);
+            MediaScanner scanner = new MediaScanner(folder, scanVisitor);
             String id = ProgressTrackerManager.getInstance().runWithProgress(scanner, tracker);
             return id;
         } catch (Throwable e) {
@@ -243,6 +204,7 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
             SageMediaFile smf = new SageMediaFile(mediaFile.getSageMediaFileId());
             IMediaMetadataPersistence persist = new CompositeMediaMetadataPersistence(new SageCustomMetadataPersistence(), new SageShowPeristence());
             IMediaMetadata md = persist.loadMetaData(smf);
+            
             return newMetadata(md);
         } catch (Throwable e) {
             log.error("Failed to get metadata: " + mediaFile.getSageMediaFileId() + "; " + mediaFile.getTitle(), e);
@@ -267,7 +229,23 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
             if (mi.getFanart() != null) {
                 List<GWTMediaArt> malist = new ArrayList<GWTMediaArt>();
                 for (IMediaArt ma : mi.getFanart()) {
-                    malist.add(new GWTMediaArt(ma));
+                    GWTMediaArt gma = new GWTMediaArt(ma);
+                    if (gma.getDownloadUrl()!=null && gma.getDownloadUrl().startsWith("file")) {
+                        gma.setLocal(true);
+                        File f;
+                        try {
+                            f = new File(new URI(gma.getDownloadUrl()));
+                            gma.setLabel(f.getAbsolutePath());
+                            gma.setDownloadUrl(makeLocalMediaUrl(f.getAbsolutePath()));
+                        } catch (URISyntaxException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    } else {
+                        gma.setLabel(gma.getDownloadUrl());
+                        gma.setLocal(false);
+                    }
+                    malist.add(gma);
                 }
                 mi.getFanart().clear();
                 mi.getFanart().addAll(malist);
@@ -382,23 +360,10 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
                 }
 
                 log.debug("Handing Resources: " + res);
-                GWTMediaFile item = new GWTMediaFile((IMediaFile) res);
-                if (res instanceof SageMediaFile) {
-                    Object o = SageMediaFile.getSageMediaFileObject(res);
-                    item.setSageMediaFileId(MediaFileAPI.GetMediaFileID(o));
-                    if (MediaFileAPI.IsTVFile(o)) {
-                        item.setTitle(ShowAPI.GetShowTitle(o));
-                        item.setMinorTitle(ShowAPI.GetShowEpisode(o));
-                    }
-                }
-                item.setPosterUrl("media/poster/" + item.getSageMediaFileId() + "?transform=[{name:scale,height:40},{name: reflection}]");
+                GWTMediaFile item = createGWTMediaFile(res);
                 item.setMessage(errStatus);
                 items.add(item);
 
-                // if (MediaFileAPI.IsTVFile(o)) {
-                // item.setMediaTitle(item.getMediaTitle() + " - " +
-                // ShowAPI.GetShowEpisode(o));
-                // }
             }
 
             status.setItems(items);
@@ -410,8 +375,88 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
         }
     }
 
-    public ServiceReply saveMetadata(GWTMediaFile file) {
-        IMediaMetadataPersistence persist = new CompositeMediaMetadataPersistence(new SageCustomMetadataPersistence(), new SageShowPeristence(true), new SageTVPropertiesWithCentralFanartPersistence());
+    private String makeLocalMediaUrl(String url) {
+        return "media/get?i=" + URLEncoder.encode(url);
+    }
+    
+    private GWTMediaFile createGWTMediaFile(IMediaResource res) {
+        GWTMediaFile item = new GWTMediaFile((IMediaFile) res);
+        if (res instanceof SageMediaFile) {
+            Object o = SageMediaFile.getSageMediaFileObject(res);
+            item.setSageMediaFileId(MediaFileAPI.GetMediaFileID(o));
+            if (MediaFileAPI.IsTVFile(o)) {
+                item.getSageRecording().set(true);
+                item.setTitle(ShowAPI.GetShowTitle(o));
+                item.setMinorTitle(ShowAPI.GetShowEpisode(o));
+            }
+            
+            // add in default fanart locations
+            GWTMediaArt art = new GWTMediaArt();
+            String file =phoenix.api.GetFanartPoster(o);
+            if (file!=null) {
+                File f = new File(file);
+                art.setDownloadUrl(makeLocalMediaUrl(f.getAbsolutePath()));
+                art.setLabel(f.getAbsolutePath());
+                art.setExists(f.exists());
+                art.setLocal(true);
+                item.setDefaultPoster(art);
+            }
+
+            art = new GWTMediaArt();
+            file = phoenix.api.GetFanartBackground(o);
+            if (file!=null) {
+                File f = new File(file);
+                art.setDownloadUrl(makeLocalMediaUrl(f.getAbsolutePath()));
+                art.setLabel(f.getAbsolutePath());
+                art.setExists(f.exists());
+                art.setLocal(true);
+                item.setDefaultBackground(art);
+            }
+
+            art = new GWTMediaArt();
+            file = phoenix.api.GetFanartBanner(o);
+            if (file!=null) {
+                File f = new File(file);
+                art.setDownloadUrl(makeLocalMediaUrl(f.getAbsolutePath()));
+                art.setLabel(f.getAbsolutePath());
+                art.setExists(f.exists());
+                art.setLocal(true);
+                item.setDefaultBanner(art);
+            }
+            
+            
+            // add in default fanart locations
+            item.setDefaultPosterDir(phoenix.api.GetFanartPosterPath(o));
+            item.setDefaultBackgroundDir(phoenix.api.GetFanartBackgroundPath(o));
+            item.setDefaultBannerDir(phoenix.api.GetFanartBannerPath(o));
+            
+            Object airing = MediaFileAPI.GetMediaFileAiring(o);
+            Object origShow = AiringAPI.GetShow(airing);
+            if (airing!=null) {
+                item.setAiringId(String.valueOf(AiringAPI.GetAiringID(airing)));
+            }
+            if (origShow!=null) {
+                item.setShowId(ShowAPI.GetShowExternalID(origShow));
+            }
+        }
+        item.setPosterUrl("media/poster/" + item.getSageMediaFileId() + "?transform=[{name:scale,height:40},{name: reflection}]");
+        return item;
+    }
+    
+    private SageMediaFile createSageMediaFile(String uri) {
+        try {
+            File f = new File(new URI(uri));
+            Object mf = MediaFileAPI.GetMediaFileForFilePath(f);
+            return new SageMediaFile(mf);
+        } catch (Exception e) {
+            log.error("Failed to get SageMediaFile for: " + uri);
+            return null;
+        }
+        
+    }
+
+    public ServiceReply<GWTMediaFile> saveMetadata(GWTMediaFile file) {
+        IMediaMetadataPersistence persist = new CompositeMediaMetadataPersistence(new SageCustomMetadataPersistence(), new SageShowPeristence(file.getSageRecording().get()), new SageTVPropertiesWithCentralFanartPersistence());
         SageMediaFile smf = new SageMediaFile(file.getSageMediaFileId());
         log.debug("Saving File: " + smf.getLocation());
         PersistenceOptions options = new PersistenceOptions();
@@ -419,17 +464,62 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
         options.setOverwriteMetadata(true);
         try {
             Object sageObject = smf.getSageMediaFileObject(smf);
-            if (MediaFileAPI.IsTVFile(sageObject) && !"TV".equals(file.getMetadata().getString(MetadataKey.MEDIA_TYPE))) {
+            if (MediaFileAPI.IsTVFile(sageObject) && !file.getSageRecording().get()) {
                 // moving a file from TV to non TV requiers some manipulation
                 log.warn("Moving File from TV to NON TV: " + smf.getLocation());
+                Object newMF = phoenix.api.RemoveMetadataFromMediaFile(sageObject);
+                if (newMF == null) {
+                    log.error("Failed strip metadata from TV File: " + file.getLocation());
+                } else {
+                    smf = new SageMediaFile(newMF);
+                }
+            }
+            
+            // process the fanart images
+            for (Iterator<IMediaArt> i = file.getMetadata().getFanart().iterator(); i.hasNext();) {
+                IMediaArt ma = i.next();
+                if (ma instanceof GWTMediaArt) {
+                    GWTMediaArt gma = (GWTMediaArt) ma;
+                    if (gma.isLocal()) {
+                        log.debug("Skipping Download of Local Fanart: " + gma.getLabel());
+                        i.remove();
+                    }
+                    if (gma.isDeleted() && gma.isLocal()) {
+                        try {
+                            File f = new File(gma.getLabel());
+                            f.delete();
+                        } catch (Throwable t) {
+                            log.error("Unablet to delete: " + gma.getDownloadUrl());
+                        }
+                    }
+                }
             }
             
             persist.storeMetaData(file.getMetadata(), smf, options);
             
-            ServiceReply reply = new ServiceReply(0, "ok");
+            log.debug("Metadata Saved... Reloading");
+
+            smf = createSageMediaFile(file.getLocation().toURI());
+            
+            // touch the file and tell sage to reload the metadata
+            smf.touch();
+            Global.RunLibraryImportScan(false);
+            
+            if (smf==null) {
+                throw new IOException("Unable to reload MediaFile after metadata was saved.");
+            }
+            GWTMediaFile newMediaFile = createGWTMediaFile(smf);
+            if (newMediaFile==null) {
+                throw new IOException("Unable to create GWT MediaFile from SageMediaFile: " + smf);
+            }
+            
+            newMediaFile.attachMetadata(loadMetadata(newMediaFile));
+            
+            // return back the new metadata object
+            ServiceReply<GWTMediaFile> reply = new ServiceReply<GWTMediaFile>(0, "ok", newMediaFile);
             return reply;
         } catch (IOException e) {
-            ServiceReply reply = new ServiceReply(99, "Failed: " + e.getMessage());
+            ServiceReply<GWTMediaFile> reply = new ServiceReply<GWTMediaFile>(99, "Failed: " + e.getMessage(), null);
             return reply;
         }
     }

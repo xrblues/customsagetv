@@ -8,7 +8,6 @@ import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.media.GWTMediaSearchResult;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
-import org.jdna.media.metadata.IMediaSearchResult;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -20,5 +19,5 @@ public interface BrowserService extends RemoteService {
     public GWTMediaMetadata getMetadata(GWTMediaSearchResult result);
     public List<GWTMediaSearchResult> searchForMetadata(GWTMediaFile item, String provider);
     public ProgressStatus getStatus(String id);
-    public ServiceReply saveMetadata(GWTMediaFile file);
+    public ServiceReply<GWTMediaFile> saveMetadata(GWTMediaFile file);
 }

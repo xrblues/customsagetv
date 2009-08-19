@@ -8,6 +8,13 @@ import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.HasResizeHandlers;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -18,11 +25,14 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class AppPanel extends Composite {
+public class AppPanel extends Composite implements ResizeHandler, HasResizeHandlers {
+    public static AppPanel INSTANCE = null;
+    
     private DockPanel dp = new DockPanel();
     private Widget curPanel = null;
     
     public AppPanel() {
+        INSTANCE = this;
         dp.setWidth("100%");
         dp.setHeight("100%");
         
@@ -32,6 +42,7 @@ public class AppPanel extends Composite {
                 setStatusPanel();
             }
         }) ;
+        status.addStyleName("App-Status");
         
         Hyperlink configure = new Hyperlink("Configure", "configure");
         configure.addClickHandler(new ClickHandler() {
@@ -39,6 +50,7 @@ public class AppPanel extends Composite {
                 setConfigurePanel();
             }
         });
+        configure.setStyleName("App-Configure");
 
         // TODO
         Hyperlink scan = new Hyperlink("Scan", "scan");
@@ -47,6 +59,7 @@ public class AppPanel extends Composite {
                 setScanPanel();
             }
         });
+        scan.addStyleName("App-Scan");
 
         Hyperlink refresh = new Hyperlink("Refresh Library", "refresh");
         refresh.addClickHandler(new ClickHandler() {
@@ -54,6 +67,7 @@ public class AppPanel extends Composite {
                 setRefreshPanel();
             }
         });
+        refresh.addStyleName("App-Refresh");
 
         Grid header = new Grid(1,2);
         header.setWidth("100%");
@@ -80,6 +94,9 @@ public class AppPanel extends Composite {
         initWidget(dp);
         
         setStatusPanel();
+        
+        Window.addResizeHandler(this);
+        Window.enableScrolling(false);
     }
     
     protected void setScanPanel() {
@@ -116,5 +133,31 @@ public class AppPanel extends Composite {
         dp.add(panel, DockPanel.CENTER);
         dp.setCellHeight(panel, "100%");
         curPanel = panel;
+    }
+
+    public void onResize(ResizeEvent event) {
+        System.out.println("AppPanel(): Resize Window: " + event.getWidth() + ";" + event.getHeight());
+        adjustSize(event.getWidth(), event.getHeight());
+        if (curPanel instanceof ResizeHandler) {
+            ((ResizeHandler) curPanel).onResize(event);
+        }
+    }
+
+    private void adjustSize(int width, int height) {
+        setPixelSize(width, height);
+    }
+    
+    public static void adjustWindowSize() {
+        DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                ResizeEvent evt = new ResizeEvent(Window.getClientWidth(), Window.getClientHeight()) {
+                };
+                INSTANCE.onResize(evt);
+            }
+        });
+    }
+
+    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+        return addHandler(handler, ResizeEvent.getType());
     }
 }

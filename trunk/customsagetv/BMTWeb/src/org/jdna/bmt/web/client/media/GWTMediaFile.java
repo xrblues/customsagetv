@@ -2,11 +2,11 @@ package org.jdna.bmt.web.client.media;
 
 import java.io.Serializable;
 
+import org.jdna.bmt.web.client.util.Property;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.IPath;
-import org.jdna.media.metadata.IMediaMetadata;
 
 public class GWTMediaFile implements IMediaFile, Serializable {
     private IPath path;
@@ -24,7 +24,21 @@ public class GWTMediaFile implements IMediaFile, Serializable {
     private String posterUrl;
     private String message;
     
+    public GWTMediaArt defaultPoster;
+    public GWTMediaArt defaultBackground;
+    public GWTMediaArt defaultBanner;
+    
+    public String defaultPosterDir;
+    public String defaultBackgroundDir;
+    public String defaultBannerDir;
+    
+    
+    private Property<Boolean> sageRecording = new Property<Boolean>(false);
+    
     private GWTMediaMetadata metadata;
+    
+    private String showId;
+    private String airingId;
 
     public GWTMediaFile() {
     }
@@ -143,6 +157,72 @@ public class GWTMediaFile implements IMediaFile, Serializable {
     public void setMinorTitle(String minorTitle) {
         this.minorTitle = minorTitle;
     }
-    
-    
+
+    public GWTMediaArt getDefaultPoster() {
+        return defaultPoster;
+    }
+
+    public void setDefaultPoster(GWTMediaArt defaultPoster) {
+        this.defaultPoster = defaultPoster;
+    }
+
+    public GWTMediaArt getDefaultBackground() {
+        return defaultBackground;
+    }
+
+    public void setDefaultBackground(GWTMediaArt defaultBackground) {
+        this.defaultBackground = defaultBackground;
+    }
+
+    public GWTMediaArt getDefaultBanner() {
+        return defaultBanner;
+    }
+
+    public void setDefaultBanner(GWTMediaArt defaultBanner) {
+        this.defaultBanner = defaultBanner;
+    }
+
+    public Property<Boolean> getSageRecording() {
+        return sageRecording;
+    }
+
+    public String getShowId() {
+        return showId;
+    }
+
+    public void setShowId(String showId) {
+        this.showId = showId;
+    }
+
+    public String getAiringId() {
+        return airingId;
+    }
+
+    public void setAiringId(String airingId) {
+        this.airingId = airingId;
+    }
+
+    public String getDefaultPosterDir() {
+        return defaultPosterDir;
+    }
+
+    public void setDefaultPosterDir(String defaultPosterDir) {
+        this.defaultPosterDir = defaultPosterDir;
+    }
+
+    public String getDefaultBackgroundDir() {
+        return defaultBackgroundDir;
+    }
+
+    public void setDefaultBackgroundDir(String defaultBackgroundDir) {
+        this.defaultBackgroundDir = defaultBackgroundDir;
+    }
+
+    public String getDefaultBannerDir() {
+        return defaultBannerDir;
+    }
+
+    public void setDefaultBannerDir(String defaultBannerDir) {
+        this.defaultBannerDir = defaultBannerDir;
+    }
 }
