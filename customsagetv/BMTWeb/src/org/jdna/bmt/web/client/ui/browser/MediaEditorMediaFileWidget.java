@@ -125,4 +125,9 @@ public class MediaEditorMediaFileWidget extends Composite implements HasClickHan
         this.currentSelectedItem = this;
         this.addStyleName("MediaItem_selected");
     }
+
+    public void onUpdate(GWTMediaFile result) {
+        this.mediaItem = result;
+        addStyleName("MediaItem_updated");
+    }
 }

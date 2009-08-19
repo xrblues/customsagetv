@@ -1,7 +1,11 @@
 package org.jdna.bmt.web.server;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -29,6 +33,44 @@ public class MediaHandlerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getParameter("i")!=null) {
+            String img = req.getParameter("i");
+            if (img==null) {
+                resp.sendError(404, "Unknown Image: " + img);
+                return;
+            }
+            
+            File f = null;
+            if (img.startsWith("file")) {
+                try {
+                    f = new File(new URI(img));
+                } catch (URISyntaxException e) {
+                    resp.sendError(500, e.getMessage());
+                    return;
+                }
+            } else {
+                f = new File(img);
+            }
+            
+            if (f.exists()) {
+                f = f.getCanonicalFile();
+                if (f.getName().endsWith(".jpg") || f.getName().endsWith(".png")) {
+                    resp.setContentType("image/png");
+                    FileInputStream fis = null;
+                    OutputStream os = resp.getOutputStream();
+                    try {
+                        fis=new FileInputStream(f);
+                        IOUtils.copy(fis, os);
+                    } finally {
+                        os.flush();
+                        if (fis!=null) fis.close();
+                    }
+                }
+            }
+            return;
+        }
+        
+        // else do the proxy fetching
         String mediaUrl = "/media"+req.getPathInfo();
         String parts[] = mediaUrl.split("/");
         
@@ -46,7 +88,7 @@ public class MediaHandlerServlet extends HttpServlet {
     private void proxyMediaServlet(String url, HttpServletRequest req, HttpServletResponse resp) {
         try {
             // TODO: Use configuration
-            URL u = new URL("http://mediaserver:8081/sagex" + url);
+            URL u = new URL("http://mediaserver:8080/sagex" + url);
             log.debug("Proxy Media: " + u.toString());
             URLConnection c = u.openConnection();
             c.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008072820 Firefox/3.0.1");

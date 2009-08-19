@@ -1,10 +1,13 @@
 package org.jdna.bmt.web.client.ui.browser;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
+import org.jdna.bmt.web.client.ui.app.AppPanel;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
+import org.jdna.bmt.web.client.ui.util.SortedVerticalPanel;
 import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.core.client.GWT;
@@ -12,10 +15,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -25,20 +25,28 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class MediaEditor extends Composite {
+public class MediaEditor extends Composite implements ResizeHandler {
     private final BrowserServiceAsync browserService  = GWT.create(BrowserService.class);
 
+    private static class MediaFileComparator implements Comparator<MediaEditorMediaFileWidget> {
+        public int compare(MediaEditorMediaFileWidget o1, MediaEditorMediaFileWidget o2) {
+            if (o1==null || o1.getMediaFile().getTitle()==null) return -1;
+            if (o2==null || o2.getMediaFile().getTitle()==null) return 1;
+            System.out.println("Comparing: " + o1.getMediaFile().getTitle() + "; " + o2.getMediaFile().getTitle() + "; " + o1.getMediaFile().getTitle().compareTo(o2.getMediaFile().getTitle()));
+            return o1.getMediaFile().getTitle().compareToIgnoreCase(o2.getMediaFile().getTitle());
+        }
+    }
+    
     private HorizontalPanel           panel           = new HorizontalPanel();
     private DockPanel                 editor          = new DockPanel();
 
     private VerticalPanel             itemsPanel      = new VerticalPanel();
-    private VerticalPanel             scannedItems    = new VerticalPanel();
+    private SortedVerticalPanel<MediaEditorMediaFileWidget>       scannedItems    = new SortedVerticalPanel<MediaEditorMediaFileWidget>(new MediaFileComparator());
     private VerticalPanel             itemStatusPanel = new VerticalPanel();
 
     private VerticalPanel             leftPanel       = new VerticalPanel();
 
     private ScrollPanel               scrollItems     = null;
-    private ScrollPanel               scrollDetails   = null;
 
     private MediaEditorMetadataPanel          details         = null;
 
@@ -84,15 +92,8 @@ public class MediaEditor extends Composite {
         editor.setHeight("100%");
 
         panel.add(editor);
-        panel.setCellWidth(editor, "90%");
+        panel.setCellWidth(editor, "100%");
         initWidget(panel);
-
-        Window.addResizeHandler(new ResizeHandler() {
-            public void onResize(ResizeEvent event) {
-                System.out.println("Updating Scroll Size");
-                onWindowResized(Window.getClientWidth(), Window.getClientHeight());
-            }
-        });
 
         timer = new Timer() {
             @Override
@@ -122,7 +123,7 @@ public class MediaEditor extends Composite {
         };
         timer.scheduleRepeating(400);
 
-        onWindowResized(Window.getClientWidth(), Window.getClientHeight());
+        AppPanel.adjustWindowSize();
     }
 
     private void cancelTimer(String string) {
@@ -158,6 +159,9 @@ public class MediaEditor extends Composite {
             scrollHeight = 1;
         }
 
+        
+        System.out.println("MediaEditor(): onWindowResize(): " + scrollWidth + ";" + scrollHeight);
+
         panel.setPixelSize(scrollWidth, scrollHeight);
 
         resizeItemScroller(windowWidth, windowHeight);
@@ -165,19 +169,22 @@ public class MediaEditor extends Composite {
     }
 
     public void resizeDetailScroller(int windowWidth, int windowHeight) {
-        if (scrollDetails != null) {
-            int editorWidth = windowWidth - scrollDetails.getAbsoluteLeft();
+        if (details != null) {
+            int editorWidth = windowWidth - editor.getAbsoluteLeft();
             if (editorWidth < 1) {
                 editorWidth = 1;
             }
 
-            int editorHeight = windowHeight - scrollDetails.getAbsoluteTop();
+            int editorHeight = windowHeight - editor.getAbsoluteTop();
             if (editorHeight < 1) {
                 editorHeight = 1;
             }
 
+            System.out.println("MediaEditor(): Resize Details: " + editorWidth + "; " + editorHeight);
+            
             editor.setPixelSize(editorWidth, editorHeight);
-            scrollDetails.setPixelSize(editorWidth, editorHeight);
+            details.setPixelSize(editorWidth, editorHeight);
+            details.adjustSize(windowWidth, windowHeight);
         }
     }
 
@@ -193,6 +200,8 @@ public class MediaEditor extends Composite {
         }
 
         if (scrollWidth > 300) scrollWidth = 300;
+
+        System.out.println("MediaEditor(): Resize List: " + scrollWidth + "; " + scrollHeight);
 
         leftPanel.setWidth(scrollWidth + "px");
         scrollItems.setHeight(scrollHeight + "px");
@@ -212,14 +221,11 @@ public class MediaEditor extends Composite {
                 scannedItems.add(item);
             }
         }
-        DeferredCommand.addCommand(new Command() {
-            public void execute() {
-                onWindowResized(Window.getClientWidth(), Window.getClientHeight());
-            }
-        });
+        
+        AppPanel.adjustWindowSize();
     }
 
-    protected void updateMediaEditorPanel(MediaEditorMediaFileWidget item) {
+    protected void updateMediaEditorPanel(final MediaEditorMediaFileWidget item) {
         final GWTMediaFile mi = item.getMediaFile();
         final PopupPanel waiting = Dialogs.showWaitingPopup("Getting details for " + mi.getTitle());
         browserService.loadMetadata(mi, new AsyncCallback<GWTMediaMetadata>() {
@@ -232,26 +238,31 @@ public class MediaEditor extends Composite {
             public void onSuccess(GWTMediaMetadata result) {
                 Dialogs.hidePopup(waiting, 1000);
                 mi.attachMetadata(result);
-                updateEditorPanel(mi);
+                updateEditorPanel(mi, item);
             }
         });
     }
 
-    protected void updateEditorPanel(GWTMediaFile mediaFile) {
-        DeferredCommand.addCommand(new Command() {
-            public void execute() {
-                onWindowResized(Window.getClientWidth(), Window.getClientHeight());
+    protected void updateEditorPanel(GWTMediaFile mediaFile, final MediaEditorMediaFileWidget item) {
+        editor.clear();
+        details = new MediaEditorMetadataPanel(mediaFile);
+        details.setWidth("100%");
+        editor.add(details, DockPanel.CENTER);
+        editor.setCellWidth(details, "100%");
+        details.setUpdateListener(new AsyncCallback<GWTMediaFile>() {
+            public void onFailure(Throwable caught) {
+            }
+
+            public void onSuccess(GWTMediaFile result) {
+                item.onUpdate(result);
             }
         });
         
-        editor.clear();
-        details = new MediaEditorMetadataPanel(mediaFile);
-        scrollDetails = new ScrollPanel();
-        scrollDetails.setWidth("100%");
-        scrollDetails.setHeight("100%");
-        editor.add(scrollDetails, DockPanel.CENTER);
-        editor.setCellWidth(scrollDetails, "100%");
-        scrollDetails.add(details);
-        onWindowResized(Window.getClientWidth(), Window.getClientHeight());
+        AppPanel.adjustWindowSize();
+    }
+
+    public void onResize(ResizeEvent event) {
+        System.out.println("MediaEditor Resize Event: " + event.getWidth() +";"+ event.getHeight());
+        onWindowResized(event.getWidth(), event.getHeight());
     }
 }

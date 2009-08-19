@@ -69,8 +69,7 @@ h1 {
 }
 
 .Row-Odd {
-/*	background-color: #F3F3F3;*/
-	background-color: #E5FCEB;
+	background-color: #F3F3F3;
 }
 
 .MediaItem {
@@ -84,6 +83,10 @@ h1 {
 
 .MediaItem_selected {
 	background-color: #909090;
+}
+
+.MediaItem_updated {
+	background-color: #03932A;
 }
 
 .MediaItem-PrimaryTitle {
@@ -107,5 +110,41 @@ h1 {
 	background-color: black;
 }
 
+.HelpLabel-icon {
+	cursor: pointer;
+}
 
+.HelpLabel-Property {
+	font-weight: bold;
+	padding-bottom: 10px;
+}
 
+.HelpLabel-HelpText {
+	padding-bottom: 10px;
+}
+
+.App-Configure {
+	background-image: url("images/16x16/applications-system.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
+.App-Status {
+	background-image: url("images/16x16/dialog-information.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
+.App-Scan {
+	background-image: url("images/16x16/system-search.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
+.App-Refresh {
+	background-image: url("images/16x16/view-refresh.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
+
+.ImagePopupLabel-label {
+	cursor: pointer;
+	text-decoration: underline;
+}

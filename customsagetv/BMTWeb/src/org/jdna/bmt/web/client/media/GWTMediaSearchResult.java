@@ -2,7 +2,6 @@ package org.jdna.bmt.web.client.media;
 
 import java.io.Serializable;
 
-import org.jdna.media.IMediaFile;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
 
