@@ -230,6 +230,21 @@ public class MetadataAPI {
         return cd;
     }
     
+    public static boolean isValidSeason(IMediaMetadata md) {
+        String s =MetadataAPI.getSeason(md);
+        return (!"0".equals(s)) && !StringUtils.isEmpty(s);
+    }
+
+    public static boolean isValidDisc(IMediaMetadata md) {
+        String s =MetadataAPI.getDisc(md);
+        return (!"0".equals(s)) && !StringUtils.isEmpty(s);
+    }
+
+    public static boolean isValidEpisode(IMediaMetadata md) {
+        String s =MetadataAPI.getEpisode(md);
+        return (!"0".equals(s)) && !StringUtils.isEmpty(s);
+    }
+    
     /**
      * Normalized Metadata will go through the Metadata, and fill in the blanks from other fields, etc.  
      * Ie, Media Type, MediaTitle, Display Title, Rating, etc, should all be filled in, if possible. 
@@ -238,8 +253,9 @@ public class MetadataAPI {
      */
     public static IMediaMetadata normalizeMetadata(IMediaFile mf, IMediaMetadata md) {
         SageMetadataConfiguration cfg = GroupProxy.get(SageMetadataConfiguration.class);
+        MetadataConfiguration metadataCfg = GroupProxy.get(MetadataConfiguration.class);
         
-        if (StringUtils.isEmpty(MetadataAPI.getDisc(md))) {
+        if (isValidDisc(md)) {
             MetadataAPI.setDisc(md, getCDFromMediaFile(mf));
         }
         
@@ -259,16 +275,20 @@ public class MetadataAPI {
         props.put(SageProperty.DISC.sageKey, MetadataAPI.getDisc(md));
         
         // update it using the mask
-        if (!StringUtils.isEmpty(MetadataAPI.getSeason(md))) {
+        if (isValidSeason(md)) {
             MetadataAPI.setMediaType(md, MediaType.TV.sageValue());
             
             // assume TV
-            if (!StringUtils.isEmpty(MetadataAPI.getEpisode(md))) {
+            if (isValidEpisode(md)) {
                 // cough hack - need to format the season and episode so that it look liks 01, 02, etc.
                 Map<String, String> mod = new HashMap<String,String>(props);
                 mod.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(props.get(SageProperty.SEASON_NUMBER.sageKey), 2));
                 mod.put(SageProperty.EPISODE_NUMBER.sageKey, zeroPad(props.get(SageProperty.EPISODE_NUMBER.sageKey), 2));
-                MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getTvTitleMask(), mod));
+                if (metadataCfg.isImportTVAsRecordedShows()) {
+                    MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getSageTVTitleMask(), mod));
+                } else {
+                    MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getTvTitleMask(), mod));
+                }
             } else {
                 // format for dvd TV disc titles
                 Map mod = new HashMap(props);
@@ -281,10 +301,10 @@ public class MetadataAPI {
             if (StringUtils.isEmpty(MetadataAPI.getMediaType(md))) {
                 MetadataAPI.setMediaType(md, MediaType.MOVIE.sageValue());
             }
-            if (StringUtils.isEmpty(MetadataAPI.getDisc(md))) {
-                MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getTitleMask(), props));
-            } else {
+            if (isValidDisc(md)) {
                 MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getMultiCDTitleMask(), props));
+            } else {
+                MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getTitleMask(), props));
             }
         }
 
@@ -350,4 +370,23 @@ public class MetadataAPI {
         }
     }
 
+    public static void setSeason(IMediaMetadata md, String season) {
+        if (!StringUtils.isEmpty(season)) {
+            md.setString(MetadataKey.SEASON, season);
+        }
+    }
+
+    public static void setEpisode(IMediaMetadata md, String num) {
+        if (!StringUtils.isEmpty(num)) {
+            md.setString(MetadataKey.EPISODE, num);
+        }
+    }
+
+    public static void setEpisodeTitle(IMediaMetadata md, String string) {
+        md.setString(MetadataKey.EPISODE_TITLE, string);
+    }
+    
+    public static boolean isTV(IMediaMetadata md) {
+        return MetadataUtil.TV_MEDIA_TYPE.equals(md.getString(MetadataKey.MEDIA_TYPE));
+    }
 }

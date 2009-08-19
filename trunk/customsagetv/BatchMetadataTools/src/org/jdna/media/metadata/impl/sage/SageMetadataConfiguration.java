@@ -10,23 +10,28 @@ public class SageMetadataConfiguration extends GroupProxy {
     @AField(label="Actor Mask", description = "How each Actor will be written.  This mask will be applied to each actor, and then appeneded into a single line for the properties file. {0} - Actor Name, {1} - Actor Role")
     private FieldProxy<String> actorMask        = new FieldProxy<String>("{0} -- {1};\n");
 
-    @AField(label="Description Mask", description = "Description Mask (note ${PROP_FIELD_NAME} field names are looked up in the property file)")
-    private FieldProxy<String> descriptionMask  = new FieldProxy<String>("${"+SageProperty.DESCRIPTION.sageKey+"}");
-
     @AField(label="Multi CD Title Mask", description = "Title to use for multi volume vidoes (_disc is disc # 1,2,3,etc)")
-    private FieldProxy<String> multiCDTitleMask = new FieldProxy<String>("${"+SageProperty.DISPLAY_TITLE.sageKey+"} Disc ${"+SageProperty.DISC.sageKey+"}");
+    private FieldProxy<String> multiCDTitleMask = new FieldProxy<String>("${"+SageProperty.MEDIA_TITLE.sageKey+"} Disc ${"+SageProperty.DISC.sageKey+"}");
 
     @AField(label="Single CD Title Mask", description = "Title to use for single volume vidoes")
-    private FieldProxy<String> titleMask        = new FieldProxy<String>("${"+SageProperty.DISPLAY_TITLE.sageKey+"}");
+    private FieldProxy<String> titleMask        = new FieldProxy<String>("${"+SageProperty.MEDIA_TITLE.sageKey+"}");
 
     @AField(label="Genre Levels", description = "Number genre levels to write.  -1 means all levels.")
     private FieldProxy<Integer>    genreLevels      = new FieldProxy<Integer>(1);
     
-    @AField(label="TV Title Mask", description="Title mask to use for TV Files")
-    private FieldProxy<String> tvTitleMask = new FieldProxy<String>("${"+SageProperty.DISPLAY_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}E${"+SageProperty.EPISODE_NUMBER.sageKey+"} - ${"+SageProperty.EPISODE_TITLE.sageKey+"}");
+    @AField(label="Sage Recording TV Title Mask", description="Title mask to use for SageTV Recording Files")
+    private FieldProxy<String> sageTVTitleMask = new FieldProxy<String>("${"+SageProperty.MEDIA_TITLE.sageKey+"}");
+
+    /*
+    @AField(label="Sage Recording TV Episode Title Mask", description="Episode Title mask to use for SageTV Recording Files")
+    private FieldProxy<String> sageEpisodeTVTitleMask = new FieldProxy<String>("S${"+SageProperty.SEASON_NUMBER.sageKey+"}E${"+SageProperty.EPISODE_NUMBER.sageKey+"} - ${"+SageProperty.EPISODE_TITLE.sageKey+"}");
+     */
+    
+    @AField(label="TV Title Mask", description="Title mask to use for TV Files (Non Sage Recordings)")
+    private FieldProxy<String> tvTitleMask = new FieldProxy<String>("${"+SageProperty.MEDIA_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}E${"+SageProperty.EPISODE_NUMBER.sageKey+"} - ${"+SageProperty.EPISODE_TITLE.sageKey+"}");
     
     @AField(label="TV DVD Title Mask", description="Title mask to use for TV on Dvd")
-    private FieldProxy<String> tvDvdTitleMask = new FieldProxy<String>("${"+SageProperty.DISPLAY_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}D${"+SageProperty.DISC.sageKey+"}");
+    private FieldProxy<String> tvDvdTitleMask = new FieldProxy<String>("${"+SageProperty.MEDIA_TITLE.sageKey+"} - S${"+SageProperty.SEASON_NUMBER.sageKey+"}D${"+SageProperty.DISC.sageKey+"}");
     
     @AField(label="Rewrite Titles", description="Rewrite titles so that 'A Big Adventure' becomes 'Big Adventure, A'")
     private FieldProxy<Boolean> rewriteTitle = new FieldProxy<Boolean>(false);
@@ -45,14 +50,6 @@ public class SageMetadataConfiguration extends GroupProxy {
 
     public void setActorMask(String actorMask) {
         this.actorMask.set(actorMask);
-    }
-
-    public String getDescriptionMask() {
-        return descriptionMask.getString();
-    }
-
-    public void setDescriptionMask(String descriptionMask) {
-        this.descriptionMask.set(descriptionMask);
     }
 
     public String getMultiCDTitleMask() {
@@ -109,5 +106,13 @@ public class SageMetadataConfiguration extends GroupProxy {
 
     public void setRewriteTitleRegex(String rewriteTitleRegex) {
         this.rewriteTitleRegex.set(rewriteTitleRegex);
+    }
+
+    public void setSageTVTitleMask(String sageTVTitleMask) {
+        this.sageTVTitleMask.set(sageTVTitleMask);
+    }
+
+    public String getSageTVTitleMask() {
+        return sageTVTitleMask.getString();
     }
 }

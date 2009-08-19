@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -17,13 +16,13 @@ import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
+import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
-import org.jdna.media.metadata.impl.sage.SageProperty;
-import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
+import org.jdna.media.metadata.impl.sage.SageMetadataConfiguration;
 
 import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
@@ -40,6 +39,7 @@ import sagex.phoenix.fanart.MediaArtifactType;
 public class SageShowPeristence implements IMediaMetadataPersistence {
     private static final Logger log = Logger.getLogger(SageShowPeristence.class);
     private MetadataConfiguration cfg = GroupProxy.get(MetadataConfiguration.class);
+    private SageMetadataConfiguration sageCfg = GroupProxy.get(SageMetadataConfiguration.class);
     private boolean importAsTV = false;;
 
     public SageShowPeristence() {
@@ -105,25 +105,33 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         if (people!=null) {
             for (String s : people) {
                 CastMember cm = new CastMember(ICastMember.WRITER);
-                cm.setName(s);
+                cm.setName(s.trim());
+                md.addCastMember(cm);
             }
         }
         people = ShowAPI.GetPeopleListInShowInRole(show, "Director");
         if (people!=null) {
             for (String s : people) {
                 CastMember cm = new CastMember(ICastMember.DIRECTOR);
-                cm.setName(s);
+                cm.setName(s.trim());
+                md.addCastMember(cm);
             }
         }
         people = ShowAPI.GetPeopleListInShowInRole(show, "Actor");
         if (people!=null) {
             for (String s : people) {
                 CastMember cm = new CastMember(ICastMember.ACTOR);
-                cm.setName(s);
+                String parts[] = s.split("--");
+                if (parts!=null&&parts.length>1) {
+                    cm.setName(parts[0].trim());
+                    cm.setPart(parts[1].trim());
+                } else {
+                    cm.setName(s.trim());
+                }
+                md.addCastMember(cm);
             }
         }
         
-        //md.set(MetadataKey.GENRE_LIST);
         String genre = ShowAPI.GetShowCategory(show);
         if (genre!=null) {
             md.getGenres().add(genre);
@@ -134,10 +142,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         md.set(MetadataKey.DISPLAY_TITLE, MediaFileAPI.GetMediaTitle(file));
         md.set(MetadataKey.DURATION, String.valueOf(AiringAPI.GetAiringDuration(airing)));
         
-        //md.set(MetadataKey.METADATA_PROVIDER_DATA_URL, "sage://"+MediaFileAPI.GetMediaFileID(file));
-        //md.set(MetadataKey.METADATA_PROVIDER_ID, String.valueOf(MediaFileAPI.GetMediaFileID(file)));
         md.set(MetadataKey.MPAA_RATING, ShowAPI.GetShowRated(show));
-        //md.set(MetadataKey.MPAA_RATING_DESCRIPTION, value);
         md.set(MetadataKey.LANGUAGE, ShowAPI.GetShowLanguage(show));
         md.set(MetadataKey.RUNNING_TIME, String.valueOf(AiringAPI.GetAiringDuration(airing)));
         md.set(MetadataKey.YEAR, ShowAPI.GetShowYear(show));
@@ -153,6 +158,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         
         MetadataAPI.normalizeMetadata((IMediaFile)mediaFile, md);
 
+        // TODO: Figure out why Title does not get persisted when you are saving NON tv
         if (!MetadataUtil.TV_MEDIA_TYPE.equals(md.getString(MetadataKey.MEDIA_TYPE))) {
             log.warn("SageShowPersistence can only be used for TV media types; This type is: " + md.getString(MetadataKey.MEDIA_TYPE));
             return;
@@ -170,7 +176,25 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
 
         log.debug("Setting default values");
 
-        String title = MetadataAPI.getDisplayTitle(md);
+        
+        String title = null;
+        if (importAsTV) {
+            title = MediaMetadataUtils.format(sageCfg.getSageTVTitleMask(), md);
+        } else {
+            if (MetadataAPI.isTV(md)) {
+                if (StringUtils.isEmpty(MetadataAPI.getDisc(md))) {
+                    title = MediaMetadataUtils.format(sageCfg.getTvTitleMask(), md);
+                } else {
+                    title = MediaMetadataUtils.format(sageCfg.getTvDvdTitleMask(), md);
+                }
+            } else {
+                if (StringUtils.isEmpty(MetadataAPI.getDisc(md))) {
+                    title = MediaMetadataUtils.format(sageCfg.getTitleMask(), md);
+                } else {
+                    title = MediaMetadataUtils.format(sageCfg.getMultiCDTitleMask(), md);
+                }
+            }
+        }
 
         log.debug("*** Title: " + title);
         boolean firstRun = ShowAPI.IsShowFirstRun(airing);
@@ -199,7 +223,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             language = ShowAPI.GetShowLanguage(origShow);
             origAirDate = ShowAPI.GetOriginalAiringDate(origShow);
             externalID = ShowAPI.GetShowExternalID(origShow);
-            if (externalID!=null && !externalID.startsWith("EP")) {
+            if (externalID!=null && importAsTV && !externalID.startsWith("EP")) {
                 log.debug("Existing show external id is not a sage recording, so we are going to discard it, and create a new one. OldId: "+externalID);
                 externalID=null;
             }
@@ -265,8 +289,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             }
         }
 
-        // TODO: If import show as TV, then create a new airing id
-        if (externalID==null || options.isOverwriteMetadata()) {
+        if (externalID==null || (options.isOverwriteMetadata())) {
             externalID = createShowId(md);
         }
 
@@ -299,7 +322,12 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
     private String createShowId(IMediaMetadata md) {
         // TODO: if import tv is enabled, then set the prefix to "EP", so that 
         // it will show up in the sage recordings
-        String prefix = "EPmt";
+        String prefix = null;
+        if (importAsTV) {
+            prefix = "EPmt";
+        } else {
+            prefix = "MFmf";
+        }
         String id = null;
         do {
             // keep gen'd EPGID less than 12 chars

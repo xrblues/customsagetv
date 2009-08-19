@@ -18,7 +18,6 @@ import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataAPI;
-import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.SearchQuery;
@@ -68,6 +67,12 @@ public class TVDBItemParser {
                 // parse and fill
                 md = new MediaMetadata();
 
+                // update with the query args, and then overwrite if needed
+                MetadataAPI.setSeason(md, queryArgs.get(SearchQuery.Field.SEASON.name()));
+                MetadataAPI.setEpisode(md, queryArgs.get(SearchQuery.Field.EPISODE.name()));
+                MetadataAPI.setDisc(md, queryArgs.get(SearchQuery.Field.DISC.name()));
+                MetadataAPI.setReleaseDate(md, queryArgs.get(SearchQuery.Field.EPISODE_DATE.name()));
+                
                 // TODO: Cache the series info in memory, since it may be likely
                 // that we are going to
                 // need it again very soon.

@@ -12,6 +12,9 @@ import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaFile.ContentType;
 import org.jdna.media.metadata.MetadataAPI;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchQueryFactory;
+import org.jdna.media.metadata.SearchQuery.Type;
 import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageMediaFolder;
 
@@ -122,6 +125,33 @@ public class SageMediaFilesTestCase extends TestCase {
         assertEquals("getTitle()","TVShow",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());
         assertEquals("getContentType()", ContentType.TV, mf.getContentType());
+
+        SearchQuery query = SearchQueryFactory.getInstance().createQuery(mf);
+        assertEquals(Type.TV, query.getType());
+    }
+
+    public void testSageTVMovie() throws Exception {
+        StubSageAPI provider = new StubSageAPI();
+        provider.setDebugCalls(false);
+        provider.addCall("IsTVFile",true);
+        provider.addCall("IsAiringObject",true);
+        provider.addCall("GetMediaFileForID", "sagemf");
+        provider.addCall("GetAiringTitle","TVShow");
+        provider.addCall("GetShowCategory", "Movie");
+        SageAPI.setProvider(provider);
+        
+        IMediaFile mf = new SageMediaFile(1200);
+        assertEquals("getBasename()","TVShow",mf.getBasename());
+        assertEquals("getExtension()",null,mf.getExtension());
+        assertEquals("getLocationUri()","sage://id/1200",mf.getLocation().toURI());
+        assertEquals("getName()","TVShow",mf.getName());
+        assertEquals("getTitle()","TVShow",mf.getTitle());
+        assertEquals("getType()",IMediaResource.Type.File,mf.getType());
+        assertEquals("getContentType()", ContentType.MOVIE, mf.getContentType());
+        
+        SearchQuery query = SearchQueryFactory.getInstance().createQuery(mf);
+        assertEquals(Type.MOVIE, query.getType());
+        
     }
     
     public void testSageMediaFolder() throws Exception {

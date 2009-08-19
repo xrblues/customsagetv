@@ -19,7 +19,7 @@ public class TestRunnableProgress extends TestCase {
     public void testRunnableProgress() {
         BasicConfigurator.configure();
         
-        ProgressTrackerManager mgr = ProgressTrackerManager.getInstance();
+        ProgressTrackerManager mgr = new ProgressTrackerManager();
         
         IRunnableWithProgress<ProgressTracker<String>> runnable = new IRunnableWithProgress<ProgressTracker<String>>() {
             public void run(ProgressTracker<String> monitor) {

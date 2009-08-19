@@ -130,6 +130,7 @@ public class IMDBSearchResultParser extends URLSaxParser {
         if (state == STARTING || state == ENDED) return;
 
         if (aState == TITLE_READ_TITLE) {
+            log.debug("IMDB Title: " + charBuffer);
             curResult.setTitle(charBuffer);
             // set the state to READ_YEAR
             aState = TITLE_READ_YEAR;
@@ -158,5 +159,10 @@ public class IMDBSearchResultParser extends URLSaxParser {
             results.add(curResult);
             curResult = null;
         }
+    }
+
+    @Override
+    public void skippedEntity(String name) throws SAXException {
+        log.debug("IMDB: Character Entity: " + name);
     }
 }

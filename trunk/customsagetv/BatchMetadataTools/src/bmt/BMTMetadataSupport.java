@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
+import org.jdna.media.MovieResourceFilter;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
@@ -19,13 +21,16 @@ import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
-import org.jdna.media.util.BackgroundMetadataUpdater;
+import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
+import org.jdna.media.util.FilteredResourceVisitor;
 import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.sage.MetadataPluginOptions;
 import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageMediaFolder;
 import org.jdna.sage.media.SageShowPeristence;
+import org.jdna.util.MediaScanner;
 import org.jdna.util.ProgressTracker;
+import org.jdna.util.ProgressTrackerManager;
 
 import sagex.api.AiringAPI;
 import sagex.api.Global;
@@ -46,6 +51,8 @@ public class BMTMetadataSupport implements IMetadataSupport {
     private PersistenceOptions options;
     private MetadataUpdaterConfiguration updaterConfig = GroupProxy.get(MetadataUpdaterConfiguration.class);
     private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
+    
+    private String currentTrackerId = null;
     
     public BMTMetadataSupport() {
         log.info("Using BMTMetadataSupport: " + bmt.api.GetVersion());
@@ -150,6 +157,15 @@ public class BMTMetadataSupport implements IMetadataSupport {
                 log.debug("Running Library Import Scan to pick up the changes.");
                 Global.RunLibraryImportScan(false);
             }
+            
+            try {
+                if (result instanceof IMediaSearchResult) {
+                    ConfigurationManager.getInstance().setMetadataIdForTitle(smf.getTitle(), ((IMediaSearchResult)result).getMetadataId());
+                    ConfigurationManager.getInstance().saveTitleMappings();
+                }
+            } catch (Exception ex) {
+                log.error("Failed to update title mappings!", ex);
+            }
         } catch (Exception e) {
             log.error("Failed to update metadata!", e);
         }
@@ -191,21 +207,67 @@ public class BMTMetadataSupport implements IMetadataSupport {
     }
 
     public float getMetadataScanComplete() {
-        return (float) BackgroundMetadataUpdater.getInstance().getTracker().internalWorked();
+        return getMetadataScanComplete(currentTrackerId);
     }
 
     public boolean isMetadataScanRunning() {
-        return BackgroundMetadataUpdater.isRunning();
+        return isMetadataScanRunning(currentTrackerId);
     }
 
-    public void startMetadataScan(String provider, Object[] sageMediaFiles) {
-        try {
-            if (provider==null) {
-                provider = metadataConfig.getDefaultProviderId();
-            }
-            BackgroundMetadataUpdater.startScan(new SageMediaFolder(sageMediaFiles), provider, MetadataPluginOptions.getOnDemandUpdaterPersistence(), MetadataPluginOptions.getPersistenceOptions(), new ProgressTracker<IMediaFile>());
-        } catch (Exception e) {
-            log.error("Scan Failed!", e);
+    public float getMetadataScanComplete(Object tracker) {
+        ProgressTracker<IMediaFile> mt = getTracker(tracker);
+        if (mt!=null) return (float) mt.internalWorked();
+        return 0;
+    }
+
+    public boolean isMetadataScanRunning(Object tracker) {
+        ProgressTracker<IMediaFile> mt = getTracker(tracker);
+        if (mt!=null) return mt.isDone() || mt.isCancelled();
+        return false;
+    }
+
+    private ProgressTracker<IMediaFile> getTracker(Object tracker) {
+        if (tracker!=null) {
+            return (ProgressTracker<IMediaFile>) ProgressTrackerManager.getInstance().getProgress((String) tracker);
         }
+        return null;
+    }
+    
+    public synchronized Object startMetadataScan(String provider, Object[] sageMediaFiles) {
+        try {
+            if (isMetadataScanRunning()) {
+                log.error("Can't start another tracker until the current tracker is done!");
+                return null;
+            }
+            
+            if (sageMediaFiles==null) {
+                log.error("Can't scan, since media files are null!");
+                return null;
+            }
+
+            log.info("BMT Media Scan about to start with " + sageMediaFiles.length + " items");
+            
+            ProgressTracker<IMediaFile> tracker = new ProgressTracker<IMediaFile>();
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(metadataConfig.getDefaultProviderId(), MetadataPluginOptions.getOnDemandUpdaterPersistence(), MetadataPluginOptions.getPersistenceOptions(), SearchQuery.Type.MOVIE, tracker);
+            
+            FilteredResourceVisitor scanVisitor = new FilteredResourceVisitor(new MovieResourceFilter(), autoUpdater);
+            MediaScanner scanner = new MediaScanner(new SageMediaFolder(sageMediaFiles), scanVisitor);
+            currentTrackerId = ProgressTrackerManager.getInstance().runWithProgress(scanner, tracker);
+            log.info("BMT Media Scan was started with tracker id: " + currentTrackerId);
+        } catch (Throwable e) {
+            log.error("Scan Failed!", e);
+            currentTrackerId = null;
+        }
+        return currentTrackerId;
+    }
+
+    public boolean cancelMetadataScan(Object tracker) {
+        ProgressTracker<IMediaFile> mt = getTracker(tracker);
+        if (mt!=null) {
+            log.info("Cancelling Media Scan: " + tracker);
+            mt.setCancelled(true);
+            currentTrackerId=null;
+        }
+        return true;
     }
 }

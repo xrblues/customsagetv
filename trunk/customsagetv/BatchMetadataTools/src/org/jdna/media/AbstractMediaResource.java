@@ -14,7 +14,7 @@ public abstract class AbstractMediaResource implements IMediaResource {
     
     public String getTitle() {
         String name = getBasename();
-        if (name != null) return name.replaceAll("[^A-Za-z0-9']", " ");
+        if (name != null) return name.replaceAll("[^A-Za-z0-9&']", " ");
         return name;
     }
 

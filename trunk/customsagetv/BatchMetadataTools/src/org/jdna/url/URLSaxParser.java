@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.jdna.util.AbstractSaxHandler;
 import org.xml.sax.Attributes;
@@ -115,9 +116,13 @@ public class URLSaxParser extends AbstractSaxHandler {
             charbuf = charbuf.trim();
 
             // just remove html entities
-            charbuf = charbuf.replaceAll("&nbsp;", " ");
+            // charbuf = charbuf.replaceAll("&nbsp;", " ");
+            
+            charbuf = StringEscapeUtils.unescapeXml(charbuf);
+            
+            //charbuf = charbuf.replaceAll("&nbsp;", " ");
 
-            charbuf = charbuf.replaceAll("&[#0-9a-zA-Z]+;", "");
+            // charbuf = charbuf.replaceAll("&[#0-9a-zA-Z]+;", "");
 
         } catch (Throwable e) {
             log.error("There was a problem getting a string from the char array!; buffer as known: " + charbuf, e);

@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 import org.jdna.media.CDStackingModel;
+import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.url.UrlConfiguration;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
@@ -121,14 +122,14 @@ public class MediaMetadataUtils {
 
     /**
      * For the purposes of searching it will, keep only alpha numeric characters
-     * and '
+     * and '&
      * 
      * @param s
      * @return
      */
     public static String removeNonSearchCharacters(String s) {
         if (s == null) return null;
-        return (s.replaceAll("[^A-Za-z0-9']", " ")).replaceAll("[\\ ]+", " ");
+        return (s.replaceAll("[^A-Za-z0-9&']", " ")).replaceAll("[\\ ]+", " ");
     }
 
     /**
@@ -223,6 +224,42 @@ public class MediaMetadataUtils {
             lastStart = m.end();
             String key = token.substring(2, token.length() - 1);
             String val = (String) props.get(key);
+            if (val == null) val = "";
+            sb.append(val);
+        }
+
+        sb.append(s.substring(lastStart));
+
+        return sb.toString();
+    }
+    
+    /**
+     * Given a String in the format, ${KEY}..., it will replace all occurances
+     * of ${KEY} with a lookup in the Map for KEY.
+     * 
+     * ie, ${TEST1} -- ${TEST2} would result in Hello -- There, provided that
+     * the map contained 2 keys TEST1=Hello, TEST2=There
+     * 
+     * @param s
+     *            Format String
+     * @param map
+     *            Map of Named Paramters
+     * @return
+     */
+    public static String format(String s, IMediaMetadata md) {
+        log.debug("Formatting: " + s);
+        Pattern p = Pattern.compile("(\\$\\{[_\\.a-zA-Z]+\\})");
+        Matcher m = p.matcher(s);
+        StringBuffer sb = new StringBuffer();
+
+        int lastStart = 0;
+        while (m.find()) {
+            String token = m.group(0);
+            sb.append(s.substring(lastStart, m.start()));
+            lastStart = m.end();
+            String key = token.substring(2, token.length() - 1);
+            
+            String val = md.getString(SageProperty.metadataKey(key));
             if (val == null) val = "";
             sb.append(val);
         }

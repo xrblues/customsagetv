@@ -96,6 +96,7 @@ public class Similarity {
 	        }
 	
 	        float score= (float)(2.0*intersection)/union;
+	        if (Float.isNaN(score)) score=0;
 	        if (score==1.0f) {
 	            // exception case... for some reason, "Batman Begins" == "Batman Begins 2"
 	            // for the lack of a better test...

@@ -10,6 +10,8 @@ import org.jdna.media.metadata.MetadataID;
 import org.jdna.util.PropertiesUtils;
 import org.jdna.util.SortedProperties;
 
+import sagex.phoenix.Phoenix;
+
 /**
  * ConfigurationManager provides an Abstract way to access grouped
  * configurations. Before the ConfigurationManager can be used, it must have a
@@ -41,7 +43,7 @@ public class ConfigurationManager {
     private void load() {
         // now load the tvfilename props, if they exist
         titleMapProps = new SortedProperties();
-        titleMapPropsFile = new File("metadata-titles.properties");
+        titleMapPropsFile = new File(Phoenix.getInstance().getSageTVRootDir(), "metadata-titles.properties");
         log.debug("Loading: " + titleMapPropsFile.getAbsolutePath());
         if (titleMapPropsFile.exists()) {
             try {
