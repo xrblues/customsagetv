@@ -12,7 +12,6 @@ import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.metadata.impl.sage.SagePropertyType;
 
-import sagex.api.MediaFileAPI;
 import sagex.phoenix.fanart.SageFanartUtil;
 
 /**
@@ -43,7 +42,12 @@ public class SageCustomMetadataPersistence implements IMediaMetadataPersistence 
                 if (p.propertyType == SagePropertyType.EXTENDED) {
                     String val = SageFanartUtil.GetMediaFileMetadata(smf.getSageMediaFileObject(smf), p.sageKey);
                     if (val != null) {
-                        md.set(p.metadataKey, val);
+                        if ("0".equals(val) && (p == SageProperty.SEASON_NUMBER || p == SageProperty.EPISODE_NUMBER || p==SageProperty.DISC)) {
+                            // don't store 0 in those fields
+                            md.set(p.metadataKey, "");
+                        } else {
+                            md.set(p.metadataKey, val);
+                        }
                     }
                 }
             }
@@ -60,7 +64,12 @@ public class SageCustomMetadataPersistence implements IMediaMetadataPersistence 
                 if (p.propertyType == SagePropertyType.EXTENDED) {
                     String val = md.getString(p.metadataKey);
                     if (val instanceof String && !StringUtils.isEmpty((String) val)) {
-                        SageFanartUtil.SetMediaFileMetadata(smf.getSageMediaFileObject(smf), p.sageKey, (String) val);
+                        if ("0".equals(val) && (p == SageProperty.SEASON_NUMBER || p == SageProperty.EPISODE_NUMBER || p==SageProperty.DISC)) {
+                            // don't store 0 in those fields
+                            SageFanartUtil.SetMediaFileMetadata(smf.getSageMediaFileObject(smf), p.sageKey, "");
+                        } else {
+                            SageFanartUtil.SetMediaFileMetadata(smf.getSageMediaFileObject(smf), p.sageKey, (String) val);
+                        }
                     }
                 }
             }

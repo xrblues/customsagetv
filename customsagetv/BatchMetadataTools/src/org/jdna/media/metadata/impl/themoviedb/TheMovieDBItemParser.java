@@ -16,7 +16,6 @@ import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MetadataAPI;
-import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.url.IUrl;
 import org.jdna.url.UrlFactory;

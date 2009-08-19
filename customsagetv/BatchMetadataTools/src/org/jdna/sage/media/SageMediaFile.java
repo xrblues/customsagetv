@@ -12,6 +12,7 @@ import org.jdna.media.util.PathUtils;
 
 import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
+import sagex.api.ShowAPI;
 import sagex.phoenix.fanart.SageFanartUtil;
 import sagex.phoenix.fanart.SimpleMediaFile;
 
@@ -54,6 +55,14 @@ public class SageMediaFile extends VirtualMediaFile {
             if (o==null) {
                 this.airing=mediaFile;
                 setContentType(ContentType.TV);
+
+                // Now check the alternate category, since some sage recordings are Movies
+                String altCat = ShowAPI.GetShowCategory(mediaFile);
+                if (altCat != null) {
+                    if (altCat.equals("Movie") || altCat.equals(phoenix.api.GetProperty("alternate_movie_category"))) {
+                        setContentType(ContentType.MOVIE);
+                    }
+                }
             } else {
                 init(o);
             }
@@ -63,6 +72,14 @@ public class SageMediaFile extends VirtualMediaFile {
                 setContentType(ContentType.HDFOLDER);
             } else if (MediaFileAPI.IsTVFile(mediaFile)) {
                 setContentType(ContentType.TV);
+                
+                // Now check the alternate category, since some sage recordings are Movies
+                String altCat = ShowAPI.GetShowCategory(mediaFile);
+                if (altCat != null) {
+                    if (altCat.equals("Movie") || altCat.equals(phoenix.api.GetProperty("alternate_movie_category"))) {
+                        setContentType(ContentType.MOVIE);
+                    }
+                }
             } else if (MediaFileAPI.IsVideoFile(mediaFile)) {
                 setContentType(ContentType.MOVIE);
             } else {

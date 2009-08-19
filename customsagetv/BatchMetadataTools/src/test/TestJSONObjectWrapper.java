@@ -4,7 +4,6 @@ import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 
 import sagex.phoenix.fanart.MediaArtifactType;
-import sagex.remote.json.JSONObject;
 
 public class TestJSONObjectWrapper {
     public static void main(String args[]) {

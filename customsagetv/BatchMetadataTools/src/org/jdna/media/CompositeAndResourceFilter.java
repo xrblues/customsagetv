@@ -11,11 +11,14 @@ public class CompositeAndResourceFilter extends AbstractCompositeResourceFilter 
     }
 
     public boolean accept(IMediaResource resource) {
+        if (getFilterCount()==0) return true;
+        
         for (IMediaResourceFilter f : filters) {
             if (!f.accept(resource)) {
                 return false;
             }
         }
+        
         return true;
     }
 }

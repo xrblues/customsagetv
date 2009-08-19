@@ -23,7 +23,7 @@ public enum SageProperty {
     SERIALIZED_CAST("x-ser-Cast", MetadataKey.CAST_MEMBER_LIST, SagePropertyType.BMT),
     SERIALIZED_GENRES("x-ser-Genres", MetadataKey.GENRE_LIST, SagePropertyType.BMT),
     SERIALIZED_FANART("x-ser-Fanart", MetadataKey.MEDIA_ART_LIST, SagePropertyType.BMT),
-    SERIALIZED_DESCRIPTION("x-ser-Description", MetadataKey.DESCRIPTION, SagePropertyType.BMT),
+    /*SERIALIZED_DESCRIPTION("x-ser-Description", MetadataKey.DESCRIPTION, SagePropertyType.BMT),*/
     COMMENT("", MetadataKey.COMMENT, SagePropertyType.CORE),
     COMPANY("x-Company", MetadataKey.COMPANY, SagePropertyType.BMT),
     COMPOSER("", MetadataKey.COMPOSER, SagePropertyType.CORE),
@@ -113,5 +113,33 @@ public enum SageProperty {
         }
 
         return mdkeys.size() == MetadataKey.values().length;
+    }
+    
+    /**
+     * Find Property by sage key
+     * @param sageKey
+     */
+    public static SageProperty valueOfSageKey(String sageKey) {
+       for (SageProperty p : values()) {
+           if (p.sageKey!=null && p.sageKey.equals(sageKey)) {
+               return p;
+           }
+       }
+       return null;
+    }
+    
+    /**
+     * Returns the MetadataKey for a given SageProperty Key
+     * 
+     * @param sageProp
+     * @return
+     */
+    public static MetadataKey metadataKey(String sageProp) {
+        for (SageProperty p : values()) {
+            if (p.sageKey!=null && p.sageKey.equals(sageProp)) {
+                return p.metadataKey;
+            }
+        }
+        return null;
     }
 }

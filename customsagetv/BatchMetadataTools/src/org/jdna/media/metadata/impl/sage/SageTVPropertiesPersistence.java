@@ -29,6 +29,7 @@ import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.media.metadata.MetadataAPI;
+import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
@@ -46,6 +47,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     private static final Logger                                   log              = Logger.getLogger(SageTVPropertiesPersistence.class);
 
     private SageMetadataConfiguration cfg = new SageMetadataConfiguration();
+    private MetadataConfiguration metadataCfg = new MetadataConfiguration();
     
     public SageTVPropertiesPersistence() {
         if (!SageProperty.isPropertySetValid()) {
@@ -161,7 +163,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
 
         // lastly encode the description, to ensure that all other props are
         // set.
-        props.put(SageProperty.DESCRIPTION.sageKey, encodeDescription(md, cfg.getDescriptionMask(), props));
+        props.put(SageProperty.DESCRIPTION.sageKey, MetadataAPI.getDescription(md));
         
         // now copy this metadata...
         Map<String, String> xprops = new HashMap<String, String>();
@@ -179,7 +181,12 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         if (s == null) return "";
         if (s instanceof String) {
             String num = ((String) s).trim();
-            return String.valueOf(NumberUtils.toInt(num));
+            int n = NumberUtils.toInt(num);
+            if (n>0) {
+                return String.valueOf(n);
+            } else {
+                return "";
+            }
         } else {
             return s.toString();
         }
@@ -281,14 +288,18 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
             // store the title
             props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(MetadataAPI.getMediaTitle(md)));
             // update it using the mask
-            if (!StringUtils.isEmpty(props.get(SageProperty.SEASON_NUMBER.sageKey))) {
+            if (MetadataAPI.isValidSeason(md)) {
                 // assume TV
-                if (!StringUtils.isEmpty(props.get(SageProperty.EPISODE_NUMBER.sageKey))) {
+                if (MetadataAPI.isValidEpisode(md)) {
                     // cough hack - need to format the season and episode so that it look liks 01, 02, etc.
                     Map mod = new HashMap(props);
                     mod.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(props.get(SageProperty.SEASON_NUMBER.sageKey), 2));
                     mod.put(SageProperty.EPISODE_NUMBER.sageKey, zeroPad(props.get(SageProperty.EPISODE_NUMBER.sageKey), 2));
-                    props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(cfg.getTvTitleMask(), mod));
+                    if (metadataCfg.isImportTVAsRecordedShows()) {
+                        props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(cfg.getSageTVTitleMask(), mod));
+                    } else {
+                        props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(cfg.getTvTitleMask(), mod));
+                    }
                 } else {
                     Map mod = new HashMap(props);
                     mod.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(props.get(SageProperty.SEASON_NUMBER.sageKey), 2));
@@ -296,10 +307,10 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
                     props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(cfg.getTvDvdTitleMask(), mod));
                 }
             } else {
-                if (StringUtils.isEmpty(MetadataAPI.getDisc(md))) {
-                    props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(cfg.getTitleMask(), props));
-                } else {
+                if (MetadataAPI.isValidDisc(md)) {
                     props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(cfg.getMultiCDTitleMask(), props));
+                } else {
+                    props.put(SageProperty.DISPLAY_TITLE.sageKey, MediaMetadataUtils.format(cfg.getTitleMask(), props));
                 }
             }
             saveSingle(props, mediaFileParent, md, options);
@@ -382,11 +393,6 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         return sb.toString();
     }
 
-    private static String encodeDescription(IMediaMetadata md, String mask, Map<String,String> props) {
-        if (mask == null) mask = "${"+SageProperty.DESCRIPTION.sageKey+"}";
-        return MediaMetadataUtils.format(mask, props);
-    }
-
     private static String encodeGenres(List<String> genres) {
         if (genres == null) return "";
 
@@ -456,7 +462,7 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
                 } else if (p == SageProperty.DISPLAY_TITLE) {
                     md.setMediaTitle(StringUtils.defaultIfEmpty(props.get(p.sageKey), props.get(SageProperty.MEDIA_TITLE.sageKey)));
                 } else if (p == SageProperty.DESCRIPTION) {
-                    md.setDescription(StringUtils.defaultIfEmpty(props.get(SageProperty.SERIALIZED_DESCRIPTION.sageKey), props.get(p.sageKey)));
+                    md.setDescription(props.get(p.sageKey));
                 } else {
                     md.set(p.metadataKey, props.get(p.sageKey));
                     log.debug("Setting: " + p.metadataKey + "; Value: " + props.get(p.sageKey));

@@ -3,6 +3,7 @@ package org.jdna.media;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
@@ -25,16 +26,17 @@ public class MovieResourceFilter implements IMediaResourceFilter {
     }
     
     private void init(String dirFilter, String fileFilter) {
-        log.debug("Using Movie Filter Regex: " + fileFilter);
-        filePattern = Pattern.compile(fileFilter, Pattern.CASE_INSENSITIVE);
-
-        if (dirFilter == null) {
+        if (!StringUtils.isEmpty(fileFilter)) {
+            log.debug("Using Movie Filter Regex: " + fileFilter);
+            filePattern = Pattern.compile(fileFilter, Pattern.CASE_INSENSITIVE);
+        }
+        
+        if (StringUtils.isEmpty(dirFilter)) {
             log.debug("Not Using any Directory Exclude Filters.");
         } else {
             log.debug("Using Directory Exclude Regex: " + dirFilter);
             dirExcludePattern = Pattern.compile(dirFilter, Pattern.CASE_INSENSITIVE);
         }
-
     }
 
     public boolean accept(IMediaResource resource) {
