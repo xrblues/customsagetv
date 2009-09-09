@@ -8,12 +8,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.MediaConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 import org.jdna.media.metadata.impl.sage.SageMetadataConfiguration;
 import org.jdna.media.metadata.impl.sage.SageProperty;
+import org.jdna.sage.media.SageMediaFile;
 
+import sagex.api.MediaFileAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.MediaArtifactType;
 import sagex.phoenix.fanart.MediaType;
@@ -231,18 +234,20 @@ public class MetadataAPI {
     }
     
     public static boolean isValidSeason(IMediaMetadata md) {
-        String s =MetadataAPI.getSeason(md);
-        return (!"0".equals(s)) && !StringUtils.isEmpty(s);
+        return isValidNumberNotZero(MetadataAPI.getSeason(md));
     }
 
     public static boolean isValidDisc(IMediaMetadata md) {
-        String s =MetadataAPI.getDisc(md);
-        return (!"0".equals(s)) && !StringUtils.isEmpty(s);
+        return isValidNumberNotZero(MetadataAPI.getDisc(md));
     }
 
     public static boolean isValidEpisode(IMediaMetadata md) {
-        String s =MetadataAPI.getEpisode(md);
-        return (!"0".equals(s)) && !StringUtils.isEmpty(s);
+        return isValidNumberNotZero(MetadataAPI.getEpisode(md));
+    }
+    
+    private static boolean isValidNumberNotZero(String s) {
+        int n = NumberUtils.toInt(s, 0);
+        return n>0;
     }
     
     /**
@@ -251,11 +256,10 @@ public class MetadataAPI {
      * 
      * @param md
      */
-    public static IMediaMetadata normalizeMetadata(IMediaFile mf, IMediaMetadata md) {
+    public static IMediaMetadata normalizeMetadata(IMediaFile mf, IMediaMetadata md, PersistenceOptions options) {
         SageMetadataConfiguration cfg = GroupProxy.get(SageMetadataConfiguration.class);
-        MetadataConfiguration metadataCfg = GroupProxy.get(MetadataConfiguration.class);
         
-        if (isValidDisc(md)) {
+        if (!isValidDisc(md)) {
             MetadataAPI.setDisc(md, getCDFromMediaFile(mf));
         }
         
@@ -266,35 +270,55 @@ public class MetadataAPI {
                 md.setString(k, s.trim());
             }
         }
-
+        
+        boolean importAsTV = options.isImportAsTV() && (isValidSeason(md) || MetadataAPI.isTV(md));
+        if (mf instanceof SageMediaFile) {
+            Object sagemf = SageMediaFile.getSageMediaFileObject(mf);
+            importAsTV = importAsTV || MediaFileAPI.IsTVFile(sagemf);
+        }
+        
         // create a simple sagetv map for rewriting purposes.
         // title masks rely on the properties
         Map<String, String> props = new HashMap<String, String>();
-        props.put(SageProperty.MEDIA_TITLE.sageKey, MetadataAPI.getMediaTitle(md));
+        props.put(SageProperty.MEDIA_TITLE.sageKey, rewriteTitle(MetadataAPI.getMediaTitle(md)));
         props.put(SageProperty.DISPLAY_TITLE.sageKey, rewriteTitle(MetadataAPI.getMediaTitle(md)));
-        props.put(SageProperty.DISC.sageKey, MetadataAPI.getDisc(md));
+
+        if (MetadataAPI.isValidDisc(md)) {
+            props.put(SageProperty.DISC.sageKey, MetadataAPI.getDisc(md));
+        }
         
         // update it using the mask
         if (isValidSeason(md)) {
+            props.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(MetadataAPI.getSeason(md), 2));
+            props.put(SageProperty.EPISODE_TITLE.sageKey, MetadataAPI.getEpisodeTitle(md));
+
             MetadataAPI.setMediaType(md, MediaType.TV.sageValue());
             
             // assume TV
             if (isValidEpisode(md)) {
                 // cough hack - need to format the season and episode so that it look liks 01, 02, etc.
-                Map<String, String> mod = new HashMap<String,String>(props);
-                mod.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(props.get(SageProperty.SEASON_NUMBER.sageKey), 2));
-                mod.put(SageProperty.EPISODE_NUMBER.sageKey, zeroPad(props.get(SageProperty.EPISODE_NUMBER.sageKey), 2));
-                if (metadataCfg.isImportTVAsRecordedShows()) {
-                    MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getSageTVTitleMask(), mod));
+                props.put(SageProperty.EPISODE_NUMBER.sageKey, zeroPad(MetadataAPI.getEpisode(md), 2));
+                if (importAsTV) {
+                    if (options.isUseTitleMasks()) {
+                        MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getSageTVTitleMask(), props));
+                    }
                 } else {
-                    MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getTvTitleMask(), mod));
+                    if (options.isUseTitleMasks()) {
+                        MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getTvTitleMask(), props));
+                    }
                 }
             } else {
                 // format for dvd TV disc titles
-                Map mod = new HashMap(props);
-                mod.put(SageProperty.SEASON_NUMBER.sageKey, zeroPad(props.get(SageProperty.SEASON_NUMBER.sageKey), 2));
-                mod.put(SageProperty.DISC.sageKey, zeroPad(props.get(SageProperty.DISC.sageKey), 2));
-                MetadataAPI.setDisplayTitle(md,  MediaMetadataUtils.format(cfg.getTvDvdTitleMask(), mod));
+                props.put(SageProperty.DISC.sageKey, zeroPad(props.get(SageProperty.DISC.sageKey), 2));
+                if (importAsTV) {
+                    if (options.isUseTitleMasks()) {
+                        MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getSageTVTitleMask(), props));
+                    }
+                } else { 
+                    if (options.isUseTitleMasks()) {
+                        MetadataAPI.setDisplayTitle(md,  MediaMetadataUtils.format(cfg.getTvDvdTitleMask(), props));
+                    }
+                }
             }
         } else {
             // assume normal movie
@@ -302,13 +326,22 @@ public class MetadataAPI {
                 MetadataAPI.setMediaType(md, MediaType.MOVIE.sageValue());
             }
             if (isValidDisc(md)) {
-                MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getMultiCDTitleMask(), props));
+                if (options.isUseTitleMasks()) {
+                    props.put(SageProperty.DISC.sageKey, zeroPad(props.get(SageProperty.DISC.sageKey), 2));
+                    MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getMultiCDTitleMask(), props));
+                }
             } else {
-                MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getTitleMask(), props));
+                if (options.isUseTitleMasks()) {
+                    MetadataAPI.setDisplayTitle(md, MediaMetadataUtils.format(cfg.getTitleMask(), props));
+                }
             }
         }
 
         MetadataAPI.setUserRating(md, IMDBUtils.parseUserRating(MetadataAPI.getUserRating(md)));
+
+        if (StringUtils.isEmpty(MetadataAPI.getDisplayTitle(md))) {
+            MetadataAPI.setDisplayTitle(md, rewriteTitle(MetadataAPI.getMediaTitle(md)));
+        }
         
         // TODO: Fill in year from release date
         // TODO: Fix Release data in format YYYY-MM-DD
@@ -343,6 +376,10 @@ public class MetadataAPI {
     
     public static String getEpisode(IMediaMetadata md) {
         return md.getString(MetadataKey.EPISODE);
+    }
+
+    public static String getEpisodeTitle(IMediaMetadata md) {
+        return md.getString(MetadataKey.EPISODE_TITLE);
     }
     
     public static String getDisc(IMediaMetadata md) {

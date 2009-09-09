@@ -202,4 +202,8 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
     public void setString(MetadataKey key, String value) {
         set(key, value);
     }
+
+    public void remove(MetadataKey key) {
+        store.remove(key);
+    }
 }

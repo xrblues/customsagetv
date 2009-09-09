@@ -59,7 +59,7 @@ public class SageCustomMetadataPersistence implements IMediaMetadataPersistence 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
         if (mediaFile instanceof SageMediaFile) {
             SageMediaFile smf = (SageMediaFile) mediaFile;
-            MetadataAPI.normalizeMetadata(smf, md);
+            MetadataAPI.normalizeMetadata(smf, md, options);
             for (SageProperty p : SageProperty.values()) {
                 if (p.propertyType == SagePropertyType.EXTENDED) {
                     String val = md.getString(p.metadataKey);

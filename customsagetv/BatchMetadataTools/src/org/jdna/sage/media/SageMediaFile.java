@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IPath;
 import org.jdna.media.VirtualMediaFile;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.util.PathUtils;
 
 import sagex.api.AiringAPI;
@@ -68,6 +70,18 @@ public class SageMediaFile extends VirtualMediaFile {
             }
         } else if (MediaFileAPI.IsMediaFileObject(mediaFile)) {
             this.mediaFile = mediaFile;
+            Object mf = MediaFileAPI.GetFileForSegment(mediaFile, 0);
+            if (mf==null) {
+                try {
+                    log.warn("Media File does not have a File associated with it: " + mediaFile);
+                    setLocationUri(PathUtils.createPath(new URI("sage:/id/" + MediaFileAPI.GetMediaFileID(mediaFile))));
+                } catch (URISyntaxException e) {
+                    log.error("Failed to set ID Location URI for mediafile: " + mediaFile);
+                }
+            } else {
+                setLocationUri(PathUtils.createPath((File)mf));
+            }
+
             if (MediaFileAPI.IsDVD(mediaFile) || MediaFileAPI.IsBluRay(mediaFile)) {
                 setContentType(ContentType.HDFOLDER);
             } else if (MediaFileAPI.IsTVFile(mediaFile)) {
@@ -81,20 +95,13 @@ public class SageMediaFile extends VirtualMediaFile {
                     }
                 }
             } else if (MediaFileAPI.IsVideoFile(mediaFile)) {
-                setContentType(ContentType.MOVIE);
-            } else {
-                setContentType(ContentType.UNKNOWN);
-            }
-            Object mf = MediaFileAPI.GetFileForSegment(mediaFile, 0);
-            if (mf==null) {
-                try {
-                    log.warn("Media File does not have a File associated with it: " + mediaFile);
-                    setLocationUri(PathUtils.createPath(new URI("sage:/id/" + MediaFileAPI.GetMediaFileID(mediaFile))));
-                } catch (URISyntaxException e) {
-                    log.error("Failed to set ID Location URI for mediafile: " + mediaFile);
+                // check the filename using the FileName utils...
+                SearchQuery q = SearchQueryFactory.createQuery(this.getLocation().toString());
+                if (q.getType() == SearchQuery.Type.TV) {
+                    setContentType(ContentType.TV);
+                } else {
+                    setContentType(ContentType.MOVIE);
                 }
-            } else {
-                setLocationUri(PathUtils.createPath((File)mf));
             }
         }
     }
@@ -183,7 +190,7 @@ public class SageMediaFile extends VirtualMediaFile {
     @Override
     public String getTitle() {
         // Sage Handles DVD Tiles a little differently, so let the FanartUtils figure out the title for us
-        if (mediaFile!=null && SageFanartUtil.IsDVDFile(mediaFile)) {
+        if (mediaFile!=null) {
             SimpleMediaFile smf = SageFanartUtil.GetSimpleMediaFile(mediaFile);
             if (smf!=null) {
                 return smf.getTitle();

@@ -40,14 +40,8 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
     private static final Logger log = Logger.getLogger(SageShowPeristence.class);
     private MetadataConfiguration cfg = GroupProxy.get(MetadataConfiguration.class);
     private SageMetadataConfiguration sageCfg = GroupProxy.get(SageMetadataConfiguration.class);
-    private boolean importAsTV = false;;
 
     public SageShowPeristence() {
-        importAsTV = cfg.isImportTVAsRecordedShows();
-    }
-    
-    public SageShowPeristence(boolean importAsTV) {
-        this.importAsTV  = importAsTV;
     }
     
     public String getDescription() {
@@ -139,9 +133,12 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         md.set(MetadataKey.COMMENT,"");
         md.set(MetadataKey.COMPANY,"");
         md.set(MetadataKey.DESCRIPTION, ShowAPI.GetShowDescription(show));
-        md.set(MetadataKey.DISPLAY_TITLE, MediaFileAPI.GetMediaTitle(file));
+        //if (MediaFileAPI.IsTVFile(file) || MediaFileAPI.IsBluRay(file) || MediaFileAPI.IsDVD(file)) {
+            MetadataAPI.setDisplayTitle(md, ShowAPI.GetShowTitle(show));
+        //} else {
+        //    md.set(MetadataKey.DISPLAY_TITLE, MediaFileAPI.GetMediaTitle(file));
+        //}
         md.set(MetadataKey.DURATION, String.valueOf(AiringAPI.GetAiringDuration(airing)));
-        
         md.set(MetadataKey.MPAA_RATING, ShowAPI.GetShowRated(show));
         md.set(MetadataKey.LANGUAGE, ShowAPI.GetShowLanguage(show));
         md.set(MetadataKey.RUNNING_TIME, String.valueOf(AiringAPI.GetAiringDuration(airing)));
@@ -156,44 +153,20 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             return;
         }
         
-        MetadataAPI.normalizeMetadata((IMediaFile)mediaFile, md);
+        MetadataAPI.normalizeMetadata((IMediaFile)mediaFile, md, options);
 
-        // TODO: Figure out why Title does not get persisted when you are saving NON tv
-        if (!MetadataUtil.TV_MEDIA_TYPE.equals(md.getString(MetadataKey.MEDIA_TYPE))) {
-            log.warn("SageShowPersistence can only be used for TV media types; This type is: " + md.getString(MetadataKey.MEDIA_TYPE));
-            return;
-        }
-
-        if (!importAsTV) {
-            log.info("Import Shows as Sage Recordings is currently disabled.");
-            return;
-        }
-        
         log.debug("Storing Sage Metdata directly to the Sage SHOW object");
         Object sageMF = SageMediaFile.getSageMediaFileObject(mediaFile);
         Object airing = MediaFileAPI.GetMediaFileAiring(sageMF);
         Object origShow = AiringAPI.GetShow(airing);
 
-        log.debug("Setting default values");
+        boolean importAsTV = (options.isImportAsTV() && MetadataAPI.isTV(md));
 
+        String title = MetadataAPI.getDisplayTitle(md);
         
-        String title = null;
-        if (importAsTV) {
-            title = MediaMetadataUtils.format(sageCfg.getSageTVTitleMask(), md);
-        } else {
-            if (MetadataAPI.isTV(md)) {
-                if (StringUtils.isEmpty(MetadataAPI.getDisc(md))) {
-                    title = MediaMetadataUtils.format(sageCfg.getTvTitleMask(), md);
-                } else {
-                    title = MediaMetadataUtils.format(sageCfg.getTvDvdTitleMask(), md);
-                }
-            } else {
-                if (StringUtils.isEmpty(MetadataAPI.getDisc(md))) {
-                    title = MediaMetadataUtils.format(sageCfg.getTitleMask(), md);
-                } else {
-                    title = MediaMetadataUtils.format(sageCfg.getMultiCDTitleMask(), md);
-                }
-            }
+        if (title==null) {
+            log.warn("Title is null for: " + mediaFile.getLocation().toString() + "; aborting.");
+            return;
         }
 
         log.debug("*** Title: " + title);
@@ -223,10 +196,6 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             language = ShowAPI.GetShowLanguage(origShow);
             origAirDate = ShowAPI.GetOriginalAiringDate(origShow);
             externalID = ShowAPI.GetShowExternalID(origShow);
-            if (externalID!=null && importAsTV && !externalID.startsWith("EP")) {
-                log.debug("Existing show external id is not a sage recording, so we are going to discard it, and create a new one. OldId: "+externalID);
-                externalID=null;
-            }
         }
 
         if (origAirDate==0 || options.isOverwriteMetadata()) {
@@ -289,11 +258,20 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             }
         }
 
-        if (externalID==null || (options.isOverwriteMetadata())) {
-            externalID = createShowId(md);
+        if (externalID==null || importAsTV) {
+            externalID = createShowId(md, options);
+            log.debug("New ExternalID Created: " + externalID);
         }
 
-        log.debug("Creating new Show...");
+        // Sage wants to have the movie titles in the episode field as well
+        // failure to set this will mean that a movie in sage stv will not
+        // show a title
+        if (StringUtils.isEmpty(episode)) {
+            episode = title;
+        }
+        
+        log.debug("Creating new Show: " + title);
+        log.debug("Type: " + MetadataAPI.getMediaType(md));
         log.debug("Title: " + title);
         log.debug("FirstRun: " + firstRun);
         log.debug("Episode: " + episode);
@@ -317,16 +295,17 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
 
         log.debug("Adding new show to mediafile");
         MediaFileAPI.SetMediaFileShow(sageMF, show);
+        
+        // lastly unset the archived flag for the tv
+        MediaFileAPI.MoveTVFileOutOfLibrary(sageMF);
     }
 
-    private String createShowId(IMediaMetadata md) {
-        // TODO: if import tv is enabled, then set the prefix to "EP", so that 
-        // it will show up in the sage recordings
+    private String createShowId(IMediaMetadata md, PersistenceOptions options) {
         String prefix = null;
-        if (importAsTV) {
+        if (MetadataAPI.isTV(md) && options.isImportAsTV()) {
             prefix = "EPmt";
         } else {
-            prefix = "MFmf";
+            prefix = "MFmt";
         }
         String id = null;
         do {

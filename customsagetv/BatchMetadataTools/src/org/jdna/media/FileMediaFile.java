@@ -59,6 +59,18 @@ public class FileMediaFile extends AbstractMediaFile implements IMediaFile {
         }
     }
     
+    public boolean renameTo(String newName) {
+    	File newFile = new File(newName);
+    	boolean retVal = file.renameTo(newFile);
+    	if(retVal) {
+    		//If file renaming was successful, update our internal variables
+    		file = newFile;
+    		super.setLocationUri(new Path(newFile.toURI().toString()));
+    	}
+    	
+    	return retVal;
+    }
+    
     protected File getFile() {
         return file;
     }

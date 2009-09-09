@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraper name="IMDb Top 50 Movie Rentals (Xbmc)" content="movielistings" thumb="imdb.gif" description="Provides the top 50 Movies for the current week">
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;IMDb Source&quot; type=&quot;text&quot; id=&quot;url&quot; default=&quot;http://www.imdb.com/&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
+	
+	<GetMovieListings dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression clear="yes">/title/([t0-9]*)/faq</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 (\2)&lt;/title&gt;&lt;url&gt;http://$INFO[url]/title/$$7/&lt;/url&gt;&lt;id&gt;$$7&lt;/id&gt;&lt;/entity&gt;" dest="5">
+				<expression clear="yes" noclean="1">&lt;meta name=&quot;title&quot; content=&quot;([^&quot;]*) \(([0-9]*)\)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="4">
+				<expression noclean="1">(&gt;&lt;a href=&quot;/title.*)</expression>
+			</RegExp>
+			<RegExp input="$$4" output="&lt;entity&gt;&lt;title&gt;\2 (\3)&lt;/title&gt;&lt;url&gt;http://$INFO[url]/title/\1/&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes" noclean="1,2">&gt;&lt;a href=&quot;/title/([t0-9]*)/[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt; *\(([0-9]*)</expression>
+			</RegExp>
+			<expression clear="yes" noclean="1"></expression>
+		</RegExp>
+	</GetMovieListings>
+</scraper>

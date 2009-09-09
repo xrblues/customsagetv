@@ -1,6 +1,7 @@
 package org.jdna.metadataupdater;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jdna.cmdline.CommandLine;
 import org.jdna.cmdline.CommandLineArg;
@@ -20,6 +22,7 @@ import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaFolder;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.VirtualMediaFolder;
+import org.jdna.media.metadata.CompositeMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
@@ -30,9 +33,14 @@ import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence;
+import org.jdna.media.metadata.impl.xbmc.XbmcScraper;
+import org.jdna.media.metadata.impl.xbmc.XbmcScraperParser;
+import org.jdna.media.metadata.impl.xbmc.XbmcScraperProcessor;
+import org.jdna.media.metadata.impl.xbmc.XbmcUrl;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 import org.jdna.media.util.MissingMetadataVisitor;
 import org.jdna.media.util.RefreshMetadataVisitor;
+import org.jdna.sage.RenameMediaFile;
 import org.jdna.util.LoggerConfiguration;
 import org.jdna.util.ProgressTracker;
 import org.jdna.util.ProgressTracker.FailedItem;
@@ -105,7 +113,7 @@ public class MetadataUpdater {
         config = GroupProxy.get(MetadataUpdaterConfiguration.class);
         metadataConfig = GroupProxy.get(MetadataConfiguration.class);
         options = new PersistenceOptions();
-        persistence = new SageTVPropertiesWithCentralFanartPersistence();
+        persistence = new CompositeMediaMetadataPersistence(new RenameMediaFile(), new SageTVPropertiesWithCentralFanartPersistence());
         
         // add bmt metadata configuration
         //Phoenix.getInstance().getConfigurationMetadataManager().addMetadata(new Direcot);
@@ -213,7 +221,7 @@ public class MetadataUpdater {
             System.out.flush();
             return;
         }
-        
+
         if (showSupportedMetadata) {
             System.out.println("Supported Metadata Fields");
             MetadataKey values[] = Arrays.copyOf(MetadataKey.values(), MetadataKey.values().length);
@@ -291,6 +299,10 @@ public class MetadataUpdater {
                 System.out.println("Touched File(s)");
                 return;
             }
+            
+            // set some basic options for commandline use
+            options.setImportAsTV(false);
+            options.setUseTitleMasks(true);
             
             // collectors and counters for automatic updating
             if (!config.isProcessMissingMetadataOnly()) {
@@ -598,6 +610,11 @@ public class MetadataUpdater {
         options.setOverwriteFanart(false);
     }
     
+    @CommandLineArg(name = "renameFilePattern", description = "Renames the file(s) being processed according to the pattern given.")
+    public void setRenameFilePattern(String pattern) {
+    	options.setFileRenamePattern(pattern);
+    }
+    
     @CommandLineArg(name = "setProperty", description = "Sets a Property (--setProperty=name:value) (use --showProperties to get property list)")
     public void setPropertu(String propAndVal) {
         Pattern p = Pattern.compile("([^:]+):(.*)");
@@ -652,6 +669,44 @@ public class MetadataUpdater {
     @CommandLineArg(name = "remote", description = "Enable sagex Remote APIs for configuration.")
     public void setPerformTests(boolean remote) {
         proxyAPI.enableRemoteAPI(remote);
+    }
+
+    /**
+     * Test Xbmc Scraper 
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "testXbmcScraper", description = "Test XbmcScraper; Pass ScraperPath,Function,ScraperUrl")
+    public void testXbmcScraper(String cmdArgs) {
+        try {
+            String parts[] = cmdArgs.split(",");
+            if (parts==null || parts.length<3) {
+                System.err.println("testXbmcScraper requires Function and Url in the form; ScraperFile,Function,Url");
+            } else {
+                XbmcScraperParser parser = new XbmcScraperParser();
+                System.err.println("Loading Scraper: " + parts[0]);
+                XbmcScraper scraper = parser.parseScraper(new File(parts[0].trim()));
+                XbmcScraperProcessor proc = new XbmcScraperProcessor(scraper);
+                System.err.println("Loading Url: " + parts[2].trim());
+                XbmcUrl url = new XbmcUrl(parts[2].trim());
+                System.err.println("Executing Function: " + parts[1].trim());
+                String xml = (proc.executeFunction(parts[1].trim(), new String[] {"", url.getTextContent(), url.toExternalForm()}));
+                if (xml==null || xml.trim().length()==0) {
+                    throw new Exception("Invalid Function or URL!");
+                }
+                
+                FileWriter fw = new FileWriter(parts[1].trim()+".xml");
+                IOUtils.write(xml, fw);
+                fw.flush();
+                fw.close();
+                
+                System.err.println("Wrote: " + parts[1].trim()+".xml");
+                
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        System.exit(0);
     }
     
     public boolean isTVSearch() {
