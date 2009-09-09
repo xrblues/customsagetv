@@ -64,4 +64,7 @@ public abstract class DecoratedMediaFolder implements IMediaFolder {
     public void touch() {
         folder.touch();
     }
+    public boolean renameTo(String newName) {
+    	return folder.renameTo(newName);
+    }
 }

@@ -37,23 +37,6 @@ public class MetadataUtil {
     }
 
     /**
-     * Udpates the MediaType in the metadata, in the even that it has not been set.
-     * 
-     * @param md
-     */
-    public static void updateMetadataMediaType(IMediaMetadata md) {
-        if (md==null) return;
-        // set the media type, if it's not set
-        if (StringUtils.isEmpty((String) md.getString(MetadataKey.MEDIA_TYPE))) {
-            if (StringUtils.isEmpty((String) md.getString(MetadataKey.SEASON))) {
-                md.setString(MetadataKey.MEDIA_TYPE, MOVIE_MEDIA_TYPE);
-            } else {
-                md.setString(MetadataKey.MEDIA_TYPE, TV_MEDIA_TYPE);
-            }
-        }
-    }
-
-    /**
      * Return the best score for a title when compared to the search string.  It uses 2 passes to find the best match.
      * the first pass uses the matchTitle as is, and the second pass uses the matchTitle will non search characters removed.
      * 

@@ -1,7 +1,7 @@
 package test.junit;
 
-import static test.junit.FilesTestCase.makeDir;
-import static test.junit.FilesTestCase.makeFile;
+import static test.junit.lib.FilesTestCase.makeDir;
+import static test.junit.lib.FilesTestCase.makeFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,6 +24,8 @@ import org.jdna.media.StackedMediaFolder;
 import org.jdna.media.VirtualMediaFile;
 import org.jdna.media.VirtualMediaFolder;
 import org.jdna.util.DirectoryScanner;
+
+import test.junit.lib.FilesTestCase;
 
 public class MediaResourcesTestCase extends TestCase {
     private static class Counter {
@@ -102,7 +104,7 @@ public class MediaResourcesTestCase extends TestCase {
         vmf.addMember(new VirtualMediaFile("test:/f1/testmovie.avi"));
         vmf.addMember(new VirtualMediaFolder("test:/f2/test2/"));
         
-        StackedMediaFolder smf = new StackedMediaFolder(vmf, CDStackingModel.INSTANCE);
+        StackedMediaFolder smf = new StackedMediaFolder(vmf, new CDStackingModel());
         assertEquals("member count", 4, smf.members().size());
 
         int found=0;

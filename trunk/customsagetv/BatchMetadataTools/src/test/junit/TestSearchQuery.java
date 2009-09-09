@@ -1,6 +1,7 @@
 package test.junit;
 
 import static org.junit.Assert.assertEquals;
+import static test.junit.lib.FilesTestCase.*;
 
 import java.io.File;
 
@@ -9,7 +10,17 @@ import org.jdna.media.IMediaFile;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.metadata.SearchQuery.Field;
+import org.jdna.media.metadata.impl.StubMetadataProvider;
+import org.jdna.sage.media.SageMediaFile;
 import org.junit.Test;
+
+import sagex.SageAPI;
+import sagex.api.MediaFileAPI;
+import sagex.remote.factory.request.MediaFileAPIFactory;
+import sagex.stub.MediaFileAPIProxy;
+import sagex.stub.StubAPIProxy;
+import sagex.stub.StubSageAPI;
+
 
 public class TestSearchQuery {
 
@@ -34,6 +45,28 @@ public class TestSearchQuery {
         mf = new FileMediaFile(new File("House-00000000-0.avi"));
         q = SearchQueryFactory.getInstance().createQuery(mf);
         assertParts(q, SearchQuery.Type.TV, "House", null, null);
+    }
+    
+    @Test
+    public void testCreateQuerySageMediaFile() {
+        StubSageAPI provider = new StubSageAPI();
+        SageAPI.setProvider(provider);
+        Object mfObj = MediaFileAPI.AddMediaFile(makeFile("sage/TV/House S01E02.avi"), "TV");
+        assertNotNull(mfObj);
+        System.out.println(MediaFileAPIProxy.getMediaFile(mfObj).title);
+        assertTrue("Not a TV File", MediaFileAPI.IsTVFile(mfObj));
+        SearchQuery q = SearchQueryFactory.getInstance().createQuery(new SageMediaFile(mfObj));
+        assertParts(q, SearchQuery.Type.TV, "House", "01", "02");
+
+
+        /// TODO fix search query to work with SageMediaFile
+        /// TODO run find bugs
+        
+        mfObj = MediaFileAPI.AddMediaFile(makeFile("sage/TV/Leverage-TheTopHatJob-4836543-0.ts"), "TV");
+        assertTrue("Not A TV File", MediaFileAPI.IsTVFile(mfObj));
+        q = SearchQueryFactory.getInstance().createQuery(new SageMediaFile(mfObj));
+        assertParts(q, SearchQuery.Type.TV, "Leverage");
+        assertEquals("The Top Hat Job", q.get(Field.EPISODE_TITLE));
     }
     
     private void assertParts(SearchQuery q, SearchQuery.Type type, String title) {

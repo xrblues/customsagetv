@@ -63,4 +63,9 @@ public abstract class AbstractMediaResource implements IMediaResource {
         if (l==-1) return null;
         return u.substring(l+1);
     }
+    
+    public boolean renameTo(String newName) {
+    	this.uri = new Path(newName);
+		return true;
+    }
 }

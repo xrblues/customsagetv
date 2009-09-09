@@ -16,9 +16,6 @@ public class PluginConfiguration extends GroupProxy {
     @AField(label="Overwrite Fanart", description="Overwrite Existing Fanart")
     private FieldProxy<Boolean> overwriteFanart = new FieldProxy<Boolean>(false);
     
-    @AField(label="Missing Media Items Workaround", description="Enable this if you notice that some of your media items are not showing up when you do a SageTV Referesh.  This is a workaround until the problem is solved.")
-    private FieldProxy<Boolean> returnNullMetadata = new FieldProxy<Boolean>(true);
-
     public PluginConfiguration() {
         super();
         init();
@@ -46,13 +43,5 @@ public class PluginConfiguration extends GroupProxy {
 
     public void setEnabled(boolean enabled) {
         this.enabled.set(enabled);
-    }
-
-    public boolean getReturnNullMetadata() {
-        return returnNullMetadata.get();
-    }
-
-    public void setReturnNullMetadata(boolean returnNullMetadata) {
-        this.returnNullMetadata.set(returnNullMetadata);
     }
 }

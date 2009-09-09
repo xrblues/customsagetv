@@ -51,4 +51,8 @@
 			<description>helps w/ support issues when using multiple clients</description>
 		</field>
 	</group>
+	
+	<group label="Video Sources" editor="videoSourcesEditor">
+		<description>Configure Video Sources / Library Import Directories</description>
+	</group>
 </configuration>

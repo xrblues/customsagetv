@@ -30,4 +30,6 @@ public interface IMediaResource extends Comparable<IMediaResource> {
     public void delete();
 
     public Type getType();
+    
+    public boolean renameTo(String newName);
 }

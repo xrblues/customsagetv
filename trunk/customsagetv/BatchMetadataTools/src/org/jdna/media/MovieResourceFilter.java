@@ -10,7 +10,6 @@ import sagex.phoenix.configuration.proxy.GroupProxy;
 
 public class MovieResourceFilter implements IMediaResourceFilter {
     private static final Logger             log               = Logger.getLogger(MovieResourceFilter.class);
-    public static final MovieResourceFilter INSTANCE          = new MovieResourceFilter();
 
     private Pattern                         filePattern       = null;
     private Pattern                         dirExcludePattern = null;

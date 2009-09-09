@@ -56,7 +56,11 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         try {
             log.debug("Searching the details provider: " + detailsProviderId + " for movie id: " + result.getMetadataId());
             try {
-                return MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaDataById(result.getMetadataId());
+                IMediaMetadata md = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaDataById(result.getMetadataId());
+                if (md==null) {
+                    throw new Exception("Failed to get details by id: " + result.getMetadataId());
+                }
+                return md;
             } catch (Exception e) {
                 log.debug("Searching the details provider: " + detailsProviderId + " for movie title: " + result.getTitle());
                 List<IMediaSearchResult> results = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).search(new SearchQuery(result.getTitle()));
@@ -165,7 +169,7 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
-        throw new Exception("Search by MetadataID not supported.");
+        throw new Exception("Search by MetadataID not supported: " + id);
     }
 
     public IMediaMetadata getMetaDataByUrl(String url) throws Exception {

@@ -1,4 +1,4 @@
-package test.junit;
+package test.junit.lib;
 
 import java.io.File;
 

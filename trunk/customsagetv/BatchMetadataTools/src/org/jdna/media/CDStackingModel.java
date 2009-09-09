@@ -20,7 +20,6 @@ import sagex.phoenix.configuration.proxy.GroupProxy;
  */
 public class CDStackingModel implements IMediaStackModel {
     private static final Logger         log      = Logger.getLogger(CDStackingModel.class);
-    public static final CDStackingModel INSTANCE = new CDStackingModel();
     private Pattern                     pattern  = null;
     private MediaConfiguration cfg = GroupProxy.get(MediaConfiguration.class);
 

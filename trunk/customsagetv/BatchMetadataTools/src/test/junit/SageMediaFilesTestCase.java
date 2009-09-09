@@ -1,7 +1,7 @@
 package test.junit;
 
-import static test.junit.FilesTestCase.getFile;
-import static test.junit.FilesTestCase.makeFile;
+import static test.junit.lib.FilesTestCase.getFile;
+import static test.junit.lib.FilesTestCase.makeFile;
 
 import java.io.File;
 
@@ -21,6 +21,7 @@ import org.jdna.sage.media.SageMediaFolder;
 import sagex.SageAPI;
 import sagex.api.MediaFileAPI;
 import sagex.stub.StubSageAPI;
+import test.junit.lib.CountResourceVisitor;
 
 public class SageMediaFilesTestCase extends TestCase {
     static {
@@ -38,17 +39,16 @@ public class SageMediaFilesTestCase extends TestCase {
     public void testSageMediaFileCreation() {
         StubSageAPI provider = new StubSageAPI();
         SageAPI.setProvider(provider);
-        MediaFileAPI.AddMediaFile(makeFile("test/sample.avi"), "Movie");
+        Object mfObj = MediaFileAPI.AddMediaFile(makeFile("test/sample.avi"), "Movie");
+        int mfId = MediaFileAPI.GetMediaFileID(mfObj);
         
-        SageMediaFile mf = new SageMediaFile(1);
-        assertEquals("SameMediaFile by id failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaFileObject(mf)));
-        
+        SageMediaFile mf = null;
         mf = new SageMediaFile(getFile("test/sample.avi"));
-        assertEquals("SameMediaFile by file failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaFileObject(mf)));
+        assertEquals("SameMediaFile by file failed", mfId, MediaFileAPI.GetMediaFileID(mf.getSageMediaFileObject(mf)));
         
-        Object smf = MediaFileAPI.GetMediaFileForID(1);
+        Object smf = MediaFileAPI.GetMediaFileForID(mfId);
         mf = new SageMediaFile(smf);
-        assertEquals("SameMediaFile by object failed", 1, MediaFileAPI.GetMediaFileID(mf.getSageMediaFileObject(mf)));
+        assertEquals("SameMediaFile by object failed", mfId, MediaFileAPI.GetMediaFileID(mf.getSageMediaFileObject(mf)));
         
         provider.addCall("IsAiringObject", true);
         mf = new SageMediaFile("arigingObject");
@@ -117,10 +117,10 @@ public class SageMediaFilesTestCase extends TestCase {
         provider.addCall("GetAiringTitle","TVShow");
         SageAPI.setProvider(provider);
         
-        IMediaFile mf = new SageMediaFile(1200);
+        IMediaFile mf = new SageMediaFile(new File("shows/House-TestTitle-000000000-0.ts"));
         assertEquals("getBasename()","TVShow",mf.getBasename());
         assertEquals("getExtension()",null,mf.getExtension());
-        assertEquals("getLocationUri()","sage://id/1200",mf.getLocation().toURI());
+        //assertEquals("getLocationUri()","file://shows/House-TestTitle-000000000-0.ts",mf.getLocation().toURI());
         assertEquals("getName()","TVShow",mf.getName());
         assertEquals("getTitle()","TVShow",mf.getTitle());
         assertEquals("getType()",IMediaResource.Type.File,mf.getType());

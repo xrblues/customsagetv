@@ -16,6 +16,7 @@ import sagex.phoenix.configuration.Group;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.IConfigurationMetadataVisitor;
 import sagex.phoenix.configuration.XmlMetadataProvider;
+import test.junit.lib.InitBMT;
 
 public class BMTMetadataTestCase extends TestCase {
     public BMTMetadataTestCase() {

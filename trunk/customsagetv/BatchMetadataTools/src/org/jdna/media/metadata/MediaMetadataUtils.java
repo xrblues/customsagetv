@@ -149,7 +149,8 @@ public class MediaMetadataUtils {
     public static String cleanSearchCriteria(String s, boolean removeYear) {
         String wordTokens[] = GroupProxy.get(MetadataConfiguration.class).getWordsToClean().split(",");
 
-        s = CDStackingModel.INSTANCE.getStackedTitle(s);
+        CDStackingModel stackModel = new CDStackingModel();
+        s = stackModel.getStackedTitle(s);
         log.debug("Cleaning Search Criteria: " + s);
 
         String parts[] = removeNonSearchCharacters(s).split(" ");

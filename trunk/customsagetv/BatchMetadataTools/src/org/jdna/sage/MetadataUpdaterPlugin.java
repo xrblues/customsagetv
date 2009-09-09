@@ -2,6 +2,7 @@ package org.jdna.sage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -20,7 +21,6 @@ import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 import org.jdna.metadataupdater.Version;
-import org.jdna.sage.media.SageMediaFile;
 
 import sage.MediaFileMetadataParser;
 import sagex.api.Configuration;
@@ -77,6 +77,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             return null;
         }
 
+        
         log.debug("Automatic Plugin is Processing File: " + file.getAbsolutePath());
         
         // do the work....
@@ -87,6 +88,10 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 return null;
             }
             
+            // see if this is an existing tv file
+            Object sagemf = MediaFileAPI.GetMediaFileForFilePath(file);
+            boolean isExistingTVFile = sagemf!=null && MediaFileAPI.IsTVFile(sagemf);
+            
             AutomaticUpdateMetadataVisitor automaticUpdater;
             MovieResourceFilter            filter;
             IMediaMetadataPersistence      persistence;
@@ -96,9 +101,19 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             options = new PersistenceOptions();
             options.setOverwriteFanart(pluginConfig.getOverwriteFanart());
             options.setOverwriteMetadata(pluginConfig.getOverwriteMetadata());
+            if (isExistingTVFile) {
+                // changes the title mask format
+                options.setImportAsTV(true);
+            } else {
+                options.setImportAsTV(false);
+            }
+            
+            // always rewrite titles when using the plugin
+            options.setUseTitleMasks(true);
+            
             status.beginTask("Automatic Plugin; Scanning: " + file.getAbsolutePath(), 1);
             automaticUpdater = new AutomaticUpdateMetadataVisitor(metadataConfig.getDefaultProviderId(), persistence, options, null, status);
-            filter = MovieResourceFilter.INSTANCE;
+            filter = new MovieResourceFilter();
 
             // check if the dvd profiler info is not set, and if not set, then
             // use the sagemc defaults
@@ -124,13 +139,14 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 }
             }
 
-            Object o = MediaFileAPI.GetMediaFileForFilePath(file);
-            if (o != null) {
-                mr = new SageMediaFile(o);
-            } else {
-                log.warn("Not an existing Sage Media File: " + file.getAbsolutePath() + "; Treating it as a regular File Media File.");
+            //Object o = MediaFileAPI.GetMediaFileForFilePath(file);
+            //if (o != null) {
+            //    mr = new SageMediaFile(o);
+            //} else {
+            //    log.warn("Not an existing Sage Media File: " + file.getAbsolutePath() + "; Treating it as a regular File Media File.");
+            // TODO: Changed to use this, because of a recursive issue when using a SageMediaFile.getTitle()
                 mr = FileMediaFolder.createResource(file);
-            }
+            //}
             
             if (filter.accept(mr)) {
                 log.debug("Scanning MediaFile: " + file.getAbsolutePath() + "; arg: " + arg + "; Providers: " + metadataConfig.getDefaultProviderId());
@@ -142,16 +158,17 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                     md = persistence.loadMetaData(mr);
                     if (md != null) {
                         // normalize the properties
-                        md = MetadataAPI.normalizeMetadata((IMediaFile)mr, md);
-                        Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
+                        md = MetadataAPI.normalizeMetadata((IMediaFile)mr, md, options);
+                        Map<String,String> props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md, options);
                         log.info("Reusing existing metadata for MediaFile: " + file.getAbsolutePath());
                         status.addSuccess((IMediaFile) mr);
                         status.worked(1);
-                        if (pluginConfig.getReturnNullMetadata()) {
-                            return null;
-                        } else {
-                            return props;
+                        if (props!=null) {
+                            for (Map.Entry<String, String> me : props.entrySet()) {
+                                System.out.println("BMTPROP: [" +  me.getKey() + "] = [" + me.getValue() + "]");
+                            }
                         }
+                        return props;
                     }
                 }
 
@@ -162,18 +179,18 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 md = persistence.loadMetaData(mr);
                 if (md != null) {
                     // normalize the properties
-                    md = MetadataAPI.normalizeMetadata((IMediaFile)mr, md);
+                    md = MetadataAPI.normalizeMetadata((IMediaFile)mr, md, options);
                     
                     // return the props
-                    Object props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md);
+                    Map<String, String> props = SageTVPropertiesPersistence.getSageTVMetadataMap((IMediaFile) mr, md, options);
                     log.info("New Metadata Imported for: " + file.getAbsolutePath());
-                    
-                    // as a work around for when sagetv sometimes will not hang on import and not scan all movies
-                    if (pluginConfig.getReturnNullMetadata()) {
-                        return null;
-                    } else {
-                        return props;
+                    if (props!=null) {
+                        for (Map.Entry<String, String> me : props.entrySet()) {
+                            System.out.printf("BMTPROP: [%s]=[%s]", me.getKey(), me.getValue());
+                        }
                     }
+                    // as a work around for when sagetv sometimes will not hang on import and not scan all movies
+                    return props;
                 } else {
                     log.error("Failed to Fetch Metadata for Media: " + file.getAbsolutePath());
                 }

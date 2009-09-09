@@ -77,4 +77,8 @@ public class DecoratedMediaFile implements IMediaFile {
     public void touch() {
         file.touch();
     }
+    
+    public boolean renameTo(String newName) {
+    	return file.renameTo(newName);
+    }
 }

@@ -1,8 +1,8 @@
 package test.junit;
 
-import static test.junit.FilesTestCase.getFile;
-import static test.junit.FilesTestCase.makeDir;
-import static test.junit.FilesTestCase.makeFile;
+import static test.junit.lib.FilesTestCase.getFile;
+import static test.junit.lib.FilesTestCase.makeDir;
+import static test.junit.lib.FilesTestCase.makeFile;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -30,12 +30,14 @@ import org.jdna.media.metadata.impl.StubMetadataProvider;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.util.PathUtils;
 import org.jdna.sage.MetadataUpdaterPlugin;
+import org.jdna.sage.PluginConfiguration;
 import org.jdna.sage.ScanningStatus;
 
 import sagex.api.MediaFileAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaArtifactType;
+import test.junit.lib.InitBMT;
 
 public class MetadataPluginTestCase extends TestCase {
     public MetadataPluginTestCase() {
@@ -79,6 +81,7 @@ public class MetadataPluginTestCase extends TestCase {
         Properties props = new Properties();
         props.load(new FileInputStream(propFile));
         assertEquals("MediaTitle incorrect", "The Terminator", props.getProperty(SageProperty.MEDIA_TITLE.sageKey));
+        assertEquals("MediaTitle incorrect", "The Terminator", props.getProperty(SageProperty.DISPLAY_TITLE.sageKey));
         
         // save the file stamp on the properties file, search and test again, test that the on demand search will overwrite.
         long lastModified = propFile.lastModified();
@@ -107,6 +110,7 @@ public class MetadataPluginTestCase extends TestCase {
         // setup the stub provider
         setStubProvider();
 
+        PluginConfiguration pluginConf = new PluginConfiguration();
         MetadataUpdaterPlugin plugin = new MetadataUpdaterPlugin();
         Object results = plugin.extractMetadata(getFile("test/Movies/Terminator.avi"), null);
         assertNotNull("No metadata returned", results);
@@ -122,6 +126,7 @@ public class MetadataPluginTestCase extends TestCase {
         Properties props = new Properties();
         props.load(new FileInputStream(propFile));
         assertEquals("MediaTitle incorrect", "The Terminator", props.getProperty(SageProperty.MEDIA_TITLE.sageKey));
+        assertEquals("MediaTitle incorrect", "The Terminator", props.getProperty(SageProperty.DISPLAY_TITLE.sageKey));
 
         // test the a second attempt does not update the properties
         long lastModified = propFile.lastModified();

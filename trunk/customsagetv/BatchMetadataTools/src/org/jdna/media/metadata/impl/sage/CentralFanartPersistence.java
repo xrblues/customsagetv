@@ -8,7 +8,6 @@ import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MetadataAPI;
-import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
 
 public class CentralFanartPersistence implements IMediaMetadataPersistence {
@@ -34,7 +33,7 @@ public class CentralFanartPersistence implements IMediaMetadataPersistence {
         }
         log.debug("Storing fanart for: " + MetadataAPI.getMediaTitle(md));
         // ensure the metadata type is set.
-        MetadataUtil.updateMetadataMediaType(md);
+        MetadataAPI.normalizeMetadata((IMediaFile)mediaFile, md, options);
         FanartStorage.downloadFanart((IMediaFile)mediaFile, md, options);
         log.debug("Storing fanart complete.");
     }

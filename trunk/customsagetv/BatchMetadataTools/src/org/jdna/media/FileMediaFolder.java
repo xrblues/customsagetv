@@ -8,7 +8,7 @@ import sagex.phoenix.fanart.FanartUtil;
 
 
 public class FileMediaFolder extends AbstractMediaFolder {
-    private static final IMediaResourceFilter mediaFilter = MovieResourceFilter.INSTANCE;
+    private IMediaResourceFilter mediaFilter = null;
     private File file = null;
     
 
@@ -49,10 +49,17 @@ public class FileMediaFolder extends AbstractMediaFolder {
        File fs[] = file.listFiles();
        for (File f : fs) {
            IMediaResource mr = createResource(f);
-           if (mediaFilter.accept(mr)) {
+           if (getMediaFilter().accept(mr)) {
                addMember(mr);
            }
         }
+    }
+    
+    private IMediaResourceFilter getMediaFilter() {
+        if (mediaFilter==null) {
+            mediaFilter = new MovieResourceFilter();
+        }
+        return mediaFilter;
     }
 
     public boolean exists() {

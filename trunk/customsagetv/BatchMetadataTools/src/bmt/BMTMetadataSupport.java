@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
+import org.jdna.media.MediaConfiguration;
 import org.jdna.media.MovieResourceFilter;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
@@ -48,7 +49,6 @@ import sagex.phoenix.fanart.IMetadataSupport;
  */
 public class BMTMetadataSupport implements IMetadataSupport {
     private static final Logger log = Logger.getLogger(BMTMetadataSupport.class);
-    private PersistenceOptions options;
     private MetadataUpdaterConfiguration updaterConfig = GroupProxy.get(MetadataUpdaterConfiguration.class);
     private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
     
@@ -56,9 +56,6 @@ public class BMTMetadataSupport implements IMetadataSupport {
     
     public BMTMetadataSupport() {
         log.info("Using BMTMetadataSupport: " + bmt.api.GetVersion());
-        new CentralFanartPersistence();
-        options=new PersistenceOptions();
-        options.setOverwriteFanart(false);
     }
 
     public void addActiveProvider(IMetadataProviderInfo pi) {
@@ -89,21 +86,6 @@ public class BMTMetadataSupport implements IMetadataSupport {
         return bmt.api.getMetadataProviders(false);
     }
 
-    public Map<String, String> getMetadataForResult(IMetadataSearchResult result) {
-        // first we need to update the central fanart properties based on the ui
-        // settings
-        try {
-            updaterConfig.setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
-            updaterConfig.setFanartEnabled(phoenix.api.IsFanartEnabled());
-            IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(result.getProviderId());
-            IMediaMetadata md = prov.getMetaData((IMediaSearchResult) result);
-            return SageTVPropertiesPersistence.getSageTVMetadataMap(md);
-        } catch (Exception e) {
-            log.error("Failed to get metadata for restult: " + result, e);
-        }
-        return null;
-    }
-
     public String[] getMetadataKeys(KeyType type) {
         List<String> l = new LinkedList<String>();
         
@@ -127,36 +109,23 @@ public class BMTMetadataSupport implements IMetadataSupport {
             IMediaMetadata md = prov.getMetaData((IMediaSearchResult) result);
             IMediaMetadataPersistence persistence = null; 
 
-            IMediaFile smf = new SageMediaFile(media);
-            MetadataAPI.normalizeMetadata(smf, md);
-            
-            if (AiringAPI.IsAiringObject(media)) {
-                if (AiringAPI.GetMediaFileForAiring(media)==null) {
-                    persistence = MetadataPluginOptions.getFanartOnlyPersistence();
-                } else {
-                    persistence = MetadataPluginOptions.getOnDemandUpdaterPersistence();
-                }
-            }
-            
             if (MediaFileAPI.IsMediaFileObject(media)) {
                 persistence = MetadataPluginOptions.getOnDemandUpdaterPersistence();
+            } else {
+                persistence = MetadataPluginOptions.getFanartOnlyPersistence();
             }
+
+            PersistenceOptions options = new PersistenceOptions();
+            options.setImportAsTV(metadataConfig.isImportTVAsRecordedShows());
+            options.setOverwriteFanart(false);
+            options.setOverwriteMetadata(true);
+            options.setUseTitleMasks(true);
+            
+            IMediaFile smf = new SageMediaFile(media);
+            MetadataAPI.normalizeMetadata(smf, md, options);
             
             // Save the sage properties, the update sage's wiz.bin, then download the fanart.
             persistence.storeMetaData(md, smf, options);
-            
-            if (MediaFileAPI.IsMediaFileObject(media)) {
-                if (metadataConfig.isImportTVAsRecordedShows()) {
-                    log.debug("Importing Show as a SageRecording....");
-                    SageShowPeristence sp = new SageShowPeristence();
-                    sp.storeMetaData(md, smf, options);
-                }
-            }
-            
-            if (MediaFileAPI.IsMediaFileObject(media)) {
-                log.debug("Running Library Import Scan to pick up the changes.");
-                Global.RunLibraryImportScan(false);
-            }
             
             try {
                 if (result instanceof IMediaSearchResult) {
@@ -169,6 +138,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
         } catch (Exception e) {
             log.error("Failed to update metadata!", e);
         }
+        
         return false;
     }
 
@@ -247,8 +217,14 @@ public class BMTMetadataSupport implements IMetadataSupport {
 
             log.info("BMT Media Scan about to start with " + sageMediaFiles.length + " items");
             
+            MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
             ProgressTracker<IMediaFile> tracker = new ProgressTracker<IMediaFile>();
-            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(metadataConfig.getDefaultProviderId(), MetadataPluginOptions.getOnDemandUpdaterPersistence(), MetadataPluginOptions.getPersistenceOptions(), SearchQuery.Type.MOVIE, tracker);
+            PersistenceOptions options = new PersistenceOptions();
+            options.setImportAsTV(false);
+            options.setUseTitleMasks(true);
+            options.setOverwriteFanart(true);
+            options.setOverwriteMetadata(true);
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(metadataConfig.getDefaultProviderId(), MetadataPluginOptions.getOnDemandUpdaterPersistence(), options, SearchQuery.Type.MOVIE, tracker);
             
             FilteredResourceVisitor scanVisitor = new FilteredResourceVisitor(new MovieResourceFilter(), autoUpdater);
             MediaScanner scanner = new MediaScanner(new SageMediaFolder(sageMediaFiles), scanVisitor);
