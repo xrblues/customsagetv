@@ -1,6 +1,8 @@
 package org.jdna.bmt.web.client.ui.input;
 
 
+import org.jdna.bmt.web.client.Application;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -38,7 +40,7 @@ public abstract class EditorTextBox extends Composite implements HasValue<String
             
             HorizontalPanel hp = new HorizontalPanel();
             hp.setSpacing(5);
-            Button b = new Button("Ok");
+            Button b = new Button(Application.labels().ok());
             b.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     EditorDialog.this.editor.setValue(EditorDialog.this.panel.getValue(), true);
@@ -46,7 +48,7 @@ public abstract class EditorTextBox extends Composite implements HasValue<String
                 }
             });
             hp.add(b);
-            Button cancel = new Button("Cancel");
+            Button cancel = new Button(Application.labels().cancel());
             cancel.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     EditorDialog.this.hide();
@@ -120,5 +122,9 @@ public abstract class EditorTextBox extends Composite implements HasValue<String
 
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
         return textbox.addValueChangeHandler(handler);
+    }
+    
+    public Button getButton() {
+        return button;
     }
 }

@@ -1,6 +1,8 @@
 package org.jdna.bmt.web.client.ui.prefs;
 
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -11,4 +13,6 @@ public interface PreferencesService extends RemoteService {
     public boolean savePreferences(PrefItem[] preferences);
     public Log4jPrefs getLog4jPreferences();
     public String saveLog4jPreferences(Log4jPrefs prefs);
+    public List<VideoSource> getVideoSources();
+    public List<VideoSource> saveVideoSources(List<VideoSource> sources);
 }

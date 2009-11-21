@@ -225,4 +225,8 @@ public class GWTMediaFile implements IMediaFile, Serializable {
     public void setDefaultBannerDir(String defaultBannerDir) {
         this.defaultBannerDir = defaultBannerDir;
     }
+
+    public boolean renameTo(String newName) {
+        return false;
+    }
 }

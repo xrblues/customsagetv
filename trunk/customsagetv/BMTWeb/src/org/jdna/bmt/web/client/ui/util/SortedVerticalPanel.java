@@ -26,7 +26,6 @@ public class SortedVerticalPanel<T> extends Composite {
                 break;
             }
         }
-        System.out.println("Inserting: " + index);
         if (index==-1) {
             panel.add(widget);
         } else {

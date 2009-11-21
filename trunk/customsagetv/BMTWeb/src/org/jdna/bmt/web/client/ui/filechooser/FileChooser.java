@@ -1,5 +1,6 @@
 package org.jdna.bmt.web.client.ui.filechooser;
 
+import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.core.client.GWT;
@@ -8,7 +9,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -30,6 +33,10 @@ public class FileChooser extends Composite implements HasValue<String> {
         this.fileSelection = new TextBox();
         this.fileSelection.setValue(base);
 
+        DockPanel dp = new DockPanel();
+        dp.setSpacing(5);
+        dp.setWidth("100%");
+        
         VerticalPanel vp = new VerticalPanel();
         vp.setWidth("100%");
         vp.setSpacing(5);
@@ -49,7 +56,7 @@ public class FileChooser extends Composite implements HasValue<String> {
                 if (selName.startsWith("[dir]")) {
                     chooserServices.listFiles(sel, new AsyncCallback<JSFileResult>() {
                         public void onFailure(Throwable caught) {
-                            Log.error("Failed to get Files!", caught);
+                            Log.error(Application.messages().failedToGetFiles(), caught);
                         }
     
                         public void onSuccess(JSFileResult result) {
@@ -64,7 +71,46 @@ public class FileChooser extends Composite implements HasValue<String> {
         
         vp.add(dirs);
         
-        initWidget(vp);
+        VerticalPanel buttons = new VerticalPanel();
+        vp.setSpacing(5);
+        
+        Button list = new Button(Application.labels().listRoots(), new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                chooserServices.listFiles((String)null, new AsyncCallback<JSFileResult>() {
+                    public void onFailure(Throwable caught) {
+                        Log.error(Application.messages().failedToGetFiles(), caught);
+                    }
+
+                    public void onSuccess(JSFileResult result) {
+                        updateTree(result);
+                    }
+                });
+            }
+        });
+        list.setWidth("100%");
+
+        Button sage = new Button(Application.labels().sageHome(), new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                chooserServices.listFiles(".", new AsyncCallback<JSFileResult>() {
+                    public void onFailure(Throwable caught) {
+                        Log.error(Application.messages().failedToGetFiles(), caught);
+                    }
+
+                    public void onSuccess(JSFileResult result) {
+                        updateTree(result);
+                    }
+                });
+            }
+        });
+        sage.setWidth("100%");
+        
+        buttons.add(list);
+        buttons.add(sage);
+        
+        dp.add(buttons, DockPanel.WEST);
+        
+        dp.add(vp, DockPanel.CENTER);
+        initWidget(dp);
         setWidth("100%");
         initTree(fileSelection.getValue());
     }
@@ -73,7 +119,7 @@ public class FileChooser extends Composite implements HasValue<String> {
     private void initTree(String base) {
         chooserServices.listFiles(base, new AsyncCallback<JSFileResult>() {
             public void onFailure(Throwable caught) {
-                Log.error("Failed to get Files!", caught);
+                Log.error(Application.messages().failedToGetFiles(), caught);
             }
 
             public void onSuccess(JSFileResult result) {
@@ -86,9 +132,10 @@ public class FileChooser extends Composite implements HasValue<String> {
         dirs.clear();
 
         fileSelection.setValue(result.getDir().getPath());
-        
-        addItem(new JSFile(result.getDir().getPath(), ".", true));
-        addItem(new JSFile(result.getParent().getPath(), "..", true));
+
+        if (!result.getDir().isRoot()) {
+            addItem(new JSFile(result.getParent().getPath(), "..", true));
+        }
 
         for (JSFile f : result.children) {
             if (dirsOnly && !f.isDirectory()) continue;
