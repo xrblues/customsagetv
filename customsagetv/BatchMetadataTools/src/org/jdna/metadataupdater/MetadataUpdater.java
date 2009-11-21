@@ -42,6 +42,7 @@ import org.jdna.media.util.MissingMetadataVisitor;
 import org.jdna.media.util.RefreshMetadataVisitor;
 import org.jdna.sage.RenameMediaFile;
 import org.jdna.util.LoggerConfiguration;
+import org.jdna.util.PersistenceFactory;
 import org.jdna.util.ProgressTracker;
 import org.jdna.util.ProgressTracker.FailedItem;
 
@@ -113,10 +114,7 @@ public class MetadataUpdater {
         config = GroupProxy.get(MetadataUpdaterConfiguration.class);
         metadataConfig = GroupProxy.get(MetadataConfiguration.class);
         options = new PersistenceOptions();
-        persistence = new CompositeMediaMetadataPersistence(new RenameMediaFile(), new SageTVPropertiesWithCentralFanartPersistence());
-        
-        // add bmt metadata configuration
-        //Phoenix.getInstance().getConfigurationMetadataManager().addMetadata(new Direcot);
+        persistence = PersistenceFactory.getCommandlinePersistence();
         
         try {
             String title = "Batch MetaData Tools (" + Version.VERSION + ")";
@@ -600,13 +598,13 @@ public class MetadataUpdater {
 
     @CommandLineArg(name = "fanartOnly", description = "Only process fanart, ignore updating metadata (default false)")
     public void setFanartOnly(boolean b) {
-        persistence=new CentralFanartPersistence();
+        persistence=PersistenceFactory.getFanartOnlyPersistence();
         options.setOverwriteMetadata(false);
     }
 
     @CommandLineArg(name = "metadataOnly", description = "Only process metadata, ignore updating fanart (default false)")
     public void setMetadataOnly(boolean b) {
-        persistence=new SageTVPropertiesPersistence();
+        persistence=PersistenceFactory.getPropertiesPersistence();
         options.setOverwriteFanart(false);
     }
     

@@ -132,15 +132,9 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
         return supportedSearchTypes;
     }
 
-	public IMediaMetadata getMetaDataFromCompositeId(String compositeId)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
+    public String getUrlForId(MetadataID id) throws Exception {
         if (!initialized) initialize();
-        return new MyMoviesParser(id.getId()).getMetaData();
+        return id.getId();
     }
 
     public IMediaMetadata getMetaDataByUrl(String url) throws Exception {

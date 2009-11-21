@@ -146,4 +146,8 @@ public class MediaSearchResult implements IMediaSearchResult, Serializable {
     public Map<String, String> getExtraArgs() {
         return extraArgs;
     }
+    
+    public String toString() {
+        return providerId + "; " + title + "; " + score + "; " + url;
+    }
 }

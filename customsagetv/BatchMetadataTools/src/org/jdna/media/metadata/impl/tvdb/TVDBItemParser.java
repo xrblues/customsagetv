@@ -101,7 +101,7 @@ public class TVDBItemParser {
                 md.setProviderId(TVDBMetadataProvider.PROVIDER_ID);
                 md.setProviderDataId(MetadataAPI.createMetadataIDString("tvdb", seriesId));
             } catch (Exception e) {
-                log.error("Failed while parsing series: " + origUrl, e);
+                log.warn("Failed while parsing series: " + origUrl, e);
                 md = null;
             }
         }
@@ -154,7 +154,7 @@ public class TVDBItemParser {
         try {
             updateMetadataFromUrl(md, MessageFormat.format(EPISODE_BY_DATE_URL, TVDBMetadataProvider.getApiKey(), seriesId, date));
         } catch (Exception e) {
-            log.error("Failed to get season/episode specific information for " + seriesId + "; Date: " + date, e);
+            log.warn("Failed to get season/episode specific information for " + seriesId + "; Date: " + date, e);
         }
 
     }
@@ -181,7 +181,7 @@ public class TVDBItemParser {
                 log.info("Unable to match a direct title for: " + title);
             }
         } catch (Exception e) {
-            log.error("Failed to find a match based on title: " + title);
+            log.warn("Failed to find a match based on title: " + title);
         }
     }
     
@@ -211,7 +211,7 @@ public class TVDBItemParser {
         try {
             updateMetadataFromUrl(md, MessageFormat.format(SEASON_EPISODE_URL, TVDBMetadataProvider.getApiKey(), seriesId, inSeason, inEpisode));
         } catch (Exception e) {
-            log.error("Failed to get season/episode specific information for " + seriesId + "; Season: " + season + "; episode: " + episode, e);
+            log.warn("Failed to get season/episode specific information for " + seriesId + "; Season: " + season + "; episode: " + episode);
         }
 
     }

@@ -56,7 +56,7 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         try {
             log.debug("Searching the details provider: " + detailsProviderId + " for movie id: " + result.getMetadataId());
             try {
-                IMediaMetadata md = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaDataById(result.getMetadataId());
+                IMediaMetadata md = MediaMetadataFactory.getInstance().getProvider(detailsProviderId).getMetaDataByUrl(result.getUrl());
                 if (md==null) {
                     throw new Exception("Failed to get details by id: " + result.getMetadataId());
                 }
@@ -168,16 +168,19 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
         return MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getSupportedSearchTypes();
     }
 
-    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
-        throw new Exception("Search by MetadataID not supported: " + id);
+    public String getUrlForId(MetadataID id) throws Exception {
+        IMediaMetadataProvider mp = MediaMetadataFactory.getInstance().getProvider(id.getKey());
+        if (mp==null) throw new Exception("Can't get Url for MetadataId: " + id);
+        return mp.getUrlForId(id);
     }
 
     public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
-        IMediaMetadata searcher = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaDataByUrl(url);
+        IMediaMetadataProvider sprov = MediaMetadataFactory.getInstance().getProvider(searcherProviderId); 
+        IMediaMetadata searcher = sprov.getMetaDataByUrl(url);
         IMediaMetadata details = null;
         try {
             if (MetadataAPI.getProviderDataId(searcher) != null) {
-                details = MediaMetadataFactory.getInstance().getProvider(searcherProviderId).getMetaDataById(new MetadataID(MetadataAPI.getProviderDataId(searcher)));
+                details = sprov.getMetaDataByUrl(sprov.getUrlForId(new MetadataID(MetadataAPI.getProviderDataId(searcher))));
             }
         } catch (Exception e) {
             log.error("Failed to find details using searcher's metadataid: " + MetadataAPI.getProviderDataId(searcher) + " will try using title search", e);

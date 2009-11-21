@@ -3,6 +3,7 @@ package org.jdna.sage.media;
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
@@ -41,18 +42,22 @@ public class SageCustomMetadataPersistence implements IMediaMetadataPersistence 
             for (SageProperty p : SageProperty.values()) {
                 if (p.propertyType == SagePropertyType.EXTENDED) {
                     String val = SageFanartUtil.GetMediaFileMetadata(smf.getSageMediaFileObject(smf), p.sageKey);
-                    if (val != null) {
-                        if ("0".equals(val) && (p == SageProperty.SEASON_NUMBER || p == SageProperty.EPISODE_NUMBER || p==SageProperty.DISC)) {
-                            // don't store 0 in those fields
-                            md.set(p.metadataKey, "");
-                        } else {
-                            md.set(p.metadataKey, val);
+                    if (!StringUtils.isEmpty(val)) {
+                        String sval = val;
+                        if ((p == SageProperty.SEASON_NUMBER || p == SageProperty.EPISODE_NUMBER || p == SageProperty.DISC)) {
+                            int nval = NumberUtils.toInt(val, 0);
+                            if (nval != 0) {
+                                sval = String.valueOf(nval);
+                            } else {
+                                sval = "";
+                            }
                         }
+                        md.set(p.metadataKey, sval);
                     }
                 }
             }
         }
-        
+
         return md;
     }
 
@@ -63,14 +68,19 @@ public class SageCustomMetadataPersistence implements IMediaMetadataPersistence 
             for (SageProperty p : SageProperty.values()) {
                 if (p.propertyType == SagePropertyType.EXTENDED) {
                     String val = md.getString(p.metadataKey);
-                    if (val instanceof String && !StringUtils.isEmpty((String) val)) {
-                        if ("0".equals(val) && (p == SageProperty.SEASON_NUMBER || p == SageProperty.EPISODE_NUMBER || p==SageProperty.DISC)) {
-                            // don't store 0 in those fields
-                            SageFanartUtil.SetMediaFileMetadata(smf.getSageMediaFileObject(smf), p.sageKey, "");
+                    String sval = val;
+                    if (StringUtils.isEmpty(val)) {
+                        sval = "";
+                    }
+                    if ((p == SageProperty.SEASON_NUMBER || p == SageProperty.EPISODE_NUMBER || p == SageProperty.DISC)) {
+                        int nval = NumberUtils.toInt(val, 0);
+                        if (nval == 0) {
+                            sval = "";
                         } else {
-                            SageFanartUtil.SetMediaFileMetadata(smf.getSageMediaFileObject(smf), p.sageKey, (String) val);
+                            sval = String.valueOf(nval);
                         }
                     }
+                    SageFanartUtil.SetMediaFileMetadata(smf.getSageMediaFileObject(smf), p.sageKey, sval);
                 }
             }
         }

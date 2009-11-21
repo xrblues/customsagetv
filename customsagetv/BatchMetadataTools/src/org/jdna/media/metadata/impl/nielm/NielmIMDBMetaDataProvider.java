@@ -121,8 +121,8 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
         return supportedSearchTypes;
     }
 
-    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
-        return getMetaDataByUrl(String.format(IMDBSearchResultParser.IMDB_TITLE_URL, cfg.getIMDbDomain(), id));
+    public String getUrlForId(MetadataID id) throws Exception {
+        return String.format(IMDBSearchResultParser.IMDB_TITLE_URL, cfg.getIMDbDomain(), id.getId());
     }
 
     public IMediaMetadata getMetaDataByUrl(String url) throws Exception {

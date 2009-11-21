@@ -18,9 +18,9 @@ import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
 import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
-import org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 import org.jdna.metadataupdater.Version;
+import org.jdna.util.PersistenceFactory;
 
 import sage.MediaFileMetadataParser;
 import sagex.api.Configuration;
@@ -97,7 +97,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             IMediaMetadataPersistence      persistence;
             PersistenceOptions             options;
            
-            persistence = new SageTVPropertiesWithCentralFanartPersistence();;
+            persistence = PersistenceFactory.getAutomaticPluginPersistence();
             options = new PersistenceOptions();
             options.setOverwriteFanart(pluginConfig.getOverwriteFanart());
             options.setOverwriteMetadata(pluginConfig.getOverwriteMetadata());

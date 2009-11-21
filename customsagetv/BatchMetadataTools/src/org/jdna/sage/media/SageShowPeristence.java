@@ -6,7 +6,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.log4j.Logger;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
@@ -16,7 +18,6 @@ import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
-import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
@@ -133,17 +134,35 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         md.set(MetadataKey.COMMENT,"");
         md.set(MetadataKey.COMPANY,"");
         md.set(MetadataKey.DESCRIPTION, ShowAPI.GetShowDescription(show));
-        //if (MediaFileAPI.IsTVFile(file) || MediaFileAPI.IsBluRay(file) || MediaFileAPI.IsDVD(file)) {
-            MetadataAPI.setDisplayTitle(md, ShowAPI.GetShowTitle(show));
-        //} else {
-        //    md.set(MetadataKey.DISPLAY_TITLE, MediaFileAPI.GetMediaTitle(file));
-        //}
+        MetadataAPI.setDisplayTitle(md, ShowAPI.GetShowTitle(show));
         md.set(MetadataKey.DURATION, String.valueOf(AiringAPI.GetAiringDuration(airing)));
         md.set(MetadataKey.MPAA_RATING, ShowAPI.GetShowRated(show));
         md.set(MetadataKey.LANGUAGE, ShowAPI.GetShowLanguage(show));
         md.set(MetadataKey.RUNNING_TIME, String.valueOf(AiringAPI.GetAiringDuration(airing)));
         md.set(MetadataKey.YEAR, ShowAPI.GetShowYear(show));
 
+        if (MediaFileAPI.IsTVFile(file)) {
+            MetadataAPI.setMediaType(md, "TV");
+            MetadataAPI.setEpisodeTitle(md, ShowAPI.GetShowTitle(show));
+            MetadataAPI.setMediaTitle(md, ShowAPI.GetShowTitle(show));
+        }
+        
+        Date d = new Date(AiringAPI.GetAiringStartTime(airing));
+        if (StringUtils.isEmpty(MetadataAPI.getReleaseDate(md))) {
+            MetadataAPI.setReleaseDate(md, d);
+        }
+        
+        if (StringUtils.isEmpty(MetadataAPI.getYear(md))) {
+            MetadataAPI.setYear(md, d);
+        }
+        
+        if (StringUtils.isEmpty(MetadataAPI.getMPAARating(md))) {
+            String ratings[] = AiringAPI.GetAiringRatings(airing);
+            if (ratings!=null) {
+                MetadataAPI.setMPAARating(md, new StrBuilder().appendWithSeparators(ratings, "; ").toString());
+            }
+        }
+        
         return md;
     }
 
@@ -160,7 +179,8 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         Object airing = MediaFileAPI.GetMediaFileAiring(sageMF);
         Object origShow = AiringAPI.GetShow(airing);
 
-        boolean importAsTV = (options.isImportAsTV() && MetadataAPI.isTV(md));
+        // should only import as TV if it's not currently imported as TV
+        boolean importAsTV = (options.isImportAsTV() && MetadataAPI.isTV(md)) && !(MediaFileAPI.IsTVFile(sageMF));
 
         String title = MetadataAPI.getDisplayTitle(md);
         
@@ -292,11 +312,16 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             log.error("Failed to create a new Show using the provided metadata!");
             return;
         }
+        
+        // TODO: it would appear that we need to recreate the Airing using the newly create show.
+        
+        // TODO: retain the watched flag 
 
         log.debug("Adding new show to mediafile");
         MediaFileAPI.SetMediaFileShow(sageMF, show);
         
         // lastly unset the archived flag for the tv
+        // TODO: need to determine if the file was previously moved out of the library, and if so, and only do this if needed.
         MediaFileAPI.MoveTVFileOutOfLibrary(sageMF);
     }
 

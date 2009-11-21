@@ -49,6 +49,9 @@ public class MetadataConfiguration extends GroupProxy {
     
     @AField(label="Import TV as Sage Recordings", description="When importing TV Shows, try to add them into the Sage Recordings.")
     private FieldProxy<Boolean> importTVAsRecordedShows = new FieldProxy<Boolean>(false);
+
+    @AField(label="Backup Sage Recordings on write", description="When writing/overwriting SageTV recordings, first make a backup of the existing metadata.")
+    private FieldProxy<Boolean> backupSageRecordingMetadata = new FieldProxy<Boolean>(true);
     
     public MetadataConfiguration() {
         super();
@@ -149,5 +152,13 @@ public class MetadataConfiguration extends GroupProxy {
 
     public void setImportTVAsRecordedShows(boolean importTVAsRecordedShows) {
         this.importTVAsRecordedShows.set(importTVAsRecordedShows);
+    }
+
+    public boolean isBackupSageRecordingMetadata() {
+        return backupSageRecordingMetadata.getBoolean();
+    }
+
+    public void setBackupSageRecordingMetadata(boolean backup) {
+        this.backupSageRecordingMetadata.set(backup);
     }
 }

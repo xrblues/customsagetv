@@ -50,16 +50,16 @@ public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
         return supportedSearchTypes;
     }
 
-    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
+    public String getUrlForId(MetadataID id) throws Exception {
         if (IMDBMetaDataProvider.PROVIDER_ID.equals(id.getKey())) {
             // imdb lookup
             TheMovieDBItemParser p = new TheMovieDBItemParser(String.format(TheMovieDBItemParser.IMDB_ITEM_URL, id.getId()));
             if (p.getMetadata() != null) {
-                return getMetaDataByUrl(String.format(TheMovieDBItemParser.ITEM_URL, p.getTheMovieDBID()));
+                return String.format(TheMovieDBItemParser.ITEM_URL, p.getTheMovieDBID());
             }
-        } else if ("themoviedb".equals(id.getKey())) {
+        } else if ("themoviedb".equals(id.getKey()) || PROVIDER_ID.equals(id.getKey())) {
             // normal moviedb lookup
-            getMetaDataByUrl(String.format(TheMovieDBItemParser.ITEM_URL, id.getId()));
+            return String.format(TheMovieDBItemParser.ITEM_URL, id.getId());
         }
         throw new Exception("Failed to get metadata by Id: " + id);
     }

@@ -1,17 +1,22 @@
 package org.jdna.media.metadata.impl.tvdb;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
+import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Type;
 
 public class TVDBMetadataProvider implements IMediaMetadataProvider {
+    private Logger log = Logger.getLogger(TVDBMetadataProvider.class);
     public static final String   PROVIDER_ID = "tvdb";
     private static IProviderInfo info        = new ProviderInfo(PROVIDER_ID, "thetvdb.com", "Provides Fanart and Metadata from thetvdb.com", "");
     private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.TV};
@@ -49,8 +54,15 @@ public class TVDBMetadataProvider implements IMediaMetadataProvider {
         return supportedSearchTypes;
     }
 
-    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
-        throw new Exception("Failed to get metadata by Id: " + id);
+    public String getUrlForId(MetadataID id) throws Exception {
+        MediaSearchResult sr = new MediaSearchResult();
+        sr.setMetadataId(id);
+        for (Map.Entry<String, String> me : id.getArgs().entrySet()) {
+            sr.addExtraArg(me.getKey(), me.getValue());
+        }
+        sr.setProviderId(id.getKey());
+        sr.setUrl(id.getId());
+        return sr.getUrlWithExtraArgs();
     }
 
     public IMediaMetadata getMetaDataByUrl(String url) throws Exception {

@@ -143,19 +143,14 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
         return supportedSearchTypes;
     }
 
-	public IMediaMetadata getMetaDataFromCompositeId(String compositeId)
-			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
-        if (!initialized) initialize();
-        return new LocalDVDProfParser(id.getId()).getMetaData();
-    }
-
     public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
         if (!initialized) initialize();
         return new LocalDVDProfParser(url).getMetaData();
+    }
+
+    public String getUrlForId(MetadataID id) throws Exception {
+        if (!initialized) initialize();
+        // dvd prof url is just the id of the video in the xml
+        return id.getId();
     }
 }

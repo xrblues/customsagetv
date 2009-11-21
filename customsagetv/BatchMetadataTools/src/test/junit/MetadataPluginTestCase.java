@@ -40,6 +40,8 @@ import sagex.phoenix.fanart.MediaArtifactType;
 import test.junit.lib.InitBMT;
 
 public class MetadataPluginTestCase extends TestCase {
+    String PID="testplugin";
+
     public MetadataPluginTestCase() {
     }
 
@@ -65,7 +67,7 @@ public class MetadataPluginTestCase extends TestCase {
         // setup the stub provider
         setStubProvider();
         
-        IMetadataSearchResult[] results = phoenix.api.GetMetadataSearchResults(StubMetadataProvider.PROVIDER_ID, mf);
+        IMetadataSearchResult[] results = phoenix.api.GetMetadataSearchResults(PID, mf);
         assertEquals("search results failed", 1, results.length);
 
         // udpate the metadata...
@@ -85,7 +87,7 @@ public class MetadataPluginTestCase extends TestCase {
         
         // save the file stamp on the properties file, search and test again, test that the on demand search will overwrite.
         long lastModified = propFile.lastModified();
-        results = phoenix.api.GetMetadataSearchResults(StubMetadataProvider.PROVIDER_ID, mf);
+        results = phoenix.api.GetMetadataSearchResults(PID, mf);
         assertEquals("search results failed", 1, results.length);
         phoenix.api.UpdateMediaFileMetadata(mf, results[0]);
         propFile = getFile("test/Movies/Terminator.avi.properties");
@@ -140,22 +142,23 @@ public class MetadataPluginTestCase extends TestCase {
     private void setStubProvider() throws MalformedURLException {
         MediaMetadataFactory factory  = MediaMetadataFactory.getInstance();
 
-        StubMetadataProvider provider= (StubMetadataProvider) factory.getProvider(StubMetadataProvider.PROVIDER_ID);
+        
+        StubMetadataProvider provider= (StubMetadataProvider) factory.getProvider(PID);
         if (provider == null) {
-            provider = new StubMetadataProvider();
+            provider = new StubMetadataProvider(PID, "Test Plugin Provider");
             factory.addMetaDataProvider(provider);
         }
-        provider = (StubMetadataProvider) factory.getProvider(StubMetadataProvider.PROVIDER_ID);
+        provider = (StubMetadataProvider) factory.getProvider(PID);
         if (provider==null) {
             fail("Could not register stub metadata provider");
         }
         provider.reset();
         
         // use the stub provider
-        GroupProxy.get(MetadataConfiguration.class).setDefaultProviderId(StubMetadataProvider.PROVIDER_ID);
+        GroupProxy.get(MetadataConfiguration.class).setDefaultProviderId(PID);
 
         // add in a movie to the stub provider
-        MediaSearchResult res = new MediaSearchResult(StubMetadataProvider.PROVIDER_ID, 0.9f);
+        MediaSearchResult res = new MediaSearchResult(PID, 0.9f);
         res.setUrl("test://1");
         res.setYear("2008");
         res.setTitle("Terminator");
@@ -166,19 +169,19 @@ public class MetadataPluginTestCase extends TestCase {
         
         File f = makeFile("test/tmpimages/Terminator.jpg");
         MediaArt ma = new MediaArt();
-        ma.setProviderId(StubMetadataProvider.PROVIDER_ID);
+        ma.setProviderId(PID);
         ma.setDownloadUrl(f.toURL().toExternalForm());
         ma.setType(MediaArtifactType.BACKGROUND);
         md.addMediaArt(ma);
 
         ma = new MediaArt();
-        ma.setProviderId(StubMetadataProvider.PROVIDER_ID);
+        ma.setProviderId(PID);
         ma.setDownloadUrl(f.toURL().toExternalForm());
         ma.setType(MediaArtifactType.BANNER);
         md.addMediaArt(ma);
 
         ma = new MediaArt();
-        ma.setProviderId(StubMetadataProvider.PROVIDER_ID);
+        ma.setProviderId(PID);
         ma.setDownloadUrl(f.toURL().toExternalForm());
         ma.setType(MediaArtifactType.POSTER);
         md.addMediaArt(ma);

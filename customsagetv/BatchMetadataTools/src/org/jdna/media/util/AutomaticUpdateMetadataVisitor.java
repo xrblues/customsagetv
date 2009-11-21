@@ -2,16 +2,19 @@ package org.jdna.media.util;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
 import org.jdna.media.IMediaResource;
 import org.jdna.media.IMediaResourceVisitor;
+import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MediaMetadataUtils;
+import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
@@ -77,8 +80,8 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
 
     protected void fetchMetaData(IMediaFile file, SearchQuery query) throws Exception {
         List<IMediaSearchResult> results = getSearchResultsForTitle(query);
-        
         IMediaSearchResult result = null;
+        
         // check to see if there is a configured title id for this query, if so, then use it.
         MetadataID mid = ConfigurationManager.getInstance().getMetadataIdForTitle(query.get(SearchQuery.Field.TITLE));
         if (mid!=null) {
@@ -90,6 +93,28 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
                     result =sr;
                     break;
                 }
+            }
+            
+            if (result==null) {
+                log.warn("Could not find search result for the metadata-titles id: " + mid + " will create it dynamically.");
+                IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(mid.getKey());
+                MediaSearchResult sr = new MediaSearchResult();
+                for (SearchQuery.Field f : SearchQuery.Field.values()) {
+                    if (f==SearchQuery.Field.TITLE) continue;
+                    String s = query.get(f);
+                    if (!StringUtils.isEmpty(s)) {
+                        sr.addExtraArg(f.name(), s);
+                        mid.addArg(f.name(), s);
+                    }
+                }
+                
+                sr.setMetadataId(mid);
+                sr.setProviderId(mid.getKey());
+                sr.setScore(1.0f);
+                sr.setTitle(query.get(SearchQuery.Field.TITLE));
+                sr.setUrl(prov.getUrlForId(mid));
+                result=sr;
+                log.debug("Returning this handcrafted result: " + sr);
             }
         } else {
             if (!MediaMetadataFactory.getInstance().isGoodSearch(results)) {
