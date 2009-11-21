@@ -6,6 +6,7 @@ public class JSFile implements Serializable {
     private boolean isDir = false;
     private String path = null;
     private String name = null;
+    private boolean isRoot = false;
     
     public JSFile() {
     }
@@ -14,6 +15,9 @@ public class JSFile implements Serializable {
         this.path=path;
         this.name =name;
         this.isDir=isDirectory;
+        if (name==null || name.trim().length()==0) {
+            this.name=path;
+        }
     }
     
     public boolean isDirectory() {
@@ -26,5 +30,13 @@ public class JSFile implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isRoot() {
+        return isRoot;
+    }
+
+    public void setRoot(boolean isRoot) {
+        this.isRoot = isRoot;
     }
 }

@@ -1,6 +1,9 @@
 package org.jdna.bmt.web.client.ui.prefs;
 
 
+import org.jdna.bmt.web.client.Application;
+import org.jdna.bmt.web.client.i18n.Labels;
+import org.jdna.bmt.web.client.i18n.Msgs;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.UpdatablePanel;
 import org.jdna.bmt.web.client.util.Log;
@@ -29,6 +32,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PreferencesPanel extends Composite {
+    protected final Msgs msgs = Application.messages();
+    protected final Labels labels = Application.labels();
+    
     private static class EditorPanel extends Composite {
         DockPanel main = new DockPanel();
         Label header = new Label();
@@ -85,11 +91,11 @@ public class PreferencesPanel extends Composite {
         protected void savePreferences() {
             updatable.save(new AsyncCallback<UpdatablePanel>() {
                 public void onFailure(Throwable caught) {
-                    Log.error("Failed to save", caught);
+                    Log.error(Application.messages().failedToSavePreferences(), caught);
                 }
 
                 public void onSuccess(UpdatablePanel result) {
-                    setStatus("Preferences are saved.");
+                    setStatus(Application.messages().preferencesSaved());
                 }
             });
         }
@@ -186,7 +192,7 @@ public class PreferencesPanel extends Composite {
 
                 public void onSuccess(PrefItem result) {
                     if (result==null || result.getChildren()==null || result.getChildren().length==0) {
-                        Log.error("Nothing Found for: " + search.getValue());
+                        Log.error(Application.messages().nothingFoundFor(search.getValue()));
                     } else {
                         updateSearch(result);
                     }

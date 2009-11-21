@@ -1,6 +1,8 @@
 package org.jdna.bmt.web.client.ui.input;
 
 
+import java.util.List;
+
 import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.Property;
 import org.jdna.bmt.web.client.util.StringUtils;
@@ -16,6 +18,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class InputBuilder<W, T> {
+    
     public W widget = null;
     
     public InputBuilder(W w) {
@@ -26,8 +29,20 @@ public class InputBuilder<W, T> {
         return new InputBuilder<TextBox, String>(new TextBox());
     }
 
+    public static InputBuilder<TextBox, String> textbox(TextBox tb) {
+        return new InputBuilder<TextBox, String>(tb);
+    }
+
     public static InputBuilder<CheckBox, Boolean> checkbox() {
         return new InputBuilder<CheckBox, Boolean>(new CheckBox());
+    }
+
+    public static InputBuilder<ListBox, String> combo(List<NVP<String>> nvp) {
+        ListBox lb = new ListBox();
+        for (NVP<String> p : nvp) {
+            lb.addItem(p.getName(), p.getValue());
+        }
+        return new InputBuilder<ListBox, String>(lb);
     }
 
     public static InputBuilder<ListBox, String> combo(String values) {

@@ -30,6 +30,8 @@ public class EditorFactory {
     public static Widget createEditor(String editor) {
         if ("log4jEditor".equals(editor)) {
             return new Log4jEditorPanel();
+        } else if ("videoSourcesEditor".equals(editor)) {
+            return new VideoSourcesEditorPanel();
         } else {
             Log.debug("Unknown Editor: " + editor);
         }

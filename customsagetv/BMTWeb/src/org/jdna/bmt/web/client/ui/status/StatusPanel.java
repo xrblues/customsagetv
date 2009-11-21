@@ -1,5 +1,7 @@
 package org.jdna.bmt.web.client.ui.status;
 
+import org.jdna.bmt.web.client.Application;
+import org.jdna.bmt.web.client.i18n.Labels;
 import org.jdna.bmt.web.client.ui.layout.FlowGrid;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -7,6 +9,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class StatusPanel extends Composite {
+    private Labels labels = Application.labels();
+    
     private static class StatusBox extends Composite {
         VerticalPanel vp = new VerticalPanel();
         public StatusBox(HasStatus status) {
@@ -18,9 +22,6 @@ public class StatusPanel extends Composite {
             vp.add(l);
             vp.add(status.getStatusWidget());
             
-            //DecoratorPanel dp = new DecoratorPanel();
-            //dp.setWidget(vp);
-            
             initWidget(vp);
         }
     }
@@ -29,9 +30,9 @@ public class StatusPanel extends Composite {
     public StatusPanel() {
         grid.setWidth("100%");
         
-        addStatus(new SimpleStatus("Phoenix", "Phoenix Status Information", "phoenix"));
-        addStatus(new SimpleStatus("Metadata Tools", "Metadata Tools Status Information", "bmt"));
-        addStatus(new SimpleStatus("SageTV", "SageTV Status Information", "sagetv"));
+        addStatus(new SimpleStatus(labels.statusPhoenix(), labels.statusPhoenixDesc(), "phoenix"));
+        addStatus(new SimpleStatus(labels.metadataTools(), labels.metadataToolsDesc(), "bmt"));
+        addStatus(new SimpleStatus(labels.sagetv(), labels.sagetvDesc(), "sagetv"));
         initWidget(grid);
     }
     

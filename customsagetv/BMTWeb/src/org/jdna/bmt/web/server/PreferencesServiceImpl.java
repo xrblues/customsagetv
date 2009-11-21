@@ -2,6 +2,7 @@ package org.jdna.bmt.web.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,8 +15,11 @@ import org.apache.log4j.PropertyConfigurator;
 import org.jdna.bmt.web.client.ui.prefs.Log4jPrefs;
 import org.jdna.bmt.web.client.ui.prefs.PrefItem;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesService;
+import org.jdna.bmt.web.client.ui.prefs.VideoSource;
+import org.jdna.bmt.web.client.ui.prefs.VideoSource.SourceType;
 import org.jdna.util.SortedProperties;
 
+import sagex.api.Configuration;
 import sagex.phoenix.configuration.Group;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.NewSearchGroup;
@@ -182,6 +186,29 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
         }
         
         return "ok";
+    }
+
+    public List<VideoSource> getVideoSources() {
+        List<VideoSource> list = new ArrayList<VideoSource>();
+        File files[] = Configuration.GetVideoLibraryImportPaths();
+        if (files!=null) {
+            for (File f : files) {
+                list.add(new VideoSource(f.getAbsolutePath(), SourceType.VIDEO));
+            }
+        }
+        return list;
+    }
+
+    public List<VideoSource> saveVideoSources(List<VideoSource> sources) {
+        for (VideoSource vs : sources) {
+            if (vs.isDeleted()) {
+                Configuration.RemoveVideoLibraryImportPath(new File(vs.getPath()));
+            } else if (vs.isNew()) {
+                Configuration.AddVideoLibraryImportPath(vs.getPath());
+            }
+        }
+        
+        return getVideoSources();
     }
 
 }

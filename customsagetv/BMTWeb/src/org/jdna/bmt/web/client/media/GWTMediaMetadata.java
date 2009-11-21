@@ -58,4 +58,8 @@ public class GWTMediaMetadata implements IMediaMetadata, Serializable {
     public void setString(MetadataKey key, String value) {
         getProperty(key).set(value);
     }
+
+    public void remove(MetadataKey key) {
+        metadata.remove(key);
+    }
 }

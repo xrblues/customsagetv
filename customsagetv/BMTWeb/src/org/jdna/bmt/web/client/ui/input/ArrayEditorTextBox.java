@@ -1,5 +1,6 @@
 package org.jdna.bmt.web.client.ui.input;
 
+import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -82,7 +83,7 @@ public class ArrayEditorTextBox extends EditorTextBox {
                 }
             });
             up.setWidth("100%");
-            Button down = new Button("Down", new ClickHandler() {
+            Button down = new Button(Application.labels().down(), new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     int sel = list.getSelectedIndex();
                     if (sel>=0 && sel<list.getItemCount()-1) {
@@ -94,7 +95,7 @@ public class ArrayEditorTextBox extends EditorTextBox {
                 }
             });
             down.setWidth("100%");
-            Button remove = new Button("Remove", new ClickHandler() {
+            Button remove = new Button(Application.labels().remove(), new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     if (list.getSelectedIndex()>=0) {
                         int s = list.getSelectedIndex();

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jdna.bmt.web.client.i18n.Msgs;
 import org.jdna.bmt.web.client.ui.layout.Simple2ColFormLayoutPanel;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.UpdatablePanel;
@@ -15,6 +16,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 public class PreferenceItemsPanel extends Composite implements UpdatablePanel {
     private final PreferencesServiceAsync preferencesService = GWT.create(PreferencesService.class);
+    private final Msgs msgs = GWT.create(Msgs.class);
 
     private Simple2ColFormLayoutPanel      grid  = null;
     private PrefItem parentItem = null;
@@ -75,12 +77,12 @@ public class PreferenceItemsPanel extends Composite implements UpdatablePanel {
                     }
                     callback.onSuccess(PreferenceItemsPanel.this);
                 } else {
-                    Log.error("Failed to save preferences!");
+                    Log.error(msgs.failedToSavePreferences());
                 }
             }
         });
         } else {
-            Dialogs.showMessage("Nothing to save.");
+            Dialogs.showMessage(msgs.nothingToSave());
         }
     }
 

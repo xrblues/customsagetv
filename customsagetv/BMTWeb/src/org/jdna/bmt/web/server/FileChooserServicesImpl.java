@@ -25,16 +25,22 @@ public class FileChooserServicesImpl extends RemoteServiceServlet implements Fil
         log.debug("listFiles("+base+")");
         File f = null;
         if (base==null || base.trim().length()==0) {
-            f = new File(".");
+            return listRoots();
         } else {
             f = new File(base);
             if (!f.exists()) {
-                log.warn("Does not exist: " + base);
-                f = new File(".");
+                return listRoots();
             }
         }
+        
         try {
-            if (!f.isDirectory()) f = f.getCanonicalFile().getParentFile();
+            if (!f.isDirectory()) {
+                f = f.getCanonicalFile().getParentFile();
+            }
+            
+            if (f==null || !f.exists()) {
+                return listRoots();
+            }
             log.debug("listFiles("+f.getAbsolutePath()+")");
             return listFiles(toJSFile(f));
         } catch (Throwable t) {
@@ -43,10 +49,24 @@ public class FileChooserServicesImpl extends RemoteServiceServlet implements Fil
         }
     }
 
+    public JSFileResult listRoots() {
+        List<JSFile> files = new ArrayList<JSFile>();
+        for (File f : File.listRoots()) {
+            System.out.println("**** Adding Root: " + f.getAbsolutePath() + "; " +f.getName());
+            files.add(toJSFile(f));
+        }
+        return new JSFileResult(null, ROOT(), files.toArray(new JSFile[files.size()]));
+    }
+
     public JSFileResult listFiles(JSFile base) {
+        if (base==null) {
+            return listRoots();
+        }
+        
         File f = new File(base.getPath());
-        if (!f.exists()) return null;
-        if (!f.isDirectory()) return null;
+        if (!f.exists()) return listRoots();
+        if (!f.isDirectory()) return listRoots();
+        
         List<JSFile> files = new ArrayList<JSFile>();
         for (File f1 : f.listFiles()) {
             files.add(toJSFile(f1));
@@ -56,6 +76,16 @@ public class FileChooserServicesImpl extends RemoteServiceServlet implements Fil
     }
     
     private JSFile toJSFile(File in) {
-        return new JSFile(in.getAbsolutePath(), in.getName(), in.isDirectory());
+        if (in==null) {
+            return ROOT();
+        } else {
+            return new JSFile(in.getAbsolutePath(), in.getName(), in.isDirectory());
+        }
+    }
+    
+    private JSFile ROOT() {
+        JSFile f =  new JSFile("Root FileSystems", "/", true);
+        f.setRoot(true);
+        return f;
     }
 }

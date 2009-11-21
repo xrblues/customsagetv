@@ -6,6 +6,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
@@ -17,9 +19,13 @@ import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.media.GWTMediaSearchResult;
-import org.jdna.bmt.web.client.ui.browser.BrowserService;
-import org.jdna.bmt.web.client.ui.browser.ProgressStatus;
-import org.jdna.bmt.web.client.ui.browser.ScanOptions;
+import org.jdna.bmt.web.client.media.GWTPersistenceOptions;
+import org.jdna.bmt.web.client.media.GWTProviderInfo;
+import org.jdna.bmt.web.client.ui.scan.BrowserService;
+import org.jdna.bmt.web.client.ui.scan.ProgressStatus;
+import org.jdna.bmt.web.client.ui.scan.SaveOptions;
+import org.jdna.bmt.web.client.ui.scan.ScanOptions;
+import org.jdna.bmt.web.client.ui.scan.SearchQueryOptions;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
 import org.jdna.media.ConditionalResourceFilter;
 import org.jdna.media.IMediaFile;
@@ -35,21 +41,16 @@ import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
-import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQueryFactory;
-import org.jdna.media.metadata.SearchQuery.Field;
-import org.jdna.media.metadata.SearchQuery.Type;
 import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
-import org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 import org.jdna.media.util.FilteredResourceVisitor;
 import org.jdna.media.util.ProgressTrackerVisitor;
 import org.jdna.sage.MissingFanartFilter;
 import org.jdna.sage.MissingMetadataFilter;
-import org.jdna.sage.UpdateMediaFileTimeStamp;
+import org.jdna.sage.media.SageBackupPersistenceUsingSageXmlInfo;
 import org.jdna.sage.media.SageCustomMetadataPersistence;
 import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageMediaFolder;
@@ -62,7 +63,6 @@ import org.jdna.util.ProgressTracker.FailedItem;
 
 import sagex.SageAPI;
 import sagex.api.AiringAPI;
-import sagex.api.Global;
 import sagex.api.MediaFileAPI;
 import sagex.api.ShowAPI;
 import sagex.phoenix.fanart.MediaArtifactType;
@@ -165,21 +165,29 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
                 scanVisitor = new FilteredResourceVisitor(filter, scanOnlyVisitor);
             } else {
                 CompositeMediaMetadataPersistence persistence = new CompositeMediaMetadataPersistence();
+                
+                // backup first
+                persistence.add(new SageBackupPersistenceUsingSageXmlInfo());
+                
+                // now use this to save
                 if (options.getUpdateMetadata().get()) {
                     persistence.add(new SageTVPropertiesPersistence());
+                    persistence.add(new SageShowPeristence());
                     persistence.add(new SageCustomMetadataPersistence());
-                    persistence.add(new SageShowPeristence(options.getImportTV().get()));
                 }
 
                 if (options.getUpdateFanart().get()) {
                     persistence.add(new CentralFanartPersistence());
                 }
 
-                persistence.add(new UpdateMediaFileTimeStamp());
+                // no need to update the time stamp
+                //persistence.add(new UpdateMediaFileTimeStamp());
 
                 PersistenceOptions persistOptions = new PersistenceOptions();
                 persistOptions.setOverwriteFanart(options.getOverwriteFanart().get());
                 persistOptions.setOverwriteMetadata(options.getOverwriteMetadata().get());
+                persistOptions.setImportAsTV(options.getImportTV().get());
+                persistOptions.setUseTitleMasks(true);
 
                 // for automatic updates
                 AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(metadataConfig.getDefaultProviderId(), persistence, persistOptions, SearchQuery.Type.MOVIE, tracker);
@@ -202,7 +210,7 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
         try {
             log.debug("Fetching Current Metadata for Item: " + mediaFile.getSageMediaFileId() + "; " + mediaFile.getTitle());
             SageMediaFile smf = new SageMediaFile(mediaFile.getSageMediaFileId());
-            IMediaMetadataPersistence persist = new CompositeMediaMetadataPersistence(new SageCustomMetadataPersistence(), new SageShowPeristence());
+            IMediaMetadataPersistence persist = new CompositeMediaMetadataPersistence(new SageShowPeristence(), new SageCustomMetadataPersistence());
             IMediaMetadata md = persist.loadMetaData(smf);
             
             return newMetadata(md);
@@ -254,15 +262,17 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
         return mi;
     }
 
-    public List<GWTMediaSearchResult> searchForMetadata(GWTMediaFile mediaFile, String provider) {
-        if (provider == null) {
+    public List<GWTMediaSearchResult> searchForMetadata(GWTMediaFile mediaFile, SearchQueryOptions options) {
+        String provider = options.getProvider().get();
+        if (StringUtils.isEmpty(provider)) {
             provider = new MetadataConfiguration().getDefaultProviderId();
         }
 
         GWTMediaMetadata item = mediaFile.getMetadata();
 
-        SearchQuery query = null;
+        SearchQuery query = options.getSearchQuery();
         try {
+            /*
             if (!StringUtils.isEmpty(item.getString(MetadataKey.MEDIA_TITLE)) && !StringUtils.isEmpty(item.getString(MetadataKey.MEDIA_TYPE))) {
                 query = new SearchQuery();
                 if ("TV".equals(item.getString(MetadataKey.MEDIA_TYPE))) {
@@ -282,8 +292,9 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
                 query = SearchQueryFactory.getInstance().createQuery(smf);
                 log.debug("Sage Query Created");
             }
+            */
 
-            log.info("WebUI Search: " + query);
+            log.info("WebUI Search: " + query + " using provider: " + provider );
 
             IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(provider);
             List<IMediaSearchResult> results = prov.search(query);
@@ -310,11 +321,15 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
         }
     }
 
-    public GWTMediaMetadata getMetadata(GWTMediaSearchResult result) {
+    public GWTMediaMetadata getMetadata(GWTMediaSearchResult result, GWTPersistenceOptions mdOptions) {
         IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(result.getProviderId());
         try {
             SageMediaFile smf = new SageMediaFile(result.getMediaFileId());
-            return newMetadata(MetadataAPI.normalizeMetadata(smf, prov.getMetaDataByUrl(result.getUrl())));
+            // create a set of persistence options for just returning metadata
+            PersistenceOptions options = new PersistenceOptions();
+            options.setUseTitleMasks(mdOptions.isUseTitleMasks());
+            options.setImportAsTV(mdOptions.isImportAsTV());
+            return newMetadata(MetadataAPI.normalizeMetadata(smf, prov.getMetaData(result), options));
         } catch (Exception e) {
             log.error("Metadata Retreival Failed!", e);
             throw new RuntimeException(e);
@@ -390,6 +405,15 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
                 item.setMinorTitle(ShowAPI.GetShowEpisode(o));
             }
             
+            // we need to load the custom metadata fields, to see if this is a TV file, etc
+            SageCustomMetadataPersistence p = new SageCustomMetadataPersistence();
+            IMediaMetadata md = p.loadMetaData(res);
+            if (MetadataAPI.isTV(md)) {
+                if (StringUtils.isEmpty(item.getMinorTitle())) {
+                    item.setMinorTitle(MetadataAPI.getEpisodeTitle(md));
+                }
+            }
+            
             // add in default fanart locations
             GWTMediaArt art = new GWTMediaArt();
             String file =phoenix.api.GetFanartPoster(o);
@@ -455,13 +479,34 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
         
     }
 
-    public ServiceReply<GWTMediaFile> saveMetadata(GWTMediaFile file) {
-        IMediaMetadataPersistence persist = new CompositeMediaMetadataPersistence(new SageCustomMetadataPersistence(), new SageShowPeristence(file.getSageRecording().get()), new SageTVPropertiesWithCentralFanartPersistence());
+    public ServiceReply<GWTMediaFile> saveMetadata(GWTMediaFile file, SaveOptions uiOptions) {
+        CompositeMediaMetadataPersistence persist = null;
+        
         SageMediaFile smf = new SageMediaFile(file.getSageMediaFileId());
         log.debug("Saving File: " + smf.getLocation());
         PersistenceOptions options = new PersistenceOptions();
-        options.setOverwriteFanart(true);
-        options.setOverwriteMetadata(true);
+        options.setOverwriteFanart(uiOptions.getOverwriteFanart().get());
+        options.setOverwriteMetadata(uiOptions.getOverwriteMetadata().get());
+        options.setImportAsTV(file.getSageRecording().get());
+
+        persist = new CompositeMediaMetadataPersistence();
+        if (uiOptions.getUpdateMetadata().get()) {
+            persist.add(new SageBackupPersistenceUsingSageXmlInfo());
+            persist.add(new SageShowPeristence());
+            persist.add(new SageCustomMetadataPersistence());
+            persist.add(new SageTVPropertiesPersistence());
+        }
+        
+        if (uiOptions.getUpdateFanart().get()) {
+            if (!uiOptions.getUpdateMetadata().get()) {
+                persist.add(new SageCustomMetadataPersistence());
+            }
+            persist.add(new CentralFanartPersistence());
+        }
+        
+        // TODO: Should probably ask the use if we want to use the default masks, etc.
+        options.setUseTitleMasks(false);
+        
         try {
             Object sageObject = smf.getSageMediaFileObject(smf);
             if (MediaFileAPI.IsTVFile(sageObject) && !file.getSageRecording().get()) {
@@ -502,12 +547,14 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
             smf = createSageMediaFile(file.getLocation().toURI());
             
             // touch the file and tell sage to reload the metadata
-            smf.touch();
-            Global.RunLibraryImportScan(false);
+            // not needed, since we updated MF directly
+            //smf.touch();
+            //Global.RunLibraryImportScan(false);
             
             if (smf==null) {
                 throw new IOException("Unable to reload MediaFile after metadata was saved.");
             }
+            
             GWTMediaFile newMediaFile = createGWTMediaFile(smf);
             if (newMediaFile==null) {
                 throw new IOException("Unable to create GWT MediaFile from SageMediaFile: " + smf);
@@ -521,6 +568,32 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
         } catch (IOException e) {
             ServiceReply<GWTMediaFile> reply = new ServiceReply<GWTMediaFile>(99, "Failed: " + e.getMessage(), null);
             return reply;
+        }
+    }
+
+    public List<GWTProviderInfo> getProviders() {
+        List<GWTProviderInfo> providers = new ArrayList<GWTProviderInfo>();
+        GWTProviderInfo system = new GWTProviderInfo();
+        system.setName("System Default");
+        system.setId(new MetadataConfiguration().getDefaultProviderId());
+        system.setDescription(system.getId());
+        providers.add(system);
+        List<IMediaMetadataProvider> provs = MediaMetadataFactory.getInstance().getMetaDataProviders();
+        Collections.sort(provs, new Comparator<IMediaMetadataProvider>() {
+            public int compare(IMediaMetadataProvider o1, IMediaMetadataProvider o2) {
+                return o1.getInfo().getName().compareToIgnoreCase(o2.getInfo().getName());
+            }
+        });
+        for (IMediaMetadataProvider p : MediaMetadataFactory.getInstance().getMetaDataProviders()) {
+            providers.add(new GWTProviderInfo(p.getInfo()));
+        }
+        return providers;
+    }
+
+    public void cancelScan(String id) {
+        ScanProgressTracker tracker = (ScanProgressTracker) ProgressTrackerManager.getInstance().getProgress(id);
+        if (tracker!=null) {
+            tracker.setCancelled(true);
         }
     }
 }

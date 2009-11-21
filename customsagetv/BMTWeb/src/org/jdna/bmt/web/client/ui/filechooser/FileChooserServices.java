@@ -7,4 +7,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface FileChooserServices extends RemoteService {
     public JSFileResult listFiles(String base);
     public JSFileResult listFiles(JSFile base);
+    public JSFileResult listRoots();
 }

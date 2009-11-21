@@ -1,5 +1,7 @@
 package org.jdna.bmt.web.client.ui.prefs;
 
+import org.jdna.bmt.web.client.Application;
+import org.jdna.bmt.web.client.i18n.Msgs;
 import org.jdna.bmt.web.client.ui.input.ArrayEditorTextBox;
 import org.jdna.bmt.web.client.ui.input.InputFactory;
 import org.jdna.bmt.web.client.ui.input.LargeStringTextBox;
@@ -11,6 +13,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PreferenceItemEditor extends Composite {
+    private Msgs msgs = Application.messages();
+    
     private HelpLabel  label  = null;
     private Widget   editor = null;
     private PrefItem item   = null;
@@ -38,13 +42,14 @@ public class PreferenceItemEditor extends Composite {
                 this.editor = InputFactory.bind(new CheckBox(), item);
             } else {
                 TextBox tb = new TextBox();
-                tb.setValue("No Editor For: " + item.getType());
+                tb.setValue(msgs.noEditor(item.getType()));
                 this.editor = tb;
             }
         }
     }
 
     private String createHelpText(PrefItem item2) {
+        // TODO: i18n
         return "<div class=\"HelpLabel-Property\">Sage Property: " +item2.getKey() + "</div><div class=\"HelpLabel-HelpText\">" + item2.getDescription() + "</div>";
     }
 

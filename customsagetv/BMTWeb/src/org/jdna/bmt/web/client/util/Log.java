@@ -10,7 +10,9 @@ public class Log {
 
     public static void error(String msg, Throwable caught) {
         System.out.println(msg);
-        caught.printStackTrace();
+        if (caught!=null) {
+            caught.printStackTrace();
+        }
         GWT.log(msg, caught);
         Window.alert(msg);
     }
