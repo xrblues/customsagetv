@@ -138,6 +138,11 @@ h1 {
 	background-repeat: no-repeat;
 	text-indent: 18px;
 }
+.App-Browse {
+	background-image: url("images/16x16/folder-saved-search.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
 .App-Refresh {
 	background-image: url("images/16x16/view-refresh.png");
 	background-repeat: no-repeat;
@@ -148,3 +153,93 @@ h1 {
 	cursor: pointer;
 	text-decoration: underline;
 }
+
+.VideosSource-Deleted {
+	text-decoration: line-through;
+	color: red;
+}
+
+.VideoSource-Row td {
+	border-bottom: 1px dotted black; 
+}
+
+.InfoPanel, .DataDialog-HeaderBox {
+	xbackground-color: #EDEFF4;
+	background-color: #FFF9D7;
+	border-color: #E2C822;
+	margin: 5 5 5 5;
+	padding: 5 5 5 5;
+	border: 2px solid #E2C822;
+	-moz-border-radius: 7px;
+    border-radius: 7px;
+}
+
+.ProgressPanel-Cancel {
+	font-size: x-small;
+	text-decoration: underline;
+	color: black;
+	font-style: italic;
+}
+
+.BrowsePanel {
+}
+
+.BrowsePanel .MediaItem {
+	float: left;
+	border: 1px solid black;
+	width: 150px;
+	height: 200px;
+	min-height: 100px;
+	min-width: 50px;
+	margin: 10 10 10 10;
+	padding: 5 5 5 5;
+}
+
+.MediaItem .MediaItem-Title1 {
+	font-weight: bold;
+}
+
+.MediaItem .MediaItem-Title2 {
+	font-style: italic;
+	font-size: smaller;
+}
+
+.BrowsePanel .MediaFolder {
+	background-color: #FFF9D7;
+	xbackground-image: url("images/16x16/folder.png");
+	xbackground-position: bottom left;
+	xbackground-repeat: no-repeat;
+}
+
+.SideMenuItem {
+	height: 30px;
+	border-bottom: 1px solid black;
+	cursor: pointer;
+}
+
+.hover {
+	background-color: #F3F3F3;
+}
+
+.SideMenuItem-selected {
+	background-color: #909090;
+}
+
+. SideMenuItem-Label {
+}
+
+.SideMenuPanel-Label {
+	border-bottom: 1px solid black;
+}
+
+.SideMenuPanel-LabelText {
+	font-size: larger;
+	font-weight: bold;	
+}
+
+.HorizontalButtonBar {
+	background-color: #F3F3F3;
+	border-top: 1px solid black;
+	border-bottom: 2px solid black;
+}
+
