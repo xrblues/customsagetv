@@ -32,6 +32,11 @@
   </servlet>
 
   <servlet>
+    <servlet-name>browsing</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.BrowsingServicesImpl</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>sage</servlet-name>
     <servlet-class>org.jdna.bmt.web.server.SageServicesImpl</servlet-class>
   </servlet>
@@ -70,6 +75,11 @@
   <servlet-mapping>
     <servlet-name>browser</servlet-name>
     <url-pattern>/bmtweb/browser</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>browsing</servlet-name>
+    <url-pattern>/bmtweb/browsing</url-pattern>
   </servlet-mapping>
 
 </web-app>
