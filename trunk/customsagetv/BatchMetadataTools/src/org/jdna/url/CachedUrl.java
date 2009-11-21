@@ -70,7 +70,7 @@ public class CachedUrl extends Url implements IUrl {
 
     private boolean isExpired(File cachedFile) {
         long secs = cfg.getCacheExpiryInSeconds();
-        long diff = (System.currentTimeMillis() / 1000) - cachedFile.lastModified();
+        long diff = (System.currentTimeMillis() - cachedFile.lastModified())/1000;
         if (diff > secs) {
             return true;
         }

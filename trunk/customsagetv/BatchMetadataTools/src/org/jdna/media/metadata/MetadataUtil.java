@@ -90,7 +90,7 @@ public class MetadataUtil {
 
             md.setString(MetadataKey.RELEASE_DATE, out);
         } catch (Exception e) {
-            log.error("Failed to parse/format release dates; dateIn: " + strDate + "; dateInFormat: " + dateInFormat, e);
+            log.warn("Failed to parse/format release dates; dateIn: " + strDate + "; dateInFormat: " + dateInFormat);
             md.setString(MetadataKey.RELEASE_DATE, null);
         }
     }
@@ -105,7 +105,7 @@ public class MetadataUtil {
             Date d = dateFormat.parse(date);
             return d;
         } catch (Exception e) {
-            log.error("Failed to get a date from the metadata date: " + date, e);
+            log.warn("Failed to parse a date from the metadata date: " + date);
         }
         return null;
     }

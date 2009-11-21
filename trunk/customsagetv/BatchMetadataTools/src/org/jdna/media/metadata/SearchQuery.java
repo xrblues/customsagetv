@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SearchQuery implements Serializable {
-    public enum Field { TITLE, SEASON, EPISODE, DISC, EPISODE_TITLE, EPISODE_DATE };
+    public enum Field { TITLE, SEASON, EPISODE, DISC, EPISODE_TITLE, EPISODE_DATE, YEAR};
     public enum Type { TV, MOVIE, MUSIC };
     
     private Map<Field, String> fields = new HashMap<Field, String>();

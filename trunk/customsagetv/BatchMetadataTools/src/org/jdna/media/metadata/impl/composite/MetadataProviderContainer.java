@@ -91,8 +91,8 @@ public class MetadataProviderContainer implements IMediaMetadataProvider {
         return Type.values();
     }
 
-    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
-        throw new Exception("getMetaDataById(id) is not supported for a container.");
+    public String getUrlForId(MetadataID id) throws Exception {
+        throw new Exception("getUrlForId(id) is not supported for a container.");
     }
 
     public IMediaMetadata getMetaDataByUrl(String url) throws Exception {

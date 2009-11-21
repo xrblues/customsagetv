@@ -111,7 +111,7 @@ public class MediaMetadataUtils {
             }
             ImageIO.write(imageSrc, "jpg", out);
         } catch (Throwable t) {
-            log.error("Failed to write image: " + url + "; to file: " + out.getAbsolutePath() + "; with scale: " + scaleWidth, t);
+            log.warn("Failed to write image: " + url + "; to file: " + out.getAbsolutePath() + "; with scale: " + scaleWidth, t);
         } finally {
             if (out.exists() && out.length() == 0) {
                 log.info("Removing 0 byte file: " + out.getAbsolutePath() + "; for url: " + url);

@@ -2,12 +2,10 @@ package bmt;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.IMediaFile;
-import org.jdna.media.MediaConfiguration;
 import org.jdna.media.MovieResourceFilter;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
@@ -19,22 +17,17 @@ import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
-import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
 import org.jdna.media.metadata.impl.sage.SageProperty;
-import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
 import org.jdna.media.util.FilteredResourceVisitor;
 import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
-import org.jdna.sage.MetadataPluginOptions;
 import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageMediaFolder;
-import org.jdna.sage.media.SageShowPeristence;
 import org.jdna.util.MediaScanner;
+import org.jdna.util.PersistenceFactory;
 import org.jdna.util.ProgressTracker;
 import org.jdna.util.ProgressTrackerManager;
 
-import sagex.api.AiringAPI;
-import sagex.api.Global;
 import sagex.api.MediaFileAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataProviderInfo;
@@ -110,9 +103,9 @@ public class BMTMetadataSupport implements IMetadataSupport {
             IMediaMetadataPersistence persistence = null; 
 
             if (MediaFileAPI.IsMediaFileObject(media)) {
-                persistence = MetadataPluginOptions.getOnDemandUpdaterPersistence();
+                persistence = PersistenceFactory.getOnDemandPersistence();
             } else {
-                persistence = MetadataPluginOptions.getFanartOnlyPersistence();
+                persistence = PersistenceFactory.getFanartOnlyPersistence();
             }
 
             PersistenceOptions options = new PersistenceOptions();
@@ -224,7 +217,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
             options.setUseTitleMasks(true);
             options.setOverwriteFanart(true);
             options.setOverwriteMetadata(true);
-            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(metadataConfig.getDefaultProviderId(), MetadataPluginOptions.getOnDemandUpdaterPersistence(), options, SearchQuery.Type.MOVIE, tracker);
+            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(metadataConfig.getDefaultProviderId(), PersistenceFactory.getOnDemandPersistence(), options, SearchQuery.Type.MOVIE, tracker);
             
             FilteredResourceVisitor scanVisitor = new FilteredResourceVisitor(new MovieResourceFilter(), autoUpdater);
             MediaScanner scanner = new MediaScanner(new SageMediaFolder(sageMediaFiles), scanVisitor);

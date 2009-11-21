@@ -1,7 +1,9 @@
 package test.junit;
 
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static test.junit.lib.FilesTestCase.*;
+import static test.junit.lib.FilesTestCase.makeFile;
 
 import java.io.File;
 
@@ -10,15 +12,12 @@ import org.jdna.media.IMediaFile;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.metadata.SearchQuery.Field;
-import org.jdna.media.metadata.impl.StubMetadataProvider;
 import org.jdna.sage.media.SageMediaFile;
 import org.junit.Test;
 
 import sagex.SageAPI;
 import sagex.api.MediaFileAPI;
-import sagex.remote.factory.request.MediaFileAPIFactory;
 import sagex.stub.MediaFileAPIProxy;
-import sagex.stub.StubAPIProxy;
 import sagex.stub.StubSageAPI;
 
 
@@ -45,6 +44,15 @@ public class TestSearchQuery {
         mf = new FileMediaFile(new File("House-00000000-0.avi"));
         q = SearchQueryFactory.getInstance().createQuery(mf);
         assertParts(q, SearchQuery.Type.TV, "House", null, null);
+        
+        // test if the year is parsed
+        mf = new FileMediaFile(new File("1984 (2009).avi"));
+        q = SearchQueryFactory.getInstance().createQuery(mf);
+        assertEquals("2009", q.get(Field.YEAR));
+
+        mf = new FileMediaFile(new File("Movies/2004/In the Deep.avi"));
+        q = SearchQueryFactory.getInstance().createQuery(mf);
+        assertEquals("2004", q.get(Field.YEAR));
     }
     
     @Test

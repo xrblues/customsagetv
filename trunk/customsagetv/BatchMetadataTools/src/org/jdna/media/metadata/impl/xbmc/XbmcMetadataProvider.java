@@ -508,8 +508,8 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         return supportedSearchTypes;
     }
 
-    public IMediaMetadata getMetaDataById(MetadataID id) throws Exception {
-        throw new Exception("getMetadataById() not supported: " + id);
+    public String getUrlForId(MetadataID id) throws Exception {
+        throw new Exception("getUrlForId() not supported: " + id);
     }
 
     public IMediaMetadata getMetaDataByUrl(String url) throws Exception {

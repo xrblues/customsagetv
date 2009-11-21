@@ -1,6 +1,9 @@
 package org.jdna.media.metadata;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +31,11 @@ import sagex.phoenix.fanart.MediaType;
  *
  */
 public class MetadataAPI {
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    
     public static IMediaMetadata copy(IMediaMetadata src, IMediaMetadata dest) {
+        if (src==null) return dest;
+        if (dest==null) return src;
         for (MetadataKey k : MetadataKey.values()) {
             dest.setString(k, safeTrim(src.getString(k)));
         }
@@ -44,6 +51,8 @@ public class MetadataAPI {
     }
 
     public static IMediaMetadata copyNonNull(IMediaMetadata src, IMediaMetadata dest) {
+        if (src==null) return dest;
+        if (dest==null) return src;
         for (MetadataKey k : MetadataKey.values()) {
             if (src.getString(k)!=null) {
                 dest.setString(k, safeTrim(src.getString(k)));
@@ -425,5 +434,18 @@ public class MetadataAPI {
     
     public static boolean isTV(IMediaMetadata md) {
         return MetadataUtil.TV_MEDIA_TYPE.equals(md.getString(MetadataKey.MEDIA_TYPE));
+    }
+
+    public static void setReleaseDate(MediaMetadata md, Date d) {
+        try {
+            setReleaseDate(md, dateFormat.format(d));
+        } catch (Exception t) {
+        }
+    }
+
+    public static void setYear(MediaMetadata md, Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        setYear(md, String.valueOf(c.get(Calendar.YEAR)));
     }
 }
