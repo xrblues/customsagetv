@@ -3,12 +3,13 @@ package org.jdna.media.metadata.impl.sage;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.jdna.media.IMediaFile;
-import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.PersistenceOptions;
+
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.IMediaResource;
 
 public class CentralFanartPersistence implements IMediaMetadataPersistence {
     private static final Logger log = Logger.getLogger(CentralFanartPersistence.class);

@@ -2,8 +2,11 @@ package test;
 
 import java.io.IOException;
 
+import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.impl.imdb.IMDBSearchResultParser;
 import org.xml.sax.SAXException;
+
+import sagex.phoenix.fanart.MediaType;
 
 public class TestIMDBParser {
     public static void main(String args[]) throws Exception {
@@ -14,7 +17,9 @@ public class TestIMDBParser {
     }
 
     private void go(String url, String searchTitle) throws IOException, SAXException {
-        IMDBSearchResultParser parser = new IMDBSearchResultParser(url, searchTitle);
+        SearchQuery query = new SearchQuery();
+        query.setMediaType(MediaType.MOVIE);
+        IMDBSearchResultParser parser = new IMDBSearchResultParser(query, url, searchTitle);
         parser.parse();
         TestUtils.dumpResults(parser.getResults());
     }

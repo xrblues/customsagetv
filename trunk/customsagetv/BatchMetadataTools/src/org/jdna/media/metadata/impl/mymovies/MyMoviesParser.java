@@ -21,6 +21,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.fanart.MediaType;
 
 public class MyMoviesParser {
     private static final Logger      log         = Logger.getLogger(MyMoviesParser.class);
@@ -38,7 +39,7 @@ public class MyMoviesParser {
 
     public MyMoviesParser(String id) throws Exception {
         this.id = id;
-        this.provider = (MyMoviesMetadataProvider) MediaMetadataFactory.getInstance().getProvider(MyMoviesMetadataProvider.PROVIDER_ID);
+        this.provider = (MyMoviesMetadataProvider) MediaMetadataFactory.getInstance().getProvider(MyMoviesMetadataProvider.PROVIDER_ID, MediaType.MOVIE);
         this.movieFile = provider.getMyMoviesXmlFile();
         this.node = movieFile.findMovieById(id);
     }

@@ -23,9 +23,15 @@ public class MetadataConfiguration extends GroupProxy {
     @AField(label="Ignore Words in Title", description = "Comma separated list of words that will be removed from a title when doing a search", editor="array")
     private FieldProxy<String> wordsToClean           = new FieldProxy<String>("1080p,720p,480p,1080i,720i,480i,dvd,dvdrip,cam,ts,tc,scr,screener,dvdscr,xvid,divx,avi,vrs,repack,mallat,proper,dmt,dmd,stv,HDTV,x264");
 
-    @AField(label="Metadata Provider(s)", description = "Default provider id to use (comma separate, if more than 1)", editor="array")
-    private FieldProxy<String> defaultProviderId      = new FieldProxy<String>("tvdb,imdb-2,themoviedb.org,imdb.xml");
-    
+    @AField(label="TV Metadata Provider(s)", description = "Default provider id to use for TV (comma separate, if more than 1)", editor="array")
+    private FieldProxy<String> tvProviders      = new FieldProxy<String>("tvdb");
+
+    @AField(label="Movie Metadata Provider(s)", description = "Default provider id to use for Movies (comma separate, if more than 1)", editor="array")
+    private FieldProxy<String> movieProviders      = new FieldProxy<String>("imdb-2,themoviedb.org,imdb.xml");
+
+    @AField(label="Music Metadata Provider(s)", description = "Default provider id to use for Music (comma separate, if more than 1)", editor="array")
+    private FieldProxy<String> musicProviders      = new FieldProxy<String>("");
+
     @AField(label="Good Score Threshold", description = "Score which must be exceeded to consider a result a good match")
     private FieldProxy<Float> goodScoreThreshold = new FieldProxy<Float>(0.9f);
 
@@ -52,6 +58,13 @@ public class MetadataConfiguration extends GroupProxy {
 
     @AField(label="Backup Sage Recordings on write", description="When writing/overwriting SageTV recordings, first make a backup of the existing metadata.")
     private FieldProxy<Boolean> backupSageRecordingMetadata = new FieldProxy<Boolean>(true);
+    
+    @AField(label="Fanart Enabled", description="Enable Fanart downloading", fullKey="phoenix/mediametadata/fanartEnabled")
+    private FieldProxy<Boolean> fanartEnabled = new FieldProxy<Boolean>(true);
+    
+    @AField(label="Central Fanart Folder", description="Location of the central fanart folder", fullKey="phoenix/mediametadata/fanartCentralFolder", editor="dirChooser")
+    private FieldProxy<String> fanartCentralFolder = new FieldProxy<String>(null);
+
     
     public MetadataConfiguration() {
         super();
@@ -82,12 +95,28 @@ public class MetadataConfiguration extends GroupProxy {
         this.wordsToClean.set(wordsToClean);
     }
 
-    public String getDefaultProviderId() {
-        return defaultProviderId.getString();
+    public String getTVProviders() {
+        return tvProviders.getString();
     }
 
-    public void setDefaultProviderId(String defaultProviderId) {
-        this.defaultProviderId.set(defaultProviderId);
+    public void setTVProviders(String defaultProviderId) {
+        this.tvProviders.set(defaultProviderId);
+    }
+
+    public String getMovieProviders() {
+        return movieProviders.getString();
+    }
+
+    public void setMovieProviders(String defaultProviderId) {
+        this.movieProviders.set(defaultProviderId);
+    }
+
+    public String getMusicProviders() {
+        return musicProviders.getString();
+    }
+
+    public void setMusicProviders(String defaultProviderId) {
+        this.musicProviders.set(defaultProviderId);
     }
     
     public float getGoodScoreThreshold(){
@@ -160,5 +189,21 @@ public class MetadataConfiguration extends GroupProxy {
 
     public void setBackupSageRecordingMetadata(boolean backup) {
         this.backupSageRecordingMetadata.set(backup);
+    }
+    
+    public String getFanartCentralFolder() {
+        return fanartCentralFolder.getString();
+    }
+
+    public void setCentralFanartFolder(String centralFanartFolder) {
+        this.fanartCentralFolder.set(centralFanartFolder);
+    }
+
+    public boolean isFanartEnabled() {
+        return fanartEnabled.getBoolean();
+    }
+
+    public void setFanartEnabled(boolean fanartEnabled) {
+        this.fanartEnabled.set(fanartEnabled);
     }
 }

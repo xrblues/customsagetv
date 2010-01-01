@@ -16,8 +16,9 @@ import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQuery.Type;
 import org.xml.sax.SAXException;
+
+import sagex.phoenix.fanart.MediaType;
 
 public class IMDBMetaDataProvider implements IMediaMetadataProvider {
     private static final Logger  log               = Logger.getLogger(IMDBMetaDataProvider.class);
@@ -30,7 +31,7 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
     private static final String  PROVIDER_DESC     = "Fast, bare bones IMDb provider, no fanart, limited cast metadata";
 
     private static IProviderInfo info              = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_ICON_URL);
-    private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
+    private static final MediaType[] supportedSearchTypes = new MediaType[] {MediaType.MOVIE};
 
     private IMDBConfiguration cfg = new IMDBConfiguration();
     
@@ -52,12 +53,12 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
     public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
         List<IMediaSearchResult> results = null;
         log.debug("Search Query: " + query);
-        if (query.getType() == SearchQuery.Type.MOVIE) {
-            String arg = query.get(SearchQuery.Field.TITLE);
+        if (query.getMediaType() == MediaType.MOVIE) {
+            String arg = query.get(SearchQuery.Field.QUERY);
             String eArg = URLEncoder.encode(arg);
             String url = MessageFormat.format(IMDB_TITLE_URL, cfg.getIMDbDomain(), eArg);
             log.debug("IMDB Search Url: " + url);
-            IMDBSearchResultParser parser = new IMDBSearchResultParser(url, arg);
+            IMDBSearchResultParser parser = new IMDBSearchResultParser(query, url, arg);
             // don't follow the redirected urls
             parser.setFollowRedirects(false);
             try {
@@ -76,8 +77,8 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
                 log.error("Error Parsing Search: " + arg, e);
             }
         } else {
-            log.error("Search Type no Supported: " + query.getType());
-            throw new Exception("Seach Type Not Supported: " + query.getType());
+            log.error("Search Type no Supported: " + query.getMediaType());
+            throw new Exception("Seach Type Not Supported: " + query.getMediaType());
         }
         
         return results;
@@ -108,7 +109,7 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
         return info;
     }
 
-    public Type[] getSupportedSearchTypes() {
+    public MediaType[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
 

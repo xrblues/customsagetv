@@ -4,41 +4,40 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import sagex.phoenix.fanart.MediaType;
+
 public class SearchQuery implements Serializable {
-    public enum Field { TITLE, SEASON, EPISODE, DISC, EPISODE_TITLE, EPISODE_DATE, YEAR};
-    public enum Type { TV, MOVIE, MUSIC };
+    private static final long serialVersionUID = 1L;
+
+    public enum Field { QUERY, RAW_TITLE, CLEAN_TITLE, SEASON, EPISODE, DISC, EPISODE_TITLE, EPISODE_DATE, YEAR, FILE, URL, METADATA_ID, SERIES_ID };
     
     private Map<Field, String> fields = new HashMap<Field, String>();
-    private Type type = Type.MOVIE;
+    private MediaType type = MediaType.MOVIE;
     
     public SearchQuery() {
     }
     
     public SearchQuery(SearchQuery query) {
-        this.type=query.getType();
+        this.type=query.getMediaType();
         for (Field f : query.fields.keySet()) {
             fields.put(f, query.get(f));
         }
     }
 
-    public SearchQuery(String title) {
-        this (Type.MOVIE, title);
-    }
-
-    public SearchQuery(Type type, String title) {
-        this(type, Field.TITLE, title);
+    public SearchQuery(MediaType type, String title) {
+        this(type, Field.RAW_TITLE, title);
     }
     
-    public SearchQuery(Type type, Field field, String value) {
+    public SearchQuery(MediaType type, Field field, String value) {
         this.type=type;
         set(field, value);
     }
     
-    public Type getType() {
+    public MediaType getMediaType() {
         return type;
     }
     
-    public SearchQuery setType(Type type) {
+    public SearchQuery setMediaType(MediaType type) {
         this.type=type;
         return this;
     }

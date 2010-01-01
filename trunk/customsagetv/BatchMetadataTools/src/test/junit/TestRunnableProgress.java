@@ -3,10 +3,11 @@ package test.junit;
 import junit.framework.TestCase;
 
 import org.apache.log4j.BasicConfigurator;
-import org.jdna.util.IProgressMonitor;
-import org.jdna.util.IRunnableWithProgress;
-import org.jdna.util.ProgressTracker;
-import org.jdna.util.ProgressTrackerManager;
+
+import sagex.phoenix.progress.IProgressMonitor;
+import sagex.phoenix.progress.IRunnableWithProgress;
+import sagex.phoenix.progress.ProgressTracker;
+import sagex.phoenix.progress.ProgressTrackerManager;
 
 public class TestRunnableProgress extends TestCase {
     public TestRunnableProgress() {

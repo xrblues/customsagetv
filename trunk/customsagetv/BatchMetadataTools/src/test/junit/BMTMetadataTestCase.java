@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.url.UrlConfiguration;
 
 import sagex.phoenix.Phoenix;
@@ -92,11 +91,6 @@ public class BMTMetadataTestCase extends TestCase {
         el = (Field) cmm.getConfigurationElement("phoenix/mediametadata/fanartEnabled");
         assertNotNull(el);
         assertEquals("boolean", el.getType());
-    }
- 
-    public void testMetadataObjects() {
-        MetadataConfiguration cfg =new MetadataConfiguration();
-        assertNotNull(cfg.getDefaultProviderId());
     }
 
     @Override

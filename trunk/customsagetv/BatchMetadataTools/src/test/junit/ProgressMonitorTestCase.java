@@ -1,11 +1,10 @@
 package test.junit;
 
 import junit.framework.TestCase;
-
-import org.jdna.util.BasicProgressMonitor;
-import org.jdna.util.IProgressMonitor;
-import org.jdna.util.ProgressTracker;
-import org.jdna.util.ProgressTracker.FailedItem;
+import sagex.phoenix.progress.BasicProgressMonitor;
+import sagex.phoenix.progress.IProgressMonitor;
+import sagex.phoenix.progress.ProgressTracker;
+import sagex.phoenix.progress.TrackedItem;
 
 public class ProgressMonitorTestCase extends TestCase {
     public ProgressMonitorTestCase() {
@@ -40,7 +39,7 @@ public class ProgressMonitorTestCase extends TestCase {
         assertEquals(1, track.getSuccessfulItems().size());
         assertEquals(1, track.getFailedItems().size());
         
-        FailedItem<String> item =  track.getFailedItems().peek();
+        TrackedItem<String> item =  track.getFailedItems().peek();
         assertEquals("TestFailed", item.getItem());
     }
 }

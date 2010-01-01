@@ -12,13 +12,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.PersistenceOptions;
 
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.IMediaResource;
+import sagex.phoenix.vfs.util.PathUtils;
+
+/**
+ * TODO: Re-work rename so that it becomes a part of the PersistenceOptions, ie, if rename is enabled, then the mask
+ * will be in the persistence options 
+ *
+ */
 public class RenameMediaFile implements IMediaMetadataPersistence {
     private static final Logger log = Logger.getLogger(RenameMediaFile.class);
 
@@ -32,9 +40,9 @@ public class RenameMediaFile implements IMediaMetadataPersistence {
     private static Map<String, String> createVariableMap(IMediaMetadata md, IMediaResource mediaFile) {
 		Map<String, String> retVal = new HashMap<String, String>();
 		
-		retVal.put("FileExtension", mediaFile.getExtension());
-		retVal.put("FileBasename", mediaFile.getBasename());
-		retVal.put("FileName", mediaFile.getName());
+		retVal.put("FileExtension", PathUtils.getExtension(mediaFile));
+		retVal.put("FileBasename", PathUtils.getBasename(mediaFile));
+		retVal.put("FileName", PathUtils.getName(mediaFile));
 		retVal.put("FileTitle", mediaFile.getTitle());
 
 		//loop over all metadata allow replacement based on those
@@ -160,7 +168,7 @@ public class RenameMediaFile implements IMediaMetadataPersistence {
         if (mediaFile!=null && mediaFile.exists()) {
         	String patternString = options.getFileRenamePattern();
         	if(patternString != null) {
-        		log.debug("Renaming: " + mediaFile.getLocation());
+        		log.debug("Renaming: " + mediaFile);
 
         		patternString = replaceVariables(patternString, createVariableMap(md, mediaFile));
         		
@@ -173,7 +181,13 @@ public class RenameMediaFile implements IMediaMetadataPersistence {
         			}
         		}
         		
-        		if(!mediaFile.renameTo(newFile.getAbsolutePath())) {
+        		File files[] = ((IMediaFile)mediaFile).getFiles();
+        		if (files==null || files.length!=1) {
+        		    log.warn("Cannot rename mediafile; either too many files, or no files are in its collection.");
+        		    return;
+        		}
+        		
+        		if(!files[0].renameTo(newFile)) {
         			log.error("Failed to rename file to: " + patternString);
         		}
         	}

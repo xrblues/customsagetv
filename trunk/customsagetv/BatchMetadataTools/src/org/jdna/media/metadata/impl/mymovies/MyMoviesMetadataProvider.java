@@ -11,9 +11,9 @@ import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQuery.Type;
 
 import sagex.phoenix.Phoenix;
+import sagex.phoenix.fanart.MediaType;
 
 public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
     private static final Logger                 log               = Logger.getLogger(MyMoviesMetadataProvider.class);
@@ -35,7 +35,7 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
     
     private static MyMoviesMetadataProvider instance          = new MyMoviesMetadataProvider();
     
-    private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
+    private static final MediaType[] supportedSearchTypes = new MediaType[] {MediaType.MOVIE};
 
     public MyMoviesMetadataProvider() {
     }
@@ -63,7 +63,7 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
             }
         }
 
-        String arg = query.get(SearchQuery.Field.TITLE);
+        String arg = query.get(SearchQuery.Field.QUERY);
         try {
             return MyMoviesIndex.getInstance().searchTitle(arg);
         } catch (Exception e) {
@@ -128,12 +128,13 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
         return info;
     }
 
-    public Type[] getSupportedSearchTypes() {
+    public MediaType[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
 
     public String getUrlForId(MetadataID id) throws Exception {
         if (!initialized) initialize();
+        
         return id.getId();
     }
 

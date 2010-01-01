@@ -6,12 +6,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.log4j.Logger;
-import org.jdna.media.IMediaFile;
-import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.CastMember;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
@@ -30,6 +27,9 @@ import sagex.api.MediaFileAPI;
 import sagex.api.ShowAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.IMediaResource;
+import sagex.phoenix.vfs.util.PathUtils;
 
 /**
  * Updates the Sage Show Metadata for a TV Episode.
@@ -56,7 +56,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
     public IMediaMetadata loadMetaData(IMediaResource mediaFile) {
         MediaMetadata md = new MediaMetadata();
         
-        Object file = SageMediaFile.getSageMediaFileObject(mediaFile);
+        Object file = phoenix.api.GetSageMediaFile(mediaFile);
         if (file==null) {
             log.error("Can only load Sage Metadata For Sage MediaFiles");
             return md;
@@ -167,7 +167,8 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
     }
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
-        if (!(mediaFile instanceof SageMediaFile)) {
+        Object sageMF = phoenix.api.GetSageMediaFile(mediaFile);
+        if (sageMF == null) {
             log.error("Currently the Sage Show Persistence can only work on native Sage Media files.");
             return;
         }
@@ -175,7 +176,6 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         MetadataAPI.normalizeMetadata((IMediaFile)mediaFile, md, options);
 
         log.debug("Storing Sage Metdata directly to the Sage SHOW object");
-        Object sageMF = SageMediaFile.getSageMediaFileObject(mediaFile);
         Object airing = MediaFileAPI.GetMediaFileAiring(sageMF);
         Object origShow = AiringAPI.GetShow(airing);
 
@@ -185,7 +185,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         String title = MetadataAPI.getDisplayTitle(md);
         
         if (title==null) {
-            log.warn("Title is null for: " + mediaFile.getLocation().toString() + "; aborting.");
+            log.warn("Title is null for: " + PathUtils.getLocation(mediaFile) + "; aborting.");
             return;
         }
 

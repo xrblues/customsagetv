@@ -1,12 +1,11 @@
 package test.junit;
 
+import static org.junit.Assert.assertEquals;
+import static test.junit.lib.FilesTestCase.makeFile;
+
 import java.io.File;
 import java.util.Map;
 
-import net.sf.sageplugins.sageutils.SageApi;
-
-import org.jdna.media.FileMediaFile;
-import org.jdna.media.IMediaFile;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MetadataAPI;
@@ -14,15 +13,14 @@ import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.sage.SageMetadataConfiguration;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
-import org.jdna.sage.media.SageMediaFile;
 import org.junit.Test;
 
 import sagex.SageAPI;
 import sagex.api.MediaFileAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.impl.FileResourceFactory;
 import sagex.stub.StubSageAPI;
-import static org.junit.Assert.*;
-import static test.junit.lib.FilesTestCase.makeFile;
 
 public class TestNormalizeMetadata {
     @Test
@@ -163,7 +161,7 @@ public class TestNormalizeMetadata {
         StubSageAPI provider = new StubSageAPI();
         SageAPI.setProvider(provider);
         Object mfObj = MediaFileAPI.AddMediaFile(makeFile("TV/bender.avi"), "TV");
-        SageMediaFile smf = new SageMediaFile(mfObj);
+        IMediaFile smf = phoenix.api.GetMediaFile(mfObj);
         
         IMediaMetadata md = getTVMetadataForDisc();
 
@@ -180,7 +178,7 @@ public class TestNormalizeMetadata {
     }
     
     private IMediaFile getTVMediaFile() {
-        return new FileMediaFile(new File("/tmp/futurama-bendergetsmade.avi"));
+        return (IMediaFile) FileResourceFactory.createResource(new File("/tmp/futurama-bendergetsmade.avi"));
     }
     
     private IMediaMetadata getTVMetadata() {

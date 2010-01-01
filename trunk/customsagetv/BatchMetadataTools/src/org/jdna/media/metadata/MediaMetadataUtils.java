@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
-import org.jdna.media.CDStackingModel;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.url.UrlConfiguration;
 
@@ -37,7 +36,9 @@ public class MediaMetadataUtils {
             log.debug("Writing Image; Url: " + url + "; ToFile: " + out.getAbsolutePath());
 
             // make the directory, if it doesn't exist.
-            out.getParentFile().mkdirs();
+            if (out.getParentFile()!=null) {
+                out.getParentFile().mkdirs();
+            }
 
             URL u = new URL(url);
             URLConnection conn = u.openConnection();
@@ -52,7 +53,7 @@ public class MediaMetadataUtils {
             }
             ImageIO.write(img, "jpg", out);
         } catch (Throwable t) {
-            log.error("Failed to write image: " + url + "; to file: " + out.getAbsolutePath(), t);
+            log.warn("Failed to write image: " + url + "; to file: " + out.getAbsolutePath(), t);
         } finally {
             if (out.exists() && out.length() == 0) {
                 log.info("Removing 0 byte file: " + out.getAbsolutePath() + "; for url: " + url);
@@ -75,7 +76,9 @@ public class MediaMetadataUtils {
             log.debug("Writing Image; Url: " + url + "; ToFile: " + out.getAbsolutePath() + "; WithScale: " + scaleWidth);
 
             // make the directory, if it doesn't exist.
-            out.getParentFile().mkdirs();
+            if (out.getParentFile()!=null) {
+                out.getParentFile().mkdirs();
+            }
 
             URL u = new URL(url);
             URLConnection conn = u.openConnection();
@@ -149,8 +152,9 @@ public class MediaMetadataUtils {
     public static String cleanSearchCriteria(String s, boolean removeYear) {
         String wordTokens[] = GroupProxy.get(MetadataConfiguration.class).getWordsToClean().split(",");
 
-        CDStackingModel stackModel = new CDStackingModel();
-        s = stackModel.getStackedTitle(s);
+        // TODO: Use xbmc scrapers for titles
+        //CDStackingModel stackModel = new CDStackingModel();
+        //s = stackModel.getStackedTitle(s);
         log.debug("Cleaning Search Criteria: " + s);
 
         String parts[] = removeNonSearchCharacters(s).split(" ");

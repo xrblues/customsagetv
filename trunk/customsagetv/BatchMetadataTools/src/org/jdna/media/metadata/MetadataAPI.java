@@ -12,17 +12,17 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.jdna.media.IMediaFile;
 import org.jdna.media.MediaConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 import org.jdna.media.metadata.impl.sage.SageMetadataConfiguration;
 import org.jdna.media.metadata.impl.sage.SageProperty;
-import org.jdna.sage.media.SageMediaFile;
 
 import sagex.api.MediaFileAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.MediaArtifactType;
 import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.util.PathUtils;
 
 /**
  * Static class for working with metadata fields in a typesafe manner
@@ -228,7 +228,7 @@ public class MetadataAPI {
     public static String getCDFromMediaFile(IMediaFile mf) {
         MediaConfiguration medaiCfg = GroupProxy.get(MediaConfiguration.class);
         Pattern cds = Pattern.compile(medaiCfg.getStackingModelRegex());
-        String name = mf.getBasename();
+        String name = PathUtils.getBasename(mf);
         Matcher m = cds.matcher(name);
         String cd=null;
         if (m.find()) {
@@ -281,8 +281,8 @@ public class MetadataAPI {
         }
         
         boolean importAsTV = options.isImportAsTV() && (isValidSeason(md) || MetadataAPI.isTV(md));
-        if (mf instanceof SageMediaFile) {
-            Object sagemf = SageMediaFile.getSageMediaFileObject(mf);
+        Object sagemf = phoenix.api.GetSageMediaFile(mf);
+        if (sagemf != null) {
             importAsTV = importAsTV || MediaFileAPI.IsTVFile(sagemf);
         }
         

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Make this contain a map of ids
 public class MetadataID implements Serializable {
     private static final long serialVersionUID = 1L;
     
@@ -29,11 +28,11 @@ public class MetadataID implements Serializable {
     public MetadataID() {
     }
     
-    private String key, id;
+    private String provider, id;
     private Map<String, String> args = new HashMap<String, String>();
     
-    public MetadataID(String key, String id) {
-        this.key=key;
+    public MetadataID(String provider, String id) {
+        this.provider=provider;
         this.id=id;
     }
     
@@ -50,7 +49,7 @@ public class MetadataID implements Serializable {
         }
         
         String keyParts[] = getNVP(nvps[0]);
-        this.key = keyParts[0];
+        this.provider = keyParts[0];
         this.id=keyParts[1];
         
         if (nvps.length>1) {
@@ -61,12 +60,12 @@ public class MetadataID implements Serializable {
         }
     }
     
-    public String getKey() {
-        return key;
+    public String getProvider() {
+        return provider;
     }
     
-    public void setKey(String key) {
-        this.key = key;
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
     
     public String getId() {
@@ -86,7 +85,7 @@ public class MetadataID implements Serializable {
     }
     
     public String toIDString() {
-        StringBuilder sb = new StringBuilder(key + ":" + id);
+        StringBuilder sb = new StringBuilder(provider + ":" + id);
         if (getArgs().size()>0) {
             for (Map.Entry<String, String> me : getArgs().entrySet()) {
                 sb.append(";").append(me.getKey()).append(":").append(me.getValue());
@@ -106,7 +105,7 @@ public class MetadataID implements Serializable {
         int result = 1;
         result = prime * result + ((args == null) ? 0 : args.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
+        result = prime * result + ((provider == null) ? 0 : provider.hashCode());
         return result;
     }
 
@@ -122,9 +121,9 @@ public class MetadataID implements Serializable {
         if (id == null) {
             if (other.id != null) return false;
         } else if (!id.equals(other.id)) return false;
-        if (key == null) {
-            if (other.key != null) return false;
-        } else if (!key.equals(other.key)) return false;
+        if (provider == null) {
+            if (other.provider != null) return false;
+        } else if (!provider.equals(other.provider)) return false;
         return true;
     }
 }

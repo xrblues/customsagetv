@@ -1,10 +1,12 @@
 package org.jdna.metadataupdater;
 
-import org.jdna.media.IMediaFile;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MetadataAPI;
-import org.jdna.util.ProgressTracker;
+
+import sagex.phoenix.progress.ProgressTracker;
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.util.PathUtils;
 
 public class ConsoleProgressTracker extends ProgressTracker<IMediaFile> {
     private IMediaMetadataPersistence persistence = null;
@@ -17,7 +19,7 @@ public class ConsoleProgressTracker extends ProgressTracker<IMediaFile> {
     @Override
     public void addFailed(IMediaFile item, String msg, Throwable t) {
         super.addFailed(item, msg, t);
-        System.out.println("Skipping: " + item.getLocation() + "; Message: " + msg);
+        System.out.println("Skipping: " + PathUtils.getLocation(item) + "; Message: " + msg);
     }
 
     @Override
@@ -30,10 +32,6 @@ public class ConsoleProgressTracker extends ProgressTracker<IMediaFile> {
             title=MetadataAPI.getMediaTitle(md);
         }
         
-        System.out.printf("Updated: %s; %s\n", title, item.getLocation());
-        
-        // touch the resource, so that Sage will reload.
-        item.touch();
-
+        System.out.printf("Updated: %s; %s\n", title, PathUtils.getLocation(item));
     }
 }

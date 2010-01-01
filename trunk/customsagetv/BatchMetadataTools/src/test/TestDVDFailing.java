@@ -5,8 +5,6 @@ import java.io.File;
 import org.apache.log4j.BasicConfigurator;
 
 import sagex.api.Configuration;
-import sagex.api.Database;
-import sagex.api.Global;
 
 public class TestDVDFailing {
     public static void main(String args[]) {

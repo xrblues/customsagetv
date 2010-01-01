@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import junit.framework.TestCase;
-
-import org.jdna.util.FileCleaner;
+import sagex.phoenix.vfs.impl.FileCleaner;
 
 public class FilesTestCase extends TestCase {
 

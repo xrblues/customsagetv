@@ -12,7 +12,8 @@ import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQuery.Type;
+
+import sagex.phoenix.fanart.MediaType;
 
 /**
  * A Container for multiple Metadata Providers.  When a search is performed, it will loop though the providers and search until it
@@ -35,7 +36,7 @@ public class MetadataProviderContainer implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return MediaMetadataFactory.getInstance().getProvider(result.getProviderId()).getMetaData(result);
+        return MediaMetadataFactory.getInstance().getProvider(result.getProviderId(), result.getMediaType()).getMetaData(result);
     }
 
     public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
@@ -87,8 +88,8 @@ public class MetadataProviderContainer implements IMediaMetadataProvider {
     /**
      * Container support all types
      */
-    public Type[] getSupportedSearchTypes() {
-        return Type.values();
+    public MediaType[] getSupportedSearchTypes() {
+        return MediaType.values();
     }
 
     public String getUrlForId(MetadataID id) throws Exception {

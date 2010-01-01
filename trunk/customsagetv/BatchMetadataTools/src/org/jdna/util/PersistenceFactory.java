@@ -1,7 +1,7 @@
 package org.jdna.util;
 
-import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.CompositeMediaMetadataPersistence;
+import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
 import org.jdna.media.metadata.impl.sage.SageTVPropertiesWithCentralFanartPersistence;

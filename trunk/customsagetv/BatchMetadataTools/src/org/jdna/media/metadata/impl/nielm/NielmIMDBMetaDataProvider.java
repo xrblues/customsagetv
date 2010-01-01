@@ -23,11 +23,12 @@ import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQuery.Type;
 import org.jdna.media.metadata.impl.imdb.IMDBConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBSearchResultParser;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
+
+import sagex.phoenix.fanart.MediaType;
 
 public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
     private static final Logger  log                   = Logger.getLogger(NielmIMDBMetaDataProvider.class);
@@ -40,7 +41,7 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
     private static IProviderInfo info                  = new ProviderInfo(PROVIDER_ID, PROVIDER_NAME, PROVIDER_DESC, PROVIDER_THUMNAIL_URL);
 
     private ImdbWebBackend       db                    = null;
-    private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
+    private static final MediaType[] supportedSearchTypes = new MediaType[] {MediaType.MOVIE};
 
     private IMDBConfiguration cfg = new IMDBConfiguration();
     
@@ -51,9 +52,9 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
     public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
         List<IMediaSearchResult> results = new ArrayList<IMediaSearchResult>();
 
-        if (query.getType() == SearchQuery.Type.MOVIE) {
+        if (query.getMediaType() == MediaType.MOVIE) {
             try {
-                String arg = query.get(SearchQuery.Field.TITLE);
+                String arg = query.get(SearchQuery.Field.QUERY);
                 Vector<Role> list = db.searchTitle(arg);
                 for (Role r : list) {
                     MediaSearchResult vsr = new MediaSearchResult();
@@ -117,7 +118,7 @@ public class NielmIMDBMetaDataProvider implements IMediaMetadataProvider {
         return info;
     }
 
-    public Type[] getSupportedSearchTypes() {
+    public MediaType[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
 

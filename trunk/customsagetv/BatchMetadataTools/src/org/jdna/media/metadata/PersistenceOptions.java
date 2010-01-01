@@ -12,6 +12,9 @@ public class PersistenceOptions {
     private String fileRenamePattern=null;
     private boolean importAsTV = false;
     private boolean useTitleMasks = false;
+    private boolean createProperties=true;
+    private boolean updateWizBin=false;
+    private boolean touchingFiles=false;
     
     public PersistenceOptions() {
     }
@@ -49,5 +52,44 @@ public class PersistenceOptions {
 
     public void setUseTitleMasks(boolean useTitleMasks) {
         this.useTitleMasks = useTitleMasks;
+    }
+
+    public boolean isCreateProperties() {
+        return createProperties;
+    }
+
+    /**
+     * @return the updateWizBin
+     */
+    public boolean isUpdateWizBin() {
+        return updateWizBin;
+    }
+
+    /**
+     * @param updateWizBin the updateWizBin to set
+     */
+    public void setUpdateWizBin(boolean updateWizBin) {
+        this.updateWizBin = updateWizBin;
+    }
+
+    /**
+     * @param createProperties the createProperties to set
+     */
+    public void setCreateProperties(boolean createProperties) {
+        this.createProperties = createProperties;
+    }
+
+    /**
+     * @return the touchingFiles
+     */
+    public boolean isTouchingFiles() {
+        return touchingFiles;
+    }
+
+    /**
+     * @param touchingFiles the touchingFiles to set
+     */
+    public void setTouchingFiles(boolean touchingFiles) {
+        this.touchingFiles = touchingFiles;
     }
 }

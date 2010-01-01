@@ -1,18 +1,12 @@
 package test;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jdna.media.CDStackingModel;
-import org.jdna.media.FileMediaFile;
-import org.jdna.media.MediaConfiguration;
 import org.jdna.media.metadata.MediaMetadataUtils;
-
-import sagex.phoenix.configuration.proxy.GroupProxy;
 
 public class TestRegexp {
     public static void main(String args[]) throws IOException {
@@ -208,13 +202,13 @@ public class TestRegexp {
     }
 
     public static void testStack(String s) {
-        FileMediaFile mf = new FileMediaFile(new File(s));
-        System.out.printf("String: %s; Name; %s, Basename: %s; Stacked: %s\n", s, mf.getTitle(), mf.getBasename(), new CDStackingModel().getStackedTitle(mf));
+        //FileMediaFile mf = new FileMediaFile(new File(s));
+        //System.out.printf("String: %s; Name; %s, Basename: %s; Stacked: %s\n", s, mf.getTitle(), mf.getBasename(), new CDStackingModel().getStackedTitle(mf));
 
-        Pattern p = Pattern.compile(GroupProxy.get(MediaConfiguration.class).getStackingModelRegex(), Pattern.CASE_INSENSITIVE);
-        Matcher m = p.matcher(mf.getTitle());
-        if (m.find()) {
-            System.out.printf("Regex: %s; Start Char: %s; Data: %s\n", p.pattern(), m.start(), mf.getTitle().substring(0, m.start()));
-        }
+        //Pattern p = Pattern.compile(GroupProxy.get(MediaConfiguration.class).getStackingModelRegex(), Pattern.CASE_INSENSITIVE);
+        //Matcher m = p.matcher(mf.getTitle());
+        //if (m.find()) {
+        //    System.out.printf("Regex: %s; Start Char: %s; Data: %s\n", p.pattern(), m.start(), mf.getTitle().substring(0, m.start()));
+        //}
     }
 }

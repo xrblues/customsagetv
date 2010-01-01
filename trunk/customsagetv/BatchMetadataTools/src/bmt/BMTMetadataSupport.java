@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
-import org.jdna.media.IMediaFile;
-import org.jdna.media.MovieResourceFilter;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
@@ -15,24 +13,17 @@ import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
-import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.metadata.impl.sage.SageProperty;
-import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
-import org.jdna.media.util.FilteredResourceVisitor;
-import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
-import org.jdna.sage.media.SageMediaFile;
-import org.jdna.sage.media.SageMediaFolder;
-import org.jdna.util.MediaScanner;
 import org.jdna.util.PersistenceFactory;
-import org.jdna.util.ProgressTracker;
-import org.jdna.util.ProgressTrackerManager;
 
 import sagex.api.MediaFileAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataProviderInfo;
 import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.IMetadataSupport;
+import sagex.phoenix.progress.ProgressTracker;
+import sagex.phoenix.progress.ProgressTrackerManager;
+import sagex.phoenix.vfs.IMediaFile;
 
 /**
  * Allows BMT to provide metadata support to the Phoenix Metadata apis.
@@ -42,7 +33,6 @@ import sagex.phoenix.fanart.IMetadataSupport;
  */
 public class BMTMetadataSupport implements IMetadataSupport {
     private static final Logger log = Logger.getLogger(BMTMetadataSupport.class);
-    private MetadataUpdaterConfiguration updaterConfig = GroupProxy.get(MetadataUpdaterConfiguration.class);
     private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
     
     private String currentTrackerId = null;
@@ -95,10 +85,10 @@ public class BMTMetadataSupport implements IMetadataSupport {
         try {
             // first we need to update the central fanart properties based on
             // the ui settings
-            updaterConfig.setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
-            updaterConfig.setFanartEnabled(phoenix.api.IsFanartEnabled());
+            metadataConfig.setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
+            metadataConfig.setFanartEnabled(phoenix.api.IsFanartEnabled());
 
-            IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(result.getProviderId());
+            IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(result.getProviderId(), result.getMediaType());
             IMediaMetadata md = prov.getMetaData((IMediaSearchResult) result);
             IMediaMetadataPersistence persistence = null; 
 
@@ -114,7 +104,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
             options.setOverwriteMetadata(true);
             options.setUseTitleMasks(true);
             
-            IMediaFile smf = new SageMediaFile(media);
+            IMediaFile smf = phoenix.api.GetMediaFile(media);
             MetadataAPI.normalizeMetadata(smf, md, options);
             
             // Save the sage properties, the update sage's wiz.bin, then download the fanart.
@@ -138,6 +128,9 @@ public class BMTMetadataSupport implements IMetadataSupport {
     public IMetadataSearchResult[] getMetadataSearchResults(String providerId, Object media) {
         log.debug("Searching for metadata; Provider: " + providerId + "; media: " + media);
         
+        // TODO: implement getMetadataSearchResults()
+        
+        /**
         if (media == null) {
             log.debug("getMetadataSearchResults() was passed a null media item");
             return null;
@@ -148,11 +141,11 @@ public class BMTMetadataSupport implements IMetadataSupport {
         }
 
         try {
-            SageMediaFile smf = new SageMediaFile(media);
+            IMediaFile smf = phoenix.api.GetMediaFile(media);
 
             SearchQuery q = SearchQueryFactory.getInstance().createQuery(smf);
-            if (smf.getContentType() == IMediaFile.ContentType.TV) {
-                q.setType(SearchQuery.Type.TV);
+            if (smf.isType(MediaResourceType.TV.value())) {
+                q.setMediaType(SearchQuery.Type.TV);
             }
 
             log.debug("Metadata Search for: " + q + "; media: " + media);
@@ -166,6 +159,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
         } catch (Exception e) {
             log.error("Failed to do a metadata lookup", e);
         }
+        */
         return null;
     }
 
@@ -202,27 +196,8 @@ public class BMTMetadataSupport implements IMetadataSupport {
                 log.error("Can't start another tracker until the current tracker is done!");
                 return null;
             }
-            
-            if (sageMediaFiles==null) {
-                log.error("Can't scan, since media files are null!");
-                return null;
-            }
 
-            log.info("BMT Media Scan about to start with " + sageMediaFiles.length + " items");
-            
-            MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
-            ProgressTracker<IMediaFile> tracker = new ProgressTracker<IMediaFile>();
-            PersistenceOptions options = new PersistenceOptions();
-            options.setImportAsTV(false);
-            options.setUseTitleMasks(true);
-            options.setOverwriteFanart(true);
-            options.setOverwriteMetadata(true);
-            AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(metadataConfig.getDefaultProviderId(), PersistenceFactory.getOnDemandPersistence(), options, SearchQuery.Type.MOVIE, tracker);
-            
-            FilteredResourceVisitor scanVisitor = new FilteredResourceVisitor(new MovieResourceFilter(), autoUpdater);
-            MediaScanner scanner = new MediaScanner(new SageMediaFolder(sageMediaFiles), scanVisitor);
-            currentTrackerId = ProgressTrackerManager.getInstance().runWithProgress(scanner, tracker);
-            log.info("BMT Media Scan was started with tracker id: " + currentTrackerId);
+            throw new UnsupportedOperationException("TODO: Not Implemented!");
         } catch (Throwable e) {
             log.error("Scan Failed!", e);
             currentTrackerId = null;

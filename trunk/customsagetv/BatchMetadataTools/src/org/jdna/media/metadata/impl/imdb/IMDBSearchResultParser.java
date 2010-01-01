@@ -12,6 +12,7 @@ import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
+import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -67,10 +68,12 @@ public class IMDBSearchResultParser extends URLSaxParser {
     private String 							searchTitle;                                                          
 
     private IMDBConfiguration cfg = new IMDBConfiguration();
+    private SearchQuery query = null;
     
-    public IMDBSearchResultParser(String url, String searchTitle) {
+    public IMDBSearchResultParser(SearchQuery query, String url, String searchTitle) {
         super(url);
         this.searchTitle = searchTitle;
+        this.query=query;
     }
 
     public List<IMediaSearchResult> getResults() { 	
@@ -95,7 +98,7 @@ public class IMDBSearchResultParser extends URLSaxParser {
                 aState = TITLE_READ_TITLE;
 
                 // create the IVIdeoResult
-                curResult = new MediaSearchResult(IMDBMetaDataProvider.PROVIDER_ID, 0.0f);
+                curResult = new MediaSearchResult(IMDBMetaDataProvider.PROVIDER_ID, query.getMediaType(),  0.0f);
 
                 // set the imdb title url
                 String imdbId = IMDBUtils.parseIMDBID(href);

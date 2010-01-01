@@ -3,11 +3,9 @@ package test;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jdna.media.IMediaFile;
-import org.jdna.sage.media.SageMediaFile;
-
 import sagex.SageAPI;
 import sagex.api.AiringAPI;
+import sagex.phoenix.vfs.IMediaFile;
 import sagex.stub.StubSageAPI;
 
 public class TestAiringParser {
@@ -24,8 +22,7 @@ public class TestAiringParser {
             if (airing!=null) {
                 System.out.println("Airing Title: " + AiringAPI.GetAiringTitle(airing));
             }
-            IMediaFile mf = new SageMediaFile(airing);
-            System.out.println("Media Title: " + mf.getTitle() + "; type: " + mf.getType() + "; content: " + mf.getContentType());
+            IMediaFile mf = phoenix.api.GetMediaFile(airing);
         }
     }
 }

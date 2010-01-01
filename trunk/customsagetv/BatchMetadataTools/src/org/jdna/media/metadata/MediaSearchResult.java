@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import sagex.phoenix.fanart.MediaType;
+
 public class MediaSearchResult implements IMediaSearchResult, Serializable {
     private static final long serialVersionUID = 2L;
 
@@ -18,13 +20,16 @@ public class MediaSearchResult implements IMediaSearchResult, Serializable {
     private MetadataID metadataId;
     private float			score;
     private Map<String,String> extraArgs = new HashMap<String, String>();
+
+    private MediaType type;
     
     public MediaSearchResult() {
     	
     }
     
-    public MediaSearchResult(String providerId, float score) {
+    public MediaSearchResult(String providerId, MediaType type, float score) {
         this.providerId = providerId;
+        this.type=type;
         this.score = score;
     }
 
@@ -149,5 +154,9 @@ public class MediaSearchResult implements IMediaSearchResult, Serializable {
     
     public String toString() {
         return providerId + "; " + title + "; " + score + "; " + url;
+    }
+
+    public MediaType getMediaType() {
+        return type;
     }
 }

@@ -10,9 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.media.IMediaFile;
-import org.jdna.media.IMediaResource;
-import org.jdna.media.StackedMediaFile;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.MediaMetadataUtils;
@@ -21,33 +18,32 @@ import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
-import org.jdna.media.util.PathUtils;
-import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.util.StoredStringSet;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.FanartUtil;
 import sagex.phoenix.fanart.MediaArtifactType;
 import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.util.PathUtils;
 
 public class FanartStorage {
     private static final FanartStorage instance = new FanartStorage();
     private static final Logger        log      = Logger.getLogger(FanartStorage.class);
     
-    private MetadataUpdaterConfiguration updaterConfig = GroupProxy.get(MetadataUpdaterConfiguration.class);
     private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
 
     public void saveFanart(IMediaFile mediaFileParent, String title, IMediaMetadata md, PersistenceOptions options) {
         MediaArtifactType[] localArtTypes = null;
         boolean localFanart = false;
-        if (updaterConfig.isFanartEnabled() && !StringUtils.isEmpty(updaterConfig.getFanartCentralFolder())) {
-            log.info("Using Central Fanart: " + updaterConfig.getFanartCentralFolder());
+        if (metadataConfig.isFanartEnabled() && !StringUtils.isEmpty(metadataConfig.getFanartCentralFolder())) {
+            log.info("Using Central Fanart: " + metadataConfig.getFanartCentralFolder());
             for (MediaArtifactType mt : MediaArtifactType.values()) {
                 saveCentralFanart(title, md, mt, options);
             }
             localArtTypes = new MediaArtifactType[] { MediaArtifactType.POSTER };
             localFanart = metadataConfig.isEnableDefaultSTVPosterCompatibility();
-        } else if (updaterConfig.isFanartEnabled()) {
+        } else if (metadataConfig.isFanartEnabled()) {
             log.info("Using Local Fanart; The central fanart folder is not set.");
             localArtTypes = MediaArtifactType.values();
             localFanart = true;
@@ -64,29 +60,17 @@ public class FanartStorage {
     }
 
     private void saveLocalFanartForTypes(IMediaFile mediaFileParent, IMediaMetadata md, PersistenceOptions options, MediaArtifactType[] artTypes) {
-        if (mediaFileParent instanceof StackedMediaFile) {
-            for (IMediaResource mf : ((StackedMediaFile) mediaFileParent).getStackedFiles()) {
-                for (MediaArtifactType mt : artTypes) {
-                    try {
-                        saveLocalFanart((IMediaFile) mf, md, mt, options);
-                    } catch (Exception e) {
-                        log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocation(), e);
-                    }
-                }
-            }
-        } else {
             for (MediaArtifactType mt : artTypes) {
                 try {
                     saveLocalFanart(mediaFileParent, md, mt, options);
                 } catch (Exception e) {
-                    log.error("Failed to save fanart: " + mt + " for file: " + mediaFileParent.getLocation(), e);
+                    log.error("Failed to save fanart: " + mt + " for file: " + PathUtils.getLocation(mediaFileParent), e);
                 }
             }
-        }
     }
 
     private void saveLocalFanart(IMediaFile mediaFileParent, IMediaMetadata md, MediaArtifactType mt, PersistenceOptions options) throws IOException {
-        File mediaFile = PathUtils.toFile(mediaFileParent.getLocation());
+        File mediaFile = PathUtils.getFirstFile(mediaFileParent);
 
         // media type is not important for local fanart
         File imageFile = FanartUtil.getLocalFanartForFile(mediaFile, MediaType.MOVIE, mt);
@@ -140,7 +124,7 @@ public class FanartStorage {
     private boolean shouldSkipFile(File imageFile) {
         boolean skip = false;
         // only do this if we are using the central fanart
-        if ((updaterConfig.isFanartEnabled() && !StringUtils.isEmpty(updaterConfig.getFanartCentralFolder()))) {
+        if ((metadataConfig.isFanartEnabled() && !StringUtils.isEmpty(metadataConfig.getFanartCentralFolder()))) {
             try {
                 File storedFile = new File(imageFile.getParentFile(), "images");
                 StoredStringSet set = new StoredStringSet();
@@ -169,7 +153,7 @@ public class FanartStorage {
     }
 
     private void saveCentralFanart(String title, IMediaMetadata md, MediaArtifactType mt, PersistenceOptions options) {
-        String centralFolder = updaterConfig.getFanartCentralFolder();
+        String centralFolder = metadataConfig.getFanartCentralFolder();
         if (centralFolder == null) {
             throw new RuntimeException("Central Fanart Support is enabled, but no central folder location is set!");
         }
