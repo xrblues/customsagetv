@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 20/07/09 5:47 PM
+ * Generated Date/Time: 1/1/10 10:04 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/WidgetAPIFactory.html'>WidgetAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -108,6 +108,9 @@ public class WidgetAPIFactory {
    }
    if (command.equals("GetDefaultSTVFile")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetDefaultSTVFile",parameters,null);
+   }
+   if (command.equals("GetUIWidgetContext")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIWidgetContext",parameters,null);
    }
    throw new RuntimeException("Invalid WidgetAPIFactory Command: "+command);
    }

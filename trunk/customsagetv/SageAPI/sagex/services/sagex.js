@@ -19,11 +19,12 @@ function Echo(name) {
 }
 
 /**
- * Simple Service to return the Current Context (for testing)
+ * Simple Service to return the Current Context
+ 
  * @return
  */
 function GetUIContext() {
-	return SageAPI.getUIContext();
+	return SageAPI.GetUIContext();
 }
 
  /**

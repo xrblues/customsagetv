@@ -4,7 +4,7 @@
 	
 	<property name="target" value="target"/>
 	<property name="name" value="sagex.api"/>
-	<property name="version" value="6.5.20"/>
+	<property name="version" value="6.6.1"/>
 	<property name="jarname" value="${name}.jar"/>
 
 	<path id="SageAPI.classpath">
@@ -35,7 +35,7 @@
 			<fileset dir="src" excludes="**/*.java" />
 		</copy>
 		<mkdir dir="target/classes"/>
-		<javac debug="true" classpathref="AppClasspath" srcdir="src" destdir="target/classes">
+		<javac debug="true" classpathref="AppClasspath" source="1.5" target="1.5" srcdir="src" destdir="target/classes">
 		</javac>
 	</target>
 
@@ -60,6 +60,7 @@
 		</jar>
 		
 		<!-- update the MovieMetadata project, if it exists -->
+		<copy file="${target}/sage/JARs/${jarname}" todir="target" failonerror="false"/>
 		<copy file="${target}/sage/JARs/${jarname}" todir="../MovieMetadataUpdater/libs/" failonerror="false"/>
 		<copy file="${target}/sage/JARs/${jarname}" todir="../Phoenix/lib/" failonerror="false"/>
 	</target>

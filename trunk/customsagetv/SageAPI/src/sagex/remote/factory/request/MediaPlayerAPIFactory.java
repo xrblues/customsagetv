@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 20/07/09 5:47 PM
+ * Generated Date/Time: 1/1/10 10:04 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaPlayerAPIFactory.html'>MediaPlayerAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -83,7 +83,20 @@ public class MediaPlayerAPIFactory {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"Watch",parameters,java.lang.Object.class);
    }
    if (command.equals("WatchLive")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"WatchLive",parameters,java.lang.String.class,long.class);
+      if (parameters!=null && parameters.length == 2) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "WatchLive", parameters, java.lang.String.class,long.class);
+      }
+      if (parameters!=null && parameters.length == 3) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "WatchLive", parameters, java.lang.String.class,long.class,java.lang.String.class);
+      }
+   }
+   if (command.equals("WatchLive")) {
+      if (parameters!=null && parameters.length == 2) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "WatchLive", parameters, java.lang.String.class,long.class);
+      }
+      if (parameters!=null && parameters.length == 3) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "WatchLive", parameters, java.lang.String.class,long.class,java.lang.String.class);
+      }
    }
    if (command.equals("LockTuner")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"LockTuner",parameters,java.lang.String.class);

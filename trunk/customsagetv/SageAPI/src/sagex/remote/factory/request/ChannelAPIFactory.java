@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 20/07/09 5:47 PM
+ * Generated Date/Time: 1/1/10 10:04 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ChannelAPIFactory.html'>ChannelAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */

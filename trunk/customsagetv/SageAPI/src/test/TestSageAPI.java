@@ -3,6 +3,7 @@ package test;
 import java.io.File;
 
 import sagex.SageAPI;
+import sagex.UIContext;
 import sagex.api.Configuration;
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
@@ -38,17 +39,17 @@ public class TestSageAPI {
 		}
 
 		// Simply media file test....
-		Object files[] = MediaFileAPI.GetMediaFiles("T");
-		if (files != null) {
-			System.out.println("Got Files: " + files.length);
-			Object mf = files[10];
-			System.out.println("Title: " + MediaFileAPI.GetMediaTitle(mf));
-			System.out.println("Runtime: " + MediaFileAPI.GetFileDuration(mf));
-			System.out.println("ID: " + MediaFileAPI.GetMediaFileID(mf));
-		}
+		//Object files[] = MediaFileAPI.GetMediaFiles("T");
+		//if (files != null) {
+		//	System.out.println("Got Files: " + files.length);
+		//	Object mf = files[10];
+		//	System.out.println("Title: " + MediaFileAPI.GetMediaTitle(mf));
+		//	System.out.println("Runtime: " + MediaFileAPI.GetFileDuration(mf));
+		//	System.out.println("ID: " + MediaFileAPI.GetMediaFileID(mf));
+		//}
 
 		// simple call to tell us how much video we have..
-		System.out.println("Total Video Duration: " + Global.GetTotalVideoDuration() / 3600);
+		//System.out.println("Total Video Duration: " + Global.GetTotalVideoDuration() / 3600);
 
 		// dump out our media import paths on the server
 		File[] libDirs = Configuration.GetLibraryImportPaths();
@@ -64,8 +65,21 @@ public class TestSageAPI {
 		String uiContexts[] = Global.GetUIContextNames();
 		for (String ui : uiContexts) {
 			System.out.println("Context: " + ui);
-			WidgetAPI.setUIContext(ui);
-			System.out.printf("Current STV File: %s\n", WidgetAPI.GetCurrentSTVFile());
+			System.out.printf("%s: STV File: %s\n", ui, WidgetAPI.GetCurrentSTVFile(new UIContext(ui)));
+			SageAPI.setUIContext(ui);
+            System.out.printf("%s: STV File: %s\n", ui, WidgetAPI.GetCurrentSTVFile(null));
+            
+            Configuration.SetProperty(new UIContext(ui), "/test/sagex/api", "TestVal");
+            String val = Configuration.GetProperty("/test/sagex/api", null);
+            if ("TestVal".equals(val)) {
+                System.out.println("That's not right!!  SetProperty with UI context set the server prop");
+            }
+            val = Configuration.GetProperty(new UIContext(ui), "/test/sagex/api", null);
+            if (!"TestVal".equals(val)) {
+                System.out.println("That's not right!!! GetProperty with client context did not work.");
+            } else {
+                System.out.println("Got Client Val: " + val);
+            }
 		}
 		System.out.printf("Current STV File: %s\n", WidgetAPI.GetCurrentSTVFile());
 		
@@ -95,7 +109,7 @@ public class TestSageAPI {
 		
 		System.out.println("Total Video Duration: " + Global.GetTotalVideoDuration() / 3600);
 
-		WidgetAPI.setUIContext(null);
+		SageAPI.setUIContext(null);
 	    
 		
 		System.out.println("Were Done.");
