@@ -13,6 +13,8 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import sagex.ILog;
+import sagex.LogProvider;
 import sagex.SageAPI;
 import sagex.remote.xmlrpc.RequestHelper;
 
@@ -23,6 +25,8 @@ public class ServiceFactory {
         private ScriptEngine engine;
         private long lastModified;
     }
+    
+    private ILog log = LogProvider.getLogger(ServiceFactory.class);
     
     private File serviceDir=null;
     private ScriptEngineManager manager = new ScriptEngineManager();
@@ -101,6 +105,7 @@ public class ServiceFactory {
         b.put("WidgetAPI",new sagex.api.WidgetAPI());
         b.put("Version",new sagex.api.Version());
         b.put("SageAPI", new sagex.SageAPI());
+        b.put("Log", log);
     }
 
 

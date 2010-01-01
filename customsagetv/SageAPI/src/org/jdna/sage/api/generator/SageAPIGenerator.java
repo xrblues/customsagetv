@@ -47,7 +47,7 @@ public class SageAPIGenerator {
 		pw.println(" * This Generated API is not Affiliated with SageTV.  It is user contributed.");
 		pw.println(" */");
 
-		// pw.println("import org.apache.log4j.Logger;");
+		pw.println("import sagex.UIContext;");
 
 		pw.printf("public class %s {\n", className);
 
@@ -66,14 +66,21 @@ public class SageAPIGenerator {
 			callSageSerice(pw, m);
 
 			pw.println("}\n");
+
+
+			if (m.comment != null && m.comment.trim().length() > 0) {
+                pw.println("/**");
+                pw.println(" * UI Context Aware Call<br/>");
+                pw.println(m.comment.trim());
+                pw.println(" */");
+            }
+			pw.printf("public static %s %s (UIContext _uicontext%s%s) {\n", fixSageApi(m.returnType), m.name, (createArgList(m.args,false).trim().length()>0)?",":"", createArgList(m.args,false));
+
+            // build the body to call a sage service
+            callSageSericeUI(pw, m);
+
+            pw.println("}\n");
 		}
-		
-		// now we generate a utility method for setting a context
-		pw.println("\n\n");
-		pw.println("/** Convenience method for setting this thread's UI Context\n@see sagex.SageAPI.setUIConext()*/");
-		pw.println("public static void setUIContext(String context) {");
-		pw.println("   sagex.SageAPI.setUIContext(context);");
-		pw.println("}");
 		
 		pw.println("}");
 
@@ -96,6 +103,18 @@ public class SageAPIGenerator {
     		pw.printf("  return %s;\n", safeReturnType(m.returnType));
 		}
 	}
+
+	private void callSageSericeUI(PrintWriter pw, SageMethod m) {
+        String objArr = buildObjectArray(m);
+        String retStr = buildReturnString(m);
+        if (m.returnType==null || m.returnType=="" || m.returnType.equals("void") || m.returnType.contains("[]")) {
+            pw.printf("  %s sagex.SageAPI.call(_uicontext, \"%s\", %s);\n", retStr, m.name, objArr);
+        } else {
+            pw.printf("  Object o = sagex.SageAPI.call(_uicontext, \"%s\", %s);\n", m.name, objArr);
+            pw.printf("  if (o!=null) %s o;\n", retStr);
+            pw.printf("  return %s;\n", safeReturnType(m.returnType));
+        }
+    }
 
 	private String safeReturnType(String type) {
 	    if (type.contains("boolean")) {

@@ -1,16 +1,33 @@
 package test;
 
-import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import sagex.api.AiringAPI;
-import sagex.api.MediaFileAPI;
+import org.apache.log4j.BasicConfigurator;
+
+import sagex.ILog;
+import sagex.LogProvider;
+import sagex.UIContext;
 
 public class TestMisc {
     public static void main(String args[]) {
-        Object mediafile = MediaFileAPI.GetMediaFileForFilePath(new File("/var/media/tv/Futurama-SpacePilot3000-2007144-0.ts"));
-        System.out.printf("     Title: %s\n", MediaFileAPI.GetMediaTitle(mediafile));
-        System.out.printf("Is Watched: %s\n", AiringAPI.IsWatched(mediafile)); 
+        BasicConfigurator.configure();
         
-        System.out.println("Object Class Name: " + Object.class.getName());
+        ILog log = LogProvider.getLogger(TestMisc.class);
+        log.info("Logging is working");
+        
+        UIContext ctx = UIContext.getCurrentContext();
+        log.debug("Context: " + ctx);
+        
+        String thread = "AWTThreadWatcher-001d098ac46c@ac4b99";
+        //String thread = "MiniUIServer@10a829";
+        //String thread = "Thread-21@da213a";
+        Pattern p = Pattern.compile("-([0-9a-f]{12}+)@");
+        Matcher m = p.matcher(thread);
+        if (m.find()) {
+            log.debug("UI: " + m.group(1));
+        } else {
+            log.debug("Nothing");
+        }
     }
 }

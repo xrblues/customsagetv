@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 20/07/09 5:47 PM
+ * Generated Date/Time: 1/1/10 10:04 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -97,6 +97,7 @@ static {
    commands.put("GetCaptureDeviceAudioSource","CaptureDeviceAPI");
    commands.put("GetAudioCaptureSources","CaptureDeviceAPI");
    commands.put("IsCaptureDeviceHardwareEncoder","CaptureDeviceAPI");
+   commands.put("GetCaptureDeviceBroadcastStandard","CaptureDeviceAPI");
    commands.put("GetInfraredTuningPlugin","CaptureDeviceInputAPI");
    commands.put("GetInfraredTuningPluginPortNumber","CaptureDeviceInputAPI");
    commands.put("SetInfraredTuningPluginAndPort","CaptureDeviceInputAPI");
@@ -658,6 +659,7 @@ static {
    commands.put("SetVolume","MediaPlayerAPI");
    commands.put("Watch","MediaPlayerAPI");
    commands.put("WatchLive","MediaPlayerAPI");
+   commands.put("WatchLive","MediaPlayerAPI");
    commands.put("LockTuner","MediaPlayerAPI");
    commands.put("WatchLocalFile","MediaPlayerAPI");
    commands.put("StartPlaylist","MediaPlayerAPI");
@@ -920,6 +922,7 @@ static {
    commands.put("ReleaseUIRefreshLock","Utility");
    commands.put("CalculateMD5Sum","Utility");
    commands.put("GetTimeSinceLastInput","Utility");
+   commands.put("GetFileAsString","Utility");
    commands.put("LoadSTVFile","WidgetAPI");
    commands.put("ImportSTVFile","WidgetAPI");
    commands.put("IsSTVModified","WidgetAPI");
@@ -952,6 +955,7 @@ static {
    commands.put("GetWidgetSymbol","WidgetAPI");
    commands.put("FindWidgetBySymbol","WidgetAPI");
    commands.put("GetDefaultSTVFile","WidgetAPI");
+   commands.put("GetUIWidgetContext","WidgetAPI");
 }
 
 
