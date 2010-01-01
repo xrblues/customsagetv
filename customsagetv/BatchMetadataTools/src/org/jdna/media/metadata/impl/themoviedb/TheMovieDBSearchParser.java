@@ -62,7 +62,7 @@ public class TheMovieDBSearchParser {
     }
     
     public TheMovieDBSearchParser(SearchQuery query) {
-        searchTitle = query.get(SearchQuery.Field.TITLE);
+        searchTitle = query.get(SearchQuery.Field.QUERY);
         this.url = UrlFactory.newUrl(String.format(SEARCH_URL, URLEncoder.encode(searchTitle), TheMovieDBMetadataProvider.getApiKey()));
 
         log.debug("TheMovieDB SearchQuery Url: " + url);

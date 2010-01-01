@@ -3,7 +3,6 @@ package org.jdna.media.metadata.impl.tvdb;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
@@ -13,13 +12,14 @@ import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQuery.Type;
+
+import sagex.phoenix.fanart.MediaType;
 
 public class TVDBMetadataProvider implements IMediaMetadataProvider {
     private Logger log = Logger.getLogger(TVDBMetadataProvider.class);
     public static final String   PROVIDER_ID = "tvdb";
     private static IProviderInfo info        = new ProviderInfo(PROVIDER_ID, "thetvdb.com", "Provides Fanart and Metadata from thetvdb.com", "");
-    private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.TV};
+    private static final MediaType[] supportedSearchTypes = new MediaType[] {MediaType.TV};
 
     public IProviderInfo getInfo() {
         return info;
@@ -30,10 +30,10 @@ public class TVDBMetadataProvider implements IMediaMetadataProvider {
     }
 
     public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
-        if (query.getType() ==  SearchQuery.Type.TV) {
+        if (query.getMediaType() ==  MediaType.TV) {
             return new TVDBSearchParser(query).getResults();
         } else {
-            throw new Exception("Unsupported Search Type: " + query.getType());
+            throw new Exception("Unsupported Search Type: " + query.getMediaType());
         }
     }
 
@@ -50,7 +50,7 @@ public class TVDBMetadataProvider implements IMediaMetadataProvider {
         return key;
     }
 
-    public Type[] getSupportedSearchTypes() {
+    public MediaType[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
 
@@ -60,7 +60,7 @@ public class TVDBMetadataProvider implements IMediaMetadataProvider {
         for (Map.Entry<String, String> me : id.getArgs().entrySet()) {
             sr.addExtraArg(me.getKey(), me.getValue());
         }
-        sr.setProviderId(id.getKey());
+        sr.setProviderId(id.getProvider());
         sr.setUrl(id.getId());
         return sr.getUrlWithExtraArgs();
     }

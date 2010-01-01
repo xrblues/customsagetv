@@ -11,9 +11,9 @@ import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQuery.Type;
 
 import sagex.phoenix.Phoenix;
+import sagex.phoenix.fanart.MediaType;
 
 public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     private static final Logger                 log               = Logger.getLogger(LocalDVDProfMetaDataProvider.class);
@@ -32,7 +32,7 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
     private boolean                             initialized       = false;
     private static LocalDVDProfMetaDataProvider instance          = new LocalDVDProfMetaDataProvider();
     
-    private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
+    private static final MediaType[] supportedSearchTypes = new MediaType[] {MediaType.MOVIE};
     
     private DVDProfilerLocalConfiguration cfg = new DVDProfilerLocalConfiguration();
 
@@ -62,7 +62,7 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
             }
         }
 
-        String arg = query.get(SearchQuery.Field.TITLE);
+        String arg = query.get(SearchQuery.Field.QUERY);
         try {
             return LocalMovieIndex.getInstance().searchTitle(arg);
         } catch (Exception e) {
@@ -139,7 +139,7 @@ public class LocalDVDProfMetaDataProvider implements IMediaMetadataProvider {
         return info;
     }
 
-    public Type[] getSupportedSearchTypes() {
+    public MediaType[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
 

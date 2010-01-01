@@ -30,7 +30,6 @@ import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQuery.Type;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBMovieMetaDataParser;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
@@ -41,6 +40,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.fanart.MediaType;
 
 public class XbmcMetadataProvider implements IMediaMetadataProvider {
     private static final Logger                 log                  = Logger.getLogger(XbmcMetadataProvider.class);
@@ -49,7 +49,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
 
     private IProviderInfo                       info;
     private XbmcScraper                         scraper;
-    private Type[]                              supportedSearchTypes = null;
+    private MediaType[]                              supportedSearchTypes = null;
 
     public XbmcMetadataProvider(String providerXml) {
         XbmcScraperParser parser = new XbmcScraperParser();
@@ -76,7 +76,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
 
         String content = scraper.getContent();
         if (!StringUtils.isEmpty(content)) {
-            List<SearchQuery.Type> types = new ArrayList<Type>();
+            List<MediaType> types = new ArrayList<MediaType>();
             Pattern p = Pattern.compile("([^,]+)");
             Matcher m = p.matcher(content);
             while (m.find()) {
@@ -84,21 +84,21 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
                 log.debug("Provider:  " + scraper.getId() + "; content type: " + type);
                 if ("movies".equalsIgnoreCase(type)) {
                     log.debug("Using Movies for Provider:  " + scraper.getId() + "; content type: " + type);
-                    types.add(SearchQuery.Type.MOVIE);
+                    types.add(MediaType.MOVIE);
                 } else if ("tvshows".equalsIgnoreCase(type)) {
                     log.debug("Using TV for Provider:  " + scraper.getId() + "; content type: " + type);
-                    types.add(SearchQuery.Type.TV);
+                    types.add(MediaType.TV);
                 } else if ("music".equalsIgnoreCase(type)) {
-                    types.add(SearchQuery.Type.MUSIC);
+                    types.add(MediaType.MUSIC);
                 } else {
                     log.debug("Unknown XBMC Scraper type: " + type);
                 }
             }
 
-            supportedSearchTypes = types.toArray(new SearchQuery.Type[types.size()]);
+            supportedSearchTypes = types.toArray(new MediaType[types.size()]);
         } else {
             log.warn("No Content Type for provider: " + scraper.getId());
-            supportedSearchTypes = new SearchQuery.Type[0];
+            supportedSearchTypes = new MediaType[0];
         }
     }
 
@@ -124,7 +124,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         XbmcMovieProcessor processor = new XbmcMovieProcessor(scraper);
         String xmlDetails = processor.getDetails(url, (extraArgs != null) ? extraArgs.get("id") : null);
 
-        if (extraArgs != null && SearchQuery.Type.TV.toString().equals(extraArgs.get("mediatype"))) {
+        if (extraArgs != null && MediaType.TV.toString().equals(extraArgs.get("mediatype"))) {
             md.set(MetadataKey.MEDIA_TYPE, MetadataUtil.TV_MEDIA_TYPE);
             processXmlContentForTV(xmlDetails, md, extraArgs);
         } else {
@@ -413,7 +413,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
 
     public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
         List<IMediaSearchResult> l = new ArrayList<IMediaSearchResult>();
-        String arg = query.get(SearchQuery.Field.TITLE);
+        String arg = query.get(SearchQuery.Field.QUERY);
         // xbmc wants title and year separated, so let's do that
         String args[] = ParserUtils.parseTitle(arg);
         String title = args[0];
@@ -479,9 +479,9 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         Map<String, String> args = new HashMap<String, String>();
         args.put("id", id);
 
-        if (query.getType() == SearchQuery.Type.MOVIE) {
-        } else if (query.getType() == SearchQuery.Type.TV) {
-            args.put("mediatype", SearchQuery.Type.TV.toString());
+        if (query.getMediaType() == MediaType.MOVIE) {
+        } else if (query.getMediaType() == MediaType.TV) {
+            args.put("mediatype", MediaType.TV.toString());
             if (!StringUtils.isEmpty(query.get(SearchQuery.Field.SEASON))) {
                 args.put("season", query.get(SearchQuery.Field.SEASON));
             }
@@ -504,7 +504,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         return url + extraArgs;
     }
 
-    public Type[] getSupportedSearchTypes() {
+    public MediaType[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
 

@@ -10,7 +10,6 @@ import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
-import org.jdna.sage.media.SageMediaFile;
 import org.jdna.sage.media.SageShowPeristence;
 
 import sagex.SageAPI;
@@ -41,7 +40,7 @@ public class TestBMTApis {
         Object smf = MediaFileAPI.GetMediaFileForFilePath(new File("/var/media/tv/Futurama-ISecondThatEmotion-2559577-0.ts"));
 
         IMetadataSearchResult[] results = phoenix.api.GetMetadataSearchResults(smf);
-        IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(results[0].getProviderId());
+        IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(results[0].getProviderId(), results[0].getMediaType());
         IMediaMetadata md = prov.getMetaData((IMediaSearchResult) results[0]);
 
         GroupProxy.get(MetadataConfiguration.class).setImportTVAsRecordedShows(true);
@@ -49,7 +48,7 @@ public class TestBMTApis {
         SageShowPeristence sp = new SageShowPeristence();
         PersistenceOptions options = new PersistenceOptions();
         options.setOverwriteMetadata(true);
-        sp.storeMetaData(md, new SageMediaFile(smf), options);
+        sp.storeMetaData(md, phoenix.api.GetMediaFile(smf), options);
     }
 
     public static void testRemoveShowMetadata() {

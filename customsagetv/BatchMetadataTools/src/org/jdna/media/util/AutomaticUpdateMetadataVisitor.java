@@ -5,10 +5,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.configuration.ConfigurationManager;
-import org.jdna.media.IMediaFile;
-import org.jdna.media.IMediaResource;
-import org.jdna.media.IMediaResourceVisitor;
-import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IMediaSearchResult;
@@ -19,7 +15,13 @@ import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
-import org.jdna.util.ProgressTracker;
+
+import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.progress.ProgressTracker;
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.IMediaResource;
+import sagex.phoenix.vfs.IMediaResourceVisitor;
+import sagex.phoenix.vfs.util.PathUtils;
 
 public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     private static final Logger    log = Logger.getLogger(AutomaticUpdateMetadataVisitor.class);
@@ -28,44 +30,46 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     private IMediaMetadataPersistence persistence;
     private PersistenceOptions options;
 
-    private SearchQuery.Type defaultSearchType;
+    private MediaType defaultSearchType;
     
     private ProgressTracker<IMediaFile> tracker;
 
-    public AutomaticUpdateMetadataVisitor(String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, SearchQuery.Type defaultSearchType, ProgressTracker<IMediaFile> tracker) {
-        this.provider = MediaMetadataFactory.getInstance().getProvider(providerId);
+    public AutomaticUpdateMetadataVisitor(String providerId, IMediaMetadataPersistence persistence, PersistenceOptions options, MediaType defaultSearchType, ProgressTracker<IMediaFile> tracker) {
+        this.provider = MediaMetadataFactory.getInstance().getProvider(providerId, defaultSearchType);
         this.options = options;
         this.persistence =  persistence;
         this.defaultSearchType=defaultSearchType;
         this.tracker=tracker;
     }
 
-    public void visit(IMediaResource resource) {
+    public boolean visit(IMediaResource resource) {
         if (tracker.isCancelled()) {
-            log.debug("Tracker is cancelled; Won't accept file: " + resource.getLocation());
-            return;
+            log.debug("Tracker is cancelled; Won't accept file: " + PathUtils.getLocation(resource));
+            return false;
         }
         
         try {
-            if (resource.getType() == IMediaResource.Type.File) {
-                tracker.setTaskName("Scanning: " + resource.getLocation());
+            if (resource instanceof IMediaFile) {
+                tracker.setTaskName("Scanning: " + PathUtils.getLocation(resource));
                 fetchMetaData((IMediaFile) resource);
             } else {
-                log.debug("Not a Media File: " + resource.getLocation());
+                log.debug("Not a Media File: " + PathUtils.getLocation(resource));
             }
         } catch (Exception e) {
-            log.error("Failed to find/update metadata for resource: " + resource.getLocation(), e);
-            tracker.addFailed((IMediaFile) resource, "Failed to find/update metadata for resource: " + resource.getLocation(), e);
-            log.error("Failed to visit MediaResource: " + resource.getLocation(), e);
+            log.error("Failed to find/update metadata for resource: " + PathUtils.getLocation(resource), e);
+            tracker.addFailed((IMediaFile) resource, "Failed to find/update metadata for resource: " + PathUtils.getLocation(resource), e);
+            log.error("Failed to visit MediaResource: " + PathUtils.getLocation(resource), e);
         } finally {
             tracker.worked(1);
         }
+        
+        return !tracker.isCancelled();
     }
 
     protected void fetchMetaData(IMediaFile file) throws Exception {
         SearchQuery query = null;
-        if (defaultSearchType!=null && defaultSearchType==SearchQuery.Type.TV) {
-            query = SearchQueryFactory.getInstance().createQuery(file, SearchQuery.Type.TV);
+        if (defaultSearchType!=null && defaultSearchType==MediaType.TV) {
+            query = SearchQueryFactory.getInstance().createQuery(file, MediaType.TV);
         } else {
             query = SearchQueryFactory.getInstance().createQuery(file);
         }
@@ -83,9 +87,9 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
         IMediaSearchResult result = null;
         
         // check to see if there is a configured title id for this query, if so, then use it.
-        MetadataID mid = ConfigurationManager.getInstance().getMetadataIdForTitle(query.get(SearchQuery.Field.TITLE));
+        MetadataID mid = ConfigurationManager.getInstance().getMetadataIdForTitle(query.get(SearchQuery.Field.QUERY));
         if (mid!=null) {
-            log.debug("Found a Configured MetadataID: " + mid + "; for Title: " + query.get(SearchQuery.Field.TITLE));
+            log.debug("Found a Configured MetadataID: " + mid + "; for Title: " + query.get(SearchQuery.Field.QUERY));
             // see if we have a result that matches
             for (IMediaSearchResult sr : results) {
                 if (mid.equals(sr.getMetadataId())) {
@@ -97,10 +101,10 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
             
             if (result==null) {
                 log.warn("Could not find search result for the metadata-titles id: " + mid + " will create it dynamically.");
-                IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(mid.getKey());
+                IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(mid.getProvider(), query.getMediaType());
                 MediaSearchResult sr = new MediaSearchResult();
                 for (SearchQuery.Field f : SearchQuery.Field.values()) {
-                    if (f==SearchQuery.Field.TITLE) continue;
+                    if (f==SearchQuery.Field.QUERY) continue;
                     String s = query.get(f);
                     if (!StringUtils.isEmpty(s)) {
                         sr.addExtraArg(f.name(), s);
@@ -109,9 +113,9 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
                 }
                 
                 sr.setMetadataId(mid);
-                sr.setProviderId(mid.getKey());
+                sr.setProviderId(mid.getProvider());
                 sr.setScore(1.0f);
-                sr.setTitle(query.get(SearchQuery.Field.TITLE));
+                sr.setTitle(query.get(SearchQuery.Field.QUERY));
                 sr.setUrl(prov.getUrlForId(mid));
                 result=sr;
                 log.debug("Returning this handcrafted result: " + sr);
@@ -119,12 +123,12 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
         } else {
             if (!MediaMetadataFactory.getInstance().isGoodSearch(results)) {
                 log.debug("Not very sucessful with the search for: " + query);
-                String oldName = query.get(SearchQuery.Field.TITLE);
+                String oldName = query.get(SearchQuery.Field.QUERY);
                 String newName = MediaMetadataUtils.cleanSearchCriteria(oldName, true);
                 if (!oldName.equals(newName)) {
                     log.debug("We'll try again using: " + newName);
                     SearchQuery newQuery = new SearchQuery(query);
-                    newQuery.set(SearchQuery.Field.TITLE, newName);
+                    newQuery.set(SearchQuery.Field.QUERY, newName);
                     List<IMediaSearchResult> newResults = getSearchResultsForTitle(newQuery);
                     if (MediaMetadataFactory.getInstance().isGoodSearch(newResults)) {
                         log.debug("Our other search returned better results.. We'll use these.");
@@ -148,7 +152,7 @@ public class AutomaticUpdateMetadataVisitor implements IMediaResourceVisitor {
     }
 
     protected void handleNotFoundResults(IMediaFile file, SearchQuery query, List<IMediaSearchResult> results) {
-        log.debug("Nothing Found for query: " + query + "; File: " + file.getLocation());
+        log.debug("Nothing Found for query: " + query + "; File: " + PathUtils.getLocation(file));
         tracker.addFailed(file, "Nothing Found for Query: " + query);
     }
 

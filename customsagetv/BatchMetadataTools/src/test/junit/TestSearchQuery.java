@@ -7,16 +7,16 @@ import static test.junit.lib.FilesTestCase.makeFile;
 
 import java.io.File;
 
-import org.jdna.media.FileMediaFile;
-import org.jdna.media.IMediaFile;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.metadata.SearchQuery.Field;
-import org.jdna.sage.media.SageMediaFile;
 import org.junit.Test;
 
 import sagex.SageAPI;
 import sagex.api.MediaFileAPI;
+import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.impl.FileResourceFactory;
 import sagex.stub.MediaFileAPIProxy;
 import sagex.stub.StubSageAPI;
 
@@ -25,34 +25,30 @@ public class TestSearchQuery {
 
     @Test
     public void testCreateQueryIMediaResource() {
-        IMediaFile mf = new FileMediaFile(new File("Finding.Nemo.DVDRip.avi"));
+        IMediaFile mf = (IMediaFile) FileResourceFactory.createResource(new File("Finding.Nemo.DVDRip.avi"));
         SearchQuery q = SearchQueryFactory.getInstance().createQuery(mf);
-        assertParts(q, SearchQuery.Type.MOVIE, "Finding Nemo");
+        assertParts(q, MediaType.MOVIE, "Finding Nemo");
         
-        mf = new FileMediaFile(new File("House S01E02.avi"));
+        mf = (IMediaFile) FileResourceFactory.createResource(new File("House S01E02.avi"));
         q = SearchQueryFactory.getInstance().createQuery(mf);
-        assertParts(q, SearchQuery.Type.TV, "House", "01", "02");
+        assertParts(q, MediaType.TV, "House", "01", "02");
 
-        mf = new FileMediaFile(new File("House S1E2.avi"));
+        mf = (IMediaFile) FileResourceFactory.createResource(new File("House S1E2.avi"));
         q = SearchQueryFactory.getInstance().createQuery(mf);
-        assertParts(q, SearchQuery.Type.TV, "House", "1", "2");
+        assertParts(q, MediaType.TV, "House", "1", "2");
 
-        mf = new FileMediaFile(new File("House-Doctors-00000000-0.avi"));
+        mf = (IMediaFile) FileResourceFactory.createResource(new File("House-Doctors-00000000-0.avi"));
         q = SearchQueryFactory.getInstance().createQuery(mf);
-        assertParts(q, SearchQuery.Type.TV, "House", null, null);
+        assertParts(q, MediaType.TV, "House", null, null);
         
-        mf = new FileMediaFile(new File("House-00000000-0.avi"));
+        mf = (IMediaFile) FileResourceFactory.createResource(new File("House-00000000-0.avi"));
         q = SearchQueryFactory.getInstance().createQuery(mf);
-        assertParts(q, SearchQuery.Type.TV, "House", null, null);
+        assertParts(q, MediaType.TV, "House", null, null);
         
         // test if the year is parsed
-        mf = new FileMediaFile(new File("1984 (2009).avi"));
+        mf = (IMediaFile) FileResourceFactory.createResource(new File("1984 (2009).avi"));
         q = SearchQueryFactory.getInstance().createQuery(mf);
         assertEquals("2009", q.get(Field.YEAR));
-
-        mf = new FileMediaFile(new File("Movies/2004/In the Deep.avi"));
-        q = SearchQueryFactory.getInstance().createQuery(mf);
-        assertEquals("2004", q.get(Field.YEAR));
     }
     
     @Test
@@ -63,8 +59,8 @@ public class TestSearchQuery {
         assertNotNull(mfObj);
         System.out.println(MediaFileAPIProxy.getMediaFile(mfObj).title);
         assertTrue("Not a TV File", MediaFileAPI.IsTVFile(mfObj));
-        SearchQuery q = SearchQueryFactory.getInstance().createQuery(new SageMediaFile(mfObj));
-        assertParts(q, SearchQuery.Type.TV, "House", "01", "02");
+        SearchQuery q = SearchQueryFactory.getInstance().createQuery(phoenix.api.GetMediaFile(mfObj));
+        assertParts(q, MediaType.TV, "House", "01", "02");
 
 
         /// TODO fix search query to work with SageMediaFile
@@ -72,17 +68,17 @@ public class TestSearchQuery {
         
         mfObj = MediaFileAPI.AddMediaFile(makeFile("sage/TV/Leverage-TheTopHatJob-4836543-0.ts"), "TV");
         assertTrue("Not A TV File", MediaFileAPI.IsTVFile(mfObj));
-        q = SearchQueryFactory.getInstance().createQuery(new SageMediaFile(mfObj));
-        assertParts(q, SearchQuery.Type.TV, "Leverage");
+        q = SearchQueryFactory.getInstance().createQuery(phoenix.api.GetMediaFile(mfObj));
+        assertParts(q, MediaType.TV, "Leverage");
         assertEquals("The Top Hat Job", q.get(Field.EPISODE_TITLE));
     }
     
-    private void assertParts(SearchQuery q, SearchQuery.Type type, String title) {
-        assertEquals(type, q.getType());
-        assertEquals(title, q.get(Field.TITLE));
+    private void assertParts(SearchQuery q, MediaType type, String title) {
+        assertEquals(type, q.getMediaType());
+        assertEquals(title, q.get(Field.CLEAN_TITLE));
     }
 
-    private void assertParts(SearchQuery q, SearchQuery.Type type, String title, String season, String episode) {
+    private void assertParts(SearchQuery q, MediaType type, String title, String season, String episode) {
         assertParts(q, type, title);
         assertEquals(season, q.get(Field.SEASON));
         assertEquals(episode, q.get(Field.EPISODE));

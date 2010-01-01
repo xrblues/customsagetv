@@ -3,6 +3,8 @@ package test;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 
+import sagex.phoenix.fanart.MediaType;
+
 public class TestIMDBProvider extends TestIMDBParser {
     public static void main(String args[]) {
         TestIMDBProvider p = new TestIMDBProvider();
@@ -12,7 +14,7 @@ public class TestIMDBProvider extends TestIMDBParser {
     public void go(String arg) {
         IMDBMetaDataProvider finder = new IMDBMetaDataProvider();
         try {
-            TestUtils.dumpResults(finder.search(new SearchQuery(arg)));
+            TestUtils.dumpResults(finder.search(new SearchQuery(MediaType.MOVIE, arg)));
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

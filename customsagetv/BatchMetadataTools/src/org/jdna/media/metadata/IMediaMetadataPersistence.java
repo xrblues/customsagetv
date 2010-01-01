@@ -2,7 +2,7 @@ package org.jdna.media.metadata;
 
 import java.io.IOException;
 
-import org.jdna.media.IMediaResource;
+import sagex.phoenix.vfs.IMediaResource;
 
 public interface IMediaMetadataPersistence {
     /**

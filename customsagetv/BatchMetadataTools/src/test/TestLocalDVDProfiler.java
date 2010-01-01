@@ -11,6 +11,8 @@ import org.jdna.media.metadata.impl.dvdproflocal.IDVDProfMovieNodeVisitor;
 import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
 import org.w3c.dom.Element;
 
+import sagex.phoenix.fanart.MediaType;
+
 public class TestLocalDVDProfiler {
     public static void main(String args[]) throws Exception {
         DVDProfXmlFile file = new DVDProfXmlFile(new File("/home/seans/DevelopmentProjects/workspaces/sage/MovieMetadataUpdater/testing/DVDProfiler/dvd.xml"));
@@ -26,7 +28,7 @@ public class TestLocalDVDProfiler {
 
     public static void main2(String args[]) throws Exception {
         IMediaMetadataProvider prov = new LocalDVDProfMetaDataProvider();
-        List<IMediaSearchResult> results = prov.search(new SearchQuery("Batman Begins"));
+        List<IMediaSearchResult> results = prov.search(new SearchQuery(MediaType.MOVIE, "Batman Begins"));
 
         TestUtils.dumpResults(results);
 

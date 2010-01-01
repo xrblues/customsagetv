@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jdna.media.IMediaResource;
+
+import sagex.phoenix.vfs.IMediaResource;
 
 public class CompositeMediaMetadataPersistence implements IMediaMetadataPersistence {
     private static final Logger log = Logger.getLogger(CompositeMediaMetadataPersistence.class);

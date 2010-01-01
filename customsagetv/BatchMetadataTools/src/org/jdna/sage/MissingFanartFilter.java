@@ -1,12 +1,10 @@
 package org.jdna.sage;
 
-import org.jdna.media.IMediaResource;
-import org.jdna.media.IMediaResourceFilter;
-import org.jdna.sage.media.SageMediaFile;
-
 import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.vfs.IMediaResource;
+import sagex.phoenix.vfs.filters.IResourceFilter;
 
-public class MissingFanartFilter implements IMediaResourceFilter {
+public class MissingFanartFilter implements IResourceFilter {
     private MediaArtifactType fanart = null;
     
     public MissingFanartFilter(MediaArtifactType fanart) {
@@ -14,7 +12,7 @@ public class MissingFanartFilter implements IMediaResourceFilter {
     }
     
     public boolean accept(IMediaResource resource) {
-        Object file = SageMediaFile.getSageMediaFileObject(resource);
+        Object file = phoenix.api.GetSageMediaFile(resource);
         if (file != null) {
             if (fanart == MediaArtifactType.POSTER) {
                 return !phoenix.api.HasFanartPoster(file);

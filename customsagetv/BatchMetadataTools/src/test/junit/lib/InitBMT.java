@@ -2,11 +2,10 @@ package test.junit.lib;
 
 import java.io.File;
 
-import javax.swing.plaf.basic.BasicLookAndFeel;
+import junit.framework.TestCase;
 
 import org.apache.log4j.BasicConfigurator;
 
-import junit.framework.TestCase;
 import sagex.SageAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.ConfigurationMetadataManager;

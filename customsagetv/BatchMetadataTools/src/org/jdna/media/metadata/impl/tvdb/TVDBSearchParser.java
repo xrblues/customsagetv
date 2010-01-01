@@ -46,7 +46,7 @@ public class TVDBSearchParser {
     
     public TVDBSearchParser(SearchQuery query) {
         this.query=query;
-        searchTitle = query.get(SearchQuery.Field.TITLE);
+        searchTitle = query.get(SearchQuery.Field.QUERY);
         this.url = UrlFactory.newUrl(String.format(SEARCH_URL, URLEncoder.encode(searchTitle)));
 
         log.debug("TVDB SearchQuery Url: " + url);
@@ -79,7 +79,7 @@ public class TVDBSearchParser {
     private void addMovie(Element item) {
         MediaSearchResult sr = new MediaSearchResult();
         for (SearchQuery.Field f : SearchQuery.Field.values()) {
-            if (f==SearchQuery.Field.TITLE) continue;
+            if (f==SearchQuery.Field.QUERY) continue;
             String s = query.get(f);
             if (!StringUtils.isEmpty(s)) {
                 sr.addExtraArg(f.name(), s);

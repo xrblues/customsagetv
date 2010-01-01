@@ -13,7 +13,8 @@ import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQuery.Type;
+
+import sagex.phoenix.fanart.MediaType;
 
 public class StubMetadataProvider implements IMediaMetadataProvider {
     private IProviderInfo info = null;
@@ -21,7 +22,7 @@ public class StubMetadataProvider implements IMediaMetadataProvider {
     private Map<IMediaSearchResult, IMediaMetadata> metadataResultMap = new HashMap<IMediaSearchResult, IMediaMetadata>();
     private Map<MetadataID, IMediaMetadata> metadataIdMap = new HashMap<MetadataID, IMediaMetadata>();
     private Map<String, IMediaMetadata> metadataUrlMap = new HashMap<String, IMediaMetadata>();
-    private SearchQuery.Type[] types = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
+    private MediaType[] types = new MediaType[] {MediaType.MOVIE};
     private List<IMediaSearchResult> results = new LinkedList<IMediaSearchResult>();
     
     public StubMetadataProvider() {
@@ -88,7 +89,7 @@ public class StubMetadataProvider implements IMediaMetadataProvider {
         return md;
     }
 
-    public Type[] getSupportedSearchTypes() {
+    public MediaType[] getSupportedSearchTypes() {
         return types;
     }
 
@@ -101,7 +102,7 @@ public class StubMetadataProvider implements IMediaMetadataProvider {
         return results;
     }
 
-    public void setSupportedSearchTypes(SearchQuery.Type[] types) {
+    public void setSupportedSearchTypes(MediaType[] types) {
         this.types = types;
     }
     

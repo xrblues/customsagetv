@@ -19,6 +19,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.fanart.MediaType;
 
 public class LocalDVDProfParser {
     private static final Logger          log         = Logger.getLogger(LocalDVDProfParser.class);
@@ -36,7 +37,7 @@ public class LocalDVDProfParser {
 
     public LocalDVDProfParser(String id) throws Exception {
         this.id = id;
-        this.provider = (LocalDVDProfMetaDataProvider) MediaMetadataFactory.getInstance().getProvider(LocalDVDProfMetaDataProvider.PROVIDER_ID);
+        this.provider = (LocalDVDProfMetaDataProvider) MediaMetadataFactory.getInstance().getProvider(LocalDVDProfMetaDataProvider.PROVIDER_ID, MediaType.MOVIE);
         this.dvdFile = provider.getDvdProfilerXmlFile();
         this.node = dvdFile.findMovieById(id);
     }

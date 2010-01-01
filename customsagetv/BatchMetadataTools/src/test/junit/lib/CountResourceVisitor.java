@@ -3,13 +3,14 @@ package test.junit.lib;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jdna.media.IMediaResource;
-import org.jdna.media.IMediaResourceVisitor;
+import sagex.phoenix.vfs.IMediaResource;
+import sagex.phoenix.vfs.IMediaResourceVisitor;
 
 public class CountResourceVisitor implements IMediaResourceVisitor {
     List<IMediaResource> items = new LinkedList<IMediaResource>();
-    public void visit(IMediaResource resource) {
+    public boolean visit(IMediaResource resource) {
         items.add(resource);
+        return true;
     }
     
     public List<IMediaResource> getItems() {

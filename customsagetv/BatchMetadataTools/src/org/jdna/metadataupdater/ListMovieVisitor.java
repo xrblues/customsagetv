@@ -2,47 +2,50 @@ package org.jdna.metadataupdater;
 
 import java.util.List;
 
-import org.jdna.media.IMediaFile;
-import org.jdna.media.IMediaResource;
-import org.jdna.media.IMediaResourceVisitor;
-import org.jdna.media.IPath;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataKey;
+import org.jdna.util.PersistenceFactory;
 
 import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.IMediaResource;
+import sagex.phoenix.vfs.IMediaResourceVisitor;
+import sagex.phoenix.vfs.MediaResourceType;
+import sagex.phoenix.vfs.util.PathUtils;
 
 public class ListMovieVisitor implements IMediaResourceVisitor {
     private boolean verbose = false;
     private IMediaMetadataPersistence persistence;
 
-    public ListMovieVisitor(IMediaMetadataPersistence persistence, boolean verbose) {
+    public ListMovieVisitor(boolean verbose) {
         this.verbose = verbose;
-        this.persistence = persistence;
+        this.persistence = PersistenceFactory.getPropertiesPersistence();
         System.out.printf("\nListing Movies\n- = Missing MetaData;\n");
     }
 
-    public void visit(IMediaResource resource) {
-        if (resource.getType() == IMediaResource.Type.File) {
+    public boolean visit(IMediaResource resource) {
+        if (resource.isType(MediaResourceType.ANY_VIDEO.value())) {
             if (verbose) {
                 showMetadata((IMediaFile) resource);
             } else {
                 IMediaMetadata md = persistence.loadMetaData(resource);
                 IMediaFile mediaFile = (IMediaFile) resource;
                 String code = ((md == null) ? "-" : " ");
-                System.out.printf("%s %-40s (%s)\n", code, mediaFile.getTitle(), mediaFile.getLocation());
+                System.out.printf("%s %-40s (%s)\n", code, mediaFile.getTitle(), PathUtils.getLocation(mediaFile));
             }
         }
+        return true;
     }
 
     public void showMetadata(IMediaFile mf) {
-        printMetadata(persistence.loadMetaData(mf), mf.getName(), mf.getLocation());
+        printMetadata(persistence.loadMetaData(mf), PathUtils.getName(mf), PathUtils.getLocation(mf));
     }
     
-    public static void printMetadata(IMediaMetadata md, String name, IPath location) {
+    public static void printMetadata(IMediaMetadata md, String name, String location) {
         if (md == null) {
             System.out.println("No Metadata for: " + location);
         } else {

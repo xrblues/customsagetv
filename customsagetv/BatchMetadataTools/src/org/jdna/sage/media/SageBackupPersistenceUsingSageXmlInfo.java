@@ -6,12 +6,12 @@ import java.io.IOException;
 import net.sf.sageplugins.sagexmlinfo.SageXmlWriter;
 
 import org.apache.log4j.Logger;
-import org.jdna.media.IMediaResource;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.PersistenceOptions;
 
 import sagex.api.MediaFileAPI;
+import sagex.phoenix.vfs.IMediaResource;
 
 public class SageBackupPersistenceUsingSageXmlInfo implements IMediaMetadataPersistence {
     private Logger log = Logger.getLogger(SageBackupPersistenceUsingSageXmlInfo.class);
@@ -34,8 +34,8 @@ public class SageBackupPersistenceUsingSageXmlInfo implements IMediaMetadataPers
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
         try {
-            if (mediaFile instanceof SageMediaFile) {
-                Object sageFile = ((SageMediaFile) mediaFile).getInternalSageMediaObject();
+            Object sageFile = phoenix.api.GetSageMediaFile(mediaFile);
+            if (sageFile != null) {
                 if (!MediaFileAPI.IsTVFile(sageFile)) {
                     log.debug("Not a TV File: " + sageFile);
                     return;

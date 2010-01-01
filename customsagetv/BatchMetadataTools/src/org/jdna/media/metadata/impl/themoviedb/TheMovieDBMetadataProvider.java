@@ -9,13 +9,14 @@ import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQuery.Type;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
+
+import sagex.phoenix.fanart.MediaType;
 
 public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
     public static final String   PROVIDER_ID = "themoviedb.org";
     private static IProviderInfo info        = new ProviderInfo(PROVIDER_ID, "themoviedb.org", "Provides Fanart and Metadata from themoviedb.org", "http://www.themoviedb.org/images/tmdb/header-logo.png");
-    private static final Type[] supportedSearchTypes = new SearchQuery.Type[] {SearchQuery.Type.MOVIE};
+    private static final MediaType[] supportedSearchTypes = new MediaType[] {MediaType.MOVIE};
 
     public IProviderInfo getInfo() {
         return info;
@@ -26,10 +27,10 @@ public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
     }
 
     public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
-        if (query.getType() ==  SearchQuery.Type.MOVIE) {
+        if (query.getMediaType() ==  MediaType.MOVIE) {
             return new TheMovieDBSearchParser(query).getResults();
         } else {
-            throw new Exception("Unsupported Search Type: " + query.getType());
+            throw new Exception("Unsupported Search Type: " + query.getMediaType());
         }
     }
 
@@ -46,18 +47,18 @@ public class TheMovieDBMetadataProvider implements IMediaMetadataProvider {
         return key;
     }
 
-    public Type[] getSupportedSearchTypes() {
+    public MediaType[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
 
     public String getUrlForId(MetadataID id) throws Exception {
-        if (IMDBMetaDataProvider.PROVIDER_ID.equals(id.getKey())) {
+        if (IMDBMetaDataProvider.PROVIDER_ID.equals(id.getProvider())) {
             // imdb lookup
             TheMovieDBItemParser p = new TheMovieDBItemParser(String.format(TheMovieDBItemParser.IMDB_ITEM_URL, id.getId()));
             if (p.getMetadata() != null) {
                 return String.format(TheMovieDBItemParser.ITEM_URL, p.getTheMovieDBID());
             }
-        } else if ("themoviedb".equals(id.getKey()) || PROVIDER_ID.equals(id.getKey())) {
+        } else if ("themoviedb".equals(id.getProvider()) || PROVIDER_ID.equals(id.getProvider())) {
             // normal moviedb lookup
             return String.format(TheMovieDBItemParser.ITEM_URL, id.getId());
         }

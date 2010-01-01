@@ -1,9 +1,9 @@
 package org.jdna.media.util;
 
-import org.jdna.media.IMediaFile;
-import org.jdna.media.IMediaResource;
-import org.jdna.media.IMediaResourceVisitor;
-import org.jdna.util.ProgressTracker;
+import sagex.phoenix.progress.ProgressTracker;
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.IMediaResource;
+import sagex.phoenix.vfs.IMediaResourceVisitor;
 
 /**
  * Very Simple visitor that will add each visited item to a Tracker.  This is normally used with a FilteredVisitor so that
@@ -18,10 +18,11 @@ public class ProgressTrackerVisitor implements IMediaResourceVisitor {
         this.tracker=tracker;
     }
     
-    public void visit(IMediaResource resource) {
-        if (resource.getType() == IMediaResource.Type.File) {
+    public boolean visit(IMediaResource resource) {
+        if (resource instanceof IMediaFile) {
             tracker.addSuccess((IMediaFile) resource);
             tracker.worked(1);
         }
+        return true;
     }
 }

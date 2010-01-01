@@ -13,7 +13,6 @@ import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.metadata.impl.sage.SagePropertyType;
-import org.jdna.metadataupdater.MetadataUpdaterConfiguration;
 import org.jdna.metadataupdater.Version;
 
 import sagex.api.Configuration;
@@ -94,25 +93,36 @@ public class api {
         return plugins.contains(bmtClass);
     }
     
+    /**
+     * @deprecated now uses multiple provider ids for tv, movies, and music
+     * @return
+     */
+    @Deprecated()
     public static String GetCurrentMetadataProviderIds() {
         try {
-            return GroupProxy.get(MetadataConfiguration.class).getDefaultProviderId();
+            //return GroupProxy.get(MetadataConfiguration.class).getDefaultProviderId();
+            return "";
         } catch (Exception e) {
             return "";
         }
     }
 
+    /**
+     * @deprecated now uses multiple provider ids for tv, movies, and music
+     * @return
+     */
+    @Deprecated
     public static void SetCurrentProvidersIds(String list) {
-        System.out.println("Setting New Current Metadata Providers to: " + list);
-        GroupProxy.get(MetadataConfiguration.class).setDefaultProviderId(list);
-        SaveMetadataProviderConfiguration();
+        //System.out.println("Setting New Current Metadata Providers to: " + list);
+        //GroupProxy.get(MetadataConfiguration.class).setDefaultProviderId(list);
+        //SaveMetadataProviderConfiguration();
     }
     
     public static void SaveMetadataProviderConfiguration() {
         try {
             // update central fanart locations from phoenix
-            GroupProxy.get(MetadataUpdaterConfiguration.class).setFanartEnabled(phoenix.api.IsFanartEnabled());
-            GroupProxy.get(MetadataUpdaterConfiguration.class).setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
+            GroupProxy.get(MetadataConfiguration.class).setFanartEnabled(phoenix.api.IsFanartEnabled());
+            GroupProxy.get(MetadataConfiguration.class).setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
 
             Phoenix.getInstance().getConfigurationManager().save();
             System.out.println("Metadata Configuration is peristed.");
@@ -163,14 +173,19 @@ public class api {
      }
     
 
+    /**
+     * @deprecated now uses multiple provider ids for tv, movies, and music
+     * @return
+     */
+    @Deprecated
     private static void SafeAddProvider(String id, List<IProviderInfo> infos) {
-        try {
-            IMediaMetadataProvider mp = MediaMetadataFactory.getInstance().getProvider(id);
-            infos.add(mp.getInfo());
-        } catch (Exception e) {
-            System.out.println("Invalid Provider: removing id: " + id);
-            RemoveDefaultMetadataProvider(id);
-        }
+        //try {
+            //IMediaMetadataProvider mp = MediaMetadataFactory.getInstance().getProvider(id);
+            //infos.add(mp.getInfo());
+        //} catch (Exception e) {
+            //System.out.println("Invalid Provider: removing id: " + id);
+            //RemoveDefaultMetadataProvider(id);
+        //}
     }
 
     

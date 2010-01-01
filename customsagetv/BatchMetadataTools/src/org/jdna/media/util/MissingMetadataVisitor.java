@@ -1,11 +1,13 @@
 package org.jdna.media.util;
 
 import org.apache.commons.lang.StringUtils;
-import org.jdna.media.IMediaResource;
-import org.jdna.media.IMediaResourceVisitor;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MetadataAPI;
+
+import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.IMediaResource;
+import sagex.phoenix.vfs.IMediaResourceVisitor;
 
 /**
  * Resource Visitor that collects ONLY resources that contain missing metadata.
@@ -29,16 +31,17 @@ public class MissingMetadataVisitor implements IMediaResourceVisitor {
         this.missingVisitor=missingVisitor;
     }
 
-    public void visit(IMediaResource resource) {
-        if (resource.getType() == IMediaResource.Type.File) {
+    public boolean visit(IMediaResource resource) {
+        if (resource instanceof IMediaFile) {
             if (isMissingMetadata(persistence, resource)) {
                 missingVisitor.visit(resource);
             }
         }
+        return true;
     }
 
     public static boolean isMissingMetadata(IMediaMetadataPersistence persistence, IMediaResource resource) {
-        if (resource.getType() == IMediaResource.Type.File) {
+        if (resource instanceof IMediaFile) {
             try {
                 IMediaMetadata md = persistence.loadMetaData(resource);
 

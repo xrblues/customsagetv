@@ -1,30 +1,12 @@
 package org.jdna.sage;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.media.FileMediaFolder;
-import org.jdna.media.IMediaFile;
-import org.jdna.media.IMediaResource;
-import org.jdna.media.MovieResourceFilter;
-import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.media.metadata.IMediaMetadataPersistence;
-import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
-import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfilerLocalConfiguration;
-import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
-import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
-import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
-import org.jdna.metadataupdater.Version;
-import org.jdna.util.PersistenceFactory;
 
 import sage.MediaFileMetadataParser;
-import sagex.api.Configuration;
-import sagex.api.MediaFileAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 
 /**
@@ -39,9 +21,7 @@ import sagex.phoenix.configuration.proxy.GroupProxy;
 public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
     private static final Logger log = Logger.getLogger(MetadataUpdaterPlugin.class);
     public static boolean init = false;
-    
-    private static ScanningStatus status = ScanningStatus.getInstance();
-    
+
     private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
     private DVDProfilerLocalConfiguration dvdProfConfig =GroupProxy.get(DVDProfilerLocalConfiguration.class);
     private PluginConfiguration pluginConfig = GroupProxy.get(PluginConfiguration.class);
@@ -55,6 +35,18 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
      * 
      */
     public Object extractMetadata(File file, String arg) {
+        /**
+         * new model
+         * - read file
+         * - create a query
+         * - create persistence options
+         * - fire scan event
+         * - return null
+         * - track multiple returns of the same file to prevent sage from going into an endless loop
+         */
+        // TODO: Implemente Sage Metadata plugin
+        
+        /*
         // lazy load the static references, and only load them once
         try {
             if (!init) {
@@ -93,7 +85,6 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             boolean isExistingTVFile = sagemf!=null && MediaFileAPI.IsTVFile(sagemf);
             
             AutomaticUpdateMetadataVisitor automaticUpdater;
-            MovieResourceFilter            filter;
             IMediaMetadataPersistence      persistence;
             PersistenceOptions             options;
            
@@ -113,7 +104,6 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             
             status.beginTask("Automatic Plugin; Scanning: " + file.getAbsolutePath(), 1);
             automaticUpdater = new AutomaticUpdateMetadataVisitor(metadataConfig.getDefaultProviderId(), persistence, options, null, status);
-            filter = new MovieResourceFilter();
 
             // check if the dvd profiler info is not set, and if not set, then
             // use the sagemc defaults
@@ -145,10 +135,9 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             //} else {
             //    log.warn("Not an existing Sage Media File: " + file.getAbsolutePath() + "; Treating it as a regular File Media File.");
             // TODO: Changed to use this, because of a recursive issue when using a SageMediaFile.getTitle()
-                mr = FileMediaFolder.createResource(file);
+                mr = null; // FileMediaFolder.createResource(file);
             //}
             
-            if (filter.accept(mr)) {
                 log.debug("Scanning MediaFile: " + file.getAbsolutePath() + "; arg: " + arg + "; Providers: " + metadataConfig.getDefaultProviderId());
 
                 IMediaMetadata md = null;
@@ -170,7 +159,6 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                         }
                         return props;
                     }
-                }
 
                 // update the metadata and download fanart...
                 automaticUpdater.visit(mr);
@@ -206,6 +194,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
         }
 
         log.debug("Returning NULL Properties for File: " + file.getAbsolutePath());
+        */
         return null;
     }
 }
