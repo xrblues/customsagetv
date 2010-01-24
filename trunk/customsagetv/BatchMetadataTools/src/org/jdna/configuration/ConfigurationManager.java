@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.media.metadata.MetadataID;
 import org.jdna.util.PropertiesUtils;
 import org.jdna.util.SortedProperties;
 
@@ -59,25 +57,5 @@ public class ConfigurationManager {
     public synchronized void saveTitleMappings() throws IOException {
         log.debug("Writing Title mappings: " + titleMapPropsFile.getAbsolutePath());
         PropertiesUtils.store(titleMapProps, titleMapPropsFile, "Title to MediaProviderDataID mappings");
-    }
-    
-    public MetadataID getMetadataIdForTitle(String title) {
-        log.debug("Looking for MetadataID for title: " + title);
-        if (title==null) return null;
-        String mid = titleMapProps.getProperty(title);
-        if (!StringUtils.isEmpty(mid)) {
-            log.debug("Found MetadataID + " + mid + " for title: " + title);
-            return new MetadataID(mid);
-        }
-        log.debug("No MetadataID configured for title: " + title);
-        return null;
-    }
-    
-    public void setMetadataIdForTitle(String title, MetadataID id) {
-        if (id==null||title==null) {
-            log.warn("setMetadataForTitle(): title or id is null; Title: " + title + "; id: " + id);
-            return;
-        }
-        titleMapProps.setProperty(title, id.toIDString());
     }
 }

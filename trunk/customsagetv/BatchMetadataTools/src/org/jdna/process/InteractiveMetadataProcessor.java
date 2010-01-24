@@ -7,12 +7,12 @@ import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.metadata.SearchQuery.Field;
 
+import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaType;
 import sagex.phoenix.progress.IProgressMonitor;
 import sagex.phoenix.progress.ProgressTracker;
@@ -98,9 +98,9 @@ public abstract class InteractiveMetadataProcessor {
                 throw new RuntimeException("Can't process media files without a provider!");
             }
             
-            IMediaSearchResult result = null;
+            IMetadataSearchResult result = null;
             monitor.setTaskName("Searching for: " + query.get(Field.QUERY));
-            List<IMediaSearchResult> results=null;
+            List<IMetadataSearchResult> results=null;
             try {
                 results = searchByTitle(query, query.get(Field.QUERY), provider);
             } catch (Exception e1) {
@@ -154,13 +154,13 @@ public abstract class InteractiveMetadataProcessor {
      * @param monitor
      * @return selected result of null, if no result selected.
      */
-    protected abstract IMediaSearchResult selectResult(IMediaFile mf, SearchQuery query, List<IMediaSearchResult> results, ProgressTracker<MetadataItem> monitor);
+    protected abstract IMetadataSearchResult selectResult(IMediaFile mf, SearchQuery query, List<IMetadataSearchResult> results, ProgressTracker<MetadataItem> monitor);
 
     private void persistMetadata(SearchQuery query, IMediaMetadata md, IMediaFile file, PersistenceOptions options) throws Exception {
         persistence.storeMetaData(md, file, options);
     }
 
-    private List<IMediaSearchResult> searchByTitle(SearchQuery query, String searchTitle, IMediaMetadataProvider provider) throws Exception {
+    private List<IMetadataSearchResult> searchByTitle(SearchQuery query, String searchTitle, IMediaMetadataProvider provider) throws Exception {
         SearchQuery newQuery = SearchQuery.copy(query);
         newQuery.set(Field.QUERY, searchTitle);
         return provider.search(newQuery);

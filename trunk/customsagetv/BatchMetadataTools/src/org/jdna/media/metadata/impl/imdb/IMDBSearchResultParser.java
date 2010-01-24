@@ -8,14 +8,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
-import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.URLSaxParser;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+
+import sagex.phoenix.fanart.IMetadataSearchResult;
 
 /**
  * State Machine parser that will parse an IDMB Search Reults Url and build a
@@ -31,8 +31,6 @@ import org.xml.sax.SAXException;
  */
 public class IMDBSearchResultParser extends URLSaxParser {
     private static final Logger            log                 = Logger.getLogger(IMDBSearchResultParser.class);
-
-    public static final String             IMDB_TITLE_URL           = "http://%s/title/%s/";
 
     private static String                  POPULAR_TITLE_MATCH = "Popular Titles";
     private static String                  PARTIAL_TITLE_MATCH = "Titles (Approx Matches)";
@@ -54,11 +52,11 @@ public class IMDBSearchResultParser extends URLSaxParser {
     private String                         charBuffer          = null;
     private MediaSearchResult              curResult           = null;
 
-    private List<IMediaSearchResult>       results             = new ArrayList<IMediaSearchResult>();
+    private List<IMetadataSearchResult>       results             = new ArrayList<IMetadataSearchResult>();
 
-    private Comparator<IMediaSearchResult> sorter              = new Comparator<IMediaSearchResult>() {
+    private Comparator<IMetadataSearchResult> sorter              = new Comparator<IMetadataSearchResult>() {
 
-                                                                   public int compare(IMediaSearchResult o1, IMediaSearchResult o2) {
+                                                                   public int compare(IMetadataSearchResult o1, IMetadataSearchResult o2) {
                                                                        if(o1.getScore() > o2.getScore()) return -1;
                                                                 	   if(o1.getScore() < o2.getScore()) return 1;
                                                                        return 0;
@@ -67,7 +65,6 @@ public class IMDBSearchResultParser extends URLSaxParser {
                                                                };
     private String 							searchTitle;                                                          
 
-    private IMDBConfiguration cfg = new IMDBConfiguration();
     private SearchQuery query = null;
     
     public IMDBSearchResultParser(SearchQuery query, String url, String searchTitle) {
@@ -76,7 +73,7 @@ public class IMDBSearchResultParser extends URLSaxParser {
         this.query=query;
     }
 
-    public List<IMediaSearchResult> getResults() { 	
+    public List<IMetadataSearchResult> getResults() { 	
         Collections.sort(results, sorter);
         return results;
     }
@@ -103,8 +100,8 @@ public class IMDBSearchResultParser extends URLSaxParser {
                 // set the imdb title url
                 String imdbId = IMDBUtils.parseIMDBID(href);
                 log.debug("Setting IMDB ID: " + imdbId + " from href: " + href);
-                curResult.setMetadataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, imdbId));
-                curResult.setUrl(String.format(IMDB_TITLE_URL, cfg.getIMDbDomain(), imdbId));
+                curResult.setId(imdbId);
+                curResult.setUrl(IMDBUtils.createDetailUrl(imdbId));
             }
         }
     }

@@ -22,6 +22,7 @@ import org.jdna.media.metadata.impl.xbmc.XbmcScraper;
 import org.jdna.media.metadata.impl.xbmc.XbmcScraperParser;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaType;
 
 public class MediaMetadataFactory {
@@ -149,7 +150,7 @@ public class MediaMetadataFactory {
         metadataProviders.remove(provider);
     }
 
-    public List<IMediaSearchResult> search(String providerId, SearchQuery query) throws Exception {
+    public List<IMetadataSearchResult> search(String providerId, SearchQuery query) throws Exception {
         log.info("Searching: providerId: " + providerId + "; Query: " + query);
         IMediaMetadataProvider provider = getProvider(providerId, query.getMediaType());
         if (provider == null) {
@@ -159,7 +160,7 @@ public class MediaMetadataFactory {
         return provider.search(query);
     }
 
-    public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
+    public List<IMetadataSearchResult> search(SearchQuery query) throws Exception {
         if (metadataProviders.size() == 0) throw new Exception("No Providers Installed!");
         return metadataProviders.get(0).search(query);
     }
@@ -236,13 +237,13 @@ public class MediaMetadataFactory {
     }
     
     @Deprecated
-    public boolean isGoodSearch(List<IMediaSearchResult> results) {
+    public boolean isGoodSearch(List<IMetadataSearchResult> results) {
     	float goodScore = metadataCfg.getGoodScoreThreshold();
     	return results!=null && (results.size() > 0 && results.get(0).getScore() >= goodScore);
     }
     
-    public IMediaSearchResult getBestResultForQuery(List<IMediaSearchResult> results, SearchQuery query) {
-        IMediaSearchResult res = null;
+    public IMetadataSearchResult getBestResultForQuery(List<IMetadataSearchResult> results, SearchQuery query) {
+        IMetadataSearchResult res = null;
         
         String year = query.get(Field.YEAR);
         float goodScore = metadataCfg.getGoodScoreThreshold();
@@ -254,7 +255,7 @@ public class MediaMetadataFactory {
                 res = results.get(0);
             } else {
                 // attempt to find a good match that also includes the right year
-                for (IMediaSearchResult r : results) {
+                for (IMetadataSearchResult r : results) {
                     if (r.getScore() >= goodScore && year.equals(r.getYear())) {
                         res = r;
                         break;

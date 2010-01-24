@@ -160,6 +160,7 @@ public class CommandLine {
                 a = a.substring(2);
                 int pos = a.indexOf("=");
                 if (pos == -1) {
+                    log.debug("Adding Arg: [" + a + "]=[" + Boolean.TRUE + "]");
                     argList.add(new Arg(a, Boolean.TRUE));
                 } else {
                     String n = a.substring(0, pos);
@@ -169,14 +170,14 @@ public class CommandLine {
                     } else if ("false".equals(v)) {
                         v = Boolean.FALSE;
                     }
-                    log.debug("Adding Mapped Arg: [" + n + "]=[]" + v);
+                    log.debug("Adding Mapped Arg: [" + n + "]=[" + v + "]");
                     argList.add(new Arg(n, v));
                 }
             } else if (a.startsWith("-")) {
                 log.error("CommandLine does not support single - args! Skipping: " + a);
                 throw new Exception("CommandLine does not support single args! " + a);
             } else {
-                log.debug("Adding Unamed Arg: " + a);
+                log.debug("Adding Unamed Arg: [" + a + "]");
                 extra.add(a);
 
             }
@@ -255,38 +256,44 @@ public class CommandLine {
      * @throws Exception
      */
     public void applyToAnnotated(Object o) throws Exception {
+        Method m = getAnnotatedMethodForArg("EXTRAARGS", o);
+        if (m!=null) {
+            m.invoke(o, (Object) getExtraArgs());
+        }
+        
+        for (Arg arg: argList) {
+            m = getAnnotatedMethodForArg(arg.name, o);
+            if (m==null) {
+                throw new Exception("Unknown Arg: " + arg.name);
+            }
+            
+            CommandLineArg cla = m.getAnnotation(CommandLineArg.class);
+            Object val = arg.value;
+            if (val == null && cla.required()) throw new Exception("Missing Required Arg: " + cla.name());
+            if (val != null) {
+                try {
+                    m.invoke(o, val);
+                } catch (Exception e) {
+                    System.out.printf("Failed while applying arg: %s (%s) to method: %s\n", cla.name(), val, m.getName());
+                    throw e;
+                }
+            } else {
+                throw new Exception("Missing Value for Arg: " + arg.name);
+            }
+        }
+    }
+    
+    private Method getAnnotatedMethodForArg(String arg, Object o) {
         for (Method m : o.getClass().getDeclaredMethods()) {
             CommandLineArg cla = m.getAnnotation(CommandLineArg.class);
             if (cla != null) {
                 // check for special cla annotations and extraargs
-                if ("EXTRAARGS".equals(cla.name())) {
-                    try {
-                        m.invoke(o, (Object) getExtraArgs());
-                    } catch (Exception e) {
-                        System.out.printf("Failed to set EXTRAARGS in method %s.  Check that method supports String[] parameter\n", m.getName());
-                        throw e;
-                    }
-                }
-
-                // execute the method for each passed arg that matches
-                for (Arg arg : argList) {
-                    if (arg.name.equals(cla.name())) {
-                        Object val = arg.value;
-                        if (val == null && cla.required()) throw new Exception("Missing Required Arg: " + cla.name());
-                        if (val != null) {
-                            try {
-                                m.invoke(o, val);
-                            } catch (Exception e) {
-                                System.out.printf("Failed while applying arg: %s (%s) to method: %s\n", cla.name(), val, m.getName());
-                                throw e;
-                            }
-                        } else {
-                            log.warn("Missing potential arg: " + cla.name());
-                        }
-                    }
+                if (arg.equals(cla.name())) {
+                    return m;
                 }
             }
         }
+        return null;
     }
 
     /**

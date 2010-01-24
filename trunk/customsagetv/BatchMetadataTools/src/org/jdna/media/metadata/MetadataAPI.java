@@ -204,25 +204,22 @@ public class MetadataAPI {
     public static String getDescription(IMediaMetadata md) {
         return md.getString(MetadataKey.DESCRIPTION);
     }
-
-    public static String getProviderDataUrl(IMediaMetadata md) {
-        return md.getString(MetadataKey.METADATA_PROVIDER_DATA_URL);
-    }
-
     public static String getProviderId(IMediaMetadata md) {
         return md.getString(MetadataKey.METADATA_PROVIDER_ID);
+    }
+
+    /*
+    public static String getProviderDataUrl(IMediaMetadata md) {
+        return md.getString(MetadataKey.METADATA_PROVIDER_DATA_URL);
     }
 
     public static void setProviderDataUrl(IMediaMetadata md, String url) {
         md.setString(MetadataKey.METADATA_PROVIDER_DATA_URL, url);
     }
-
+    */
+    
     public static void setProviderId(IMediaMetadata md, String id) {
         md.setString(MetadataKey.METADATA_PROVIDER_ID, id);
-    }
-    
-    public static String createMetadataIDString(String id, String url) {
-        return new MetadataID(id, url).toIDString();
     }
     
     public static String getCDFromMediaFile(IMediaFile mf) {
@@ -436,16 +433,24 @@ public class MetadataAPI {
         return MetadataUtil.TV_MEDIA_TYPE.equals(md.getString(MetadataKey.MEDIA_TYPE));
     }
 
-    public static void setReleaseDate(MediaMetadata md, Date d) {
+    public static void setReleaseDate(IMediaMetadata md, Date d) {
         try {
             setReleaseDate(md, dateFormat.format(d));
         } catch (Exception t) {
         }
     }
 
-    public static void setYear(MediaMetadata md, Date d) {
+    public static void setYear(IMediaMetadata md, Date d) {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         setYear(md, String.valueOf(c.get(Calendar.YEAR)));
+    }
+
+    public static void setIMDBID(IMediaMetadata md, String imdbid) {
+        md.setString(MetadataKey.IMDB_ID, imdbid);
+    }
+
+    public static String getIMDBID(IMediaMetadata md) {
+        return md.getString(MetadataKey.IMDB_ID);
     }
 }

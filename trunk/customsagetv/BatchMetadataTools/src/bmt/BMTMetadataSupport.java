@@ -4,11 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jdna.configuration.ConfigurationManager;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
@@ -34,6 +32,7 @@ import sagex.phoenix.vfs.IMediaFile;
 public class BMTMetadataSupport implements IMetadataSupport {
     private static final Logger log = Logger.getLogger(BMTMetadataSupport.class);
     private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
+    private ProgressTrackerManager trackerManager = new ProgressTrackerManager();
     
     private String currentTrackerId = null;
     
@@ -89,7 +88,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
             metadataConfig.setFanartEnabled(phoenix.api.IsFanartEnabled());
 
             IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(result.getProviderId(), result.getMediaType());
-            IMediaMetadata md = prov.getMetaData((IMediaSearchResult) result);
+            IMediaMetadata md = prov.getMetaData(result);
             IMediaMetadataPersistence persistence = null; 
 
             if (MediaFileAPI.IsMediaFileObject(media)) {
@@ -111,10 +110,9 @@ public class BMTMetadataSupport implements IMetadataSupport {
             persistence.storeMetaData(md, smf, options);
             
             try {
-                if (result instanceof IMediaSearchResult) {
-                    ConfigurationManager.getInstance().setMetadataIdForTitle(smf.getTitle(), ((IMediaSearchResult)result).getMetadataId());
-                    ConfigurationManager.getInstance().saveTitleMappings();
-                }
+                // TODO: Store this using the new Titles manages
+                //ConfigurationManager.getInstance().setMetadataIdForTitle(smf.getTitle(), result.getMetadataId());
+                //ConfigurationManager.getInstance().saveTitleMappings();
             } catch (Exception ex) {
                 log.error("Failed to update title mappings!", ex);
             }
@@ -185,7 +183,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
 
     private ProgressTracker<IMediaFile> getTracker(Object tracker) {
         if (tracker!=null) {
-            return (ProgressTracker<IMediaFile>) ProgressTrackerManager.getInstance().getProgress((String) tracker);
+            return (ProgressTracker<IMediaFile>) trackerManager.getProgress((String) tracker);
         }
         return null;
     }

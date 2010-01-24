@@ -3,6 +3,7 @@ package test.junit;
 import static test.junit.lib.FilesTestCase.getFile;
 import static test.junit.lib.FilesTestCase.makeDir;
 import static test.junit.lib.FilesTestCase.makeFile;
+import static test.junit.lib.FilesTestCase.listFiles;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -87,8 +88,8 @@ public class MetadataPluginTestCase extends TestCase {
         }
         File fanartDir = makeDir("test/Fanart");
         
-        Object mf = MediaFileAPI.AddMediaFile(makeFile("test/Movies/Terminator.avi"), "Movies");
-        assertEquals("mediafile not added", "Terminator", MediaFileAPI.GetMediaTitle(mf));
+        Object mf = MediaFileAPI.AddMediaFile(makeFile("test/Movies/The Terminator (1984).avi"), "Movies");
+        assertEquals("mediafile not added", "The Terminator (1984)", MediaFileAPI.GetMediaTitle(mf));
         
         phoenix.api.SetFanartCentralFolder(fanartDir);
         phoenix.api.SetIsFanartEnabled(true);
@@ -98,17 +99,22 @@ public class MetadataPluginTestCase extends TestCase {
 
         PluginConfiguration pluginConf = new PluginConfiguration();
         MetadataUpdaterPlugin plugin = new MetadataUpdaterPlugin();
-        Object results = plugin.extractMetadata(getFile("test/Movies/Terminator.avi"), null);
-        assertNotNull("No metadata returned", results);
-        assertTrue("result is not a Map", results instanceof Map);
+        Object results = plugin.extractMetadata(getFile("test/Movies/The Terminator (1984).avi"), null);
         
+        try {
+            Thread.currentThread().sleep(10000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         // test central fanart worked
-        getFile("test/Fanart/Movies/The Terminator/Backgrounds/Terminator.jpg");
-        getFile("test/Fanart/Movies/The Terminator/Banners/Terminator.jpg");
-        getFile("test/Fanart/Movies/The Terminator/Posters/Terminator.jpg");
+        listFiles("test/Fanart/Movies/The Terminator/Backgrounds/", "\\.jpg");
+        //getFile("test/Fanart/Movies/The Terminator/Banners/The Terminator (1984).jpg");
+        listFiles("test/Fanart/Movies/The Terminator/Posters/", "\\.jpg");
 
         // test that it wrote a properties files
-        File propFile = getFile("test/Movies/Terminator.avi.properties");
+        File propFile = getFile("test/Movies/The Terminator (1984).avi.properties");
         Properties props = new Properties();
         props.load(new FileInputStream(propFile));
         assertEquals("MediaTitle incorrect", "The Terminator", props.getProperty(SageProperty.MEDIA_TITLE.sageKey));
@@ -116,10 +122,10 @@ public class MetadataPluginTestCase extends TestCase {
 
         // test the a second attempt does not update the properties
         long lastModified = propFile.lastModified();
-        results = plugin.extractMetadata(getFile("test/Movies/Terminator.avi"), null);
+        results = plugin.extractMetadata(getFile("test/Movies/The Terminator (1984).avi"), null);
         assertNotNull("No metadata returned", results);
         assertTrue("result is not a Map", results instanceof Map);
-        propFile = getFile("test/Movies/Terminator.avi.properties");
+        propFile = getFile("test/Movies/The Terminator (1984).avi.properties");
         assertEquals("propfile was updated!", lastModified , propFile.lastModified());
     }
     

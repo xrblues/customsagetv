@@ -14,7 +14,7 @@ public class PersistenceOptions {
     private boolean useTitleMasks = false;
     private boolean createProperties=true;
     private boolean updateWizBin=false;
-    private boolean touchingFiles=false;
+    private boolean touchingFiles=true;
     
     public PersistenceOptions() {
     }

@@ -4,6 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IMDBUtils {
+    public static final String             IMDB_TITLE_URL           = "http://%s/title/%s/";
+
     public static String parseIMDBID(String url) {
         if (url==null) return null;
         Pattern p = Pattern.compile("/(tt[0-9]+)/");
@@ -30,5 +32,10 @@ public class IMDBUtils {
         }
         
         return ur;
+    }
+
+    public static String createDetailUrl(String imdbid) {
+        IMDBConfiguration cfg = new IMDBConfiguration();
+        return String.format(IMDB_TITLE_URL, cfg.getIMDbDomain(), imdbid);
     }
 }

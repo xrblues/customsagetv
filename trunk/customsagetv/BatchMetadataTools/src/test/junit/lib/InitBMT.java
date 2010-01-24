@@ -5,6 +5,7 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.PropertyConfigurator;
 
 import sagex.SageAPI;
 import sagex.phoenix.Phoenix;
@@ -15,6 +16,11 @@ import sagex.stub.StubSageAPI;
 public class InitBMT extends TestCase {
     private static StubSageAPI api = null;
     public static void initBMT() throws Exception {
+        File f = new File("log4j.properties");
+        if (f.exists()) {
+            PropertyConfigurator.configure(f.getAbsolutePath());
+        }
+        
         BasicConfigurator.configure();
         if (api==null) {
             api = new StubSageAPI();

@@ -1,22 +1,19 @@
 package org.jdna.media.metadata.impl.tvdb;
 
 import java.util.List;
-import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
-import org.jdna.media.metadata.MediaSearchResult;
-import org.jdna.media.metadata.MetadataID;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 
+import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaType;
 
 public class TVDBMetadataProvider implements IMediaMetadataProvider {
-    private Logger log = Logger.getLogger(TVDBMetadataProvider.class);
     public static final String   PROVIDER_ID = "tvdb";
     private static IProviderInfo info        = new ProviderInfo(PROVIDER_ID, "thetvdb.com", "Provides Fanart and Metadata from thetvdb.com", "");
     private static final MediaType[] supportedSearchTypes = new MediaType[] {MediaType.TV};
@@ -25,16 +22,26 @@ public class TVDBMetadataProvider implements IMediaMetadataProvider {
         return info;
     }
 
-    public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-    	return getMetaDataByUrl(result.getUrl());  
+    public IMediaMetadata getMetaData(IMetadataSearchResult result) throws Exception {
+        if (MetadataUtil.hasMetadata(result)) return MetadataUtil.getMetadata(result);
+
+        return new TVDBItemParser(result).getMetadata();
     }
 
-    public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
+    public List<IMetadataSearchResult> search(SearchQuery query) throws Exception {
+        // search by ID, if the ID is present
+        if (!StringUtils.isEmpty(query.get(SearchQuery.Field.ID))) {
+            List<IMetadataSearchResult> res = MetadataUtil.searchById(this, query, query.get(SearchQuery.Field.ID));
+            if (res!=null) {
+                return res;
+            }
+        }
+        
+        // carry on normal search
         if (query.getMediaType() ==  MediaType.TV) {
             return new TVDBSearchParser(query).getResults();
-        } else {
-            throw new Exception("Unsupported Search Type: " + query.getMediaType());
         }
+        throw new Exception("Unsupported Search Type: " + query.getMediaType());
     }
 
     /**
@@ -52,20 +59,5 @@ public class TVDBMetadataProvider implements IMediaMetadataProvider {
 
     public MediaType[] getSupportedSearchTypes() {
         return supportedSearchTypes;
-    }
-
-    public String getUrlForId(MetadataID id) throws Exception {
-        MediaSearchResult sr = new MediaSearchResult();
-        sr.setMetadataId(id);
-        for (Map.Entry<String, String> me : id.getArgs().entrySet()) {
-            sr.addExtraArg(me.getKey(), me.getValue());
-        }
-        sr.setProviderId(id.getProvider());
-        sr.setUrl(id.getId());
-        return sr.getUrlWithExtraArgs();
-    }
-
-    public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
-        return new TVDBItemParser(url).getMetadata();
     }
 }

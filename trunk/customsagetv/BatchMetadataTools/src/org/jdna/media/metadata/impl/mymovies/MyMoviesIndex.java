@@ -16,11 +16,11 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
-import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
 import org.w3c.dom.Element;
+
+import sagex.phoenix.fanart.IMetadataSearchResult;
 
 public class MyMoviesIndex implements MyMoviesNodeVisitor {
     private static final Logger    log      = Logger.getLogger(MyMoviesIndex.class);
@@ -95,14 +95,14 @@ public class MyMoviesIndex implements MyMoviesNodeVisitor {
         return doc;
     }
 
-    public List<IMediaSearchResult> searchTitle(String title) throws Exception {
+    public List<IMetadataSearchResult> searchTitle(String title) throws Exception {
         if (searcher == null) openIndex();
 
         Query query = parser.parse(title);
         Hits hits = searcher.search(query);
 
         int l = hits.length();
-        List<IMediaSearchResult> results = new ArrayList<IMediaSearchResult>(l);
+        List<IMetadataSearchResult> results = new ArrayList<IMetadataSearchResult>(l);
 
         for (int i = 0; i < l; i++) {
             Document d = hits.doc(i);
@@ -112,7 +112,7 @@ public class MyMoviesIndex implements MyMoviesNodeVisitor {
             
             float score = MetadataUtil.calculateScore(title, name);
 
-            results.add(new MediaSearchResult(MyMoviesMetadataProvider.PROVIDER_ID, id, new MetadataID(MyMoviesMetadataProvider.PROVIDER_ID, id), name, date, score));
+            results.add(new MediaSearchResult(MyMoviesMetadataProvider.PROVIDER_ID, id, name, date, score));
         }
 
         return results;

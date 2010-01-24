@@ -12,7 +12,6 @@ import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaMetadataFactory;
-import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.util.DOMUtils;
@@ -66,8 +65,7 @@ public class MyMoviesParser {
         metadata.setYear(getYear());
 
         metadata.setProviderId(MyMoviesMetadataProvider.PROVIDER_ID);
-        metadata.setProviderDataId(MetadataAPI.createMetadataIDString(MyMoviesMetadataProvider.PROVIDER_ID, getProviderUrl()));
-        metadata.setProviderDataUrl(id);
+        metadata.setProviderDataId(id);
         return metadata;
     }
 

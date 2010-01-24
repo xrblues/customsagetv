@@ -1,15 +1,22 @@
 package org.jdna.media.metadata;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.SearchQuery.Field;
+import org.jdna.media.metadata.impl.sage.SageProperty;
 
 import sagex.phoenix.fanart.MediaType;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaResource;
 import sagex.phoenix.vfs.util.PathUtils;
+import sagex.remote.json.JSONException;
+import sagex.remote.json.JSONObject;
 
 public class SearchQueryFactory {
     
@@ -18,7 +25,6 @@ public class SearchQueryFactory {
     private static MovieFileNameUtils movieFilenameUtils = new MovieFileNameUtils(new File("scrapers/xbmc/moviefilenames"));
     private static FileMatcherManager titles = new FileMatcherManager(new File("scrapers/MediaTitles.xml"));
 
-    // private static Pattern[] yearPatterns = new Pattern[] {Pattern.compile("\\(([0-9]{4})\\)"), Pattern.compile("[^0-9]+([12][0-9]{3})[^0-9]+")};
     private Logger log = Logger.getLogger(SearchQueryFactory.class);
 
     public static SearchQueryFactory getInstance() {
@@ -71,12 +77,9 @@ public class SearchQueryFactory {
             if (match!=null) {
                 if (q==null) {
                     q = new SearchQuery();
-                    if (match.getSeries()!=null || (match.getMetadata()!=null && match.getMetadata().getName().contains("tv"))) {
-                        q.setMediaType(MediaType.TV);
-                    } else {
-                        q.setMediaType(MediaType.MOVIE);
-                    }
                 }
+                
+                q.setMediaType(match.getMediaType());
                 
                 if (!StringUtils.isEmpty(match.getTitle())) {
                     q.set(Field.RAW_TITLE, match.getTitle());
@@ -86,12 +89,9 @@ public class SearchQueryFactory {
                     q.set(Field.YEAR, match.getYear());
                 }
                 
-                if (match.getSeries()!=null) {
-                    q.set(Field.SERIES_ID, match.getSeries().getName() + ":" + match.getSeries().getValue());
-                }
-                
                 if (match.getMetadata()!=null) {
-                    q.set(Field.METADATA_ID, match.getMetadata().getName() + ":" + match.getMetadata().getValue());
+                    q.set(Field.PROVIDER, match.getMetadata().getName());
+                    q.set(Field.ID, match.getMetadata().getValue());
                 }
             }
         }
@@ -111,4 +111,41 @@ public class SearchQueryFactory {
         
         return q;
     }
+
+    private static Map<String, SearchQuery.Field> mappedFields = new HashMap<String, Field>();
+    
+    static {
+        mappedFields.put(SageProperty.DISPLAY_TITLE.sageKey.toLowerCase(), Field.RAW_TITLE);
+        mappedFields.put(SageProperty.DISC.sageKey.toLowerCase(), Field.DISC);
+        mappedFields.put("EpisodeDate".toLowerCase(),Field.EPISODE_DATE);
+        mappedFields.put(SageProperty.EPISODE_NUMBER.sageKey.toLowerCase(),Field.EPISODE);
+        mappedFields.put(SageProperty.EPISODE_TITLE.sageKey.toLowerCase(), Field.EPISODE_TITLE);
+        mappedFields.put(SageProperty.SEASON_NUMBER.sageKey.toLowerCase(), Field.SEASON);
+        mappedFields.put("ID".toLowerCase(),Field.ID);
+        mappedFields.put(SageProperty.YEAR.sageKey.toLowerCase(), Field.YEAR);
+    }
+    
+    public static Set<String> getJSONQueryFields() {
+        return mappedFields.keySet();
+    }
+
+    public void updateQueryFromJSON(SearchQuery query, String data) throws Exception {
+        JSONObject jo = new JSONObject(data);
+        for (Iterator i = jo.keys(); i.hasNext();) {
+            String k = (String) i.next();
+            String v = jo.getString(k);
+            if (SageProperty.MEDIA_TYPE.sageKey.equalsIgnoreCase(k)) {
+                query.setMediaType(MediaType.toMediaType(v));
+            } else {
+                SearchQuery.Field f = mappedFields.get(k.toLowerCase());
+                if (f==null) {
+                    throw new JSONException("Invalid Field: " + k);
+                }
+                log.debug("Setting Query Field via json args: " + f + " = " + v);
+                query.set(f, v);
+            }
+        }
+    }
+    
+
 }
