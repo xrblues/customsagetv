@@ -1,7 +1,8 @@
 package org.jdna.bmt.web.client.ui.browser;
 
 import org.jdna.bmt.web.client.Application;
-import org.jdna.bmt.web.client.ui.browser.GWTFactoryInfo.SourceType;
+import org.jdna.bmt.web.client.media.GWTFactoryInfo;
+import org.jdna.bmt.web.client.media.GWTFactoryInfo.SourceType;
 import org.jdna.bmt.web.client.ui.util.SideMenuItem;
 import org.jdna.bmt.web.client.ui.util.SideMenuPanel;
 
@@ -16,9 +17,9 @@ public class SourcesPanel extends Composite implements FactoriesReplyHandler {
     private SideMenuPanel       views            = new SideMenuPanel(Application.labels().views());
 
     private HandlerRegistration factoriesHandler = null;
-    private HasFolder           folder           = null;
-
-    public SourcesPanel(HasFolder folder) {
+    private BrowserView           folder           = null;
+    
+    public SourcesPanel(BrowserView folder) {
         this.folder = folder;
         panel.setHeight("100%");
         panel.setWidth("100%");
@@ -31,7 +32,10 @@ public class SourcesPanel extends Composite implements FactoriesReplyHandler {
     @Override
     protected void onAttach() {
         factoriesHandler = Application.events().addHandler(FactoriesReplyEvent.TYPE, this);
+        
+        // Get the views...
         BrowsingServicesManager.getInstance().getFactoryInfo(GWTFactoryInfo.SourceType.View);
+
         super.onAttach();
     }
 
@@ -43,7 +47,7 @@ public class SourcesPanel extends Composite implements FactoriesReplyHandler {
 
     public void onFactoriesReply(FactoriesReplyEvent event) {
         GWTFactoryInfo factories[] = event.getFactoryInf0();
-        if (factories == null || factories.length == 0) {
+        if (event.getSourceType() == SourceType.View && (factories == null || factories.length == 0)) {
             Application.fireErrorEvent(Application.messages().factoryNotConfigured(event.getSourceType().name()));
             return;
         }
@@ -52,6 +56,8 @@ public class SourcesPanel extends Composite implements FactoriesReplyHandler {
     }
 
     private void updateInfo(final GWTFactoryInfo.SourceType sourceType, GWTFactoryInfo info[]) {
+        if (info==null || info.length==0) return;
+        
         if (sourceType == SourceType.View) {
             views.clearItems();
             for (GWTFactoryInfo f : info) {

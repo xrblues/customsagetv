@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jdna.bmt.web.client.media.GWTProviderInfo;
+import org.jdna.bmt.web.client.ui.browser.MetadataService;
+import org.jdna.bmt.web.client.ui.browser.MetadataServiceAsync;
 import org.jdna.bmt.web.client.ui.input.InputBuilder;
 import org.jdna.bmt.web.client.ui.input.NVP;
 import org.jdna.bmt.web.client.ui.layout.Simple2ColFormLayoutPanel;
@@ -22,7 +24,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SearchQueryPanel extends DataDialog<SearchQueryOptions> {
-    private final BrowserServiceAsync browserService = GWT.create(BrowserService.class);
+    private final MetadataServiceAsync browserService = GWT.create(MetadataService.class);
 
     private ListBox providers;
     private ListBox type;
@@ -52,7 +54,7 @@ public class SearchQueryPanel extends DataDialog<SearchQueryOptions> {
         episode = InputBuilder.textbox().bind(getData().getEpisode()).widget();
         season = InputBuilder.textbox().bind(getData().getSeason()).widget();
         
-        providers = InputBuilder.combo(nvp).bind(getData().getProvider()).widget();
+        //providers = InputBuilder.combo(nvp).bind(getData().getProvider()).widget();
 
         propPanel.add("Metadata Source", providers);
         propPanel.add("Search Type", type);

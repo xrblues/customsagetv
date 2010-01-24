@@ -7,7 +7,7 @@ import org.jdna.media.metadata.IMediaArt;
 import sagex.phoenix.fanart.MediaArtifactType;
 
 public class GWTMediaArt implements IMediaArt, Serializable {
-
+    private static final long serialVersionUID = 1L;
     private MediaArtifactType type;
     private int season;
     private String id;

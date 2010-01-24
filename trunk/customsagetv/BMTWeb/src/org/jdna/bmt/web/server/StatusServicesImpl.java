@@ -1,7 +1,6 @@
 package org.jdna.bmt.web.server;
 
 import java.io.File;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,12 +8,12 @@ import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.ui.status.StatusServices;
 import org.jdna.bmt.web.client.ui.status.StatusValue;
 import org.jdna.bmt.web.client.util.StringUtils;
-import org.jdna.media.IMediaFile;
-import org.jdna.sage.ScanningStatus;
-import org.jdna.util.ProgressTracker.FailedItem;
+import org.jdna.process.MetadataItem;
+import org.jdna.process.ProgressSingleton;
 
 import sagex.api.Configuration;
 import sagex.api.Global;
+import sagex.phoenix.progress.TrackedItem;
 import sagex.phoenix.util.SageTV;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -47,36 +46,31 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
                 String fields = Configuration.GetServerProperty("custom_metadata_properties", null);
                 status.add(new StatusValue("Custom Fields Configured", String.valueOf(!StringUtils.isEmpty(fields)), warn(StringUtils.isEmpty(fields))));
 
-                status.add(new StatusValue("Last Scan Date", String.valueOf(new Date(ScanningStatus.getInstance().getLastScanTime()))));
-                status.add(new StatusValue("Total Scanned", String.valueOf(ScanningStatus.getInstance().getTotalScanned())));
+                status.add(new StatusValue("Last Scan Date", String.valueOf(ProgressSingleton.getTracker().getLastUpdated())));
 
-                if (ScanningStatus.getInstance().getTotalSuccess()>0) {
-                    status.add(new StatusValue("Total Success", String.valueOf(ScanningStatus.getInstance().getTotalSuccess())));
-                    List<IMediaFile> succ = ScanningStatus.getInstance().getSuccessfulItems();
-                    if (succ.size() > 0) {
-                        for (int i = 0; i < succ.size(); i++) {
-                            IMediaFile mf = succ.get(i);
-                            if (mf!=null) {
-                                status.add(new StatusValue("Last Scanned MediaFile", mf.getTitle()));
-                            }
+                if (ProgressSingleton.getSuccessCount()>0) {
+                    status.add(new StatusValue("Total Success", String.valueOf(ProgressSingleton.getSuccessCount())));
+                    List<TrackedItem<MetadataItem>> succ = ProgressSingleton.getSuccess();
+                    for (int i = 0; i < succ.size(); i++) {
+                        TrackedItem<MetadataItem> mf = succ.get(i);
+                        if (mf!=null) {
+                            status.add(new StatusValue("MediaFile", mf.getItem().getFile().getTitle()));
                         }
                     }
                 }
 
-                if (ScanningStatus.getInstance().getTotalFailed() > 0) {
-                    status.add(new StatusValue("Total Failed", String.valueOf(ScanningStatus.getInstance().getTotalFailed())));
-                    List<FailedItem<IMediaFile>> failed = ScanningStatus.getInstance().getFailedItems();
-                    if (ScanningStatus.getInstance().getTotalFailed() > 0) {
+                if (ProgressSingleton.getFailedCount() > 0) {
+                    status.add(new StatusValue("Total Failed", String.valueOf(ProgressSingleton.getFailedCount())));
+                    List<TrackedItem<MetadataItem>> failed = ProgressSingleton.getFailed();
                         for (int i = 0; i < failed.size(); i++) {
-                            FailedItem<IMediaFile> fi = failed.get(i);
+                            TrackedItem<MetadataItem> fi = failed.get(i);
                             if (fi!=null) {
                                 if (fi.getItem()!=null) {
-                                    status.add(new StatusValue("(" + (i + 1) + ") Failed MediaFile", fi.getItem().getName(), StatusValue.ERROR, fi.getMessage()));
+                                    status.add(new StatusValue("(" + (i + 1) + ") Failed MediaFile", fi.getItem().getFile().getTitle(), StatusValue.ERROR, fi.getMessage()));
                                 } else {
                                     status.add(new StatusValue("(" + (i + 1) + ") Failed MediaFile", "No Name", StatusValue.ERROR, fi.getMessage()));
                                 }
                             } 
-                        }
                     }
                 }
             } else if ("sagetv".equals(statusType)) {

@@ -1,9 +1,11 @@
-package org.jdna.bmt.web.client.ui.browser;
+package org.jdna.bmt.web.client.media;
 
 import java.io.Serializable;
 
 public class GWTFactoryInfo implements Serializable {
-    public static enum SourceType {Source, View, Sort, Filter, Group, ALL}; 
+    private static final long serialVersionUID = 1L;
+
+    public static enum SourceType {Source, View, Sort, Filter, Group, ALL, SCANS}; 
     private String id, label, description;
     private SourceType sourceType = SourceType.Source;
     

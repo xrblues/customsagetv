@@ -217,6 +217,10 @@ h1 {
 	cursor: pointer;
 }
 
+.clickable {
+	cursor: pointer;
+}
+
 .hover {
 	background-color: #F3F3F3;
 }
@@ -235,6 +239,7 @@ h1 {
 .SideMenuPanel-LabelText {
 	font-size: larger;
 	font-weight: bold;	
+	overflow: hidden;
 }
 
 .HorizontalButtonBar {
@@ -243,3 +248,9 @@ h1 {
 	border-bottom: 2px solid black;
 }
 
+.ScanSideMenuItem-status {
+	font-size: small;
+	font-weight: normal;
+	font-style: italic;	
+	overflow: hidden;
+}

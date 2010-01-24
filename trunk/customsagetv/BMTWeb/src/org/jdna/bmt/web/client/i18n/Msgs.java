@@ -53,4 +53,16 @@ public interface Msgs extends Messages {
 
     @DefaultMessage("Unable to get items for {0}")
     String failedToGetFactoryInfo(String label);
+
+    @DefaultMessage("Unable to scan folder {0}")
+    String failedToScan(String title);
+
+    @DefaultMessage("Scan ({0})")
+    String scanLabel(String title);
+
+    @DefaultMessage("Cancelled ({0} : {1})")
+    String cancelledWithStatus(int successCount, int failedCount);
+
+    @DefaultMessage("Complete ({0} : {1})")
+    String completeWithStatus(int successCount, int failedCount);
 }

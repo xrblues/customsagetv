@@ -1,5 +1,9 @@
 package org.jdna.bmt.web.client.ui.browser;
 
+import org.jdna.bmt.web.client.media.GWTFactoryInfo;
+import org.jdna.bmt.web.client.media.GWTMediaFolder;
+import org.jdna.bmt.web.client.media.GWTMediaResource;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -8,7 +12,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("browsing")
 public interface BrowsingService extends RemoteService {
-    public MediaResource[] browseChildren(MediaFolder folder);
+    public GWTMediaResource[] browseChildren(GWTMediaFolder folder);
     public GWTFactoryInfo[] getFactories(GWTFactoryInfo.SourceType sourceType);
-    public MediaFolder getFolderForSource(GWTFactoryInfo source, MediaFolder parentFolder);
+    public GWTMediaFolder getFolderForSource(GWTFactoryInfo source, GWTMediaFolder parentFolder);
 }

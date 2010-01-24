@@ -27,8 +27,8 @@
   </servlet>
 
   <servlet>
-    <servlet-name>browser</servlet-name>
-    <servlet-class>org.jdna.bmt.web.server.BrowserServicesImpl</servlet-class>
+    <servlet-name>metadata</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.MetadataServicesImpl</servlet-class>
   </servlet>
 
   <servlet>
@@ -73,8 +73,8 @@
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>browser</servlet-name>
-    <url-pattern>/bmtweb/browser</url-pattern>
+    <servlet-name>metadata</servlet-name>
+    <url-pattern>/bmtweb/metadata</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

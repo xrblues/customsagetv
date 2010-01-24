@@ -1,12 +1,14 @@
 package org.jdna.bmt.web.client.ui.browser;
 
+import org.jdna.bmt.web.client.media.GWTMediaFolder;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class BrowseRequestEvent extends GwtEvent<BrowseRequestHandler> {
     public static final GwtEvent.Type<BrowseRequestHandler> TYPE =  new GwtEvent.Type<BrowseRequestHandler>();
-    private MediaFolder folder = null;
+    private GWTMediaFolder folder = null;
     
-    public BrowseRequestEvent(MediaFolder folder) {
+    public BrowseRequestEvent(GWTMediaFolder folder) {
         this.folder=folder;
     }
     

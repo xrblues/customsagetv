@@ -44,7 +44,7 @@ public class MediaEditorMediaFileWidget extends Composite implements HasClickHan
         panel.setSpacing(5);
         panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
         
-        thumb = new Image(item.getPosterUrl());
+        thumb = new Image(item.getThumbnailUrl());
         thumb.setHeight(imageHeight+"px");
         thumb.addErrorHandler(new ErrorHandler() {
             public void onError(ErrorEvent event) {

@@ -1,12 +1,14 @@
 package org.jdna.bmt.web.client.ui.browser;
 
+import org.jdna.bmt.web.client.media.GWTMediaFolder;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class BrowseReplyEvent extends GwtEvent<BrowseReplyHandler> {
     public static final GwtEvent.Type<BrowseReplyHandler> TYPE =  new GwtEvent.Type<BrowseReplyHandler>();
-    private MediaFolder folder = null;
+    private GWTMediaFolder folder = null;
     
-    public BrowseReplyEvent(MediaFolder folder) {
+    public BrowseReplyEvent(GWTMediaFolder folder) {
         this.folder=folder;
     }
     
@@ -20,7 +22,7 @@ public class BrowseReplyEvent extends GwtEvent<BrowseReplyHandler> {
         return TYPE;
     }
 
-    public MediaFolder getBrowseableFolder() {
+    public GWTMediaFolder getBrowseableFolder() {
         return folder;
     }
 }

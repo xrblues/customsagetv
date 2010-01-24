@@ -1,6 +1,10 @@
 package org.jdna.bmt.web.client.ui.browser;
 
 import org.jdna.bmt.web.client.Application;
+import org.jdna.bmt.web.client.media.GWTFactoryInfo;
+import org.jdna.bmt.web.client.media.GWTMediaFolder;
+import org.jdna.bmt.web.client.media.GWTMediaResource;
+import org.jdna.bmt.web.client.media.SageQueryFolder;
 import org.jdna.bmt.web.client.ui.app.ErrorEvent;
 import org.jdna.bmt.web.client.util.Log;
 
@@ -22,7 +26,7 @@ public class BrowsingServicesManager {
         return instance;
     }
 
-    public void browseFolder(final MediaFolder folder) {
+    public void browseFolder(final GWTMediaFolder folder) {
         // TODO: Use a SystemEvent, like, WaitingEven.fireBeginWait(), and then have this even call a cancel wait when a reply is received
         // 
         // if the folder has children, then use them
@@ -32,13 +36,13 @@ public class BrowsingServicesManager {
             return;
         }
         
-        browser.browseChildren(folder, new AsyncCallback<MediaResource[]>() {
+        browser.browseChildren(folder, new AsyncCallback<GWTMediaResource[]>() {
             public void onFailure(Throwable caught) {
                 System.out.println("**** ERROR **** " + caught.getMessage());
                 Application.events().fireEvent(new ErrorEvent(Application.messages().failedToBrowseFolder(folder.getTitle()), caught));
             }
 
-            public void onSuccess(MediaResource[] result) {
+            public void onSuccess(GWTMediaResource[] result) {
                 folder.setChildren(result);
                 Application.events().fireEvent(new BrowseReplyEvent(folder));
             }
@@ -61,14 +65,14 @@ public class BrowsingServicesManager {
         return browser;
     }
 
-    public void getFolderForSource(final GWTFactoryInfo factory, final MediaFolder folder) {
+    public void getFolderForSource(final GWTFactoryInfo factory, final GWTMediaFolder folder) {
         Log.debug("Browse Source: " + factory);
-        browser.getFolderForSource(factory, folder, new AsyncCallback<MediaFolder>() {
+        browser.getFolderForSource(factory, folder, new AsyncCallback<GWTMediaFolder>() {
             public void onFailure(Throwable caught) {
                 Application.fireErrorEvent(Application.messages().failedToBrowseSource(factory.getLabel()), caught);
             }
             
-            public void onSuccess(MediaFolder result) {
+            public void onSuccess(GWTMediaFolder result) {
                 browseFolder(result);
             }
         });

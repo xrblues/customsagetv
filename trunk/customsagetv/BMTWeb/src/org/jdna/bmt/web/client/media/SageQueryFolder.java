@@ -1,6 +1,6 @@
-package org.jdna.bmt.web.client.ui.browser;
+package org.jdna.bmt.web.client.media;
 
-public class SageQueryFolder extends MediaFolder {
+public class SageQueryFolder extends GWTMediaFolder {
     private String mediaMask = null;
     
     public SageQueryFolder() {

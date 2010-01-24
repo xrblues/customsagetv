@@ -6,6 +6,8 @@ import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.media.GWTMediaSearchResult;
 import org.jdna.bmt.web.client.media.GWTPersistenceOptions;
+import org.jdna.bmt.web.client.ui.browser.MetadataService;
+import org.jdna.bmt.web.client.ui.browser.MetadataServiceAsync;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.OKDialogHandler;
@@ -28,7 +30,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MetadataSearchResultsPanel extends Composite {
-    private final BrowserServiceAsync browserService = GWT.create(BrowserService.class);
+    private final MetadataServiceAsync browserService = GWT.create(MetadataService.class);
 
     private AsyncCallback<GWTMediaMetadata> callbackHandler;
     

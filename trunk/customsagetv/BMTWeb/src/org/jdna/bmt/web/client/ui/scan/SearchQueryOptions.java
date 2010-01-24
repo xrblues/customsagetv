@@ -8,10 +8,12 @@ import org.jdna.bmt.web.client.util.Property;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Field;
-import org.jdna.media.metadata.SearchQuery.Type;
+
+import sagex.phoenix.fanart.MediaType;
 
 public class SearchQueryOptions implements Serializable {
-    private Property<String> provider = new Property<String>();
+    private Property<String> tvProvider = new Property<String>();
+    private Property<String> movieProvider = new Property<String>();
     private Property<String> searchTitle = new Property<String>();
     private Property<String> episodeTitle = new Property<String>();
     private Property<String> year = new Property<String>();
@@ -37,14 +39,14 @@ public class SearchQueryOptions implements Serializable {
     
     public SearchQuery getSearchQuery() {
         SearchQuery q = new SearchQuery();
-        q.set(Field.TITLE, searchTitle.get());
+        q.set(Field.QUERY, searchTitle.get());
         if ("TV".equals(type.get())) {
-            q.setType(Type.TV);
+            q.setMediaType(MediaType.TV);
             q.set(Field.EPISODE_TITLE, episodeTitle.get());
             q.set(Field.EPISODE, episode.get());
             q.set(Field.SEASON, season.get());
         } else {
-            q.setType(Type.MOVIE);
+            q.setMediaType(MediaType.MOVIE);
         }
         
         return q;
@@ -98,12 +100,20 @@ public class SearchQueryOptions implements Serializable {
         this.type = type;
     }
 
-    public Property<String> getProvider() {
-        return provider;
+    public Property<String> getTVProvider() {
+        return tvProvider;
     }
 
-    public void setProvider(Property<String> provider) {
-        this.provider = provider;
+    public void setTVProvider(Property<String> provider) {
+        this.tvProvider = provider;
+    }
+
+    public Property<String> getMovieProvider() {
+        return movieProvider;
+    }
+
+    public void setMovieProvider(Property<String> provider) {
+        this.movieProvider = provider;
     }
 
 }

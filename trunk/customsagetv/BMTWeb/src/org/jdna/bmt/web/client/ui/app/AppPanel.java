@@ -5,15 +5,10 @@ import java.util.Map;
 
 import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.ui.browser.BrowsePanel;
+import org.jdna.bmt.web.client.ui.browser.MetadataService;
+import org.jdna.bmt.web.client.ui.browser.MetadataServiceAsync;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesPanel;
-import org.jdna.bmt.web.client.ui.scan.BrowserService;
-import org.jdna.bmt.web.client.ui.scan.BrowserServiceAsync;
-import org.jdna.bmt.web.client.ui.scan.MediaEditor;
-import org.jdna.bmt.web.client.ui.scan.ScanOptions;
-import org.jdna.bmt.web.client.ui.scan.ScanOptionsPanel;
 import org.jdna.bmt.web.client.ui.status.StatusPanel;
-import org.jdna.bmt.web.client.ui.util.DataDialog;
-import org.jdna.bmt.web.client.ui.util.OKDialogHandler;
 import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.core.client.GWT;
@@ -29,7 +24,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Grid;
@@ -41,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class AppPanel extends Composite implements ResizeHandler, HasResizeHandlers, ValueChangeHandler<String>, ErrorEventHandler {
     public static AppPanel INSTANCE = null;
-    private final BrowserServiceAsync browserService = GWT.create(BrowserService.class);
+    private final MetadataServiceAsync browserService = GWT.create(MetadataService.class);
     
     private DockPanel dp = new DockPanel();
     private Widget curPanel = null;
@@ -56,14 +50,6 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         
         Hyperlink configure = new Hyperlink(Application.labels().configure(), "configure");
         configure.setStyleName("App-Configure");
-
-        Hyperlink scan = new Hyperlink(Application.labels().scan(), "scan");
-        scan.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                setScanPanel();
-            }
-        });
-        scan.addStyleName("App-Scan");
 
         Hyperlink browse = new Hyperlink(Application.labels().browse(), "browsing/source:tv");
         browse.addStyleName("App-Browse");
@@ -89,7 +75,6 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         hp.setSpacing(10);
         hp.add(status);
         hp.add(configure);
-        hp.add(scan);
         hp.add(browse);
         hp.add(refresh);
         
@@ -126,40 +111,6 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         if (!(curPanel instanceof BrowsePanel)) {
             setPanel(new BrowsePanel()); 
         }
-        
-        //BrowsingServicesManager.getInstance().browseSource(params.get("source"));
-        
-        /*
-        if (params.containsKey("recordings")) {
-            BrowsingServicesManager.getInstance().browseSageFiles("T", Application.labels().recordings());
-        } else if (params.containsKey("dvds")) {
-            BrowsingServicesManager.getInstance().browseSageFiles("DL", Application.labels().dvds());
-        } else if (params.containsKey("videos")) {
-            BrowsingServicesManager.getInstance().browseSageFiles("VL", Application.labels().videos());
-        } else if (params.containsKey("filesystem")) {
-            BrowsingServicesManager.getInstance().browseSageSources(Application.labels().filesystem());
-        } else if (params.containsKey("genres")) {
-            BrowsingServicesManager.getInstance().browseSageFiles("genres", Application.labels().genres());
-        }  else {
-            Log.error("Unhandled browse options");
-            BrowsingServicesManager.getInstance().browseSageFiles("T", Application.labels().recordings());
-        }
-        */
-    }
-
-    protected void setScanPanel() {
-        DataDialog.showDialog(new ScanOptionsPanel(new OKDialogHandler<ScanOptions>() {
-            public void onSave(ScanOptions data) {
-                browserService.scan(data, new AsyncCallback<String>() {
-                    public void onFailure(Throwable caught) {
-                    }
-
-                    public void onSuccess(String scanId) {
-                        setPanel(new MediaEditor(scanId));
-                    }
-                });
-            }
-        }));
     }
 
     protected void setRefreshPanel() {

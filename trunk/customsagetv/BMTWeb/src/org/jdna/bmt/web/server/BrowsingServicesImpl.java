@@ -7,20 +7,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
+import org.jdna.bmt.web.client.media.GWTFactoryInfo;
+import org.jdna.bmt.web.client.media.GWTMediaFile;
+import org.jdna.bmt.web.client.media.GWTMediaFolder;
+import org.jdna.bmt.web.client.media.GWTMediaResource;
+import org.jdna.bmt.web.client.media.GWTFactoryInfo.SourceType;
 import org.jdna.bmt.web.client.ui.browser.BrowsingService;
-import org.jdna.bmt.web.client.ui.browser.GWTFactoryInfo;
-import org.jdna.bmt.web.client.ui.browser.MediaFile;
-import org.jdna.bmt.web.client.ui.browser.MediaFolder;
-import org.jdna.bmt.web.client.ui.browser.MediaResource;
-import org.jdna.bmt.web.client.ui.browser.GWTFactoryInfo.SourceType;
 
 import sagex.api.MediaFileAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaFolder;
 import sagex.phoenix.vfs.IMediaResource;
-import sagex.phoenix.vfs.sage.SageMediaFile;
+import sagex.phoenix.vfs.MediaResourceType;
+import sagex.phoenix.vfs.util.PathUtils;
 import sagex.phoenix.vfs.views.ViewFactory;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -32,56 +35,80 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class BrowsingServicesImpl extends RemoteServiceServlet implements BrowsingService {
     private static final Logger log = Logger.getLogger(BrowsingServicesImpl.class);
 
-    public MediaResource[] browseChildren(MediaFolder folder) {
+    public GWTMediaResource[] browseChildren(GWTMediaFolder folder) {
         IMediaFolder vfsFolder = null;
         vfsFolder = getFolderRef(folder);
-        List<MediaResource> files = new ArrayList<MediaResource>();
+        List<GWTMediaResource> files = new ArrayList<GWTMediaResource>();
         if (vfsFolder != null) {
             for (IMediaResource r : vfsFolder) {
                 files.add(convertResource(r));
             }
         }
 
-        return files.toArray(new MediaResource[files.size()]);
+        return files.toArray(new GWTMediaResource[files.size()]);
     }
 
-    private MediaResource convertResource(IMediaResource r) {
+    protected GWTMediaResource convertResource(IMediaResource r) {
+        return convertResource(r, getThreadLocalRequest());
+    }
+
+    public static GWTMediaResource convertResource(IMediaResource r, HttpServletRequest req) {
         if (r instanceof IMediaFolder) {
-            MediaFolder folder = new MediaFolder(null, phoenix.api.GetMediaTitle(r));
+            GWTMediaFolder folder = new GWTMediaFolder(null, phoenix.api.GetMediaTitle(r));
             folder.setResourceRef(String.valueOf(r.hashCode()));
-            setFolderRef((IMediaFolder) r);
+            setFolderRef((IMediaFolder) r, req);
+            folder.setPath(PathUtils.getLocation(r));
             return folder;
         } else {
-            MediaFile file = new MediaFile(null, r.getTitle());
+            GWTMediaFile file = new GWTMediaFile(null, r.getTitle());
             if (r instanceof IMediaFile) {
-                file.setEpisodeTitle(phoenix.api.GetEpisodeTitle(r));
-                if (r instanceof SageMediaFile) {
-                    int id = MediaFileAPI.GetMediaFileID(((SageMediaFile) r).getMediaObject());
+                if (r.isType(MediaResourceType.TV.value())) {
+                    file.setMinorTitle(phoenix.api.GetEpisodeTitle(r));
+                }
+                Object sageMedia = phoenix.api.GetSageMediaFile(r);
+                if (sageMedia!=null) {
+                    int id = MediaFileAPI.GetMediaFileID(sageMedia);
                     file.setThumbnailUrl("media/poster/" + id + "?transform={name:scale,height:120}}");
+                    file.setSageMediaFileId(id);
+                } else {
+                    log.debug("Not a sage media object??");
                 }
             }
+            file.setPath(PathUtils.getLocation(r));
             return file;
         }
     }
 
     private Map<String, IMediaFolder> getFolderRefs() {
-        Map<String, IMediaFolder> refs = (Map<String, IMediaFolder>) getThreadLocalRequest().getSession().getAttribute("folderRefs");
+        return getFolderRefs(getThreadLocalRequest());
+    }
+
+    private IMediaFolder getFolderRef(GWTMediaFolder folder) {
+        return getFolderRefs().get(folder.getResourceRef());
+    }
+    
+    public static Map<String, IMediaFolder> getFolderRefs(HttpServletRequest req) {
+        Map<String, IMediaFolder> refs = (Map<String, IMediaFolder>) req.getSession().getAttribute("folderRefs");
         if (refs == null) {
             refs = new HashMap<String, IMediaFolder>();
-            getThreadLocalRequest().getSession().setAttribute("folderRefs", refs);
+            req.getSession().setAttribute("folderRefs", refs);
         }
         return refs;
     }
 
-    private IMediaFolder getFolderRef(MediaFolder folder) {
-        return getFolderRefs().get(folder.getResourceRef());
+    public static IMediaFolder getFolderRef(GWTMediaFolder folder, HttpServletRequest req) {
+        return getFolderRefs(req).get(folder.getResourceRef());
     }
 
     private void setFolderRef(IMediaFolder folder) {
         getFolderRefs().put(String.valueOf(folder.hashCode()), folder);
     }
 
-    public MediaFolder getFolderForSource(GWTFactoryInfo source, MediaFolder folder) {
+    public static void setFolderRef(IMediaFolder folder, HttpServletRequest req) {
+        getFolderRefs(req).put(String.valueOf(folder.hashCode()), folder);
+    }
+
+    public GWTMediaFolder getFolderForSource(GWTFactoryInfo source, GWTMediaFolder folder) {
         log.debug("Getting Folder for source: " + source);
 
         if (source.getSourceType() == SourceType.View) {
@@ -97,7 +124,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
                 IMediaFolder f = factory.create(null);
                 setFolderRef(f);
                 log.debug("**** Returning newly created folder: " + f);
-                return (MediaFolder) convertResource(f);
+                return (GWTMediaFolder) convertResource(f);
             } else {
                 log.warn("Failed to get factory for: " + source.getId());
             }

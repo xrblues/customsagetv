@@ -1,10 +1,17 @@
 package org.jdna.bmt.web.client.ui.browser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.event.EventBus;
 import org.jdna.bmt.web.client.event.WaitingEvent;
+import org.jdna.bmt.web.client.media.GWTMediaFolder;
+import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.ui.app.ErrorEvent;
+import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar;
+import org.jdna.bmt.web.client.ui.util.OKDialogHandler;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -20,43 +27,69 @@ import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-public class BrowsePanel extends Composite implements BrowseReplyHandler, HasFolder, ResizeHandler {
+public class BrowsePanel extends Composite implements BrowseReplyHandler, BrowserView, ResizeHandler {
     private DockPanel           panel          = new DockPanel();
-    private FlowPanel           mainItems      = new FlowPanel();
+    private Panel               mainItems      = new FlowPanel();
+    private VerticalPanel       sideSource = new VerticalPanel();
     private SourcesPanel        sources        = new SourcesPanel(this);
-    private MediaFolder         currentFolder  = null;
+    private ScansPanel          scans = new ScansPanel(this);
+    
+    private GWTMediaFolder         currentFolder  = null;
 
     private DockPanel           browser        = new DockPanel();
     private ScrollPanel         browserScroller = new ScrollPanel();
     
     private HorizontalButtonBar     browserActions = new HorizontalButtonBar();
+    private Button backButton = null;
+    private Button updateMetadataButton = null;
 
     private HandlerRegistration replyHandler   = null;
     private HandlerRegistration resizeHandler = null;
+    private int lastScrollPosition;
     
     public BrowsePanel() {
         super();
         panel.setSpacing(5);
         panel.setWidth("100%");
-        sources.setWidth("220px");
-        panel.add(sources, DockPanel.WEST);
-        panel.setCellHorizontalAlignment(sources, HasHorizontalAlignment.ALIGN_LEFT);
-        panel.setCellVerticalAlignment(sources, HasVerticalAlignment.ALIGN_TOP);
-        panel.setCellWidth(sources, "300px");
+        sideSource.setWidth("220px");
+        sideSource.add(sources);
+        sources.setWidth("100%");
+        sideSource.add(scans);
+        scans.setWidth("100%");
+        panel.add(sideSource, DockPanel.WEST);
+        panel.setCellHorizontalAlignment(sideSource, HasHorizontalAlignment.ALIGN_LEFT);
+        panel.setCellVerticalAlignment(sideSource, HasVerticalAlignment.ALIGN_TOP);
+        panel.setCellWidth(sideSource, "300px");
 
         
         // add browse actions
-        browserActions.add(new Button("Back", new ClickHandler() {
+        backButton = new Button("Back", new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if (currentFolder.getParent()!=null) {
                     BrowsingServicesManager.getInstance().browseFolder(currentFolder.getParent());
                 }
             }
-        }));
-        //browserActions.addItem(new Button("Find Metadata"));
+        });
+        browserActions.add(backButton);
+        
+        updateMetadataButton = new Button("Update Metadata", new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                final ScanOptions options = new ScanOptions();
+                options.getScanPath().set(currentFolder);
+                DataDialog.showDialog(new ScanOptionsPanel(options, new OKDialogHandler<ScanOptions>() {
+                    public void onSave(ScanOptions data) {
+                        MetadataServicesManager.getInstance().scan(currentFolder, options);
+                    }
+                }));
+            }
+        });
+        browserActions.add(updateMetadataButton);
+        
         //browserActions.addItem(new Button("Set All Watched"));
         browserActions.setVisible(false);
         
@@ -86,7 +119,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, HasFol
 
         initWidget(panel);
     }
-
+    
     @Override
     protected void onAttach() {
         System.out.println("Attaching Browse Reply Event Handler");
@@ -107,8 +140,13 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, HasFol
         updateViewForFolder(event.getBrowseableFolder());
     }
 
-    private void updateViewForFolder(MediaFolder browseableFolder) {
+    private void updateViewForFolder(GWTMediaFolder browseableFolder) {
         try {
+            // if the mainItems widget is not visible, then set it.
+            if (mainItems != browserScroller.getWidget()) {
+                mainItems.clear();
+                browserScroller.setWidget(mainItems);
+            }
             this.currentFolder = browseableFolder;
             if (browseableFolder == null) {
                 Application.events().fireEvent(new ErrorEvent(Application.messages().failedToBrowseFolder("")));
@@ -116,42 +154,32 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, HasFol
             }
 
             mainItems.clear();
-            MediaResource[] children = browseableFolder.getChildren();
+            GWTMediaResource[] children = browseableFolder.getChildren();
             if (children == null) {
                 Application.events().fireEvent(new ErrorEvent(Application.messages().failedToBrowseFolder(browseableFolder.getTitle())));
                 return;
             }
 
-            if (children.length>0) {
+            if (children.length>0 && browseableFolder.isAllowActions()) {
                 browserActions.setVisible(true);
             } else {
                 browserActions.setVisible(false);
             }
             
-            //if (browseableFolder.getParent() != null) {
-            //    mainItems.add(new MediaItem(new BackMediaFolder(browseableFolder.getParent())));
-            //}
-
-            for (MediaResource r : children) {
-                MediaItem mi = new MediaItem(r);
+            for (GWTMediaResource r : children) {
+                MediaItem mi = new MediaItem(r, this);
                 mi.setHeight("250px");
                 mainItems.add(mi);
             }
             
-            DeferredCommand.addCommand(new Command() {
-                public void execute() {
-                    ResizeEvent evt = new ResizeEvent(Window.getClientWidth(), Window.getClientHeight()) {
-                    };
-                    onResize(evt);
-                }
-            });
+            resize();
         } finally {
             // notify handlers that we are no longer waiting for data
             EventBus.getHandlerManager().fireEvent(new WaitingEvent(browseableFolder.getResourceRef(), false));
         }
     }
 
-    public MediaFolder getFolder() {
+    public GWTMediaFolder getFolder() {
         return currentFolder;
     }
 
@@ -170,5 +198,40 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, HasFol
             scrollHeight = 1;
         }
         browserScroller.setPixelSize(scrollWidth, scrollHeight);
+    }
+
+    public void setDisplay(Widget w) {
+        // save the scroll position
+        lastScrollPosition = browserScroller.getScrollPosition();
+        
+        setActionsVisible(false);
+        Panel  p = new FlowPanel();
+        p.add(w);
+        browserScroller.setWidget(p);
+        
+        resize();
+    }
+
+    public void setActionsVisible(boolean b) {
+        browserActions.setVisible(b);
+    }
+
+    public void back() {
+        // just restore the mainitems
+        setActionsVisible(true);
+        browserScroller.setWidget(mainItems);
+        browserScroller.setScrollPosition(lastScrollPosition);
+        resize();
+    }
+    
+    private void resize() {
+        DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                ResizeEvent evt = new ResizeEvent(Window.getClientWidth(), Window.getClientHeight()) {
+                    // no body
+                };
+                onResize(evt);
+            }
+        });
     }
 }

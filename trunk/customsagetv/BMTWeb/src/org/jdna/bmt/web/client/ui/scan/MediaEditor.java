@@ -6,6 +6,9 @@ import java.util.List;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.ui.app.AppPanel;
+import org.jdna.bmt.web.client.ui.browser.MetadataService;
+import org.jdna.bmt.web.client.ui.browser.MetadataServiceAsync;
+import org.jdna.bmt.web.client.ui.browser.ProgressStatus;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.SortedVerticalPanel;
 import org.jdna.bmt.web.client.util.Log;
@@ -26,7 +29,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MediaEditor extends Composite implements ResizeHandler {
-    private final BrowserServiceAsync browserService  = GWT.create(BrowserService.class);
+    private final MetadataServiceAsync browserService  = GWT.create(MetadataService.class);
 
     private static class MediaFileComparator implements Comparator<MediaEditorMediaFileWidget> {
         public int compare(MediaEditorMediaFileWidget o1, MediaEditorMediaFileWidget o2) {
@@ -106,6 +109,7 @@ public class MediaEditor extends Composite implements ResizeHandler {
 
                     public void onSuccess(ProgressStatus result) {
                         if (result != null) {
+                            /*
                             if ((result.isDone() || result.isCancelled()) && (result.getItems()==null || result.getItems().size()==0)) {
                                 result.setStatus(result.getTotalWork() + " Items");
                                 cancelTimer(result);
@@ -113,6 +117,7 @@ public class MediaEditor extends Composite implements ResizeHandler {
                                 statusIndicator.updateProgress(result);
                                 addResults(result.getItems());
                             }
+                            */
                         } else {
                             cancelTimer("No Results");
                         }
@@ -184,7 +189,7 @@ public class MediaEditor extends Composite implements ResizeHandler {
             
             editor.setPixelSize(editorWidth, editorHeight);
             details.setPixelSize(editorWidth, editorHeight);
-            details.adjustSize(windowWidth, windowHeight);
+            //details.adjustSize(windowWidth, windowHeight);
         }
     }
 
@@ -245,7 +250,7 @@ public class MediaEditor extends Composite implements ResizeHandler {
 
     protected void updateEditorPanel(GWTMediaFile mediaFile, final MediaEditorMediaFileWidget item) {
         editor.clear();
-        details = new MediaEditorMetadataPanel(mediaFile);
+        details = new MediaEditorMetadataPanel(mediaFile,null);
         details.setWidth("100%");
         editor.add(details, DockPanel.CENTER);
         editor.setCellWidth(details, "100%");

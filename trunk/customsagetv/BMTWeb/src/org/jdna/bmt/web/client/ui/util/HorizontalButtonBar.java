@@ -29,4 +29,10 @@ public class HorizontalButtonBar extends Composite {
     public void clear() {
         buttons.clear();
     }
+
+    public void basicStyle() {
+        panel.removeStyleName("HorizontalButtonBar");
+        panel.setSpacing(1);
+        buttons.setSpacing(3);
+    }
 }
