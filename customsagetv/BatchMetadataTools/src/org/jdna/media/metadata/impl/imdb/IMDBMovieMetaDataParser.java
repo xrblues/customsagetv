@@ -81,11 +81,10 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
 
     public IMDBMovieMetaDataParser(String url) {
         super(url);
-        // These are the Metadata Fields that we support
         metadata = new MediaMetadata();
         metadata.setProviderId(IMDBMetaDataProvider.PROVIDER_ID);
-        metadata.setProviderDataUrl(url);
-        metadata.setProviderDataId(MetadataAPI.createMetadataIDString(IMDBMetaDataProvider.PROVIDER_ID,IMDBUtils.parseIMDBID(url)));
+        metadata.setProviderDataId(IMDBUtils.parseIMDBID(url));
+        MetadataAPI.setIMDBID(metadata, IMDBUtils.parseIMDBID(url));
     }
 
     public MediaMetadata getMetatData() {

@@ -16,6 +16,12 @@ public class PluginConfiguration extends GroupProxy {
     @AField(label="Overwrite Fanart", description="Overwrite Existing Fanart")
     private FieldProxy<Boolean> overwriteFanart = new FieldProxy<Boolean>(false);
     
+    @AField(label="Record Failures as System Message", description="Write a SystemMessage for any failed media items")
+    private FieldProxy<Boolean> useSystemMessagesForFailed = new FieldProxy<Boolean>(true);
+
+    @AField(label="Push status updates using System Messages", description="If true, then when a bunch of mediafile has been scanned, then a status of success and failed counts will be sent as a system message")
+    private FieldProxy<Boolean> useSystemMessagesForStatus = new FieldProxy<Boolean>(true);
+
     public PluginConfiguration() {
         super();
         init();
@@ -43,5 +49,33 @@ public class PluginConfiguration extends GroupProxy {
 
     public void setEnabled(boolean enabled) {
         this.enabled.set(enabled);
+    }
+
+    /**
+     * @return the useSystemMessagesForFailed
+     */
+    public boolean getUseSystemMessagesForFailed() {
+        return useSystemMessagesForFailed.get();
+    }
+
+    /**
+     * @param useSystemMessagesForFailed the useSystemMessagesForFailed to set
+     */
+    public void setUseSystemMessagesForFailed(boolean useSystemMessagesForFailed) {
+        this.useSystemMessagesForFailed.set(useSystemMessagesForFailed);
+    }
+
+    /**
+     * @return the useSystemMessagesForStatus
+     */
+    public boolean getUseSystemMessagesForStatus() {
+        return useSystemMessagesForStatus.get();
+    }
+
+    /**
+     * @param useSystemMessagesForStatus the useSystemMessagesForStatus to set
+     */
+    public void setUseSystemMessagesForStatus(boolean useSystemMessagesForStatus) {
+        this.useSystemMessagesForStatus.set(useSystemMessagesForStatus);
     }
 }

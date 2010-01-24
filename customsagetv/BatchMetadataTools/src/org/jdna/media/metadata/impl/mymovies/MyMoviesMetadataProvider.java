@@ -3,16 +3,17 @@ package org.jdna.media.metadata.impl.mymovies;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
-import org.jdna.media.metadata.MetadataID;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 
 import sagex.phoenix.Phoenix;
+import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaType;
 
 public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
@@ -52,7 +53,7 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
         return PROVIDER_NAME;
     }
 
-    public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
+    public List<IMetadataSearchResult> search(SearchQuery query) throws Exception {
         if (!initialized) initialize();
 
         if (shouldRebuildIndexes()) {
@@ -63,6 +64,16 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
             }
         }
 
+        
+        // search by ID, if the ID is present
+        if (!StringUtils.isEmpty(query.get(SearchQuery.Field.ID))) {
+            List<IMetadataSearchResult> res = MetadataUtil.searchById(this, query, query.get(SearchQuery.Field.ID));
+            if (res!=null) {
+                return res;
+            }
+        }
+        
+        // carry on normal search
         String arg = query.get(SearchQuery.Field.QUERY);
         try {
             return MyMoviesIndex.getInstance().searchTitle(arg);
@@ -120,8 +131,12 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
         return imageDir;
     }
 
-    public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return getMetaDataByUrl(result.getUrl());
+    public IMediaMetadata getMetaData(IMetadataSearchResult result) throws Exception {
+        if (!initialized) initialize();
+        
+        if (MetadataUtil.hasMetadata(result)) return MetadataUtil.getMetadata(result);
+
+        return new MyMoviesParser(result.getId()).getMetaData();
     }
 
     public IProviderInfo getInfo() {
@@ -130,16 +145,5 @@ public class MyMoviesMetadataProvider implements IMediaMetadataProvider {
 
     public MediaType[] getSupportedSearchTypes() {
         return supportedSearchTypes;
-    }
-
-    public String getUrlForId(MetadataID id) throws Exception {
-        if (!initialized) initialize();
-        
-        return id.getId();
-    }
-
-    public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
-        if (!initialized) initialize();
-        return new MyMoviesParser(url).getMetaData();
     }
 }

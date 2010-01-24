@@ -4,13 +4,13 @@ import java.io.File;
 import java.util.List;
 
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.impl.dvdproflocal.DVDProfXmlFile;
 import org.jdna.media.metadata.impl.dvdproflocal.IDVDProfMovieNodeVisitor;
 import org.jdna.media.metadata.impl.dvdproflocal.LocalDVDProfMetaDataProvider;
 import org.w3c.dom.Element;
 
+import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaType;
 
 public class TestLocalDVDProfiler {
@@ -28,12 +28,12 @@ public class TestLocalDVDProfiler {
 
     public static void main2(String args[]) throws Exception {
         IMediaMetadataProvider prov = new LocalDVDProfMetaDataProvider();
-        List<IMediaSearchResult> results = prov.search(new SearchQuery(MediaType.MOVIE, "Batman Begins"));
+        List<IMetadataSearchResult> results = prov.search(new SearchQuery(MediaType.MOVIE, "Batman Begins"));
 
         TestUtils.dumpResults(results);
 
         if (results != null && results.size() > 0) {
-            IMediaSearchResult res = results.get(0);
+            IMetadataSearchResult res = results.get(0);
             TestUtils.dumpMetaData(prov.getMetaData(res));
         }
     }

@@ -153,17 +153,19 @@ public class MediaMetadata implements IMediaMetadata, Serializable {
         }
     }
 
+    /*
     public String getProviderDataUrl() {
         return (String) get(MetadataKey.METADATA_PROVIDER_DATA_URL);
     }
-
+    public void setProviderDataUrl(String url) {
+        set(MetadataKey.METADATA_PROVIDER_DATA_URL, url);
+    }
+    */
+    
     public String getProviderId() {
         return (String) get(MetadataKey.METADATA_PROVIDER_ID);
     }
 
-    public void setProviderDataUrl(String url) {
-        set(MetadataKey.METADATA_PROVIDER_DATA_URL, url);
-    }
 
     public void setProviderId(String id) {
         set(MetadataKey.METADATA_PROVIDER_ID, id);

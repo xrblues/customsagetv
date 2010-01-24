@@ -17,14 +17,13 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataConfiguration;
-import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
 import org.w3c.dom.Element;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.fanart.IMetadataSearchResult;
 
 public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
     private static final Logger    log      = Logger.getLogger(LocalMovieIndex.class);
@@ -107,7 +106,7 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
         return doc;
     }
 
-    public List<IMediaSearchResult> searchTitle(String title) throws Exception {
+    public List<IMetadataSearchResult> searchTitle(String title) throws Exception {
         if (searcher == null) openIndex();
 
         Query query = null;
@@ -121,7 +120,7 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
         Hits hits = searcher.search(query);
         
         int l = hits.length();
-        List<IMediaSearchResult> results = new ArrayList<IMediaSearchResult>(l);
+        List<IMetadataSearchResult> results = new ArrayList<IMetadataSearchResult>(l);
 
         for (int i = 0; i < l; i++) {
             Document d = hits.doc(i);
@@ -139,7 +138,7 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
             if (!StringUtils.isEmpty(altTitle)) {
                 name = name + "(aka "+  altTitle+")";
             }
-            results.add(new MediaSearchResult(LocalDVDProfMetaDataProvider.PROVIDER_ID, id, new MetadataID(LocalDVDProfMetaDataProvider.PROVIDER_ID, id), name, date, Math.max(score1, score2)));
+            results.add(new MediaSearchResult(LocalDVDProfMetaDataProvider.PROVIDER_ID, id, name, date, Math.max(score1, score2)));
         }
         
         return results;

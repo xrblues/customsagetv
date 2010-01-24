@@ -13,9 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
-import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.IUrl;
@@ -25,6 +23,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import sagex.phoenix.fanart.IMetadataSearchResult;
+
 public class TVDBSearchParser {
     private static final Logger                 log        = Logger.getLogger(TVDBSearchParser.class);
     private static final String                 SEARCH_URL = "http://www.thetvdb.com/api/GetSeries.php?seriesname=%s";
@@ -33,11 +33,11 @@ public class TVDBSearchParser {
 
     private SearchQuery query = null;
     private IUrl                                url;
-    private List<IMediaSearchResult>            results    = new LinkedList<IMediaSearchResult>();
+    private List<IMetadataSearchResult>            results    = new LinkedList<IMetadataSearchResult>();
     private String								searchTitle;
 
-    private Comparator<IMediaSearchResult> sorter              = new Comparator<IMediaSearchResult>() {
-        public int compare(IMediaSearchResult o1, IMediaSearchResult o2) {
+    private Comparator<IMetadataSearchResult> sorter              = new Comparator<IMetadataSearchResult>() {
+        public int compare(IMetadataSearchResult o1, IMetadataSearchResult o2) {
      	   if(o1.getScore() > o2.getScore()) return -1;
      	   if(o1.getScore() < o2.getScore()) return 1;
             return 0;
@@ -52,7 +52,7 @@ public class TVDBSearchParser {
         log.debug("TVDB SearchQuery Url: " + url);
     }
 
-    public List<IMediaSearchResult> getResults() {
+    public List<IMetadataSearchResult> getResults() {
         // already parsed
         if (results.size() > 0) return results;
 
@@ -77,39 +77,24 @@ public class TVDBSearchParser {
     }
 
     private void addMovie(Element item) {
-        MediaSearchResult sr = new MediaSearchResult();
-        for (SearchQuery.Field f : SearchQuery.Field.values()) {
-            if (f==SearchQuery.Field.QUERY) continue;
-            String s = query.get(f);
-            if (!StringUtils.isEmpty(s)) {
-                sr.addExtraArg(f.name(), s);
-            }
-        }
-        sr.setProviderId(TVDBMetadataProvider.PROVIDER_ID);
         String title = getElementValue(item, "SeriesName");
         if (StringUtils.isEmpty(title)) {
             log.warn("TVDB Item didn't contain a title: " + item.getTextContent());
             return;
         }
         
+        MediaSearchResult sr = new MediaSearchResult();
+        MetadataUtil.copySearchQueryToSearchResult(query, sr);
+        sr.setProviderId(TVDBMetadataProvider.PROVIDER_ID);
         sr.setTitle(title);
         sr.setScore(getScore(title));
-        
         sr.setYear(parseYear(getElementValue(item, "FirstAired")));
-        
-        String id = getElementValue(item, "seriesid");
-        sr.setMetadataId(new MetadataID("tvdb", id));
-        
-        sr.setUrl(id);
-        
-        // use the url with extra args
-        sr.setUrl(sr.getUrlWithExtraArgs());
-        
-        // TODO: once MetadataID contains a map of ids, add the imdb to it
-        //sr.setMetadataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, getElementValue(item, "imdb")));
+        sr.setId(getElementValue(item, "seriesid"));
+        sr.setIMDBId(getElementValue(item, "imdb"));
+        // note, sr.setUrl() is never used, since IMDB only looks up using ids
 
         results.add(sr);
-        log.debug("Adding TV Title: " + sr.getTitle());
+        log.debug("Added TVDB Title: " + sr.getTitle());
     }
 
     private String parseYear(String year) {

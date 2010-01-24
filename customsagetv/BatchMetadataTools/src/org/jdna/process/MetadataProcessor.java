@@ -1,5 +1,6 @@
 package org.jdna.process;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,15 +9,18 @@ import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MediaMetadataPersistence;
 import org.jdna.media.metadata.MediaSearchResult;
-import org.jdna.media.metadata.MetadataID;
+import org.jdna.media.metadata.MetadataConfiguration;
+import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.metadata.SearchQuery.Field;
 
+import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaType;
 import sagex.phoenix.progress.IProgressMonitor;
 import sagex.phoenix.progress.ProgressTracker;
@@ -24,6 +28,7 @@ import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaResource;
 import sagex.phoenix.vfs.IMediaResourceVisitor;
 import sagex.phoenix.vfs.MediaFolderTraversal;
+import sagex.phoenix.vfs.filters.AndResourceFilter;
 import sagex.phoenix.vfs.filters.IResourceFilter;
 
 public class MetadataProcessor {
@@ -33,25 +38,69 @@ public class MetadataProcessor {
     private PersistenceOptions                     options     = null;
     private IMediaMetadataPersistence              persistence = null;
     private Map<MediaType, IMediaMetadataProvider> providers   = null;
+    private AndResourceFilter filter =  new AndResourceFilter();
+    private boolean recurse = false;
+    private String defaultQueryArgs = null;
 
+    private MetadataConfiguration metadataConfig;
+    
+    public MetadataProcessor(PersistenceOptions options) {
+        this.options=options;
+        this.metadataConfig = GroupProxy.get(MetadataConfiguration.class);
+        
+        providers = new HashMap<MediaType, IMediaMetadataProvider>();
+        String tv = metadataConfig.getTVProviders();
+        providers.put(MediaType.TV, MediaMetadataFactory.getInstance().getProvider(tv, MediaType.TV));
+
+        String movie = metadataConfig.getMovieProviders();
+        providers.put(MediaType.MOVIE, MediaMetadataFactory.getInstance().getProvider(movie, MediaType.MOVIE));
+        
+        persistence = new MediaMetadataPersistence();
+    }
+    
     public MetadataProcessor(MediaType forceType, Map<MediaType, IMediaMetadataProvider> providers, IMediaMetadataPersistence persistence, PersistenceOptions options) {
         this.forcedType = forceType;
         this.providers = providers;
         this.persistence = persistence;
         this.options = options;
+        
+        // if you are not overwriting metadata, then only process missing metadata
+        if (!options.isOverwriteMetadata()) {
+            log.info("Metadata Processor will only scan for items that are missing metadata.");
+            includeOnlyMissingMetadata();
+        }
+    }
+    
+    public void addFilter(IResourceFilter filt) {
+        this.filter.addFilter(filt);
+    }
+    
+    public void setRecurse(boolean recurse) {
+        this.recurse=recurse;
+    }
+    
+    public void includeOnlyMissingMetadata() {
+        addFilter(new MissingMetadataFilter(persistence));
     }
 
-    public void process(final IMediaResource res, boolean recurse, final IResourceFilter filter, final ProgressTracker<MetadataItem> monitor) {
+    public void process(final IMediaResource res, final ProgressTracker<MetadataItem> monitor) {
         try {
             monitor.beginTask("Processing Media Files...", IProgressMonitor.UNKNOWN);
             IMediaResourceVisitor vis = new IMediaResourceVisitor() {
-                public boolean visit(IMediaResource res) {
+                public boolean visit(IMediaResource res1) {
                     if (!monitor.isCancelled()) {
-                        if (filter.accept(res)) {
-                            if (res instanceof IMediaFile) {
-                                monitor.setTaskName("Processing: " + res.getTitle());
+                        if (filter.accept(res1)) {
+                            if (res1 instanceof IMediaFile) {
+                                monitor.setTaskName("Processing: " + res1.getTitle());
 
-                                SearchQuery query = SearchQueryFactory.getInstance().createQuery(res);
+                                SearchQuery query = SearchQueryFactory.getInstance().createQuery(res1);
+                                if (query!=null && defaultQueryArgs!=null) {
+                                    try {
+                                        SearchQueryFactory.getInstance().updateQueryFromJSON(query,defaultQueryArgs);
+                                    } catch (Exception e) {
+                                        log.warn("Failed to update the query using json default query args: " + defaultQueryArgs, e);
+                                    }
+                                }
                                 if (forcedType != null) {
                                     if (query!=null) {
                                         log.info("Forcing media type on query to be " + forcedType);
@@ -60,14 +109,14 @@ public class MetadataProcessor {
                                 }
 
                                 if (query == null) {
-                                    log.warn("Failed to create a metadata search query for: " + res);
-                                    monitor.addFailed(new MetadataItem((IMediaFile)res, query, options, null, persistence, null), "Failed to create a metadata search query for: " + res);
+                                    log.warn("Failed to create a metadata search query for: " + res1);
+                                    monitor.addFailed(new MetadataItem((IMediaFile)res1, query, options, null, persistence, null), "Failed to create a metadata search query for: " + res1);
                                 } else {
-                                    scanMediaFile((IMediaFile) res, query, monitor);
+                                    scanMediaFile((IMediaFile) res1, query, monitor);
                                 }
                             }
                         } else {
-                            log.debug("Resource: " + res + " was not accepted by filter.");
+                            log.debug("Resource: " + res1 + " was not accepted by filter.");
                         }
                     } else {
                         log.info("Scan was cancelled. Aborting...");
@@ -84,6 +133,13 @@ public class MetadataProcessor {
     }
 
     public void scanMediaFile(IMediaFile mf, SearchQuery query, ProgressTracker<MetadataItem> monitor) {
+        if (query.getMediaType()==null) {
+            log.debug("Failed to determine the media type, using Movie");
+            query.setMediaType(MediaType.MOVIE);
+        }
+        if (providers==null) {
+            throw new RuntimeException("Misconfiguration!  No Providers were set for the provider!");
+        }
         IMediaMetadataProvider provider = providers.get(query.getMediaType());
         if (provider == null) {
             log.warn("No metadata provider was passed for the given media type: " + query.getMediaType());
@@ -93,44 +149,26 @@ public class MetadataProcessor {
 
         // if there is a search by id, then use it
         IMediaMetadata md = null;
-        if (!StringUtils.isEmpty(query.get(Field.METADATA_ID))) {
-            MetadataID mid = new MetadataID(query.get(Field.METADATA_ID));
-            IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().findById(mid.getProvider());
+        if (!StringUtils.isEmpty(query.get(Field.ID)) && !StringUtils.isEmpty(query.get(Field.PROVIDER))) {
+            IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().findById(query.get(Field.PROVIDER));
+            MediaSearchResult sr = new MediaSearchResult();
+            MetadataUtil.copySearchQueryToSearchResult(query, sr);
+            sr.setId(query.get(Field.ID));
+            sr.setProviderId(query.get(Field.PROVIDER));
+            
             try {
-                md = prov.getMetaDataByUrl(prov.getUrlForId(mid));
+                md = prov.getMetaData(sr);
             } catch (Exception e) {
-                log.warn("Failed to get metadata by id " + mid + ", but will continue to search by title, etc.", e);
-                monitor.setTaskName("Failed to get metadata by id " + mid + ", but will continue to search by title, etc.");
+                log.warn("Failed to get metadata by id; " + sr + ";, but will continue to search by title, etc.", e);
+                monitor.setTaskName("Failed to get metadata by id; " + sr + ";, but will continue to search by title, etc.");
             }
         }
-
-        if (md == null && !StringUtils.isEmpty(query.get(Field.SERIES_ID)) && !StringUtils.isEmpty(query.get(Field.SEASON))) {
-            MetadataID mid = new MetadataID(query.get(Field.SERIES_ID));
-            MediaSearchResult sr = new MediaSearchResult(mid.getProvider(), MediaType.TV, 1.0f);
-            sr.setTitle(query.get(Field.RAW_TITLE));
-            sr.setYear(query.get(Field.YEAR));
-            for (SearchQuery.Field f : SearchQuery.Field.values()) {
-                if (!StringUtils.isEmpty(query.get(f))) {
-                    sr.addExtraArg(f.name(), query.get(f));
-                }
-            }
-            String url = sr.getUrl();
-            IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().findById(mid.getProvider());
-            try {
-                md = prov.getMetaDataByUrl(url);
-            } catch (Exception e) {
-                log.warn("Failed to get metadata by series url " + mid + ", but will continue to search by title, etc.", e);
-                monitor.setTaskName("Failed to get metadata by series url " + mid + ", but will continue to search by title, etc.");
-            }
-        }
-
-        // check if there is a search by url
 
         // otherwise do a fuzzy logic search by title/year
         if (md == null) {
             try {
-                List<IMediaSearchResult> results = searchByTitle(query, query.get(Field.RAW_TITLE), provider);
-                IMediaSearchResult res = MediaMetadataFactory.getInstance().getBestResultForQuery(results, query);
+                List<IMetadataSearchResult> results = searchByTitle(query, query.get(Field.RAW_TITLE), provider);
+                IMetadataSearchResult res = MediaMetadataFactory.getInstance().getBestResultForQuery(results, query);
                 if (res == null) {
                     // TODO: Use a config flag to search for secondary title
                     // always, and then chose the best result
@@ -150,23 +188,41 @@ public class MetadataProcessor {
 
         if (md != null) {
             try {
-                persistMetadata(query, md, mf, options);
+                persistMetadata(md, mf);
                 monitor.addSuccess(new MetadataItem(mf, query, options, provider, persistence, md));
             } catch (Exception e) {
                 monitor.addFailed(new MetadataItem(mf, query, options, provider, persistence, md), "Failed to save metadata");
             }
         } else {
-            monitor.addFailed(new MetadataItem(mf, query, options, provider, persistence, md), "Failed to find a metadata match");
+            log.warn("Failed to find a metadata match for " + mf);
         }
     }
 
-    private void persistMetadata(SearchQuery query, IMediaMetadata md, IMediaFile file, PersistenceOptions options) throws Exception {
+    private void persistMetadata(IMediaMetadata md, IMediaFile file) throws Exception {
         persistence.storeMetaData(md, file, options);
     }
 
-    private List<IMediaSearchResult> searchByTitle(SearchQuery query, String searchTitle, IMediaMetadataProvider provider) throws Exception {
+    private List<IMetadataSearchResult> searchByTitle(SearchQuery query, String searchTitle, IMediaMetadataProvider provider) throws Exception {
         SearchQuery newQuery = SearchQuery.copy(query);
         newQuery.set(Field.QUERY, searchTitle);
         return provider.search(newQuery);
+    }
+
+    /**
+     * @return the defaultQueryArgs
+     */
+    public String getDefaultQueryArgs() {
+        return defaultQueryArgs;
+    }
+
+    /**
+     * Sets a JSON String of the default query args.  This will be passed to {@link SearchQuery}.updateFromJSON().
+     * The default query args will be used on ALL querries, so use with caution, since it could lead to some
+     * unintended consequences
+     * 
+     * @param defaultQueryArgs the defaultQueryArgs to set
+     */
+    public void setDefaultQueryArgs(String defaultQueryArgs) {
+        this.defaultQueryArgs = defaultQueryArgs;
     }
 }

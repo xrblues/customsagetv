@@ -6,13 +6,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaMetadataFactory;
-import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
 
+import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaType;
 
 /**
@@ -35,13 +34,13 @@ public class MetadataProviderContainer implements IMediaMetadataProvider {
         return info;
     }
 
-    public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
+    public IMediaMetadata getMetaData(IMetadataSearchResult result) throws Exception {
         return MediaMetadataFactory.getInstance().getProvider(result.getProviderId(), result.getMediaType()).getMetaData(result);
     }
 
-    public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
-        List<IMediaSearchResult> list = null;
-        List<IMediaSearchResult> searches = new ArrayList<IMediaSearchResult>();
+    public List<IMetadataSearchResult> search(SearchQuery query) throws Exception {
+        List<IMetadataSearchResult> list = null;
+        List<IMetadataSearchResult> searches = new ArrayList<IMetadataSearchResult>();
         for (IMediaMetadataProvider p : providers) {
             try {
                 if (MediaMetadataFactory.getInstance().canProviderAcceptQuery(p, query)) {
@@ -92,11 +91,8 @@ public class MetadataProviderContainer implements IMediaMetadataProvider {
         return MediaType.values();
     }
 
-    public String getUrlForId(MetadataID id) throws Exception {
-        throw new Exception("getUrlForId(id) is not supported for a container.");
-    }
-
-    public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
-        throw new Exception("getMetaDataByUrl(url) is not supported for a container.");
+    public IMediaMetadata getMetaDataById(String id) throws Exception {
+        log.warn("getMetadataById() is not implemented for a container");
+        return null;
     }
 }

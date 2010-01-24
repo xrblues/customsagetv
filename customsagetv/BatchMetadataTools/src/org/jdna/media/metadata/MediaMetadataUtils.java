@@ -33,11 +33,14 @@ public class MediaMetadataUtils {
                 log.error("writeImageFromUrl called with null output file for image: " + url);
             }
 
-            log.debug("Writing Image; Url: " + url + "; ToFile: " + out.getAbsolutePath());
+            log.info("Writing Image; Url: " + url + "; ToFile: " + out.getAbsolutePath());
 
             // make the directory, if it doesn't exist.
-            if (out.getParentFile()!=null) {
-                out.getParentFile().mkdirs();
+            if (out.getParentFile()!=null && !out.getParentFile().exists()) {
+                if (!out.getParentFile().mkdirs()) {
+                    log.warn("Failed to create parent image folder (probably a permission issue): " + out.getParentFile().getAbsolutePath());
+                    return;
+                }
             }
 
             URL u = new URL(url);
@@ -73,11 +76,14 @@ public class MediaMetadataUtils {
                 log.error("writeImageFromUrl called with null output file for image: " + url);
             }
 
-            log.debug("Writing Image; Url: " + url + "; ToFile: " + out.getAbsolutePath() + "; WithScale: " + scaleWidth);
+            log.info("Writing Image; Url: " + url + "; ToFile: " + out.getAbsolutePath() + "; WithScale: " + scaleWidth);
 
             // make the directory, if it doesn't exist.
-            if (out.getParentFile()!=null) {
-                out.getParentFile().mkdirs();
+            if (out.getParentFile()!=null  && !out.getParentFile().exists()) {
+                if (!out.getParentFile().mkdirs()) {
+                    log.warn("Failed to create parent image folder (probably a permission issue): " + out.getParentFile().getAbsolutePath());
+                    return;
+                }
             }
 
             URL u = new URL(url);

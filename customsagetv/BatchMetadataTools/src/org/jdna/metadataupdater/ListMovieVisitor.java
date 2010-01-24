@@ -63,7 +63,6 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
             col2("Runtime:", MetadataAPI.getRuntime(md));
             col2("Aspect Ratio:", md.getString(MetadataKey.ASPECT_RATIO));
             col2("Provider DataId:", (MetadataAPI.getProviderDataId(md)==null?"Not Set":MetadataAPI.getProviderDataId(md)));
-            col2("Provider Url:", MetadataAPI.getProviderDataUrl(md));
             col2("Provider Id:", MetadataAPI.getProviderId(md));
             if (MetadataAPI.getMediaArt(md, MediaArtifactType.POSTER) != null) {
                 List<IMediaArt> maArr = MetadataAPI.getMediaArt(md, MediaArtifactType.POSTER);

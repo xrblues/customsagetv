@@ -3,44 +3,29 @@ package org.jdna.metadataupdater;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.metadata.SearchQuery.Field;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.process.InteractiveMetadataProcessor;
 import org.jdna.process.MetadataItem;
 
+import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaType;
 import sagex.phoenix.progress.ProgressTracker;
 import sagex.phoenix.vfs.IMediaFile;
-import sagex.remote.json.JSONException;
-import sagex.remote.json.JSONObject;
 
 public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProcessor {
     private Logger log         = Logger.getLogger(this.getClass());
 
     private int    displaySize = 10;
-    private static Map<String, SearchQuery.Field> mappedFields = new HashMap<String, Field>();
-    
-    static {
-        mappedFields.put(SageProperty.DISPLAY_TITLE.sageKey, Field.QUERY);
-        mappedFields.put(SageProperty.DISC.sageKey, Field.DISC);
-        mappedFields.put("EpisodeDate",Field.EPISODE_DATE);
-        mappedFields.put(SageProperty.EPISODE_NUMBER.sageKey,Field.EPISODE);
-        mappedFields.put(SageProperty.EPISODE_TITLE.sageKey, Field.EPISODE_TITLE);
-        mappedFields.put(SageProperty.SEASON_NUMBER.sageKey, Field.SEASON);
-        mappedFields.put("Series",Field.SERIES_ID);
-        mappedFields.put(SageProperty.YEAR.sageKey, Field.YEAR);
-    }
 
     public ConsoleInteractiveMetadataProcessor(MediaType forceType, Map<MediaType, IMediaMetadataProvider> providers, IMediaMetadataPersistence persistence, PersistenceOptions options, int displaySize) {
         super(forceType, providers, persistence, options);
@@ -48,7 +33,7 @@ public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProc
     }
 
     @Override
-    protected IMediaSearchResult selectResult(IMediaFile mf, SearchQuery query, List<IMediaSearchResult> results, ProgressTracker<MetadataItem> monitor) {
+    protected IMetadataSearchResult selectResult(IMediaFile mf, SearchQuery query, List<IMetadataSearchResult> results, ProgressTracker<MetadataItem> monitor) {
         // Let's prompt for results
         // draw the screen, and let the input handler decide what to do next
         log.debug("Showing Results for: " + query);
@@ -74,7 +59,7 @@ public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProc
             message("{Field: 'value', Field: 'Value', Field: 'value', ...}");
             message("Where Field is one of the following Field names...");
             message(" " + SageProperty.MEDIA_TYPE.sageKey +": [TV, Movies, Music]");
-            for (String s : mappedFields.keySet()) {
+            for (String s : SearchQueryFactory.getJSONQueryFields()) {
                 message(" " + s);
             }
             message("For example to search for The Wicker Man in 1973, you could use the search query");
@@ -101,24 +86,10 @@ public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProc
             } catch (Exception e) {
                 if (data.startsWith("{")) {
                     log.debug("Processing JSON Query: " + data);
-                    // if the user specified a json query, then process it
                     try {
-                        JSONObject jo = new JSONObject(data);
-                        for (Iterator i = jo.keys(); i.hasNext();) {
-                            String k = (String) i.next();
-                            String v = jo.getString(k);
-                            if (SageProperty.MEDIA_TYPE.sageKey.equalsIgnoreCase(k)) {
-                                query.setMediaType(MediaType.toMediaType(v));
-                            } else {
-                                SearchQuery.Field f = mappedFields.get(k);
-                                if (f==null) {
-                                    throw new JSONException("Invalid Field: " + k);
-                                }
-                                log.debug("Setting Query Option: " + f + " = " + v);
-                                query.set(f, v);
-                            }
-                        }
-                    } catch (JSONException e1) {
+                        // if the user specified a json query, then process it
+                        SearchQueryFactory.getInstance().updateQueryFromJSON(query,data);
+                    } catch (Exception e1) {
                         monitor.setTaskName("Failed to process query string: " + data + "; Message: " + e1.getMessage());
                     }
                     setState(State.Search);
@@ -136,7 +107,7 @@ public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProc
                 return null;
             }
             
-            IMediaSearchResult sr = results.get(n);
+            IMetadataSearchResult sr = results.get(n);
             log.debug("User's Selected Title: " + sr.getTitle());
             // TODO: remember the selected title
             // ConfigurationManager.getInstance().setMetadataIdForTitle(query.get(SearchQuery.Field.QUERY), sr.getMetadataId());
@@ -144,7 +115,7 @@ public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProc
         }
     }
 
-    public void renderResults(String title, List<IMediaSearchResult> results, int max) {
+    public void renderResults(String title, List<IMetadataSearchResult> results, int max) {
         System.out.printf("\n\n%s\n", title);
         if (results==null) {
             System.out.println("No Results!");
@@ -153,7 +124,7 @@ public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProc
         int l = results.size();
         l = Math.min(l, max);
         for (int i = 0; i < l; i++) {
-            IMediaSearchResult sr = results.get(i);
+            IMetadataSearchResult sr = results.get(i);
             System.out.printf("%2d (%1.3f - %s) - %s (%s)\n", i, sr.getScore(), sr.getProviderId(), sr.getTitle(), sr.getYear());
         }
 
@@ -176,4 +147,5 @@ public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProc
 
         return resp;
     }
+
 }

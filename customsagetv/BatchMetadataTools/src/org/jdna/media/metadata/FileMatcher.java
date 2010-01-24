@@ -3,12 +3,14 @@ package org.jdna.media.metadata;
 import java.io.File;
 import java.util.regex.Pattern;
 
+import sagex.phoenix.fanart.MediaType;
+
 public class FileMatcher {
+    private MediaType mediaType = MediaType.MUSIC;
     private File file;
     private String title, year;
     private Pattern fileRegex;
     private ID metadata;
-    private ID series;
     private ID fanart;
     
     public FileMatcher() {
@@ -67,18 +69,6 @@ public class FileMatcher {
         this.metadata = metadata;
     }
     /**
-     * @return the series
-     */
-    public ID getSeries() {
-        return series;
-    }
-    /**
-     * @param series the series to set
-     */
-    public void setSeries(ID series) {
-        this.series = series;
-    }
-    /**
      * @return the fanart
      */
     public ID getFanart() {
@@ -103,5 +93,19 @@ public class FileMatcher {
      */
     public void setFile(File file) {
         this.file = file;
+    }
+
+    /**
+     * @return the mediaType
+     */
+    public MediaType getMediaType() {
+        return mediaType;
+    }
+
+    /**
+     * @param mediaType the mediaType to set
+     */
+    public void setMediaType(MediaType mediaType) {
+        this.mediaType = mediaType;
     }
 }

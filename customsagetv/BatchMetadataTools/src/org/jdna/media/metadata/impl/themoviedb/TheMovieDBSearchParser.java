@@ -14,10 +14,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataConfiguration;
-import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.IUrl;
@@ -28,6 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.fanart.IMetadataSearchResult;
 
 public class TheMovieDBSearchParser {
     private static final Logger                 log        = Logger.getLogger(TheMovieDBMetadataProvider.class);
@@ -36,14 +35,15 @@ public class TheMovieDBSearchParser {
     private static final Pattern yearPattern = Pattern.compile("([0-9]{4})");
 
     private IUrl                                url;
-    private List<IMediaSearchResult>            results    = new ArrayList<IMediaSearchResult>();
+    private List<IMetadataSearchResult>            results    = new ArrayList<IMetadataSearchResult>();
     private String								searchTitle;
+    private SearchQuery query;
+    private MetadataConfiguration cfg = GroupProxy.get(MetadataConfiguration.class);
     
-    public MetadataConfiguration cfg = GroupProxy.get(MetadataConfiguration.class);
     
-    private Comparator<IMediaSearchResult> sorter              = new Comparator<IMediaSearchResult>() {
+    private Comparator<IMetadataSearchResult> sorter              = new Comparator<IMetadataSearchResult>() {
 
-        public int compare(IMediaSearchResult o1, IMediaSearchResult o2) {
+        public int compare(IMetadataSearchResult o1, IMetadataSearchResult o2) {
      	   if(o1.getScore() > o2.getScore()) return -1;
      	   if(o1.getScore() < o2.getScore()) return 1;
             return 0;
@@ -64,11 +64,12 @@ public class TheMovieDBSearchParser {
     public TheMovieDBSearchParser(SearchQuery query) {
         searchTitle = query.get(SearchQuery.Field.QUERY);
         this.url = UrlFactory.newUrl(String.format(SEARCH_URL, URLEncoder.encode(searchTitle), TheMovieDBMetadataProvider.getApiKey()));
+        this.query=query;
 
         log.debug("TheMovieDB SearchQuery Url: " + url);
     }
 
-    public List<IMediaSearchResult> getResults() {
+    public List<IMetadataSearchResult> getResults() {
         // already parsed
         if (results.size() > 0) return results;
 
@@ -90,15 +91,18 @@ public class TheMovieDBSearchParser {
     }
 
     private void addMovie(Element item) {
-        MediaSearchResult sr = new MediaSearchResult();
-        sr.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
         if (StringUtils.isEmpty(getElementValue(item, "title"))) {
             log.warn("TheMovieDB Item didn't contain a title: " + item.getTextContent());
             return;
         }
         
+        MediaSearchResult sr = new MediaSearchResult();
+        MetadataUtil.copySearchQueryToSearchResult(query, sr);
+        
+        sr.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
+
         String title = getElementValue(item, "title");
-        sr.setTitle(getElementValue(item, "title"));
+        sr.setTitle(title);
         sr.setScore(getScore(title));
 
         // add alternate title scoring...
@@ -136,12 +140,9 @@ public class TheMovieDBSearchParser {
         }
         
         sr.setYear(parseYear(getElementValue(item, "release")));
-        String id = getElementValue(item, "id");
-        sr.setUrl(String.format(TheMovieDBItemParser.ITEM_URL, id));
-        sr.setMetadataId(new MetadataID("themoviedb", id));
-        
-        // TODO: once MetadataID contains a map of ids, add the imdb to it
-        //sr.setMetadataId(new MetadataID(IMDBMetaDataProvider.PROVIDER_ID, getElementValue(item, "imdb")));
+        sr.setId(getElementValue(item, "id"));
+        sr.setUrl(String.format(TheMovieDBItemParser.ITEM_URL, sr.getId()));
+        sr.setIMDBId(getElementValue(item, "imdb"));
 
         results.add(sr);
     }

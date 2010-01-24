@@ -5,7 +5,6 @@ import java.io.File;
 import org.apache.log4j.BasicConfigurator;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MetadataConfiguration;
@@ -41,7 +40,7 @@ public class TestBMTApis {
 
         IMetadataSearchResult[] results = phoenix.api.GetMetadataSearchResults(smf);
         IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(results[0].getProviderId(), results[0].getMediaType());
-        IMediaMetadata md = prov.getMetaData((IMediaSearchResult) results[0]);
+        IMediaMetadata md = prov.getMetaData((IMetadataSearchResult) results[0]);
 
         GroupProxy.get(MetadataConfiguration.class).setImportTVAsRecordedShows(true);
         

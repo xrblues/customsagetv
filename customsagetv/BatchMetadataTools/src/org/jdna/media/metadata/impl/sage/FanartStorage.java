@@ -132,7 +132,7 @@ public class FanartStorage {
                 if (storedFile.exists()) {
                     StoredStringSet.load(set, storedFile);
                     if (set.contains(name)) {
-                        log.debug("Skipping Image file: " + imageFile.getPath() + " because it's in the image skip file.");
+                        log.info("Skipping Image file: " + imageFile.getPath() + " because it's in the image skip file.");
                         skip = true;
                     }
                 }
@@ -146,7 +146,7 @@ public class FanartStorage {
                     StoredStringSet.save(set, storedFile, "Ignoring these image files");
                 }
             } catch (Exception e) {
-                log.error("Failed to load/save the skip file for image: " + imageFile.getAbsolutePath(), e);
+                log.warn("Failed to load/save the skip file for image (probably a permission issue): " + imageFile.getAbsolutePath());
             }
         }
         return skip;
@@ -174,11 +174,11 @@ public class FanartStorage {
 
             File fanartFile = FanartUtil.getCentralFanartArtifact(mediaType, mt, title, centralFolder, extraMD);
             List<IMediaArt> artwork = MetadataAPI.getMediaArt(md, mt);
-            downloadAndSageCentralFanart(mt, fanartFile, artwork, options);
+            downloadAndSaveCentralFanart(mt, fanartFile, artwork, options);
         }
     }
 
-    private void downloadAndSageCentralFanart(MediaArtifactType mt, File fanartDir, List<IMediaArt> artwork, PersistenceOptions options) {
+    private void downloadAndSaveCentralFanart(MediaArtifactType mt, File fanartDir, List<IMediaArt> artwork, PersistenceOptions options) {
         int downloaded = 0;
         int max = metadataConfig.getMaxDownloadableImages();
         if (max == -1) max = 99;
@@ -187,8 +187,8 @@ public class FanartStorage {
             for (IMediaArt ma : artwork) {
                 try {
                     downloadAndSaveFanart(mt, ma, fanartDir, options, true);
-                } catch (IOException e) {
-                    log.error("Failed to download Fanart: " + ma.getDownloadUrl() + " for : " + fanartDir.getAbsolutePath(), e);
+                } catch (Throwable t) {
+                    log.error("Failed to download Fanart: " + ma.getDownloadUrl() + " for : " + fanartDir.getAbsolutePath(), t);
                 }
                 downloaded++;
                 if (downloaded >= max) break;
@@ -221,7 +221,7 @@ public class FanartStorage {
         if (l.size() == 0) {
             log.debug("No Series Level TV " + mt.name() + " MediaArt for " + MetadataAPI.getMediaTitle(md));
         } else {
-            downloadAndSageCentralFanart(mt, fanartFile, l, options);
+            downloadAndSaveCentralFanart(mt, fanartFile, l, options);
         }
 
         // do the season level artwork
@@ -244,7 +244,7 @@ public class FanartStorage {
             if (l.size() == 0) {
                 log.debug("No Season Level TV " + mt.name() + " MediaArt for " + MetadataAPI.getMediaTitle(md));
             } else {
-                downloadAndSageCentralFanart(mt, fanartFile, l, options);
+                downloadAndSaveCentralFanart(mt, fanartFile, l, options);
             }
         }
     }

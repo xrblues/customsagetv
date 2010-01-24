@@ -3,9 +3,7 @@ package org.jdna.media.metadata.impl.xbmc;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,21 +14,20 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.CastMember;
+import org.jdna.media.metadata.HasFindByIMDBID;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.IProviderInfo;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataAPI;
-import org.jdna.media.metadata.MetadataID;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
+import org.jdna.media.metadata.SearchQuery.Field;
 import org.jdna.media.metadata.impl.imdb.IMDBMovieMetaDataParser;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 import org.jdna.util.DOMUtils;
@@ -39,17 +36,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaArtifactType;
 import sagex.phoenix.fanart.MediaType;
 
-public class XbmcMetadataProvider implements IMediaMetadataProvider {
+public class XbmcMetadataProvider implements IMediaMetadataProvider, HasFindByIMDBID {
     private static final Logger                 log                  = Logger.getLogger(XbmcMetadataProvider.class);
-    private static final String                 EXTRA_ARGS_SEP       = ";;;;";
     private static final DocumentBuilderFactory factory              = DocumentBuilderFactory.newInstance();
 
     private IProviderInfo                       info;
     private XbmcScraper                         scraper;
-    private MediaType[]                              supportedSearchTypes = null;
+    private MediaType[]                         supportedSearchTypes = null;
 
     public XbmcMetadataProvider(String providerXml) {
         XbmcScraperParser parser = new XbmcScraperParser();
@@ -106,32 +103,104 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         return info;
     }
 
-    public IMediaMetadata getMetaData(IMediaSearchResult result) throws Exception {
-        return getMetaDataByUrl(result.getUrl());
-    }
-
-    private IMediaMetadata getMetaData(String providerDataUrl, XbmcUrl url, Map<String, String> extraArgs) throws Exception {
+    public IMediaMetadata getMetaData(IMetadataSearchResult result) throws Exception {
+        log.debug("Xbmc: getMetadata(): " + result);
+        
         MediaMetadata md = new MediaMetadata();
-        updateMDValue(md, MetadataKey.METADATA_PROVIDER_DATA_URL, providerDataUrl);
         updateMDValue(md, MetadataKey.METADATA_PROVIDER_ID, getInfo().getId());
 
-        // we can't make a valid MEDIA_PROVIDER_ID using the xbmc scrapers
-        String imdbId = IMDBUtils.parseIMDBID(providerDataUrl);
-        if (imdbId != null) {
-            md.setString(MetadataKey.MEDIA_PROVIDER_DATA_ID, MetadataAPI.createMetadataIDString(IMDBMetaDataProvider.PROVIDER_ID, imdbId));
-        }
+        md.setString(MetadataKey.MEDIA_PROVIDER_DATA_ID, result.getId());
 
         XbmcMovieProcessor processor = new XbmcMovieProcessor(scraper);
-        String xmlDetails = processor.getDetails(url, (extraArgs != null) ? extraArgs.get("id") : null);
+        String xmlDetails = processor.getDetails(new XbmcUrl(result.getUrl()), result.getId());
 
-        if (extraArgs != null && MediaType.TV.toString().equals(extraArgs.get("mediatype"))) {
+        if (result.getMediaType() == MediaType.TV) {
             md.set(MetadataKey.MEDIA_TYPE, MetadataUtil.TV_MEDIA_TYPE);
-            processXmlContentForTV(xmlDetails, md, extraArgs);
+            processXmlContentForTV(xmlDetails, md, result);
         } else {
             processXmlContent(xmlDetails, md);
         }
 
+        // try to parse an imdb id from the url
+        if (!StringUtils.isEmpty(result.getUrl()) && StringUtils.isEmpty(MetadataAPI.getIMDBID(md))) {
+            MetadataAPI.setIMDBID(md, IMDBUtils.parseIMDBID(result.getUrl()));
+        }
+        
         return md;
+    }
+    public List<IMetadataSearchResult> search(SearchQuery query) throws Exception {
+        List<IMetadataSearchResult> l = new ArrayList<IMetadataSearchResult>();
+        String arg = query.get(SearchQuery.Field.QUERY);
+        
+        // xbmc wants title and year separated, so let's do that
+        String args[] = ParserUtils.parseTitle(arg);
+        String title = args[0];
+        String year = query.get(Field.YEAR);
+
+        XbmcMovieProcessor processor = new XbmcMovieProcessor(scraper);
+        XbmcUrl url = processor.getSearchUrl(title, year);
+        String xmlString = processor.getSearchReulsts(url);
+
+        log.debug("========= BEGIN XBMC Scraper Search Xml Results: Url: " + url);
+        log.debug(xmlString);
+        log.debug("========= End XBMC Scraper Search Xml Results: Url: " + url);
+
+        Document xml = parseXmlString(xmlString);
+
+        NodeList nl = xml.getElementsByTagName("entity");
+        for (int i = 0; i < nl.getLength(); i++) {
+            try {
+                Element el = (Element) nl.item(i);
+                NodeList titleList = el.getElementsByTagName("title");
+                String t = titleList.item(0).getTextContent();
+                NodeList urlList = el.getElementsByTagName("url");
+                XbmcUrl u = new XbmcUrl((Element) urlList.item(0));
+
+                MediaSearchResult sr = new MediaSearchResult();
+                String id = DOMUtils.getElementValue(el, "id");
+                sr.setId(id);
+                sr.setUrl(u.toExternalForm());
+                sr.setProviderId(getInfo().getId());
+                sr.getExtra().put("mediatype", query.getMediaType().name());
+                
+                // populate extra args
+                MetadataUtil.copySearchQueryToSearchResult(query, sr);
+
+                if (u.toExternalForm().indexOf("imdb") != -1) {
+                    sr.addExtraArg("xbmcprovider", "imdb");
+                    sr.addExtraArg("imdbid", id);
+                } else if (u.toExternalForm().indexOf("thetvdb.com") != -1) {
+                    sr.addExtraArg("xbmcprovider", "tvdb");
+                    sr.addExtraArg("tvdbid", id);
+                }
+
+                String v[] = ParserUtils.parseTitle(t);
+                sr.setTitle(v[0]);
+                sr.setYear(v[1]);
+                sr.setScore(MetadataUtil.calculateScore(arg, v[0]));
+                l.add(sr);
+            } catch (Exception e) {
+                log.error("Error process an xml node!  Ignoring it from the search results.");
+            }
+        }
+
+        return l;
+    }
+
+
+    public IMediaMetadata getMetadataForIMDBId(String imdbid) {
+        if (getInfo().getId().contains("imdb")) {
+            MediaSearchResult sr = new MediaSearchResult();
+            sr.setIMDBId(imdbid);
+            sr.setId(imdbid);
+            sr.setUrl(IMDBUtils.createDetailUrl(imdbid));
+            try {
+                return getMetaData(sr);
+            } catch (Exception e) {
+                log.warn("Failed to search by IMDB URL: " + sr.getUrl(), e);
+            }
+        }
+        return null;
     }
 
     private void processXmlContent(String xmlDetails, MediaMetadata md) throws Exception {
@@ -150,7 +219,7 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         addMetadata(md, xml.getDocumentElement());
     }
 
-    private void processXmlContentForTV(String xmlDetails, MediaMetadata md, Map<String, String> args) throws Exception {
+    private void processXmlContentForTV(String xmlDetails, MediaMetadata md, IMetadataSearchResult result) throws Exception {
         log.debug("*** PROCESSING TV ***");
         if (xmlDetails == null || StringUtils.isEmpty(xmlDetails)) {
             log.warn("Cannot process empty Xml Contents.");
@@ -174,10 +243,10 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         if (StringUtils.isEmpty(episodeUrl)) {
             log.error("No Episode Data!");
         } else {
-            if (!StringUtils.isEmpty(args.get("season"))) {
-                int findEpisode = NumberUtils.toInt(args.get("episode"));
-                int findSeason = NumberUtils.toInt(args.get("season"));
-                int findDisc = NumberUtils.toInt(args.get("disc"));
+            if (!StringUtils.isEmpty(result.getExtra().get(SearchQuery.Field.SEASON.name()))) {
+                int findEpisode = NumberUtils.toInt(result.getExtra().get(SearchQuery.Field.EPISODE.name()));
+                int findSeason = NumberUtils.toInt(result.getExtra().get(SearchQuery.Field.SEASON.name()));
+                int findDisc = NumberUtils.toInt(result.getExtra().get(SearchQuery.Field.DISC.name()));
 
                 XbmcUrl url = new XbmcUrl(episodeUrl);
                 // Call get Episode List
@@ -354,36 +423,6 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
     }
 
     /**
-     * given a provider data url, parse out the url and the extra provider args.
-     * provider args are separated by ;;;;
-     * 
-     * @param providerDataUrl
-     * @return
-     */
-    private Map<String, String> parseUrlArgs(String providerDataUrl) {
-        log.debug("Looking for Extra Args in url: " + providerDataUrl);
-        if (providerDataUrl == null) return null;
-
-        Map<String, String> map = new HashMap<String, String>();
-        Pattern p = Pattern.compile("(.*)" + EXTRA_ARGS_SEP + "(.*)");
-        Matcher m = p.matcher(providerDataUrl);
-        if (m.find()) {
-            map.put("_providerDataUrl", m.group(1));
-
-            Pattern argPattern = Pattern.compile("&?([^=]+)=([^&$]+)");
-            Matcher argMatcher = argPattern.matcher(m.group(2));
-            while (argMatcher.find()) {
-                map.put(argMatcher.group(1), argMatcher.group(2));
-                log.debug("Adding Arg: " + argMatcher.group(1) + "; " + argMatcher.group(2));
-            }
-            return map;
-        } else {
-            log.debug("No Extra Args in url: " + providerDataUrl);
-            return null;
-        }
-    }
-
-    /**
      * added because some xml strings are not parsable using utf-8
      * 
      * @param xml
@@ -411,110 +450,8 @@ public class XbmcMetadataProvider implements IMediaMetadataProvider {
         return doc;
     }
 
-    public List<IMediaSearchResult> search(SearchQuery query) throws Exception {
-        List<IMediaSearchResult> l = new ArrayList<IMediaSearchResult>();
-        String arg = query.get(SearchQuery.Field.QUERY);
-        // xbmc wants title and year separated, so let's do that
-        String args[] = ParserUtils.parseTitle(arg);
-        String title = args[0];
-        String year = args[1];
-
-        XbmcMovieProcessor processor = new XbmcMovieProcessor(scraper);
-        XbmcUrl url = processor.getSearchUrl(title, year);
-        String xmlString = processor.getSearchReulsts(url);
-
-        log.debug("========= BEGIN XBMC Scraper Search Xml Results: Url: " + url);
-        log.debug(xmlString);
-        log.debug("========= End XBMC Scraper Search Xml Results: Url: " + url);
-
-        Document xml = parseXmlString(xmlString);
-
-        NodeList nl = xml.getElementsByTagName("entity");
-        for (int i = 0; i < nl.getLength(); i++) {
-            try {
-                Element el = (Element) nl.item(i);
-                NodeList titleList = el.getElementsByTagName("title");
-                String t = titleList.item(0).getTextContent();
-                NodeList urlList = el.getElementsByTagName("url");
-                XbmcUrl u = new XbmcUrl((Element) urlList.item(0));
-
-                MediaSearchResult sr = new MediaSearchResult();
-                String id = DOMUtils.getElementValue(el, "id");
-                sr.setUrl(createDetailUrl(u.toExternalForm(), query, id));
-                sr.setProviderId(getInfo().getId());
-
-                MetadataID mid = null;
-                if (u.toExternalForm().indexOf("imdb") != -1) {
-                    mid = new MetadataID("imdb", id);
-                } else if (u.toExternalForm().indexOf("thetvdb.com") != -1) {
-                    mid = new MetadataID("tvdb", id);
-                }
-
-                if (mid != null) {
-                    sr.setMetadataId(mid);
-                }
-
-                String v[] = ParserUtils.parseTitle(t);
-                sr.setTitle(v[0]);
-                sr.setYear(v[1]);
-                sr.setScore(MetadataUtil.calculateScore(arg, v[0]));
-                l.add(sr);
-            } catch (Exception e) {
-                log.error("Error process an xml node!  Ignoring it from the search results.");
-            }
-        }
-
-        return l;
-    }
-
-    /**
-     * builds custom url storing the episode and season for later retrieval
-     * 
-     * @param url
-     * @param query
-     * @param id
-     * @return
-     */
-    private String createDetailUrl(String url, SearchQuery query, String id) {
-        Map<String, String> args = new HashMap<String, String>();
-        args.put("id", id);
-
-        if (query.getMediaType() == MediaType.MOVIE) {
-        } else if (query.getMediaType() == MediaType.TV) {
-            args.put("mediatype", MediaType.TV.toString());
-            if (!StringUtils.isEmpty(query.get(SearchQuery.Field.SEASON))) {
-                args.put("season", query.get(SearchQuery.Field.SEASON));
-            }
-            if (!StringUtils.isEmpty(query.get(SearchQuery.Field.EPISODE))) {
-                args.put("episode", query.get(SearchQuery.Field.EPISODE));
-            }
-            if (!StringUtils.isEmpty(query.get(SearchQuery.Field.DISC))) {
-                args.put("disc", query.get(SearchQuery.Field.DISC));
-            }
-        } else {
-        }
-
-        String extraArgs = EXTRA_ARGS_SEP;
-        boolean sep = false;
-        for (String key : args.keySet()) {
-            if (sep) extraArgs += "&";
-            extraArgs += (key + "=" + args.get(key));
-            sep = true;
-        }
-        return url + extraArgs;
-    }
-
     public MediaType[] getSupportedSearchTypes() {
         return supportedSearchTypes;
     }
 
-    public String getUrlForId(MetadataID id) throws Exception {
-        throw new Exception("getUrlForId() not supported: " + id);
-    }
-
-    public IMediaMetadata getMetaDataByUrl(String url) throws Exception {
-        log.debug("Xbmc: ProviderDataUrl: " + url);
-        Map<String, String> args = parseUrlArgs(url);
-        return getMetaData(url, new XbmcUrl(args.get("_providerDataUrl")), args);
-    }
 }

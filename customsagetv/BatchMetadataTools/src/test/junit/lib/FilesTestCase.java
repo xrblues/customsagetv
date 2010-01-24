@@ -1,7 +1,10 @@
 package test.junit.lib;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 import sagex.phoenix.vfs.impl.FileCleaner;
@@ -43,6 +46,20 @@ public class FilesTestCase extends TestCase {
         f = new File(f, path);
         assertEquals("Missing File: " + f.getAbsolutePath(), true, f.exists());
         return f;
+    }
+
+    public static File[] listFiles(String path, String regex) {
+        final Pattern p = Pattern.compile(regex);
+        File f = new File("target/junit/");
+        f = new File(f, path);
+        File files[] = f.listFiles(new FileFilter() {
+            public boolean accept(File pathname) {
+                Matcher m = p.matcher(pathname.getName());
+                return m.find();
+            }
+        });
+        assertEquals("Missing File(s) for regex: " + regex + " in path: " + path, true, files!=null && files.length>0);
+        return files;
     }
     
     public void testFileDelete() {

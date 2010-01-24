@@ -2,13 +2,19 @@ package org.jdna.media.metadata;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
+import org.jdna.media.metadata.SearchQuery.Field;
 import org.jdna.util.Similarity;
+
+import sagex.phoenix.fanart.IMetadataSearchResult;
 
 public class MetadataUtil {
     private static final Logger log = Logger.getLogger(MetadataUtil.class);
@@ -128,5 +134,49 @@ public class MetadataUtil {
     public static String getBareTitle(String name) {
        if (name != null) return name.replaceAll("[^A-Za-z0-9']", " ");
        return name;
+    }
+    
+    public static void copySearchQueryToSearchResult(SearchQuery query, IMetadataSearchResult sr) {
+        for (SearchQuery.Field f : SearchQuery.Field.values()) {
+            if (f==SearchQuery.Field.QUERY) continue;
+            String s = query.get(f);
+            if (!StringUtils.isEmpty(s)) {
+                sr.getExtra().put(f.name(), s);
+            }
+        }
+    }
+
+    public static List<IMetadataSearchResult> searchById(IMediaMetadataProvider prov, SearchQuery query, String id) {
+        log.debug("searchById() for: " + query);
+        MediaSearchResult res = new MediaSearchResult(prov.getInfo().getId(), id, query.get(Field.RAW_TITLE), query.get(Field.YEAR), 1.0f);
+        MetadataUtil.copySearchQueryToSearchResult(query, res);
+
+        // do the search by id...
+        try {
+            IMediaMetadata md = prov.getMetaData(res);
+            if (md==null) throw new Exception("metadata result was null.");
+            res.setMetadata(md);
+            res.setMediaType(query.getMediaType());
+            res.setScore(1.0f);
+            res.setTitle(MetadataAPI.getMediaTitle(md));
+            res.setYear(MetadataAPI.getYear(md));
+            log.info("searchById() was sucessful for: " + id);
+        } catch (Exception e) {
+            log.warn("searchById() failed for: " + query, e);
+            return null;
+        }
+        
+        return Arrays.asList(new IMetadataSearchResult[] {res});
+    }
+
+    public static boolean hasMetadata(IMetadataSearchResult result) {
+        return result != null && (result instanceof MediaSearchResult) &&  ((MediaSearchResult) result).getMetadata() != null;
+    }
+
+    public static IMediaMetadata getMetadata(IMetadataSearchResult result) {
+        if (result != null && (result instanceof MediaSearchResult)) {
+            return ((MediaSearchResult) result).getMetadata();
+        }
+        return null;
     }
 }

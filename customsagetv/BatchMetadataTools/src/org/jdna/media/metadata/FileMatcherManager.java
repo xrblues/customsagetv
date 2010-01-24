@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import sagex.phoenix.fanart.MediaType;
 import sagex.phoenix.util.BaseBuilder;
 import sagex.phoenix.util.XmlUtil;
 
@@ -43,10 +44,9 @@ public class FileMatcherManager {
             } else if ("year".equals(name)) {
             } else if ("metadata".equals(name)) {
                 curMatcher.setMetadata(new ID(XmlUtil.attr(attributes, "name", null),null));
+                curMatcher.setMediaType(MediaType.toMediaType(XmlUtil.attr(attributes, "type", "movie")));
             } else if ("fanart".equals(name)) {
                 curMatcher.setFanart(new ID(XmlUtil.attr(attributes, "name", null),null));
-            } else if ("series".equals(name)) {
-                curMatcher.setSeries(new ID(XmlUtil.attr(attributes, "name", null),null));
             } else if ("titles".equals(name)) {
             } else {
                 warning("Unhandled element: " + name + " in file matcher xml");
@@ -74,8 +74,6 @@ public class FileMatcherManager {
                 curMatcher.getMetadata().setValue(getData());
             } else if ("fanart".equals(name)) {
                 curMatcher.getFanart().setValue(getData());
-            } else if ("series".equals(name)) {
-                curMatcher.getSeries().setValue(getData());
             }
         }
     }
@@ -106,12 +104,13 @@ public class FileMatcherManager {
         if (this.matcherXml.exists()) {
             try {
                 matchers = buildMatchers(matcherXml);
-                if (matchers==null) {
-                    matchers = new ArrayList<FileMatcher>();
-                }
             } catch (Exception e) {
                 log.warn("Failed to load matchers xml file: " + matcherXml2.getAbsolutePath(), e);
             }
+        }
+        
+        if (matchers==null) {
+            matchers = new ArrayList<FileMatcher>();
         }
     }
     

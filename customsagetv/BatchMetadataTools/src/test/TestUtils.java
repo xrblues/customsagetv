@@ -2,19 +2,20 @@ package test;
 
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MetadataKey;
 
+import sagex.phoenix.fanart.IMetadataSearchResult;
+
 public class TestUtils {
-    public static void dumpResults(java.util.List<IMediaSearchResult> results) {
+    public static void dumpResults(java.util.List<IMetadataSearchResult> results) {
         System.out.println("Begin Dumping Results");
-        for (IMediaSearchResult r : results) {
+        for (IMetadataSearchResult r : results) {
             dumpResult(r);
         }
         System.out.println("End Dumping Results");
     }
 
-    public static void dumpResult(IMediaSearchResult r) {
+    public static void dumpResult(IMetadataSearchResult r) {
         System.out.printf("ResultClass: %s\n", r.getClass().getName());
         System.out.printf("      Title: %s\n", r.getTitle());
         System.out.printf("       Year: %s\n", r.getYear());

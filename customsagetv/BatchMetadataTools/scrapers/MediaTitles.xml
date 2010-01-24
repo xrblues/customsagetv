@@ -3,7 +3,7 @@
 		<regex>[\\/]Babylon\s*5[\\/]</regex>
 		<title>Babylon 5</title>
 		<year>1993</year>
-		<series name="tvdb">7072</series>
+		<metadata type="tv" name="tvdb">7072</metadata>
 	</match>
 	
 	<match>
@@ -11,6 +11,5 @@
 		<title>Finding Nemo</title>
 		<year>2003</year>
 		<metadata name="imdb">tt0266543</metadata>
-		<fanart name="themoviedb.org">12</fanart>
 	</match>
 </titles>

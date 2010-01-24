@@ -8,13 +8,20 @@ import sagex.phoenix.fanart.MediaType;
 
 public class SearchQuery implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    public enum Field { QUERY, RAW_TITLE, CLEAN_TITLE, SEASON, EPISODE, DISC, EPISODE_TITLE, EPISODE_DATE, YEAR, FILE, URL, METADATA_ID, SERIES_ID };
+    
+    /*
+        we are going to add IMDBID and ID to the search query
+        remove metadata id and series id since they are basically the same
+        provider will no longer have search by id, just a searchQUery, and
+        then the provider can determine how to search, etc.
+    */
+    public enum Field { QUERY, RAW_TITLE, CLEAN_TITLE, SEASON, EPISODE, DISC, EPISODE_TITLE, EPISODE_DATE, YEAR, FILE, URL, PROVIDER, ID};
     
     private Map<Field, String> fields = new HashMap<Field, String>();
     private MediaType type = MediaType.MOVIE;
     
     public SearchQuery() {
+        // empty
     }
     
     public SearchQuery(SearchQuery query) {

@@ -34,10 +34,11 @@ public enum SageProperty {
     LANGUAGE("", MetadataKey.LANGUAGE, SagePropertyType.CORE),
     MEDIA_ART("", MetadataKey.MEDIA_ART_LIST, SagePropertyType.BMT),
     PROVIDER_DATA_ID("MediaProviderDataID", MetadataKey.MEDIA_PROVIDER_DATA_ID, SagePropertyType.EXTENDED),
+    IMDB_ID("IMDBID", MetadataKey.IMDB_ID, SagePropertyType.EXTENDED),
     MEDIA_TITLE("MediaTitle", MetadataKey.MEDIA_TITLE, SagePropertyType.EXTENDED),
     MEDIA_TYPE("MediaType", MetadataKey.MEDIA_TYPE, SagePropertyType.EXTENDED),
     METADATA_PROVIDER_ID("x-MetadataProviderId", MetadataKey.METADATA_PROVIDER_ID, SagePropertyType.BMT),
-    METADATA_PROVIDER_DATA_URL("x-MetadataProviderDataUrl", MetadataKey.METADATA_PROVIDER_DATA_URL, SagePropertyType.BMT),
+    /* METADATA_PROVIDER_DATA_URL("x-MetadataProviderDataUrl", MetadataKey.METADATA_PROVIDER_DATA_URL, SagePropertyType.BMT), */
     MAPP_RATING("Rated", MetadataKey.MPAA_RATING, SagePropertyType.CORE),
     MPAA_RATING_DESCRIPTION("x-MPAARatingDescription", MetadataKey.MPAA_RATING_DESCRIPTION, SagePropertyType.BMT),
     FANART_POSTER("x-Fanart-PosterUrl", MetadataKey.POSTER_ART, SagePropertyType.BMT),
@@ -112,7 +113,18 @@ public enum SageProperty {
             }
         }
 
-        return mdkeys.size() == MetadataKey.values().length;
+        boolean b = mdkeys.size() == MetadataKey.values().length;
+        if (!b) {
+            System.out.println("=== Begin Sage Properties and Metadata Keys are out of Sync ===");
+            for (MetadataKey k : MetadataKey.values()) {
+                if (!mdkeys.contains(k)) {
+                    System.out.println("   Add " + k + " to SageProperty.");
+                }
+            }
+            
+            System.out.println("=== End Sage Properties and Metadata Keys are out of Sync ===");
+        }
+        return b;
     }
     
     /**

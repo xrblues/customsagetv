@@ -17,7 +17,6 @@ import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataKey;
-import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.jdna.media.metadata.impl.imdb.IMDBMovieMetaDataParser;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 
@@ -62,8 +61,8 @@ public class NeilmIMDBMetaDataParser {
         md.setYear(data.getYear());
 
         md.setProviderId(NielmIMDBMetaDataProvider.PROVIDER_ID);
-        md.setProviderDataUrl(data.getImdbUrl());
-        md.setProviderDataId(MetadataAPI.createMetadataIDString(IMDBMetaDataProvider.PROVIDER_ID, IMDBUtils.parseIMDBID(data.getImdbUrl())));
+        md.setProviderDataId(IMDBUtils.parseIMDBID(data.getImdbUrl()));
+        MetadataAPI.setIMDBID(md, IMDBUtils.parseIMDBID(data.getImdbUrl()));
         return md;
     }
 

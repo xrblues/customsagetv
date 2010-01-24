@@ -83,9 +83,9 @@ public class TheMovieDBItemParser {
                 md.setUserRating(getElementValue(movie, "rating"));
                 md.setYear(parseYear(md.getReleaseDate()));
 
-                md.setProviderDataUrl(origUrl);
                 md.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
-                md.setProviderDataId(MetadataAPI.createMetadataIDString("themoviedb", theMovieDBID));
+                md.setProviderDataId(theMovieDBID);
+                MetadataAPI.setIMDBID(md, getElementValue(movie, "imdb"));
             } catch (Exception e) {
                 log.error("Failed while parsing: " + url, e);
                 md = null;
