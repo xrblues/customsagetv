@@ -1,18 +1,18 @@
-package org.jdna.bmt.web.client.ui.browser;
+package org.jdna.bmt.web.client.media;
 
 import org.jdna.bmt.web.client.Application;
 
-public class BackMediaFolder extends MediaFolder {
-    private MediaFolder decorate;
+public class BackMediaFolder extends GWTMediaFolder {
+    private GWTMediaFolder decorate;
     public BackMediaFolder() {
     }
 
-    public BackMediaFolder(MediaFolder backTo) {
+    public BackMediaFolder(GWTMediaFolder backTo) {
         super(null, null);
         this.decorate = backTo;
     }
     
-    public MediaFolder getBackToFolder() {
+    public GWTMediaFolder getBackToFolder() {
         return decorate;
     }
 

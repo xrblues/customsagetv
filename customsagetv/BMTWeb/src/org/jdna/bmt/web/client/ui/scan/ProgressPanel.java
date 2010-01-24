@@ -1,5 +1,8 @@
 package org.jdna.bmt.web.client.ui.scan;
 
+import org.jdna.bmt.web.client.ui.browser.MetadataService;
+import org.jdna.bmt.web.client.ui.browser.MetadataServiceAsync;
+import org.jdna.bmt.web.client.ui.browser.ProgressStatus;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.WaitingPanel;
 import org.jdna.bmt.web.client.util.Log;
@@ -14,7 +17,7 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 
 public class ProgressPanel extends Composite {
-    private final BrowserServiceAsync browserService = GWT.create(BrowserService.class);
+    private final MetadataServiceAsync browserService = GWT.create(MetadataService.class);
 
     private Label label = new Label();
     private Hyperlink cancel =new Hyperlink("Cancel", "#cancelScan");
@@ -46,7 +49,7 @@ public class ProgressPanel extends Composite {
                 cancel.setVisible(false);
             } else {
                 if (!cancel.isVisible()) {
-                    final String statusId = status.getStatusId();
+                    final String statusId = status.getProgressId();
                     cancel.addClickHandler(new ClickHandler() {
                         public void onClick(ClickEvent event) {
                             browserService.cancelScan(statusId, new AsyncCallback<Void>() {

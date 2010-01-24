@@ -1,5 +1,10 @@
 package org.jdna.bmt.web.client.ui.browser;
 
+import org.jdna.bmt.web.client.media.BackMediaFolder;
+import org.jdna.bmt.web.client.media.GWTMediaFile;
+import org.jdna.bmt.web.client.media.GWTMediaFolder;
+import org.jdna.bmt.web.client.media.GWTMediaResource;
+import org.jdna.bmt.web.client.ui.scan.MediaEditorMetadataPanel;
 import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.StringUtils;
 
@@ -21,12 +26,14 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MediaItem extends Composite implements HasClickHandlers, MouseOutHandler, MouseOverHandler, ClickHandler {
-    private MediaResource   res;
+    private GWTMediaResource   res;
     private DockPanel       panel   = new DockPanel();
     private VerticalPanel   titles  = new VerticalPanel();
     private HorizontalPanel actions = new HorizontalPanel();
+    private BrowserView view = null;
 
-    public MediaItem(MediaResource res) {
+    public MediaItem(GWTMediaResource res, BrowserView view) {
+        this.view=view;
         this.res = res;
         titles.setWidth("100%");
         panel.add(titles, DockPanel.NORTH);
@@ -36,10 +43,13 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
 
         
         if (res.getThumbnailUrl()!=null) {
+            System.out.println("Setting Thubmnail Url: " + res.getThumbnailUrl());
             Image img = new Image(res.getThumbnailUrl());
             panel.add(img, DockPanel.CENTER);
             panel.setCellHorizontalAlignment(img, HasHorizontalAlignment.ALIGN_CENTER);
             panel.setCellVerticalAlignment(img, HasVerticalAlignment.ALIGN_BOTTOM);
+        } else {
+            System.out.println("Not Thumbnail for: " + res.getTitle());
         }
         
         
@@ -58,10 +68,14 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         panel.setCellVerticalAlignment(actions, HasVerticalAlignment.ALIGN_BOTTOM);
         panel.setCellHeight(actions, "20px");
 
-        if (res instanceof MediaFolder) {
+        if (res instanceof GWTMediaFolder) {
             panel.addStyleName("MediaFolder");
         }
 
+        if (res.getMessage()!=null) {
+            panel.setTitle(res.getMessage());
+        }
+        
         initWidget(panel);
 
         addDomHandler(this, MouseOverEvent.getType());
@@ -69,15 +83,15 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         addDomHandler(this, ClickEvent.getType());
     }
 
-    private void setTitles(MediaResource res2) {
+    private void setTitles(GWTMediaResource res2) {
         titles.clear();
         Label title1 = new Label(res2.getTitle());
         titles.add(title1);
         titles.setCellHorizontalAlignment(title1, HasHorizontalAlignment.ALIGN_CENTER);
         title1.setStyleName("MediaItem-Title1");
 
-        if (res2 instanceof MediaFile) {
-            String epTitle = ((MediaFile) res2).getEpisodeTitle();
+        if (res2 instanceof GWTMediaFile) {
+            String epTitle = ((GWTMediaFile) res2).getTitle();
             if (!StringUtils.isEmpty(epTitle)) {
                 Label title2 = new Label(epTitle);
                 titles.add(title2);
@@ -100,14 +114,15 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
     }
 
     public void onClick(ClickEvent event) {
-        if (res instanceof MediaFolder) {
+        if (res instanceof GWTMediaFolder) {
             if (res instanceof BackMediaFolder) {
                 BrowsingServicesManager.getInstance().browseFolder(((BackMediaFolder) res).getBackToFolder());
             } else {
-                BrowsingServicesManager.getInstance().browseFolder((MediaFolder) res);
+                BrowsingServicesManager.getInstance().browseFolder((GWTMediaFolder) res);
             }
         } else {
             Log.debug("Clicked: " + res.getTitle());
+            view.setDisplay(new MediaEditorMetadataPanel((GWTMediaFile) res, view));
         }
     }
 }

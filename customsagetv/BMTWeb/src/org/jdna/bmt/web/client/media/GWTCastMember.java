@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.jdna.media.metadata.ICastMember;
 
 public class GWTCastMember implements ICastMember, Serializable {
+    private static final long serialVersionUID = 1L;
     private int type;
     private String providerUrl;
     private String part;

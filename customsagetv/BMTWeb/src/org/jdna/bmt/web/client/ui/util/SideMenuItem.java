@@ -21,8 +21,9 @@ public class SideMenuItem extends Composite implements HasClickHandlers, MouseOu
     private HorizontalPanel    panel   = new HorizontalPanel();
     private ClickHandler onclick;
     private String label;
-
-    public SideMenuItem(String label, String url, ClickHandler onclick) {
+    private Widget labelWidget = null;
+    
+    public SideMenuItem(String label, String iconUrl, ClickHandler onclick) {
         this.label=label;
         this.onclick=onclick;
         
@@ -31,8 +32,8 @@ public class SideMenuItem extends Composite implements HasClickHandlers, MouseOu
 
         // setup the icon, if any
         Widget w = null;
-        if (url!=null) {
-            w = new Image(url);
+        if (iconUrl!=null) {
+            w = new Image(iconUrl);
         } else {
             w = new Label("");
         }
@@ -44,12 +45,10 @@ public class SideMenuItem extends Composite implements HasClickHandlers, MouseOu
         
         
         // add the label
-        Label l = new Label(this.label);
-        l.setStyleName("SideMenuItem-Label");
-        l.setWordWrap(false);
-        panel.add(l);
-        panel.setCellVerticalAlignment(l, HasVerticalAlignment.ALIGN_MIDDLE);
-        panel.setCellHorizontalAlignment(l, HasHorizontalAlignment.ALIGN_LEFT);
+        labelWidget = createLabelWidget();
+        panel.add(labelWidget);
+        panel.setCellVerticalAlignment(labelWidget, HasVerticalAlignment.ALIGN_MIDDLE);
+        panel.setCellHorizontalAlignment(labelWidget, HasHorizontalAlignment.ALIGN_LEFT);
         panel.setHeight("30px");
         
         waiting.setVisible(false);
@@ -63,6 +62,17 @@ public class SideMenuItem extends Composite implements HasClickHandlers, MouseOu
         addDomHandler(this, MouseOverEvent.getType());
         addDomHandler(this, MouseOutEvent.getType());
         addDomHandler(this, ClickEvent.getType());
+    }
+    
+    /**
+     * Override this method to create your own label view 
+     * @return
+     */
+    protected Widget createLabelWidget() {
+        Label l = new Label(this.label);
+        l.setStyleName("SideMenuItem-Label");
+        l.setWordWrap(false);
+        return l;
     }
 
     public HandlerRegistration addClickHandler(ClickHandler handler) {
@@ -83,5 +93,17 @@ public class SideMenuItem extends Composite implements HasClickHandlers, MouseOu
     
     public void setBusy(boolean busy) {
         waiting.setVisible(busy);
+    }
+    
+    public void setBusyImage(String url) {
+        this.waiting.setUrl(url);
+    }
+    
+    public String getLabelString() {
+        return label;
+    }
+    
+    public Widget getLabelWidget() {
+        return labelWidget;
     }
 }

@@ -15,7 +15,6 @@ public class FlowGrid extends Composite {
     public FlowGrid(int cols) {
         this.cols=cols;
         initWidget(grid);
-        System.out.println("=================================================");
     }
 
     public void add(String text) {
@@ -27,7 +26,6 @@ public class FlowGrid extends Composite {
         int row = (int)((float)widgetCount / (float)cols);
         
         if (col==0) System.out.println("");
-        System.out.println("CurCount: " + widgetCount + "; Row: " + row + "; col: " + col + "; newCount: " + (widgetCount+1));
         grid.setWidget(row, col, w);
         grid.getCellFormatter().setAlignment(row, col, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP);
         widgetCount++;

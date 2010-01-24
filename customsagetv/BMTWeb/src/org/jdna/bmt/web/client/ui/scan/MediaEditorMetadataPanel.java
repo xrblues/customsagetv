@@ -4,8 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
+import org.jdna.bmt.web.client.ui.browser.BrowserView;
+import org.jdna.bmt.web.client.ui.browser.MetadataService;
+import org.jdna.bmt.web.client.ui.browser.MetadataServiceAsync;
+import org.jdna.bmt.web.client.ui.browser.MetadataServicesManager;
+import org.jdna.bmt.web.client.ui.browser.MetadataUpdatedEvent;
+import org.jdna.bmt.web.client.ui.browser.MetadataUpdatedHandler;
 import org.jdna.bmt.web.client.ui.input.InputBuilder;
 import org.jdna.bmt.web.client.ui.input.LargeStringTextBox;
 import org.jdna.bmt.web.client.ui.layout.FlowGrid;
@@ -25,38 +32,40 @@ import org.jdna.media.metadata.MetadataKey;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class MediaEditorMetadataPanel extends Composite {
-    private final BrowserServiceAsync browserService  = GWT.create(BrowserService.class);
+public class MediaEditorMetadataPanel extends Composite implements MetadataUpdatedHandler {
+    private final MetadataServiceAsync browserService  = GWT.create(MetadataService.class);
 
     private GWTMediaFile mediaFile = null;
     private GWTMediaMetadata metadata = null;
     
-    private ScrollPanel scrollPanel = new ScrollPanel();
     private VerticalPanel scrolledDetails = new VerticalPanel();
     private VerticalPanel metadataPanel = new VerticalPanel();
 
     private AsyncCallback<GWTMediaFile> updateHandler;
+    
+    private HandlerRegistration metadataUpdatedHandler = null;
 
-    public MediaEditorMetadataPanel(GWTMediaFile mediaFile) {
-        scrollPanel.setWidth("100%");
+    private BrowserView browserView;
+    
+    public MediaEditorMetadataPanel(GWTMediaFile mediaFile, BrowserView view) {
+        this.browserView = view;
         scrolledDetails.setWidth("100%");
         metadataPanel.setWidth("100%");
         metadataPanel.setSpacing(5);
         
         initWidget(metadataPanel);
-        init(mediaFile);
+        this.mediaFile = mediaFile;
     }
     
     private void init(GWTMediaFile mf) {
@@ -65,11 +74,8 @@ public class MediaEditorMetadataPanel extends Composite {
 
         metadataPanel.clear();
         scrolledDetails.clear();
-        scrollPanel.clear();
         metadataPanel.setWidth("100%");
         
-        //HorizontalPanel hp = new HorizontalPanel();
-        //hp.setSpacing(5);
         HorizontalButtonBar hp = new HorizontalButtonBar();
 
         Button save = new Button("Save");
@@ -109,7 +115,15 @@ public class MediaEditorMetadataPanel extends Composite {
                 });
             }
         });
+
+        Button back = new Button("Back");
+        back.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                browserView.back();
+            }
+        });
         
+        hp.add(back);
         hp.add(find);
         hp.add(save);
         hp.add(saveFanart);
@@ -119,9 +133,9 @@ public class MediaEditorMetadataPanel extends Composite {
         metadataPanel.add(hp);
         metadataPanel.setCellHorizontalAlignment(hp, HasHorizontalAlignment.ALIGN_RIGHT);
         
-        metadataPanel.add(scrollPanel);
-        metadataPanel.setCellHorizontalAlignment(scrollPanel, HasHorizontalAlignment.ALIGN_RIGHT);
-        metadataPanel.setCellWidth(scrollPanel, "100%");
+        metadataPanel.add(scrolledDetails);
+        metadataPanel.setCellHorizontalAlignment(scrolledDetails, HasHorizontalAlignment.ALIGN_RIGHT);
+        metadataPanel.setCellWidth(scrolledDetails, "100%");
 
         
         // Metadata
@@ -131,7 +145,7 @@ public class MediaEditorMetadataPanel extends Composite {
         Simple2ColFormLayoutPanel panel = new Simple2ColFormLayoutPanel();
         panel.setWidth("99%");
         
-        LargeStringTextBox tb = new LargeStringTextBox(InputBuilder.textbox().bind(mediaFile.getLocation().toURI()).widget(), "URI");
+        LargeStringTextBox tb = new LargeStringTextBox(InputBuilder.textbox().bind(mediaFile.getPath()).widget(), "PATH");
         tb.setReadOnly(true);
         
         panel.add("Sage Recording?", InputBuilder.checkbox().bind(mediaFile.getSageRecording()).widget());
@@ -276,11 +290,6 @@ public class MediaEditorMetadataPanel extends Composite {
         dp.setContent(grid);
         scrolledDetails.add(dp);
         scrolledDetails.setCellWidth(dp, "100%");
-
-        
-        scrollPanel.setWidget(scrolledDetails);
-        
-        System.out.println("Sage Media File: " + mediaFile.getLocation());
     }
 
     private void saveFanart() {
@@ -318,24 +327,34 @@ public class MediaEditorMetadataPanel extends Composite {
         });
     }
 
-    public void adjustSize(int windowWidth, int windowHeight) {
-        // take away the decorations
-        int width = windowWidth - scrollPanel.getAbsoluteLeft();
-        if (width < 1) {
-            width = 1;
-        }
-
-        int height = windowHeight - scrollPanel.getAbsoluteTop();
-        if (height < 1) {
-            height = 1;
-        }
-        
-        System.out.println("MediaEditorMetadataPanel(): Adjusting Metadata Scroll Size: " + width + ";" + height);
-        metadataPanel.setWidth(width + "px");
-        scrollPanel.setHeight(height + "px");
-    }
-
     public void setUpdateListener(AsyncCallback<GWTMediaFile> asyncCallback) {
         this.updateHandler = asyncCallback;
+    }
+
+    /* (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.Composite#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+        super.onAttach();
+        metadataUpdatedHandler = Application.events().addHandler(MetadataUpdatedEvent.TYPE, this);
+        MetadataServicesManager.getInstance().requestUpdatedMetadata(mediaFile);
+    }
+
+    /* (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.Composite#onDetach()
+     */
+    @Override
+    protected void onDetach() {
+        super.onDetach();
+        metadataUpdatedHandler.removeHandler();
+    }
+
+    public void onMetadataUpdated(MetadataUpdatedEvent event) {
+        if (event.getFile() == mediaFile) {
+            // udpate
+            metadata = event.getFile().getMetadata();
+            init(event.getFile());
+        }
     }
 }

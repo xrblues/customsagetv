@@ -96,4 +96,7 @@ public interface Labels extends Constants {
 
     @DefaultStringValue("Sorts")
     String sorts();
+
+    @DefaultStringValue("Scans")
+    String scans();
 }

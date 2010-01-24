@@ -1,5 +1,7 @@
 package org.jdna.bmt.web.client.ui.browser;
 
+import org.jdna.bmt.web.client.media.GWTFactoryInfo;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class FactoriesReplyEvent extends GwtEvent<FactoriesReplyHandler> {

@@ -1,71 +1,58 @@
 package org.jdna.bmt.web.server;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
+import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.media.GWTCastMember;
 import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
+import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
+import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.media.GWTMediaSearchResult;
 import org.jdna.bmt.web.client.media.GWTPersistenceOptions;
 import org.jdna.bmt.web.client.media.GWTProviderInfo;
-import org.jdna.bmt.web.client.ui.scan.BrowserService;
-import org.jdna.bmt.web.client.ui.scan.ProgressStatus;
+import org.jdna.bmt.web.client.ui.browser.MetadataService;
+import org.jdna.bmt.web.client.ui.browser.ProgressStatus;
+import org.jdna.bmt.web.client.ui.browser.ScanOptions;
 import org.jdna.bmt.web.client.ui.scan.SaveOptions;
-import org.jdna.bmt.web.client.ui.scan.ScanOptions;
 import org.jdna.bmt.web.client.ui.scan.SearchQueryOptions;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
-import org.jdna.media.ConditionalResourceFilter;
-import org.jdna.media.IMediaFile;
-import org.jdna.media.IMediaResource;
-import org.jdna.media.MovieResourceFilter;
 import org.jdna.media.metadata.CompositeMediaMetadataPersistence;
 import org.jdna.media.metadata.ICastMember;
 import org.jdna.media.metadata.IMediaArt;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IMediaSearchResult;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MediaMetadataPersistence;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
-import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.impl.sage.CentralFanartPersistence;
-import org.jdna.media.metadata.impl.sage.SageTVPropertiesPersistence;
-import org.jdna.media.util.AutomaticUpdateMetadataVisitor;
-import org.jdna.media.util.FilteredResourceVisitor;
-import org.jdna.media.util.ProgressTrackerVisitor;
-import org.jdna.sage.MissingFanartFilter;
-import org.jdna.sage.MissingMetadataFilter;
-import org.jdna.sage.media.SageBackupPersistenceUsingSageXmlInfo;
+import org.jdna.process.MetadataItem;
+import org.jdna.process.MetadataProcessor;
 import org.jdna.sage.media.SageCustomMetadataPersistence;
-import org.jdna.sage.media.SageMediaFile;
-import org.jdna.sage.media.SageMediaFolder;
 import org.jdna.sage.media.SageShowPeristence;
-import org.jdna.util.IProgressMonitor;
-import org.jdna.util.MediaScanner;
-import org.jdna.util.ProgressTracker;
-import org.jdna.util.ProgressTrackerManager;
-import org.jdna.util.ProgressTracker.FailedItem;
 
-import sagex.SageAPI;
-import sagex.api.AiringAPI;
-import sagex.api.MediaFileAPI;
-import sagex.api.ShowAPI;
-import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.progress.IRunnableWithProgress;
+import sagex.phoenix.progress.ProgressTracker;
+import sagex.phoenix.progress.ProgressTrackerManager;
+import sagex.phoenix.progress.TrackedItem;
+import sagex.phoenix.vfs.IMediaFolder;
+import sagex.phoenix.vfs.MediaResourceType;
+import sagex.phoenix.vfs.filters.AndResourceFilter;
+import sagex.phoenix.vfs.filters.MediaTypeFilter;
+import sagex.phoenix.vfs.sage.SageMediaFile;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -73,146 +60,103 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * The server side implementation of the RPC service.
  */
 @SuppressWarnings("serial")
-public class BrowserServicesImpl extends RemoteServiceServlet implements BrowserService {
-    private static final Logger log = Logger.getLogger(BrowserServicesImpl.class);
+public class MetadataServicesImpl extends RemoteServiceServlet implements MetadataService {
+    private Logger log = Logger.getLogger(MetadataServicesImpl.class);
+    private ProgressTrackerManager trackerManager = new ProgressTrackerManager();
+    private MetadataConfiguration config = GroupProxy.get(MetadataConfiguration.class);
 
-    public class ScanProgressTracker extends ProgressTracker<IMediaFile> {
-        private ScanOptions options = null;
-
-        public ScanProgressTracker(ScanOptions options) {
-            super();
-            this.options = options;
-        }
-
-        public ScanProgressTracker(ScanOptions options, IProgressMonitor monitor) {
-            super(monitor);
-            this.options = options;
-        }
-
-        public ScanOptions getOptions() {
-            return options;
-        }
+    public MetadataServicesImpl() {
+    }
+    
+    public GWTMediaMetadata getMetadata(GWTMediaSearchResult result, GWTPersistenceOptions options) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
-    public BrowserServicesImpl() {
-        ServicesInit.init();
+    public List<GWTProviderInfo> getProviders() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
-    public String scan(ScanOptions options) {
-        try {
-            // update the options for Remote API debugging
-            if (SageAPI.isRemote()) {
-                options.getDontUpdate().set(true);
-            }
-
-            MetadataConfiguration metadataConfig = new MetadataConfiguration();
-
-            // setup the types
-            StringBuffer types = new StringBuffer("L");
-            if (options.getScanDVD().get()) types.append("DB");
-            if (options.getScanTV().get()) types.append("T");
-            if (options.getScanVideo().get()) types.append("V");
-
-            // if nothing is checked, then scan all
-            if (types.length() == 1) {
-                types.append("TVDB");
-            }
-
-            // setup the filters
-            ConditionalResourceFilter filter = new ConditionalResourceFilter();
-            if (options.getScanMissingMetadata().get()) {
-                filter.or(new MissingMetadataFilter());
-            }
-
-            if (options.getScanMissingPoster().get()) {
-                filter.or(new MissingFanartFilter(MediaArtifactType.POSTER));
-            }
-
-            if (options.getScanMissingBackground().get()) {
-                filter.or(new MissingFanartFilter(MediaArtifactType.BACKGROUND));
-            }
-
-            if (options.getScanMissingBanner().get()) {
-                filter.or(new MissingFanartFilter(MediaArtifactType.BANNER));
-            }
-
-            filter.and(new MovieResourceFilter());
-
-            // do the work
-            log.debug("Getting MediaFile for: " + types.toString() + "; Filter: " + options.getFilter().get());
-
-            String titleFilter = "";
-            String filt = options.getFilter().get();
-            if (filt != null && filt.trim().length() > 0) {
-                titleFilter = "?filterTitle=" + filt;
-            }
-
-            SageMediaFolder folder = new SageMediaFolder("sage://query/" + types + titleFilter);
-            if (folder.members().size() == 0) {
-                return null;
-            }
-            log.debug("Folder Items: " + folder.members().size());
-
-            // track scanning status
-            ScanProgressTracker tracker = new ScanProgressTracker(options);
-            FilteredResourceVisitor scanVisitor = null;
-
-            if (options.getDontUpdate().get()) {
-                // for search/scan only
-                ProgressTrackerVisitor scanOnlyVisitor = new ProgressTrackerVisitor(tracker);
-
-                // use scan only visitor/tracker
-                scanVisitor = new FilteredResourceVisitor(filter, scanOnlyVisitor);
-            } else {
-                CompositeMediaMetadataPersistence persistence = new CompositeMediaMetadataPersistence();
-                
-                // backup first
-                persistence.add(new SageBackupPersistenceUsingSageXmlInfo());
-                
-                // now use this to save
-                if (options.getUpdateMetadata().get()) {
-                    persistence.add(new SageTVPropertiesPersistence());
-                    persistence.add(new SageShowPeristence());
-                    persistence.add(new SageCustomMetadataPersistence());
-                }
-
-                if (options.getUpdateFanart().get()) {
-                    persistence.add(new CentralFanartPersistence());
-                }
-
-                // no need to update the time stamp
-                //persistence.add(new UpdateMediaFileTimeStamp());
-
-                PersistenceOptions persistOptions = new PersistenceOptions();
-                persistOptions.setOverwriteFanart(options.getOverwriteFanart().get());
-                persistOptions.setOverwriteMetadata(options.getOverwriteMetadata().get());
-                persistOptions.setImportAsTV(options.getImportTV().get());
-                persistOptions.setUseTitleMasks(true);
-
-                // for automatic updates
-                AutomaticUpdateMetadataVisitor autoUpdater = new AutomaticUpdateMetadataVisitor(metadataConfig.getDefaultProviderId(), persistence, persistOptions, SearchQuery.Type.MOVIE, tracker);
-
-                // use the automatic updater
-                scanVisitor = new FilteredResourceVisitor(filter, autoUpdater);
-            }
-
-            MediaScanner scanner = new MediaScanner(folder, scanVisitor);
-            String id = ProgressTrackerManager.getInstance().runWithProgress(scanner, tracker);
-            return id;
-        } catch (Throwable e) {
-            e.printStackTrace();
-            log.error(e.getMessage(), e);
-            throw new RuntimeException("Scan Service Failed!", e);
+    public ProgressStatus[] getScansInProgress() {
+        List<ProgressStatus> all = new ArrayList<ProgressStatus>();
+        for (String id : trackerManager.getProgressIds()) {
+            all.add(getStatus(id));
         }
+        return all.toArray(new ProgressStatus[] {});
+    }
+
+    public ProgressStatus getStatus(String id) {
+        log.debug("Getting Progress Status for: " + id);
+        ProgressStatus status = new ProgressStatus();
+        status.setProgressId(id);
+        
+        ProgressTracker<MetadataItem> tracker = (ProgressTracker<MetadataItem>) trackerManager.getProgress(id);
+        if (tracker==null) {
+            log.debug("No Tracker for Id: " + id);
+            status.setIsDone(true);
+        } else {
+            updateProgressStatus(status, tracker);
+        }
+        return status;
+    }
+    
+    private void updateProgressStatus(ProgressStatus status, ProgressTracker<MetadataItem> tracker) {
+        status.setComplete(tracker.internalWorked());
+        status.setIsCancelled(tracker.isCancelled());
+        status.setIsDone(tracker.isDone());
+        status.setStatus(tracker.getTaskName());
+        status.setTotalWork(tracker.getTotalWork());
+        status.setWorked(tracker.getWorked());
+        status.setSuccessCount(tracker.getSuccessfulItems().size());
+        status.setFailedCount(tracker.getFailedItems().size());
+        status.setLabel(tracker.getLabel());
+        status.setDate(tracker.getLastUpdated());
+    }
+
+    public void cancelScan(String id) {
+        ProgressTracker<MetadataItem> tracker = (ProgressTracker<MetadataItem>) trackerManager.getProgress(id);
+        if (tracker!=null) {
+            tracker.setCancelled(true);
+            log.debug("Cancelled Scan: " + id);
+        }
+    }
+    
+    public void removeScan(String progressId) {
+        cancelScan(progressId);
+        trackerManager.removeProgress(progressId);
+    }
+
+    public GWTMediaResource[] getProgressItems(String progressId, boolean b) {
+        log.debug("Getting Items for progress: " + progressId);
+        ProgressTracker<MetadataItem> tracker = (ProgressTracker<MetadataItem>) trackerManager.getProgress(progressId);
+        LinkedList<TrackedItem<MetadataItem>> items = null;
+        if (b) {
+            items = tracker.getSuccessfulItems();
+        } else {
+            items = tracker.getFailedItems();
+        }
+
+        List<GWTMediaResource> gwtitems = new ArrayList<GWTMediaResource>();
+        for (TrackedItem<MetadataItem> i : items) {
+            GWTMediaResource res = BrowsingServicesImpl.convertResource(i.getItem().getFile(), getThreadLocalRequest());
+            gwtitems.add(res);
+            if (i.getMessage()!=null) {
+                res.setMessage(i.getMessage());
+            }
+        }
+        GWTMediaResource all[] = (gwtitems.toArray(new GWTMediaResource[] {}));
+        log.debug("Created Reply with " + all.length + " items.");
+        return all;
     }
 
     public GWTMediaMetadata loadMetadata(GWTMediaFile mediaFile) {
         try {
             log.debug("Fetching Current Metadata for Item: " + mediaFile.getSageMediaFileId() + "; " + mediaFile.getTitle());
-            SageMediaFile smf = new SageMediaFile(mediaFile.getSageMediaFileId());
-            IMediaMetadataPersistence persist = new CompositeMediaMetadataPersistence(new SageShowPeristence(), new SageCustomMetadataPersistence());
-            IMediaMetadata md = persist.loadMetaData(smf);
             
+            // TODO: load metadata using EITHER the properties or show metadata
+            IMediaMetadataPersistence persist = new CompositeMediaMetadataPersistence(new SageShowPeristence(), new SageCustomMetadataPersistence());
+            IMediaMetadata md = persist.loadMetaData(new SageMediaFile(null, phoenix.api.GetSageMediaFile(mediaFile.getSageMediaFileId())));
             return newMetadata(md);
         } catch (Throwable e) {
             log.error("Failed to get metadata: " + mediaFile.getSageMediaFileId() + "; " + mediaFile.getTitle(), e);
@@ -262,6 +206,67 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
         return mi;
     }
 
+    public ServiceReply<GWTMediaFile> saveMetadata(GWTMediaFile file, SaveOptions options) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<GWTMediaSearchResult> searchForMetadata(GWTMediaFile item, SearchQueryOptions options) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String scan(final GWTMediaFolder folder, final ScanOptions options) {
+        log.debug("Scanning Folder: " + folder);
+        ProgressTracker<MetadataItem> tracker = new ProgressTracker<MetadataItem>();
+        tracker.setLabel(folder.getTitle());
+        
+        Map<MediaType, IMediaMetadataProvider> providers = new HashMap<MediaType, IMediaMetadataProvider>();
+        providers.put(MediaType.TV, MediaMetadataFactory.getInstance().getProvider(config.getTVProviders(), MediaType.TV));
+        providers.put(MediaType.MOVIE, MediaMetadataFactory.getInstance().getProvider(config.getMovieProviders(), MediaType.MOVIE));
+        
+        IMediaMetadataPersistence persistence = new MediaMetadataPersistence();
+        
+        PersistenceOptions poptions = new PersistenceOptions();
+        poptions.setImportAsTV(options.getImportTV().get());
+        poptions.setOverwriteFanart(options.getOverwriteFanart().get());
+        poptions.setOverwriteMetadata(options.getOverwriteMetadata().get());
+        poptions.setCreateProperties(true);
+        poptions.setTouchingFiles(true);
+        poptions.setUpdateWizBin(true);
+        poptions.setUseTitleMasks(true);
+        
+        final AndResourceFilter filter = new AndResourceFilter(new MediaTypeFilter(MediaResourceType.ANY_VIDEO));
+        final IMediaFolder realFolder = BrowsingServicesImpl.getFolderRef(folder, getThreadLocalRequest());
+        
+        final MetadataProcessor processor = new MetadataProcessor(null, providers, persistence, poptions);
+        String trackerId = trackerManager.runWithProgress(new IRunnableWithProgress<ProgressTracker<MetadataItem>>() {
+            public void run(ProgressTracker<MetadataItem> monitor) {
+                try {
+                    log.info("Starting Scan on folder: " + realFolder.getTitle());
+                    processor.setRecurse(options.getIncludeSubDirs().get());
+                    processor.addFilter(filter);
+                    processor.process(realFolder, monitor);
+                } catch (Throwable t) {
+                    log.error("Scan Failed!", t);
+                } finally {
+                    log.info("Scan completed: " + realFolder.getTitle());
+                    monitor.done();
+                }
+            }
+        }, tracker);
+        return trackerId;
+    }
+
+
+
+    private String makeLocalMediaUrl(String url) {
+        return "media/get?i=" + URLEncoder.encode(url);
+    }
+
+/*
+    
+
     public List<GWTMediaSearchResult> searchForMetadata(GWTMediaFile mediaFile, SearchQueryOptions options) {
         String provider = options.getProvider().get();
         if (StringUtils.isEmpty(provider)) {
@@ -292,7 +297,6 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
                 query = SearchQueryFactory.getInstance().createQuery(smf);
                 log.debug("Sage Query Created");
             }
-            */
 
             log.info("WebUI Search: " + query + " using provider: " + provider );
 
@@ -336,63 +340,7 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
         }
     }
 
-    public ProgressStatus getStatus(String id) {
-        try {
-            ProgressStatus status = new ProgressStatus();
-            ScanProgressTracker tracker = (ScanProgressTracker) ProgressTrackerManager.getInstance().getProgress(id);
-            status.setComplete(tracker.internalWorked());
-            status.setStatus(tracker.getTaskName());
-            status.setIsDone(tracker.isDone());
-            status.setIsCancelled(tracker.isCancelled());
-            status.setTotalWork(tracker.getTotalWork());
-            status.setWorked(tracker.getWorked());
 
-            Queue queue = null;
-            tracker.getSuccessfulItems();
-            if (tracker.getOptions().getDontUpdate().get()) {
-                queue = tracker.getSuccessfulItems();
-            } else {
-                queue = tracker.getFailedItems();
-            }
-
-            List<GWTMediaFile> items = new ArrayList<GWTMediaFile>();
-
-            for (int i = 0; i < 10; i++) {
-                String errStatus = null;
-                IMediaResource res = null;
-                if (tracker.getOptions().getDontUpdate().get()) {
-                    res = (IMediaResource) queue.poll();
-                } else {
-                    FailedItem<IMediaFile> failed = (FailedItem<IMediaFile>) queue.poll();
-                    if (failed != null) {
-                        res = failed.getItem();
-                        errStatus = failed.getMessage();
-                    }
-                }
-
-                if (res == null) {
-                    break;
-                }
-
-                log.debug("Handing Resources: " + res);
-                GWTMediaFile item = createGWTMediaFile(res);
-                item.setMessage(errStatus);
-                items.add(item);
-
-            }
-
-            status.setItems(items);
-
-            return status;
-        } catch (Throwable t) {
-            log.error("GetStatus Failed for " + id, t);
-            throw new RuntimeException(t);
-        }
-    }
-
-    private String makeLocalMediaUrl(String url) {
-        return "media/get?i=" + URLEncoder.encode(url);
-    }
     
     private GWTMediaFile createGWTMediaFile(IMediaResource res) {
         GWTMediaFile item = new GWTMediaFile((IMediaFile) res);
@@ -596,4 +544,5 @@ public class BrowserServicesImpl extends RemoteServiceServlet implements Browser
             tracker.setCancelled(true);
         }
     }
+    */
 }

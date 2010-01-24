@@ -25,7 +25,7 @@ public class MediaItemWidget extends Composite implements HasClickHandlers {
         this.mediaFile=item;
         panel.setWidth("150px");
         panel.setSpacing(7);
-        thumb = new Image(item.getPosterUrl());
+        thumb = new Image(item.getThumbnailUrl());
         thumb.setHeight("120px");
         thumb.addErrorHandler(new ErrorHandler() {
             public void onError(ErrorEvent event) {
