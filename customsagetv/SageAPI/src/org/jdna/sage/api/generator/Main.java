@@ -99,6 +99,10 @@ public class Main {
 				System.out.println("Generating sagex.api." + name);
 				SageAPIGenerator sag = new SageAPIGenerator(new File(srcDir), packageName, name, methods);
 				sag.generate();
+				
+                System.out.println("Generating sagex.api.enums" + name);
+				SageEnumGenerator seg = new SageEnumGenerator(new File(srcDir), packageName, name, methods);
+				seg.generate();
 
 				System.out.println("Generating sagex.api.remote.factory." + name + "Factory");
 				ApiFactoryGenerator classFactory = new ApiFactoryGenerator(new File(srcDir), requestFactoryPackage, name + "Factory", methods);
@@ -120,13 +124,18 @@ public class Main {
 		}
 
 		// now generate files requiring ALL metedata
+		System.out.println("Generating RPC Factories");
 		SageRPCRequestFactoryGenerator gen = new SageRPCRequestFactoryGenerator(new File(srcDir), requestFactoryPackage, "SageRPCRequestFactory", allMetaData);
 		gen.generate();
 		
 		// generate the JSON Lookup API
+		System.out.println("Generating JSON API Lookup");
         JSONApiLookupGenerator json = new JSONApiLookupGenerator(new File(srcDir), "sagex.remote.api", "JSONApiLookup", allMetaData);
         json.generate();
-
+        
+        System.out.println("Generating Sage Command enums");
+        SageCommandEnumGenerator cmds = new SageCommandEnumGenerator(new File(srcDir), "sagex.api", "SageCommand");
+        cmds.generate();
 	}
 
 	private void initConfiguration() throws Exception {
