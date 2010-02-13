@@ -94,7 +94,7 @@ In 3.x, bmt used the metadata.properties file to help with the selection of item
 </titles>
 }}}
 
-The first <code><match></code> entry will set the Title, Year, and series ID for any media items that are in the Babylon 5 directory.  In this case, title and year are actually not needed, since we are forcing a series id.
+The first &lg;match> entry will set the Title, Year, and series ID for any media items that are in the Babylon 5 directory.  In this case, title and year are actually not needed, since we are forcing a series id.
 
 The Second <match> entry is forcibly setting the imdbid for a specific file.  Again title and year are not really required here.
 
