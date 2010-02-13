@@ -65,3 +65,37 @@ Once you have set your scan options, you can then start the scan by pressing the
 Once the Scan is in progress, it will add a section below the views for the scanning status.  This status will be updated as the scan progresses.  If you navigate about from this page and then return the status will continue to be updated.
 
 Once a scan has been stated, you can cancel it by clicked the "cancel" link in the status box.  A history of your scans is kept for your review.  You can click on the scan progress, and it will show a panel of your results.  You can then click on the Success or Failed numbers to see a view of the success or failed items.  From that view you can also edit the metadata as you can from any other view.
+
+= Command Line =
+Metadata Tools, as of 4.0, still supports a commandline interface.  It is recommended that you review the command line options before using them.  I will assume that if you can adventurous enough to use the command line, then you can read the help for each option.
+
+When using the commandline, you cannot directly update the Wiz.bin.  You will simply create .properties files and fanart files, and then sagetv will use them.
+
+If you have used the 3.x commandline, then I recommend that you review the 4.x commandline, because it has changed.
+
+= How do I ... =
+== Force a particular show/series/movie for a given media item? ==
+In 3.x, bmt used the metadata.properties file to help with the selection of items.  In 4.x that file is no longer used.  In its place is a new file, scrapers/MediaTitles.xml.  MediaTitles.xml contains items that will be used to force a better query or even for an id result on a query.  For example, consder the following sammple file
+<code>
+<titles>
+	<match>
+		<regex>[\\/]Babylon\s*5[\\/]</regex>
+		<title>Babylon 5</title>
+		<year>1993</year>
+		<metadata type="tv" name="tvdb">7072</metadata>
+	</match>
+	
+	<match>
+		<file>/home/movies/shared/FindingNemo.avi</file>
+		<title>Finding Nemo</title>
+		<year>2003</year>
+		<metadata name="imdb">tt0266543</metadata>
+	</match>
+</titles>
+</code>
+
+The first <match> entry will set the Title, Year, and series ID for any media items that are in the Babylon 5 directory.  In this case, title and year are actually not needed, since we are forcing a series id.
+
+The Second <match> entry is forcibly setting the imdbid for a specific file.  Again title and year are not really required here.
+
+A <match> element will consist of ether a <regex> element or a <file> element followed by a <title>, <year> or <metadata> elements.  If only <title> and <year> are passed then the Search Query will be updated to use those values as the title and year search parameters.
