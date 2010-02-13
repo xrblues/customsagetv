@@ -43,5 +43,23 @@ From this panel you can configure how the automatic should process files.
   * *Supported MediaResource File Types* allows you to specify which kind of media files you want the automatic plugin to process.  You can specify more than one type by separting them via a comma.  By default ALL_VIDEO is uses, which means, TV, DVDs, BluRays, and normal Video media files.
   * *Create Default STV Thumbnail*, if checked, will create a thumbnail image, in the same directory as the media file, which will allow the default STV to see a better thumbnail for the media file.  If you use SageMC, then you probably don't need to enable this.  But, if you use the default STV, then this will allow the default media browser to use poster thumbnails.
 
+= Performing a Scan =
+You can perform a scan by using the Browse action from the Web UI.  When in Browse, you are provided with a list of media sources, ie, Recordings, Videos, etc, and when you navigate them, an *Update Metadata* button is present at the top of the list.  When You select Update Metadata, it will update the metadata for that current folder and optionally the sub folders of the current folder.  You can initiate the scan at any level.
 
-	
+Selecting *Update Metadata*, present your with a dialog box of how you want the scan to proceed.  
+
+  * *Include Sub Folders* - Process current folder and its child folders
+  * *Update Metadata* - Update the metadata for all items.  If unchecked the the metadata remains unchanged, but the fanart may still be updated.
+  * *Overwrite Existing Metadata* - force an overwrite of existing metadata, otherwise, skip items that have metadta
+  * *Create .properties Files* - Create .properties files for each item containing its metadata
+  * *Update Fanart* - If unchecked, then fanart is not processed, but metadata may still be updated.
+  * *Overwrite Existing Fanart* - Will download fanart even if there is existing fanart.
+  * *Generate Thumbanils for Default STV* - Create a Default STV compatible thumbnail/poster. Creates a .jpg of the poster in the same folder as the media item.
+  * *Update Wiz.bin* - Directly import metadata into the SageTV database (wiz.bin)
+  * *Import TV as Sage Recordings* - Import TV media items into the SageTV recordings. (Forces Update Wiz.bin to true)
+
+Once you have set your scan options, you can then start the scan by pressing the Scan Button.
+
+Once the Scan is in progress, it will add a section below the views for the scanning status.  This status will be updated as the scan progresses.  If you navigate about from this page and then return the status will continue to be updated.
+
+Once a scan has been stated, you can cancel it by clicked the "cancel" link in the status box.  A history of your scans is kept for your review.  You can click on the scan progress, and it will show a panel of your results.  You can then click on the Success or Failed numbers to see a view of the success or failed items.  From that view you can also edit the metadata as you can from any other view.
