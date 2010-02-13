@@ -94,8 +94,8 @@ In 3.x, bmt used the metadata.properties file to help with the selection of item
 </titles>
 }}}
 
-The first &lg;match> entry will set the Title, Year, and series ID for any media items that are in the Babylon 5 directory.  In this case, title and year are actually not needed, since we are forcing a series id.
+The first *match* entry will set the Title, Year, and series ID for any media items that are in the Babylon 5 directory.  In this case, title and year are actually not needed, since we are forcing a series id.
 
-The Second <match> entry is forcibly setting the imdbid for a specific file.  Again title and year are not really required here.
+The Second *match* entry is forcibly setting the imdbid for a specific file.  Again title and year are not really required here.
 
-A <match> element will consist of ether a <regex> element or a <file> element followed by a <title>, <year> or <metadata> elements.  If only <title> and <year> are passed then the Search Query will be updated to use those values as the title and year search parameters.
+A *match* element will consist of ether a *regex* element or a *file* element followed by a *title*, *year* or *metadata* elements.  If only *title* and *year* are passed then the Search Query will be updated to use those values as the title and year search parameters.
