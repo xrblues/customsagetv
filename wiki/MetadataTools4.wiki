@@ -1,5 +1,7 @@
 #summary Metadata Tools for SageTV
 
+<wiki:toc max_depth="6" /> 
+
 = Introduction =
 
 Metadata Tools (aka BMT) is a collection of tools for managing and fetching metadata.  Currently it supports fetching metadata from imdb.com, themoviedb.com, tvdb.com.  It also have some support for pulling metadata and fanart from existing DVDProfiler or MyMovies collections.  DVDProfiler and MyMovies support is limited.
