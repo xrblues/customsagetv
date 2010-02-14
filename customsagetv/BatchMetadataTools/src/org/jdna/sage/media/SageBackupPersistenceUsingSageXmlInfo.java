@@ -3,12 +3,11 @@ package org.jdna.sage.media;
 import java.io.File;
 import java.io.IOException;
 
-import net.sf.sageplugins.sagexmlinfo.SageXmlWriter;
-
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.PersistenceOptions;
+import org.jdna.sage.io.SageXmlWriter;
 
 import sagex.api.MediaFileAPI;
 import sagex.phoenix.vfs.IMediaResource;

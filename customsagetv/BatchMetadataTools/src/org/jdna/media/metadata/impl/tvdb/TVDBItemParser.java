@@ -22,6 +22,7 @@ import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.IUrl;
 import org.jdna.url.UrlFactory;
 import org.jdna.util.DOMUtils;
+import org.jdna.util.ParserUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -56,6 +57,8 @@ public class TVDBItemParser {
     public IMediaMetadata getMetadata() {
         if (md == null) {
             try {
+                log.debug("Getting Metadata for Result: " + result);
+                
                 // parse and fill
                 md = new MediaMetadata();
 
@@ -88,8 +91,15 @@ public class TVDBItemParser {
                     } else {
                         log.warn("No Specific Episode Lookup for query: " + result);
                     }
+                } else {
+                    // TOOD: throw exception if no season
+                    throw new Exception("No Season information");
                 }
-
+                
+                if (StringUtils.isEmpty(MetadataAPI.getEpisodeTitle(md))) {
+                    throw new Exception("Failed to find an episode title");
+                }
+                
                 md.setProviderId(TVDBMetadataProvider.PROVIDER_ID);
                 md.setProviderDataId(result.getId());
             } catch (Exception e) {
@@ -114,7 +124,7 @@ public class TVDBItemParser {
     private void updateMetadataFromElement(MediaMetadata md, Element el) {
         md.set(MetadataKey.SEASON, DOMUtils.getElementValue(el, "SeasonNumber"));
         md.set(MetadataKey.EPISODE, DOMUtils.getElementValue(el, "EpisodeNumber"));
-        md.set(MetadataKey.EPISODE_TITLE, DOMUtils.getElementValue(el, "EpisodeName"));
+        md.set(MetadataKey.EPISODE_TITLE, org.jdna.util.StringUtils.unquote(DOMUtils.getElementValue(el, "EpisodeName")));
         // actually this is redundant because the tvdb is already YYYY-MM-DD, but this will
         // ensure that we are safe if out internal mask changes
         MetadataUtil.setReleaseDateFromFormattedDate(md, DOMUtils.getElementValue(el, "FirstAired"), "yyyy-MM-dd");
@@ -331,8 +341,12 @@ public class TVDBItemParser {
         md.set(MetadataKey.DESCRIPTION, DOMUtils.getElementValue(series, "Overview"));
         md.set(MetadataKey.USER_RATING, DOMUtils.getElementValue(series, "Rating"));
         md.set(MetadataKey.RUNNING_TIME, MetadataUtil.convertTimeToMillissecondsForSage(DOMUtils.getElementValue(series, "Runtime")));
-        md.set(MetadataKey.MEDIA_TITLE, DOMUtils.getElementValue(series, "SeriesName"));
-        md.set(MetadataKey.DISPLAY_TITLE, DOMUtils.getElementValue(series, "SeriesName"));
+        // fix title, unquote, and then parse the title if it's Title (year)
+        String title = org.jdna.util.StringUtils.unquote(DOMUtils.getElementValue(series, "SeriesName"));
+        String titleParts[] = ParserUtils.parseTitle(title);
+        title=titleParts[0];
+        md.set(MetadataKey.MEDIA_TITLE, title);
+        md.set(MetadataKey.DISPLAY_TITLE, title);
         md.set(MetadataKey.MEDIA_TYPE, MetadataUtil.TV_MEDIA_TYPE);
     }
 

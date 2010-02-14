@@ -5,11 +5,8 @@ import sagex.phoenix.configuration.proxy.AGroup;
 import sagex.phoenix.configuration.proxy.FieldProxy;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 
-@AGroup(label="Automatic Plugin Configuration", path = "bmt/plugin", description = "Configuration for Automatic Plugin")
-public class PluginConfiguration extends GroupProxy {
-    @AField(label="Enabled", description="Enable/Disable the Automatic Plugin (does not remove it)")
-    private FieldProxy<Boolean> enabled = new FieldProxy<Boolean>(true);
-
+@AGroup(label="On-Demand Plugin Configuration", path = "bmt/ondemandplugin", description = "Configuration for On-Demand Plugin (ie, Searches from withing the STV)")
+public class OnDemandConfiguration extends GroupProxy {
     @AField(label="Overwrite Metadata", description="Overwrite Existing Metadata Configuration")
     private FieldProxy<Boolean> overwriteMetadata = new FieldProxy<Boolean>(false);
 
@@ -31,10 +28,13 @@ public class PluginConfiguration extends GroupProxy {
     @AField(label="Supported MediaResource File Types", description="Comma Separated list of Media Resource Types that the Automatic scanner will support; TV, DVD, BLURAY, ANY_VIDEO, MUSIC, VIDEO")
     private FieldProxy<String> supportedMediaTypes = new FieldProxy<String>("ANY_VIDEO");
 
+    @AField(label="Update in background", description="If true, then the downloading of fanart/metadata will happen in the background")
+    private FieldProxy<Boolean> updateInBackground = new FieldProxy<Boolean>(Boolean.FALSE);
+
     @AField(label="Create Default STV Thumbnail", description="If true, then create a default STV thumbnail")
     private FieldProxy<Boolean> createDefaultSTVThumbnail = new FieldProxy<Boolean>(Boolean.FALSE);
 
-    public PluginConfiguration() {
+    public OnDemandConfiguration() {
         super();
         init();
     }
@@ -53,14 +53,6 @@ public class PluginConfiguration extends GroupProxy {
 
     public void setOverwriteFanart(boolean overwriteFanart) {
         this.overwriteFanart.set(overwriteFanart);
-    }
-
-    public boolean getEnabled() {
-        return enabled.get();
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled.set(enabled);
     }
 
     /**
@@ -114,7 +106,18 @@ public class PluginConfiguration extends GroupProxy {
     public boolean getImportTVAsRecordings() {
         return importTVAsRecordings.get();
     }
-    
+
+    /**
+     * @return the updateInBackground
+     */
+    public boolean getUpdateInBackground() {
+        return updateInBackground.get();
+    }
+
+    public void setUpdateInBackground(boolean b) {
+        updateInBackground.set(b);
+    }
+
     /**
      * @return the createDefaultSTVThumbnail
      */
@@ -128,5 +131,4 @@ public class PluginConfiguration extends GroupProxy {
     public void setCreateDefaultSTVThumbnail(boolean createDefaultSTVThumbnail) {
         this.createDefaultSTVThumbnail.set(createDefaultSTVThumbnail);
     }
-
 }

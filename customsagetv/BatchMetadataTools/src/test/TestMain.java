@@ -1,5 +1,8 @@
 package test;
 
+import java.io.File;
+import java.net.URL;
+
 import org.apache.log4j.BasicConfigurator;
 import org.jdna.metadataupdater.MetadataUpdater;
 
@@ -16,8 +19,13 @@ public class TestMain {
      */
     public static void main(String[] args) throws Exception {
         BasicConfigurator.configure();
-        String file = "/home/seans/DevelopmentProjects/workspaces/sage/MovieMetadataUpdater/target/sage/../../testing/Movies/Transformers 2 (2009).avi";
-        MetadataUpdater.main(new String[] {file});
+        
+        URL u = new URL("file:/tmp/a.txt");
+        File f = new File(u.toURI());
+        System.out.println("File: " + f);
+        
+        File f2 = new File("/tmp/a.txt");
+        System.out.println("Equals: " + f.equals(f2) + "; " + (f == f2));
     }
 
 }

@@ -50,15 +50,6 @@ public class MetadataConfiguration extends GroupProxy {
     @AField(label="Max Images to Download", description="Maximum # of images within each fanart type to download.")
     private FieldProxy<Integer> maxDownloadableImages = new FieldProxy<Integer>(5);
     
-    @AField(label="Default STV Poster Compatibility", description="When writing fanart, if this is enabled, an additional poster file will be written that is compatible with the default stv.")
-    private FieldProxy<Boolean> enableDefaultSTVPosterCompatibility = new FieldProxy<Boolean>(false);
-    
-    @AField(label="Import TV as Sage Recordings", description="When importing TV Shows, try to add them into the Sage Recordings.")
-    private FieldProxy<Boolean> importTVAsRecordedShows = new FieldProxy<Boolean>(false);
-
-    @AField(label="Backup Sage Recordings on write", description="When writing/overwriting SageTV recordings, first make a backup of the existing metadata.")
-    private FieldProxy<Boolean> backupSageRecordingMetadata = new FieldProxy<Boolean>(true);
-    
     @AField(label="Fanart Enabled", description="Enable Fanart downloading", fullKey="phoenix/mediametadata/fanartEnabled")
     private FieldProxy<Boolean> fanartEnabled = new FieldProxy<Boolean>(true);
     
@@ -167,30 +158,6 @@ public class MetadataConfiguration extends GroupProxy {
         this.maxDownloadableImages.set(maxDownloadableImages);
     }
 
-    public boolean isEnableDefaultSTVPosterCompatibility() {
-        return enableDefaultSTVPosterCompatibility.getBoolean();
-    }
-
-    public void setEnableDefaultSTVPosterCompatibility(boolean enableDefaultSTVPosterCompatibility) {
-        this.enableDefaultSTVPosterCompatibility.set(enableDefaultSTVPosterCompatibility);
-    }
-
-    public boolean isImportTVAsRecordedShows() {
-        return importTVAsRecordedShows.getBoolean();
-    }
-
-    public void setImportTVAsRecordedShows(boolean importTVAsRecordedShows) {
-        this.importTVAsRecordedShows.set(importTVAsRecordedShows);
-    }
-
-    public boolean isBackupSageRecordingMetadata() {
-        return backupSageRecordingMetadata.getBoolean();
-    }
-
-    public void setBackupSageRecordingMetadata(boolean backup) {
-        this.backupSageRecordingMetadata.set(backup);
-    }
-    
     public String getFanartCentralFolder() {
         return fanartCentralFolder.getString();
     }

@@ -116,7 +116,7 @@ public class MetadataProcessor {
                                 }
                             }
                         } else {
-                            log.debug("Resource: " + res1 + " was not accepted by filter.");
+                            log.info("Resource: " + res1 + " was not accepted by filter.");
                         }
                     } else {
                         log.info("Scan was cancelled. Aborting...");

@@ -12,6 +12,7 @@ import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.sage.SageProperty;
+import org.jdna.sage.OnDemandConfiguration;
 import org.jdna.util.PersistenceFactory;
 
 import sagex.api.MediaFileAPI;
@@ -32,6 +33,8 @@ import sagex.phoenix.vfs.IMediaFile;
 public class BMTMetadataSupport implements IMetadataSupport {
     private static final Logger log = Logger.getLogger(BMTMetadataSupport.class);
     private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
+    private OnDemandConfiguration ondemandConfig = GroupProxy.get(OnDemandConfiguration.class);
+    
     private ProgressTrackerManager trackerManager = new ProgressTrackerManager();
     
     private String currentTrackerId = null;
@@ -82,6 +85,9 @@ public class BMTMetadataSupport implements IMetadataSupport {
 
     public boolean updateMetadataForResult(Object media, IMetadataSearchResult result) {
         try {
+            // TODO: Run in background
+            
+            
             // first we need to update the central fanart properties based on
             // the ui settings
             metadataConfig.setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
@@ -98,10 +104,21 @@ public class BMTMetadataSupport implements IMetadataSupport {
             }
 
             PersistenceOptions options = new PersistenceOptions();
-            options.setImportAsTV(metadataConfig.isImportTVAsRecordedShows());
-            options.setOverwriteFanart(false);
-            options.setOverwriteMetadata(true);
+            // TODO: set options for all this as On-Demand settings
+            options.setImportAsTV(ondemandConfig.getImportTVAsRecordings());
+            options.setOverwriteFanart(ondemandConfig.getOverwriteFanart());
+            options.setOverwriteMetadata(ondemandConfig.getOverwriteMetadata());
             options.setUseTitleMasks(true);
+            options.setCreateProperties(false);
+            options.setUpdateWizBin(ondemandConfig.getUpdateWizBin());
+            if (ondemandConfig.getUpdateWizBin()) {
+                options.setCreateProperties(false);
+                options.setTouchingFiles(false);
+            } else {
+                options.setCreateProperties(true);
+                options.setTouchingFiles(true);
+            }
+            options.setCreateDefaultSTVThumbnail(ondemandConfig.getCreateDefaultSTVThumbnail());
             
             IMediaFile smf = phoenix.api.GetMediaFile(media);
             MetadataAPI.normalizeMetadata(smf, md, options);

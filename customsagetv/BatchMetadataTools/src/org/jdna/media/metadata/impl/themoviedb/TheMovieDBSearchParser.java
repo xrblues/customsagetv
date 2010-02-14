@@ -101,7 +101,7 @@ public class TheMovieDBSearchParser {
         
         sr.setProviderId(TheMovieDBMetadataProvider.PROVIDER_ID);
 
-        String title = getElementValue(item, "title");
+        String title = org.jdna.util.StringUtils.unquote(getElementValue(item, "title"));
         sr.setTitle(title);
         sr.setScore(getScore(title));
 

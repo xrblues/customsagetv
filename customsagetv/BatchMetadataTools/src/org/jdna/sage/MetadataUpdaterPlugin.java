@@ -58,14 +58,14 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             if (!init) {
                 init=true;
                 log.debug("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
-                log.debug("    BMT Version:  " + Version.VERSION);
+                log.info("    BMT Version:  " + Version.VERSION);
                 log.debug("Phoenix Version:  " + phoenix.api.GetVersion());
                 log.debug("  Sagex Version:  " + sagex.api.Version.GetVersion());
                 log.debug("   Java Version:  " + System.getProperty("java.version"));
                 log.debug(" Java Classpath:  " + System.getProperty("java.class.path"));
                 log.debug("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
                 
-                log.debug("Registering the ScanMediaFileEventHandler");
+                log.info("Registering the ScanMediaFileEventHandler");
                 Phoenix.getInstance().getEventBus().addHandler(ScanMediaFileEvent.TYPE, new SageScanMediaFileEvenHandler());
             }
         } catch (Throwable e) {
@@ -114,14 +114,27 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
     }
 
     private void scanFile(File file) {
-        log.debug("BMT Automatic Plugin handling file: " + file.getAbsolutePath() + "; BMT Version: " + Version.VERSION + "; Phoenix Version: " + phoenix.api.GetVersion());
+        log.info("BMT Automatic Plugin handling file: " + file.getAbsolutePath() + "; BMT Version: " + Version.VERSION + "; Phoenix Version: " + phoenix.api.GetVersion());
         PersistenceOptions options = new PersistenceOptions();
-        options.setCreateProperties(true);
-        options.setTouchingFiles(false);
-        options.setUpdateWizBin(true);
+        options.setUpdateWizBin(pluginConfig.getUpdateWizBin());
         options.setUseTitleMasks(true);
         options.setOverwriteFanart(pluginConfig.getOverwriteFanart());
         options.setOverwriteMetadata(pluginConfig.getOverwriteMetadata());
+        options.setUpdateWizBin(pluginConfig.getUpdateWizBin());
+        options.setCreateDefaultSTVThumbnail(pluginConfig.getCreateDefaultSTVThumbnail());
+        if (pluginConfig.getImportTVAsRecordings()) {
+            options.setImportAsTV(pluginConfig.getImportTVAsRecordings());
+            options.setUpdateWizBin(true);
+        }
+        
+        if (pluginConfig.getUpdateWizBin()) {
+            options.setCreateProperties(false);
+            options.setTouchingFiles(false);
+        } else {
+            options.setCreateProperties(true);
+            options.setTouchingFiles(true);
+        }
+        
         ScanMediaFileEvent event = new ScanMediaFileEvent(file, options);
         Phoenix.getInstance().getEventBus().fireEvent(event);
     }

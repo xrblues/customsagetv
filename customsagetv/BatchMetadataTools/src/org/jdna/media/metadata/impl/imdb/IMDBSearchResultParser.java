@@ -12,6 +12,7 @@ import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.URLSaxParser;
+import org.jdna.util.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -131,7 +132,7 @@ public class IMDBSearchResultParser extends URLSaxParser {
 
         if (aState == TITLE_READ_TITLE) {
             log.debug("IMDB Title: " + charBuffer);
-            curResult.setTitle(charBuffer);
+            curResult.setTitle(StringUtils.unquote(charBuffer));
             // set the state to READ_YEAR
             aState = TITLE_READ_YEAR;
         } else if (aState == TITLE_READ_YEAR) {

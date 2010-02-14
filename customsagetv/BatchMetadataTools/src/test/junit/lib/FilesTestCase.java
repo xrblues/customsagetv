@@ -41,11 +41,17 @@ public class FilesTestCase extends TestCase {
         return f;
     }
     
-    public static File getFile(String path) {
+    public static File getFile(String path, boolean failOnError) {
         File f = new File("target/junit/");
         f = new File(f, path);
-        assertEquals("Missing File: " + f.getAbsolutePath(), true, f.exists());
+        if (failOnError) {
+            assertEquals("Missing File: " + f.getAbsolutePath(), true, f.exists());
+        }
         return f;
+    }
+
+    public static File getFile(String path) {
+        return getFile(path, true);
     }
 
     public static File[] listFiles(String path, String regex) {

@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.log4j.Logger;
 import org.jdna.media.MediaConfiguration;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 import org.jdna.media.metadata.impl.sage.SageMetadataConfiguration;
@@ -31,6 +32,7 @@ import sagex.phoenix.vfs.util.PathUtils;
  *
  */
 public class MetadataAPI {
+    private static Logger log = Logger.getLogger(MetadataAPI.class);
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     
     public static IMediaMetadata copy(IMediaMetadata src, IMediaMetadata dest) {
@@ -282,6 +284,8 @@ public class MetadataAPI {
         if (sagemf != null) {
             importAsTV = importAsTV || MediaFileAPI.IsTVFile(sagemf);
         }
+        
+        log.debug("NormalizeMetadata(): importAsTv: " + importAsTV + "; mediaFile: " + mf);
         
         // create a simple sagetv map for rewriting purposes.
         // title masks rely on the properties

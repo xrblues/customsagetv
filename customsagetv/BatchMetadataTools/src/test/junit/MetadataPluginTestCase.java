@@ -1,9 +1,9 @@
 package test.junit;
 
 import static test.junit.lib.FilesTestCase.getFile;
+import static test.junit.lib.FilesTestCase.listFiles;
 import static test.junit.lib.FilesTestCase.makeDir;
 import static test.junit.lib.FilesTestCase.makeFile;
-import static test.junit.lib.FilesTestCase.listFiles;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -90,6 +90,8 @@ public class MetadataPluginTestCase extends TestCase {
         
         Object mf = MediaFileAPI.AddMediaFile(makeFile("test/Movies/The Terminator (1984).avi"), "Movies");
         assertEquals("mediafile not added", "The Terminator (1984)", MediaFileAPI.GetMediaTitle(mf));
+
+        Object mf2 = MediaFileAPI.AddMediaFile(makeFile("test/Movies/Finding Nemo.avi"), "Movies");
         
         phoenix.api.SetFanartCentralFolder(fanartDir);
         phoenix.api.SetIsFanartEnabled(true);
@@ -127,6 +129,20 @@ public class MetadataPluginTestCase extends TestCase {
         assertTrue("result is not a Map", results instanceof Map);
         propFile = getFile("test/Movies/The Terminator (1984).avi.properties");
         assertEquals("propfile was updated!", lastModified , propFile.lastModified());
+        
+        // update the plugin to NOT accept videos, and try again...
+        pluginConf.setSupportedMediaTypes("dvd, bluray");
+        results = plugin.extractMetadata(getFile("test/Movies/Finding Nemo.avi"), null);
+        
+        try {
+            Thread.currentThread().sleep(3000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        File f = getFile("test/Movies/Finding Nemo.avi.properties", false);
+        assertFalse("File Should have been excluded!", f.exists());
     }
     
     private void setStubProvider() throws MalformedURLException {

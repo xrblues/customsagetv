@@ -86,7 +86,7 @@ public class TVDBSearchParser {
         MediaSearchResult sr = new MediaSearchResult();
         MetadataUtil.copySearchQueryToSearchResult(query, sr);
         sr.setProviderId(TVDBMetadataProvider.PROVIDER_ID);
-        sr.setTitle(title);
+        sr.setTitle(org.jdna.util.StringUtils.unquote(title));
         sr.setScore(getScore(title));
         sr.setYear(parseYear(getElementValue(item, "FirstAired")));
         sr.setId(getElementValue(item, "seriesid"));
