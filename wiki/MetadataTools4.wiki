@@ -99,3 +99,11 @@ The first *match* entry will set the Title, Year, and series ID for any media it
 The Second *match* entry is forcibly setting the imdbid for a specific file.  Again title and year are not really required here.
 
 A *match* element will consist of ether a *regex* element or a *file* element followed by a *title*, *year* or *metadata* elements.  If only *title* and *year* are passed then the Search Query will be updated to use those values as the title and year search parameters.
+
+== Get better search hits with my media? ==
+It is recommended that you use a consistent naming format for your media.  For movies, use, 
+{{{
+Movie Name (Year).avi
+}}}
+The more readable the filename, the better the odds of getting good hits.  By including the (Year) in the filename, then you will enable bmt to select a better match based on the year.  ie, when bmt finds more than 1 good match, it will then use the year, if available to return the better result.
+
