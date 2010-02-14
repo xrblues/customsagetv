@@ -83,8 +83,34 @@ public class MediaSearchResult implements IMetadataSearchResult, Serializable, H
         this.extraArgs.put(key, value);
     }
     
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
     public String toString() {
-        return providerId + "; " + title + "; " + score + "; " + url;
+        StringBuilder builder = new StringBuilder();
+        builder.append("MediaSearchResult [extraArgs=");
+        builder.append(org.jdna.util.StringUtils.mapToString(extraArgs));
+        builder.append(", id=");
+        builder.append(id);
+        builder.append(", imdbId=");
+        builder.append(imdbId);
+        builder.append(", metadata=");
+        builder.append(metadata);
+        builder.append(", providerId=");
+        builder.append(providerId);
+        builder.append(", score=");
+        builder.append(score);
+        builder.append(", title=");
+        builder.append(title);
+        builder.append(", type=");
+        builder.append(type);
+        builder.append(", url=");
+        builder.append(url);
+        builder.append(", year=");
+        builder.append(year);
+        builder.append("]");
+        return builder.toString();
     }
 
     public MediaType getMediaType() {

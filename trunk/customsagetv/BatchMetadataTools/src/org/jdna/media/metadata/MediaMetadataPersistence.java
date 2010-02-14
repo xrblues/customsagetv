@@ -11,6 +11,7 @@ import org.jdna.sage.media.SageShowPeristence;
 
 import sagex.SageAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaResource;
 
 /**
@@ -64,7 +65,7 @@ public class MediaMetadataPersistence implements IMediaMetadataPersistence {
     }
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
-        log.debug("Begin updating metadata for: " + mediaFile);
+        log.info("Begin updating metadata for: " + mediaFile + "; With Options: " + options);
         /**
          * if options.createProperties==true || isRemote
          * -- write properties persistence
@@ -77,6 +78,9 @@ public class MediaMetadataPersistence implements IMediaMetadataPersistence {
          * if central fanart
          * -- sage central fanart persistent
          */
+        
+        // Normalize the metadata, in case it hasn't been done.
+        MetadataAPI.normalizeMetadata((IMediaFile) mediaFile, md, options);
         
         if (options.isCreateProperties()) {
             log.debug("Updating Properties File for: " + mediaFile);
@@ -97,15 +101,15 @@ public class MediaMetadataPersistence implements IMediaMetadataPersistence {
                     log.warn("Failed to update wiz.bin for: " + mediaFile, t);
                 }
             }
-            
-            log.debug("Updating Custom Fields in Wiz.Bin for: " + mediaFile);
-            try {
-                sageExtra.storeMetaData(md, mediaFile, options);
-            } catch (Throwable t) {
-                log.warn("Failed to update Custom Metadata in wiz.bin for: " + mediaFile, t);
-            }
         } else {
             log.debug("BMT Commandline; Skipping Direct Wiz.Bin updates.");
+        }
+
+        log.debug("Updating Custom Fields in Wiz.Bin for: " + mediaFile);
+        try {
+            sageExtra.storeMetaData(md, mediaFile, options);
+        } catch (Throwable t) {
+            log.warn("Failed to update Custom Metadata in wiz.bin for: " + mediaFile, t);
         }
         
         
@@ -118,7 +122,7 @@ public class MediaMetadataPersistence implements IMediaMetadataPersistence {
         
         // if we need to touch files, the do so...
         if (options.isTouchingFiles()) {
-            log.debug("Updating Timestampt on file for: " + mediaFile);
+            log.debug("Updating Timestamp on file for: " + mediaFile);
             try {
                 // TODO: Touch Files to the date/time of the recording (or current time +1ms)
                 mediaFile.touch(mediaFile.lastModified()+1);

@@ -71,6 +71,12 @@ public class TestSearchQuery {
         q = SearchQueryFactory.getInstance().createQuery(phoenix.api.GetMediaFile(mfObj));
         assertParts(q, MediaType.TV, "Leverage");
         assertEquals("The Top Hat Job", q.get(Field.EPISODE_TITLE));
+
+    
+        mfObj = MediaFileAPI.AddMediaFile(makeFile("sage/TV/House-s2Ep3-4836543-0.ts"), "TV");
+        assertTrue("Not A TV File", MediaFileAPI.IsTVFile(mfObj));
+        q = SearchQueryFactory.getInstance().createQuery(phoenix.api.GetMediaFile(mfObj));
+        assertParts(q, MediaType.TV, "House", "2","3");
     }
     
     private void assertParts(SearchQuery q, MediaType type, String title) {

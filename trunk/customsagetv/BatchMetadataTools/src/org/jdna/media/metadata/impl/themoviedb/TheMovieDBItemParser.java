@@ -76,7 +76,7 @@ public class TheMovieDBItemParser {
                 addPosters(md, movie);
                 addBackgrounds(md, movie);
                 addBanners(md, movie);
-                md.setMediaTitle(getElementValue(movie, "title"));
+                md.setMediaTitle(org.jdna.util.StringUtils.unquote(getElementValue(movie, "title")));
                 if (StringUtils.isEmpty(md.getMediaTitle())) {
                     throw new RuntimeException("The MovieDB Result didn't contain a title. Url: " + url + TheMovieDBMetadataProvider.getApiKey());
                 }

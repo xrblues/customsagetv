@@ -3,6 +3,7 @@ package org.jdna.media.metadata.impl.tvdb;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.IProviderInfo;
@@ -14,6 +15,7 @@ import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaType;
 
 public class TVDBMetadataProvider implements IMediaMetadataProvider {
+    private Logger log = Logger.getLogger(TVDBMetadataProvider.class);
     public static final String   PROVIDER_ID = "tvdb";
     private static IProviderInfo info        = new ProviderInfo(PROVIDER_ID, "thetvdb.com", "Provides Fanart and Metadata from thetvdb.com", "");
     private static final MediaType[] supportedSearchTypes = new MediaType[] {MediaType.TV};
@@ -23,7 +25,10 @@ public class TVDBMetadataProvider implements IMediaMetadataProvider {
     }
 
     public IMediaMetadata getMetaData(IMetadataSearchResult result) throws Exception {
-        if (MetadataUtil.hasMetadata(result)) return MetadataUtil.getMetadata(result);
+        if (MetadataUtil.hasMetadata(result)) {
+            log.info("Returning Metadata stored in the Result.");
+            return MetadataUtil.getMetadata(result);
+        }
 
         return new TVDBItemParser(result).getMetadata();
     }

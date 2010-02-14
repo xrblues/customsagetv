@@ -56,7 +56,8 @@ public enum SageProperty {
     ACTORS("Actor", MetadataKey.CAST_MEMBER_LIST, SagePropertyType.CORE, ICastMember.ACTOR),
     YEAR("Year", MetadataKey.YEAR, SagePropertyType.CORE),
     FILENAME("x-FileName", null, SagePropertyType.BMT),
-    FILEURI("x-FileUri", null, SagePropertyType.BMT);
+    FILEURI("x-FileUri", null, SagePropertyType.BMT),
+    ISWATCHED("x-Watched", MetadataKey.ISWATCHED, SagePropertyType.BMT);
 
     public SagePropertyType propertyType;
     public String      sageKey;

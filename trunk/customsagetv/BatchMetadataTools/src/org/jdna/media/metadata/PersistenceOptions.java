@@ -15,6 +15,7 @@ public class PersistenceOptions {
     private boolean createProperties=true;
     private boolean updateWizBin=false;
     private boolean touchingFiles=true;
+    private boolean createDefaultSTVThumbnail=false;
     
     public PersistenceOptions() {
     }
@@ -91,5 +92,46 @@ public class PersistenceOptions {
      */
     public void setTouchingFiles(boolean touchingFiles) {
         this.touchingFiles = touchingFiles;
+    }
+
+    /**
+     * if true, then create thumbnail for use in the default stv.
+     * 
+     * @return
+     */
+    public boolean isCreateDefaultSTVThumbnail() {
+        return createDefaultSTVThumbnail;
+    }
+    
+    public void setCreateDefaultSTVThumbnail(boolean b) {
+        this.createDefaultSTVThumbnail = b;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("PersistenceOptions [createDefaultSTVThumbnail=");
+        builder.append(createDefaultSTVThumbnail);
+        builder.append(", createProperties=");
+        builder.append(createProperties);
+        builder.append(", fileRenamePattern=");
+        builder.append(fileRenamePattern);
+        builder.append(", importAsTV=");
+        builder.append(importAsTV);
+        builder.append(", overwriteFanart=");
+        builder.append(overwriteFanart);
+        builder.append(", overwriteMetadata=");
+        builder.append(overwriteMetadata);
+        builder.append(", touchingFiles=");
+        builder.append(touchingFiles);
+        builder.append(", updateWizBin=");
+        builder.append(updateWizBin);
+        builder.append(", useTitleMasks=");
+        builder.append(useTitleMasks);
+        builder.append("]");
+        return builder.toString();
     }
 }

@@ -14,6 +14,7 @@ import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.metadata.impl.sage.SagePropertyType;
 import org.jdna.metadataupdater.Version;
+import org.jdna.sage.OnDemandConfiguration;
 
 import sagex.api.Configuration;
 import sagex.phoenix.Phoenix;
@@ -268,11 +269,10 @@ public class api {
     }
     
     public static boolean IsImportShowAsSageRecordingEnabled() {
-        return GroupProxy.get(MetadataConfiguration.class).isImportTVAsRecordedShows();
+        return GroupProxy.get(OnDemandConfiguration.class).getImportTVAsRecordings();
     }
     
     public static void SetImportShowAsSageRecordingEnabled(boolean b) {
-        GroupProxy.get(MetadataConfiguration.class).setImportTVAsRecordedShows(b);
-        SaveMetadataProviderConfiguration();
+        GroupProxy.get(OnDemandConfiguration.class).setImportTVAsRecordings(b);
     }
 }

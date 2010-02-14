@@ -34,6 +34,8 @@ import org.jdna.media.util.RefreshMetadataVisitor;
 import org.jdna.process.InteractiveMetadataProcessor;
 import org.jdna.process.MetadataItem;
 import org.jdna.process.MetadataProcessor;
+import org.jdna.util.JarInfo;
+import org.jdna.util.JarUtil;
 import org.jdna.util.LoggerConfiguration;
 
 import sagex.SageAPI;
@@ -725,6 +727,31 @@ public class MetadataUpdater {
     @CommandLineArg(name = "out", description = "Don't update anything, just dump results to stdout")
     public void setDontUpdate(boolean out) {
         this.dontUpdate = out;
+    }
+
+    @CommandLineArg(name = "jarinfo", description = "Print information about the sagetv JARs")
+    public void setDoJarInfo(boolean b) {
+        List<JarInfo> jars = JarUtil.getJarInfo(new File("JARs"));
+        System.out.println();
+        for (JarInfo ji : jars) {
+            System.out.printf("%s: %s (%s)\n", ji.getFile(), ji.getTitle(), ji.getVersion());
+        }
+        System.out.println();
+        
+        System.exit(0);
+    }
+
+    @CommandLineArg(name = "jarclean", description = "Remove duplicate JARs from the JARs area")
+    public void setDoCleanJars(boolean b) {
+        List<JarInfo> jars = JarUtil.findDuplicateJars(new File("JARs"));
+        for (JarInfo ji : jars) {
+            System.out.printf("Removing %s: %s (%s)\n", ji.getFile(), ji.getTitle(), ji.getVersion());
+            ji.getFile().deleteOnExit();
+        }
+        
+        System.out.printf("Removed %s jars.\n\n", jars.size());
+        
+        System.exit(0);
     }
 
     /**

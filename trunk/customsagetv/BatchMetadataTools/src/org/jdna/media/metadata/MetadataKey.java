@@ -33,8 +33,8 @@ public enum MetadataKey {
     MEDIA_TYPE("MediaType",""),
     DVD_DISC("Disc", ""), 
     METADATA_PROVIDER_ID("MetadataProviderId", ""),
-    /* METADATA_PROVIDER_DATA_URL("MetadataProviderDataUrl", ""), */
     IMDB_ID("IMDBId",""),
+    ISWATCHED("Watched",""),
     DISPLAY_TITLE("Title","");
     
     private String id, desc;

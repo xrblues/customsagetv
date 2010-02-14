@@ -12,6 +12,7 @@ import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.url.URLSaxParser;
+import org.jdna.util.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -113,6 +114,8 @@ public class IMDBMovieMetaDataParser extends URLSaxParser {
                 metadata.setMediaTitle(charbuf);
                 metadata.setYear("Unknown");
             }
+            // unquote titles
+            metadata.setMediaTitle(StringUtils.unquote(metadata.getMediaTitle()));
             // reset the state
             state = LOOKING;
             return;

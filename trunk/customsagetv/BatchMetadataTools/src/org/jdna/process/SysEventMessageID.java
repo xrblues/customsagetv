@@ -14,4 +14,5 @@ public class SysEventMessageID {
     public static final int AUTOMATIC_PLUGIN_INIT_FAILED = 10002;
     public static final int SCAN_COMPLETE_STATUS = 10003;
     public static final int SCAN_COMPLETE_ERROR = 10004;
+    public static final int METADATA_FAILED = 10005;
 }

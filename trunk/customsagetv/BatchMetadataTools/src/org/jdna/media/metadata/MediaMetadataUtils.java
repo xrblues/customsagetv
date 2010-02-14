@@ -44,6 +44,11 @@ public class MediaMetadataUtils {
             }
 
             URL u = new URL(url);
+            if (isSameFile(u, out)) {
+                log.warn("Skipping: " + url + "; since it's the same as the output file.");
+                return;
+            }
+            
             URLConnection conn = u.openConnection();
             if (conn instanceof HttpURLConnection) {
                 conn.setRequestProperty("User-Agent", GroupProxy.get(UrlConfiguration.class).getHttpUserAgent());
@@ -62,6 +67,15 @@ public class MediaMetadataUtils {
                 log.info("Removing 0 byte file: " + out.getAbsolutePath() + "; for url: " + url);
                 out.delete();
             }
+        }
+    }
+
+    private static boolean isSameFile(URL u, File out) {
+        try {
+            if (u==null || out==null) return false;
+            return out.equals(new File(u.toURI()));
+        } catch (Throwable e) {
+            return false;
         }
     }
 
@@ -87,6 +101,11 @@ public class MediaMetadataUtils {
             }
 
             URL u = new URL(url);
+            if (isSameFile(u, out)) {
+                log.warn("Skipping: " + url + "; since it's the same as the output file.");
+                return;
+            }
+            
             URLConnection conn = u.openConnection();
             if (conn instanceof HttpURLConnection) {
                 conn.setRequestProperty("User-Agent", GroupProxy.get(UrlConfiguration.class).getHttpUserAgent());

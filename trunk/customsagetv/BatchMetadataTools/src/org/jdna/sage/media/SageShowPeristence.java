@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.log4j.Logger;
@@ -16,16 +18,13 @@ import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MetadataAPI;
-import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.PersistenceOptions;
-import org.jdna.media.metadata.impl.sage.SageMetadataConfiguration;
 
 import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
 import sagex.api.ShowAPI;
-import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.MediaArtifactType;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaResource;
@@ -39,8 +38,6 @@ import sagex.phoenix.vfs.util.PathUtils;
  */
 public class SageShowPeristence implements IMediaMetadataPersistence {
     private static final Logger log = Logger.getLogger(SageShowPeristence.class);
-    private MetadataConfiguration cfg = GroupProxy.get(MetadataConfiguration.class);
-    private SageMetadataConfiguration sageCfg = GroupProxy.get(SageMetadataConfiguration.class);
 
     public SageShowPeristence() {
     }
@@ -140,6 +137,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         md.set(MetadataKey.LANGUAGE, ShowAPI.GetShowLanguage(show));
         md.set(MetadataKey.RUNNING_TIME, String.valueOf(AiringAPI.GetAiringDuration(airing)));
         md.set(MetadataKey.YEAR, ShowAPI.GetShowYear(show));
+        md.set(MetadataKey.ISWATCHED, String.valueOf(AiringAPI.IsWatched(airing)));
 
         if (MediaFileAPI.IsTVFile(file)) {
             MetadataAPI.setMediaType(md, "TV");
@@ -166,19 +164,64 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         return md;
     }
 
+    /**
+     * Some limitations of the storeMetadata
+     * - Will not update sagetv native recordings because it loses channel info, etc
+     * - Can import recordings, but it will not have channel info
+     */
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
+        /**
+         * Comments from Jeff on ExternalID
+         * 
+         * The external IDs are unique IDs used by our EPG data provider (Tribune). 
+         * The MV, SP, SH and EP are the ones that come from them. DT is for EPG data that comes from the 
+         * digital TV stream itself and the ID appended to that is essentially a random hash code. 
+         * You can go ahead and make up your own; but the best way to do that and be safe is to put 
+         * another character after one of those 2 letter prefixes so then they would never conflict 
+         * with one that SageTV uses (since we always put numbers after the 2 char prefix). 
+         * And MV=Movie, SP=Sports, SH=Show, EP=Episode and DT=Digital TV data.  SageTV only checks the first 
+         * two characters of the ID to see if its intended to be a TV recording or not. For other imported 
+         * files SageTV uses an 'MF' prefix for MediaFile and then appends the unique local database 
+         * ID for the MediaFile object after that.
+         * 
+         */
+        
+        
+        if (!options.isUpdateWizBin()) {
+            log.warn("Updating of Wiz.Bin is disabled.");
+            return;
+        }
+        
         Object sageMF = phoenix.api.GetSageMediaFile(mediaFile);
         if (sageMF == null) {
             log.error("Currently the Sage Show Persistence can only work on native Sage Media files.");
             return;
         }
         
+        // small check to ensure that we don't update core sagetv TV objects in the wiz.bin.  ie,
+        // we assume that native TV file have the correct metadata.
+        if (MediaFileAPI.IsTVFile(sageMF)) {
+            // don't update metadate for sage native tv files, but we do for imported tv files.
+            String extId = ShowAPI.GetShowExternalID(sageMF);
+            if (extId!=null) {
+                if (extId.length()>4 && extId.charAt(2)=='m' && extId.charAt(3)=='t') {
+                    // we can update, since it's our own imported tv
+                } else {
+                    log.info("SageShowPersistence does not update core sagetv TV objects; skipping: " + extId + "; " + mediaFile);
+                    return;
+                }
+            }
+        }
+        
         MetadataAPI.normalizeMetadata((IMediaFile)mediaFile, md, options);
 
-        log.debug("Storing Sage Metdata directly to the Sage SHOW object");
+        log.info("Storing Sage Metdata directly to the Sage SHOW object for " + mediaFile);
         Object airing = MediaFileAPI.GetMediaFileAiring(sageMF);
         Object origShow = AiringAPI.GetShow(airing);
-
+        
+        // test if it's a library file
+        boolean isArchived = !MediaFileAPI.IsLibraryFile(sageMF);
+        
         // should only import as TV if it's not currently imported as TV
         boolean importAsTV = (options.isImportAsTV() && MetadataAPI.isTV(md)) && !(MediaFileAPI.IsTVFile(sageMF));
 
@@ -278,10 +321,8 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             }
         }
 
-        if (externalID==null || importAsTV) {
-            externalID = createShowId(md, options);
-            log.debug("New ExternalID Created: " + externalID);
-        }
+        externalID = createShowId(md, options, externalID);
+        log.debug("New ExternalID Created: " + externalID);
 
         // Sage wants to have the movie titles in the episode field as well
         // failure to set this will mean that a movie in sage stv will not
@@ -306,37 +347,79 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         log.debug("External Id: " + externalID);
         log.debug("Language: " + language);
         log.debug("Original Air Date: " + origAirDate);
+        
+        // Addst the show
         Object show = ShowAPI.AddShow(title, firstRun, episode, description, duration, cat1, cat2, actors, roles, mpaaRated, mpaaExpandedRatings, year, parentRating, miscList, externalID, language, origAirDate);
 
         if (show == null) {
             log.error("Failed to create a new Show using the provided metadata!");
             return;
         }
-        
-        // TODO: it would appear that we need to recreate the Airing using the newly create show.
-        
-        // TODO: retain the watched flag 
 
+        // associates the show metadata with the mediafile, and it will create a new airing
         log.debug("Adding new show to mediafile");
         MediaFileAPI.SetMediaFileShow(sageMF, show);
+
+        // update this new airing with information from the old airing
+        updateAiring(show, airing, MediaFileAPI.GetMediaFileAiring(sageMF));
         
-        // lastly unset the archived flag for the tv
-        // TODO: need to determine if the file was previously moved out of the library, and if so, and only do this if needed.
-        MediaFileAPI.MoveTVFileOutOfLibrary(sageMF);
+        // lastly unset the archived flag for the tv, if it's archived
+        if (isArchived) {
+            MediaFileAPI.MoveTVFileOutOfLibrary(sageMF);
+        }
+        
+        // set the watched flag
+        boolean watched = BooleanUtils.toBoolean(md.getString(MetadataKey.ISWATCHED));
+        if (watched) {
+            AiringAPI.SetWatched(sageMF);
+        }
+    }
+    
+    private void updateAiring(Object show, Object airing, Object newAir) {
+        if (airing!=null && newAir!=null) {
+            if (AiringAPI.IsDontLike(airing)) {
+                AiringAPI.SetDontLike(newAir);
+            }
+            
+            AiringAPI.SetRecordingName(newAir, AiringAPI.GetRecordingName(airing));
+            AiringAPI.SetRecordingQuality(newAir, AiringAPI.GetRecordingQuality(airing));
+            AiringAPI.SetRecordingTimes(newAir, AiringAPI.GetAiringStartTime(airing), AiringAPI.GetAiringEndTime(airing));
+
+            if (AiringAPI.IsWatched(airing)) {
+                AiringAPI.SetWatched(newAir);
+            }
+        }
     }
 
-    private String createShowId(IMediaMetadata md, PersistenceOptions options) {
+    private String createShowId(IMediaMetadata md, PersistenceOptions options, String externalID) {
         String prefix = null;
-        if (MetadataAPI.isTV(md) && options.isImportAsTV()) {
-            prefix = "EPmt";
+        if (options.isImportAsTV()) {
+            if (MetadataAPI.isTV(md)) {
+                prefix = "EPmt";
+            } else {
+                prefix = "MVmt";
+            }
         } else {
             prefix = "MFmt";
         }
+
+        // build a suffix using season and episode, if it exists.
+        String suffix = null;
+        if (MetadataAPI.isTV(md)) {
+            if (!StringUtils.isEmpty(MetadataAPI.getSeason(md)) && !StringUtils.isEmpty(MetadataAPI.getEpisode(md))) {
+                suffix = org.jdna.util.StringUtils.zeroPad(MetadataAPI.getSeason(md), 2) + org.jdna.util.StringUtils.zeroPad(MetadataAPI.getEpisode(md), 2);
+            } else {
+                suffix = Integer.toHexString((int)(new Random().nextDouble()*0xFFFF));
+            }
+        } else {
+            suffix = Integer.toHexString((int)(new Random().nextDouble()*0xFFFF));
+        }
+        
         String id = null;
         do {
             // keep gen'd EPGID less than 12 chars
             // SEANS: Taken from nielm's xmlinfo... I'm guessing there is a 12 char limit, so i won't mess with it
-            id = prefix + Integer.toHexString((int)(java.lang.Math.random()*0xFFFFFFF));
+            id = prefix + Integer.toHexString((int)(new Random().nextDouble()*0xFFFF)) + suffix;
             log.debug("Calculated a showid: " + id);
         } while (ShowAPI.GetShowForExternalID(id) != null);
         return id;

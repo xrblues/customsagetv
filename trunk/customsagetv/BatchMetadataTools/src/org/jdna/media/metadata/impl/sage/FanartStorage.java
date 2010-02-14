@@ -42,7 +42,7 @@ public class FanartStorage {
                 saveCentralFanart(title, md, mt, options);
             }
             localArtTypes = new MediaArtifactType[] { MediaArtifactType.POSTER };
-            localFanart = metadataConfig.isEnableDefaultSTVPosterCompatibility();
+            localFanart = options.isCreateDefaultSTVThumbnail();
         } else if (metadataConfig.isFanartEnabled()) {
             log.info("Using Local Fanart; The central fanart folder is not set.");
             localArtTypes = MediaArtifactType.values();
