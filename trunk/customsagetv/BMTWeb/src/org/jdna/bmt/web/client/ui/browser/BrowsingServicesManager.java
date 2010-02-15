@@ -6,10 +6,12 @@ import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.media.SageQueryFolder;
 import org.jdna.bmt.web.client.ui.app.ErrorEvent;
+import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 public class BrowsingServicesManager {
     private static final BrowsingServicesManager instance = new BrowsingServicesManager();
@@ -27,8 +29,6 @@ public class BrowsingServicesManager {
     }
 
     public void browseFolder(final GWTMediaFolder folder) {
-        // TODO: Use a SystemEvent, like, WaitingEven.fireBeginWait(), and then have this even call a cancel wait when a reply is received
-        // 
         // if the folder has children, then use them
         if (folder.getChildren()!=null) {
             Log.debug("Using Cached Items");
@@ -36,15 +36,18 @@ public class BrowsingServicesManager {
             return;
         }
         
+        final PopupPanel dialog = Dialogs.showWaitingPopup("Loading...");
         browser.browseChildren(folder, new AsyncCallback<GWTMediaResource[]>() {
             public void onFailure(Throwable caught) {
                 System.out.println("**** ERROR **** " + caught.getMessage());
                 Application.events().fireEvent(new ErrorEvent(Application.messages().failedToBrowseFolder(folder.getTitle()), caught));
+                dialog.hide();
             }
 
             public void onSuccess(GWTMediaResource[] result) {
                 folder.setChildren(result);
                 Application.events().fireEvent(new BrowseReplyEvent(folder));
+                dialog.hide();
             }
         });
     }

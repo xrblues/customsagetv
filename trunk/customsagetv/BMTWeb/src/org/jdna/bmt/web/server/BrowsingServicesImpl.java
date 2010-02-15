@@ -1,5 +1,6 @@
 package org.jdna.bmt.web.server;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,7 +18,9 @@ import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.media.GWTFactoryInfo.SourceType;
 import org.jdna.bmt.web.client.ui.browser.BrowsingService;
 
+import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
+import sagex.api.ShowAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaFolder;
@@ -58,6 +61,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
             folder.setResourceRef(String.valueOf(r.hashCode()));
             setFolderRef((IMediaFolder) r, req);
             folder.setPath(PathUtils.getLocation(r));
+            folder.setMinorTitle(folder.getPath());
             return folder;
         } else {
             GWTMediaFile file = new GWTMediaFile(null, r.getTitle());
@@ -68,8 +72,15 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
                 Object sageMedia = phoenix.api.GetSageMediaFile(r);
                 if (sageMedia!=null) {
                     int id = MediaFileAPI.GetMediaFileID(sageMedia);
-                    file.setThumbnailUrl("media/poster/" + id + "?transform={name:scale,height:120}}");
+                    //file.setThumbnailUrl("media/poster/" + id + "?transform={name:scale,height:120}}");
+                    file.setThumbnailUrl("media/poster/" + id);
                     file.setSageMediaFileId(id);
+                    file.setAiringId(String.valueOf(AiringAPI.GetAiringID(sageMedia)));
+                    file.setShowId(ShowAPI.GetShowExternalID(sageMedia));
+                    File f = new File(phoenix.api.GetFanartBackgroundPath(sageMedia));
+                    f=f.getParentFile();
+                    file.setFanartDir(f.getAbsolutePath());
+                    file.getSageRecording().set(MediaFileAPI.IsTVFile(sageMedia));
                 } else {
                     log.debug("Not a sage media object??");
                 }

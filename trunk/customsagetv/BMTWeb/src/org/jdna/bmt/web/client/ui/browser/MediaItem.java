@@ -1,15 +1,15 @@
 package org.jdna.bmt.web.client.ui.browser;
 
-import org.jdna.bmt.web.client.media.BackMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
-import org.jdna.bmt.web.client.ui.scan.MediaEditorMetadataPanel;
-import org.jdna.bmt.web.client.util.Log;
+import org.jdna.bmt.web.client.ui.debug.DebugDialog;
 import org.jdna.bmt.web.client.util.StringUtils;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -26,14 +26,14 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MediaItem extends Composite implements HasClickHandlers, MouseOutHandler, MouseOverHandler, ClickHandler {
-    private GWTMediaResource   res;
-    private DockPanel       panel   = new DockPanel();
-    private VerticalPanel   titles  = new VerticalPanel();
-    private HorizontalPanel actions = new HorizontalPanel();
-    private BrowserView view = null;
+    private GWTMediaResource res;
+    private DockPanel        panel   = new DockPanel();
+    private VerticalPanel    titles  = new VerticalPanel();
+    private HorizontalPanel  actions = new HorizontalPanel();
+    private BrowserView      view    = null;
 
-    public MediaItem(GWTMediaResource res, BrowserView view) {
-        this.view=view;
+    public MediaItem(final GWTMediaResource res, BrowserView view) {
+        this.view = view;
         this.res = res;
         titles.setWidth("100%");
         panel.add(titles, DockPanel.NORTH);
@@ -41,29 +41,42 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         panel.setStyleName("MediaItem");
         setTitles(res);
 
+        System.out.println("Setting Thubmnail Url: " + res.getThumbnailUrl());
+        final Image img = new Image();
+        img.addStyleName("MediaItem-Image");
+        img.addErrorHandler(new ErrorHandler() {
+            public void onError(ErrorEvent event) {
+                if (res instanceof GWTMediaFolder) {
+                    img.setUrl("images/128x128/folder_video.png");
+                } else {
+                    img.setUrl("images/128x128/video.png");
+                }
+            }
+        });
         
-        if (res.getThumbnailUrl()!=null) {
-            System.out.println("Setting Thubmnail Url: " + res.getThumbnailUrl());
-            Image img = new Image(res.getThumbnailUrl());
-            panel.add(img, DockPanel.CENTER);
-            panel.setCellHorizontalAlignment(img, HasHorizontalAlignment.ALIGN_CENTER);
-            panel.setCellVerticalAlignment(img, HasVerticalAlignment.ALIGN_BOTTOM);
+        if (res instanceof GWTMediaFolder) {
+            img.setUrl("images/128x128/folder_video.png");
         } else {
-            System.out.println("Not Thumbnail for: " + res.getTitle());
+            img.setUrl(res.getThumbnailUrl());
         }
-        
-        
-        panel.add(actions, DockPanel.SOUTH);
-        if (!(res instanceof BackMediaFolder)) {
-            Image img = new Image("images/16x16/applications-system.png");
-            img.addClickHandler(new ClickHandler() {
+
+        // set the actions
+        if (!(res instanceof GWTMediaFolder)) {
+            Image img2 = new Image("images/16x16/applications-system.png");
+            img2.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    Log.debug("media options");
+                    DebugDialog.show((GWTMediaFile) res);
                     event.stopPropagation();
                 }
             });
-            actions.add(img);
+            actions.add(img2);
         }
+        
+        panel.add(img, DockPanel.CENTER);
+        panel.setCellHorizontalAlignment(img, HasHorizontalAlignment.ALIGN_CENTER);
+        panel.setCellVerticalAlignment(img, HasVerticalAlignment.ALIGN_BOTTOM);
+
+        panel.add(actions, DockPanel.SOUTH);
         panel.setCellHorizontalAlignment(actions, HasHorizontalAlignment.ALIGN_RIGHT);
         panel.setCellVerticalAlignment(actions, HasVerticalAlignment.ALIGN_BOTTOM);
         panel.setCellHeight(actions, "20px");
@@ -72,10 +85,10 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
             panel.addStyleName("MediaFolder");
         }
 
-        if (res.getMessage()!=null) {
+        if (res.getMessage() != null) {
             panel.setTitle(res.getMessage());
         }
-        
+
         initWidget(panel);
 
         addDomHandler(this, MouseOverEvent.getType());
@@ -90,15 +103,16 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         titles.setCellHorizontalAlignment(title1, HasHorizontalAlignment.ALIGN_CENTER);
         title1.setStyleName("MediaItem-Title1");
 
-        if (res2 instanceof GWTMediaFile) {
-            String epTitle = ((GWTMediaFile) res2).getTitle();
-            if (!StringUtils.isEmpty(epTitle)) {
+        //if (res2 instanceof GWTMediaFile) {
+            String epTitle = res2.getMinorTitle();
+            if (!StringUtils.isEmpty(epTitle) && !epTitle.equals(res.getTitle())) {
                 Label title2 = new Label(epTitle);
+                
                 titles.add(title2);
                 titles.setCellHorizontalAlignment(title2, HasHorizontalAlignment.ALIGN_CENTER);
                 title2.setStyleName("MediaItem-Title2");
             }
-        }
+        //}
     }
 
     public HandlerRegistration addClickHandler(ClickHandler handler) {
@@ -115,13 +129,8 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
 
     public void onClick(ClickEvent event) {
         if (res instanceof GWTMediaFolder) {
-            if (res instanceof BackMediaFolder) {
-                BrowsingServicesManager.getInstance().browseFolder(((BackMediaFolder) res).getBackToFolder());
-            } else {
-                BrowsingServicesManager.getInstance().browseFolder((GWTMediaFolder) res);
-            }
+            BrowsingServicesManager.getInstance().browseFolder((GWTMediaFolder) res);
         } else {
-            Log.debug("Clicked: " + res.getTitle());
             view.setDisplay(new MediaEditorMetadataPanel((GWTMediaFile) res, view));
         }
     }

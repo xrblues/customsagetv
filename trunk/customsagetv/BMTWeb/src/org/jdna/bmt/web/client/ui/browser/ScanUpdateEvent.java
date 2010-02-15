@@ -1,7 +1,5 @@
 package org.jdna.bmt.web.client.ui.browser;
 
-import org.jdna.bmt.web.client.media.GWTMediaFolder;
-
 import com.google.gwt.event.shared.GwtEvent;
 
 public class ScanUpdateEvent extends GwtEvent<ScanUpdateHandler> {

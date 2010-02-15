@@ -4,7 +4,6 @@ import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.util.Log;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -17,8 +16,6 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class RefreshOptionsPanel extends Composite {
-    private static final SageServiceAsync sage = GWT.create(SageService.class);
-    
     private DialogBox dialog = null;
     private RadioButton newOnly = null;
     private RadioButton fullReindex = null;
@@ -42,7 +39,7 @@ public class RefreshOptionsPanel extends Composite {
         Button refresh = new Button("Refresh", new ClickHandler() {
             public void onClick(ClickEvent event) {
                 dialog.hide();
-                sage.refreshLibrary(fullReindex.getValue(), new AsyncCallback<String>() {
+                SageAPI.refreshLibrary(fullReindex.getValue(), new AsyncCallback<String>() {
                     public void onFailure(Throwable caught) {
                         Log.error(Application.messages().failedToStartScan(), caught);
                     }

@@ -7,8 +7,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class HorizontalButtonBar extends Composite {
+    public static enum Layout {Right, Left}
+    
     private HorizontalPanel panel = new HorizontalPanel();
     private HorizontalPanel buttons = new HorizontalPanel();
+    private HorizontalPanel rightButtons = new HorizontalPanel();
     
     public HorizontalButtonBar() {
         panel.setWidth("100%");
@@ -19,15 +22,30 @@ public class HorizontalButtonBar extends Composite {
         panel.add(buttons);
         panel.setCellHorizontalAlignment(buttons, HasHorizontalAlignment.ALIGN_LEFT);
         panel.setCellVerticalAlignment(buttons, HasVerticalAlignment.ALIGN_MIDDLE);
+
+        rightButtons.setSpacing(6);
+        panel.add(rightButtons);
+        panel.setCellHorizontalAlignment(rightButtons, HasHorizontalAlignment.ALIGN_RIGHT);
+        panel.setCellVerticalAlignment(rightButtons, HasVerticalAlignment.ALIGN_MIDDLE);
+
         initWidget(panel);
     }
     
     public void add(Widget w) {
-        buttons.add(w);
+        add(w, Layout.Left);
+    }
+
+    public void add(Widget w, Layout layout) {
+        if (layout==Layout.Right) {
+            rightButtons.add(w);
+        } else {
+            buttons.add(w);
+        }
     }
     
     public void clear() {
         buttons.clear();
+        rightButtons.clear();
     }
 
     public void basicStyle() {

@@ -7,10 +7,10 @@ import com.google.gwt.event.shared.GwtEvent;
 public class ScanRequestEvent extends GwtEvent<ScanRequestHandler> {
     public static final GwtEvent.Type<ScanRequestHandler> TYPE =  new GwtEvent.Type<ScanRequestHandler>();
     private GWTMediaFolder folder = null;
-    private ScanOptions options = null;
+    private PersistenceOptionsUI options = null;
     private String trackingId=null;
     
-    public ScanRequestEvent(GWTMediaFolder folder, ScanOptions options, String trackingId) {
+    public ScanRequestEvent(GWTMediaFolder folder, PersistenceOptionsUI options, String trackingId) {
         this.folder=folder;
         this.options=options;
         this.trackingId=trackingId;
@@ -36,7 +36,7 @@ public class ScanRequestEvent extends GwtEvent<ScanRequestHandler> {
     /**
      * @return the options
      */
-    public ScanOptions getOptions() {
+    public PersistenceOptionsUI getOptions() {
         return options;
     }
 

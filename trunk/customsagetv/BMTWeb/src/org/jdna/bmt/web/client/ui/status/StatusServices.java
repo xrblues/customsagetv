@@ -8,4 +8,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("status")
 public interface StatusServices extends RemoteService {
     public List<StatusValue> getStatusInfo(String base);
+    public List<SystemMessage> getSystemMessages();
 }
