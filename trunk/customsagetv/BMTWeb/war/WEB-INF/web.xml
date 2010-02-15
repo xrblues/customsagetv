@@ -46,6 +46,15 @@
     <servlet-class>org.jdna.bmt.web.server.MediaHandlerServlet</servlet-class>
   </servlet>
   
+  <servlet>
+    <servlet-name>debug</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.DebugServicesImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>sageapi</servlet-name>
+    <servlet-class>sagex.remote.SagexServlet</servlet-class>
+  </servlet>
   
   <servlet-mapping>
     <servlet-name>sage</servlet-name>
@@ -82,4 +91,13 @@
     <url-pattern>/bmtweb/browsing</url-pattern>
   </servlet-mapping>
 
+  <servlet-mapping>
+    <servlet-name>debug</servlet-name>
+    <url-pattern>/bmtweb/debug</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>sageapi</servlet-name>
+    <url-pattern>/bmtweb/sageapi/*</url-pattern>
+  </servlet-mapping>
 </web-app>
