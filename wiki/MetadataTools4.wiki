@@ -30,7 +30,8 @@ When using the Automatic Plugin, then when new media items are added to the sage
 
 To enable this plugin, you must register bmt as a sagetv metadata plugin source.  To do this, from the web ui, go to Configuration -> SageTV -> Metadata Settings and set *org.jdna.sage.MetadataUpdaterPlugin* as the Metadata Parser.  Then Save.
 
-You should also set the Custom Metadata Fields, since there are required for fanart.  The custom metadata fields should be *IMDBID;DiscNumber;EpisodeNumber;EpisodeTitle;MediaProviderDataID;MediaTitle;MediaType;OriginalAirDate;SeasonNumber;UserRating;*
+You should also set the Custom Metadata Fields, since there are required for fanart.  The custom metadata fields should be {{{
+IMDBID;DiscNumber;EpisodeNumber;EpisodeTitle;MediaProviderDataID;MediaTitle;MediaType;OriginalAirDate;SeasonNumber;UserRating;}}}
 
 Once you enable the plugin, you should also configure how you want the automatic plugin to behave.  To do this, go to, Configuration -> Metadata Tools -> Automatic Plugin Configuration.
 
@@ -106,4 +107,3 @@ It is recommended that you use a consistent naming format for your media.  For m
 Movie Name (Year).avi
 }}}
 The more readable the filename, the better the odds of getting good hits.  By including the (Year) in the filename, then you will enable bmt to select a better match based on the year.  ie, when bmt finds more than 1 good match, it will then use the year, if available to return the better result.
-
