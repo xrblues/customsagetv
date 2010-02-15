@@ -99,4 +99,10 @@ public interface Labels extends Constants {
 
     @DefaultStringValue("Scans")
     String scans();
+
+    @DefaultStringValue("JARs")
+    String jars();
+
+    @DefaultStringValue("Installed JARs")
+    String jarsDesc();
 }

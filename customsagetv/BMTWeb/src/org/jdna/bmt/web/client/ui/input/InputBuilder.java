@@ -9,24 +9,39 @@ import org.jdna.bmt.web.client.util.StringUtils;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
-public class InputBuilder<W, T> {
+public class InputBuilder<W extends Widget, T> {
     
     public W widget = null;
     
     public InputBuilder(W w) {
         this.widget=w;
     }
+
+    public static InputBuilder<TextArea, String> textarea() {
+        return new InputBuilder<TextArea, String>(new TextArea());
+    }
     
     public static InputBuilder<TextBox, String> textbox() {
-        return new InputBuilder<TextBox, String>(new TextBox());
+        return textbox(new TextBox());
+    }
+
+    public static InputBuilder<TextBox, String> textbox(String id) {
+        TextBox tb = new TextBox();
+        tb.getElement().setId(id);
+        return textbox(tb);
     }
 
     public static InputBuilder<TextBox, String> textbox(TextBox tb) {
@@ -35,6 +50,30 @@ public class InputBuilder<W, T> {
 
     public static InputBuilder<CheckBox, Boolean> checkbox() {
         return new InputBuilder<CheckBox, Boolean>(new CheckBox());
+    }
+
+    public static InputBuilder<CheckBox, Boolean> checkbox(String id) {
+        CheckBox cb = new CheckBox();
+        cb.getElement().setId(id);
+        return new InputBuilder<CheckBox, Boolean>(cb);
+    }
+    
+    public InputBuilder<W, T> addChangeHandler(final ChangeHandler handler) {
+        if (widget instanceof HasChangeHandlers) {
+            ((HasChangeHandlers) widget).addChangeHandler(handler);
+        } else {
+            Log.error("Widget does not have ChangeHandlers: " + widget);
+        }
+        return this;
+    }
+
+    public InputBuilder<W, T> addClickHandler(final ClickHandler handler) {
+        if (widget instanceof HasClickHandlers) {
+            ((HasClickHandlers) widget).addClickHandler(handler);
+        } else {
+            Log.error("Widget does not have ClickHandlers: " + widget);
+        }
+        return this;
     }
 
     public static InputBuilder<ListBox, String> combo(List<NVP<String>> nvp) {

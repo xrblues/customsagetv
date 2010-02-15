@@ -6,10 +6,13 @@ import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.ui.app.ErrorEvent;
+import org.jdna.bmt.web.client.ui.util.Dialogs;
+import org.jdna.bmt.web.client.ui.util.ServiceReply;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 public class MetadataServicesManager {
     private static final MetadataServicesManager instance = new MetadataServicesManager();
@@ -22,7 +25,7 @@ public class MetadataServicesManager {
         return instance;
     }
 
-    public void scan(final GWTMediaFolder folder, final ScanOptions options) {
+    public void scan(final GWTMediaFolder folder, final PersistenceOptionsUI options) {
         service.scan(folder, options, new AsyncCallback<String>() {
             public void onFailure(Throwable caught) {
                 System.out.println("**** ERROR **** " + caught.getMessage());
@@ -166,7 +169,34 @@ public class MetadataServicesManager {
 
             public void onSuccess(GWTMediaMetadata result) {
                 file.attachMetadata(result);
-                Application.events().fireEvent(new MetadataUpdatedEvent(file));
+                metadataUpdated(file);
+            }
+        });
+    }
+    
+    public void metadataUpdated(GWTMediaFile file) {
+        Application.events().fireEvent(new MetadataUpdatedEvent(file));
+    }
+    
+    public void saveMetadata(final GWTMediaFile file, PersistenceOptionsUI options) {
+        final PopupPanel save = Dialogs.showWaitingPopup("Saving...");
+        service.saveMetadata(file, options, new AsyncCallback<ServiceReply<GWTMediaFile>>() {
+            public void onFailure(Throwable caught) {
+                save.hide();
+                Application.fireErrorEvent("Failed to save metadata for item: " + file.getTitle(), caught);
+            }
+
+            public void onSuccess(ServiceReply<GWTMediaFile> result) {
+                save.hide();
+                if (result==null || result.getCode()>0) {
+                    if (result==null) {
+                        Application.fireErrorEvent("Failed to save metadata for item: " + file.getTitle(), null);
+                    } else {
+                        Application.fireErrorEvent(result.getMessage(), null);
+                    }
+                } else {
+                    metadataUpdated(result.getData());
+                }
             }
         });
     }

@@ -1,10 +1,11 @@
-package org.jdna.bmt.web.client.ui.scan;
+package org.jdna.bmt.web.client.ui.browser;
 
 import java.io.Serializable;
 
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.util.Property;
+import org.jdna.bmt.web.client.util.StringUtils;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQuery.Field;
@@ -12,8 +13,7 @@ import org.jdna.media.metadata.SearchQuery.Field;
 import sagex.phoenix.fanart.MediaType;
 
 public class SearchQueryOptions implements Serializable {
-    private Property<String> tvProvider = new Property<String>();
-    private Property<String> movieProvider = new Property<String>();
+    private Property<String> provider = new Property<String>();
     private Property<String> searchTitle = new Property<String>();
     private Property<String> episodeTitle = new Property<String>();
     private Property<String> year = new Property<String>();
@@ -27,6 +27,7 @@ public class SearchQueryOptions implements Serializable {
     public SearchQueryOptions(GWTMediaFile mf) {
         GWTMediaMetadata md = mf.getMetadata();
         searchTitle.set(md.getString(MetadataKey.MEDIA_TITLE));
+        year.set(md.getString(MetadataKey.YEAR));
         if ("TV".equals(md.getString(MetadataKey.MEDIA_TYPE))) {
             type.set("TV");
             episodeTitle.set(md.getString(MetadataKey.EPISODE_TITLE));
@@ -35,11 +36,16 @@ public class SearchQueryOptions implements Serializable {
         } else {
             type.set("Movie");
         }
+        
+        if (StringUtils.isEmpty(searchTitle.get())) {
+            searchTitle.set(mf.getTitle());
+        }
     }
     
     public SearchQuery getSearchQuery() {
         SearchQuery q = new SearchQuery();
         q.set(Field.QUERY, searchTitle.get());
+        q.set(Field.YEAR, year.get());
         if ("TV".equals(type.get())) {
             q.setMediaType(MediaType.TV);
             q.set(Field.EPISODE_TITLE, episodeTitle.get());
@@ -100,20 +106,11 @@ public class SearchQueryOptions implements Serializable {
         this.type = type;
     }
 
-    public Property<String> getTVProvider() {
-        return tvProvider;
+    public Property<String> getProvider() {
+        return provider;
     }
 
-    public void setTVProvider(Property<String> provider) {
-        this.tvProvider = provider;
+    public void setProvider(Property<String> provider) {
+        this.provider = provider;
     }
-
-    public Property<String> getMovieProvider() {
-        return movieProvider;
-    }
-
-    public void setMovieProvider(Property<String> provider) {
-        this.movieProvider = provider;
-    }
-
 }

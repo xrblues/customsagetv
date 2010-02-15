@@ -16,47 +16,23 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class SideMenuItem extends Composite implements HasClickHandlers, MouseOutHandler, MouseOverHandler, ClickHandler {
+public class SideMenuItem<T> extends Composite implements HasClickHandlers, MouseOutHandler, MouseOverHandler, ClickHandler {
     private Image waiting = new Image("waiting-sidemenu.gif");
     private HorizontalPanel    panel   = new HorizontalPanel();
     private ClickHandler onclick;
     private String label;
     private Widget labelWidget = null;
+    private T userData;
+    private String iconUrl;
     
     public SideMenuItem(String label, String iconUrl, ClickHandler onclick) {
         this.label=label;
         this.onclick=onclick;
+        this.iconUrl = iconUrl;
         
         panel.setStyleName("SideMenuItem");
         panel.setWidth("100%");
 
-        // setup the icon, if any
-        Widget w = null;
-        if (iconUrl!=null) {
-            w = new Image(iconUrl);
-        } else {
-            w = new Label("");
-        }
-        
-        panel.add(w);
-        panel.setCellHorizontalAlignment(w, HasHorizontalAlignment.ALIGN_CENTER);
-        panel.setCellVerticalAlignment(w, HasVerticalAlignment.ALIGN_MIDDLE);
-        panel.setCellWidth(w, "30px");
-        
-        
-        // add the label
-        labelWidget = createLabelWidget();
-        panel.add(labelWidget);
-        panel.setCellVerticalAlignment(labelWidget, HasVerticalAlignment.ALIGN_MIDDLE);
-        panel.setCellHorizontalAlignment(labelWidget, HasHorizontalAlignment.ALIGN_LEFT);
-        panel.setHeight("30px");
-        
-        waiting.setVisible(false);
-        panel.add(waiting);
-        panel.setCellHorizontalAlignment(waiting, HasHorizontalAlignment.ALIGN_RIGHT);
-        panel.setCellVerticalAlignment(waiting, HasVerticalAlignment.ALIGN_MIDDLE);
-        panel.setCellWidth(w, "20px");
-        
         initWidget(panel);
 
         addDomHandler(this, MouseOverEvent.getType());
@@ -105,5 +81,48 @@ public class SideMenuItem extends Composite implements HasClickHandlers, MouseOu
     
     public Widget getLabelWidget() {
         return labelWidget;
+    }
+    
+    public void setUserData(T data) {
+        this.userData=data;
+    }
+    
+    public T getUserData() {
+        return userData;
+    }
+
+    /* (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.Composite#onAttach()
+     */
+    @Override
+    protected void onAttach() {
+        super.onAttach();
+
+        // setup the icon, if any
+        Widget w = null;
+        if (iconUrl!=null) {
+            w = new Image(iconUrl);
+        } else {
+            w = new Label("");
+        }
+        
+        panel.add(w);
+        panel.setCellHorizontalAlignment(w, HasHorizontalAlignment.ALIGN_CENTER);
+        panel.setCellVerticalAlignment(w, HasVerticalAlignment.ALIGN_MIDDLE);
+        panel.setCellWidth(w, "30px");
+        
+        
+        // add the label
+        labelWidget = createLabelWidget();
+        panel.add(labelWidget);
+        panel.setCellVerticalAlignment(labelWidget, HasVerticalAlignment.ALIGN_MIDDLE);
+        panel.setCellHorizontalAlignment(labelWidget, HasHorizontalAlignment.ALIGN_LEFT);
+        panel.setHeight("30px");
+        
+        waiting.setVisible(false);
+        panel.add(waiting);
+        panel.setCellHorizontalAlignment(waiting, HasHorizontalAlignment.ALIGN_RIGHT);
+        panel.setCellVerticalAlignment(waiting, HasVerticalAlignment.ALIGN_MIDDLE);
+        panel.setCellWidth(w, "20px");
     }
 }

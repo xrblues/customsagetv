@@ -12,14 +12,7 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
     
     private int sageMediaFileId;
     
-    public GWTMediaArt defaultPoster;
-    public GWTMediaArt defaultBackground;
-    public GWTMediaArt defaultBanner;
-    
-    public String defaultPosterDir;
-    public String defaultBackgroundDir;
-    public String defaultBannerDir;
-    
+    public String fanartDir;
     
     private Property<Boolean> sageRecording = new Property<Boolean>(false);
     
@@ -63,30 +56,6 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
         this.sageMediaFileId = sageMediaFileId;
     }
 
-    public GWTMediaArt getDefaultPoster() {
-        return defaultPoster;
-    }
-
-    public void setDefaultPoster(GWTMediaArt defaultPoster) {
-        this.defaultPoster = defaultPoster;
-    }
-
-    public GWTMediaArt getDefaultBackground() {
-        return defaultBackground;
-    }
-
-    public void setDefaultBackground(GWTMediaArt defaultBackground) {
-        this.defaultBackground = defaultBackground;
-    }
-
-    public GWTMediaArt getDefaultBanner() {
-        return defaultBanner;
-    }
-
-    public void setDefaultBanner(GWTMediaArt defaultBanner) {
-        this.defaultBanner = defaultBanner;
-    }
-
     public Property<Boolean> getSageRecording() {
         return sageRecording;
     }
@@ -107,27 +76,17 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
         this.airingId = airingId;
     }
 
-    public String getDefaultPosterDir() {
-        return defaultPosterDir;
+    /**
+     * @return the fanartDir
+     */
+    public String getFanartDir() {
+        return fanartDir;
     }
 
-    public void setDefaultPosterDir(String defaultPosterDir) {
-        this.defaultPosterDir = defaultPosterDir;
-    }
-
-    public String getDefaultBackgroundDir() {
-        return defaultBackgroundDir;
-    }
-
-    public void setDefaultBackgroundDir(String defaultBackgroundDir) {
-        this.defaultBackgroundDir = defaultBackgroundDir;
-    }
-
-    public String getDefaultBannerDir() {
-        return defaultBannerDir;
-    }
-
-    public void setDefaultBannerDir(String defaultBannerDir) {
-        this.defaultBannerDir = defaultBannerDir;
+    /**
+     * @param fanartDir the fanartDir to set
+     */
+    public void setFanartDir(String fanartDir) {
+        this.fanartDir = fanartDir;
     }
 }

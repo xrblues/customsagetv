@@ -12,6 +12,7 @@ public class StatusValue implements Serializable {
     public String value;
     private int level;
     private String reason;
+    private boolean isSepartor;
     
     public StatusValue() {
     }
@@ -47,5 +48,19 @@ public class StatusValue implements Serializable {
 
     public String getReason() {
         return reason;
+    }
+
+    /**
+     * @return the isSepartor
+     */
+    public boolean isSepartor() {
+        return isSepartor;
+    }
+
+    /**
+     * @param isSepartor the isSepartor to set
+     */
+    public void setSepartor(boolean isSepartor) {
+        this.isSepartor = isSepartor;
     }
 }

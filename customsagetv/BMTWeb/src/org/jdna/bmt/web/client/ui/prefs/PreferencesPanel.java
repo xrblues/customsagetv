@@ -23,7 +23,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
@@ -155,13 +157,37 @@ public class PreferencesPanel extends Composite {
                 }
             }
         });
+        search.setText("Search...");
+        search.addStyleName("SearchBox-Empty");
+        search.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                search.setText("");
+                search.removeStyleName("SearchBox-Empty");
+            }
+        });
         
         
         VerticalPanel vp = new VerticalPanel();
         vp.setWidth("200px");
         vp.setSpacing(3);
-        vp.add(search);
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.setSpacing(4);
+        hp.setWidth("100%");
+        hp.add(search);
+        hp.addStyleName("SearchBox");
         search.setWidth("100%");
+        Image img = new Image("images/16x16/system-search.png");
+        img.addStyleName("clickable");
+        img.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                if (search.getValue()!=null && search.getValue().trim().length()>0) {
+                    doSearch();
+                }
+            }
+        });
+        hp.add(img);
+        hp.setCellVerticalAlignment(img, HasVerticalAlignment.ALIGN_MIDDLE);
+        vp.add(hp);
         vp.add(tree);
         tree.setWidth("100%");
         main.add(vp, DockPanel.WEST);

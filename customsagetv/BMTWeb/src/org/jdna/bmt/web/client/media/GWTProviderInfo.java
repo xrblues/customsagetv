@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.jdna.media.metadata.IProviderInfo;
 
 public class GWTProviderInfo implements IProviderInfo, Serializable {
-    private String description, iconUrl, id, name;
+    private String description, iconUrl, id, name, type;
     
     public GWTProviderInfo() {
     }
@@ -47,6 +47,14 @@ public class GWTProviderInfo implements IProviderInfo, Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 
 }

@@ -1,8 +1,5 @@
 package org.jdna.bmt.web.client.ui.browser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.event.EventBus;
 import org.jdna.bmt.web.client.event.WaitingEvent;
@@ -79,10 +76,10 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         
         updateMetadataButton = new Button("Update Metadata", new ClickHandler() {
             public void onClick(ClickEvent event) {
-                final ScanOptions options = new ScanOptions();
+                final PersistenceOptionsUI options = new PersistenceOptionsUI();
                 options.getScanPath().set(currentFolder);
-                DataDialog.showDialog(new ScanOptionsPanel(options, new OKDialogHandler<ScanOptions>() {
-                    public void onSave(ScanOptions data) {
+                DataDialog.showDialog(new ScanOptionsPanel(options, new OKDialogHandler<PersistenceOptionsUI>() {
+                    public void onSave(PersistenceOptionsUI data) {
                         MetadataServicesManager.getInstance().scan(currentFolder, options);
                     }
                 }));

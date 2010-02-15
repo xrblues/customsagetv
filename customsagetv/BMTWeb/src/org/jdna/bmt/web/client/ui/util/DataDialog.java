@@ -35,6 +35,8 @@ public class DataDialog<T> extends Composite {
     protected List<Button> extraButtons = new ArrayList<Button>();
     protected String title = null;
     
+    protected boolean closeOnSave = true;
+    
     public DataDialog(String title, T data, DialogHandler<T> handler) {
         this.data=data;
         this.handler=handler;
@@ -149,9 +151,15 @@ public class DataDialog<T> extends Composite {
             }
 
             public void onSave(T data) {
-                dialog.hide();
+                if (dialogPanel.isCloseOnSave()) {
+                    dialog.hide();
+                }
+                
                 handler.onSave(data);
-                dialogPanel.setHandler(handler);
+                
+                if (dialogPanel.isCloseOnSave()) {
+                    dialogPanel.setHandler(handler);
+                }
             }
         });
         dialog.setText(dialogPanel.getTitle());
@@ -166,5 +174,41 @@ public class DataDialog<T> extends Composite {
     
     public T getData() {
         return data;
+    }
+
+    /**
+     * @return the closeOnSave
+     */
+    public boolean isCloseOnSave() {
+        return closeOnSave;
+    }
+
+    /**
+     * @param closeOnSave the closeOnSave to set
+     */
+    public void setCloseOnSave(boolean closeOnSave) {
+        this.closeOnSave = closeOnSave;
+    }
+    
+    public void center() {
+        Widget w = this;
+        while (w.getParent()!=null) { 
+            if (w instanceof DialogBox) {
+                ((DialogBox)w).center();
+                break;
+            }
+            w = w.getParent();
+        }
+    }
+
+    public void hide() {
+        Widget w = this;
+        while (w.getParent()!=null) { 
+            if (w instanceof DialogBox) {
+                ((DialogBox)w).hide();
+                break;
+            }
+            w = w.getParent();
+        }
     }
 }

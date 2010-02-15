@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.util.Property;
 
-public class ScanOptions implements Serializable {
+public class PersistenceOptionsUI implements Serializable {
     private Property<GWTMediaFolder> scanPath = new Property<GWTMediaFolder>();
     private Property<Boolean> includeSubDirs = new Property<Boolean>(Boolean.TRUE);
     
@@ -16,6 +16,12 @@ public class ScanOptions implements Serializable {
     private Property<Boolean> overwriteFanart = new Property<Boolean>(Boolean.FALSE);
 
     private Property<Boolean> importTV = new Property<Boolean>(Boolean.FALSE);
+    private Property<Boolean> updateWizBin = new Property<Boolean>(Boolean.TRUE);
+    
+    private Property<Boolean> createDefaultSTVThumbnail = new Property<Boolean>(Boolean.FALSE);
+
+    private Property<Boolean> createPropertyFiles = new Property<Boolean>(Boolean.FALSE);
+    
     
     public Property<Boolean> getUpdateMetadata() {
         return updateMetadata;
@@ -43,5 +49,23 @@ public class ScanOptions implements Serializable {
 
     public Property<Boolean> getIncludeSubDirs() {
         return includeSubDirs;
+    }
+
+    public Property<Boolean> getUpdateWizBin() {
+        return updateWizBin;
+    }
+
+    /**
+     * @return the createDefaultSTVThumbnail
+     */
+    public Property<Boolean> getCreateDefaultSTVThumbnail() {
+        return createDefaultSTVThumbnail;
+    }
+
+    /**
+     * @return the createPropertyFiles
+     */
+    public Property<Boolean> getCreatePropertyFiles() {
+        return createPropertyFiles;
     }
 }
