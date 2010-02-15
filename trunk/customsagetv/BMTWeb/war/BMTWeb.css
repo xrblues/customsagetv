@@ -35,8 +35,17 @@ h1 {
   	color: #777777;
 }
 
+.StatusBox {
+	border: 5px solid #F2F2F2;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -khtml-border-radius: 20px;
+    border-radius: 20px;
+    background-color: #F2F2F2;
+}
+
 .StatusBox-Title {
-  	font-size: 1.2em;
+	  	font-size: 1.2em;
   	text-decoration: underline;
 }
 
@@ -65,16 +74,22 @@ h1 {
 	color: white;
 }
 
-.Row-Even {
+.Row-Even td.RowCell {
+	border-bottom: 1px dotted black;
 }
 
-.Row-Odd {
-	background-color: #F3F3F3;
+.Row-Odd td.RowCell {
+	border-bottom: 1px dotted black;
+		xbackground-color: #F3F3F3;
 }
 
 .MediaItem {
 	border-bottom: 1px solid black;
 	cursor: pointer;
+}
+
+.MediaItem-Image {
+	height: 120px;
 }
 
 .MediaItem_hover {
@@ -186,13 +201,18 @@ h1 {
 
 .BrowsePanel .MediaItem {
 	float: left;
-	border: 1px solid black;
+	border: 2px groove black;
 	width: 150px;
 	height: 200px;
 	min-height: 100px;
 	min-width: 50px;
 	margin: 10 10 10 10;
 	padding: 5 5 5 5;
+
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
 }
 
 .MediaItem .MediaItem-Title1 {
@@ -204,11 +224,11 @@ h1 {
 	font-size: smaller;
 }
 
+.MediaMetadata-PosterSmall {
+	height: 40px;
+}
+
 .BrowsePanel .MediaFolder {
-	background-color: #FFF9D7;
-	xbackground-image: url("images/16x16/folder.png");
-	xbackground-position: bottom left;
-	xbackground-repeat: no-repeat;
 }
 
 .SideMenuItem {
@@ -253,4 +273,49 @@ h1 {
 	font-weight: normal;
 	font-style: italic;	
 	overflow: hidden;
+}
+
+.CastMember-Title1 {
+  	font-size: 1.1em;
+  	font-weight: bold;
+}
+
+.CastMember-Title2 {
+  	font-style: italic;
+}
+
+.StatusValue-LabelSeparator {
+	font-weight: bold;
+	font-size: larger;
+	font-style: italic;
+	padding-top: 5px;
+}
+
+.SearchBox {
+	border: 2px groove black;
+}
+
+.SearchBox input {
+	border: hidden;
+}
+
+.SearchBox-Empty {
+	color: #909090;
+	font-style: italic;
+}
+
+.SystemMessage {
+	border-bottom: 1px dotted black;
+	padding-bottom: 5px;
+}
+
+.SystemMessage-Header {
+	font-weight: bold;
+}
+
+.SystemMessage-Level2 {
+	color: orange;
+}
+.SystemMessage-Level3 {
+	color: red;
 }
