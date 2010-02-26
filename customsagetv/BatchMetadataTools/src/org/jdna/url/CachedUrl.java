@@ -33,11 +33,11 @@ public class CachedUrl extends Url implements IUrl {
         propFile = new File(getCacheDir(), urlId + ".properties");
         props = new Properties();
         if (propFile.exists()) {
-            log.debug("Reloading existing cached url: " + propFile.getAbsolutePath());
+            log.debug("Reloading existing cached url: " + propFile.getAbsolutePath() + " with id: " + urlId);
             PropertiesUtils.load(props, propFile);
             File f = getCachedFile();
             if (f.exists() && (isExpired(f) || f.length()==0)) {
-                log.debug("Expiring Cached Url File: " + f.getAbsolutePath());
+                log.info("Removing Cached Url File: " + f);
                 f.delete();
             }
         } else {
@@ -50,14 +50,19 @@ public class CachedUrl extends Url implements IUrl {
 
         // sanity check
         if (!url.toLowerCase().equals(props.getProperty("url").toLowerCase())) {
-            log.warn("The Cached url does not match the one passed! " + props.getProperty("url") + " != " + url);
+            log.error("The Cached url does not match the one passed! " + props.getProperty("url") + " != " + url + "; Propfile Name: " + propFile);
+            props.setProperty("url", url);
+            File f = getCachedFile();
+            if (f.exists()) {
+                log.error("Removing cached content for url: " + url);
+                f.delete();
+            }
         }
     }
 
     private String getCachedFileName(String url) {
         try {
             if (url==null) return null;
-            
             // now uses a simple md5 hash, which should have a fairly low collision rate, especially for our
             // limited use
             byte[] key = DigestUtils.md5(url);
@@ -68,13 +73,23 @@ public class CachedUrl extends Url implements IUrl {
         }
     }
 
-    private boolean isExpired(File cachedFile) {
+    public boolean isExpired(File cachedFile) {
         long secs = cfg.getCacheExpiryInSeconds();
         long diff = (System.currentTimeMillis() - cachedFile.lastModified())/1000;
-        if (diff > secs) {
-            return true;
+        boolean expired = (diff > secs);
+        if (expired) {
+            log.debug("CachedUrl.isExpired(): " + expired + "; File: " + cachedFile + "; LastModified: " + cachedFile.lastModified() + "; Current Time: " + System.currentTimeMillis() + "; Expiry: " + secs + "s; Diff: " + diff + "s");
         }
-        return false;
+        return expired;
+    }
+    
+    public static boolean isExpired(File cachedFile, long expirySecs) {
+        long diff = (System.currentTimeMillis() - cachedFile.lastModified())/1000;
+        boolean expired = (diff > expirySecs);
+        if (expired) {
+            log.debug("CachedUrl.isExpired(): " + expired + "; File: " + cachedFile + "; LastModified: " + cachedFile.lastModified() + "; Current Time: " + System.currentTimeMillis() + "; Expiry: " + expirySecs + "s; Diff: " + diff + "s");
+        }
+        return expired;
     }
 
     private File getCacheDir() {
@@ -94,6 +109,10 @@ public class CachedUrl extends Url implements IUrl {
     }
 
     public File getCachedFile() {
+        return getCachedFile(props);
+    }
+    
+    public static File getCachedFile(Properties props) {
         return new File(props.getProperty("file"));
     }
 

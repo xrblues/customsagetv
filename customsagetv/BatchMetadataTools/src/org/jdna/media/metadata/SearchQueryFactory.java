@@ -1,6 +1,9 @@
 package org.jdna.media.metadata;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -11,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.jdna.media.metadata.SearchQuery.Field;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 
+import sagex.api.ShowAPI;
 import sagex.phoenix.fanart.MediaType;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaResource;
@@ -99,6 +103,30 @@ public class SearchQueryFactory {
         if (q!=null) {
             if (f!=null) {
                 q.set(Field.FILE, f.getAbsolutePath());
+                // if there isn't a date set, then try setting the date using the file's date/time
+                if (StringUtils.isEmpty(q.get(Field.EPISODE_DATE))) {
+                    DateFormat dateFormat  = new SimpleDateFormat("yyyy-MM-dd");
+                    Date d = new Date(f.lastModified());
+                    q.set(Field.EPISODE_DATE, dateFormat.format(d));
+                }
+            }
+        }
+        
+        if (q!=null && q.getMediaType() == MediaType.TV) {
+            try {
+                // attempt to see if this is a movie recording, and if so, then set the type
+                Object sagemf = phoenix.api.GetSageMediaFile(resource);
+                if (sagemf!=null) {
+                    // Now check the alternate category
+                    String altCat = ShowAPI.GetShowCategory(sagemf);
+                    if (altCat != null) {
+                        if (altCat.equals("Movie") || altCat.equals(phoenix.api.GetProperty("alternate_movie_category"))) {
+                            q.setMediaType(MediaType.MOVIE);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("failed while attempting to set the media type based on alternate_movie_category",e);
             }
         }
 
@@ -106,7 +134,7 @@ public class SearchQueryFactory {
             log.warn("Failed to create Search Query for: " + resource);
         } else {
             // add in a cleaned title
-            q.set(Field.CLEAN_TITLE, MediaMetadataUtils.cleanSearchCriteria(q.get(Field.RAW_TITLE), false));
+            q.set(Field.CLEAN_TITLE, MediaMetadataUtils.cleanSearchCriteria(q.get(Field.RAW_TITLE), true));
         }
         
         return q;

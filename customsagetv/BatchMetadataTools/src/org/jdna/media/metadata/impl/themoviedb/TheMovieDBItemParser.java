@@ -78,7 +78,8 @@ public class TheMovieDBItemParser {
                 addBanners(md, movie);
                 md.setMediaTitle(org.jdna.util.StringUtils.unquote(getElementValue(movie, "title")));
                 if (StringUtils.isEmpty(md.getMediaTitle())) {
-                    throw new RuntimeException("The MovieDB Result didn't contain a title. Url: " + url + TheMovieDBMetadataProvider.getApiKey());
+                    log.warn("The MovieDB Result didn't contain a title. Url: " + url + TheMovieDBMetadataProvider.getApiKey());
+                    return null;
                 }
                 md.setUserRating(getElementValue(movie, "rating"));
                 md.setYear(parseYear(md.getReleaseDate()));

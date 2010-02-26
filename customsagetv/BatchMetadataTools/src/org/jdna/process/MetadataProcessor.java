@@ -3,9 +3,12 @@ package org.jdna.process;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jdna.media.ExcludeMediaFilter;
+import org.jdna.media.MediaConfiguration;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
@@ -43,31 +46,55 @@ public class MetadataProcessor {
     private String defaultQueryArgs = null;
 
     private MetadataConfiguration metadataConfig;
+    private MediaConfiguration mediaConfig;
     
     public MetadataProcessor(PersistenceOptions options) {
-        this.options=options;
-        this.metadataConfig = GroupProxy.get(MetadataConfiguration.class);
-        
-        providers = new HashMap<MediaType, IMediaMetadataProvider>();
-        String tv = metadataConfig.getTVProviders();
-        providers.put(MediaType.TV, MediaMetadataFactory.getInstance().getProvider(tv, MediaType.TV));
-
-        String movie = metadataConfig.getMovieProviders();
-        providers.put(MediaType.MOVIE, MediaMetadataFactory.getInstance().getProvider(movie, MediaType.MOVIE));
-        
-        persistence = new MediaMetadataPersistence();
+        init(null, null, null, options);
     }
     
     public MetadataProcessor(MediaType forceType, Map<MediaType, IMediaMetadataProvider> providers, IMediaMetadataPersistence persistence, PersistenceOptions options) {
+        init(forceType, providers, persistence, options);
+    }
+    
+    private void init(MediaType forceType, Map<MediaType, IMediaMetadataProvider> providers, IMediaMetadataPersistence persistence, PersistenceOptions options) {
         this.forcedType = forceType;
         this.providers = providers;
         this.persistence = persistence;
         this.options = options;
+        this.metadataConfig = GroupProxy.get(MetadataConfiguration.class);
+        this.mediaConfig = GroupProxy.get(MediaConfiguration.class);
+
+        if (this.providers==null) {
+            this.providers = new HashMap<MediaType, IMediaMetadataProvider>();
+
+            String tv = metadataConfig.getTVProviders();
+            this.providers.put(MediaType.TV, MediaMetadataFactory.getInstance().getProvider(tv, MediaType.TV));
+    
+            String movie = metadataConfig.getMovieProviders();
+            this.providers.put(MediaType.MOVIE, MediaMetadataFactory.getInstance().getProvider(movie, MediaType.MOVIE));
+        }
+        
+        if (this.persistence==null) {
+            this.persistence = new MediaMetadataPersistence();
+        }
         
         // if you are not overwriting metadata, then only process missing metadata
         if (!options.isOverwriteMetadata()) {
             log.info("Metadata Processor will only scan for items that are missing metadata.");
             includeOnlyMissingMetadata();
+        }
+        
+        if (!StringUtils.isEmpty(mediaConfig.getExcludeVideoDirsRegex())) {
+            String regex = mediaConfig.getExcludeVideoDirsRegex();
+            try {
+                Pattern p = Pattern.compile(regex);
+                if (p!=null) {
+                    log.info("Using Exclude Regex: " + regex);
+                    addFilter(new ExcludeMediaFilter(p));
+                }
+            } catch (Exception e) {
+                log.warn("Exclude Regex is not valid: Regex: " + regex, e);
+            }
         }
     }
     
@@ -117,7 +144,9 @@ public class MetadataProcessor {
                             }
                         } else {
                             log.info("Resource: " + res1 + " was not accepted by filter.");
+                            monitor.addSkipped(new MetadataItem((IMediaFile)res1, null, options, null, persistence, null), "Filter excluded this item.");
                         }
+                        monitor.worked(1);
                     } else {
                         log.info("Scan was cancelled. Aborting...");
                     }

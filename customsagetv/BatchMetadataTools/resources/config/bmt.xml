@@ -8,6 +8,7 @@
 	<group class="org.jdna.media.metadata.impl.imdb.IMDBConfiguration"/>
 	<group class="org.jdna.media.metadata.impl.mymovies.MyMoviesConfiguration"/>
 	<group class="org.jdna.media.metadata.impl.sage.SageMetadataConfiguration"/>
+	<group class="org.jdna.media.metadata.impl.tvdb.TVDBConfiguration"/>
 	<group class="org.jdna.sage.PluginConfiguration"/>
 	
 	<!-- Some Phoenix Configuration Items, but we duplicate them here because they are related metadata/fanart -->

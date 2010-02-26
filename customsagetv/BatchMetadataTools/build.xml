@@ -8,7 +8,7 @@
 	<property name="libs" value="lib" />
 	<property name="targetDir" value="target" />
 	<property name="name" value="metadata-updater" />
-	<property name="version" value="4.0-beta1" />
+	<property name="version" value="4.0-beta10" />
 	<property name="jarname" value="${name}.jar" />
 	<property name="launcher" value="MetadataTool" />
 	<property name="mainClass" value="org.jdna.metadataupdater.MetadataUpdater" />
@@ -107,7 +107,7 @@
 		<mkdir dir="${targetDir}/sage/STVs/Phoenix/vfs/" />
 
 		<copy toDir="${targetDir}/sage/STVs/SageTV3">
-			<fileset dir="resources/stv" includes="*.stvi,*.xml" />
+			<fileset dir="resources/stv" includes="*.xml" excludes="MetadataFanartTools*"/>
 		</copy>
 
 		<copy toDir="${targetDir}/sage/scrapers">

@@ -28,7 +28,6 @@ import sagex.phoenix.vfs.filters.OrResourceFilter;
 /**
  * 
  * TODO: Add a better queue depletion detection
- * - Have the main thread never quit, but sleep, until there are more items
  * - Create an abort thread that can be used to quickly deplete the queue in the event
  *   that someone want to abort/cancel the scan in progress 
  * TODO: Add more than 1 thread to deplete the queue
@@ -43,7 +42,6 @@ public class SageScanMediaFileEvenHandler implements ScanMediaFileEventHandler {
             @Override
             public void addFailed(MetadataItem item, String msg, Throwable t) {
                 super.addFailed(item, msg, t);
-                
                 // use system messages to notify of failed items.
                 if (pluginConfig.getUseSystemMessagesForFailed()) {
                     if (item != null && item.getQuery()!=null) {
@@ -52,10 +50,18 @@ public class SageScanMediaFileEvenHandler implements ScanMediaFileEventHandler {
                             vars.put(f.name(), item.getQuery().get(f));
                         }
                         vars.put("MediaType", item.getQuery().getMediaType().name());
-                        SystemMessageEvent evt = new SystemMessageEvent(SysEventMessageID.METADATA_FAILED, Severity.ERROR, "Failed to find metadata for: " + item.getQuery().get(Field.FILE) + " using provider " + item.getProvider(), vars);
+                        String prov = null;
+                        if (item.getProvider()!=null) {
+                            prov = item.getProvider().getInfo().getId();
+                        }
+                        SystemMessageEvent evt = new SystemMessageEvent(SysEventMessageID.METADATA_FAILED, Severity.ERROR, "Failed to find metadata for: " + item.getQuery().get(Field.FILE) + " using provider " + prov, vars);
                         Phoenix.getInstance().getEventBus().fireEvent(evt);
                     } else if (item != null) {
-                        SystemMessageEvent evt = new SystemMessageEvent(SysEventMessageID.METADATA_FAILED, Severity.ERROR, "Failed to find metadata for: " + item.getFile() + " using provider " + item.getProvider());
+                        String prov = null;
+                        if (item.getProvider()!=null) {
+                            prov = item.getProvider().getInfo().getId();
+                        }
+                        SystemMessageEvent evt = new SystemMessageEvent(SysEventMessageID.METADATA_FAILED, Severity.ERROR, "Failed to find metadata for: " + item.getFile() + " using provider " + prov);
                         Phoenix.getInstance().getEventBus().fireEvent(evt);
                     }
                 }
@@ -67,15 +73,15 @@ public class SageScanMediaFileEvenHandler implements ScanMediaFileEventHandler {
          */
         @Override
         public void run() {
+            log.info("Scanning Thread Queue is starting, waiting for files...");
             cancelled = false;
             while (!cancelled) {
                 try {
                     // wait for up to 10 seconds for a file to show up in the queue
                     ScanMediaFileEvent evt = filesToScan.poll(10000, TimeUnit.MILLISECONDS);
                     if (evt==null) {
-                        log.debug("Nothing to process... exiting scan thread.");
-                        cancelled=true;
-                        break;
+                        // timed out waiting, just try again.
+                        continue;
                     }
                     
                     setupFilters();
@@ -97,13 +103,20 @@ public class SageScanMediaFileEvenHandler implements ScanMediaFileEventHandler {
                     }
                     
                     processor.process(res, tracker);
+                    
+                    // summarize our scanning results, if there no more elements to process.
+                    if (filesToScan.isEmpty()) {
+                        notifyResults(tracker);
+                    }
                 } catch (InterruptedException e) {
                     log.info("Timed out waiting for a new file to appear in the scan queue.  Shutting down for now.");
                     cancelled=true;
                     break;
+                } catch (Throwable t) {
+                    log.warn("Scanning Thread encounted a problem.", t);
                 }
             }
-            notifyResults(tracker);
+            log.info("Scanning Thread Queue has been shutdown.");
             scanThread=null;
         }
         
@@ -127,15 +140,19 @@ public class SageScanMediaFileEvenHandler implements ScanMediaFileEventHandler {
         }
 
         private void notifyResults(ProgressTracker<MetadataItem> tracker2) {
-            log.info("Metadata Scan Completed.  Success: " + tracker2.getSuccessfulItems().size() + "; Failed: " + tracker2.getFailedItems().size());
+            log.info("Metadata Scan Completed.  Updated: " + tracker2.getSuccessCount() + "; Failed: " + tracker2.getFailedCount() + "; Skipped: " + tracker2.getSkippedCount());
             if (pluginConfig.getUseSystemMessagesForStatus()) {
-                SystemMessageEvent evt = new SystemMessageEvent(SysEventMessageID.SCAN_COMPLETE_STATUS, Severity.INFO, "Metadata Scan Completed.  Success: " + tracker2.getSuccessfulItems().size() + "; Failed: " + tracker2.getFailedItems().size());
+                SystemMessageEvent evt = new SystemMessageEvent(SysEventMessageID.SCAN_COMPLETE_STATUS, Severity.INFO, "Metadata Scan Completed.  Updated: " + tracker2.getSuccessCount() + "; Failed: " + tracker2.getFailedCount() + "; Skipped: " + tracker2.getSkippedCount());
                 Phoenix.getInstance().getEventBus().fireEvent(evt);
             }
+            
+            // clear the tracker, for the next round.
+            tracker2.clear();
         }
 
-        public boolean isCancelled() {
-            return cancelled;
+        public void shutDown() {
+            cancelled=true;
+            interrupt();
         }
     }
     
@@ -146,21 +163,18 @@ public class SageScanMediaFileEvenHandler implements ScanMediaFileEventHandler {
     
     public SageScanMediaFileEvenHandler() {
         pluginConfig = GroupProxy.get(PluginConfiguration.class);
+        scanThread = new ScanThread();
+        scanThread.setName(Thread.currentThread().getName()+ "-MediaFileHandler");
+        scanThread.start();
     }
     
     public void onScanRequest(ScanMediaFileEvent event) {
         filesToScan.add(event);
-        wakeUp();
     }
 
-    private void wakeUp() {
-        if (scanThread==null) {
-            scanThread = new ScanThread();
-            scanThread.setName(Thread.currentThread().getName()+ "-BMTScan1");
-        }
-        
-        if (!scanThread.isAlive()) {
-            scanThread.start();
+    public void shutDown() {
+        if (scanThread != null) {
+            scanThread.shutDown();
         }
     }
 }

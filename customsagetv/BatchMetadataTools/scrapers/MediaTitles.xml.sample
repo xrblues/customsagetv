@@ -1,4 +1,8 @@
 <titles>
+	<!--
+	A Match can contain a regex that will be used to match against the path.  If it matches, then it will
+	then set the fields, title, year, or id, into the search query.
+	-->
 	<match>
 		<regex>[\\/]Babylon\s*5[\\/]</regex>
 		<title>Babylon 5</title>

@@ -69,6 +69,11 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
         
         // carry on normal search
         String arg = query.get(SearchQuery.Field.QUERY);
+        if (arg==null) {
+            log.warn("The QUERY field was not set in the SearchQuery for: " + query + ";  This is most likey a programmer oversight.");
+            return null;
+        }
+        
         String eArg = URLEncoder.encode(arg);
         String url = MessageFormat.format(IMDB_TITLE_URL, cfg.getIMDbDomain(), eArg);
         log.debug("IMDB Search Url: " + url);

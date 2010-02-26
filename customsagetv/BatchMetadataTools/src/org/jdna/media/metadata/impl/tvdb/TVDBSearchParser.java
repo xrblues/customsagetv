@@ -18,16 +18,19 @@ import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.IUrl;
 import org.jdna.url.UrlFactory;
+import org.jdna.util.Pair;
+import org.jdna.util.ParserUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataSearchResult;
 
 public class TVDBSearchParser {
     private static final Logger                 log        = Logger.getLogger(TVDBSearchParser.class);
-    private static final String                 SEARCH_URL = "http://www.thetvdb.com/api/GetSeries.php?seriesname=%s";
+    private static final String                 SEARCH_URL = "http://www.thetvdb.com/api/GetSeries.php?seriesname=%s&language=%s";
     private static final DocumentBuilderFactory factory    = DocumentBuilderFactory.newInstance();
     private static final Pattern yearPattern = Pattern.compile("([0-9]{4})");
 
@@ -35,7 +38,7 @@ public class TVDBSearchParser {
     private IUrl                                url;
     private List<IMetadataSearchResult>            results    = new LinkedList<IMetadataSearchResult>();
     private String								searchTitle;
-
+    private TVDBConfiguration config = null;
     private Comparator<IMetadataSearchResult> sorter              = new Comparator<IMetadataSearchResult>() {
         public int compare(IMetadataSearchResult o1, IMetadataSearchResult o2) {
      	   if(o1.getScore() > o2.getScore()) return -1;
@@ -45,9 +48,10 @@ public class TVDBSearchParser {
     };
     
     public TVDBSearchParser(SearchQuery query) {
+        config = GroupProxy.get(TVDBConfiguration.class);
         this.query=query;
         searchTitle = query.get(SearchQuery.Field.QUERY);
-        this.url = UrlFactory.newUrl(String.format(SEARCH_URL, URLEncoder.encode(searchTitle)));
+        this.url = UrlFactory.newUrl(String.format(SEARCH_URL, URLEncoder.encode(searchTitle), config.getLanguage()));
 
         log.debug("TVDB SearchQuery Url: " + url);
     }
@@ -86,8 +90,9 @@ public class TVDBSearchParser {
         MediaSearchResult sr = new MediaSearchResult();
         MetadataUtil.copySearchQueryToSearchResult(query, sr);
         sr.setProviderId(TVDBMetadataProvider.PROVIDER_ID);
-        sr.setTitle(org.jdna.util.StringUtils.unquote(title));
-        sr.setScore(getScore(title));
+        Pair<String, String> pair = ParserUtils.parseTitleAndDateInBrackets(org.jdna.util.StringUtils.unquote(title));
+        sr.setTitle(pair.first());
+        sr.setScore(getScore(pair.first()));
         sr.setYear(parseYear(getElementValue(item, "FirstAired")));
         sr.setId(getElementValue(item, "seriesid"));
         sr.setIMDBId(getElementValue(item, "imdb"));

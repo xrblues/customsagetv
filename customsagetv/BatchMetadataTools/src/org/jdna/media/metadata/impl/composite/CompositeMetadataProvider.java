@@ -103,13 +103,13 @@ public class CompositeMetadataProvider implements IMediaMetadataProvider {
 
             // if we still have metadata, then fire off an error
             if (md==null) {
-                throw new Exception("Failed to find details for result: " + result);
+                throw new Exception("Failed to find fanart details for result: " + result);
             }
             
             // we have metadata, return it
             return md;
         } catch (Exception e) {
-            log.warn("searchDetailsByResult() failed for: " + result, e);
+            log.warn("Failed to find fanart for: " + result);
         }
         
         return null;

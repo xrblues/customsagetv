@@ -22,11 +22,13 @@ import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.IUrl;
 import org.jdna.url.UrlFactory;
 import org.jdna.util.DOMUtils;
+import org.jdna.util.Pair;
 import org.jdna.util.ParserUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaArtifactType;
 
@@ -36,22 +38,24 @@ public class TVDBItemParser {
 
     public static final String     BANNERS_URL         = "http://www.thetvdb.com/api/{0}/series/{1}/banners.xml";
     public static final String     ACTORS_URL          = "http://www.thetvdb.com/api/{0}/series/{1}/actors.xml";
-    public static final String     SERIES_URL          = "http://www.thetvdb.com/api/{0}/series/{1}";
-    public static final String     SEASON_EPISODE_URL  = "http://www.thetvdb.com/api/{0}/series/{1}/default/{2}/{3}";
+    public static final String     SERIES_URL          = "http://www.thetvdb.com/api/{0}/series/{1}/{2}.xml";
+    public static final String     SEASON_EPISODE_URL  = "http://www.thetvdb.com/api/{0}/series/{1}/default/{2}/{3}/{4}.xml";
 
     // Date format is YYYY-MM-DD
     public static final String     EPISODE_BY_DATE_URL = "http://thetvdb.com/api/GetEpisodeByAirDate.php?apikey={0}&seriesid={1}&airdate={2}";
-    public static final String     EPISODE_BY_TITLE    = "http://www.thetvdb.com/api/{0}/series/{1}/all/en.xml";
+    public static final String     EPISODE_BY_TITLE    = "http://www.thetvdb.com/api/{0}/series/{1}/all/{2}.xml";
     public static final String     FANART_URL          = "http://www.thetvdb.com/banners/{0}";
 
     private MediaMetadata          md                  = null;
     private DocumentBuilderFactory factory             = DocumentBuilderFactory.newInstance();
     private Document               banners             = null;
+    private TVDBConfiguration config = null;
 
     private IMetadataSearchResult result = null;
 
     public TVDBItemParser(IMetadataSearchResult result) {
         this.result=result;
+        config = GroupProxy.get(TVDBConfiguration.class);
     }
 
     public IMediaMetadata getMetadata() {
@@ -72,36 +76,38 @@ public class TVDBItemParser {
                 // that we are going to
                 // need it again very soon.
                 addSeriesInfo(md);
-                addActors(md);
-                addBanners(md, null);
 
-                if (result.getExtra().get(SearchQuery.Field.SEASON.name()) != null) {
-                    String season = result.getExtra().get(SearchQuery.Field.SEASON.name());
-                    
-                    // add in season fanart
-                    addBanners(md, season);
-
-                    // now add in episode specific fanart
-                    if (!StringUtils.isEmpty(result.getExtra().get(SearchQuery.Field.SEASON.name())) && !StringUtils.isEmpty(result.getExtra().get(SearchQuery.Field.EPISODE.name()))) {
-                        addSeasonEpisodeInfo(md, result.getExtra().get(SearchQuery.Field.SEASON.name()), result.getExtra().get(SearchQuery.Field.EPISODE.name()));
-                    } else if (!StringUtils.isEmpty(result.getExtra().get(SearchQuery.Field.EPISODE_DATE.name()))) {
-                        addSeasonEpisodeInfoByDate(md, result.getExtra().get(SearchQuery.Field.EPISODE_DATE.name()));
-                    } else if (!StringUtils.isEmpty(result.getExtra().get(SearchQuery.Field.EPISODE_TITLE.name()))) {
-                        addSeasonEpisodeInfoByTitle(md, result.getExtra().get(SearchQuery.Field.EPISODE_TITLE.name()));
-                    } else {
-                        log.warn("No Specific Episode Lookup for query: " + result);
-                    }
-                } else {
-                    // TOOD: throw exception if no season
-                    throw new Exception("No Season information");
+                String season = result.getExtra().get(SearchQuery.Field.SEASON.name());
+                String episode = result.getExtra().get(SearchQuery.Field.EPISODE.name());
+                String date = result.getExtra().get(SearchQuery.Field.EPISODE_DATE.name());
+                String title = result.getExtra().get(SearchQuery.Field.EPISODE_TITLE.name());
+                
+                if (!StringUtils.isEmpty(season) && !StringUtils.isEmpty(episode)) {
+                    addSeasonEpisodeInfo(md, season, episode);
                 }
                 
-                if (StringUtils.isEmpty(MetadataAPI.getEpisodeTitle(md))) {
-                    throw new Exception("Failed to find an episode title");
+                if (StringUtils.isEmpty(MetadataAPI.getEpisode(md)) && !StringUtils.isEmpty(date)) {
+                    addSeasonEpisodeInfoByDate(md, date);
+                }
+                
+                if (StringUtils.isEmpty(MetadataAPI.getEpisode(md)) && !StringUtils.isEmpty(title)) {
+                    addSeasonEpisodeInfoByTitle(md, title);
+                }
+
+                if (StringUtils.isEmpty(MetadataAPI.getEpisodeTitle(md)) || StringUtils.isEmpty(MetadataAPI.getSeason(md)) || StringUtils.isEmpty(MetadataAPI.getEpisode(md))) {
+                    throw new Exception("Did not find a valid season and episode; Search Season: " + season + "; Episode: " + episode + "; Search Date: " + date + "; Search Title: " + title);
+                }
+
+                if (!StringUtils.isEmpty(MetadataAPI.getSeason(md))) {
+                    addBanners(md, season);
                 }
                 
                 md.setProviderId(TVDBMetadataProvider.PROVIDER_ID);
                 md.setProviderDataId(result.getId());
+
+                // now add in banners and actors, no point in doing it early
+                addActors(md);
+                addBanners(md, null);
             } catch (Exception e) {
                 log.warn("Failed while parsing series: " + result, e);
                 md = null;
@@ -164,7 +170,7 @@ public class TVDBItemParser {
     private void addSeasonEpisodeInfoByTitle(MediaMetadata md, String title) {
         try {
             DocumentBuilder parser = factory.newDocumentBuilder();
-            String allurl = MessageFormat.format(EPISODE_BY_TITLE, TVDBMetadataProvider.getApiKey(), result.getId()); 
+            String allurl = MessageFormat.format(EPISODE_BY_TITLE, TVDBMetadataProvider.getApiKey(), result.getId(), config.getLanguage()); 
             log.debug("Parsing TVDB Complete Episode Info: " + allurl);
             IUrl url = UrlFactory.newUrl(allurl);
             Document doc = parser.parse(url.getInputStream(null, true));
@@ -211,7 +217,7 @@ public class TVDBItemParser {
         int inEpisode = NumberUtils.toInt(episode, -1);
 
         try {
-            updateMetadataFromUrl(md, MessageFormat.format(SEASON_EPISODE_URL, TVDBMetadataProvider.getApiKey(), result.getId(), inSeason, inEpisode));
+            updateMetadataFromUrl(md, MessageFormat.format(SEASON_EPISODE_URL, TVDBMetadataProvider.getApiKey(), result.getId(), inSeason, inEpisode, config.getLanguage()));
         } catch (Exception e) {
             log.warn("Failed to get season/episode specific information for " + result.getId() + "; Season: " + season + "; episode: " + episode);
         }
@@ -319,7 +325,7 @@ public class TVDBItemParser {
 
     private void addSeriesInfo(MediaMetadata md) throws Exception {
         DocumentBuilder parser = factory.newDocumentBuilder();
-        String seriesUrl = MessageFormat.format(SERIES_URL, TVDBMetadataProvider.getApiKey(), result.getId());
+        String seriesUrl = MessageFormat.format(SERIES_URL, TVDBMetadataProvider.getApiKey(), result.getId(), config.getLanguage());
         log.debug("Parsing TVDB Series url: " + seriesUrl);
         IUrl url = UrlFactory.newUrl(seriesUrl);
         Document doc = parser.parse(url.getInputStream(null, true));
@@ -342,11 +348,9 @@ public class TVDBItemParser {
         md.set(MetadataKey.USER_RATING, DOMUtils.getElementValue(series, "Rating"));
         md.set(MetadataKey.RUNNING_TIME, MetadataUtil.convertTimeToMillissecondsForSage(DOMUtils.getElementValue(series, "Runtime")));
         // fix title, unquote, and then parse the title if it's Title (year)
-        String title = org.jdna.util.StringUtils.unquote(DOMUtils.getElementValue(series, "SeriesName"));
-        String titleParts[] = ParserUtils.parseTitle(title);
-        title=titleParts[0];
-        md.set(MetadataKey.MEDIA_TITLE, title);
-        md.set(MetadataKey.DISPLAY_TITLE, title);
+        Pair<String, String> pair = ParserUtils.parseTitleAndDateInBrackets(org.jdna.util.StringUtils.unquote(DOMUtils.getElementValue(series, "SeriesName")));
+        md.set(MetadataKey.MEDIA_TITLE, pair.first());
+        md.set(MetadataKey.DISPLAY_TITLE, pair.first());
         md.set(MetadataKey.MEDIA_TYPE, MetadataUtil.TV_MEDIA_TYPE);
     }
 
