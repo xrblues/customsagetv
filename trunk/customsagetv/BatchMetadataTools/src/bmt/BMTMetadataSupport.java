@@ -1,28 +1,45 @@
 package bmt;
 
+import java.io.File;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
+import org.jdna.media.metadata.MediaMetadataPersistence;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
-import org.jdna.media.metadata.impl.sage.SageProperty;
+import org.jdna.media.metadata.SearchQuery;
+import org.jdna.media.metadata.SearchQueryFactory;
+import org.jdna.media.metadata.SearchQuery.Field;
+import org.jdna.process.MetadataItem;
+import org.jdna.process.MetadataProcessor;
 import org.jdna.sage.OnDemandConfiguration;
-import org.jdna.util.PersistenceFactory;
+import org.jdna.url.CachedUrlCleanupTask;
 
-import sagex.api.MediaFileAPI;
+import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.proxy.GroupProxy;
-import sagex.phoenix.fanart.IMetadataProviderInfo;
 import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.IMetadataSupport;
+import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.progress.IRunnableWithProgress;
 import sagex.phoenix.progress.ProgressTracker;
 import sagex.phoenix.progress.ProgressTrackerManager;
+import sagex.phoenix.progress.TrackedItem;
 import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.IMediaFolder;
+import sagex.phoenix.vfs.MediaResourceType;
+import sagex.phoenix.vfs.filters.AndResourceFilter;
+import sagex.phoenix.vfs.filters.MediaTypeFilter;
+import sagex.phoenix.vfs.impl.FileResourceFactory;
 
 /**
  * Allows BMT to provide metadata support to the Phoenix Metadata apis.
@@ -32,93 +49,23 @@ import sagex.phoenix.vfs.IMediaFile;
  */
 public class BMTMetadataSupport implements IMetadataSupport {
     private static final Logger log = Logger.getLogger(BMTMetadataSupport.class);
-    private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class);
     private OnDemandConfiguration ondemandConfig = GroupProxy.get(OnDemandConfiguration.class);
+    private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class); 
     
     private ProgressTrackerManager trackerManager = new ProgressTrackerManager();
     
-    private String currentTrackerId = null;
-    
     public BMTMetadataSupport() {
-        log.info("Using BMTMetadataSupport: " + bmt.api.GetVersion());
     }
 
-    public void addActiveProvider(IMetadataProviderInfo pi) {
-        bmt.api.AddDefaultMetadataProvider(pi);
-    }
-
-    public void decreaseProviderPriority(IMetadataProviderInfo pi) {
-        bmt.api.DecreaseMetadataProviderPriority(pi);
-    }
-
-    public IMetadataProviderInfo[] getInstalledProviders() {
-        return bmt.api.getMetadataProviders(true);
-    }
-
-    public void increaseProviderPriority(IMetadataProviderInfo pi) {
-        bmt.api.IncreaseMetadataProviderPriority(pi);
-    }
-
-    public boolean isMetadataSupportEnabled() {
-        return true;
-    }
-
-    public void removeActiveProvider(IMetadataProviderInfo pi) {
-        bmt.api.RemoveDefaultMetadataProvider(pi);
-    }
-
-    public IMetadataProviderInfo[] getActiveProviders() {
-        return bmt.api.getMetadataProviders(false);
-    }
-
-    public String[] getMetadataKeys(KeyType type) {
-        List<String> l = new LinkedList<String>();
-        
-        for (SageProperty p : SageProperty.values()) {
-            if (p.sageKey!=null) {
-                l.add(p.sageKey);
-            }
-        }
-        
-        return l.toArray(new String[l.size()]);
-    }
-
-    public boolean updateMetadataForResult(Object media, IMetadataSearchResult result) {
+    public boolean updateMetadataForResult(Object media, IMetadataSearchResult result, Map<String, String> perOptions) {
         try {
-            // TODO: Run in background
-            
-            
-            // first we need to update the central fanart properties based on
-            // the ui settings
-            metadataConfig.setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
-            metadataConfig.setFanartEnabled(phoenix.api.IsFanartEnabled());
-
             IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(result.getProviderId(), result.getMediaType());
             IMediaMetadata md = prov.getMetaData(result);
             IMediaMetadataPersistence persistence = null; 
 
-            if (MediaFileAPI.IsMediaFileObject(media)) {
-                persistence = PersistenceFactory.getOnDemandPersistence();
-            } else {
-                persistence = PersistenceFactory.getFanartOnlyPersistence();
-            }
-
-            PersistenceOptions options = new PersistenceOptions();
-            // TODO: set options for all this as On-Demand settings
-            options.setImportAsTV(ondemandConfig.getImportTVAsRecordings());
-            options.setOverwriteFanart(ondemandConfig.getOverwriteFanart());
-            options.setOverwriteMetadata(ondemandConfig.getOverwriteMetadata());
-            options.setUseTitleMasks(true);
-            options.setCreateProperties(false);
-            options.setUpdateWizBin(ondemandConfig.getUpdateWizBin());
-            if (ondemandConfig.getUpdateWizBin()) {
-                options.setCreateProperties(false);
-                options.setTouchingFiles(false);
-            } else {
-                options.setCreateProperties(true);
-                options.setTouchingFiles(true);
-            }
-            options.setCreateDefaultSTVThumbnail(ondemandConfig.getCreateDefaultSTVThumbnail());
+            // TODO: Does MediaMetadataPersistence handle Airings, i hope so.
+            persistence = new MediaMetadataPersistence();
+            PersistenceOptions options = createPersistenceOptions(perOptions);
             
             IMediaFile smf = phoenix.api.GetMediaFile(media);
             MetadataAPI.normalizeMetadata(smf, md, options);
@@ -127,9 +74,7 @@ public class BMTMetadataSupport implements IMetadataSupport {
             persistence.storeMetaData(md, smf, options);
             
             try {
-                // TODO: Store this using the new Titles manages
-                //ConfigurationManager.getInstance().setMetadataIdForTitle(smf.getTitle(), result.getMetadataId());
-                //ConfigurationManager.getInstance().saveTitleMappings();
+                // TODO: Store this using the new MediaTitles.xml and add a new entry for this airing
             } catch (Exception ex) {
                 log.error("Failed to update title mappings!", ex);
             }
@@ -137,96 +82,242 @@ public class BMTMetadataSupport implements IMetadataSupport {
             log.error("Failed to update metadata!", e);
         }
         
+        return true;
+    }
+    
+    private PersistenceOptions createPersistenceOptions(Map<String, String> perOptions) {
+        PersistenceOptions options = new PersistenceOptions();
+        options.setImportAsTV(ondemandConfig.getImportTVAsRecordings());
+        options.setOverwriteFanart(ondemandConfig.getOverwriteFanart());
+        options.setOverwriteMetadata(ondemandConfig.getOverwriteMetadata());
+        options.setUseTitleMasks(true);
+        options.setCreateProperties(false);
+        options.setUpdateWizBin(ondemandConfig.getUpdateWizBin());
+        if (ondemandConfig.getUpdateWizBin()) {
+            options.setCreateProperties(false);
+            options.setTouchingFiles(false);
+        } else {
+            options.setCreateProperties(true);
+            options.setTouchingFiles(true);
+        }
+        options.setCreateDefaultSTVThumbnail(ondemandConfig.getCreateDefaultSTVThumbnail());
+        
+        if (perOptions != null) {
+            // override with user defined options
+            String ofanart = perOptions.get("overwrite-fanart");
+            //String ufanart = perOptions.get("update-fanart");
+            String ometadata = perOptions.get("overwrite-metadata");
+            //String umetadata = perOptions.get("update-metadata");
+            if (ofanart!=null) options.setOverwriteFanart(BooleanUtils.toBoolean(ofanart));
+            if (ometadata!=null) options.setOverwriteMetadata(BooleanUtils.toBoolean(ometadata));
+        }
+        
+        return options;
+    }
+
+    public float getMetadataScanComplete(Object tracker) {
+        ProgressTracker<MetadataItem> mt = getTracker(tracker);
+        if (mt!=null) {
+            return (float) mt.internalWorked();
+        }
+        return 0;
+    }
+
+    public boolean isMetadataScanRunning(Object tracker) {
+        ProgressTracker<MetadataItem> mt = getTracker(tracker);
+        if (mt!=null) {
+            return !(mt.isDone() || mt.isCancelled());
+        }
         return false;
     }
 
-    public IMetadataSearchResult[] getMetadataSearchResults(String providerId, Object media) {
-        log.debug("Searching for metadata; Provider: " + providerId + "; media: " + media);
+    @SuppressWarnings("unchecked")
+    private ProgressTracker<MetadataItem> getTracker(Object tracker) {
+        if (tracker!=null) {
+            return (ProgressTracker<MetadataItem>) trackerManager.getProgress((String) tracker);
+        }
+        return null;
+    }
+    
+    public Object startMetadataScan(Object sageMediaFiles, Map<String, String> perOptions) {
+        ProgressTracker<MetadataItem> tracker = new ProgressTracker<MetadataItem>();
         
-        // TODO: implement getMetadataSearchResults()
-        
-        /**
-        if (media == null) {
-            log.debug("getMetadataSearchResults() was passed a null media item");
-            return null;
+        IMediaFolder fold = null;
+        if (sageMediaFiles instanceof File) {
+            fold = FileResourceFactory.createFolder((File) sageMediaFiles);
+        } else {
+            fold = phoenix.api.GetMediaAsFolder((Object[]) sageMediaFiles, "Scan from STV UI");
         }
         
-        if (providerId==null) {
-            providerId = metadataConfig.getDefaultProviderId(); 
-        }
+        final IMediaFolder folder = fold;
+        tracker.setLabel(folder.getTitle());
+        
+        Map<MediaType, IMediaMetadataProvider> providers = new HashMap<MediaType, IMediaMetadataProvider>();
+        providers.put(MediaType.TV, MediaMetadataFactory.getInstance().getProvider(metadataConfig.getTVProviders(), MediaType.TV));
+        providers.put(MediaType.MOVIE, MediaMetadataFactory.getInstance().getProvider(metadataConfig.getMovieProviders(), MediaType.MOVIE));
+        
+        IMediaMetadataPersistence persistence = new MediaMetadataPersistence();
+        PersistenceOptions poptions = createPersistenceOptions(perOptions);
+        
+        final AndResourceFilter filter = new AndResourceFilter(new MediaTypeFilter(MediaResourceType.ANY_VIDEO));
+        final MetadataProcessor processor = new MetadataProcessor(null, providers, persistence, poptions);
+        String trackerId = trackerManager.runWithProgress(new IRunnableWithProgress<ProgressTracker<MetadataItem>>() {
+            public void run(ProgressTracker<MetadataItem> monitor) {
+                try {
+                    log.info("Starting Scan on folder: " + folder.getTitle());
+                    processor.setRecurse(false);
+                    processor.addFilter(filter);
+                    processor.process(folder, monitor);
+                } catch (Throwable t) {
+                    log.error("Scan Failed!", t);
+                } finally {
+                    log.info("Scan completed: " + folder.getTitle());
+                    monitor.done();
+                }
+            }
+        }, tracker);
+        return trackerId;
+    }
 
+    public boolean cancelMetadataScan(Object tracker) {
+        ProgressTracker<MetadataItem> mt = getTracker(tracker);
+        if (mt!=null) {
+            log.info("Cancelling Media Scan: " + tracker);
+            mt.setCancelled(true);
+        }
+        return true;
+    }
+    
+    public IMetadataSearchResult[] getMetadataSearchResults(Object media, String title, String type) {
         try {
             IMediaFile smf = phoenix.api.GetMediaFile(media);
-
-            SearchQuery q = SearchQueryFactory.getInstance().createQuery(smf);
-            if (smf.isType(MediaResourceType.TV.value())) {
-                q.setMediaType(SearchQuery.Type.TV);
+            if (smf==null) {
+                log.warn("Failed to convert resource into a vfs resource for: " + media);
+                return null;
             }
 
-            log.debug("Metadata Search for: " + q + "; media: " + media);
-            IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(providerId);
-            List<IMediaSearchResult> l = prov.search(q);
+            // TODO: Update search query to handle Sage Airings
+            SearchQuery q = SearchQueryFactory.getInstance().createQuery(smf);
+            if (title!=null) {
+                log.info("Using Specified title: " + title + " for mediafile: " + media);
+                q.set(Field.QUERY, title);
+            } else {
+                q.set(Field.QUERY, q.get(Field.RAW_TITLE));
+            }
+            
+            if (type!=null) {
+                MediaType mt = MediaType.toMediaType(type);
+                if (mt!=null) {
+                    log.info("Using Specified media type: " + mt + " for mediafile: " + media);
+                    q.setMediaType(mt);
+                } else {
+                    log.warn("failed to convert media type: " + type + " to a valid media type");
+                }
+            }
+
+            log.info("Metadata Search for: " + q + "; media: " + media);
+            IMediaMetadataProvider prov = null;
+            if (q.getMediaType() == MediaType.TV) {
+                prov = MediaMetadataFactory.getInstance().getProvider(metadataConfig.getTVProviders(), MediaType.TV);
+            } else {
+                prov = MediaMetadataFactory.getInstance().getProvider(metadataConfig.getMovieProviders(), MediaType.MOVIE);
+            }
+            
+            List<IMetadataSearchResult> l = prov.search(q);
             if (l == null || l.size() == 0) {
                 log.debug("No matches for: " + q);
             } else {
                 return l.toArray(new IMetadataSearchResult[l.size()]);
             }
         } catch (Exception e) {
-            log.error("Failed to do a metadata lookup", e);
+            log.warn("Failed to do a metadata lookup for: " + media, e);
         }
-        */
         return null;
     }
 
-    public float getMetadataScanComplete() {
-        return getMetadataScanComplete(currentTrackerId);
+    public IMetadataSearchResult[] getMetadataSearchResults(Object media) {
+        return getMetadataSearchResults(media, null, null);
     }
 
-    public boolean isMetadataScanRunning() {
-        return isMetadataScanRunning(currentTrackerId);
+    public Object[] getFailed(Object progress) {
+        LinkedList<TrackedItem<MetadataItem>> items = getFailedItems(progress);
+        if (items!=null) {
+            IMediaFile files[] = new IMediaFile[items.size()];
+            for (int i=0;i<files.length;i++) {
+                files[i] = items.get(i).getItem().getFile();
+            }
+            return files;
+        }
+        return new Object[] {};
     }
 
-    public float getMetadataScanComplete(Object tracker) {
-        ProgressTracker<IMediaFile> mt = getTracker(tracker);
-        if (mt!=null) return (float) mt.internalWorked();
+    public int getFailedCount(Object progress) {
+        LinkedList<TrackedItem<MetadataItem>> items = getFailedItems(progress);
+        if (items!=null) {
+            return items.size();
+        }
         return 0;
     }
 
-    public boolean isMetadataScanRunning(Object tracker) {
-        ProgressTracker<IMediaFile> mt = getTracker(tracker);
-        if (mt!=null) return mt.isDone() || mt.isCancelled();
-        return false;
+    public Object[] getSkipped(Object progress) {
+        LinkedList<TrackedItem<MetadataItem>> items = getSkippedItems(progress);
+        if (items!=null) {
+            IMediaFile files[] = new IMediaFile[items.size()];
+            for (int i=0;i<files.length;i++) {
+                files[i] = items.get(i).getItem().getFile();
+            }
+        }
+        return new Object[] {};
     }
 
-    private ProgressTracker<IMediaFile> getTracker(Object tracker) {
-        if (tracker!=null) {
-            return (ProgressTracker<IMediaFile>) trackerManager.getProgress((String) tracker);
+    public int getSkippedCount(Object progress) {
+        LinkedList<TrackedItem<MetadataItem>> items = getSkippedItems(progress);
+        if (items!=null) {
+            return items.size();
+        }
+        return 0;
+    }
+
+    public Object[] getSuccess(Object progress) {
+        LinkedList<TrackedItem<MetadataItem>> items = getSuccessfulItems(progress);
+        if (items!=null) {
+            IMediaFile files[] = new IMediaFile[items.size()];
+            for (int i=0;i<files.length;i++) {
+                files[i] = items.get(i).getItem().getFile();
+            }
+        }
+        return new Object[] {};
+    }
+
+    public int getSuccessCount(Object progress) {
+        LinkedList<TrackedItem<MetadataItem>> items = getSuccessfulItems(progress);
+        if (items!=null) {
+            return items.size();
+        }
+        return 0;
+    }
+
+    public LinkedList<TrackedItem<MetadataItem>> getSuccessfulItems(Object tracker) {
+        ProgressTracker<MetadataItem> mt = getTracker(tracker);
+        if (mt!=null) {
+            return mt.getSuccessfulItems();
         }
         return null;
     }
     
-    public synchronized Object startMetadataScan(String provider, Object[] sageMediaFiles) {
-        try {
-            if (isMetadataScanRunning()) {
-                log.error("Can't start another tracker until the current tracker is done!");
-                return null;
-            }
-
-            throw new UnsupportedOperationException("TODO: Not Implemented!");
-        } catch (Throwable e) {
-            log.error("Scan Failed!", e);
-            currentTrackerId = null;
+    public LinkedList<TrackedItem<MetadataItem>> getFailedItems(Object tracker) {
+        ProgressTracker<MetadataItem> mt = getTracker(tracker);
+        if (mt!=null) {
+            return mt.getFailedItems();
         }
-        return currentTrackerId;
+        return null;
     }
 
-    public boolean cancelMetadataScan(Object tracker) {
-        ProgressTracker<IMediaFile> mt = getTracker(tracker);
+    public LinkedList<TrackedItem<MetadataItem>> getSkippedItems(Object tracker) {
+        ProgressTracker<MetadataItem> mt = getTracker(tracker);
         if (mt!=null) {
-            log.info("Cancelling Media Scan: " + tracker);
-            mt.setCancelled(true);
-            currentTrackerId=null;
+            return mt.getSkippedItems();
         }
-        return true;
+        return null;
     }
 }

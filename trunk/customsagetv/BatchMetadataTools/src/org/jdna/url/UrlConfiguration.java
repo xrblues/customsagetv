@@ -11,7 +11,7 @@ public class UrlConfiguration extends GroupProxy {
     protected FieldProxy<String> cacheDir = new FieldProxy<String>("cache/url");
 
     @AField(label="Cache Expiry", description = "How long, in seconds, URLs remain in the cache")
-    protected FieldProxy<Integer> cacheExpiryInSeconds = new FieldProxy<Integer>(60 * 60 * 4);
+    protected FieldProxy<Integer> cacheExpiryInSeconds = new FieldProxy<Integer>(60 * 30);
 
     @AField(label="URL Factory Class", description = "URL Factory class name for creating new Url objects")
     protected FieldProxy<String> urlFactoryClass      = new FieldProxy<String>(org.jdna.url.CachedUrlFactory.class.getName());

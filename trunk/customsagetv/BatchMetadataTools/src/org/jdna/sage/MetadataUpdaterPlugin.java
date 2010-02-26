@@ -12,12 +12,15 @@ import org.jdna.metadataupdater.Version;
 import org.jdna.process.ScanMediaFileEvent;
 import org.jdna.process.SysEventMessageID;
 
+import bmt.BMTActivator;
+
 import sage.MediaFileMetadataParser;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.event.message.SystemMessageEvent;
 import sagex.phoenix.event.message.SystemMessageEvent.Severity;
 import sagex.phoenix.fanart.FanartUtil;
+import sagex.phoenix.plugin.Plugin.State;
 import sagex.phoenix.util.PropertiesUtils;
 
 /**
@@ -66,7 +69,16 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 log.debug("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
                 
                 log.info("Registering the ScanMediaFileEventHandler");
-                Phoenix.getInstance().getEventBus().addHandler(ScanMediaFileEvent.TYPE, new SageScanMediaFileEvenHandler());
+                final SageScanMediaFileEvenHandler handler = new SageScanMediaFileEvenHandler();
+                Phoenix.getInstance().getEventBus().addHandler(ScanMediaFileEvent.TYPE, handler);
+                Runtime.getRuntime().addShutdownHook(new Thread() {
+                   public void run() {
+                       handler.shutDown(); 
+                   }
+                });
+                log.info("Registering URL Cache Monitor");
+                BMTActivator act = new BMTActivator();
+                act.pluginChanged(null, State.STARTING);
             }
         } catch (Throwable e) {
             log.warn("Failed while initializing the BMT Plugin!", e);
@@ -103,7 +115,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
                 if (StringUtils.isEmpty(props.getProperty(SageProperty.DISPLAY_TITLE.sageKey))) {
                     scanFile(file);
                 } else {
-                    log.debug("Returning existing metadata for: " + file.getAbsolutePath());
+                    log.info("Returning existing metadata for: " + file.getAbsolutePath());
                     return props;
                 }
             }

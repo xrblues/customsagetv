@@ -10,7 +10,7 @@
 	<!-- 	returns: 	show name -->
 	<GetShowName dest="3">
 		<RegExp input="$$1" output="\1" dest="3">
-			<expression>.*/(.*)([0-9]{1,2})x([[0-9]]{1,2})</expression>
+			<expression>.*[/\\](.*)([0-9]{1,2})x([[0-9]]{1,2})</expression>
 		</RegExp>
 	</GetShowName>
 
@@ -18,7 +18,7 @@
 	<!-- 	returns: 	Season #-->
 	<GetSeason dest="3">
 		<RegExp input="$$1" output="\2" dest="3">
-			<expression>.*/(.*)([0-9]{1,2})x([[0-9]]{1,2})</expression>
+			<expression>.*[/\\](.*)([0-9]{1,2})x([[0-9]]{1,2})</expression>
 		</RegExp>
 	</GetSeason>
 
@@ -26,7 +26,7 @@
 	<!-- 	returns: 	Episode #-->
 	<GetEpisode dest="3">
 		<RegExp input="$$1" output="\3" dest="3">
-			<expression>.*/(.*)([0-9]{1,2})x([[0-9]]{1,2})</expression>
+			<expression>.*[/\\](.*)([0-9]{1,2})x([[0-9]]{1,2})</expression>
 		</RegExp>
 	</GetEpisode>
 </scraper>

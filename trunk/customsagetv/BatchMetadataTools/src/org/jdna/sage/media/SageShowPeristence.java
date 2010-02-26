@@ -141,8 +141,17 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
 
         if (MediaFileAPI.IsTVFile(file)) {
             MetadataAPI.setMediaType(md, "TV");
-            MetadataAPI.setEpisodeTitle(md, ShowAPI.GetShowTitle(show));
+            MetadataAPI.setEpisodeTitle(md, ShowAPI.GetShowEpisode(show));
             MetadataAPI.setMediaTitle(md, ShowAPI.GetShowTitle(show));
+        } else {
+            MetadataAPI.setMediaTitle(md, ShowAPI.GetShowTitle(show));
+            MetadataAPI.setMediaType(md, "Movie");
+        }
+        
+        // dvds use the media title
+        if (MediaFileAPI.IsDVD(file) || MediaFileAPI.IsBluRay(file)) {
+            MetadataAPI.setMediaTitle(md, MediaFileAPI.GetMediaTitle(file));
+            MetadataAPI.setDisplayTitle(md, MediaFileAPI.GetMediaTitle(file));
         }
         
         Date d = new Date(AiringAPI.GetAiringStartTime(airing));
@@ -321,7 +330,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             }
         }
 
-        externalID = createShowId(md, options, externalID);
+        externalID = createShowId(importAsTV, md, options, externalID);
         log.debug("New ExternalID Created: " + externalID);
 
         // Sage wants to have the movie titles in the episode field as well
@@ -391,9 +400,9 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         }
     }
 
-    private String createShowId(IMediaMetadata md, PersistenceOptions options, String externalID) {
+    private String createShowId(boolean importAsTV, IMediaMetadata md, PersistenceOptions options, String externalID) {
         String prefix = null;
-        if (options.isImportAsTV()) {
+        if (importAsTV) {
             if (MetadataAPI.isTV(md)) {
                 prefix = "EPmt";
             } else {

@@ -13,22 +13,24 @@ import sagex.SageAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaResource;
+import sagex.phoenix.vfs.sage.SageMediaFile;
 
 /**
- * Default persistence implementation.  This is a basically a 'smart' peristence, in that it will
- * call other peristence implementations based on conditions, such as importing as tv, etc.
+ * Default persistence implementation. This is a basically a 'smart' peristence,
+ * in that it will call other peristence implementations based on conditions,
+ * such as importing as tv, etc.
  * 
  * @author seans
- *
+ * 
  */
 public class MediaMetadataPersistence implements IMediaMetadataPersistence {
-    private Logger log = Logger.getLogger(MediaMetadataPersistence.class);
+    private Logger                        log       = Logger.getLogger(MediaMetadataPersistence.class);
 
-    private MetadataConfiguration config = null;
-    private SageTVPropertiesPersistence props = new SageTVPropertiesPersistence();
+    private MetadataConfiguration         config    = null;
+    private SageTVPropertiesPersistence   props     = new SageTVPropertiesPersistence();
     private SageCustomMetadataPersistence sageExtra = new SageCustomMetadataPersistence();
-    private CentralFanartPersistence fanart = new CentralFanartPersistence();
-    private SageShowPeristence sageShow = new SageShowPeristence();
+    private CentralFanartPersistence      fanart    = new CentralFanartPersistence();
+    private SageShowPeristence            sageShow  = new SageShowPeristence();
 
     public MediaMetadataPersistence() {
         config = GroupProxy.get(MetadataConfiguration.class);
@@ -45,7 +47,7 @@ public class MediaMetadataPersistence implements IMediaMetadataPersistence {
     public IMediaMetadata loadMetaData(IMediaResource mediaFile) {
         IMediaMetadata md = new MediaMetadata();
         log.debug("Begin Loading Metadata for: " + mediaFile);
-        
+
         if (SageAPI.getProvider() instanceof BMTSageAPIProvider) {
             log.debug("BMT Commandline; Loading Metadata from Properties File for: " + mediaFile);
             IMediaMetadata md2 = props.loadMetaData(mediaFile);
@@ -59,7 +61,7 @@ public class MediaMetadataPersistence implements IMediaMetadataPersistence {
             IMediaMetadata md3 = sageExtra.loadMetaData(mediaFile);
             MetadataAPI.copyNonNull(md3, md);
         }
-        
+
         log.debug("Done Loading Metadata for: " + mediaFile);
         return md;
     }
@@ -67,69 +69,76 @@ public class MediaMetadataPersistence implements IMediaMetadataPersistence {
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
         log.info("Begin updating metadata for: " + mediaFile + "; With Options: " + options);
         /**
-         * if options.createProperties==true || isRemote
-         * -- write properties persistence
+         * if options.createProperties==true || isRemote -- write properties
+         * persistence
          * 
-         * if (options.updateWiz || options.importAsTV)
-         * -- sage import persistence
+         * if (options.updateWiz || options.importAsTV) -- sage import
+         * persistence
          * 
          * -- sage custome metadata persistence
          * 
-         * if central fanart
-         * -- sage central fanart persistent
+         * if central fanart -- sage central fanart persistent
          */
-        
+
         // Normalize the metadata, in case it hasn't been done.
         MetadataAPI.normalizeMetadata((IMediaFile) mediaFile, md, options);
-        
-        if (options.isCreateProperties()) {
-            log.debug("Updating Properties File for: " + mediaFile);
-            try {
-                props.storeMetaData(md, mediaFile, options);
-            } catch (Throwable t) {
-                log.warn("Failed to store properties for: " + mediaFile, t);
-            }
-        }
-        
-        // do not update the wiz.bin directly, if we are running from bmt commandline 
-        if (!(SageAPI.getProvider() instanceof BMTSageAPIProvider)) {
-            if (options.isUpdateWizBin() || options.isImportAsTV()) {
-                log.debug("Updating Wiz.Bin for: " + mediaFile);
+
+        if (options.isOverwriteMetadata()) {
+            if (options.isCreateProperties()) {
+                log.debug("Updating Properties File for: " + mediaFile);
                 try {
-                    sageShow.storeMetaData(md, mediaFile, options);
+                    props.storeMetaData(md, mediaFile, options);
                 } catch (Throwable t) {
-                    log.warn("Failed to update wiz.bin for: " + mediaFile, t);
+                    log.warn("Failed to store properties for: " + mediaFile, t);
                 }
             }
-        } else {
-            log.debug("BMT Commandline; Skipping Direct Wiz.Bin updates.");
+
+            // do not update the wiz.bin directly, if we are running from bmt
+            // commandline
+            if (!(SageAPI.getProvider() instanceof BMTSageAPIProvider)) {
+                if (options.isUpdateWizBin() || options.isImportAsTV()) {
+                    log.debug("Updating Wiz.Bin for: " + mediaFile);
+                    try {
+                        sageShow.storeMetaData(md, mediaFile, options);
+                    } catch (Throwable t) {
+                        log.warn("Failed to update wiz.bin for: " + mediaFile, t);
+                    }
+                }
+            } else {
+                log.debug("BMT Commandline; Skipping Direct Wiz.Bin updates.");
+            }
         }
 
-        log.debug("Updating Custom Fields in Wiz.Bin for: " + mediaFile);
-        try {
-            sageExtra.storeMetaData(md, mediaFile, options);
-        } catch (Throwable t) {
-            log.warn("Failed to update Custom Metadata in wiz.bin for: " + mediaFile, t);
+        if (options.isOverwriteFanart() || options.isOverwriteMetadata()) {
+            log.debug("Updating Custom Fields in Wiz.Bin for: " + mediaFile);
+            try {
+                sageExtra.storeMetaData(md, mediaFile, options);
+            } catch (Throwable t) {
+                log.warn("Failed to update Custom Metadata in wiz.bin for: " + mediaFile, t);
+            }
         }
-        
-        
-        log.debug("Storing Fanart for: " + mediaFile);
-        try {
-            fanart.storeMetaData(md, mediaFile, options);
-        } catch (Throwable t) {
-            log.warn("Failedt to update Fanart/Images for: " + mediaFile, t);
+
+        if (options.isOverwriteFanart()) {
+            log.debug("Storing Fanart for: " + mediaFile);
+            try {
+                fanart.storeMetaData(md, mediaFile, options);
+            } catch (Throwable t) {
+                log.warn("Failedt to update Fanart/Images for: " + mediaFile, t);
+            }
         }
-        
+
         // if we need to touch files, the do so...
         if (options.isTouchingFiles()) {
             log.debug("Updating Timestamp on file for: " + mediaFile);
             try {
-                // TODO: Touch Files to the date/time of the recording (or current time +1ms)
-                mediaFile.touch(mediaFile.lastModified()+1);
+                // TODO: Touch Files to the date/time of the recording (or
+                // current time +1ms)
+                mediaFile.touch(mediaFile.lastModified() + SageMediaFile.MIN_TOUCH_ADJUSTMENT);
             } catch (Throwable t) {
                 log.warn("Failed to update file timestamp for mediafile: " + mediaFile, t);
             }
         }
+        
         log.debug("Done updating metadata for: " + mediaFile);
     }
 }

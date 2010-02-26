@@ -20,7 +20,6 @@ public class MediaSearchResult implements IMetadataSearchResult, Serializable, H
     private MediaType type;
     
     public MediaSearchResult() {
-    	// empty contructor
     }
     
     public MediaSearchResult(String providerId, MediaType type, float score) {
@@ -36,6 +35,19 @@ public class MediaSearchResult implements IMetadataSearchResult, Serializable, H
         this.title = title;
         this.year = year;
         this.score = score;
+    }
+
+    public MediaSearchResult(IMetadataSearchResult result) {
+        this.providerId = result.getProviderId();
+        this.url =  result.getUrl();
+        this.title = result.getTitle();
+        this.year = result.getYear();
+        this.id=result.getId();
+        this.score=result.getScore();
+        if (result instanceof HasIMDBID) {
+            this.imdbId = ((HasIMDBID) result).getIMDBId();
+        }
+        extraArgs.putAll(result.getExtra());
     }
 
     public String getProviderId() {

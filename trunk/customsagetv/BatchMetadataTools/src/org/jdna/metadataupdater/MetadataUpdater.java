@@ -3,14 +3,19 @@ package org.jdna.metadataupdater;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.DataFormatException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -34,6 +39,7 @@ import org.jdna.media.util.RefreshMetadataVisitor;
 import org.jdna.process.InteractiveMetadataProcessor;
 import org.jdna.process.MetadataItem;
 import org.jdna.process.MetadataProcessor;
+import org.jdna.url.CachedUrlCleanupTask;
 import org.jdna.util.JarInfo;
 import org.jdna.util.JarUtil;
 import org.jdna.util.LoggerConfiguration;
@@ -101,6 +107,7 @@ public class MetadataUpdater {
     private boolean               notifySageTV          = false;
     private boolean               rememberSelection     = true;
     private String query = null;
+    private boolean support=false;
 
     /**
      * This method only needs to be called from the command line. All other
@@ -162,10 +169,11 @@ public class MetadataUpdater {
 
     public void logMetadataEnvironment() {
         log.debug("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
-        log.debug("   BMT Version:  " + Version.VERSION);
+        log.debug("   BMT Version:  " + bmt.api.GetVersion());
         log.debug(" Sagex Version:  " + sagex.api.Version.GetVersion());
         log.debug("  Java Version:  " + System.getProperty("java.version"));
         log.debug("Java Classpath:  " + System.getProperty("java.class.path"));
+        log.debug("Fanart Enabled:  " + phoenix.api.IsFanartEnabled());
 
         int removed = 0;
         String metadataPattern = "metadata-updater-([a-zA-Z0-9-_\\.]+).jar";
@@ -207,6 +215,22 @@ public class MetadataUpdater {
     public void process() throws Exception {
         if (!automaticUpdate) {
             System.out.println("** Automatic Updating Disabled ***");
+        }
+        
+        if (support) {
+            List<File> locations = new ArrayList<File>();
+            for (String file: files) {
+                File dir = new File(file);
+                if (dir.exists() && dir.isDirectory()) {
+                    locations.add(dir);
+                } else {
+                    System.out.println("Skipping Location: " + dir.getAbsolutePath());
+                }
+            }
+            System.out.println("Creating Support Zip File...");
+            File out = Troubleshooter.createSupportZip("No Description: BMT Commandline", true, true, locations);
+            System.out.println("ZipFile Created: " + out.getPath());
+            return;
         }
 
         // dump our properties
@@ -646,6 +670,11 @@ public class MetadataUpdater {
     @CommandLineArg(name = "auto", description = "Automatically choose best search result. [if false, it will force you to choose for each item] (default true)")
     public void setAutomaticUpdate(boolean b) {
         automaticUpdate = b;
+    }
+
+    @CommandLineArg(name = "support", description = "build a zip file with information for support")
+    public void setSupport(boolean b) {
+        support = b;
     }
 
     @CommandLineArg(name = "fanartOnly", description = "Only process fanart, ignore updating metadata (default false)")

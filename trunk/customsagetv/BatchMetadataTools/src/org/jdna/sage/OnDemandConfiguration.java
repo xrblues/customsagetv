@@ -40,7 +40,7 @@ public class OnDemandConfiguration extends GroupProxy {
     }
 
     public boolean getOverwriteMetadata() {
-        return overwriteMetadata.get();
+        return overwriteMetadata.getBoolean();
     }
 
     public void setOverwriteMetadata(boolean overwriteMetadata) {
@@ -48,7 +48,7 @@ public class OnDemandConfiguration extends GroupProxy {
     }
 
     public boolean getOverwriteFanart() {
-        return overwriteFanart.get();
+        return overwriteFanart.getBoolean();
     }
 
     public void setOverwriteFanart(boolean overwriteFanart) {
@@ -59,7 +59,7 @@ public class OnDemandConfiguration extends GroupProxy {
      * @return the useSystemMessagesForFailed
      */
     public boolean getUseSystemMessagesForFailed() {
-        return useSystemMessagesForFailed.get();
+        return useSystemMessagesForFailed.getBoolean();
     }
 
     /**
@@ -73,7 +73,7 @@ public class OnDemandConfiguration extends GroupProxy {
      * @return the useSystemMessagesForStatus
      */
     public boolean getUseSystemMessagesForStatus() {
-        return useSystemMessagesForStatus.get();
+        return useSystemMessagesForStatus.getBoolean();
     }
 
     /**
@@ -96,7 +96,7 @@ public class OnDemandConfiguration extends GroupProxy {
     }
 
     public boolean getUpdateWizBin() {
-        return updateWizBin.get();
+        return updateWizBin.getBoolean();
     }
 
     public void setImportTVAsRecordings(boolean importTVAsRecordings) {
@@ -104,14 +104,14 @@ public class OnDemandConfiguration extends GroupProxy {
     }
 
     public boolean getImportTVAsRecordings() {
-        return importTVAsRecordings.get();
+        return importTVAsRecordings.getBoolean();
     }
 
     /**
      * @return the updateInBackground
      */
     public boolean getUpdateInBackground() {
-        return updateInBackground.get();
+        return updateInBackground.getBoolean();
     }
 
     public void setUpdateInBackground(boolean b) {
@@ -122,7 +122,7 @@ public class OnDemandConfiguration extends GroupProxy {
      * @return the createDefaultSTVThumbnail
      */
     public boolean getCreateDefaultSTVThumbnail() {
-        return createDefaultSTVThumbnail.get();
+        return createDefaultSTVThumbnail.getBoolean();
     }
 
     /**

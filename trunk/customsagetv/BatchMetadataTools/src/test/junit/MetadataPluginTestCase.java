@@ -19,14 +19,15 @@ import org.apache.commons.io.FileUtils;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.sage.MetadataUpdaterPlugin;
 import org.jdna.sage.PluginConfiguration;
+import org.jdna.util.Pair;
+import org.jdna.util.ParserUtils;
 
 import sagex.api.MediaFileAPI;
+import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataSearchResult;
 import test.junit.lib.InitBMT;
 
 public class MetadataPluginTestCase extends TestCase {
-    String PID="testplugin";
-
     public MetadataPluginTestCase() {
     }
 
@@ -52,16 +53,26 @@ public class MetadataPluginTestCase extends TestCase {
         // setup the stub provider
         setStubProvider();
         
-        IMetadataSearchResult[] results = phoenix.api.GetMetadataSearchResults(PID, mf);
-        assertEquals("search results failed", 1, results.length);
+        IMetadataSearchResult[] results = phoenix.api.GetMetadataSearchResults(mf);
+        assertTrue("search results failed", results.length>0);
 
+        IMetadataSearchResult result = null;
+        for (IMetadataSearchResult r : results) {
+            if ("The Terminator".equals(r.getTitle())) {
+                result = r;
+                break;
+            }
+        }
+        
+        assertNotNull("Didn't find the The Terminator result", result);
+        
         // udpate the metadata...
-        phoenix.api.UpdateMediaFileMetadata(mf, results[0]);
+        phoenix.api.UpdateMediaFileMetadata(mf, result);
 
         // test central fanart worked
-        getFile("test/Fanart/Movies/The Terminator/Backgrounds/Terminator.jpg");
-        getFile("test/Fanart/Movies/The Terminator/Banners/Terminator.jpg");
-        getFile("test/Fanart/Movies/The Terminator/Posters/Terminator.jpg");
+        //getFile("test/Fanart/Movies/The Terminator/Backgrounds/Terminator.jpg");
+        //getFile("test/Fanart/Movies/The Terminator/Banners/Terminator.jpg");
+        //getFile("test/Fanart/Movies/The Terminator/Posters/Terminator.jpg");
 
         // test that it wrote a properties files
         File propFile = getFile("test/Movies/Terminator.avi.properties");
@@ -72,14 +83,16 @@ public class MetadataPluginTestCase extends TestCase {
         
         // save the file stamp on the properties file, search and test again, test that the on demand search will overwrite.
         long lastModified = propFile.lastModified();
-        results = phoenix.api.GetMetadataSearchResults(PID, mf);
-        assertEquals("search results failed", 1, results.length);
-        phoenix.api.UpdateMediaFileMetadata(mf, results[0]);
+        results = phoenix.api.GetMetadataSearchResults(mf);
+        assertTrue("search results failed", results.length>1);
+        phoenix.api.UpdateMediaFileMetadata(mf, result);
         propFile = getFile("test/Movies/Terminator.avi.properties");
         assertNotSame("propfile did not update!", lastModified , propFile.lastModified());
     }
     
     public void testMediaFilePlugin() throws FileNotFoundException, IOException {
+        PluginConfiguration pluginConf = GroupProxy.get(PluginConfiguration.class);
+
         try {
             FileUtils.deleteDirectory(makeDir("test"));
         } catch (IOException e) {
@@ -87,21 +100,53 @@ public class MetadataPluginTestCase extends TestCase {
             e.printStackTrace();
         }
         File fanartDir = makeDir("test/Fanart");
-        
-        Object mf = MediaFileAPI.AddMediaFile(makeFile("test/Movies/The Terminator (1984).avi"), "Movies");
-        assertEquals("mediafile not added", "The Terminator (1984)", MediaFileAPI.GetMediaTitle(mf));
-
-        Object mf2 = MediaFileAPI.AddMediaFile(makeFile("test/Movies/Finding Nemo.avi"), "Movies");
-        
         phoenix.api.SetFanartCentralFolder(fanartDir);
         phoenix.api.SetIsFanartEnabled(true);
         
-        // setup the stub provider
-        setStubProvider();
+
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    testMediaFilePluginWithName("Finding Nemo.avi", "Finding Nemo");
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+        t.setDaemon(false);
+        t.start();
+        //testMediaFilePluginWithName("The Terminator (1984).avi", "The Terminator (1984)");
+        
+        // this tests if 2 separate searches can happen at the same time.
+        testOnDemanSearch();
+        
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        //testMediaFilePluginWithName("The Terminator (1984).avi", "The Terminator (1984)");
+        
+        // update the plugin to NOT accept videos, and try again...
+        //pluginConf.setSupportedMediaTypes("dvd, bluray");
+        //testMediaFilePluginWithName("Finding Nemo.avi", "Finding Nemo");
+        //File f = getFile("test/Movies/Finding Nemo.avi.properties", false);
+        //assertFalse("File Should have been excluded!", f.exists());
+    }
+
+    public void testMediaFilePluginWithName(String movie, String title) throws FileNotFoundException, IOException {
+        Pair<String, String> pair = ParserUtils.parseTitleAndDateInBrackets(title);
+        String shortTitle = pair.first();
+        
+        Object mf = MediaFileAPI.AddMediaFile(makeFile("test/Movies/" + movie), "Movies");
+        assertEquals("mediafile not added", title, MediaFileAPI.GetMediaTitle(mf));
 
         PluginConfiguration pluginConf = new PluginConfiguration();
         MetadataUpdaterPlugin plugin = new MetadataUpdaterPlugin();
-        Object results = plugin.extractMetadata(getFile("test/Movies/The Terminator (1984).avi"), null);
+        Object results = plugin.extractMetadata(getFile("test/Movies/" + movie), null);
         
         try {
             Thread.currentThread().sleep(10000);
@@ -111,38 +156,23 @@ public class MetadataPluginTestCase extends TestCase {
         }
 
         // test central fanart worked
-        listFiles("test/Fanart/Movies/The Terminator/Backgrounds/", "\\.jpg");
-        //getFile("test/Fanart/Movies/The Terminator/Banners/The Terminator (1984).jpg");
-        listFiles("test/Fanart/Movies/The Terminator/Posters/", "\\.jpg");
+        listFiles("test/Fanart/Movies/"+shortTitle+"/Backgrounds/", "\\.jpg");
+        listFiles("test/Fanart/Movies/"+shortTitle+"/Posters/", "\\.jpg");
 
         // test that it wrote a properties files
-        File propFile = getFile("test/Movies/The Terminator (1984).avi.properties");
+        File propFile = getFile("test/Movies/"+movie+".properties");
         Properties props = new Properties();
         props.load(new FileInputStream(propFile));
-        assertEquals("MediaTitle incorrect", "The Terminator", props.getProperty(SageProperty.MEDIA_TITLE.sageKey));
-        assertEquals("MediaTitle incorrect", "The Terminator", props.getProperty(SageProperty.DISPLAY_TITLE.sageKey));
+        assertEquals("MediaTitle incorrect", shortTitle, props.getProperty(SageProperty.MEDIA_TITLE.sageKey));
+        assertEquals("MediaTitle incorrect", shortTitle, props.getProperty(SageProperty.DISPLAY_TITLE.sageKey));
 
         // test the a second attempt does not update the properties
         long lastModified = propFile.lastModified();
-        results = plugin.extractMetadata(getFile("test/Movies/The Terminator (1984).avi"), null);
+        results = plugin.extractMetadata(getFile("test/Movies/" + movie), null);
         assertNotNull("No metadata returned", results);
         assertTrue("result is not a Map", results instanceof Map);
-        propFile = getFile("test/Movies/The Terminator (1984).avi.properties");
+        propFile = getFile("test/Movies/"+movie+".properties");
         assertEquals("propfile was updated!", lastModified , propFile.lastModified());
-        
-        // update the plugin to NOT accept videos, and try again...
-        pluginConf.setSupportedMediaTypes("dvd, bluray");
-        results = plugin.extractMetadata(getFile("test/Movies/Finding Nemo.avi"), null);
-        
-        try {
-            Thread.currentThread().sleep(3000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
-        File f = getFile("test/Movies/Finding Nemo.avi.properties", false);
-        assertFalse("File Should have been excluded!", f.exists());
     }
     
     private void setStubProvider() throws MalformedURLException {

@@ -18,6 +18,9 @@ import org.jdna.sage.OnDemandConfiguration;
 
 import sagex.api.Configuration;
 import sagex.phoenix.Phoenix;
+import sagex.phoenix.configuration.Group;
+import sagex.phoenix.configuration.IConfigurationElement;
+import sagex.phoenix.configuration.IConfigurationMetadata;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 
 public class api {
@@ -95,184 +98,13 @@ public class api {
     }
     
     /**
-     * @deprecated now uses multiple provider ids for tv, movies, and music
+     * Return the configuration metadata for configuring BMT on demand options.
+     * Using this node you can navigate the configuration elements.
+     *
+     * Refer to the Phoenix 
      * @return
      */
-    @Deprecated()
-    public static String GetCurrentMetadataProviderIds() {
-        try {
-            //return GroupProxy.get(MetadataConfiguration.class).getDefaultProviderId();
-            return "";
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    /**
-     * @deprecated now uses multiple provider ids for tv, movies, and music
-     * @return
-     */
-    @Deprecated
-    public static void SetCurrentProvidersIds(String list) {
-        //System.out.println("Setting New Current Metadata Providers to: " + list);
-        //GroupProxy.get(MetadataConfiguration.class).setDefaultProviderId(list);
-        //SaveMetadataProviderConfiguration();
-    }
-    
-    public static void SaveMetadataProviderConfiguration() {
-        try {
-            // update central fanart locations from phoenix
-            GroupProxy.get(MetadataConfiguration.class).setFanartEnabled(phoenix.api.IsFanartEnabled());
-            GroupProxy.get(MetadataConfiguration.class).setCentralFanartFolder(phoenix.api.GetFanartCentralFolder());
-
-            Phoenix.getInstance().getConfigurationManager().save();
-            System.out.println("Metadata Configuration is peristed.");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String GetMetadataProviderId(Object prov) {
-        if (prov==null) return null;
-        if (prov instanceof IMediaMetadataProvider) {
-            return ((IMediaMetadataProvider)prov).getInfo().getId();
-        } else if (prov instanceof IProviderInfo) {
-            return ((IProviderInfo)prov).getId();
-        } else {
-            return String.valueOf(prov);
-        }
-    }
-
-    public static String GetMetadataProviderName(IProviderInfo info) {
-        return info.getName();
-    }
-
-    public static String GetMetadataProviderDescription(IProviderInfo info) {
-        return info.getDescription();
-    }
-    
-    public static boolean IsMetadataProviderInstalled(Object prov) {
-        if (prov==null) return false;
-        return ArrayUtils.contains(GetCurrentMetadataProviderIds().split(","), GetMetadataProviderId(prov));
-    }
-
-    public static IProviderInfo[] getMetadataProviders(boolean all) {
-        List<IMediaMetadataProvider> provs = MediaMetadataFactory.getInstance().getMetaDataProviders();
-        List <IProviderInfo> info = new LinkedList<IProviderInfo>();
-        
-        if (all) {
-            for (IMediaMetadataProvider mp : provs) {
-                info.add(mp.getInfo());
-            }
-        } else {
-            for (String p : GetCurrentMetadataProviderIds().split(",")) {
-                SafeAddProvider(p, info);
-            }
-        }
-        
-        return info.toArray(new IProviderInfo[info.size()]);
-     }
-    
-
-    /**
-     * @deprecated now uses multiple provider ids for tv, movies, and music
-     * @return
-     */
-    @Deprecated
-    private static void SafeAddProvider(String id, List<IProviderInfo> infos) {
-        //try {
-            //IMediaMetadataProvider mp = MediaMetadataFactory.getInstance().getProvider(id);
-            //infos.add(mp.getInfo());
-        //} catch (Exception e) {
-            //System.out.println("Invalid Provider: removing id: " + id);
-            //RemoveDefaultMetadataProvider(id);
-        //}
-    }
-
-    
-    public static IProviderInfo[] GetUninstalledMetadataProviders() {
-        List<IMediaMetadataProvider> provs = MediaMetadataFactory.getInstance().getMetaDataProviders();
-        List <IProviderInfo> info = new LinkedList<IProviderInfo>();
-        
-        for (IMediaMetadataProvider mp : provs) {
-            if (!IsMetadataProviderInstalled(mp.getInfo())) {
-                info.add(mp.getInfo());
-            }
-        }
-        
-        return info.toArray(new IProviderInfo[info.size()]);
-     }
-
-    
-    public static void AddDefaultMetadataProvider(Object prov) {
-        String id = GetMetadataProviderId(prov);
-        String ids[] = GetCurrentMetadataProviderIds().split(",");
-        
-        if (ArrayUtils.contains(ids, id)) {
-            return;
-        }
-        
-        ids = (String[])ArrayUtils.add(ids, id);
-        SetCurrentProvidersIds(new StrBuilder().appendWithSeparators(ids, ",").toString());
-    }
-
-    public static void RemoveDefaultMetadataProvider(Object prov) {
-        String id = GetMetadataProviderId(prov);
-        String ids[] = GetCurrentMetadataProviderIds().split(",");
-        
-        if (!ArrayUtils.contains(ids, id)) {
-            return;
-        }
-        
-        ids = (String[])ArrayUtils.removeElement(ids, id);
-        SetCurrentProvidersIds(new StrBuilder().appendWithSeparators(ids, ",").toString());
-    }
-    
-    public static void IncreaseMetadataProviderPriority(Object prov) {
-        String id = GetMetadataProviderId(prov);
-        System.out.println("Increasing Metadata Provider Priority for: " + id);
-        String ids[] = GetCurrentMetadataProviderIds().split(",");
-        int i = ArrayUtils.indexOf(ids, id);
-        if (i<=0) {
-            return; // do nothing;
-        }
-        
-        // swap
-        ids[i] = ids[i-1];
-        ids[i-1] = id;
-        
-        System.out.println("Metadata Provider Priority for: " + id + " Changed from : " + i + " to " + (i-1));
-        SetCurrentProvidersIds(new StrBuilder().appendWithSeparators(ids, ",").toString());
-    }
-
-    public static void DecreaseMetadataProviderPriority(Object prov) {
-        String id = GetMetadataProviderId(prov);
-        System.out.println("Decreasing Metadata Provider Priority for: " + id);
-        String ids[] = GetCurrentMetadataProviderIds().split(",");
-        int i = ArrayUtils.indexOf(ids, id);
-        if (i<0) {
-            return; // do nothing;
-        }
-        
-        if (i>=(ids.length-1)) {
-            // do nothing;
-            return;
-        }
-        
-        // swap
-        ids[i] = ids[i+1];
-        
-        ids[i+1] = id;
-
-        System.out.println("Metadata Provider Priority for: " + id + " Changed from : " + i + " to " + (i+1));
-        SetCurrentProvidersIds(new StrBuilder().appendWithSeparators(ids, ",").toString());
-    }
-    
-    public static boolean IsImportShowAsSageRecordingEnabled() {
-        return GroupProxy.get(OnDemandConfiguration.class).getImportTVAsRecordings();
-    }
-    
-    public static void SetImportShowAsSageRecordingEnabled(boolean b) {
-        GroupProxy.get(OnDemandConfiguration.class).setImportTVAsRecordings(b);
+    public static Group GetBMTConfiguration() {
+        return (Group) Phoenix.getInstance().getConfigurationMetadataManager().findElement("bmt/ondemandplugin");
     }
 }
