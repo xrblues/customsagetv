@@ -105,4 +105,31 @@ public interface Labels extends Constants {
 
     @DefaultStringValue("Installed JARs")
     String jarsDesc();
+
+    @DefaultStringValue("Tools")
+    String toolMenu();
+
+    @DefaultStringValue("This dialog will create a zip file containing your log files, sage properties, comments, and even a virtual layout of your import folders that can be used to testing.  Simply check off the options that you want to include.")
+    String supportHeaderText();
+
+    @DefaultStringValue("Comment")
+    String comment();
+
+    @DefaultStringValue("Include Logs?")
+    String includeLogs();
+
+    @DefaultStringValue("Include Sage Properties?")
+    String includeProperties();
+
+    @DefaultStringValue("Include Sage Import Filenames?")
+    String includeImports();
+
+    @DefaultStringValue("Create Request")
+    String createSupportRequest();
+
+    @DefaultStringValue("Success")
+    String success();
+
+    @DefaultStringValue("<b>Remove Property Files</b>")
+    String deleteProperties();
 }

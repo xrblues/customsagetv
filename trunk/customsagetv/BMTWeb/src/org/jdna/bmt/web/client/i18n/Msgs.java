@@ -65,4 +65,22 @@ public interface Msgs extends Messages {
 
     @DefaultMessage("Complete ({0} : {1})")
     String completeWithStatus(int successCount, int failedCount);
+
+    @DefaultMessage("Created File <b>{0}</b>.<br/><br/>Please send it to <a target=\"_newtab\" href=\"mailto:metadatatools@gmail.com\">metadatatools@gmail.com</a>")
+    String supportFileCreated(String result);
+
+    @DefaultMessage("This process will <i>delete</i> .properties files from your video import directories.<br/><br/>.properties files are created in bmt/SageTV so that SageTV can import the metadata.  .properties may also serve as a backup of your metadata.<br/><br/>")
+    String cleanProperties();
+
+    @DefaultMessage("Removed <b>{0}</b> files")
+    String removedProperties(Integer result);
+
+    @DefaultMessage("Creating support zip file...")
+    String creatingSupportFile();
+
+    @DefaultMessage("Cleaning property files...")
+    String cleaningProperties();
+
+    @DefaultMessage("{0} - {1}%")
+    String scanStatus(String status, int d);
 }

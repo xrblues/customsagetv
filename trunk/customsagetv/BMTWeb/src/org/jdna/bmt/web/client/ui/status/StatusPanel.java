@@ -4,15 +4,23 @@ import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.i18n.Labels;
 import org.jdna.bmt.web.client.ui.layout.FlowGrid;
 
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class StatusPanel extends Composite {
+public class StatusPanel extends Composite implements ResizeHandler {
     private Labels labels = Application.labels();
     private FlowGrid grid = new FlowGrid(2);
+    private ScrollPanel scroller = new ScrollPanel();
+    private HandlerRegistration resizeHandler;
     
     private static class StatusBox extends Composite {
         VerticalPanel vp = new VerticalPanel();
@@ -40,6 +48,11 @@ public class StatusPanel extends Composite {
     }
     
     public StatusPanel() {
+        scroller.setWidth("100%");
+        scroller.setHeight("100%");
+        scroller.setAlwaysShowScrollBars(false);
+        scroller.setWidget(grid);
+        
         grid.setWidth("100%");
         
         addStatus(new SimpleStatus(labels.statusPhoenix(), labels.statusPhoenixDesc(), "phoenix"));
@@ -47,8 +60,22 @@ public class StatusPanel extends Composite {
         addStatus(new SimpleStatus(labels.sagetv(), labels.sagetvDesc(), "sagetv"));
         addStatus(new SimpleStatus(labels.jars(), labels.jarsDesc(), "jars"));
         addStatus(new SystemMessageStatus());
-        initWidget(grid);
+        initWidget(scroller);
+        resize();
     }
+    
+    @Override
+    protected void onAttach() {
+        resizeHandler = Window.addResizeHandler(this);
+        super.onAttach();
+    }
+
+    @Override
+    protected void onDetach() {
+        super.onDetach();
+        resizeHandler.removeHandler();
+    }
+
     
     public void addStatus(HasStatus status) {
         final StatusBox sb = new StatusBox(status); 
@@ -63,4 +90,33 @@ public class StatusPanel extends Composite {
             }
         });
     }
+    
+    public void onResize(ResizeEvent event) {
+        onWindowResized(event.getWidth(), event.getHeight());
+    }
+    
+    public void onWindowResized(int windowWidth, int windowHeight) {
+        int scrollWidth = windowWidth - scroller.getAbsoluteLeft();
+        if (scrollWidth < 1) {
+            scrollWidth = 1;
+        }
+
+        int scrollHeight = windowHeight - scroller.getAbsoluteTop();
+        if (scrollHeight < 1) {
+            scrollHeight = 1;
+        }
+        scroller.setPixelSize(scrollWidth, scrollHeight);
+    }
+
+    private void resize() {
+        DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                ResizeEvent evt = new ResizeEvent(Window.getClientWidth(), Window.getClientHeight()) {
+                    // no body
+                };
+                onResize(evt);
+            }
+        });
+    }
+
 }

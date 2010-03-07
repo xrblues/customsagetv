@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +34,7 @@ import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MediaMetadataPersistence;
+import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.PersistenceOptions;
@@ -44,6 +44,7 @@ import org.jdna.process.MetadataItem;
 import org.jdna.process.MetadataProcessor;
 import org.jdna.sage.media.SageCustomMetadataPersistence;
 import org.jdna.sage.media.SageShowPeristence;
+import org.jdna.url.UrlUtil;
 
 import sagex.api.MediaFileAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
@@ -83,7 +84,8 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
             PersistenceOptions options = new PersistenceOptions();
             options.setUseTitleMasks(mdOptions.isUseTitleMasks());
             options.setImportAsTV(mdOptions.isImportAsTV());
-            return newMetadata(MetadataAPI.normalizeMetadata(smf, prov.getMetaData(result), options));
+            MediaSearchResult msr = new MediaSearchResult(result);
+            return newMetadata(MetadataAPI.normalizeMetadata(smf, prov.getMetaData(msr), options));
         } catch (Exception e) {
             log.error("Metadata Retreival Failed!", e);
             throw new RuntimeException(e);
@@ -123,6 +125,7 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
     }
     
     private void updateProgressStatus(ProgressStatus status, ProgressTracker<MetadataItem> tracker) {
+        log.debug("Tracker: "+ tracker.getLabel()+ "; %: " + tracker.internalWorked() + "; total items: " + tracker.getTotalWork() + "; worked: " + tracker.getWorked());
         status.setComplete(tracker.internalWorked());
         status.setIsCancelled(tracker.isCancelled());
         status.setIsDone(tracker.isDone());
@@ -231,7 +234,16 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
         List<GWTMediaSearchResult> results = new ArrayList<GWTMediaSearchResult>();
         try {
             MediaType type = MediaType.toMediaType(options.getType().get());
-            IMediaMetadataProvider provider = MediaMetadataFactory.getInstance().getProvider(options.getProvider().get(), type);
+            String prov = options.getProvider().get();
+            System.out.println("*** Using Search Provider: " + prov);
+            IMediaMetadataProvider provider = null;
+            if (prov!=null) {
+                provider = MediaMetadataFactory.getInstance().findById(prov); 
+            } else {
+                provider = MediaMetadataFactory.getInstance().getProvider(null, type);
+            }
+                
+            
             SearchQuery query = new SearchQuery();
             query.setMediaType(type);
             query.set(Field.QUERY, options.getSearchTitle().get());
@@ -275,7 +287,9 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
         
         PersistenceOptions poptions = new PersistenceOptions();
         poptions.setImportAsTV(options.getImportTV().get());
+        poptions.setUpdateFanart(options.getUpdateFanart().get());
         poptions.setOverwriteFanart(options.getOverwriteFanart().get());
+        poptions.setUpdateMetadata(options.getUpdateMetadata().get());
         poptions.setOverwriteMetadata(options.getOverwriteMetadata().get());
         poptions.setCreateProperties(options.getCreatePropertyFiles().get());
         poptions.setTouchingFiles(!options.getUpdateWizBin().get());
@@ -286,6 +300,7 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
         final IMediaFolder realFolder = BrowsingServicesImpl.getFolderRef(folder, getThreadLocalRequest());
         
         final MetadataProcessor processor = new MetadataProcessor(null, providers, persistence, poptions);
+        processor.setCollectItemsFirst(true);
         String trackerId = trackerManager.runWithProgress(new IRunnableWithProgress<ProgressTracker<MetadataItem>>() {
             public void run(ProgressTracker<MetadataItem> monitor) {
                 try {
@@ -307,7 +322,7 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
 
 
     private String makeLocalMediaUrl(String url) {
-        return "media/get?i=" + URLEncoder.encode(url);
+        return "media/get?i=" + UrlUtil.encode(url);
     }
 
     
@@ -323,6 +338,9 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
         options.setImportAsTV(file.getSageRecording().get());
         options.setCreateDefaultSTVThumbnail(uiOptions.getCreateDefaultSTVThumbnail().get());
         options.setCreateProperties(uiOptions.getCreatePropertyFiles().get());
+        options.setUpdateFanart(uiOptions.getUpdateFanart().get());
+        options.setUpdateMetadata(uiOptions.getUpdateMetadata().get());
+
         //options.setTouchingFiles(uiOptions.getTouchingFile().get());
         options.setUpdateWizBin(uiOptions.getUpdateWizBin().get());
 

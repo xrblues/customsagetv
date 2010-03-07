@@ -45,15 +45,10 @@ public class SystemMessageStatus implements HasStatus {
                     p.addStyleName("SystemMessage");
                     p.addStyleName("SystemMessage-Level"+ sm.getLevel());
                     p.setWidth("100%");
-                    Label l = new Label(sm.getTypeName());
+                    Label l = new Label(new Date(sm.getStartTime()).toString() + " - " + sm.getTypeName());
                     l.addStyleName("SystemMessage-Header");
                     p.add(l, DockPanel.NORTH);
                     p.add(new Label(sm.getMessage()), DockPanel.CENTER);
-                    l = new Label(new Date(sm.getStartTime()).toString());
-                    l.setWordWrap(false);
-                    p.add(l, DockPanel.EAST);
-                    p.setCellHorizontalAlignment(l, HasHorizontalAlignment.ALIGN_RIGHT);
-                    p.setCellVerticalAlignment(l, HasVerticalAlignment.ALIGN_MIDDLE);
                     
                     Image img = new Image("images/16x16/dialog-information.png");
                     p.add(img, DockPanel.WEST);

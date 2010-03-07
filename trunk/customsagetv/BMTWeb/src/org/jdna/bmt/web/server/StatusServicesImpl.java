@@ -2,6 +2,8 @@ package org.jdna.bmt.web.server;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -123,6 +125,14 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
             sm.setMessage(SystemMessageAPI.GetSystemMessageString(o));
             msgs.add(sm);
         }
+        // reverse sort date
+        Collections.sort(msgs, new Comparator<SystemMessage>() {
+            public int compare(SystemMessage o1, SystemMessage o2) {
+                if (o1.getStartTime()>o2.getStartTime()) return -1;
+                if (o1.getStartTime()<o2.getStartTime()) return 1;
+                return 0;
+            }
+        });
         return msgs;
     }
 }

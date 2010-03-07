@@ -98,6 +98,7 @@ public class Dialogs {
         final DialogBox dialog = new DialogBox();
         dialog.setAnimationEnabled(true);
         dialog.setAutoHideEnabled(false);
+        dialog.setGlassEnabled(true);
         dialog.setModal(true);
         dialog.setWidget(panel);
         dialog.setText(title);
