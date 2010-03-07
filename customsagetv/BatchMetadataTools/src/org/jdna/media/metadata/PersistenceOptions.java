@@ -1,43 +1,54 @@
 package org.jdna.media.metadata;
 
 /**
- * Options that effect how things are persisted.  Not all persistence engines will support all options.
+ * Options that effect how things are persisted. Not all persistence engines
+ * will support all options.
  * 
  * @author seans
- *
+ * 
  */
 public class PersistenceOptions {
-    private boolean overwriteFanart=false;
-    private boolean overwriteMetadata=false;
-    private String fileRenamePattern=null;
-    private boolean importAsTV = false;
-    private boolean useTitleMasks = false;
-    private boolean createProperties=true;
-    private boolean updateWizBin=false;
-    private boolean touchingFiles=true;
-    private boolean createDefaultSTVThumbnail=false;
-    
+    private boolean overwriteFanart           = false;
+    private boolean overwriteMetadata         = false;
+    private String  fileRenamePattern         = null;
+    private boolean importAsTV                = false;
+    private boolean useTitleMasks             = false;
+    private boolean createProperties          = true;
+    private boolean updateWizBin              = false;
+    private boolean touchingFiles             = true;
+    private boolean createDefaultSTVThumbnail = false;
+
+    // these options are basically only read by the MediaMetadataPersistence
+    // if false, then those subsystems will never be called
+    private boolean updateFanart              = true;
+    private boolean updateMetadata            = true;
+
     public PersistenceOptions() {
     }
-    
+
     public boolean isOverwriteFanart() {
         return overwriteFanart;
     }
+
     public void setOverwriteFanart(boolean overwriteFanart) {
         this.overwriteFanart = overwriteFanart;
     }
+
     public boolean isOverwriteMetadata() {
         return overwriteMetadata;
     }
+
     public void setOverwriteMetadata(boolean overwriteMetadata) {
         this.overwriteMetadata = overwriteMetadata;
     }
-	public String getFileRenamePattern() {
-		return fileRenamePattern;
-	}
-	public void setFileRenamePattern(String fileRenamePattern) {
-		this.fileRenamePattern = fileRenamePattern;
-	}
+
+    public String getFileRenamePattern() {
+        return fileRenamePattern;
+    }
+
+    public void setFileRenamePattern(String fileRenamePattern) {
+        this.fileRenamePattern = fileRenamePattern;
+    }
 
     public boolean isImportAsTV() {
         return importAsTV;
@@ -67,14 +78,16 @@ public class PersistenceOptions {
     }
 
     /**
-     * @param updateWizBin the updateWizBin to set
+     * @param updateWizBin
+     *            the updateWizBin to set
      */
     public void setUpdateWizBin(boolean updateWizBin) {
         this.updateWizBin = updateWizBin;
     }
 
     /**
-     * @param createProperties the createProperties to set
+     * @param createProperties
+     *            the createProperties to set
      */
     public void setCreateProperties(boolean createProperties) {
         this.createProperties = createProperties;
@@ -88,7 +101,8 @@ public class PersistenceOptions {
     }
 
     /**
-     * @param touchingFiles the touchingFiles to set
+     * @param touchingFiles
+     *            the touchingFiles to set
      */
     public void setTouchingFiles(boolean touchingFiles) {
         this.touchingFiles = touchingFiles;
@@ -102,36 +116,42 @@ public class PersistenceOptions {
     public boolean isCreateDefaultSTVThumbnail() {
         return createDefaultSTVThumbnail;
     }
-    
+
     public void setCreateDefaultSTVThumbnail(boolean b) {
         this.createDefaultSTVThumbnail = b;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("PersistenceOptions [createDefaultSTVThumbnail=");
-        builder.append(createDefaultSTVThumbnail);
-        builder.append(", createProperties=");
-        builder.append(createProperties);
-        builder.append(", fileRenamePattern=");
-        builder.append(fileRenamePattern);
-        builder.append(", importAsTV=");
-        builder.append(importAsTV);
-        builder.append(", overwriteFanart=");
-        builder.append(overwriteFanart);
-        builder.append(", overwriteMetadata=");
-        builder.append(overwriteMetadata);
-        builder.append(", touchingFiles=");
-        builder.append(touchingFiles);
-        builder.append(", updateWizBin=");
-        builder.append(updateWizBin);
-        builder.append(", useTitleMasks=");
-        builder.append(useTitleMasks);
-        builder.append("]");
-        return builder.toString();
+        return "PersistenceOptions [createDefaultSTVThumbnail=" + createDefaultSTVThumbnail + ", createProperties=" + createProperties + ", fileRenamePattern=" + fileRenamePattern + ", importAsTV=" + importAsTV + ", overwriteFanart=" + overwriteFanart + ", overwriteMetadata=" + overwriteMetadata
+                + ", touchingFiles=" + touchingFiles + ", updateFanart=" + updateFanart + ", updateMetadata=" + updateMetadata + ", updateWizBin=" + updateWizBin + ", useTitleMasks=" + useTitleMasks + "]";
+    }
+
+    public void setUpdateFanart(boolean updateFanart) {
+        this.updateFanart = updateFanart;
+    }
+
+    public boolean isUpdateFanart() {
+        return updateFanart;
+    }
+
+    /**
+     * @return the updateMetadata
+     */
+    public boolean isUpdateMetadata() {
+        return updateMetadata;
+    }
+
+    /**
+     * @param updateMetadata
+     *            the updateMetadata to set
+     */
+    public void setUpdateMetadata(boolean updateMetadata) {
+        this.updateMetadata = updateMetadata;
     }
 }

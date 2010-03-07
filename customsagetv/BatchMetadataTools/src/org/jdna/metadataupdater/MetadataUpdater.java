@@ -3,19 +3,14 @@ package org.jdna.metadataupdater;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.DataFormatException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -39,7 +34,6 @@ import org.jdna.media.util.RefreshMetadataVisitor;
 import org.jdna.process.InteractiveMetadataProcessor;
 import org.jdna.process.MetadataItem;
 import org.jdna.process.MetadataProcessor;
-import org.jdna.url.CachedUrlCleanupTask;
 import org.jdna.util.JarInfo;
 import org.jdna.util.JarUtil;
 import org.jdna.util.LoggerConfiguration;
@@ -359,6 +353,7 @@ public class MetadataUpdater {
             // set some basic options for commandline use
             options.setImportAsTV(false);
             options.setUseTitleMasks(true);
+            options.setCreateProperties(true);
 
             IResourceFilter filter = new MediaTypeFilter(MediaResourceType.ANY_VIDEO);
             ProgressTracker<MetadataItem> progress = new ProgressTracker<MetadataItem>(new ConsoleProgressMonitor());
@@ -679,12 +674,16 @@ public class MetadataUpdater {
 
     @CommandLineArg(name = "fanartOnly", description = "Only process fanart, ignore updating metadata (default false)")
     public void setFanartOnly(boolean b) {
+        options.setUpdateFanart(b);
+        options.setUpdateMetadata(!b);
         options.setOverwriteFanart(b);
         options.setOverwriteMetadata(!b);
     }
 
     @CommandLineArg(name = "metadataOnly", description = "Only process metadata, ignore updating fanart (default false)")
     public void setMetadataOnly(boolean b) {
+        options.setUpdateMetadata(b);
+        options.setUpdateFanart(!b);
         options.setOverwriteMetadata(b);
         options.setOverwriteFanart(!b);
     }

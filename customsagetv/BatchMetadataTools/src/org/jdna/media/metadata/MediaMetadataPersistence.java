@@ -83,14 +83,11 @@ public class MediaMetadataPersistence implements IMediaMetadataPersistence {
         // Normalize the metadata, in case it hasn't been done.
         MetadataAPI.normalizeMetadata((IMediaFile) mediaFile, md, options);
 
-        if (options.isOverwriteMetadata()) {
-            if (options.isCreateProperties()) {
-                log.debug("Updating Properties File for: " + mediaFile);
-                try {
-                    props.storeMetaData(md, mediaFile, options);
-                } catch (Throwable t) {
-                    log.warn("Failed to store properties for: " + mediaFile, t);
-                }
+        if (options.isUpdateMetadata()) {
+            try {
+                props.storeMetaData(md, mediaFile, options);
+            } catch (Throwable t) {
+                log.warn("Failed to store properties for: " + mediaFile, t);
             }
 
             // do not update the wiz.bin directly, if we are running from bmt
@@ -109,17 +106,17 @@ public class MediaMetadataPersistence implements IMediaMetadataPersistence {
             }
         }
 
-        if (options.isOverwriteFanart() || options.isOverwriteMetadata()) {
-            log.debug("Updating Custom Fields in Wiz.Bin for: " + mediaFile);
-            try {
-                sageExtra.storeMetaData(md, mediaFile, options);
-            } catch (Throwable t) {
-                log.warn("Failed to update Custom Metadata in wiz.bin for: " + mediaFile, t);
+        if (options.isUpdateFanart() || options.isUpdateMetadata()) {
+            if (!(SageAPI.getProvider() instanceof BMTSageAPIProvider)) {
+                try {
+                    sageExtra.storeMetaData(md, mediaFile, options);
+                } catch (Throwable t) {
+                    log.warn("Failed to update Custom Metadata in wiz.bin for: " + mediaFile, t);
+                }
             }
         }
 
-        if (options.isOverwriteFanart()) {
-            log.debug("Storing Fanart for: " + mediaFile);
+        if (options.isUpdateFanart()) {
             try {
                 fanart.storeMetaData(md, mediaFile, options);
             } catch (Throwable t) {

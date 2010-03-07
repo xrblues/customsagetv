@@ -183,6 +183,11 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     }
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
+        if (!options.isCreateProperties()) {
+            log.warn("Creating Properties has been disabled... no file will be created for " + mediaFile);
+            return;
+        }
+
         MetadataAPI.normalizeMetadata((IMediaFile) mediaFile, md, options);
 
         // do the actual save

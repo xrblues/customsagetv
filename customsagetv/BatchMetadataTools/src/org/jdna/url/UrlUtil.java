@@ -1,7 +1,9 @@
 package org.jdna.url;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.apache.log4j.Logger;
 
@@ -53,5 +55,15 @@ public class UrlUtil {
             log.error("getPathName() Failed! " + url, e);
         }
         return null;
+    }
+
+    public static String encode(String data) {
+        if (data==null) return "";
+        try {
+            return URLEncoder.encode(data, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            log.warn("Failed to url encode data: " + data + " as UTF-8; will try again using default encoding", e);
+            return URLEncoder.encode(data);
+        }
     }
 }

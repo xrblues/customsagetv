@@ -1,14 +1,16 @@
 package test.junit;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
-import java.io.IOException;
 
 import org.jdna.url.CachedUrl;
 import org.jdna.url.UrlConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 import sagex.SageAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;

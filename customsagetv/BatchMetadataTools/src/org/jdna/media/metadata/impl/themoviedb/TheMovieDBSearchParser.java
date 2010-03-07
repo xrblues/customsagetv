@@ -1,6 +1,5 @@
 package org.jdna.media.metadata.impl.themoviedb;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,6 +19,7 @@ import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.IUrl;
 import org.jdna.url.UrlFactory;
+import org.jdna.url.UrlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -63,7 +63,7 @@ public class TheMovieDBSearchParser {
     
     public TheMovieDBSearchParser(SearchQuery query) {
         searchTitle = query.get(SearchQuery.Field.QUERY);
-        this.url = UrlFactory.newUrl(String.format(SEARCH_URL, URLEncoder.encode(searchTitle), TheMovieDBMetadataProvider.getApiKey()));
+        this.url = UrlFactory.newUrl(String.format(SEARCH_URL, UrlUtil.encode(searchTitle), TheMovieDBMetadataProvider.getApiKey()));
         this.query=query;
 
         log.debug("TheMovieDB SearchQuery Url: " + url);

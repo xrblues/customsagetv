@@ -64,4 +64,7 @@
 		</field>
 	</group>
 	
+	<group label="Database Admin" editor="dbadmin">
+		<description>Database Tools (initialize, sync, etc)</description>
+	</group>
 </configuration>

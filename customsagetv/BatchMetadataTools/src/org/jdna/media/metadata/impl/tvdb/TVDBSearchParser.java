@@ -1,6 +1,5 @@
 package org.jdna.media.metadata.impl.tvdb;
 
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -18,6 +17,7 @@ import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.url.IUrl;
 import org.jdna.url.UrlFactory;
+import org.jdna.url.UrlUtil;
 import org.jdna.util.Pair;
 import org.jdna.util.ParserUtils;
 import org.w3c.dom.Document;
@@ -51,7 +51,7 @@ public class TVDBSearchParser {
         config = GroupProxy.get(TVDBConfiguration.class);
         this.query=query;
         searchTitle = query.get(SearchQuery.Field.QUERY);
-        this.url = UrlFactory.newUrl(String.format(SEARCH_URL, URLEncoder.encode(searchTitle), config.getLanguage()));
+        this.url = UrlFactory.newUrl(String.format(SEARCH_URL, UrlUtil.encode(searchTitle), config.getLanguage()));
 
         log.debug("TVDB SearchQuery Url: " + url);
     }
