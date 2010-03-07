@@ -58,10 +58,20 @@ public class MediaHandler implements SageHandler {
             Object sageMedia = getMediaFile(mediaFileId);
 
             SageMediaRequestHandler handler = handlers.get(args[2]);
-            if (handler != null) {
-                handler.processRequest(req, resp, sageMedia);
-            } else {
+            if (handler == null) {
                 help(resp, "Unknown Media Command: " + args[2]);
+                return;
+            }
+            
+            if ("poster".equals(args[2])) {
+                try {
+                    // try poster handler, and then the thumbnail handler
+                    handler.processRequest(req, resp, sageMedia);
+                } catch (Exception e) {
+                    handlers.get("thumbnail").processRequest(req, resp, sageMedia);
+                }
+            } else {
+                handler.processRequest(req, resp, sageMedia);
             }
         } catch (Exception e) {
             help(resp, e);

@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="package" name="SageAPI">
-    <property environment="env"/>
-	
-	<property name="target" value="target"/>
-	<property name="name" value="sagex.api"/>
-	<property name="version" value="6.6.2"/>
-	<property name="jarname" value="${name}.jar"/>
+	<property environment="env" />
+
+	<property name="target" value="target" />
+	<property name="name" value="sagex.api" />
+	<property name="version" value="6.6.3" />
+	<property name="jarname" value="${name}.jar" />
 
 	<path id="SageAPI.classpath">
-        <pathelement location="bin"/>
-        <pathelement location="libs/htmlparser.jar"/>
-        <pathelement location="libs/log4j-1.2.15.jar"/>
-        <pathelement location="libs/metadata-updater-1.5.jar"/>
-        <pathelement location="libs/Sage.jar"/>
-    </path>
-	
+		<pathelement location="bin" />
+		<pathelement location="libs/htmlparser.jar" />
+		<pathelement location="libs/log4j-1.2.15.jar" />
+		<pathelement location="libs/metadata-updater-1.5.jar" />
+		<pathelement location="libs/Sage.jar" />
+	</path>
+
 	<path id="AppClasspath">
 		<pathelement location="target/classes" />
-		<fileset dir="libs" includes="*.jar"/>
+		<fileset dir="libs" includes="*.jar" />
 	</path>
-	
+
 	<target name="package" depends="init,build,makeJar,javadoc">
-		<mkdir dir="${target}/sage/jetty/contexts/"/>
-		<mkdir dir="${target}/sage/sagex/services/"/>
-		<copy file="jetty/contexts/sagex.xml" todir="${target}/sage/jetty/contexts/"/>
+		<mkdir dir="${target}/sage/jetty/contexts/" />
+		<mkdir dir="${target}/sage/sagex/services/" />
+		<copy file="jetty/contexts/sagex.xml" todir="${target}/sage/jetty/contexts/" />
 		<copy file="sagex/services/sagex.js" todir="${target}/sage/sagex/services/" />
 		<zip file="${target}/${name}-${version}.zip">
-			<fileset dir="${target}/sage" includes="**/**"/>
+			<fileset dir="${target}/sage" includes="**/**" />
 		</zip>
 	</target>
 
@@ -34,13 +34,13 @@
 		<copy todir="target/classes">
 			<fileset dir="src" excludes="**/*.java" />
 		</copy>
-		<mkdir dir="target/classes"/>
+		<mkdir dir="target/classes" />
 		<javac debug="true" classpathref="AppClasspath" source="1.5" target="1.5" srcdir="src" destdir="target/classes">
 		</javac>
 	</target>
 
 	<target name="buildVersion">
-		<mkdir dir="src/sagex/api/"/>
+		<mkdir dir="src/sagex/api/" />
 		<echo file="src/sagex/api/Version.java">
 			package sagex.api;
 
@@ -54,47 +54,59 @@
 	</target>
 
 	<target name="makeJar">
-		<mkdir dir="${target}/sage/JARs"/>
+		<mkdir dir="${target}/sage/JARs" />
 		<jar destfile="${target}/sage/JARs/${jarname}">
-			<fileset dir="target/classes" includes="sagex/**"></fileset>
+			<fileset dir="target/classes" includes="sagex/**" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Specification-Title" value="Sage API Extension" />
+				<attribute name="Specification-Version" value="${version}  ${TODAY}" />
+				<attribute name="Specification-Vendor" value="Sean Stuckless" />
+				<attribute name="Implementation-Title" value="Sage API Extension" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Vendor" value="Sean Stuckless" />
+			</manifest>
+
 		</jar>
-		
+
 		<!-- update the MovieMetadata project, if it exists -->
-		<copy file="${target}/sage/JARs/${jarname}" todir="target" failonerror="false"/>
-		<copy file="${target}/sage/JARs/${jarname}" todir="../MovieMetadataUpdater/libs/" failonerror="false"/>
-		<copy file="${target}/sage/JARs/${jarname}" todir="../Phoenix/lib/" failonerror="false"/>
+		<copy file="${target}/sage/JARs/${jarname}" todir="target" failonerror="false" />
+		<copy file="${target}/sage/JARs/${jarname}" todir="../MovieMetadataUpdater/lib/" failonerror="false" />
+		<copy file="${target}/sage/JARs/${jarname}" todir="../Phoenix/lib/" failonerror="false" />
 	</target>
 
-    <target name="init">
-    	<!-- <delete dir="cache" failonerror="false"/> -->
-    	<delete dir="target" failonerror="false"/>
-        <mkdir dir="target"/>
-        <mkdir dir="target/sage"/>
-        <copy includeemptydirs="false" todir="bin">
-            <fileset dir="src" excludes="**/*.launch, **/*.java"/>
-        </copy>
-    </target>
-    <target name="clean">
-        <delete dir="target"/>
-    </target>
+	<target name="init">
+		<!-- <delete dir="cache" failonerror="false"/> -->
+		<delete dir="target" failonerror="false" />
+		<mkdir dir="target" />
+		<mkdir dir="target/sage" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src" excludes="**/*.launch, **/*.java" />
+		</copy>
+	</target>
+	<target name="clean">
+		<delete dir="target" />
+	</target>
 
 	<target name="javadoc">
-		<mkdir dir="target/sage/docs/${name}/api"/>
-		<javadoc author="true" destdir="target/sage/docs/${name}/api"  classpathref="AppClasspath">
-			<fileset dir="src" excludes="**/*.properties,**/*.json"/>
-			<header><![CDATA[SageTV Remote APIs for SageTV Project]]></header>
+		<mkdir dir="target/sage/docs/${name}/api" />
+		<javadoc author="true" destdir="target/sage/docs/${name}/api" classpathref="AppClasspath">
+			<fileset dir="src" excludes="**/*.properties,**/*.json" />
+			<header>
+				<![CDATA[SageTV Remote APIs for SageTV Project]]>
+			</header>
 			<bottom>${version}</bottom>
 		</javadoc>
 	</target>
 
-    <target name="cleanGeneratedAPI">
-    	<!-- Causing too many issues...
+	<target name="cleanGeneratedAPI">
+		<!-- Causing too many issues...
         <delete dir="src/sagex/api/" includes="*.java">
     	</delete>
     	-->
-    </target>
-	
+	</target>
+
 	<target name="generateSageAPI" depends="init">
-		<java classname="org.jdna.sage.api.generator.Main" classpathref="SageAPI.classpath" fork="true"/>
+		<java classname="org.jdna.sage.api.generator.Main" classpathref="SageAPI.classpath" fork="true" />
 	</target>
 </project>

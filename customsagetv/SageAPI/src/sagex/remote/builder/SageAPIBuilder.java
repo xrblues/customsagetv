@@ -16,6 +16,7 @@ import sagex.api.FavoriteAPI;
 import sagex.api.MediaFileAPI;
 import sagex.api.PlaylistAPI;
 import sagex.api.ShowAPI;
+import sagex.api.SystemMessageAPI;
 
 public class SageAPIBuilder {
     public static final SageAPIBuilder INSTANCE = new SageAPIBuilder();
@@ -55,6 +56,8 @@ public class SageAPIBuilder {
             buildChannel(parent, handler);
         } else if(PlaylistAPI.IsPlaylistObject(parent) || parent.toString().startsWith("Playlist[")) {
             buildPlaylist(parent, handler);
+        } else if(parent.toString().contains("SystemMessage")) {
+            buildSystemMessage(parent, handler);
         } else {
             String msg = "Unknown Object Type: " + parent.getClass().getName() + " for Sage Object: " + parent;
             handler.handleError(msg, new Exception(msg));
@@ -79,6 +82,10 @@ public class SageAPIBuilder {
 
     public void buildFavorite(Object parent, BuilderHandler handler) throws Exception {
         buildObject("Favorite", FavoriteAPI.class, parent, handler, null);
+    }
+
+    private void buildSystemMessage(Object parent, BuilderHandler handler) throws Exception {
+        buildObject("SystemMessage", SystemMessageAPI.class, parent, handler, new String[] {"DeleteSystemMessage"});
     }
 
     public void buildAlbum(Object parent, BuilderHandler handler) throws Exception {
