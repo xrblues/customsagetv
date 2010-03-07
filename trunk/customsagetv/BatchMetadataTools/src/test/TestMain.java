@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URL;
 
 import org.apache.log4j.BasicConfigurator;
-import org.jdna.metadataupdater.MetadataUpdater;
 
 
 public class TestMain {

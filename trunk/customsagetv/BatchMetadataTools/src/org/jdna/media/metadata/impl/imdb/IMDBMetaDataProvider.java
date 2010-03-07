@@ -1,7 +1,6 @@
 package org.jdna.media.metadata.impl.imdb;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataUtil;
 import org.jdna.media.metadata.ProviderInfo;
 import org.jdna.media.metadata.SearchQuery;
+import org.jdna.url.UrlUtil;
 import org.xml.sax.SAXException;
 
 import sagex.phoenix.fanart.IMetadataSearchResult;
@@ -74,7 +74,7 @@ public class IMDBMetaDataProvider implements IMediaMetadataProvider {
             return null;
         }
         
-        String eArg = URLEncoder.encode(arg);
+        String eArg = UrlUtil.encode(arg);
         String url = MessageFormat.format(IMDB_TITLE_URL, cfg.getIMDbDomain(), eArg);
         log.debug("IMDB Search Url: " + url);
         IMDBSearchResultParser parser = new IMDBSearchResultParser(query, url, arg);

@@ -31,6 +31,7 @@ import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaResource;
 import sagex.phoenix.vfs.IMediaResourceVisitor;
 import sagex.phoenix.vfs.MediaFolderTraversal;
+import sagex.phoenix.vfs.VirtualMediaFolder;
 import sagex.phoenix.vfs.filters.AndResourceFilter;
 import sagex.phoenix.vfs.filters.IResourceFilter;
 
@@ -47,6 +48,8 @@ public class MetadataProcessor {
 
     private MetadataConfiguration metadataConfig;
     private MediaConfiguration mediaConfig;
+    private boolean collectItemsFirst = false;
+    private int totalItems = IProgressMonitor.UNKNOWN;
     
     public MetadataProcessor(PersistenceOptions options) {
         init(null, null, null, options);
@@ -112,7 +115,6 @@ public class MetadataProcessor {
 
     public void process(final IMediaResource res, final ProgressTracker<MetadataItem> monitor) {
         try {
-            monitor.beginTask("Processing Media Files...", IProgressMonitor.UNKNOWN);
             IMediaResourceVisitor vis = new IMediaResourceVisitor() {
                 public boolean visit(IMediaResource res1) {
                     if (!monitor.isCancelled()) {
@@ -155,10 +157,35 @@ public class MetadataProcessor {
                 }
             };
 
-            MediaFolderTraversal.walk(res, recurse, vis);
+            IMediaResource toScan = getFolderFor(res);
+            monitor.beginTask("Processing Media Files...", totalItems);
+            MediaFolderTraversal.walk(toScan, recurse, vis);
         } finally {
             monitor.done();
         }
+    }
+
+    private IMediaResource getFolderFor(IMediaResource res) {
+        if (collectItemsFirst) {
+            log.info("Collecting Items for the scan...");
+            if (res instanceof IMediaFile) {
+                totalItems = 1;
+                return res;
+            } else {
+                final VirtualMediaFolder mf = new VirtualMediaFolder(null, "Folder");
+                IMediaResourceVisitor vis = new IMediaResourceVisitor() {
+                    public boolean visit(IMediaResource res) {
+                        mf.addMediaResource(res);
+                        return true;
+                    }
+                };
+                MediaFolderTraversal.walk(res, recurse, vis);
+                totalItems = mf.getChildren().size();
+                log.info("Initial Folder has " + totalItems);
+                return mf;
+            }
+        }
+        return res;
     }
 
     public void scanMediaFile(IMediaFile mf, SearchQuery query, ProgressTracker<MetadataItem> monitor) {
@@ -253,5 +280,19 @@ public class MetadataProcessor {
      */
     public void setDefaultQueryArgs(String defaultQueryArgs) {
         this.defaultQueryArgs = defaultQueryArgs;
+    }
+
+    /**
+     * @return the collectItemsFirst
+     */
+    public boolean isCollectItemsFirst() {
+        return collectItemsFirst;
+    }
+
+    /**
+     * @param collectItemsFirst the collectItemsFirst to set
+     */
+    public void setCollectItemsFirst(boolean collectItemsFirst) {
+        this.collectItemsFirst = collectItemsFirst;
     }
 }

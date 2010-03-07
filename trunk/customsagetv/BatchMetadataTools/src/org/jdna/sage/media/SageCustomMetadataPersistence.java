@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MediaMetadata;
@@ -24,6 +25,7 @@ import sagex.phoenix.vfs.IMediaResource;
  * @author seans
  */
 public class SageCustomMetadataPersistence implements IMediaMetadataPersistence {
+    private Logger log = Logger.getLogger(SageCustomMetadataPersistence.class);
 
     public SageCustomMetadataPersistence() {
     }
@@ -64,6 +66,7 @@ public class SageCustomMetadataPersistence implements IMediaMetadataPersistence 
     }
 
     public void storeMetaData(IMediaMetadata md, IMediaResource mediaFile, PersistenceOptions options) throws IOException {
+        log.info("Updating Custom Metadata Fields for: " + mediaFile);
         Object sageMF = phoenix.api.GetSageMediaFile(mediaFile);
         if (sageMF != null) {
             MetadataAPI.normalizeMetadata((IMediaFile) mediaFile, md, options);
@@ -82,7 +85,13 @@ public class SageCustomMetadataPersistence implements IMediaMetadataPersistence 
                             sval = String.valueOf(nval);
                         }
                     }
-                    SageFanartUtil.SetMediaFileMetadata(sageMF, p.sageKey, sval);
+                    String curVal = SageFanartUtil.GetMediaFileMetadata(sageMF, p.sageKey);
+                    // only overwrite values if they have not been set or you are overwriting fanart or metadata
+                    // it is important to update the custom metadata for fanart, since fanart resolving depends
+                    // on the custom metadata fields
+                    if (StringUtils.isEmpty(curVal) || options.isOverwriteMetadata() || options.isOverwriteFanart()) {
+                        SageFanartUtil.SetMediaFileMetadata(sageMF, p.sageKey, sval);
+                    }
                 }
             }
         }

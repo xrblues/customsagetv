@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.IOUtils;
+
+import sagex.api.Configuration;
 
 public class Troubleshooter {
     public static class StubFileZipper extends DirectoryWalker {
@@ -32,9 +35,9 @@ public class Troubleshooter {
         }
 
         protected void handleFile(File file, int depth, Collection results) {
-            Pattern p = Pattern.compile("\\.vob|\\.bdmv|\\.m2ts|\\.avi|\\.mkv|\\.mpg|\\.divx|\\.m4v", Pattern.CASE_INSENSITIVE);
+            Pattern p = Pattern.compile("\\.vob|\\.bdmv|\\.m2ts|\\.avi|\\.mkv|\\.mpg|\\.divx|\\.m4v|\\.ts", Pattern.CASE_INSENSITIVE);
             Matcher m = p.matcher(file.getName());
-            if (file.isFile() && !m.find()) {
+            if (file.isFile() && m.find()) {
                 try {
                     addStubFile(zos, file);
                 } catch (Exception e) {
@@ -47,8 +50,16 @@ public class Troubleshooter {
         private void addStubFile(ZipOutputStream zos2, File file) throws Exception {
             ZipEntry ze = new ZipEntry(file.getPath());
             zos.putNextEntry(ze);
-            zos.write(("StubFile: " + file.getAbsolutePath()).getBytes());
+            zos.write("X".getBytes());
             zos.closeEntry();
+        }
+    }
+
+    public static File createSupportZip(String problemDescription, boolean includeLogs, boolean includeProps, boolean includeImports) throws Exception {
+        if (includeImports) {
+            return createSupportZip(problemDescription, includeLogs, includeProps, Arrays.asList(Configuration.GetVideoLibraryImportPaths()));
+        } else {
+            return createSupportZip(problemDescription, includeLogs, includeProps, null);
         }
     }
 
@@ -57,7 +68,8 @@ public class Troubleshooter {
         File output = new File("bmtsupport-"+sdf.format(Calendar.getInstance().getTime())+".zip");
         return createSupportZip(problemDescription, includeLogs, includeProps, locations, output);
     }
-/**
+    
+    /**
      * Attempts to zip up various log files, props, and stub video locations for support purpsoses.
      * 
      * @param problemDescription

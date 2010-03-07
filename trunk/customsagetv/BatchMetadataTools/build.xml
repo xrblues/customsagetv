@@ -8,7 +8,7 @@
 	<property name="libs" value="lib" />
 	<property name="targetDir" value="target" />
 	<property name="name" value="metadata-updater" />
-	<property name="version" value="4.0-beta10" />
+	<property name="version" value="4.0-beta15" />
 	<property name="jarname" value="${name}.jar" />
 	<property name="launcher" value="MetadataTool" />
 	<property name="mainClass" value="org.jdna.metadataupdater.MetadataUpdater" />
@@ -81,6 +81,15 @@
 		<copy file="gwt/bmt.gwt.xml" todir="bin/gwt/" />
 	</target>
 
+	<target name="update-bmtweb-for-testing">
+		<copy todir="../BMTWeb/war/testing/">
+			<fileset dir="resources/STVs/" />
+		</copy>
+		<copy todir="../BMTWeb/war/testing/">
+			<fileset dir="../Phoenix/src/main/STVs/"/>
+		</copy>
+	</target>
+
 	<target name="package-war">
 		<mkdir dir="${targetDir}" />
 		<mkdir dir="${targetDir}/sage" />
@@ -93,9 +102,9 @@
 		<copy file="../BMTWeb/jetty/bmt.xml" todir="${targetDir}/sage/jetty/contexts" />
 
 		<!-- copy the metadata -->
-		<mkdir dir="${targetDir}/sage/STVs/Phoenix/Configuration/ext" />
-		<copy todir="${targetDir}/sage/STVs/Phoenix/Configuration/ext">
-			<fileset dir="resources/config/" includes="*.xml" />
+		<mkdir dir="${targetDir}/sage/" />
+		<copy todir="${targetDir}/sage/">
+			<fileset dir="resources" includes="STVs/**"/>
 		</copy>
 
 	</target>
@@ -105,10 +114,6 @@
 		<mkdir dir="${targetDir}/sage/JARs" />
 		<mkdir dir="${targetDir}/sage/STVs/SageTV3/" />
 		<mkdir dir="${targetDir}/sage/STVs/Phoenix/vfs/" />
-
-		<copy toDir="${targetDir}/sage/STVs/SageTV3">
-			<fileset dir="resources/stv" includes="*.xml" excludes="MetadataFanartTools*"/>
-		</copy>
 
 		<copy toDir="${targetDir}/sage/scrapers">
 			<fileset dir="scrapers">

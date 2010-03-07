@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jdna.url.UrlUtil;
 
 /**
  * This tries to emulate the XMBC Process.  Much of what is done in this code was learned from looking at the original c++ code
@@ -66,7 +67,7 @@ public class XbmcMovieProcessor {
      */
     public XbmcUrl getSearchUrl(String title, String date) throws Exception {
         if (date==null) date="";
-        String url = scraperProcessor.executeFunction(FUNCTION_CREATE_SEARCH_URL, new String[] {"", URLEncoder.encode(title), URLEncoder.encode(date)});
+        String url = scraperProcessor.executeFunction(FUNCTION_CREATE_SEARCH_URL, new String[] {"", UrlUtil.encode(title), URLEncoder.encode(date)});
         if (!StringUtils.isEmpty(url)) {
             return new XbmcUrl(url);
         } else {

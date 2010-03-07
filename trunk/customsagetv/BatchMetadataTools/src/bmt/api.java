@@ -3,25 +3,16 @@ package bmt;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.log4j.Logger;
-import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.IProviderInfo;
-import org.jdna.media.metadata.MediaMetadataFactory;
-import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.media.metadata.impl.sage.SagePropertyType;
 import org.jdna.metadataupdater.Version;
-import org.jdna.sage.OnDemandConfiguration;
 
 import sagex.api.Configuration;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.Group;
-import sagex.phoenix.configuration.IConfigurationElement;
-import sagex.phoenix.configuration.IConfigurationMetadata;
-import sagex.phoenix.configuration.proxy.GroupProxy;
 
 public class api {
     private static final Logger log = Logger.getLogger(api.class);

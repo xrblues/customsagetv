@@ -12,8 +12,6 @@ import org.jdna.metadataupdater.Version;
 import org.jdna.process.ScanMediaFileEvent;
 import org.jdna.process.SysEventMessageID;
 
-import bmt.BMTActivator;
-
 import sage.MediaFileMetadataParser;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.proxy.GroupProxy;
@@ -22,6 +20,7 @@ import sagex.phoenix.event.message.SystemMessageEvent.Severity;
 import sagex.phoenix.fanart.FanartUtil;
 import sagex.phoenix.plugin.Plugin.State;
 import sagex.phoenix.util.PropertiesUtils;
+import bmt.BMTActivator;
 
 /**
  * A MetadataUpdaterPlugin that will fetch metadata for new movies.

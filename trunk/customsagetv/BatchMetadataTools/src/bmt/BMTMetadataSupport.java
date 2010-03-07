@@ -1,7 +1,6 @@
 package bmt;
 
 import java.io.File;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,13 +22,12 @@ import org.jdna.media.metadata.SearchQuery.Field;
 import org.jdna.process.MetadataItem;
 import org.jdna.process.MetadataProcessor;
 import org.jdna.sage.OnDemandConfiguration;
-import org.jdna.url.CachedUrlCleanupTask;
 
-import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.IMetadataSupport;
 import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.progress.IProgressMonitor;
 import sagex.phoenix.progress.IRunnableWithProgress;
 import sagex.phoenix.progress.ProgressTracker;
 import sagex.phoenix.progress.ProgressTrackerManager;
@@ -140,12 +138,18 @@ public class BMTMetadataSupport implements IMetadataSupport {
     }
     
     public Object startMetadataScan(Object sageMediaFiles, Map<String, String> perOptions) {
+        if (sageMediaFiles==null) {
+            log.warn("ignoring scan for null media items");
+            return null;
+        }
         ProgressTracker<MetadataItem> tracker = new ProgressTracker<MetadataItem>();
         
         IMediaFolder fold = null;
+        int size = IProgressMonitor.UNKNOWN;
         if (sageMediaFiles instanceof File) {
             fold = FileResourceFactory.createFolder((File) sageMediaFiles);
         } else {
+            size = ((Object[]) sageMediaFiles).length;
             fold = phoenix.api.GetMediaAsFolder((Object[]) sageMediaFiles, "Scan from STV UI");
         }
         
@@ -159,12 +163,15 @@ public class BMTMetadataSupport implements IMetadataSupport {
         IMediaMetadataPersistence persistence = new MediaMetadataPersistence();
         PersistenceOptions poptions = createPersistenceOptions(perOptions);
         
+        final int itemCount = size;
         final AndResourceFilter filter = new AndResourceFilter(new MediaTypeFilter(MediaResourceType.ANY_VIDEO));
         final MetadataProcessor processor = new MetadataProcessor(null, providers, persistence, poptions);
+        processor.setCollectItemsFirst(true);
         String trackerId = trackerManager.runWithProgress(new IRunnableWithProgress<ProgressTracker<MetadataItem>>() {
             public void run(ProgressTracker<MetadataItem> monitor) {
                 try {
                     log.info("Starting Scan on folder: " + folder.getTitle());
+                    monitor.beginTask("Scanning items...", itemCount);
                     processor.setRecurse(false);
                     processor.addFilter(filter);
                     processor.process(folder, monitor);
