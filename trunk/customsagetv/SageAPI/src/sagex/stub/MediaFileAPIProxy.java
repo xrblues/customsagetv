@@ -20,6 +20,7 @@ public class MediaFileAPIProxy implements StubAPIProxy {
         public File file=null;
         public String type = "Movie";
         public String category = null;
+        public String episode;
         
         public String toString() {
             return "StubMediaFile[id:"+id+ "; title:"+title+ ";type: " + type +"; File:" +file.getAbsolutePath()+"]";
@@ -30,6 +31,12 @@ public class MediaFileAPIProxy implements StubAPIProxy {
     private Map<Integer, MediaFile> files = new HashMap<Integer, MediaFile>();
     
     public Object call(String cmd, Object[] args) {
+        if ("GetMediaFiles".equals(cmd)) {
+            return files.values().toArray(new MediaFile[files.size()]);
+        }
+
+        if (args==null || args.length==0 || args[0]==null) return null;
+        
         if ("GetMediaFileID".equals(cmd)) {
             return ((MediaFile)args[0]).id;
         }
@@ -62,10 +69,6 @@ public class MediaFileAPIProxy implements StubAPIProxy {
             return addMediaFile((File) args[0]);
         }
 
-        if ("GetMediaFiles".equals(cmd)) {
-            return files.values().toArray(new MediaFile[files.size()]);
-        }
-        
         if ("IsTVFile".equals(cmd)) {
             return "TV".equals(((MediaFile)args[0]).type);
         }
@@ -106,6 +109,10 @@ public class MediaFileAPIProxy implements StubAPIProxy {
         
         if ("GetShowCategory".equals(cmd)) {
             return ((MediaFile)args[0]).category;
+        }
+
+        if ("GetShowEpisode".equals(cmd)) {
+            return ((MediaFile)args[0]).episode;
         }
         
         System.out.println("MediaFileAPIProxy: Unhandled: " + cmd);

@@ -103,7 +103,7 @@ public class SagexServlet extends HttpServlet {
 		initialized=true;
 		
 		System.out.println("Remote API Servlet initializing.");
-		sagex.SageAPI.setProvider(new EmbeddedSageAPIProvider());
+		//sagex.SageAPI.setProvider(new EmbeddedSageAPIProvider());
 
 		// register our known handlers
 		sageHandlers.put(XMLRPCHandler.SAGE_RPC_PATH, new XMLRPCHandler());
