@@ -128,6 +128,7 @@ public class ScansPanel extends Composite implements ScanRequestHandler, ScansIn
     }
 
     protected void addScanItem(String label, final String trackingId) {
+        setVisible(true);
         ScanSideMenuItem item = new ScanSideMenuItem(label,null, trackingId, new ClickHandler() {
             public void onClick(ClickEvent event) {
                 event.stopPropagation();

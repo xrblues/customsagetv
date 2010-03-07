@@ -7,7 +7,16 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.jdna.bmt.web.client.media.GWTMediaFile;
+import org.jdna.bmt.web.client.ui.app.SupportOptions;
 import org.jdna.bmt.web.client.ui.debug.DebugService;
+import org.jdna.media.metadata.CompositeMediaMetadataPersistence;
+import org.jdna.media.metadata.IMediaMetadata;
+import org.jdna.media.metadata.IMediaMetadataPersistence;
+import org.jdna.media.metadata.MetadataKey;
+import org.jdna.metadataupdater.Tools;
+import org.jdna.metadataupdater.Troubleshooter;
+import org.jdna.sage.media.SageCustomMetadataPersistence;
+import org.jdna.sage.media.SageShowPeristence;
 
 import sagex.SageAPI;
 import sagex.api.AiringAPI;
@@ -20,6 +29,7 @@ import sagex.api.enums.MediaFileAPIEnum;
 import sagex.api.enums.ShowAPIEnum;
 import sagex.phoenix.fanart.FanartUtil;
 import sagex.phoenix.util.PropertiesUtils;
+import sagex.phoenix.vfs.sage.SageMediaFile;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -42,11 +52,45 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
             return custom(file);
         }
 
+        if ("GWTMediaFile".equals(source)) {
+            return getMediaFileData(file);
+        }
+
+        if ("metadata".equals(source)) {
+            return getMediaFileMetaData(file);
+        }
+
         if ("fanart".equals(source)) {
             return fanart(file);
         }
         
         return error("Source Not Implemented: " + source);
+    }
+
+    private Map<String, String> getMediaFileMetaData(GWTMediaFile file) {
+        Map<String,String> map = new HashMap<String, String>();
+        try {
+            IMediaMetadataPersistence persist = new CompositeMediaMetadataPersistence(new SageShowPeristence(), new SageCustomMetadataPersistence());
+            IMediaMetadata md = persist.loadMetaData(new SageMediaFile(null, phoenix.api.GetSageMediaFile(file.getSageMediaFileId())));
+            for (MetadataKey k : MetadataKey.values()) {
+                map.put(k.name(), md.getString(k));
+            }
+        } catch (Exception e) {
+        }
+        return map;
+    }
+
+    private Map<String, String> getMediaFileData(GWTMediaFile file) {
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("getAiringId", file.getAiringId());
+        map.put("getMinorTitle", file.getMinorTitle());
+        map.put("getPath", file.getPath());
+        map.put("getShowId", file.getShowId());
+        map.put("getThumbnailUrl", file.getThumbnailUrl());
+        map.put("getTitle", file.getTitle());
+        map.put("getSageMediaFileId", String.valueOf(file.getSageMediaFileId()));
+        map.put("isReadOnly", String.valueOf(file.isReadOnly()));
+        return map;
     }
 
     private Map<String, String> fanart(GWTMediaFile file) {
@@ -181,4 +225,28 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
         return map;
     }
 
+    public long updateTimestamp(GWTMediaFile file) {
+        Object sage = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
+        SageMediaFile smf = new SageMediaFile(null, sage);
+        smf.touch(smf.lastModified()+SageMediaFile.MIN_TOUCH_ADJUSTMENT);
+        return smf.lastModified();
+    }
+
+    public String createSupportRequest(SupportOptions options) {
+        try {
+            File out = Troubleshooter.createSupportZip(options.getComment().get(),
+                    options.getIncludeLogs().get(),
+                    options.getIncludeProperties().get(),
+                    options.getIncludeSageImports().get());
+            if (out==null) throw new Exception("Failed to create support file");
+            return out.getCanonicalPath();
+        } catch (Exception e) {
+            log("Failed to create support file!", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int removeMetadataProperties() {
+        return Tools.removeMetadataProperties(Configuration.GetVideoLibraryImportPaths());
+    }
 }

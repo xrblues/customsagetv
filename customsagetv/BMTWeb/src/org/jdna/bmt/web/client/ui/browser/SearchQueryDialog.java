@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements DialogHandler<SearchQueryOptions> {
     private final MetadataServiceAsync browserService = GWT.create(MetadataService.class);
 
-    private ListBox providers = new ListBox(false);
+    private ListBox providers;
     private ListBox type;
     private TextBox episodeTitle;
     private TextBox episode;
@@ -94,7 +94,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         season = InputBuilder.textbox().bind(getData().getSeason()).widget();
         
         propPanel.add("Search Type", type);
-        propPanel.add("Source", providers);
+        propPanel.add("Source", (providers=InputBuilder.combo("").bind(getData().getProvider()).widget()));
         propPanel.add("Search Title", InputBuilder.textbox().bind(getData().getSearchTitle()).widget());
         propPanel.add("Year", InputBuilder.textbox().bind(getData().getYear()).widget());
 
@@ -111,7 +111,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
 
         resultPanelContainer = new VerticalPanel();
         resultPanelContainer.setWidth("100%");
-        resultPanelContainer.setHeight("300px");
+        resultPanelContainer.setHeight("100px");
         panel.add(resultPanelContainer);
         resultPanelContainer.setVisible(false);
         
@@ -157,7 +157,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         table.setWidth("100%");
 
         ScrollPanel sp = new ScrollPanel(table);
-        sp.setHeight("300px");
+        sp.setHeight("100px");
         sp.setWidth("100%");
         panel.add(sp);
 

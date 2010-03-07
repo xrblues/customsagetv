@@ -9,6 +9,8 @@ import org.jdna.bmt.web.client.ui.browser.MetadataService;
 import org.jdna.bmt.web.client.ui.browser.MetadataServiceAsync;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesPanel;
 import org.jdna.bmt.web.client.ui.status.StatusPanel;
+import org.jdna.bmt.web.client.ui.util.CommandItem;
+import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.core.client.GWT;
@@ -31,6 +33,8 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AppPanel extends Composite implements ResizeHandler, HasResizeHandlers, ValueChangeHandler<String>, ErrorEventHandler {
@@ -46,6 +50,11 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         dp.setHeight("100%");
         
         Hyperlink status = new Hyperlink(Application.labels().status(), "status");
+        status.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                setStatusPanel();
+            }
+        });
         status.addStyleName("App-Status");
         
         Hyperlink configure = new Hyperlink(Application.labels().configure(), "configure");
@@ -62,6 +71,34 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         });
         refresh.addStyleName("App-Refresh");
 
+        final Hyperlink toolMenu = new Hyperlink(Application.labels().toolMenu(), "toolmenu");
+        toolMenu.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                showToolsMenu(toolMenu);
+            }
+
+            private void showToolsMenu(Widget offset) {
+                PopupPanel pp = new PopupPanel();
+                pp.setAutoHideEnabled(true);
+                pp.setAnimationEnabled(true);
+                VerticalPanel vp = new VerticalPanel();
+                //vp.add(new CommandItem(null, "Find/Remove Property Files", null));
+                vp.add(new CommandItem(null, "Create Support Request", new Command() {
+                    public void execute() {
+                        showSupportRequestDialog();
+                    }
+                }));
+                vp.add(new CommandItem(null, "Clean .properties", new Command() {
+                    public void execute() {
+                        showCleanPropertiesDialog();
+                    }
+                }));
+                pp.setWidget(vp);
+                pp.showRelativeTo(offset);
+            }
+        });
+        toolMenu.addStyleName("App-Toolmenu");
+
         Grid header = new Grid(1,2);
         header.setWidth("100%");
         header.addStyleName("AppPanel-Header");
@@ -76,6 +113,7 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         hp.add(status);
         hp.add(configure);
         hp.add(browse);
+        hp.add(toolMenu);
         hp.add(refresh);
         
         header.setWidget(0,1,hp);
@@ -105,6 +143,14 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         Window.addResizeHandler(this);
         Window.enableScrolling(false);
         
+    }
+
+    private void showSupportRequestDialog() {
+        DataDialog.showDialog(new SupportDialog());
+    }
+    
+    private void showCleanPropertiesDialog() {
+        DataDialog.showDialog(new CleanPropertiesDialog());
     }
     
     protected void setBrowsePanel(Map<String,String> params) {

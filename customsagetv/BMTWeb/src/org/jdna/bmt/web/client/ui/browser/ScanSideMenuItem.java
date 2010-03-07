@@ -1,14 +1,16 @@
 package org.jdna.bmt.web.client.ui.browser;
 
 import org.jdna.bmt.web.client.Application;
+import org.jdna.bmt.web.client.ui.util.CommandItem;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar;
 import org.jdna.bmt.web.client.ui.util.SideMenuItem;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -27,27 +29,27 @@ public class ScanSideMenuItem extends SideMenuItem implements ScanUpdateHandler 
             panel.add(status, DockPanel.CENTER);
             
             HorizontalButtonBar buttons = new HorizontalButtonBar();
-            buttons.basicStyle();
-            Label cancel = new Label("Cancel");
-            cancel.addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent event) {
+            //buttons.basicStyle();
+            buttons.setWidth("100%");
+            
+            CommandItem cancel = new CommandItem("images/16x16/process-stop.png", "Cancel", new Command() {
+                public void execute() {
                     MetadataServicesManager.getInstance().cancelScan(progressId);
-                    event.stopPropagation();
                 }
             });
             buttons.add(cancel);
-            Label remove = new Label("Remove");
-            remove.addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent event) {
+            
+            CommandItem remove = new CommandItem("images/16x16/edit-delete.png", "Remove", new Command() {
+                public void execute() {
                     MetadataServicesManager.getInstance().removeScan(progressId);
-                    event.stopPropagation();
                     removeItem();
                 }
             });
             buttons.add(remove);
             
             panel.add(buttons, DockPanel.SOUTH);
-            
+            panel.setCellHorizontalAlignment(buttons, HasHorizontalAlignment.ALIGN_RIGHT);
+            panel.setCellWidth(buttons, "100%");
             initWidget(panel);
         }
         
@@ -111,7 +113,7 @@ public class ScanSideMenuItem extends SideMenuItem implements ScanUpdateHandler 
             } else {
                 System.out.println("Updating Progress: " + event.getProgressStatus().getProgressId() + "; " + event.getProgressStatus().getStatus());
                 setBusy(true);
-                setStatus(event.getProgressStatus().getStatus());
+                setStatus(Application.messages().scanStatus(event.getProgressStatus().getStatus(), (int)(event.getProgressStatus().getComplete()*100)));
             }
         } else {
             System.out.println("Ignoring progress for: " + event.getProgressStatus().getProgressId());

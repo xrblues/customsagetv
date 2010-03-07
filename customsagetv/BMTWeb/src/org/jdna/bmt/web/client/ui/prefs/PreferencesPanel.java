@@ -5,6 +5,7 @@ import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.i18n.Labels;
 import org.jdna.bmt.web.client.i18n.Msgs;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
+import org.jdna.bmt.web.client.ui.util.SimpleScrollPanel;
 import org.jdna.bmt.web.client.ui.util.UpdatablePanel;
 import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.StringUtils;
@@ -111,6 +112,7 @@ public class PreferencesPanel extends Composite {
     private DockPanel                     main               = new DockPanel();
     private TextBox                       search             = new TextBox();
     private PreferenceItemsPanel          prefItemsPanel     = new PreferenceItemsPanel();
+    private SimpleScrollPanel scroller = null;
     private EditorPanel editPanel = new EditorPanel();
 
     private final PreferencesServiceAsync preferencesService = GWT.create(PreferencesService.class);
@@ -138,7 +140,6 @@ public class PreferencesPanel extends Composite {
                         });
                     }
                 }
-
             }
         });
 
@@ -205,8 +206,9 @@ public class PreferencesPanel extends Composite {
                 updateTreeItems(null, result);
             }
         });
-
-        initWidget(main);
+        
+        scroller = new SimpleScrollPanel(main);
+        initWidget(scroller);
     }
 
     private void doSearch() {
@@ -277,5 +279,6 @@ public class PreferencesPanel extends Composite {
                 editPanel.setEditorWidget(prefItemsPanel);
             }
         }
+        scroller.resize();
     }
 }

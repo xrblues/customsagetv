@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -29,8 +30,8 @@ public class DataDialog<T> extends Composite {
     protected HorizontalPanel headerWidget = null;
     protected VerticalPanel bodyWidget = null;
     protected HorizontalPanel buttonPanel = null;
-    protected Button okButton = null;
-    protected Button cancelButton = null;
+    protected PushButton okButton = null;
+    protected PushButton cancelButton = null;
     protected DockPanel mainPanel = null;
     protected List<Button> extraButtons = new ArrayList<Button>();
     protected String title = null;
@@ -47,14 +48,27 @@ public class DataDialog<T> extends Composite {
         return title;
     }
     
+    /**
+     * Use this to create a header/description for your dialog
+     * @return
+     */
     protected Widget getHeaderWidget() {
         return null;
     }
     
+    /**
+     * This is the main body contents of your dialog
+     * @return
+     */
     protected Widget getBodyWidget() {
         return null;
     }
 
+    /**
+     * Use this to add new buttons to the panel, or suppress existing ones.  You can also use this method
+     * to change the OK/Cancel button text.
+     * @param buttonPan
+     */
     protected void updateButtonPanel(Object buttonPan) {
     }
     
@@ -105,7 +119,7 @@ public class DataDialog<T> extends Composite {
         buttonPanel =new HorizontalPanel();
         buttonPanel.setStyleName("DataDialog-ButtonBox");
         
-        okButton = new Button("OK", new ClickHandler() {
+        okButton = new PushButton("OK", new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if (updateValues()) {
                     getHandler().onSave(data);
@@ -114,7 +128,7 @@ public class DataDialog<T> extends Composite {
         });
         buttonPanel.add(okButton);
 
-        cancelButton =new Button("Cancel");
+        cancelButton =new PushButton("Cancel");
         cancelButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 getHandler().onCancel();
@@ -162,6 +176,7 @@ public class DataDialog<T> extends Composite {
                 }
             }
         });
+        dialog.setGlassEnabled(true);
         dialog.setText(dialogPanel.getTitle());
         dialog.setWidget(dialogPanel);
         dialog.center();
@@ -210,5 +225,19 @@ public class DataDialog<T> extends Composite {
             }
             w = w.getParent();
         }
+    }
+
+    /**
+     * @return the okButton
+     */
+    protected PushButton getOkButton() {
+        return okButton;
+    }
+
+    /**
+     * @return the cancelButton
+     */
+    protected PushButton getCancelButton() {
+        return cancelButton;
     }
 }

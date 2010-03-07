@@ -163,6 +163,11 @@ h1 {
 	background-repeat: no-repeat;
 	text-indent: 18px;
 }
+.App-Toolmenu {
+	background-image: url("images/16x16/preferences-system.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
 
 .ImagePopupLabel-label {
 	cursor: pointer;
@@ -187,6 +192,10 @@ h1 {
 	border: 2px solid #E2C822;
 	-moz-border-radius: 7px;
     border-radius: 7px;
+}
+
+.DataDialog-ButtonBox {
+	padding-top: 5px;
 }
 
 .ProgressPanel-Cancel {
@@ -253,7 +262,7 @@ h1 {
 }
 
 .SideMenuPanel-Label {
-	border-bottom: 1px solid black;
+	border-bottom: 3px solid black;
 }
 
 .SideMenuPanel-LabelText {
@@ -318,4 +327,22 @@ h1 {
 }
 .SystemMessage-Level3 {
 	color: red;
+}
+
+.CommandItem {
+	cursor: pointer;
+}
+
+.CommandItem-Hover {
+	background-color: #F3F3F3;
+	text-decoration: underline;
+}
+
+.CommandItem-Icon {
+	padding-right: 3px;
+}
+
+.SideMenuItem .HorizontalButtonBar {
+	background-color: transparent;
+	border: none;
 }

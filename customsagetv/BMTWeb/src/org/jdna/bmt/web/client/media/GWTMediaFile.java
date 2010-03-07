@@ -20,7 +20,7 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
     
     private String showId;
     private String airingId;
-
+    
     public GWTMediaFile() {
     }
     
@@ -88,5 +88,9 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
      */
     public void setFanartDir(String fanartDir) {
         this.fanartDir = fanartDir;
+    }
+
+    public void setLastModified(long lastModified2) {
+        this.lastModified=lastModified2;
     }
 }

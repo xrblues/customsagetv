@@ -84,6 +84,8 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
                 } else {
                     log.debug("Not a sage media object??");
                 }
+                log.debug("Setting Last Modified: " + file + "; " + r.lastModified());
+                file.setLastModified(r.lastModified());
             }
             file.setPath(PathUtils.getLocation(r));
             return file;
@@ -126,7 +128,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 
             ViewFactory factory = null;
             if (source.getSourceType() == SourceType.View) {
-                factory = Phoenix.getInstance().getVFSViewFactory().getFactory(source.getId());
+                factory = Phoenix.getInstance().getVFSManager().getVFSViewFactory().getFactory(source.getId());
             } else {
                 log.warn("Inavlid Source: " + source.getId());
             }

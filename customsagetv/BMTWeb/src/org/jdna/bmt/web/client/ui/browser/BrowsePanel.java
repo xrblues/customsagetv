@@ -56,6 +56,8 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         sideSource.setWidth("220px");
         sideSource.add(sources);
         sources.setWidth("100%");
+        
+        scans.setVisible(false);
         sideSource.add(scans);
         scans.setWidth("100%");
         panel.add(sideSource, DockPanel.WEST);
