@@ -1,4 +1,5 @@
 #summary A Generic Tuner Plugin for SageTV
+#labels Featured
 
 = Description =
 
