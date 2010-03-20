@@ -8,8 +8,7 @@ It was created to move the complexities of tuning your myriad of recording devic
 
 Currently it has only been tested on Linux, but may work on the other platforms supported by SageTV with modifications.
 
-The plugin acts as a passthru to a script or program called gentuner. gentuner can be written in whatever language you desire. It accepts several arguments on the command line,
-and returns results on stdout.
+The plugin acts as a passthru to a script or program called gentuner. gentuner can be written in whatever language you desire. It needs to accept several simple arguments on the command line and return results on stdout. gentuner is responsible for handing off the actual tuning work to the appropriate software (LIRC, 6200ch, panelctl, etc).
 
 = gentuner =
 
@@ -59,7 +58,7 @@ See gentuner.CUSTOM for a more complex example.
 
 = Installation =
 
-=== building from source _(optional)_ ===
+=== Building from source _(optional)_ ===
 
 Once you have gcc installed, just:
 {{{
@@ -125,6 +124,8 @@ Note: Currently debugging is enabled and lots of stuff will get logged to `/opt/
 The Generic Tuner Plugin is based on [http://sourceforge.net/projects/multidcttuner/ MultiDCTTunerDLL] which is Copyright (C) 2004 Sean Newman and was licensed under the GPLv2 license.
 
 This code was written and/or modified by by Jim Paris, Frey Technologies LLC, Sean Newman, Sean Stuckless, and John P. Wittkoski.
+
+Thanks to Jerry Fiddler for the gentuner.PANELCTL script and the changes he made to panelctl to support multiple STBs.
 
 = Developer Details =
 _Tidbits about why the plugin does what it does will be added as time permits._
