@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPI.html'>FavoriteAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -154,7 +154,7 @@ public static boolean IsReRuns (UIContext _uicontext,Object Favorite) {
 }
 
 /**
-Returns true if this Favorite is SageTV is allowed to automatically delete recordings of this
+Returns true if SageTV is allowed to automatically delete recordings of this
  Favorite when it needs more disk space. If this is false, then SageTV will never automatically
  delete files recorded for this Favorite; the user will have to delete the files themself.
 
@@ -171,7 +171,7 @@ public static boolean IsAutoDelete (Object Favorite) {
 
 /**
  * UI Context Aware Call<br/>
-Returns true if this Favorite is SageTV is allowed to automatically delete recordings of this
+Returns true if SageTV is allowed to automatically delete recordings of this
  Favorite when it needs more disk space. If this is false, then SageTV will never automatically
  delete files recorded for this Favorite; the user will have to delete the files themself.
 
@@ -182,6 +182,41 @@ true if this Favorite is configured for auto delete, false otherwise
  */
 public static boolean IsAutoDelete (UIContext _uicontext,Object Favorite) {
   Object o = sagex.SageAPI.call(_uicontext, "IsAutoDelete", new Object[] {Favorite});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+If an automatic conversion quality is set for this Favorite; then this will return true if
+ the original file will be deleted after that conversion is performed
+
+Parameters:
+Favorite- the Favorite object
+Returns:
+true if this Favorite is configured to delete the original file after automatic conversion
+Since:
+7.0
+ */
+public static boolean IsAutoDeleteAfterConversion (Object Favorite) {
+  Object o = sagex.SageAPI.call("IsAutoDeleteAfterConversion", new Object[] {Favorite});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+If an automatic conversion quality is set for this Favorite; then this will return true if
+ the original file will be deleted after that conversion is performed
+
+Parameters:
+Favorite- the Favorite object
+Returns:
+true if this Favorite is configured to delete the original file after automatic conversion
+Since:
+7.0
+ */
+public static boolean IsAutoDeleteAfterConversion (UIContext _uicontext,Object Favorite) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsAutoDeleteAfterConversion", new Object[] {Favorite});
   if (o!=null) return (Boolean) o;
   return false;
 }
@@ -694,6 +729,76 @@ public static java.lang.String GetFavoriteQuality (UIContext _uicontext,Object F
 }
 
 /**
+Gets the name of the format that recordings of this Favorite will automatically be converted to when they have completed recording. It will return an empty
+ string if automatic conversion is disabled for this Favorite
+
+Parameters:
+Favorite- the Favorite object
+Returns:
+the name of the transcode format that should be used when converting this Favorite, the empty string if no automatic conversion should be done
+Since:
+7.0
+ */
+public static java.lang.String GetFavoriteAutomaticConversionFormat (Object Favorite) {
+  Object o = sagex.SageAPI.call("GetFavoriteAutomaticConversionFormat", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the name of the format that recordings of this Favorite will automatically be converted to when they have completed recording. It will return an empty
+ string if automatic conversion is disabled for this Favorite
+
+Parameters:
+Favorite- the Favorite object
+Returns:
+the name of the transcode format that should be used when converting this Favorite, the empty string if no automatic conversion should be done
+Since:
+7.0
+ */
+public static java.lang.String GetFavoriteAutomaticConversionFormat (UIContext _uicontext,Object Favorite) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetFavoriteAutomaticConversionFormat", new Object[] {Favorite});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Gets the directory that automatic conversions of this favorite should be saved to.
+ Returns the empty string when using the same directory the recording is in.
+
+Parameters:
+Favorite- the Favorite object
+Returns:
+the destination directory for the automatic conversions of this Favorite; or null if its the same as the recording directory
+Since:
+7.0
+ */
+public static java.io.File GetFavoriteAutomaticConversionDestination (Object Favorite) {
+  Object o = sagex.SageAPI.call("GetFavoriteAutomaticConversionDestination", new Object[] {Favorite});
+  if (o!=null) return (java.io.File) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the directory that automatic conversions of this favorite should be saved to.
+ Returns the empty string when using the same directory the recording is in.
+
+Parameters:
+Favorite- the Favorite object
+Returns:
+the destination directory for the automatic conversions of this Favorite; or null if its the same as the recording directory
+Since:
+7.0
+ */
+public static java.io.File GetFavoriteAutomaticConversionDestination (UIContext _uicontext,Object Favorite) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetFavoriteAutomaticConversionDestination", new Object[] {Favorite});
+  if (o!=null) return (java.io.File) o;
+  return null;
+}
+
+/**
 Sets the amount of time any recording for this Favorite should start before the actual Airing begins.
 
 Parameters:
@@ -760,6 +865,66 @@ Quality- the name of the recording quality that should be used when recording th
  */
 public static void SetFavoriteQuality (UIContext _uicontext,Object Favorite, java.lang.String Quality) {
    sagex.SageAPI.call(_uicontext, "SetFavoriteQuality", new Object[] {Favorite,Quality});
+}
+
+/**
+Sets the name of the format to transcode this Favorite to after a recording has been completed. Format names should come fromGetTranscodeFormats()
+.
+ Use the empty string or null to disable automatic conversion for this Favorite.
+
+Parameters:
+Favorite- the Favorite object
+Format- the name of the transcode format to use when converting recordings of this Favorite; the empty string or null to disable automatic conversion
+Since:
+7.0
+ */
+public static void SetFavoriteAutomaticConversionFormat (Object Favorite, java.lang.String Format) {
+   sagex.SageAPI.call("SetFavoriteAutomaticConversionFormat", new Object[] {Favorite,Format});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sets the name of the format to transcode this Favorite to after a recording has been completed. Format names should come fromGetTranscodeFormats()
+.
+ Use the empty string or null to disable automatic conversion for this Favorite.
+
+Parameters:
+Favorite- the Favorite object
+Format- the name of the transcode format to use when converting recordings of this Favorite; the empty string or null to disable automatic conversion
+Since:
+7.0
+ */
+public static void SetFavoriteAutomaticConversionFormat (UIContext _uicontext,Object Favorite, java.lang.String Format) {
+   sagex.SageAPI.call(_uicontext, "SetFavoriteAutomaticConversionFormat", new Object[] {Favorite,Format});
+}
+
+/**
+Sets the directory that automatic conversions of this favorite should be saved to.
+ Use null to use the same directory the recording is in.
+
+Parameters:
+Favorite- the Favorite object
+Folder- the destination directory for the automatic conversions of this Favorite; null to use the same directory as the recording directory
+Since:
+7.0
+ */
+public static void SetFavoriteAutomaticConversionDestination (Object Favorite, java.io.File Folder) {
+   sagex.SageAPI.call("SetFavoriteAutomaticConversionDestination", new Object[] {Favorite,Folder});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sets the directory that automatic conversions of this favorite should be saved to.
+ Use null to use the same directory the recording is in.
+
+Parameters:
+Favorite- the Favorite object
+Folder- the destination directory for the automatic conversions of this Favorite; null to use the same directory as the recording directory
+Since:
+7.0
+ */
+public static void SetFavoriteAutomaticConversionDestination (UIContext _uicontext,Object Favorite, java.io.File Folder) {
+   sagex.SageAPI.call(_uicontext, "SetFavoriteAutomaticConversionDestination", new Object[] {Favorite,Folder});
 }
 
 /**
@@ -837,6 +1002,35 @@ DontAutoDelete- true if this Favorite is configured to NOT auto delete, false ot
  */
 public static void SetDontAutodelete (UIContext _uicontext,Object Favorite, boolean DontAutoDelete) {
    sagex.SageAPI.call(_uicontext, "SetDontAutodelete", new Object[] {Favorite,DontAutoDelete});
+}
+
+/**
+Sets whether or not SageTV should delete the original file after doing an automatic conversion
+ for this Favorite
+
+Parameters:
+Favorite- the Favorite object
+DeleteAfterAutomaticConversion- true if this Favorite is configured to delete the source file after automatic conversion
+Since:
+7.0
+ */
+public static void SetDeleteAfterAutomaticConversion (Object Favorite, boolean DeleteAfterAutomaticConversion) {
+   sagex.SageAPI.call("SetDeleteAfterAutomaticConversion", new Object[] {Favorite,DeleteAfterAutomaticConversion});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sets whether or not SageTV should delete the original file after doing an automatic conversion
+ for this Favorite
+
+Parameters:
+Favorite- the Favorite object
+DeleteAfterAutomaticConversion- true if this Favorite is configured to delete the source file after automatic conversion
+Since:
+7.0
+ */
+public static void SetDeleteAfterAutomaticConversion (UIContext _uicontext,Object Favorite, boolean DeleteAfterAutomaticConversion) {
+   sagex.SageAPI.call(_uicontext, "SetDeleteAfterAutomaticConversion", new Object[] {Favorite,DeleteAfterAutomaticConversion});
 }
 
 /**
@@ -1479,6 +1673,74 @@ public static Object AddFavorite (UIContext _uicontext,java.lang.String Title, b
   Object o = sagex.SageAPI.call(_uicontext, "AddFavorite", new Object[] {Title,FirstRuns,ReRuns,Category,SubCategory,Person,RoleForPerson,Rated,Year,ParentalRating,Network,ChannelCallSign,Timeslot,Keyword});
   if (o!=null) return (Object) o;
   return null;
+}
+
+/**
+Returns a property value for a specified Favorite. This must have been set using SetFavoriteProperty.
+ Returns the empty string when the property is undefined.
+
+Parameters:
+Favorite- the Favorite object
+PropertyName- the name of the property
+Returns:
+the property value for the specified Favorite, or the empty string if it is not defined
+Since:
+7.0
+ */
+public static java.lang.String GetFavoriteProperty (Object Favorite, java.lang.String PropertyName) {
+  Object o = sagex.SageAPI.call("GetFavoriteProperty", new Object[] {Favorite,PropertyName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a property value for a specified Favorite. This must have been set using SetFavoriteProperty.
+ Returns the empty string when the property is undefined.
+
+Parameters:
+Favorite- the Favorite object
+PropertyName- the name of the property
+Returns:
+the property value for the specified Favorite, or the empty string if it is not defined
+Since:
+7.0
+ */
+public static java.lang.String GetFavoriteProperty (UIContext _uicontext,Object Favorite, java.lang.String PropertyName) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetFavoriteProperty", new Object[] {Favorite,PropertyName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Sets a property for this Favorite. This can be any name/value combination (but the name cannot be null). If the value is null;
+ then the specified property will be removed from this Favorite. This only impacts the return values from GetFavoriteProperty and has no other side effects.
+
+Parameters:
+Favorite- the Favorite object
+PropertyName- the name of the property
+PropertyValue- the value of the property
+Since:
+7.0
+ */
+public static void SetFavoriteProperty (Object Favorite, java.lang.String PropertyName, java.lang.String PropertyValue) {
+   sagex.SageAPI.call("SetFavoriteProperty", new Object[] {Favorite,PropertyName,PropertyValue});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sets a property for this Favorite. This can be any name/value combination (but the name cannot be null). If the value is null;
+ then the specified property will be removed from this Favorite. This only impacts the return values from GetFavoriteProperty and has no other side effects.
+
+Parameters:
+Favorite- the Favorite object
+PropertyName- the name of the property
+PropertyValue- the value of the property
+Since:
+7.0
+ */
+public static void SetFavoriteProperty (UIContext _uicontext,Object Favorite, java.lang.String PropertyName, java.lang.String PropertyValue) {
+   sagex.SageAPI.call(_uicontext, "SetFavoriteProperty", new Object[] {Favorite,PropertyName,PropertyValue});
 }
 
 }

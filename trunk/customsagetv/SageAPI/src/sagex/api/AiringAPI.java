@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AiringAPI.html'>AiringAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1503,6 +1503,76 @@ public static Object GetAiringOnBefore (UIContext _uicontext,Object Airing) {
   Object o = sagex.SageAPI.call(_uicontext, "GetAiringOnBefore", new Object[] {Airing});
   if (o!=null) return (Object) o;
   return null;
+}
+
+/**
+Returns a property value for a specified ManualRecord. This must have been set using SetManualRecordProperty and
+ the specified Airing must be a ManualRecord.
+ Returns the empty string when the property is undefined.
+
+Parameters:
+Airing- the Airing object which is a ManualRecord
+PropertyName- the name of the property
+Returns:
+the property value for the specified ManualRecord, or the empty string if it is not defined
+Since:
+7.0
+ */
+public static java.lang.String GetManualRecordProperty (Object Airing, java.lang.String PropertyName) {
+  Object o = sagex.SageAPI.call("GetManualRecordProperty", new Object[] {Airing,PropertyName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a property value for a specified ManualRecord. This must have been set using SetManualRecordProperty and
+ the specified Airing must be a ManualRecord.
+ Returns the empty string when the property is undefined.
+
+Parameters:
+Airing- the Airing object which is a ManualRecord
+PropertyName- the name of the property
+Returns:
+the property value for the specified ManualRecord, or the empty string if it is not defined
+Since:
+7.0
+ */
+public static java.lang.String GetManualRecordProperty (UIContext _uicontext,Object Airing, java.lang.String PropertyName) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetManualRecordProperty", new Object[] {Airing,PropertyName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Sets a property for a specified ManualRecord. This can be any name/value combination (but the name cannot be null). If the value is null;
+ then the specified property will be removed from this ManualRecord. This only impacts the return values from GetManualRecordProperty and has no other side effects.
+
+Parameters:
+Airing- the Airing object which is a ManualRecord
+PropertyName- the name of the property
+PropertyValue- the value of the property
+Since:
+7.0
+ */
+public static void SetManualRecordProperty (Object Airing, java.lang.String PropertyName, java.lang.String PropertyValue) {
+   sagex.SageAPI.call("SetManualRecordProperty", new Object[] {Airing,PropertyName,PropertyValue});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sets a property for a specified ManualRecord. This can be any name/value combination (but the name cannot be null). If the value is null;
+ then the specified property will be removed from this ManualRecord. This only impacts the return values from GetManualRecordProperty and has no other side effects.
+
+Parameters:
+Airing- the Airing object which is a ManualRecord
+PropertyName- the name of the property
+PropertyValue- the value of the property
+Since:
+7.0
+ */
+public static void SetManualRecordProperty (UIContext _uicontext,Object Airing, java.lang.String PropertyName, java.lang.String PropertyValue) {
+   sagex.SageAPI.call(_uicontext, "SetManualRecordProperty", new Object[] {Airing,PropertyName,PropertyValue});
 }
 
 }

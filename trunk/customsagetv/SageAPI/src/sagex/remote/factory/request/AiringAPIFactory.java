@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AiringAPIFactory.html'>AiringAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -165,6 +165,12 @@ public class AiringAPIFactory {
    }
    if (command.equals("GetAiringOnBefore")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAiringOnBefore",parameters,Object.class);
+   }
+   if (command.equals("GetManualRecordProperty")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetManualRecordProperty",parameters,Object.class,java.lang.String.class);
+   }
+   if (command.equals("SetManualRecordProperty")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetManualRecordProperty",parameters,Object.class,java.lang.String.class,java.lang.String.class);
    }
    throw new RuntimeException("Invalid AiringAPIFactory Command: "+command);
    }

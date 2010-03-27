@@ -2,7 +2,7 @@ package sagex.api.enums;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SeriesInfoAPIEnum.html'>SeriesInfoAPIEnum</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -11,6 +11,8 @@ public enum SeriesInfoAPIEnum {
 GetAllSeriesInfo,
 GetSeriesTitle,
 GetSeriesDescription,
+GetSeriesCategory,
+GetSeriesSubCategory,
 GetSeriesHistory,
 GetSeriesPremiereDate,
 GetSeriesFinaleDate,
@@ -23,5 +25,6 @@ GetNumberOfCharactersInSeries,
 GetSeriesActor,
 GetSeriesActorList,
 GetSeriesCharacter,
-GetSeriesCharacterList
+GetSeriesCharacterList,
+GetSeriesCharacterForActor
 }

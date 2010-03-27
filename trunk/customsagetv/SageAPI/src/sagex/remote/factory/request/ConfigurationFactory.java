@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ConfigurationFactory.html'>ConfigurationFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -381,6 +381,21 @@ public class ConfigurationFactory {
    }
    if (command.equals("SetOverscanScaleHeight")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetOverscanScaleHeight",parameters,float.class);
+   }
+   if (command.equals("GetOverscanInsetLeft")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetOverscanInsetLeft",parameters,null);
+   }
+   if (command.equals("GetOverscanInsetRight")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetOverscanInsetRight",parameters,null);
+   }
+   if (command.equals("GetOverscanInsetTop")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetOverscanInsetTop",parameters,null);
+   }
+   if (command.equals("GetOverscanInsetBottom")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetOverscanInsetBottom",parameters,null);
+   }
+   if (command.equals("GetOverscanInsets")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetOverscanInsets",parameters,null);
    }
    if (command.equals("GetAvailableCountries")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAvailableCountries",parameters,null);

@@ -66,12 +66,14 @@ public class Main {
 	private void process() throws Exception {
 		initConfiguration();
 
+		
 		PackageParser parser = new PackageParser(ConfigurationManager.getInstance().getProperty("sage.packageFrameUrl"));
 		parser.parse();
 		List<String> urls = parser.getUrls();
 
 		// for regular api stuff
 		String baseUrl = ConfigurationManager.getInstance().getProperty("sage.baseApiUrl", "http://download.sage.tv/api/sage/api/");
+		//String baseUrl = ConfigurationManager.getInstance().getProperty("sage.baseApiUrl", new File("/home/seans/Downloads/sagebeta/v7api/sage/api/").toURI().toString());
 		String srcDir = ConfigurationManager.getInstance().getProperty("sage.src", "src");
 		String tagsDir = ConfigurationManager.getInstance().getProperty("sage.tags", "tags");
 		String packageName = ConfigurationManager.getInstance().getProperty("sage.packageName", "sagex.api");

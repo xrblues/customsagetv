@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Database.html'>Database</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1014,8 +1014,10 @@ Misc- if true then the miscellaneous fields will be searched, if false then they
 Returns:
 an array of Airings which matches the search criteria
  */
-public static Object[] SearchSelectedFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
-  return (Object[]) sagex.SageAPI.call("SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+public static java.util.Vector SearchSelectedFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
+  Object o = sagex.SageAPI.call("SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1037,8 +1039,10 @@ Misc- if true then the miscellaneous fields will be searched, if false then they
 Returns:
 an array of Airings which matches the search criteria
  */
-public static Object[] SearchSelectedFields (UIContext _uicontext,java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
-  return (Object[]) sagex.SageAPI.call(_uicontext, "SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+public static java.util.Vector SearchSelectedFields (UIContext _uicontext,java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
+  Object o = sagex.SageAPI.call(_uicontext, "SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1063,8 +1067,10 @@ an array of Airings which matches the search criteria
 Since:
 5.1
  */
-public static Object[] SearchSelectedFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
-  return (Object[]) sagex.SageAPI.call("SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+public static java.util.Vector SearchSelectedFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
+  Object o = sagex.SageAPI.call("SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1090,8 +1096,10 @@ an array of Airings which matches the search criteria
 Since:
 5.1
  */
-public static Object[] SearchSelectedFields (UIContext _uicontext,java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
-  return (Object[]) sagex.SageAPI.call(_uicontext, "SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+public static java.util.Vector SearchSelectedFields (UIContext _uicontext,java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
+  Object o = sagex.SageAPI.call(_uicontext, "SearchSelectedFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1116,8 +1124,10 @@ an array of Airings which matches the search criteria
 Since:
 4.1
  */
-public static Object[] SearchSelectedExactFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
-  return (Object[]) sagex.SageAPI.call("SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+public static java.util.Vector SearchSelectedExactFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
+  Object o = sagex.SageAPI.call("SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1143,8 +1153,10 @@ an array of Airings which matches the search criteria
 Since:
 4.1
  */
-public static Object[] SearchSelectedExactFields (UIContext _uicontext,java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
-  return (Object[]) sagex.SageAPI.call(_uicontext, "SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+public static java.util.Vector SearchSelectedExactFields (UIContext _uicontext,java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
+  Object o = sagex.SageAPI.call(_uicontext, "SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1171,8 +1183,10 @@ an array of Airings which matches the search criteria
 Since:
 5.1
  */
-public static Object[] SearchSelectedExactFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
-  return (Object[]) sagex.SageAPI.call("SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+public static java.util.Vector SearchSelectedExactFields (java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
+  Object o = sagex.SageAPI.call("SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1200,8 +1214,10 @@ an array of Airings which matches the search criteria
 Since:
 5.1
  */
-public static Object[] SearchSelectedExactFields (UIContext _uicontext,java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
-  return (Object[]) sagex.SageAPI.call(_uicontext, "SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+public static java.util.Vector SearchSelectedExactFields (UIContext _uicontext,java.lang.String SearchString, boolean CaseSensitive, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
+  Object o = sagex.SageAPI.call(_uicontext, "SearchSelectedExactFields", new Object[] {SearchString,CaseSensitive,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1224,8 +1240,10 @@ an array of Airings which matches the search criteria
 Since:
 5.1
  */
-public static Object[] SearchSelectedFieldsRegex (java.util.regex.Pattern RegexPattern, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
-  return (Object[]) sagex.SageAPI.call("SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+public static java.util.Vector SearchSelectedFieldsRegex (java.util.regex.Pattern RegexPattern, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
+  Object o = sagex.SageAPI.call("SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1249,8 +1267,10 @@ an array of Airings which matches the search criteria
 Since:
 5.1
  */
-public static Object[] SearchSelectedFieldsRegex (UIContext _uicontext,java.util.regex.Pattern RegexPattern, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
-  return (Object[]) sagex.SageAPI.call(_uicontext, "SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+public static java.util.Vector SearchSelectedFieldsRegex (UIContext _uicontext,java.util.regex.Pattern RegexPattern, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc) {
+  Object o = sagex.SageAPI.call(_uicontext, "SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1275,8 +1295,10 @@ an array of Airings which matches the search criteria
 Since:
 5.1
  */
-public static Object[] SearchSelectedFieldsRegex (java.util.regex.Pattern RegexPattern, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
-  return (Object[]) sagex.SageAPI.call("SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+public static java.util.Vector SearchSelectedFieldsRegex (java.util.regex.Pattern RegexPattern, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
+  Object o = sagex.SageAPI.call("SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**
@@ -1302,8 +1324,10 @@ an array of Airings which matches the search criteria
 Since:
 5.1
  */
-public static Object[] SearchSelectedFieldsRegex (UIContext _uicontext,java.util.regex.Pattern RegexPattern, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
-  return (Object[]) sagex.SageAPI.call(_uicontext, "SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+public static java.util.Vector SearchSelectedFieldsRegex (UIContext _uicontext,java.util.regex.Pattern RegexPattern, boolean Titles, boolean Episode, boolean Description, boolean People, boolean Category, boolean Rated, boolean ExtendedRatings, boolean Year, boolean Misc, java.lang.String MediaMask) {
+  Object o = sagex.SageAPI.call(_uicontext, "SearchSelectedFieldsRegex", new Object[] {RegexPattern,Titles,Episode,Description,People,Category,Rated,ExtendedRatings,Year,Misc,MediaMask});
+  if (o!=null) return (java.util.Vector) o;
+  return null;
 }
 
 /**

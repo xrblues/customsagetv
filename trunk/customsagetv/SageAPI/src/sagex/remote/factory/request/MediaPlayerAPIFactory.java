@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaPlayerAPIFactory.html'>MediaPlayerAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -125,6 +125,9 @@ public class MediaPlayerAPIFactory {
    if (command.equals("GetMediaTime")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMediaTime",parameters,null);
    }
+   if (command.equals("GetRawMediaTime")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetRawMediaTime",parameters,null);
+   }
    if (command.equals("GetMediaDuration")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMediaDuration",parameters,null);
    }
@@ -217,6 +220,9 @@ public class MediaPlayerAPIFactory {
    }
    if (command.equals("GetDVDCurrentTitle")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetDVDCurrentTitle",parameters,null);
+   }
+   if (command.equals("GetBluRayTitleDescription")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetBluRayTitleDescription",parameters,int.class);
    }
    if (command.equals("GetDVDNumberOfTitles")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetDVDNumberOfTitles",parameters,null);

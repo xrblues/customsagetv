@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ShowAPI.html'>ShowAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -516,6 +516,39 @@ public static java.lang.String[] GetPeopleListInShow (UIContext _uicontext,Objec
 }
 
 /**
+Gets a list of all of the people involved in this Show and the character each of them plays if known. The order of the returned list will
+ correlate with the values returned fromGetRolesInShow
+.
+
+Parameters:
+Show- the Show object
+Returns:
+a list of all of the people involved in this Show with the characters they play as a String array
+Since:
+7.0
+ */
+public static java.lang.String[] GetPeopleAndCharacterListInShow (Object Show) {
+  return (java.lang.String[]) sagex.SageAPI.call("GetPeopleAndCharacterListInShow", new Object[] {Show});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets a list of all of the people involved in this Show and the character each of them plays if known. The order of the returned list will
+ correlate with the values returned fromGetRolesInShow
+.
+
+Parameters:
+Show- the Show object
+Returns:
+a list of all of the people involved in this Show with the characters they play as a String array
+Since:
+7.0
+ */
+public static java.lang.String[] GetPeopleAndCharacterListInShow (UIContext _uicontext,Object Show) {
+  return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetPeopleAndCharacterListInShow", new Object[] {Show});
+}
+
+/**
 Gets a list of the roles for each of the people in the specified Show. The order of the returned list will
  correlate with the values returned fromGetPeopleInShow
 
@@ -607,6 +640,80 @@ public static java.lang.String GetPeopleInShowInRoles (UIContext _uicontext,Obje
 }
 
 /**
+Gets the people in the specified Show in the specified Role. Returned as a comma separated list.
+ Each name will also append the character they play if known; using the localized format "Actor as Character".
+
+Parameters:
+Show- the Show object
+Role- the role to get the people for
+Returns:
+the people in the specified Show in the specified Role
+Since:
+7.0
+ */
+public static java.lang.String GetPeopleAndCharacterInShowInRole (Object Show, java.lang.String Role) {
+  Object o = sagex.SageAPI.call("GetPeopleAndCharacterInShowInRole", new Object[] {Show,Role});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the people in the specified Show in the specified Role. Returned as a comma separated list.
+ Each name will also append the character they play if known; using the localized format "Actor as Character".
+
+Parameters:
+Show- the Show object
+Role- the role to get the people for
+Returns:
+the people in the specified Show in the specified Role
+Since:
+7.0
+ */
+public static java.lang.String GetPeopleAndCharacterInShowInRole (UIContext _uicontext,Object Show, java.lang.String Role) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetPeopleAndCharacterInShowInRole", new Object[] {Show,Role});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Gets the people in the specified Show in the specified Roles. Returned as a comma separated list.
+ Each name will also append the character they play if known; using the localized format "Actor as Character".
+
+Parameters:
+Show- the Show object
+RoleList- the roles to get the people for
+Returns:
+the people in the specified Show in the specified Roles
+Since:
+7.0
+ */
+public static java.lang.String GetPeopleAndCharacterInShowInRoles (Object Show, java.lang.String[] RoleList) {
+  Object o = sagex.SageAPI.call("GetPeopleAndCharacterInShowInRoles", new Object[] {Show,RoleList});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the people in the specified Show in the specified Roles. Returned as a comma separated list.
+ Each name will also append the character they play if known; using the localized format "Actor as Character".
+
+Parameters:
+Show- the Show object
+RoleList- the roles to get the people for
+Returns:
+the people in the specified Show in the specified Roles
+Since:
+7.0
+ */
+public static java.lang.String GetPeopleAndCharacterInShowInRoles (UIContext _uicontext,Object Show, java.lang.String[] RoleList) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetPeopleAndCharacterInShowInRoles", new Object[] {Show,RoleList});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
 Gets the people in the specified Show in the specified Role. Returned as a String array.
 
 Parameters:
@@ -666,6 +773,72 @@ Since:
  */
 public static java.lang.String[] GetPeopleListInShowInRoles (UIContext _uicontext,Object Show, java.lang.String[] RoleList) {
   return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetPeopleListInShowInRoles", new Object[] {Show,RoleList});
+}
+
+/**
+Gets the people in the specified Show in the specified Role. Returned as a String array.
+ Each string will also indicate the character they play if known; using the localized format "Actor as Character".
+
+Parameters:
+Show- the Show object
+Role- the role to get the people for
+Returns:
+the people in the specified Show in the specified Role as a String array
+Since:
+7.0
+ */
+public static java.lang.String[] GetPeopleAndCharacterListInShowInRole (Object Show, java.lang.String Role) {
+  return (java.lang.String[]) sagex.SageAPI.call("GetPeopleAndCharacterListInShowInRole", new Object[] {Show,Role});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the people in the specified Show in the specified Role. Returned as a String array.
+ Each string will also indicate the character they play if known; using the localized format "Actor as Character".
+
+Parameters:
+Show- the Show object
+Role- the role to get the people for
+Returns:
+the people in the specified Show in the specified Role as a String array
+Since:
+7.0
+ */
+public static java.lang.String[] GetPeopleAndCharacterListInShowInRole (UIContext _uicontext,Object Show, java.lang.String Role) {
+  return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetPeopleAndCharacterListInShowInRole", new Object[] {Show,Role});
+}
+
+/**
+Gets the people in the specified Show in the specified Roles. Returned as a String array.
+ Each string will also indicate the character they play if known; using the localized format "Actor as Character".
+
+Parameters:
+Show- the Show object
+RoleList- the roles to get the people for
+Returns:
+the people in the specified Show in the specified Roles as a String array
+Since:
+7.0
+ */
+public static java.lang.String[] GetPeopleAndCharacterListInShowInRoles (Object Show, java.lang.String[] RoleList) {
+  return (java.lang.String[]) sagex.SageAPI.call("GetPeopleAndCharacterListInShowInRoles", new Object[] {Show,RoleList});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the people in the specified Show in the specified Roles. Returned as a String array.
+ Each string will also indicate the character they play if known; using the localized format "Actor as Character".
+
+Parameters:
+Show- the Show object
+RoleList- the roles to get the people for
+Returns:
+the people in the specified Show in the specified Roles as a String array
+Since:
+7.0
+ */
+public static java.lang.String[] GetPeopleAndCharacterListInShowInRoles (UIContext _uicontext,Object Show, java.lang.String[] RoleList) {
+  return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetPeopleAndCharacterListInShowInRoles", new Object[] {Show,RoleList});
 }
 
 /**

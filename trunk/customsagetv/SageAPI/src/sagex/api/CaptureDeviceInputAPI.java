@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/CaptureDeviceInputAPI.html'>CaptureDeviceInputAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -986,6 +986,39 @@ public static int GetSignalStrength (UIContext _uicontext,java.lang.String Captu
   Object o = sagex.SageAPI.call(_uicontext, "GetSignalStrength", new Object[] {CaptureDeviceInput});
   if (o!=null) return (Integer) o;
   return 0;
+}
+
+/**
+Returns the name of the broadcast standard used for reception on this capture device input (can be different per-input)
+
+Parameters:
+CaptureDeviceInput- the name of the CaptureDeviceInput
+Returns:
+the name of the broadcast standard used for reception on this capture device input (i.e. NTSC, ATSC, DVB-S, etc.)
+Since:
+7.0
+ */
+public static java.lang.String GetCaptureDeviceInputBroadcastStandard (java.lang.String CaptureDeviceInput) {
+  Object o = sagex.SageAPI.call("GetCaptureDeviceInputBroadcastStandard", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the name of the broadcast standard used for reception on this capture device input (can be different per-input)
+
+Parameters:
+CaptureDeviceInput- the name of the CaptureDeviceInput
+Returns:
+the name of the broadcast standard used for reception on this capture device input (i.e. NTSC, ATSC, DVB-S, etc.)
+Since:
+7.0
+ */
+public static java.lang.String GetCaptureDeviceInputBroadcastStandard (UIContext _uicontext,java.lang.String CaptureDeviceInput) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetCaptureDeviceInputBroadcastStandard", new Object[] {CaptureDeviceInput});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 }

@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -91,6 +91,39 @@ public static int Size (UIContext _uicontext,java.lang.Object Data) {
   Object o = sagex.SageAPI.call(_uicontext, "Size", new Object[] {Data});
   if (o!=null) return (Integer) o;
   return 0;
+}
+
+/**
+Returns true if the argument is null, zero, an empty string or a failed image load
+
+Parameters:
+Data- the object to test
+Returns:
+true if the argument is null, zero, an empty string or a failed image load
+Since:
+7.0
+ */
+public static boolean IsEmpty (java.lang.Object Data) {
+  Object o = sagex.SageAPI.call("IsEmpty", new Object[] {Data});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the argument is null, zero, an empty string or a failed image load
+
+Parameters:
+Data- the object to test
+Returns:
+true if the argument is null, zero, an empty string or a failed image load
+Since:
+7.0
+ */
+public static boolean IsEmpty (UIContext _uicontext,java.lang.Object Data) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsEmpty", new Object[] {Data});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -354,6 +387,41 @@ public static java.lang.Object RemoveElement (UIContext _uicontext,java.lang.Obj
 }
 
 /**
+Add the element with the specified value to this data. Works for java.util.Collection implementations.
+
+Parameters:
+Data- the java.util.Collection object to add the element to
+Value- the value to add to the data
+Returns:
+for java.util.Collections true if the data changed as a result of the call (i.e. the add succeded and was not redundant), false otherwise
+Since:
+7.0
+ */
+public static boolean AddElement (java.util.Collection Data, java.lang.Object Value) {
+  Object o = sagex.SageAPI.call("AddElement", new Object[] {Data,Value});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Add the element with the specified value to this data. Works for java.util.Collection implementations.
+
+Parameters:
+Data- the java.util.Collection object to add the element to
+Value- the value to add to the data
+Returns:
+for java.util.Collections true if the data changed as a result of the call (i.e. the add succeded and was not redundant), false otherwise
+Since:
+7.0
+ */
+public static boolean AddElement (UIContext _uicontext,java.util.Collection Data, java.lang.Object Value) {
+  Object o = sagex.SageAPI.call(_uicontext, "AddElement", new Object[] {Data,Value});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
 Returns the index in the data that the specified element is found at. If there are multiple occurrences of this element
  only the first index is returned. This works for arrays and java.util.List implementations.
 
@@ -452,6 +520,43 @@ the substring from the specified string
  */
 public static java.lang.String Substring (UIContext _uicontext,java.lang.String String, int StartIndex, int EndIndex) {
   Object o = sagex.SageAPI.call(_uicontext, "Substring", new Object[] {String,StartIndex,EndIndex});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Returns the substring from a specified string. The substring will start at the beginning of the string and end
+ EndIndex characters before the end of the string. Same as Substring(String, 0, Size(String) - EndOffset).
+
+Parameters:
+String- the string to get the substring of
+EndOffset- the number of characters from the end of the string to terminate the substring (0 implies return the entire string)
+Returns:
+the substring from the specified string
+Since:
+7.0
+ */
+public static java.lang.String SubstringBegin (java.lang.String String, int EndOffset) {
+  Object o = sagex.SageAPI.call("SubstringBegin", new Object[] {String,EndOffset});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the substring from a specified string. The substring will start at the beginning of the string and end
+ EndIndex characters before the end of the string. Same as Substring(String, 0, Size(String) - EndOffset).
+
+Parameters:
+String- the string to get the substring of
+EndOffset- the number of characters from the end of the string to terminate the substring (0 implies return the entire string)
+Returns:
+the substring from the specified string
+Since:
+7.0
+ */
+public static java.lang.String SubstringBegin (UIContext _uicontext,java.lang.String String, int EndOffset) {
+  Object o = sagex.SageAPI.call(_uicontext, "SubstringBegin", new Object[] {String,EndOffset});
   if (o!=null) return (java.lang.String) o;
   return null;
 }
@@ -1251,6 +1356,39 @@ public static java.lang.String GetFileNameFromPath (UIContext _uicontext,java.io
 }
 
 /**
+Returns the full path name from the specified file path..
+
+Parameters:
+FilePath- the filepath to get the full path from
+Returns:
+the full path from the specified file path
+Since:
+7.0
+ */
+public static java.lang.String GetAbsoluteFilePath (java.io.File FilePath) {
+  Object o = sagex.SageAPI.call("GetAbsoluteFilePath", new Object[] {FilePath});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the full path name from the specified file path..
+
+Parameters:
+FilePath- the filepath to get the full path from
+Returns:
+the full path from the specified file path
+Since:
+7.0
+ */
+public static java.lang.String GetAbsoluteFilePath (UIContext _uicontext,java.io.File FilePath) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetAbsoluteFilePath", new Object[] {FilePath});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
 Returns the file name extension from the specified file path (not including the '.')
 
 Parameters:
@@ -1641,6 +1779,41 @@ public static boolean IsImageLoaded (UIContext _uicontext,java.lang.Object Image
 }
 
 /**
+Checks whether the passed in MetaImage (from an API call that returns MetaImage), MediaFile, File, URL or Album failed
+ to load successfully. This will return false if the image load has not been attempted yet.
+
+Parameters:
+Image- the MetaImage to check, or a MediaFile or an Album or a java.io.File or a java.net.URL
+Returns:
+true if the MetaImage (or the MetaImage that would correspond to the passed in resource) has already tried to load; and the load failed
+Since:
+7.0
+ */
+public static boolean DidImageLoadFail (java.lang.Object Image) {
+  Object o = sagex.SageAPI.call("DidImageLoadFail", new Object[] {Image});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Checks whether the passed in MetaImage (from an API call that returns MetaImage), MediaFile, File, URL or Album failed
+ to load successfully. This will return false if the image load has not been attempted yet.
+
+Parameters:
+Image- the MetaImage to check, or a MediaFile or an Album or a java.io.File or a java.net.URL
+Returns:
+true if the MetaImage (or the MetaImage that would correspond to the passed in resource) has already tried to load; and the load failed
+Since:
+7.0
+ */
+public static boolean DidImageLoadFail (UIContext _uicontext,java.lang.Object Image) {
+  Object o = sagex.SageAPI.call(_uicontext, "DidImageLoadFail", new Object[] {Image});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
 Returns a list of the files in the specified directory
 
 Parameters:
@@ -1663,6 +1836,37 @@ a list of files in the specified directory
  */
 public static java.io.File[] DirectoryListing (UIContext _uicontext,java.io.File DirectoryPath) {
   return (java.io.File[]) sagex.SageAPI.call(_uicontext, "DirectoryListing", new Object[] {DirectoryPath});
+}
+
+/**
+Returns a list of the files in the specified directory. Only directories and file matching the media mask will be returned.
+
+Parameters:
+DirectoryPath- the directory to list the files in
+MediaMask- the types of content allowed, any combination of 'M'=Music, 'P'=Pictures or 'V'=Videos
+Returns:
+a list of folders and matching files in the specified directory
+Since:
+7.0
+ */
+public static java.io.File[] DirectoryListing (java.io.File DirectoryPath, java.lang.String MediaMask) {
+  return (java.io.File[]) sagex.SageAPI.call("DirectoryListing", new Object[] {DirectoryPath,MediaMask});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a list of the files in the specified directory. Only directories and file matching the media mask will be returned.
+
+Parameters:
+DirectoryPath- the directory to list the files in
+MediaMask- the types of content allowed, any combination of 'M'=Music, 'P'=Pictures or 'V'=Videos
+Returns:
+a list of folders and matching files in the specified directory
+Since:
+7.0
+ */
+public static java.io.File[] DirectoryListing (UIContext _uicontext,java.io.File DirectoryPath, java.lang.String MediaMask) {
+  return (java.io.File[]) sagex.SageAPI.call(_uicontext, "DirectoryListing", new Object[] {DirectoryPath,MediaMask});
 }
 
 /**
@@ -3099,7 +3303,7 @@ public static boolean AnimateDelayed (UIContext _uicontext,java.lang.String Widg
 }
 
 /**
-Sets whether or not core animation support is enabled (animations that use layers and the Animate API calls for their effects)
+Sets whether or not animation support is enabled (either layered or Effect based animations; depending upon the STV configuration)
 
 Parameters:
 Enabled- true to enable core animations; false otherwise
@@ -3112,7 +3316,7 @@ public static void SetCoreAnimationsEnabled (boolean Enabled) {
 
 /**
  * UI Context Aware Call<br/>
-Sets whether or not core animation support is enabled (animations that use layers and the Animate API calls for their effects)
+Sets whether or not animation support is enabled (either layered or Effect based animations; depending upon the STV configuration)
 
 Parameters:
 Enabled- true to enable core animations; false otherwise
@@ -3124,7 +3328,7 @@ public static void SetCoreAnimationsEnabled (UIContext _uicontext,boolean Enable
 }
 
 /**
-Returns whether or not core animation support is enabled (animations that use layers and the Animate API calls for their effects)
+Returns whether or not animation support is enabled (either layered or Effect based animations; depending upon the STV configuration)
 
 Returns:
 true if core animations are enabled; false otherwise
@@ -3139,7 +3343,7 @@ public static boolean AreCoreAnimationsEnabled () {
 
 /**
  * UI Context Aware Call<br/>
-Returns whether or not core animation support is enabled (animations that use layers and the Animate API calls for their effects)
+Returns whether or not animation support is enabled (either layered or Effect based animations; depending upon the STV configuration)
 
 Returns:
 true if core animations are enabled; false otherwise

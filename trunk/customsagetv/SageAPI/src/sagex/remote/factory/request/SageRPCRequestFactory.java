@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -65,6 +65,8 @@ static {
    commands.put("GetMediaFileForAiring","AiringAPI");
    commands.put("GetAiringOnAfter","AiringAPI");
    commands.put("GetAiringOnBefore","AiringAPI");
+   commands.put("GetManualRecordProperty","AiringAPI");
+   commands.put("SetManualRecordProperty","AiringAPI");
    commands.put("GetAllMusicArtists","AlbumAPI");
    commands.put("GetAllMusicGenres","AlbumAPI");
    commands.put("GetAlbums","AlbumAPI");
@@ -98,6 +100,7 @@ static {
    commands.put("GetAudioCaptureSources","CaptureDeviceAPI");
    commands.put("IsCaptureDeviceHardwareEncoder","CaptureDeviceAPI");
    commands.put("GetCaptureDeviceBroadcastStandard","CaptureDeviceAPI");
+   commands.put("SetCaptureDeviceDTVStandard","CaptureDeviceAPI");
    commands.put("GetInfraredTuningPlugin","CaptureDeviceInputAPI");
    commands.put("GetInfraredTuningPluginPortNumber","CaptureDeviceInputAPI");
    commands.put("SetInfraredTuningPluginAndPort","CaptureDeviceInputAPI");
@@ -132,6 +135,7 @@ static {
    commands.put("GetLineupForCaptureDeviceInput","CaptureDeviceInputAPI");
    commands.put("GetCaptureDeviceForInput","CaptureDeviceInputAPI");
    commands.put("GetSignalStrength","CaptureDeviceInputAPI");
+   commands.put("GetCaptureDeviceInputBroadcastStandard","CaptureDeviceInputAPI");
    commands.put("GetChannelDescription","ChannelAPI");
    commands.put("GetChannelName","ChannelAPI");
    commands.put("GetChannelNetwork","ChannelAPI");
@@ -280,6 +284,11 @@ static {
    commands.put("SetOverscanOffsetY","Configuration");
    commands.put("SetOverscanScaleWidth","Configuration");
    commands.put("SetOverscanScaleHeight","Configuration");
+   commands.put("GetOverscanInsetLeft","Configuration");
+   commands.put("GetOverscanInsetRight","Configuration");
+   commands.put("GetOverscanInsetTop","Configuration");
+   commands.put("GetOverscanInsetBottom","Configuration");
+   commands.put("GetOverscanInsets","Configuration");
    commands.put("GetAvailableCountries","Configuration");
    commands.put("SetCountry","Configuration");
    commands.put("GetCountry","Configuration");
@@ -420,6 +429,7 @@ static {
    commands.put("IsFirstRuns","FavoriteAPI");
    commands.put("IsReRuns","FavoriteAPI");
    commands.put("IsAutoDelete","FavoriteAPI");
+   commands.put("IsAutoDeleteAfterConversion","FavoriteAPI");
    commands.put("GetKeepAtMost","FavoriteAPI");
    commands.put("GetFavoriteDescription","FavoriteAPI");
    commands.put("GetFavoriteTitle","FavoriteAPI");
@@ -437,12 +447,17 @@ static {
    commands.put("GetStartPadding","FavoriteAPI");
    commands.put("GetStopPadding","FavoriteAPI");
    commands.put("GetFavoriteQuality","FavoriteAPI");
+   commands.put("GetFavoriteAutomaticConversionFormat","FavoriteAPI");
+   commands.put("GetFavoriteAutomaticConversionDestination","FavoriteAPI");
    commands.put("SetStartPadding","FavoriteAPI");
    commands.put("SetStopPadding","FavoriteAPI");
    commands.put("SetFavoriteQuality","FavoriteAPI");
+   commands.put("SetFavoriteAutomaticConversionFormat","FavoriteAPI");
+   commands.put("SetFavoriteAutomaticConversionDestination","FavoriteAPI");
    commands.put("CreateFavoritePriority","FavoriteAPI");
    commands.put("ConfirmManualRecordOverFavoritePriority","FavoriteAPI");
    commands.put("SetDontAutodelete","FavoriteAPI");
+   commands.put("SetDeleteAfterAutomaticConversion","FavoriteAPI");
    commands.put("SetKeepAtMost","FavoriteAPI");
    commands.put("SetRunStatus","FavoriteAPI");
    commands.put("SetFavoriteTitle","FavoriteAPI");
@@ -465,6 +480,8 @@ static {
    commands.put("GetFavorites","FavoriteAPI");
    commands.put("RemoveFavorite","FavoriteAPI");
    commands.put("AddFavorite","FavoriteAPI");
+   commands.put("GetFavoriteProperty","FavoriteAPI");
+   commands.put("SetFavoriteProperty","FavoriteAPI");
    commands.put("Refresh","Global");
    commands.put("RefreshArea","Global");
    commands.put("RefreshAreaForVariable","Global");
@@ -508,6 +525,29 @@ static {
    commands.put("ApplyServiceLevelToLineup","Global");
    commands.put("SetFocusForVariable","Global");
    commands.put("EnsureVisibilityForVariable","Global");
+   commands.put("GetVariableFromContext","Global");
+   commands.put("GetVisibilityForVariable","Global");
+   commands.put("GetUIComponentForVariable","Global");
+   commands.put("SetFocusToUIComponent","Global");
+   commands.put("GetTableFocusedVisibleRow","Global");
+   commands.put("GetTableFocusedVisibleColumn","Global");
+   commands.put("GetTableFocusedVisiblePosition","Global");
+   commands.put("GetTableFocusedPosition","Global");
+   commands.put("GetDataFromTableFocusedOffset","Global");
+   commands.put("GetDataFromTableVisiblePosition","Global");
+   commands.put("IsTableTransitionToNext","Global");
+   commands.put("IsTableTransitionToPrevious","Global");
+   commands.put("IsTransitioningToMenu","Global");
+   commands.put("IsTransitioningFromMenu","Global");
+   commands.put("GetTextForUIComponent","Global");
+   commands.put("GetUIComponentLastFocusedChild","Global");
+   commands.put("GetUIComponentPositionX","Global");
+   commands.put("GetUIComponentPositionY","Global");
+   commands.put("GetUIComponentWidth","Global");
+   commands.put("GetUIComponentHeight","Global");
+   commands.put("SendEventToUIComponent","Global");
+   commands.put("GetChildUIComponentForVariable","Global");
+   commands.put("GetVariableFromUIComponent","Global");
    commands.put("PassiveListen","Global");
    commands.put("GetAiringsThatWontBeRecorded","Global");
    commands.put("IsClient","Global");
@@ -635,6 +675,41 @@ static {
    commands.put("CanAutorotatePictureFile","MediaFileAPI");
    commands.put("AutorotatePictureFile","MediaFileAPI");
    commands.put("RegeneratePictureThumbnail","MediaFileAPI");
+   commands.put("GetMediaSource","MediaNodeAPI");
+   commands.put("GetMediaView","MediaNodeAPI");
+   commands.put("GetRelativeMediaSource","MediaNodeAPI");
+   commands.put("IsNodeFolder","MediaNodeAPI");
+   commands.put("GetNodeChildren","MediaNodeAPI");
+   commands.put("GetNodeNumChildren","MediaNodeAPI");
+   commands.put("GetNodeChildAt","MediaNodeAPI");
+   commands.put("SetNodeSort","MediaNodeAPI");
+   commands.put("GetNodeSortTechnique","MediaNodeAPI");
+   commands.put("IsNodeSortAscending","MediaNodeAPI");
+   commands.put("SetNodeFilter","MediaNodeAPI");
+   commands.put("GetNodeNumFilters","MediaNodeAPI");
+   commands.put("GetNodeFilterTechnique","MediaNodeAPI");
+   commands.put("IsNodeFilterMatching","MediaNodeAPI");
+   commands.put("AppendNodeFilter","MediaNodeAPI");
+   commands.put("IsNodeHierarchyRealized","MediaNodeAPI");
+   commands.put("GetAllNodeDescendants","MediaNodeAPI");
+   commands.put("GetNodeIcon","MediaNodeAPI");
+   commands.put("GetNodeThumbnail","MediaNodeAPI");
+   commands.put("GetNodePrimaryLabel","MediaNodeAPI");
+   commands.put("GetNodeSecondaryLabel","MediaNodeAPI");
+   commands.put("IsNodePlayable","MediaNodeAPI");
+   commands.put("IsNodeVirtual","MediaNodeAPI");
+   commands.put("GetNodeDataObject","MediaNodeAPI");
+   commands.put("GetNodeDataType","MediaNodeAPI");
+   commands.put("GetNodeProperty","MediaNodeAPI");
+   commands.put("GetNodeParent","MediaNodeAPI");
+   commands.put("RefreshNode","MediaNodeAPI");
+   commands.put("SetNodeChecked","MediaNodeAPI");
+   commands.put("SetAllChildrenChecked","MediaNodeAPI");
+   commands.put("GetChildrenCheckedCount","MediaNodeAPI");
+   commands.put("GetChildrenCheckedNodes","MediaNodeAPI");
+   commands.put("CreateMediaNode","MediaNodeAPI");
+   commands.put("GetNodeFullPath","MediaNodeAPI");
+   commands.put("GetNodeTypePath","MediaNodeAPI");
    commands.put("IsMediaPlayerFullyLoaded","MediaPlayerAPI");
    commands.put("IsMediaPlayerLoading","MediaPlayerAPI");
    commands.put("PlayFaster","MediaPlayerAPI");
@@ -669,6 +744,7 @@ static {
    commands.put("SetMute","MediaPlayerAPI");
    commands.put("GetCurrentMediaTitle","MediaPlayerAPI");
    commands.put("GetMediaTime","MediaPlayerAPI");
+   commands.put("GetRawMediaTime","MediaPlayerAPI");
    commands.put("GetMediaDuration","MediaPlayerAPI");
    commands.put("GetCurrentMediaFile","MediaPlayerAPI");
    commands.put("HasMediaFile","MediaPlayerAPI");
@@ -700,6 +776,7 @@ static {
    commands.put("ReloadCurrentFile","MediaPlayerAPI");
    commands.put("DirectPlaybackControl","MediaPlayerAPI");
    commands.put("GetDVDCurrentTitle","MediaPlayerAPI");
+   commands.put("GetBluRayTitleDescription","MediaPlayerAPI");
    commands.put("GetDVDNumberOfTitles","MediaPlayerAPI");
    commands.put("GetDVDCurrentChapter","MediaPlayerAPI");
    commands.put("GetDVDNumberOfChapters","MediaPlayerAPI");
@@ -739,6 +816,8 @@ static {
    commands.put("GetAllSeriesInfo","SeriesInfoAPI");
    commands.put("GetSeriesTitle","SeriesInfoAPI");
    commands.put("GetSeriesDescription","SeriesInfoAPI");
+   commands.put("GetSeriesCategory","SeriesInfoAPI");
+   commands.put("GetSeriesSubCategory","SeriesInfoAPI");
    commands.put("GetSeriesHistory","SeriesInfoAPI");
    commands.put("GetSeriesPremiereDate","SeriesInfoAPI");
    commands.put("GetSeriesFinaleDate","SeriesInfoAPI");
@@ -752,6 +831,7 @@ static {
    commands.put("GetSeriesActorList","SeriesInfoAPI");
    commands.put("GetSeriesCharacter","SeriesInfoAPI");
    commands.put("GetSeriesCharacterList","SeriesInfoAPI");
+   commands.put("GetSeriesCharacterForActor","SeriesInfoAPI");
    commands.put("IsShowEPGDataUnique","ShowAPI");
    commands.put("GetShowMisc","ShowAPI");
    commands.put("GetShowCategory","ShowAPI");
@@ -769,11 +849,16 @@ static {
    commands.put("GetRoleTypes","ShowAPI");
    commands.put("GetPeopleInShow","ShowAPI");
    commands.put("GetPeopleListInShow","ShowAPI");
+   commands.put("GetPeopleAndCharacterListInShow","ShowAPI");
    commands.put("GetRolesInShow","ShowAPI");
    commands.put("GetPeopleInShowInRole","ShowAPI");
    commands.put("GetPeopleInShowInRoles","ShowAPI");
+   commands.put("GetPeopleAndCharacterInShowInRole","ShowAPI");
+   commands.put("GetPeopleAndCharacterInShowInRoles","ShowAPI");
    commands.put("GetPeopleListInShowInRole","ShowAPI");
    commands.put("GetPeopleListInShowInRoles","ShowAPI");
+   commands.put("GetPeopleAndCharacterListInShowInRole","ShowAPI");
+   commands.put("GetPeopleAndCharacterListInShowInRoles","ShowAPI");
    commands.put("IsShowObject","ShowAPI");
    commands.put("IsShowFirstRun","ShowAPI");
    commands.put("IsShowReRun","ShowAPI");
@@ -796,6 +881,8 @@ static {
    commands.put("GetSystemMessageLevel","SystemMessageAPI");
    commands.put("GetSystemMessageVariable","SystemMessageAPI");
    commands.put("PostSystemMessage","SystemMessageAPI");
+   commands.put("IsSystemMessageObject","SystemMessageAPI");
+   commands.put("GetSystemMessageVariableNames","SystemMessageAPI");
    commands.put("GetTranscodeFormats","TranscodeAPI");
    commands.put("GetTranscodeFormatDetails","TranscodeAPI");
    commands.put("AddTranscodeFormat","TranscodeAPI");
@@ -825,6 +912,7 @@ static {
    commands.put("GetSubgroup","Utility");
    commands.put("Keystroke","Utility");
    commands.put("Size","Utility");
+   commands.put("IsEmpty","Utility");
    commands.put("DateFormat","Utility");
    commands.put("NumberFormat","Utility");
    commands.put("DurFormat","Utility");
@@ -833,9 +921,11 @@ static {
    commands.put("SetElement","Utility");
    commands.put("RemoveElementAtIndex","Utility");
    commands.put("RemoveElement","Utility");
+   commands.put("AddElement","Utility");
    commands.put("FindElementIndex","Utility");
    commands.put("FindComparativeElement","Utility");
    commands.put("Substring","Utility");
+   commands.put("SubstringBegin","Utility");
    commands.put("Round","Utility");
    commands.put("Time","Utility");
    commands.put("PrintCurrentTime","Utility");
@@ -862,6 +952,7 @@ static {
    commands.put("PlaySound","Utility");
    commands.put("If","Utility");
    commands.put("GetFileNameFromPath","Utility");
+   commands.put("GetAbsoluteFilePath","Utility");
    commands.put("GetFileExtensionFromPath","Utility");
    commands.put("Wait","Utility");
    commands.put("Max","Utility");
@@ -874,6 +965,8 @@ static {
    commands.put("GetScaledImageAsBufferedImage","Utility");
    commands.put("UnloadImage","Utility");
    commands.put("IsImageLoaded","Utility");
+   commands.put("DidImageLoadFail","Utility");
+   commands.put("DirectoryListing","Utility");
    commands.put("DirectoryListing","Utility");
    commands.put("LocalDirectoryListing","Utility");
    commands.put("GetFileSystemRoots","Utility");
@@ -991,8 +1084,14 @@ static {
       if ("Global".equals(api)) {
          return GlobalFactory.createRequest(context, command, parameters);
       }
+      if ("LocatorAPI".equals(api)) {
+         return LocatorAPIFactory.createRequest(context, command, parameters);
+      }
       if ("MediaFileAPI".equals(api)) {
          return MediaFileAPIFactory.createRequest(context, command, parameters);
+      }
+      if ("MediaNodeAPI".equals(api)) {
+         return MediaNodeAPIFactory.createRequest(context, command, parameters);
       }
       if ("MediaPlayerAPI".equals(api)) {
          return MediaPlayerAPIFactory.createRequest(context, command, parameters);

@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPIFactory.html'>FavoriteAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -30,6 +30,9 @@ public class FavoriteAPIFactory {
    }
    if (command.equals("IsAutoDelete")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsAutoDelete",parameters,Object.class);
+   }
+   if (command.equals("IsAutoDeleteAfterConversion")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsAutoDeleteAfterConversion",parameters,Object.class);
    }
    if (command.equals("GetKeepAtMost")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetKeepAtMost",parameters,Object.class);
@@ -82,6 +85,12 @@ public class FavoriteAPIFactory {
    if (command.equals("GetFavoriteQuality")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFavoriteQuality",parameters,Object.class);
    }
+   if (command.equals("GetFavoriteAutomaticConversionFormat")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFavoriteAutomaticConversionFormat",parameters,Object.class);
+   }
+   if (command.equals("GetFavoriteAutomaticConversionDestination")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFavoriteAutomaticConversionDestination",parameters,Object.class);
+   }
    if (command.equals("SetStartPadding")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetStartPadding",parameters,Object.class,long.class);
    }
@@ -91,6 +100,12 @@ public class FavoriteAPIFactory {
    if (command.equals("SetFavoriteQuality")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetFavoriteQuality",parameters,Object.class,java.lang.String.class);
    }
+   if (command.equals("SetFavoriteAutomaticConversionFormat")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetFavoriteAutomaticConversionFormat",parameters,Object.class,java.lang.String.class);
+   }
+   if (command.equals("SetFavoriteAutomaticConversionDestination")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetFavoriteAutomaticConversionDestination",parameters,Object.class,java.io.File.class);
+   }
    if (command.equals("CreateFavoritePriority")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CreateFavoritePriority",parameters,Object.class,Object.class);
    }
@@ -99,6 +114,9 @@ public class FavoriteAPIFactory {
    }
    if (command.equals("SetDontAutodelete")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetDontAutodelete",parameters,Object.class,boolean.class);
+   }
+   if (command.equals("SetDeleteAfterAutomaticConversion")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetDeleteAfterAutomaticConversion",parameters,Object.class,boolean.class);
    }
    if (command.equals("SetKeepAtMost")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetKeepAtMost",parameters,Object.class,int.class);
@@ -165,6 +183,12 @@ public class FavoriteAPIFactory {
    }
    if (command.equals("AddFavorite")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AddFavorite",parameters,java.lang.String.class,boolean.class,boolean.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class);
+   }
+   if (command.equals("GetFavoriteProperty")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFavoriteProperty",parameters,Object.class,java.lang.String.class);
+   }
+   if (command.equals("SetFavoriteProperty")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetFavoriteProperty",parameters,Object.class,java.lang.String.class,java.lang.String.class);
    }
    throw new RuntimeException("Invalid FavoriteAPIFactory Command: "+command);
    }

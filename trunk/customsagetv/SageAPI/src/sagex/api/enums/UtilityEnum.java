@@ -2,7 +2,7 @@ package sagex.api.enums;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/UtilityEnum.html'>UtilityEnum</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -11,6 +11,7 @@ public enum UtilityEnum {
 GetSubgroup,
 Keystroke,
 Size,
+IsEmpty,
 DateFormat,
 NumberFormat,
 DurFormat,
@@ -19,9 +20,11 @@ GetElement,
 SetElement,
 RemoveElementAtIndex,
 RemoveElement,
+AddElement,
 FindElementIndex,
 FindComparativeElement,
 Substring,
+SubstringBegin,
 Round,
 Time,
 PrintCurrentTime,
@@ -48,6 +51,7 @@ SetWindowsRegistryStringValue,
 PlaySound,
 If,
 GetFileNameFromPath,
+GetAbsoluteFilePath,
 GetFileExtensionFromPath,
 Wait,
 Max,
@@ -60,6 +64,7 @@ GetImageAsBufferedImage,
 GetScaledImageAsBufferedImage,
 UnloadImage,
 IsImageLoaded,
+DidImageLoadFail,
 DirectoryListing,
 LocalDirectoryListing,
 GetFileSystemRoots,
