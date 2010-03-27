@@ -19,7 +19,7 @@ import sagex.phoenix.util.BaseBuilder;
 import sagex.phoenix.util.XmlUtil;
 
 public class FileMatcherManager {
-    private class FileMatcherXmlBuilder extends BaseBuilder {
+    private static class FileMatcherXmlBuilder extends BaseBuilder {
         public FileMatcherXmlBuilder(String name) {
             super(name);
         }

@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
 import org.jdna.util.FileExtFileFilter;
 import org.jdna.util.PropertiesUtils;
 
+import sagex.phoenix.util.FileUtils;
+
 public class CachedUrlCleanupTask extends TimerTask {
     public static final String TaskID     = "urlcachecleaner";
     private Logger             log        = Logger.getLogger(CachedUrlCleanupTask.class);
@@ -41,7 +43,7 @@ public class CachedUrlCleanupTask extends TimerTask {
                     if (f.exists() && (CachedUrl.isExpired(f, cfg.getCacheExpiryInSeconds()) || f.length() == 0)) {
                         log.info("Removing Cached Url File: " + f);
                         f.delete();
-                        file.delete();
+                        FileUtils.deleteQuietly(file);
                         results.add(file);
                     }
                 } catch (IOException e) {

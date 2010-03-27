@@ -18,6 +18,7 @@ import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.url.UrlConfiguration;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.util.FileUtils;
 
 public class MediaMetadataUtils {
     private static final Logger log = Logger.getLogger(MediaMetadataUtils.class);
@@ -65,7 +66,7 @@ public class MediaMetadataUtils {
         } finally {
             if (out.exists() && out.length() == 0) {
                 log.info("Removing 0 byte file: " + out.getAbsolutePath() + "; for url: " + url);
-                out.delete();
+                FileUtils.deleteQuietly(out);
             }
         }
     }
@@ -143,7 +144,7 @@ public class MediaMetadataUtils {
         } finally {
             if (out.exists() && out.length() == 0) {
                 log.info("Removing 0 byte file: " + out.getAbsolutePath() + "; for url: " + url);
-                out.delete();
+                FileUtils.deleteQuietly(out);
             }
         }
     }

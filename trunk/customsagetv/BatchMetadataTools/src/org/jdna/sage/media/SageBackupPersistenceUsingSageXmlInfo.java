@@ -10,6 +10,7 @@ import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.sage.io.SageXmlWriter;
 
 import sagex.api.MediaFileAPI;
+import sagex.phoenix.util.FileUtils;
 import sagex.phoenix.vfs.IMediaResource;
 
 public class SageBackupPersistenceUsingSageXmlInfo implements IMediaMetadataPersistence {
@@ -59,7 +60,7 @@ public class SageBackupPersistenceUsingSageXmlInfo implements IMediaMetadataPers
         
         File dir = new File("backup/TV/");
         if (!dir.exists()) {
-            dir.mkdirs();
+            FileUtils.mkdirsQuietly(dir);
         }
 
         int index=1;

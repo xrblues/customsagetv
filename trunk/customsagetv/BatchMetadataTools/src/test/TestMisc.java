@@ -1,5 +1,6 @@
 package test;
 
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,13 +11,12 @@ import org.apache.commons.codec.language.RefinedSoundex;
 
 public class TestMisc {
     public static void main(String args[]) throws Throwable {
-        Pattern p = Pattern.compile(".*[/\\\\](.*)[es]([0-9]{1,2})[sexp]{1,2}([[0-9]]{1,2})",Pattern.CASE_INSENSITIVE);
-        String s = "/tmp/Battlestar Galactica-e01s01-33.mkv";
-        Matcher m  = p.matcher(s);
-        if (m.find()) {
-            System.out.println("Title: " + m.group(1));
-        } else {
-            System.out.println("*** Failed");
-        }
+        Random random = new Random();
+        String s1 = Integer.toHexString((int)(random.nextDouble()*0xFFFF));
+        String s2 = Integer.toHexString(random.nextInt());
+        String s3 = Integer.toHexString(random.nextInt()*0xFFFF);
+        System.out.println("S1: " + s1);
+        System.out.println("S2: " + s2);
+        System.out.println("S3: " + s3);
     }
 }

@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaArt;
@@ -141,7 +142,7 @@ public class FanartStorage {
                     set.add(name);
                     // create the file's parent dir if it's not exist
                     if (!storedFile.getParentFile().exists()) {
-                        storedFile.getParentFile().mkdirs();
+                        sagex.phoenix.util.FileUtils.mkdirsQuietly(storedFile.getParentFile());
                     }
                     StoredStringSet.save(set, storedFile, "Ignoring these image files");
                 }

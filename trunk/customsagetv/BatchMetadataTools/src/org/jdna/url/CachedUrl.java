@@ -15,6 +15,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jdna.util.PropertiesUtils;
 
+import sagex.phoenix.util.FileUtils;
+
 public class CachedUrl extends Url implements IUrl {
 
     private static final Logger log             = Logger.getLogger(CachedUrl.class);
@@ -38,11 +40,11 @@ public class CachedUrl extends Url implements IUrl {
             File f = getCachedFile();
             if (f.exists() && (isExpired(f) || f.length()==0)) {
                 log.info("Removing Cached Url File: " + f);
-                f.delete();
+                FileUtils.deleteQuietly(f);
             }
         } else {
             File f = propFile.getParentFile();
-            f.mkdirs();
+            FileUtils.mkdirsQuietly(f);
             log.debug("Creating a new cached url for: " + url);
             props.setProperty("url", url);
             props.setProperty("file", new File(getCacheDir(), urlId + ".cache").getPath());
@@ -54,8 +56,10 @@ public class CachedUrl extends Url implements IUrl {
             props.setProperty("url", url);
             File f = getCachedFile();
             if (f.exists()) {
-                log.error("Removing cached content for url: " + url);
-                f.delete();
+                log.info("Removing cached content for url: " + url);
+                if (!f.delete()) {
+                    log.warn("Failed to delete file: " + f);
+                }
             }
         }
     }
@@ -95,7 +99,7 @@ public class CachedUrl extends Url implements IUrl {
     private File getCacheDir() {
         if (urlCacheDir == null) {
             urlCacheDir = new File(cfg.getCacheDir());
-            if (!urlCacheDir.exists()) urlCacheDir.mkdirs();
+            if (!urlCacheDir.exists()) FileUtils.mkdirsQuietly(urlCacheDir);
         }
         return urlCacheDir;
     }
@@ -226,7 +230,7 @@ public class CachedUrl extends Url implements IUrl {
                 }
                 
                 // now remove the propfile
-                propFile.delete();
+                FileUtils.deleteQuietly(propFile);
             }
         } catch (IOException e) {
         }

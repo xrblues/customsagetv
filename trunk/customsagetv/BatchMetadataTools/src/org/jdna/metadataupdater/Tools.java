@@ -19,7 +19,7 @@ public class Tools {
                 Iterator<File> iter = FileUtils.iterateFiles(dir, new String[] {"properties"}, true);
                 for (;iter.hasNext();) {
                     File f = iter.next();
-                    f.delete();
+                    sagex.phoenix.util.FileUtils.deleteQuietly(f);
                     removed++;
                 }
             }

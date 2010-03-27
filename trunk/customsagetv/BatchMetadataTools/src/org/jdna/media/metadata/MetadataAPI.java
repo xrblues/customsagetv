@@ -33,8 +33,6 @@ import sagex.phoenix.vfs.util.PathUtils;
  */
 public class MetadataAPI {
     private static Logger log = Logger.getLogger(MetadataAPI.class);
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    
     public static IMediaMetadata copy(IMediaMetadata src, IMediaMetadata dest) {
         if (src==null) return dest;
         if (dest==null) return src;
@@ -441,6 +439,7 @@ public class MetadataAPI {
 
     public static void setReleaseDate(IMediaMetadata md, Date d) {
         try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             setReleaseDate(md, dateFormat.format(d));
         } catch (Exception t) {
         }
