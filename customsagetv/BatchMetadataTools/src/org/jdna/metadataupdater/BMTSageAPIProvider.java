@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.jdna.util.PropertiesUtils;
 import org.jdna.util.SortedProperties;
 
 import sagex.ISageAPIProvider;
@@ -26,7 +27,7 @@ public class BMTSageAPIProvider implements ISageAPIProvider {
         if (f.exists()) {
             log.info("Loading Properties from: " + f.getAbsolutePath());
             try {
-                props.load(new FileReader(f));
+                PropertiesUtils.load(props, f);
             } catch (IOException e) {
                 log.error("Failed to load Properties from: " + f.getAbsolutePath(), e);
             }

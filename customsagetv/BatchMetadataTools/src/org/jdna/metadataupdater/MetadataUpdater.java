@@ -292,7 +292,9 @@ public class MetadataUpdater {
                 System.out.println("File Not Found: " + file.getAbsolutePath() + "\nConsider adding --offline=true if you want to create an offline video.");
             } else {
                 if (!file.exists()) {
-                    file.createNewFile();
+                    if (!file.createNewFile()) {
+                        log.warn("Failed to create file: " + file);
+                    }
                 }
                 IMediaResource r = FileResourceFactory.createResource(null, file);
                 resources.add(r);
@@ -588,7 +590,7 @@ public class MetadataUpdater {
         this.query=s;
         // this will throw an exception if the query is bad
         try {
-            JSONObject jo = new JSONObject(s);
+            new JSONObject(s);
         } catch (JSONException e) {
             System.out.println("Invalid JSON String: " + s);
             exit(e.getMessage());

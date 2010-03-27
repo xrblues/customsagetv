@@ -92,13 +92,13 @@ public class SageScanMediaFileEvenHandler implements ScanMediaFileEventHandler {
                     
                     Object sageRes = phoenix.api.GetSageMediaFile(evt.getFile());
                     if (sageRes==null) {
-                        scanError("Unknown SageTV File: " + sageRes);
+                        scanError("Unknown SageTV File: " + evt.getFile());
                         continue;
                     }
                     
                     IMediaResource res = phoenix.api.GetMediaResource(sageRes);
                     if (res==null) {
-                        scanError("Unknown MediaFile: " + res);
+                        scanError("Unknown MediaFile: " + sageRes);
                         continue;
                     }
                     

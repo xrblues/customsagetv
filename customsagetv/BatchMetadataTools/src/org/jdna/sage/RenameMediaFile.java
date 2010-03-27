@@ -77,7 +77,7 @@ public class RenameMediaFile implements IMediaMetadataPersistence {
 	 * @throws Exception
 	 */
 	private static String replaceVariables(String string, Map<String,String> replacements) {
-		String retVal = new String(string);
+		String retVal = string;
 		Pattern pattern = Pattern.compile(".*?\\$\\{(\\w*)(?:\\:([a-zA-Z_0-9.]*)\\:([^}]*))?\\}.*?");
 		Matcher matcher = pattern.matcher(retVal);
 

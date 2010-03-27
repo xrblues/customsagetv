@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 public class LoggerConfiguration {
@@ -17,6 +18,7 @@ public class LoggerConfiguration {
                 os.close();
                 PropertyConfigurator.configure("log4j.properties");
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

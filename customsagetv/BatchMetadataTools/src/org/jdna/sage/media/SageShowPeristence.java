@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
@@ -37,6 +38,8 @@ import sagex.phoenix.vfs.util.PathUtils;
  * 
  */
 public class SageShowPeristence implements IMediaMetadataPersistence {
+    private Random random = new Random(System.currentTimeMillis());
+    
     private static final Logger log = Logger.getLogger(SageShowPeristence.class);
 
     public SageShowPeristence() {
@@ -350,7 +353,7 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
         log.debug("Cat1: " + cat1);
         log.debug("Cat2: " + cat2);
         log.debug("mpaaRated: " + mpaaRated);
-        log.debug("mappRatedDesc: " + mpaaExpandedRatings);
+        log.debug("mappRatedDesc: " + ArrayUtils.toString(mpaaExpandedRatings));
         log.debug("Year: " + year);
         log.debug("ParentalRating: " + parentRating);
         log.debug("External Id: " + externalID);
@@ -418,17 +421,17 @@ public class SageShowPeristence implements IMediaMetadataPersistence {
             if (!StringUtils.isEmpty(MetadataAPI.getSeason(md)) && !StringUtils.isEmpty(MetadataAPI.getEpisode(md))) {
                 suffix = org.jdna.util.StringUtils.zeroPad(MetadataAPI.getSeason(md), 2) + org.jdna.util.StringUtils.zeroPad(MetadataAPI.getEpisode(md), 2);
             } else {
-                suffix = Integer.toHexString((int)(new Random().nextDouble()*0xFFFF));
+                suffix = Integer.toHexString((int)(random.nextDouble()*0xFFFF));
             }
         } else {
-            suffix = Integer.toHexString((int)(new Random().nextDouble()*0xFFFF));
+            suffix = Integer.toHexString((int)(random.nextDouble()*0xFFFF));
         }
         
         String id = null;
         do {
             // keep gen'd EPGID less than 12 chars
             // SEANS: Taken from nielm's xmlinfo... I'm guessing there is a 12 char limit, so i won't mess with it
-            id = prefix + Integer.toHexString((int)(new Random().nextDouble()*0xFFFF)) + suffix;
+            id = prefix + Integer.toHexString((int)(random.nextDouble()*0xFFFF)) + suffix;
             log.debug("Calculated a showid: " + id);
         } while (ShowAPI.GetShowForExternalID(id) != null);
         return id;
