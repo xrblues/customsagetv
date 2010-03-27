@@ -137,7 +137,7 @@ public class IMDBSearchResultParser extends URLSaxParser {
             aState = TITLE_READ_YEAR;
         } else if (aState == TITLE_READ_YEAR) {
             // year should look like this... (NNNN)
-            Pattern p = Pattern.compile("\\(([0-9]+[\\/]*[A-Z]*)\\)");
+            Pattern p = Pattern.compile("\\(([0-9]+)([\\/]*[A-Z]*)*\\)");
             try {
                 Matcher m = p.matcher(charBuffer);
                 if (m.find()) {

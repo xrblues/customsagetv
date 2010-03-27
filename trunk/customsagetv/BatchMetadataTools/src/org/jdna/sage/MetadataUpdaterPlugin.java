@@ -91,7 +91,7 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
         }
         
         if (!pluginConfig.getEnabled()) {
-            log.debug("BMT Automatic Plugin Disabled.");
+            log.warn("BMT Automatic Plugin Disabled.");
             return null;
         }
         

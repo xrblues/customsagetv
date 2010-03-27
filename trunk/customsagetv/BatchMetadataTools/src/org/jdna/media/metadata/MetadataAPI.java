@@ -265,6 +265,8 @@ public class MetadataAPI {
      * @param md
      */
     public static IMediaMetadata normalizeMetadata(IMediaFile mf, IMediaMetadata md, PersistenceOptions options) {
+        if (md==null) return null;
+        
         SageMetadataConfiguration cfg = GroupProxy.get(SageMetadataConfiguration.class);
         
         if (!isValidDisc(md)) {

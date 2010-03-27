@@ -2,6 +2,7 @@ package org.jdna.util;
 
 import java.util.ArrayList;
 
+import org.apache.commons.codec.language.RefinedSoundex;
 import org.apache.log4j.Logger;
 
 /**
@@ -65,6 +66,11 @@ public class Similarity {
     /** @return lexical similarity value in the range [0,1] */
     @SuppressWarnings("unchecked")
     public float compareStrings(String str1, String str2) {
+        if (str1==null || str2==null) return 0.0f;
+        if (str1.toUpperCase().equals(str2.toUpperCase())) {
+            return 1.0f;
+        }
+        
     	try {
 	        ArrayList pairs1 = wordLetterPairs(str1.toUpperCase());
 	        ArrayList pairs2 = wordLetterPairs(str2.toUpperCase());

@@ -85,7 +85,7 @@ public class SageScanMediaFileEvenHandler implements ScanMediaFileEventHandler {
                     }
                     
                     setupFilters();
-                    log.debug("Scanning for metadata for file: " + evt.getFile().getAbsolutePath());
+                    log.info("Scanning for metadata for file: " + evt.getFile().getAbsolutePath());
                     
                     MetadataProcessor processor = new MetadataProcessor(evt.getOptions());
                     processor.addFilter(filter);

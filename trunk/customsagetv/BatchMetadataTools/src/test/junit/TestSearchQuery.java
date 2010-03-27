@@ -7,9 +7,11 @@ import static test.junit.lib.FilesTestCase.makeFile;
 
 import java.io.File;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.metadata.SearchQuery.Field;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sagex.SageAPI;
@@ -19,9 +21,29 @@ import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.impl.FileResourceFactory;
 import sagex.stub.MediaFileAPIProxy;
 import sagex.stub.StubSageAPI;
+import test.junit.lib.InitBMT;
 
 
 public class TestSearchQuery {
+    @BeforeClass
+    public static void setup() throws Exception {
+            InitBMT.initBMT();
+    }
+    
+    @Test
+    public void testCommonQuerries() {
+        IMediaFile mf = (IMediaFile) FileResourceFactory.createResource(new File("G.I.Joe.Rice.Of.The.Cobra.2009.avi"));
+        SearchQuery q = SearchQueryFactory.getInstance().createQuery(mf);
+        System.out.println("RAW_TITLE: " + q.get(Field.RAW_TITLE));
+        System.out.println("CLEAN_TITLE: " + q.get(Field.CLEAN_TITLE));
+        
+        mf = (IMediaFile) FileResourceFactory.createResource(new File("Sex in the city - cd1.avi"));
+        q = SearchQueryFactory.getInstance().createQuery(mf);
+        System.out.println("RAW_TITLE: " + q.get(Field.RAW_TITLE));
+        System.out.println("CLEAN_TITLE: " + q.get(Field.CLEAN_TITLE));
+        assertEquals("Clean title is not matched!", q.get(Field.CLEAN_TITLE), "Sex in the city");
+        
+    }
 
     @Test
     public void testCreateQueryIMediaResource() {
@@ -49,6 +71,19 @@ public class TestSearchQuery {
         mf = (IMediaFile) FileResourceFactory.createResource(new File("1984 (2009).avi"));
         q = SearchQueryFactory.getInstance().createQuery(mf);
         assertEquals("2009", q.get(Field.YEAR));
+        
+        // test for battlestar galactica
+        mf = (IMediaFile) FileResourceFactory.createResource(new File("Battlestar Galactica-e01s01-33.mkv"));
+        q = SearchQueryFactory.getInstance().createQuery(mf);
+        assertParts(q, MediaType.TV, "Battlestar Galactica", "01", "01");
+
+        mf = (IMediaFile) FileResourceFactory.createResource(new File("The Prisoner-s01e01-Arrival.mkv"));
+        q = SearchQueryFactory.getInstance().createQuery(mf);
+        assertParts(q, MediaType.TV, "The Prisoner", "01", "01");
+        
+        mf = (IMediaFile) FileResourceFactory.createResource(new File("\\DVDs\\Entourage Season 2 Disc 2\\VIDEO_TS"));
+        q = SearchQueryFactory.getInstance().createQuery(mf);
+        assertParts(q, MediaType.TV, "Entourage", "2", "2");
     }
     
     @Test
@@ -87,7 +122,11 @@ public class TestSearchQuery {
     private void assertParts(SearchQuery q, MediaType type, String title, String season, String episode) {
         assertParts(q, type, title);
         assertEquals(season, q.get(Field.SEASON));
-        assertEquals(episode, q.get(Field.EPISODE));
+        if (!StringUtils.isEmpty(q.get(Field.DISC))) {
+            assertEquals(episode, q.get(Field.DISC));
+        } else {
+            assertEquals(episode, q.get(Field.EPISODE));
+        }
     }
 
 }

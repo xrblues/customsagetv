@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import sagex.phoenix.fanart.MediaType;
 
 public class FileMatcher {
-    private MediaType mediaType = MediaType.MUSIC;
+    private MediaType mediaType = MediaType.MOVIE;
     private File file;
     private String title, year;
     private Pattern fileRegex;
@@ -107,5 +107,13 @@ public class FileMatcher {
      */
     public void setMediaType(MediaType mediaType) {
         this.mediaType = mediaType;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "FileMatcher [fanart=" + fanart + ", file=" + file + ", fileRegex=" + fileRegex + ", mediaType=" + mediaType + ", metadata=" + metadata + ", title=" + title + ", year=" + year + "]";
     }
 }

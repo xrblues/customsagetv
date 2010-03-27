@@ -43,7 +43,6 @@ public class TVFileNameUtils {
     }
 
     public SearchQuery createSearchQuery(IMediaResource res) {
-        
         // important, or else the filename parser will find %20 in the file
         // names, not good.
         String filenameUri = URLDecoder.decode(PathUtils.getLocation(res));
@@ -51,12 +50,14 @@ public class TVFileNameUtils {
         SearchQuery q = new SearchQuery();
         q.setMediaType(MediaType.TV);
         String args[] = new String[] { "", filenameUri };
-        if (scrapers != null) {
+        if (scrapers != null && scrapers.size()>0) {
             for (XbmcScraper x : scrapers) {
                 // get show name
+                log.debug("Using Scraper: " + x.getId());
                 XbmcScraperProcessor proc = new XbmcScraperProcessor(x);
                 String title = proc.executeFunction("GetShowName", args);
                 if (StringUtils.isEmpty(title)) {
+                    log.debug("Scraper: " + x.getId() + " failed for GetShowName for: " + filenameUri);
                     continue;
                 }
                 
@@ -120,6 +121,8 @@ public class TVFileNameUtils {
                     break;
                 }
             }
+        } else {
+            log.warn("No TV Scrapers were loaded");
         }
         
         if (StringUtils.isEmpty(q.get(Field.RAW_TITLE))) {

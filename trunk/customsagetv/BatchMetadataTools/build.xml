@@ -8,7 +8,7 @@
 	<property name="libs" value="lib" />
 	<property name="targetDir" value="target" />
 	<property name="name" value="metadata-updater" />
-	<property name="version" value="4.0-beta15" />
+	<property name="version" value="4.0-beta17" />
 	<property name="jarname" value="${name}.jar" />
 	<property name="launcher" value="MetadataTool" />
 	<property name="mainClass" value="org.jdna.metadataupdater.MetadataUpdater" />

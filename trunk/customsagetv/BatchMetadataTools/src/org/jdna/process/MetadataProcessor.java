@@ -21,6 +21,7 @@ import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.SearchQuery;
 import org.jdna.media.metadata.SearchQueryFactory;
 import org.jdna.media.metadata.SearchQuery.Field;
+import org.jdna.sage.MissingMetadataFilter;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataSearchResult;
@@ -110,7 +111,7 @@ public class MetadataProcessor {
     }
     
     public void includeOnlyMissingMetadata() {
-        addFilter(new MissingMetadataFilter(persistence));
+        addFilter(new MissingMetadataFilter());
     }
 
     public void process(final IMediaResource res, final ProgressTracker<MetadataItem> monitor) {
