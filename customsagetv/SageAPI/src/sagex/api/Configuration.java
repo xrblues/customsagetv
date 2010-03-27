@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Configuration.html'>Configuration</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -3237,6 +3237,157 @@ Amount- the vertical scale factor that should be applied to the UI to account fo
  */
 public static void SetOverscanScaleHeight (UIContext _uicontext,float Amount) {
    sagex.SageAPI.call(_uicontext, "SetOverscanScaleHeight", new Object[] {Amount});
+}
+
+/**
+Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the left side.
+ Equivalent to (GetOverscanOffsetX() * 1.0 / GetFullUIWidth())
+
+Returns:
+a floating point value which specifies the percent of the UI that is taken up by overscan on the left side
+Since:
+7.0
+ */
+public static float GetOverscanInsetLeft () {
+  Object o = sagex.SageAPI.call("GetOverscanInsetLeft", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the left side.
+ Equivalent to (GetOverscanOffsetX() * 1.0 / GetFullUIWidth())
+
+Returns:
+a floating point value which specifies the percent of the UI that is taken up by overscan on the left side
+Since:
+7.0
+ */
+public static float GetOverscanInsetLeft (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetOverscanInsetLeft", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
+}
+
+/**
+Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the right side.
+ Equivalent to 1.0 - (GetOverscanOffsetX() * 1.0 / GetFullUIWidth()) - GetOverscanScaleWidth()
+
+Returns:
+a floating point value which specifies the percent of the UI that is taken up by overscan on the right side
+Since:
+7.0
+ */
+public static float GetOverscanInsetRight () {
+  Object o = sagex.SageAPI.call("GetOverscanInsetRight", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the right side.
+ Equivalent to 1.0 - (GetOverscanOffsetX() * 1.0 / GetFullUIWidth()) - GetOverscanScaleWidth()
+
+Returns:
+a floating point value which specifies the percent of the UI that is taken up by overscan on the right side
+Since:
+7.0
+ */
+public static float GetOverscanInsetRight (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetOverscanInsetRight", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
+}
+
+/**
+Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the top
+ Equivalent to (GetOverscanOffsetY() * 1.0 / GetFullUIHeight())
+
+Returns:
+a floating point value which specifies the percent of the UI that is taken up by overscan on the top
+Since:
+7.0
+ */
+public static float GetOverscanInsetTop () {
+  Object o = sagex.SageAPI.call("GetOverscanInsetTop", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the top
+ Equivalent to (GetOverscanOffsetY() * 1.0 / GetFullUIHeight())
+
+Returns:
+a floating point value which specifies the percent of the UI that is taken up by overscan on the top
+Since:
+7.0
+ */
+public static float GetOverscanInsetTop (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetOverscanInsetTop", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
+}
+
+/**
+Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the bottom
+ Equivalent to 1.0 - (GetOverscanOffsetY() * 1.0 / GetFullUIHeight()) - GetOverscanScaleHeight()
+
+Returns:
+a floating point value which specifies the percent of the UI that is taken up by overscan on the bottom
+Since:
+7.0
+ */
+public static float GetOverscanInsetBottom () {
+  Object o = sagex.SageAPI.call("GetOverscanInsetBottom", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the bottom
+ Equivalent to 1.0 - (GetOverscanOffsetY() * 1.0 / GetFullUIHeight()) - GetOverscanScaleHeight()
+
+Returns:
+a floating point value which specifies the percent of the UI that is taken up by overscan on the bottom
+Since:
+7.0
+ */
+public static float GetOverscanInsetBottom (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetOverscanInsetBottom", (Object[])null);
+  if (o!=null) return (Float) o;
+  return 0.0f;
+}
+
+/**
+Returns a length 4 array of floating point values which specifies the percent of the UI that is taken up by overscan on the 4 sides.
+ The order is top, left, bottom, right in the returned array. Each value comes from GetOverscanInsetTop/Left/Bottom/Right() API calls.
+
+Returns:
+a length 4 array of floating point values which specifies the percent of the UI that is taken up by overscan on the 4 sides
+Since:
+7.0
+ */
+public static java.lang.Float[] GetOverscanInsets () {
+  return (java.lang.Float[]) sagex.SageAPI.call("GetOverscanInsets", (Object[])null);
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a length 4 array of floating point values which specifies the percent of the UI that is taken up by overscan on the 4 sides.
+ The order is top, left, bottom, right in the returned array. Each value comes from GetOverscanInsetTop/Left/Bottom/Right() API calls.
+
+Returns:
+a length 4 array of floating point values which specifies the percent of the UI that is taken up by overscan on the 4 sides
+Since:
+7.0
+ */
+public static java.lang.Float[] GetOverscanInsets (UIContext _uicontext) {
+  return (java.lang.Float[]) sagex.SageAPI.call(_uicontext, "GetOverscanInsets", (Object[])null);
 }
 
 /**

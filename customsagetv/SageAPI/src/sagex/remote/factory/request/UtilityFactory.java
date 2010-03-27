@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/UtilityFactory.html'>UtilityFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -21,6 +21,9 @@ public class UtilityFactory {
    }
    if (command.equals("Size")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"Size",parameters,java.lang.Object.class);
+   }
+   if (command.equals("IsEmpty")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsEmpty",parameters,java.lang.Object.class);
    }
    if (command.equals("DateFormat")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"DateFormat",parameters,java.lang.String.class,java.lang.Object.class);
@@ -46,6 +49,9 @@ public class UtilityFactory {
    if (command.equals("RemoveElement")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"RemoveElement",parameters,java.lang.Object.class,java.lang.Object.class);
    }
+   if (command.equals("AddElement")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AddElement",parameters,java.util.Collection.class,java.lang.Object.class);
+   }
    if (command.equals("FindElementIndex")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"FindElementIndex",parameters,java.lang.Object.class,java.lang.Object.class);
    }
@@ -54,6 +60,9 @@ public class UtilityFactory {
    }
    if (command.equals("Substring")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"Substring",parameters,java.lang.String.class,int.class,int.class);
+   }
+   if (command.equals("SubstringBegin")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SubstringBegin",parameters,java.lang.String.class,int.class);
    }
    if (command.equals("Round")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"Round",parameters,java.lang.Object.class);
@@ -133,6 +142,9 @@ public class UtilityFactory {
    if (command.equals("GetFileNameFromPath")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFileNameFromPath",parameters,java.io.File.class);
    }
+   if (command.equals("GetAbsoluteFilePath")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAbsoluteFilePath",parameters,java.io.File.class);
+   }
    if (command.equals("GetFileExtensionFromPath")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFileExtensionFromPath",parameters,java.lang.String.class);
    }
@@ -169,8 +181,24 @@ public class UtilityFactory {
    if (command.equals("IsImageLoaded")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsImageLoaded",parameters,java.lang.Object.class);
    }
+   if (command.equals("DidImageLoadFail")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"DidImageLoadFail",parameters,java.lang.Object.class);
+   }
    if (command.equals("DirectoryListing")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"DirectoryListing",parameters,java.io.File.class);
+      if (parameters!=null && parameters.length == 1) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "DirectoryListing", parameters, java.io.File.class);
+      }
+      if (parameters!=null && parameters.length == 2) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "DirectoryListing", parameters, java.io.File.class,java.lang.String.class);
+      }
+   }
+   if (command.equals("DirectoryListing")) {
+      if (parameters!=null && parameters.length == 1) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "DirectoryListing", parameters, java.io.File.class);
+      }
+      if (parameters!=null && parameters.length == 2) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "DirectoryListing", parameters, java.io.File.class,java.lang.String.class);
+      }
    }
    if (command.equals("LocalDirectoryListing")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"LocalDirectoryListing",parameters,java.io.File.class);

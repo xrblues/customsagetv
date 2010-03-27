@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/GlobalFactory.html'>GlobalFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -141,6 +141,75 @@ public class GlobalFactory {
    }
    if (command.equals("EnsureVisibilityForVariable")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"EnsureVisibilityForVariable",parameters,java.lang.String.class,java.lang.Object.class,int.class);
+   }
+   if (command.equals("GetVariableFromContext")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetVariableFromContext",parameters,java.lang.String.class,java.lang.Object.class,java.lang.String.class);
+   }
+   if (command.equals("GetVisibilityForVariable")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetVisibilityForVariable",parameters,java.lang.String.class,java.lang.Object.class);
+   }
+   if (command.equals("GetUIComponentForVariable")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIComponentForVariable",parameters,java.lang.String.class,java.lang.Object.class);
+   }
+   if (command.equals("SetFocusToUIComponent")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetFocusToUIComponent",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetTableFocusedVisibleRow")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetTableFocusedVisibleRow",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetTableFocusedVisibleColumn")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetTableFocusedVisibleColumn",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetTableFocusedVisiblePosition")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetTableFocusedVisiblePosition",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetTableFocusedPosition")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetTableFocusedPosition",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetDataFromTableFocusedOffset")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetDataFromTableFocusedOffset",parameters,java.lang.Object.class,int.class,boolean.class);
+   }
+   if (command.equals("GetDataFromTableVisiblePosition")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetDataFromTableVisiblePosition",parameters,java.lang.Object.class,int.class,boolean.class);
+   }
+   if (command.equals("IsTableTransitionToNext")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsTableTransitionToNext",parameters,java.lang.Object.class);
+   }
+   if (command.equals("IsTableTransitionToPrevious")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsTableTransitionToPrevious",parameters,java.lang.Object.class);
+   }
+   if (command.equals("IsTransitioningToMenu")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsTransitioningToMenu",parameters,java.lang.String.class);
+   }
+   if (command.equals("IsTransitioningFromMenu")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsTransitioningFromMenu",parameters,java.lang.String.class);
+   }
+   if (command.equals("GetTextForUIComponent")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetTextForUIComponent",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetUIComponentLastFocusedChild")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIComponentLastFocusedChild",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetUIComponentPositionX")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIComponentPositionX",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetUIComponentPositionY")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIComponentPositionY",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetUIComponentWidth")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIComponentWidth",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetUIComponentHeight")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIComponentHeight",parameters,java.lang.Object.class);
+   }
+   if (command.equals("SendEventToUIComponent")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SendEventToUIComponent",parameters,java.lang.Object.class,java.lang.String.class,int.class);
+   }
+   if (command.equals("GetChildUIComponentForVariable")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetChildUIComponentForVariable",parameters,java.lang.Object.class,java.lang.String.class,java.lang.Object.class);
+   }
+   if (command.equals("GetVariableFromUIComponent")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetVariableFromUIComponent",parameters,java.lang.Object.class,java.lang.String.class);
    }
    if (command.equals("PassiveListen")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"PassiveListen",parameters,null);

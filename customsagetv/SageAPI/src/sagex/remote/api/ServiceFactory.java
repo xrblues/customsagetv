@@ -13,10 +13,10 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import sagex.ILog;
-import sagex.LogProvider;
 import sagex.SageAPI;
 import sagex.remote.xmlrpc.RequestHelper;
+import sagex.util.ILog;
+import sagex.util.LogProvider;
 
 public class ServiceFactory {
     private static class ServicePackage {

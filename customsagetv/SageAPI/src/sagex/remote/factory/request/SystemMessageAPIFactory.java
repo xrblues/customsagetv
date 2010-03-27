@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SystemMessageAPIFactory.html'>SystemMessageAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -54,6 +54,12 @@ public class SystemMessageAPIFactory {
    }
    if (command.equals("PostSystemMessage")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"PostSystemMessage",parameters,int.class,int.class,java.lang.String.class,java.util.Properties.class);
+   }
+   if (command.equals("IsSystemMessageObject")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsSystemMessageObject",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetSystemMessageVariableNames")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSystemMessageVariableNames",parameters,Object.class);
    }
    throw new RuntimeException("Invalid SystemMessageAPIFactory Command: "+command);
    }

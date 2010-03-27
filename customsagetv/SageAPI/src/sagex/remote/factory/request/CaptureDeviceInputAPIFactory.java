@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/CaptureDeviceInputAPIFactory.html'>CaptureDeviceInputAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -114,6 +114,9 @@ public class CaptureDeviceInputAPIFactory {
    }
    if (command.equals("GetSignalStrength")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSignalStrength",parameters,java.lang.String.class);
+   }
+   if (command.equals("GetCaptureDeviceInputBroadcastStandard")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetCaptureDeviceInputBroadcastStandard",parameters,java.lang.String.class);
    }
    throw new RuntimeException("Invalid CaptureDeviceInputAPIFactory Command: "+command);
    }

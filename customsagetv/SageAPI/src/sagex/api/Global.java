@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Global.html'>Global</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1087,6 +1087,875 @@ public static boolean EnsureVisibilityForVariable (UIContext _uicontext,java.lan
   Object o = sagex.SageAPI.call(_uicontext, "EnsureVisibilityForVariable", new Object[] {Name,Value,DisplayIndex});
   if (o!=null) return (Boolean) o;
   return false;
+}
+
+/**
+Searches all UI elements in the current menu until it finds one that has a variable with the specified name 
+ matching the specified value. Once it finds this UI element, it then does a lookup of the other
+ specified variable in that UI element's context and returns that value
+
+Parameters:
+MatchName- the name of the variable to match
+MatchValue- the value of the variable to match on
+LookupName- the variable to lookup in the matching context
+Returns:
+the value of the variable
+Since:
+7.0
+ */
+public static java.lang.Object GetVariableFromContext (java.lang.String MatchName, java.lang.Object MatchValue, java.lang.String LookupName) {
+  Object o = sagex.SageAPI.call("GetVariableFromContext", new Object[] {MatchName,MatchValue,LookupName});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Searches all UI elements in the current menu until it finds one that has a variable with the specified name 
+ matching the specified value. Once it finds this UI element, it then does a lookup of the other
+ specified variable in that UI element's context and returns that value
+
+Parameters:
+MatchName- the name of the variable to match
+MatchValue- the value of the variable to match on
+LookupName- the variable to lookup in the matching context
+Returns:
+the value of the variable
+Since:
+7.0
+ */
+public static java.lang.Object GetVariableFromContext (UIContext _uicontext,java.lang.String MatchName, java.lang.Object MatchValue, java.lang.String LookupName) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetVariableFromContext", new Object[] {MatchName,MatchValue,LookupName});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+Searches all UI elements in the current menu until it finds one that has a variable with the specified name 
+ matching the specified value. Once it finds this UI element, it will return true if that UI element is currently
+ visible and false otherwise
+
+Parameters:
+MatchName- the name of the variable to match
+MatchValue- the value of the variable to match on
+Returns:
+true if the found component is visible, false otherwise
+Since:
+7.0
+ */
+public static boolean GetVisibilityForVariable (java.lang.String MatchName, java.lang.Object MatchValue) {
+  Object o = sagex.SageAPI.call("GetVisibilityForVariable", new Object[] {MatchName,MatchValue});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Searches all UI elements in the current menu until it finds one that has a variable with the specified name 
+ matching the specified value. Once it finds this UI element, it will return true if that UI element is currently
+ visible and false otherwise
+
+Parameters:
+MatchName- the name of the variable to match
+MatchValue- the value of the variable to match on
+Returns:
+true if the found component is visible, false otherwise
+Since:
+7.0
+ */
+public static boolean GetVisibilityForVariable (UIContext _uicontext,java.lang.String MatchName, java.lang.Object MatchValue) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetVisibilityForVariable", new Object[] {MatchName,MatchValue});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Searches all UI elements in the current menu until it finds one that has a variable with the specified name 
+ matching the specified value. It then returns on Object representing that UI component. The search method
+ prefers visible components over hidden ones.
+
+Parameters:
+MatchName- the name of the variable to match
+MatchValue- the value of the variable to match on
+Returns:
+the UI component with the specified variable set
+Since:
+7.0
+ */
+public static java.lang.Object GetUIComponentForVariable (java.lang.String MatchName, java.lang.Object MatchValue) {
+  Object o = sagex.SageAPI.call("GetUIComponentForVariable", new Object[] {MatchName,MatchValue});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Searches all UI elements in the current menu until it finds one that has a variable with the specified name 
+ matching the specified value. It then returns on Object representing that UI component. The search method
+ prefers visible components over hidden ones.
+
+Parameters:
+MatchName- the name of the variable to match
+MatchValue- the value of the variable to match on
+Returns:
+the UI component with the specified variable set
+Since:
+7.0
+ */
+public static java.lang.Object GetUIComponentForVariable (UIContext _uicontext,java.lang.String MatchName, java.lang.Object MatchValue) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetUIComponentForVariable", new Object[] {MatchName,MatchValue});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+Sets focus in the specified UI component. The UIComponent must be focusable for this to succeed
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+true if setting the focus in the specified component succeeded, false otherwise
+Since:
+7.0
+ */
+public static boolean SetFocusToUIComponent (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("SetFocusToUIComponent", new Object[] {UIComponent});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sets focus in the specified UI component. The UIComponent must be focusable for this to succeed
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+true if setting the focus in the specified component succeeded, false otherwise
+Since:
+7.0
+ */
+public static boolean SetFocusToUIComponent (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetFocusToUIComponent", new Object[] {UIComponent});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Gets the row number that currently has focus in the specified table. The argument may be the table itself; or a component between
+ the table and the focused component.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the row number (1-based) which is currently focused in the table, -1 is returned if the value can't be resolved
+Since:
+7.0
+ */
+public static int GetTableFocusedVisibleRow (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("GetTableFocusedVisibleRow", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the row number that currently has focus in the specified table. The argument may be the table itself; or a component between
+ the table and the focused component.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the row number (1-based) which is currently focused in the table, -1 is returned if the value can't be resolved
+Since:
+7.0
+ */
+public static int GetTableFocusedVisibleRow (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetTableFocusedVisibleRow", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Gets the column number that currently has focus in the specified table. The argument may be the table itself; or a component between
+ the table and the focused component.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the column number (1-based) which is currently focused in the table, -1 is returned if the value can't be resolved
+Since:
+7.0
+ */
+public static int GetTableFocusedVisibleColumn (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("GetTableFocusedVisibleColumn", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the column number that currently has focus in the specified table. The argument may be the table itself; or a component between
+ the table and the focused component.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the column number (1-based) which is currently focused in the table, -1 is returned if the value can't be resolved
+Since:
+7.0
+ */
+public static int GetTableFocusedVisibleColumn (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetTableFocusedVisibleColumn", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Gets thevisibletable position that currently has focus in the specified table. The argument may be the table itself; or a component between
+ the table and the focused component. This starts counting from the first component which is currently visible in the table.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the visible position (1-based) which is currently focused in the table, -1 is returned if the value can't be resolved
+Since:
+7.0
+ */
+public static int GetTableFocusedVisiblePosition (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("GetTableFocusedVisiblePosition", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets thevisibletable position that currently has focus in the specified table. The argument may be the table itself; or a component between
+ the table and the focused component. This starts counting from the first component which is currently visible in the table.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the visible position (1-based) which is currently focused in the table, -1 is returned if the value can't be resolved
+Since:
+7.0
+ */
+public static int GetTableFocusedVisiblePosition (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetTableFocusedVisiblePosition", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Gets the table position that currently has focus in the specified table. The argument may be the table itself; or a component between
+ the table and the focused component. This is the equivalent of the "TableRow" variable for the currently focused table cell; which is
+ the cell's index in the data backing the table.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the position (1-based) which is currently focused in the table, -1 is returned if the value can't be resolved
+Since:
+7.0
+ */
+public static int GetTableFocusedPosition (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("GetTableFocusedPosition", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the table position that currently has focus in the specified table. The argument may be the table itself; or a component between
+ the table and the focused component. This is the equivalent of the "TableRow" variable for the currently focused table cell; which is
+ the cell's index in the data backing the table.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the position (1-based) which is currently focused in the table, -1 is returned if the value can't be resolved
+Since:
+7.0
+ */
+public static int GetTableFocusedPosition (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetTableFocusedPosition", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Gets the data value for the table that is used for the cell at the specified position relative to what is currentlyfocusedfor the table. The UIComponent should either be the table itself; or it should have the desired table as an ancestor of it.
+ Position values are zero-based; and may be negative. If WrapIndex is false then positions greater then the size of the table's data or
+ less than zero will return null; otherwise they will be mod'd to return a value within the range of the data.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Offset- the offset of the cell who's table data should be returned; relative to the current focused position (last focused if not currently focused)
+WrapIndex- true if offsets that fall outside of the size of the data should be wrapped so that they return a data value
+Returns:
+the value of the table data at the specified offset
+Since:
+7.0
+ */
+public static java.lang.Object GetDataFromTableFocusedOffset (java.lang.Object UIComponent, int Offset, boolean WrapIndex) {
+  Object o = sagex.SageAPI.call("GetDataFromTableFocusedOffset", new Object[] {UIComponent,Offset,WrapIndex});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the data value for the table that is used for the cell at the specified position relative to what is currentlyfocusedfor the table. The UIComponent should either be the table itself; or it should have the desired table as an ancestor of it.
+ Position values are zero-based; and may be negative. If WrapIndex is false then positions greater then the size of the table's data or
+ less than zero will return null; otherwise they will be mod'd to return a value within the range of the data.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Offset- the offset of the cell who's table data should be returned; relative to the current focused position (last focused if not currently focused)
+WrapIndex- true if offsets that fall outside of the size of the data should be wrapped so that they return a data value
+Returns:
+the value of the table data at the specified offset
+Since:
+7.0
+ */
+public static java.lang.Object GetDataFromTableFocusedOffset (UIContext _uicontext,java.lang.Object UIComponent, int Offset, boolean WrapIndex) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetDataFromTableFocusedOffset", new Object[] {UIComponent,Offset,WrapIndex});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+Gets the data value for the table that is used for the cell at the specified position relative to what is currentlyvisiblefor the table. The UIComponent should either be the table itself; or it should have the desired table as an ancestor of it.
+ Offset values are zero-based; and may be negative. If WrapIndex is false then positions greater then the size of the table's data or
+ less than zero will return null; otherwise they will be mod'd to return a value within the range of the data.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Offset- the offset of the cell who's table data should be returned; relative to the first visible position
+WrapIndex- true if offsets that fall outside of the size of the data should be wrapped so that they return a data value
+Returns:
+the value of the table data at the specified offset
+Since:
+7.0
+ */
+public static java.lang.Object GetDataFromTableVisiblePosition (java.lang.Object UIComponent, int Offset, boolean WrapIndex) {
+  Object o = sagex.SageAPI.call("GetDataFromTableVisiblePosition", new Object[] {UIComponent,Offset,WrapIndex});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the data value for the table that is used for the cell at the specified position relative to what is currentlyvisiblefor the table. The UIComponent should either be the table itself; or it should have the desired table as an ancestor of it.
+ Offset values are zero-based; and may be negative. If WrapIndex is false then positions greater then the size of the table's data or
+ less than zero will return null; otherwise they will be mod'd to return a value within the range of the data.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Offset- the offset of the cell who's table data should be returned; relative to the first visible position
+WrapIndex- true if offsets that fall outside of the size of the data should be wrapped so that they return a data value
+Returns:
+the value of the table data at the specified offset
+Since:
+7.0
+ */
+public static java.lang.Object GetDataFromTableVisiblePosition (UIContext _uicontext,java.lang.Object UIComponent, int Offset, boolean WrapIndex) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetDataFromTableVisiblePosition", new Object[] {UIComponent,Offset,WrapIndex});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+Returns true if the specified table argument (or the first table parent of the argument) is on the leading edge of a transition
+ to a cell after the current one. It could be a page event, or a moving a single unit. Right and Down directionality is considered to be 'next'.
+ This can be used to trigger effects that relate to navigation occurring in a table. This will only be true for a single rendering pass on the
+ leading edge of the transition. Focus will be moved before this becomes true. If effect animations are disabled; this will always return false.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+true if the table is currently transitioning in the next direction
+Since:
+7.0
+ */
+public static boolean IsTableTransitionToNext (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("IsTableTransitionToNext", new Object[] {UIComponent});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the specified table argument (or the first table parent of the argument) is on the leading edge of a transition
+ to a cell after the current one. It could be a page event, or a moving a single unit. Right and Down directionality is considered to be 'next'.
+ This can be used to trigger effects that relate to navigation occurring in a table. This will only be true for a single rendering pass on the
+ leading edge of the transition. Focus will be moved before this becomes true. If effect animations are disabled; this will always return false.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+true if the table is currently transitioning in the next direction
+Since:
+7.0
+ */
+public static boolean IsTableTransitionToNext (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsTableTransitionToNext", new Object[] {UIComponent});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Returns true if the specified table argument (or the first table parent of the argument) is on the leading edge of a transition
+ to a cell before the current one. It could be a page event, or a moving a single unit. Left and Up directionality is considered to be 'previous'.
+ This can be used to trigger effects that relate to navigation occurring in a table. This will only be true for a single rendering pass on the
+ leading edge of the transition. Focus will be moved before this becomes true. If effect animations are disabled; this will always return false.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+true if the table is currently transitioning in the previous direction
+Since:
+7.0
+ */
+public static boolean IsTableTransitionToPrevious (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("IsTableTransitionToPrevious", new Object[] {UIComponent});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the specified table argument (or the first table parent of the argument) is on the leading edge of a transition
+ to a cell before the current one. It could be a page event, or a moving a single unit. Left and Up directionality is considered to be 'previous'.
+ This can be used to trigger effects that relate to navigation occurring in a table. This will only be true for a single rendering pass on the
+ leading edge of the transition. Focus will be moved before this becomes true. If effect animations are disabled; this will always return false.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+true if the table is currently transitioning in the previous direction
+Since:
+7.0
+ */
+public static boolean IsTableTransitionToPrevious (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsTableTransitionToPrevious", new Object[] {UIComponent});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Returns true if the specified menu name matches the name of the menu widget that the UI is in the process
+ of transitioning to. This will only be true during the processing of MenuUnloaded effects. If a null argument is given; then this is
+ true in the case that any menu transition is about to occur. The name match is case-insensitive.
+
+Parameters:
+MenuName- the name of the menu to test to see if we're transitioning to; null if it matches any menu name
+Since:
+7.0
+ */
+public static boolean IsTransitioningToMenu (java.lang.String MenuName) {
+  Object o = sagex.SageAPI.call("IsTransitioningToMenu", new Object[] {MenuName});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the specified menu name matches the name of the menu widget that the UI is in the process
+ of transitioning to. This will only be true during the processing of MenuUnloaded effects. If a null argument is given; then this is
+ true in the case that any menu transition is about to occur. The name match is case-insensitive.
+
+Parameters:
+MenuName- the name of the menu to test to see if we're transitioning to; null if it matches any menu name
+Since:
+7.0
+ */
+public static boolean IsTransitioningToMenu (UIContext _uicontext,java.lang.String MenuName) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsTransitioningToMenu", new Object[] {MenuName});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Returns true if the specified menu name matches the name of the menu widget for the previously loaded menu. The name match is case-insensitive.
+ UnlikeIsTransitioningToMenu, this is true even after the transition is complete. A null argument always returns false.
+
+Parameters:
+MenuName- the name of the menu to test to see if it was the previously loaded menu
+Since:
+7.0
+ */
+public static boolean IsTransitioningFromMenu (java.lang.String MenuName) {
+  Object o = sagex.SageAPI.call("IsTransitioningFromMenu", new Object[] {MenuName});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the specified menu name matches the name of the menu widget for the previously loaded menu. The name match is case-insensitive.
+ UnlikeIsTransitioningToMenu, this is true even after the transition is complete. A null argument always returns false.
+
+Parameters:
+MenuName- the name of the menu to test to see if it was the previously loaded menu
+Since:
+7.0
+ */
+public static boolean IsTransitioningFromMenu (UIContext _uicontext,java.lang.String MenuName) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsTransitioningFromMenu", new Object[] {MenuName});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Gets the value displayed for the textual component of the specified UI object. If its not a Text component; then
+ its children will be searched depth-first until one is found and then that will be used for the return value.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the text value displayed by the argument itself; or if its not a text component then the value displayed by the first text child of the component; null if neither condition is met
+Since:
+7.0
+ */
+public static java.lang.String GetTextForUIComponent (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("GetTextForUIComponent", new Object[] {UIComponent});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the value displayed for the textual component of the specified UI object. If its not a Text component; then
+ its children will be searched depth-first until one is found and then that will be used for the return value.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the text value displayed by the argument itself; or if its not a text component then the value displayed by the first text child of the component; null if neither condition is met
+Since:
+7.0
+ */
+public static java.lang.String GetTextForUIComponent (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetTextForUIComponent", new Object[] {UIComponent});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+If the specified component currently has a focused child; that child's UI object will
+ be returned. If not, then the last focused child for this component will be returned.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the currently focused child UI object for the specified component if it exists; otherwise the last focused child UI object for the specified component
+Since:
+7.0
+ */
+public static java.lang.Object GetUIComponentLastFocusedChild (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("GetUIComponentLastFocusedChild", new Object[] {UIComponent});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+If the specified component currently has a focused child; that child's UI object will
+ be returned. If not, then the last focused child for this component will be returned.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the currently focused child UI object for the specified component if it exists; otherwise the last focused child UI object for the specified component
+Since:
+7.0
+ */
+public static java.lang.Object GetUIComponentLastFocusedChild (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetUIComponentLastFocusedChild", new Object[] {UIComponent});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+Returns the X position in pixels in the UI of the specified UI component. This will be a value relative to the overall UI; not its parent.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the X position in pixels relative to the overall UI of the specified component
+Since:
+7.0
+ */
+public static int GetUIComponentPositionX (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("GetUIComponentPositionX", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the X position in pixels in the UI of the specified UI component. This will be a value relative to the overall UI; not its parent.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the X position in pixels relative to the overall UI of the specified component
+Since:
+7.0
+ */
+public static int GetUIComponentPositionX (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetUIComponentPositionX", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Returns the Y position in pixels in the UI of the specified UI component. This will be a value relative to the overall UI; not its parent.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the Y position in pixels relative to the overall UI of the specified component
+Since:
+7.0
+ */
+public static int GetUIComponentPositionY (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("GetUIComponentPositionY", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the Y position in pixels in the UI of the specified UI component. This will be a value relative to the overall UI; not its parent.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the Y position in pixels relative to the overall UI of the specified component
+Since:
+7.0
+ */
+public static int GetUIComponentPositionY (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetUIComponentPositionY", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Returns the width in pixels in the UI of the specified UI component.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the width in pixels of the specified component
+Since:
+7.0
+ */
+public static int GetUIComponentWidth (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("GetUIComponentWidth", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the width in pixels in the UI of the specified UI component.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the width in pixels of the specified component
+Since:
+7.0
+ */
+public static int GetUIComponentWidth (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetUIComponentWidth", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Returns the height in pixels in the UI of the specified UI component.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the height in pixels of the specified component
+Since:
+7.0
+ */
+public static int GetUIComponentHeight (java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call("GetUIComponentHeight", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the height in pixels in the UI of the specified UI component.
+
+Parameters:
+UIComponent- the specified UIComponent, can be retrieved usingGetUIComponentForVariable
+API call
+Returns:
+the height in pixels of the specified component
+Since:
+7.0
+ */
+public static int GetUIComponentHeight (UIContext _uicontext,java.lang.Object UIComponent) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetUIComponentHeight", new Object[] {UIComponent});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Sends an event to a specific UI component for processing. Similar to using theSageCommand()
+API call, but this
+ version is targeted at a specific component. Normal event processing of cursor navigation, selection, entry events will continue up the hierarchy from the target component if it
+ does not consume it; it will stop at the menu level though and any menu-level default handling for the event will not occur (i.e. media player control, menu navigation, power, etc.).
+
+Parameters:
+UIComponent- the UIComponent object to target the event at, can be retrieved usingGetUIComponentForVariable
+API call
+Command- the name of the command to send
+RepeatCount- the number of times to send the command
+Returns:
+true if the event was consumed by the target component's hierarchy
+Since:
+7.0
+ */
+public static java.lang.Object SendEventToUIComponent (java.lang.Object UIComponent, java.lang.String Command, int RepeatCount) {
+  Object o = sagex.SageAPI.call("SendEventToUIComponent", new Object[] {UIComponent,Command,RepeatCount});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sends an event to a specific UI component for processing. Similar to using theSageCommand()
+API call, but this
+ version is targeted at a specific component. Normal event processing of cursor navigation, selection, entry events will continue up the hierarchy from the target component if it
+ does not consume it; it will stop at the menu level though and any menu-level default handling for the event will not occur (i.e. media player control, menu navigation, power, etc.).
+
+Parameters:
+UIComponent- the UIComponent object to target the event at, can be retrieved usingGetUIComponentForVariable
+API call
+Command- the name of the command to send
+RepeatCount- the number of times to send the command
+Returns:
+true if the event was consumed by the target component's hierarchy
+Since:
+7.0
+ */
+public static java.lang.Object SendEventToUIComponent (UIContext _uicontext,java.lang.Object UIComponent, java.lang.String Command, int RepeatCount) {
+  Object o = sagex.SageAPI.call(_uicontext, "SendEventToUIComponent", new Object[] {UIComponent,Command,RepeatCount});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+Searches all child UI elements in of the specified UIComponent until it finds one that has a variable with the specified name 
+ matching the specified value. It then returns on Object representing that UI component
+
+Parameters:
+UIComponent- the UI component who's children should be searched
+MatchName- the name of the variable to match
+MatchValue- the value of the variable to match on
+Returns:
+the UI component with the specified variable set
+Since:
+7.0
+ */
+public static java.lang.Object GetChildUIComponentForVariable (java.lang.Object UIComponent, java.lang.String MatchName, java.lang.Object MatchValue) {
+  Object o = sagex.SageAPI.call("GetChildUIComponentForVariable", new Object[] {UIComponent,MatchName,MatchValue});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Searches all child UI elements in of the specified UIComponent until it finds one that has a variable with the specified name 
+ matching the specified value. It then returns on Object representing that UI component
+
+Parameters:
+UIComponent- the UI component who's children should be searched
+MatchName- the name of the variable to match
+MatchValue- the value of the variable to match on
+Returns:
+the UI component with the specified variable set
+Since:
+7.0
+ */
+public static java.lang.Object GetChildUIComponentForVariable (UIContext _uicontext,java.lang.Object UIComponent, java.lang.String MatchName, java.lang.Object MatchValue) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetChildUIComponentForVariable", new Object[] {UIComponent,MatchName,MatchValue});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+Retrieves the variable with the specified name from the context of the passed in UIComponent.
+
+Parameters:
+UIComponent- the UI component who's variable should be returned
+VarName- the name of the variable to lookup
+Returns:
+the value of the variable
+Since:
+7.0
+ */
+public static java.lang.Object GetVariableFromUIComponent (java.lang.Object UIComponent, java.lang.String VarName) {
+  Object o = sagex.SageAPI.call("GetVariableFromUIComponent", new Object[] {UIComponent,VarName});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Retrieves the variable with the specified name from the context of the passed in UIComponent.
+
+Parameters:
+UIComponent- the UI component who's variable should be returned
+VarName- the name of the variable to lookup
+Returns:
+the value of the variable
+Since:
+7.0
+ */
+public static java.lang.Object GetVariableFromUIComponent (UIContext _uicontext,java.lang.Object UIComponent, java.lang.String VarName) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetVariableFromUIComponent", new Object[] {UIComponent,VarName});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**

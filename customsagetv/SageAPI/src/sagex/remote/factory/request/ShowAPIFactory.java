@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ShowAPIFactory.html'>ShowAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -64,6 +64,9 @@ public class ShowAPIFactory {
    if (command.equals("GetPeopleListInShow")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPeopleListInShow",parameters,Object.class);
    }
+   if (command.equals("GetPeopleAndCharacterListInShow")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPeopleAndCharacterListInShow",parameters,Object.class);
+   }
    if (command.equals("GetRolesInShow")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetRolesInShow",parameters,Object.class);
    }
@@ -73,11 +76,23 @@ public class ShowAPIFactory {
    if (command.equals("GetPeopleInShowInRoles")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPeopleInShowInRoles",parameters,Object.class,java.lang.String[].class);
    }
+   if (command.equals("GetPeopleAndCharacterInShowInRole")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPeopleAndCharacterInShowInRole",parameters,Object.class,java.lang.String.class);
+   }
+   if (command.equals("GetPeopleAndCharacterInShowInRoles")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPeopleAndCharacterInShowInRoles",parameters,Object.class,java.lang.String[].class);
+   }
    if (command.equals("GetPeopleListInShowInRole")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPeopleListInShowInRole",parameters,Object.class,java.lang.String.class);
    }
    if (command.equals("GetPeopleListInShowInRoles")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPeopleListInShowInRoles",parameters,Object.class,java.lang.String[].class);
+   }
+   if (command.equals("GetPeopleAndCharacterListInShowInRole")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPeopleAndCharacterListInShowInRole",parameters,Object.class,java.lang.String.class);
+   }
+   if (command.equals("GetPeopleAndCharacterListInShowInRoles")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPeopleAndCharacterListInShowInRoles",parameters,Object.class,java.lang.String[].class);
    }
    if (command.equals("IsShowObject")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsShowObject",parameters,java.lang.Object.class);

@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaPlayerAPI.html'>MediaPlayerAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -821,6 +821,39 @@ public static long GetMediaTime (UIContext _uicontext) {
 }
 
 /**
+Gets the current playback time of the MediaPlayer. This is the current playback time relative to the
+ start of the current playing file. For multiple segment files; this will be relative to the start of the currently
+ playing segment. This is intended to be used by plugin developers for linking events with the media time in the file.
+
+Returns:
+the current playback time of the MediaPlayer in milliseconds
+Since:
+7.0
+ */
+public static long GetRawMediaTime () {
+  Object o = sagex.SageAPI.call("GetRawMediaTime", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the current playback time of the MediaPlayer. This is the current playback time relative to the
+ start of the current playing file. For multiple segment files; this will be relative to the start of the currently
+ playing segment. This is intended to be used by plugin developers for linking events with the media time in the file.
+
+Returns:
+the current playback time of the MediaPlayer in milliseconds
+Since:
+7.0
+ */
+public static long GetRawMediaTime (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetRawMediaTime", (Object[])null);
+  if (o!=null) return (Long) o;
+  return 0l;
+}
+
+/**
 Returns the duration of the currently loaded MediaFile in milliseconds.
 
 Returns:
@@ -1541,6 +1574,41 @@ public static int GetDVDCurrentTitle (UIContext _uicontext) {
   Object o = sagex.SageAPI.call(_uicontext, "GetDVDCurrentTitle", (Object[])null);
   if (o!=null) return (Integer) o;
   return 0;
+}
+
+/**
+Returns a description of the specified title number if playing back a BluRay. This description will have
+ the total unique duration of the specified title and an asterisk if it is considered to be the 'main' title.
+
+Parameters:
+TitleNum- the title number (1-based) to retrieve a description of
+Returns:
+a description of the specified title number if playing back a BluRay; the empty string otherwise
+Since:
+7.0
+ */
+public static java.lang.String GetBluRayTitleDescription (int TitleNum) {
+  Object o = sagex.SageAPI.call("GetBluRayTitleDescription", new Object[] {TitleNum});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a description of the specified title number if playing back a BluRay. This description will have
+ the total unique duration of the specified title and an asterisk if it is considered to be the 'main' title.
+
+Parameters:
+TitleNum- the title number (1-based) to retrieve a description of
+Returns:
+a description of the specified title number if playing back a BluRay; the empty string otherwise
+Since:
+7.0
+ */
+public static java.lang.String GetBluRayTitleDescription (UIContext _uicontext,int TitleNum) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetBluRayTitleDescription", new Object[] {TitleNum});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**

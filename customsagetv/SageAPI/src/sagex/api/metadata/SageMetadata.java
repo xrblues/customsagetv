@@ -1,55 +1,170 @@
 package sagex.api.metadata;
 
-import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
-import sagex.api.enums.MediaFileAPI;
+import sagex.api.MediaFileAPI;
+import sagex.util.ILog;
+import sagex.util.LogProvider;
 
 /**
- * SageTV Metadata Class.  This class should always contain the complete list of metadata fields that work with
- * {@link MediaFileAPI}.GetMediaFileMetadata()
+ * SageTV Metadata Class. This class should always contain the complete list of
+ * metadata fields that work with {@link MediaFileAPI}.GetMediaFileMetadata()
  * 
- * Other classes can call addProperties() to register thier own custom metadata fields
+ * Other classes can call addProperties() to register thier own custom metadata
+ * fields
  * 
  * @author seans
- *
+ * 
  */
 public class SageMetadata {
-    private static Set<ISageProperty> properties = new TreeSet<ISageProperty>(new Comparator<ISageProperty>() {
-        public int compare(ISageProperty p1, ISageProperty p2) {
-            return p1.key().compareTo(p2.key());
-        }
-    });
+    private static final ILog log = LogProvider.getLogger(SageMetadata.class);
     
-    static {
-        addProperties(SagePropertyRO.values());
-        addProperties(SagePropertyRW.values());
-        addProperties(SageRolePropertyRW.values());
-        addProperties(SageFormatPropertyRO.values());
-    }
-    
-    public static Set<ISageProperty> properties() {
-        return properties;
+    /**
+     * Create an empty metadata container.
+     * 
+     * @param klas
+     * @return
+     */
+    public static <T extends ISageMetadata> T create(Class<T> klas) {
+        List<Class> interfaces = new ArrayList<Class>();
+        interfaces.add(klas);
+
+        Object o = java.lang.reflect.Proxy.newProxyInstance(klas.getClassLoader(), interfaces.toArray(new Class[] {}), new SageMetadataProxy());
+
+        return (T) o;
     }
 
-    public static void addProperties(ISageProperty[] props) {
-        for (ISageProperty p: props) {
-            addProperty(p);
-        }
-    }
-    
-    public static boolean addProperty(ISageProperty p) {
-        return properties.add(p);
+    /**
+     * Creates a Read/Write metadata class that is backed by a Sage MediaFile object.  All calls to setXXX will
+     * be immediately reflected in the Sage MediaFile object
+     * 
+     * @param sageMediaFile
+     * @param klas
+     * @return
+     */
+    public static <T extends ISageMetadata> T create(Object sageMediaFile, Class<T> klas) {
+        List<Class> interfaces = new ArrayList<Class>();
+        interfaces.add(klas);
+        Object o = java.lang.reflect.Proxy.newProxyInstance(klas.getClassLoader(), interfaces.toArray(new Class[] {}), new SageMediaFileMetadataProxy(sageMediaFile));
+        return (T) o;
     }
 
-    public static ISageProperty valueOf(String propName) {
-        if (propName==null) return null;
-        for (ISageProperty p : properties) {
-            if (propName.equals(p.key())) {
-                return p;
+    
+    /**
+     * Given the Metadata, serialize it into a Properties object that SageTV can consume.
+     * 
+     * @param md {@link ISageMetadata} instance
+     * @return {@link Properties} object
+     */
+    public static Properties createProperties(ISageMetadata md) {
+        Properties props = new Properties();
+
+        Class classes[] = md.getClass().getInterfaces();
+        for (Class cl : classes) {
+            Method[] methods = cl.getMethods();
+            if (methods != null) {
+                for (Method m : methods) {
+                    SageProperty p = m.getAnnotation(SageProperty.class);
+                    if (p != null) {
+                        try {
+                            if (m.getName().startsWith("is") || m.getName().startsWith("get")) {
+                                if (md.isSet(p.value())) {
+                                    Object val = m.invoke(md, null);
+                                    if (val != null) {
+                                        if (m.getReturnType().isAssignableFrom(List.class)) {
+                                            Class clType = ReflectionUtil.getGenericReturnType(m);
+                                            if (clType!=null) {
+                                                if (clType.isAssignableFrom(ISageCastMember.class)) {
+                                                    // serialize the case member in the list
+                                                    props.put(p.value(), serializeCast((List<ISageCastMember>)val));
+                                                } else {
+                                                    log.warn("Skipping " + p.value() + " unhandled list element type: " + clType);
+                                                }
+                                            } else {
+                                                log.warn("Skipping " + p.value() + " no list type.");
+                                            }
+                                        } else if (m.getReturnType().equals(Date.class)) {
+                                            log.debug("Date: " + p.value());
+                                            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+                                            props.put(p.value(), f.format((Date)val));
+                                        } else {
+                                            props.put(p.value(), String.valueOf(val));
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            log.error("failed to serialize field: " + p.value(), e);
+                        }
+                    }
+                }
             }
         }
-        return null;
+
+        return props;
+    }
+
+    /**
+     * Given the {@link ISageMetadata} instance, write all non null values to the Sage MediaFile instance.
+     * 
+     * @param md {@link ISageMetadata} instance
+     * @return {@link Properties} object
+     */
+    public static void updateMediaFile(ISageMetadata md, Object sageMediaFile) {
+        Class classes[] = md.getClass().getInterfaces();
+        for (Class cl : classes) {
+            Method[] methods = cl.getMethods();
+            if (methods != null) {
+                for (Method m : methods) {
+                    SageProperty p = m.getAnnotation(SageProperty.class);
+                    if (p != null) {
+                        try {
+                            if (m.getName().startsWith("is") || m.getName().startsWith("get")) {
+                                if (md.isSet(p.value())) {
+                                    Object val = m.invoke(md, null);
+                                    if (val != null) {
+                                        if (m.getReturnType().isAssignableFrom(List.class)) {
+                                            Class clType = ReflectionUtil.getGenericReturnType(m);
+                                            if (clType!=null) {
+                                                if (clType.isAssignableFrom(ISageCastMember.class)) {
+                                                    // serialize the case member in the list
+                                                    MediaFileAPI.SetMediaFileMetadata(sageMediaFile, p.value(), serializeCast((List<ISageCastMember>)val));
+                                                } else {
+                                                    log.warn("Skipping " + p.value() + " unhandled list element type: " + clType);
+                                                }
+                                            } else {
+                                                log.warn("Skipping " + p.value() + " no list type.");
+                                            }
+                                        } else if (m.getReturnType().equals(Date.class)) {
+                                            log.debug("Date: " + p.value());
+                                            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+                                            MediaFileAPI.SetMediaFileMetadata(sageMediaFile, p.value(), f.format((Date)val));
+                                        } else {
+                                            MediaFileAPI.SetMediaFileMetadata(sageMediaFile, p.value(), String.valueOf(val));
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            log.error("failed to serialize field: " + p.value(), e);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static String serializeCast(List<ISageCastMember> val) {
+        StringBuffer sb = new StringBuffer();
+        for (int i=0;i<val.size();i++) {
+            if (i>0) sb.append(", ");
+            sb.append(val.get(i).getName());
+        }
+        return sb.toString();
     }
 }

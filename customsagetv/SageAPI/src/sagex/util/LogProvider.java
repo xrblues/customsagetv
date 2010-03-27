@@ -1,4 +1,4 @@
-package sagex;
+package sagex.util;
 
 import java.lang.reflect.Constructor;
 
@@ -32,10 +32,42 @@ public class LogProvider {
         public void warn(String msg, Throwable t) {
         }
     }
+
+    private static final class SystemOutLog implements ILog {
+        private void out(String pref, String message, Throwable t) {
+            System.out.printf("sagex.api:[%5s]:%s\n", pref, message);
+            if (t!=null) {
+                t.printStackTrace();
+            }
+        }
+        public void debug(String msg) {
+            out("debug",msg,null);
+        }
+
+        public void error(String msg) {
+            out("error",msg,null);
+        }
+
+        public void error(String msg, Throwable t) {
+            out("error",msg,t);
+        }
+
+        public void info(String msg) {
+            out("info",msg,null);
+        }
+
+        public void warn(String msg) {
+            out("warn",msg,null);
+        }
+
+        public void warn(String msg, Throwable t) {
+            out("warn",msg,t);
+        }
+    }
     
     private static Class<ILog> logClass = null;
     private static Constructor<ILog> logInit = null;
-    private static final NullLog NULLLOG = new NullLog();
+    private static ILog DefaultLog = new NullLog();
     
     static {
         try {
@@ -49,15 +81,24 @@ public class LogProvider {
     
     public static ILog getLogger(Class name) {
         if (logInit==null) {
-            return NULLLOG;
+            return DefaultLog;
         } else {
             try {
                 return logInit.newInstance(name);
             } catch (Throwable t) {
                 System.out.println("Failed to create Log Instance. Logging Disabled.");
                 logInit=null;
-                return NULLLOG;
+                return DefaultLog;
             }
         }
+    }
+    
+    /**
+     * for testing, you can use System.out, mainly useful for junit testing
+     */
+    public static void useSystemOut() {
+        logInit=null;
+        logClass=null;
+        DefaultLog = new SystemOutLog();
     }
 }

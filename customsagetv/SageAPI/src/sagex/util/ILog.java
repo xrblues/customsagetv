@@ -1,4 +1,4 @@
-package sagex;
+package sagex.util;
 
 public interface ILog {
     public void debug(String msg);

@@ -2,7 +2,7 @@ package sagex.api.enums;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/GlobalEnum.html'>GlobalEnum</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -51,6 +51,29 @@ GetSageCommandNames,
 ApplyServiceLevelToLineup,
 SetFocusForVariable,
 EnsureVisibilityForVariable,
+GetVariableFromContext,
+GetVisibilityForVariable,
+GetUIComponentForVariable,
+SetFocusToUIComponent,
+GetTableFocusedVisibleRow,
+GetTableFocusedVisibleColumn,
+GetTableFocusedVisiblePosition,
+GetTableFocusedPosition,
+GetDataFromTableFocusedOffset,
+GetDataFromTableVisiblePosition,
+IsTableTransitionToNext,
+IsTableTransitionToPrevious,
+IsTransitioningToMenu,
+IsTransitioningFromMenu,
+GetTextForUIComponent,
+GetUIComponentLastFocusedChild,
+GetUIComponentPositionX,
+GetUIComponentPositionY,
+GetUIComponentWidth,
+GetUIComponentHeight,
+SendEventToUIComponent,
+GetChildUIComponentForVariable,
+GetVariableFromUIComponent,
 PassiveListen,
 GetAiringsThatWontBeRecorded,
 IsClient,

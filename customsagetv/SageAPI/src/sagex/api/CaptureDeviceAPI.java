@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/CaptureDeviceAPI.html'>CaptureDeviceAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -482,6 +482,7 @@ public static boolean IsCaptureDeviceHardwareEncoder (UIContext _uicontext,java.
 
 /**
 Returns the name of the broadcast standard used for reception on this capture device.
+ NOTE: The method 'GetCaptureDeviceInputBroadcastStandard' should be used instead since the broadcast standard can change per-input
 
 Parameters:
 CaptureDevice- the name of the CaptureDevice
@@ -499,6 +500,7 @@ public static java.lang.String GetCaptureDeviceBroadcastStandard (java.lang.Stri
 /**
  * UI Context Aware Call<br/>
 Returns the name of the broadcast standard used for reception on this capture device.
+ NOTE: The method 'GetCaptureDeviceInputBroadcastStandard' should be used instead since the broadcast standard can change per-input
 
 Parameters:
 CaptureDevice- the name of the CaptureDevice
@@ -511,6 +513,35 @@ public static java.lang.String GetCaptureDeviceBroadcastStandard (UIContext _uic
   Object o = sagex.SageAPI.call(_uicontext, "GetCaptureDeviceBroadcastStandard", new Object[] {CaptureDevice});
   if (o!=null) return (java.lang.String) o;
   return null;
+}
+
+/**
+Sets the TV standard to use for a capture device for devices that support multiple digital TV standards. The only current
+ example of this is the Hauppauge HVR-4000 which support DVB-T, DVB-S and DVB-C.
+
+Parameters:
+CaptureDevice- the name of the CaptureDevice
+DTVStandard- the DTV standard to use for this capture device, should be one of "DVB-T", "DVB-S" or "DVB-C"
+Since:
+7.0
+ */
+public static void SetCaptureDeviceDTVStandard (java.lang.String CaptureDevice, java.lang.String DTVStandard) {
+   sagex.SageAPI.call("SetCaptureDeviceDTVStandard", new Object[] {CaptureDevice,DTVStandard});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sets the TV standard to use for a capture device for devices that support multiple digital TV standards. The only current
+ example of this is the Hauppauge HVR-4000 which support DVB-T, DVB-S and DVB-C.
+
+Parameters:
+CaptureDevice- the name of the CaptureDevice
+DTVStandard- the DTV standard to use for this capture device, should be one of "DVB-T", "DVB-S" or "DVB-C"
+Since:
+7.0
+ */
+public static void SetCaptureDeviceDTVStandard (UIContext _uicontext,java.lang.String CaptureDevice, java.lang.String DTVStandard) {
+   sagex.SageAPI.call(_uicontext, "SetCaptureDeviceDTVStandard", new Object[] {CaptureDevice,DTVStandard});
 }
 
 }

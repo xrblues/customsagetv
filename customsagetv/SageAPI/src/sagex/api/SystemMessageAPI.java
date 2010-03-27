@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SystemMessageAPI.html'>SystemMessageAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -370,7 +370,7 @@ Returns the SystemMessage variable property associated with the specified System
  on the message or to guide the user through resolution steps.
 
 Parameters:
-message- the SystemMessage object to get the alert level of
+message- the SystemMessage object to lookup the variable in
 VarName- the name of the variable to lookup in this SystemMessage (string based values)
 Returns:
 a String that corresponds to the requested variable or null if it does not exist
@@ -390,7 +390,7 @@ Returns the SystemMessage variable property associated with the specified System
  on the message or to guide the user through resolution steps.
 
 Parameters:
-message- the SystemMessage object to get the alert level of
+message- the SystemMessage object to lookup the variable in
 VarName- the name of the variable to lookup in this SystemMessage (string based values)
 Returns:
 a String that corresponds to the requested variable or null if it does not exist
@@ -405,7 +405,8 @@ public static java.lang.String GetSystemMessageVariable (UIContext _uicontext,Ob
 
 /**
 Creates a new SystemMessage and posts it to the message queue.
- Predefined message codes of interest for posting messages are:SOFTWARE_UPDATE_MSG = 1202STORAGE_MONITOR_MSG = 1203GENERAL_MSG = 1204
+ Predefined message codes of interest for posting messages are:SOFTWARE_UPDATE_MSG = 1202STORAGE_MONITOR_MSG = 1203GENERAL_MSG = 1204You may also use other user-defined message codes which should be greater than 9999. To give those messages a 'type name' which
+ will be visible by the user; you can defined a message variable with the name 'typename' and then that will be displayed.
 
 Parameters:
 MessageCode- the integer code that specifies the type of message
@@ -422,7 +423,8 @@ public static void PostSystemMessage (int MessageCode, int MessageLevel, java.la
 /**
  * UI Context Aware Call<br/>
 Creates a new SystemMessage and posts it to the message queue.
- Predefined message codes of interest for posting messages are:SOFTWARE_UPDATE_MSG = 1202STORAGE_MONITOR_MSG = 1203GENERAL_MSG = 1204
+ Predefined message codes of interest for posting messages are:SOFTWARE_UPDATE_MSG = 1202STORAGE_MONITOR_MSG = 1203GENERAL_MSG = 1204You may also use other user-defined message codes which should be greater than 9999. To give those messages a 'type name' which
+ will be visible by the user; you can defined a message variable with the name 'typename' and then that will be displayed.
 
 Parameters:
 MessageCode- the integer code that specifies the type of message
@@ -434,6 +436,74 @@ Since:
  */
 public static void PostSystemMessage (UIContext _uicontext,int MessageCode, int MessageLevel, java.lang.String MessageString, java.util.Properties MessageVariables) {
    sagex.SageAPI.call(_uicontext, "PostSystemMessage", new Object[] {MessageCode,MessageLevel,MessageString,MessageVariables});
+}
+
+/**
+Returns true if the passed in argument is a SystemMessage object
+
+Parameters:
+SystemMessage- the object to test to see if it is a SystemMessage object
+Returns:
+true if the passed in argument is a SystemMessage object, false otherwise
+Since:
+7.0
+ */
+public static boolean IsSystemMessageObject (java.lang.Object SystemMessage) {
+  Object o = sagex.SageAPI.call("IsSystemMessageObject", new Object[] {SystemMessage});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the passed in argument is a SystemMessage object
+
+Parameters:
+SystemMessage- the object to test to see if it is a SystemMessage object
+Returns:
+true if the passed in argument is a SystemMessage object, false otherwise
+Since:
+7.0
+ */
+public static boolean IsSystemMessageObject (UIContext _uicontext,java.lang.Object SystemMessage) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsSystemMessageObject", new Object[] {SystemMessage});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Returns the names of the variables associated with the specified SystemMessage. Depending
+ upon the type of message; different variables will be assigned that can be used to do further analysis/processing
+ on the message or to guide the user through resolution steps. The actual values can be retrieved with
+ GetSystemMessageVariable.
+
+Parameters:
+message- the SystemMessage object to get the variable names of
+Returns:
+a String array with all the names of the variables for the specified SystemMessage
+Since:
+7.0
+ */
+public static java.lang.String[] GetSystemMessageVariableNames (Object message) {
+  return (java.lang.String[]) sagex.SageAPI.call("GetSystemMessageVariableNames", new Object[] {message});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the names of the variables associated with the specified SystemMessage. Depending
+ upon the type of message; different variables will be assigned that can be used to do further analysis/processing
+ on the message or to guide the user through resolution steps. The actual values can be retrieved with
+ GetSystemMessageVariable.
+
+Parameters:
+message- the SystemMessage object to get the variable names of
+Returns:
+a String array with all the names of the variables for the specified SystemMessage
+Since:
+7.0
+ */
+public static java.lang.String[] GetSystemMessageVariableNames (UIContext _uicontext,Object message) {
+  return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetSystemMessageVariableNames", new Object[] {message});
 }
 
 }

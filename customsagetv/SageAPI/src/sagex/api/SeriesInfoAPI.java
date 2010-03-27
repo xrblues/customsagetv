@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SeriesInfoAPI.html'>SeriesInfoAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -95,6 +95,72 @@ Since:
  */
 public static java.lang.String GetSeriesDescription (UIContext _uicontext,Object SeriesInfo) {
   Object o = sagex.SageAPI.call(_uicontext, "GetSeriesDescription", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Returns the category for the specified SeriesInfo
+
+Parameters:
+SeriesInfo- the SeriesInfo object
+Returns:
+the category for the SeriesInfo
+Since:
+V7.0
+ */
+public static java.lang.String GetSeriesCategory (Object SeriesInfo) {
+  Object o = sagex.SageAPI.call("GetSeriesCategory", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the category for the specified SeriesInfo
+
+Parameters:
+SeriesInfo- the SeriesInfo object
+Returns:
+the category for the SeriesInfo
+Since:
+V7.0
+ */
+public static java.lang.String GetSeriesCategory (UIContext _uicontext,Object SeriesInfo) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetSeriesCategory", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Returns the subcategory for the specified SeriesInfo
+
+Parameters:
+SeriesInfo- the SeriesInfo object
+Returns:
+the subcategory for the SeriesInfo
+Since:
+V7.0
+ */
+public static java.lang.String GetSeriesSubCategory (Object SeriesInfo) {
+  Object o = sagex.SageAPI.call("GetSeriesSubCategory", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the subcategory for the specified SeriesInfo
+
+Parameters:
+SeriesInfo- the SeriesInfo object
+Returns:
+the subcategory for the SeriesInfo
+Since:
+V7.0
+ */
+public static java.lang.String GetSeriesSubCategory (UIContext _uicontext,Object SeriesInfo) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetSeriesSubCategory", new Object[] {SeriesInfo});
   if (o!=null) return (java.lang.String) o;
   return null;
 }
@@ -536,6 +602,39 @@ Since:
  */
 public static java.lang.String GetSeriesCharacterList (UIContext _uicontext,Object SeriesInfo) {
   Object o = sagex.SageAPI.call(_uicontext, "GetSeriesCharacterList", new Object[] {SeriesInfo});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Returns the name of the character that the corresponding actor plays in this series
+
+Parameters:
+SeriesInfo- the SeriesInfo object
+Returns:
+the name of the character that the corresponding actor plays in this series, the empty string if there's no correlation
+Since:
+7.0
+ */
+public static java.lang.String GetSeriesCharacterForActor (Object SeriesInfo, java.lang.String Actor) {
+  Object o = sagex.SageAPI.call("GetSeriesCharacterForActor", new Object[] {SeriesInfo,Actor});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the name of the character that the corresponding actor plays in this series
+
+Parameters:
+SeriesInfo- the SeriesInfo object
+Returns:
+the name of the character that the corresponding actor plays in this series, the empty string if there's no correlation
+Since:
+7.0
+ */
+public static java.lang.String GetSeriesCharacterForActor (UIContext _uicontext,Object SeriesInfo, java.lang.String Actor) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetSeriesCharacterForActor", new Object[] {SeriesInfo,Actor});
   if (o!=null) return (java.lang.String) o;
   return null;
 }

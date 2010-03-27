@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 3/8/10 7:24 AM
+ * Generated Date/Time: 3/24/10 9:02 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SeriesInfoAPIFactory.html'>SeriesInfoAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -21,6 +21,12 @@ public class SeriesInfoAPIFactory {
    }
    if (command.equals("GetSeriesDescription")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSeriesDescription",parameters,Object.class);
+   }
+   if (command.equals("GetSeriesCategory")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSeriesCategory",parameters,Object.class);
+   }
+   if (command.equals("GetSeriesSubCategory")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSeriesSubCategory",parameters,Object.class);
    }
    if (command.equals("GetSeriesHistory")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSeriesHistory",parameters,Object.class);
@@ -60,6 +66,9 @@ public class SeriesInfoAPIFactory {
    }
    if (command.equals("GetSeriesCharacterList")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSeriesCharacterList",parameters,Object.class);
+   }
+   if (command.equals("GetSeriesCharacterForActor")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSeriesCharacterForActor",parameters,Object.class,java.lang.String.class);
    }
    throw new RuntimeException("Invalid SeriesInfoAPIFactory Command: "+command);
    }
