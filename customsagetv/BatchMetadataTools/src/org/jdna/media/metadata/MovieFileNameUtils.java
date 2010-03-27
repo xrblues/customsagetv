@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -20,6 +21,9 @@ public class MovieFileNameUtils {
     private static final Logger log      = Logger.getLogger(MovieFileNameUtils.class);
 
     private List<XbmcScraper>   scrapers = new ArrayList<XbmcScraper>();
+    private Pattern cdPartScraper = Pattern.compile("(.+)[ _\\\\.-]+(cd|dvd|part|disc)[ _\\\\.-]*([0-9a-d]+)", Pattern.CASE_INSENSITIVE);
+    
+
 
     public MovieFileNameUtils(File scraperDir) {
         File files[] = scraperDir.listFiles();
@@ -76,8 +80,23 @@ public class MovieFileNameUtils {
         // TODO: Test if the Sage Object is a Recording and if it's a Movie
 
         if (StringUtils.isEmpty(q.get(Field.RAW_TITLE))) {
-            log.warn("Failed to parse move title using scrapers for: " + filenameUri + ", will use filename as the movie title.");
-            q.set(Field.RAW_TITLE, PathUtils.getBasename(res));
+            String title = PathUtils.getBasename(res);
+            log.warn("Failed to parse move title using scrapers for: " + filenameUri + ", will use the following movie title: " + title);
+            q.set(Field.RAW_TITLE, title);
+        }
+        
+        // finally test if this is a multi-cd title, if so, then parse out just the title part
+        if (!StringUtils.isEmpty(q.get(Field.RAW_TITLE))) {
+            java.util.regex.Matcher m = cdPartScraper.matcher(q.get(Field.RAW_TITLE));
+            if (m.find()) {
+                String t1 = q.get(Field.RAW_TITLE);
+                String t2 = m.group(1);
+                
+                // remove non alpha at the end of the line
+                t2=t2.replaceAll("[^a-zA-Z0-9]*$", "");
+                q.set(Field.RAW_TITLE, t2);
+                log.debug("Adjusting title: " + t1 + " to: " + t2 + "; because it matches a multi-cd title");
+            }
         }
         
         log.debug("Created Movie Query: " + q);

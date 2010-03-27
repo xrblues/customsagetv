@@ -16,7 +16,7 @@ import sagex.stub.StubSageAPI;
 public class InitBMT extends TestCase {
     private static StubSageAPI api = null;
     public static void initBMT() throws Exception {
-        File f = new File("log4j.properties");
+        File f = new File("src/test/junit/log4j.properties");
         if (f.exists()) {
             PropertyConfigurator.configure(f.getAbsolutePath());
         }

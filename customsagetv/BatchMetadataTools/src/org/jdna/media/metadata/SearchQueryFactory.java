@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -79,6 +80,7 @@ public class SearchQueryFactory {
         if (f!=null) {
             FileMatcher match = titles.getMatcher(f.getAbsolutePath());
             if (match!=null) {
+                log.info("Applying MediaTitle information: " + match);
                 if (q==null) {
                     q = new SearchQuery();
                 }

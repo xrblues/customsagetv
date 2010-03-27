@@ -17,10 +17,14 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
+import org.jdna.media.BackupConfiguration;
 
 import sagex.api.Configuration;
+import sagex.phoenix.configuration.proxy.GroupProxy;
 
 public class Troubleshooter {
+    private static final Logger log =  Logger.getLogger(Troubleshooter.class);
     public static class StubFileZipper extends DirectoryWalker {
         ZipOutputStream zos;
         public StubFileZipper(ZipOutputStream zos) {
@@ -123,6 +127,38 @@ public class Troubleshooter {
             IOUtils.copy(fis, zos);
             fis.close();
             zos.closeEntry();
+        }
+    }
+    
+    public static void backupWizBin() throws Exception {
+        BackupConfiguration cfg = GroupProxy.get(BackupConfiguration.class);
+        File outdir = new File(cfg.getBackupFolder());
+        if (!outdir.exists()) {
+            log.debug("Creating Backup Folder: " + outdir.getAbsolutePath());
+            if (!outdir.mkdirs()) {
+                throw new IOException("Failed to create backup dir: " + outdir);
+            }
+        }
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+        File output = new File(outdir, "Wiz.bin-"+sdf.format(Calendar.getInstance().getTime()));
+        if (output.exists()) throw new IOException("Backup file exists: " + output.getAbsolutePath());
+        
+        File input = new File("Wiz.bin");
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+        try {
+            fis = new FileInputStream(input);
+            fos = new FileOutputStream(output);
+            IOUtils.copyLarge(fis, fos);
+        } finally {
+            if (fis!=null) {
+                IOUtils.closeQuietly(fis);
+            }
+            if (fos!=null) {
+                fos.flush();
+                IOUtils.closeQuietly(fos);
+            }
         }
     }
 }

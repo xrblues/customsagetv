@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.language.RefinedSoundex;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.SearchQuery.Field;
@@ -247,7 +248,6 @@ public class MediaMetadataFactory {
         
         String year = query.get(Field.YEAR);
         float goodScore = metadataCfg.getGoodScoreThreshold();
-        boolean haveResults = results!=null && (results.size() > 0 && results.get(0).getScore() >= goodScore);
         
         if (results!=null && (results.size() > 0 && results.get(0).getScore() >= goodScore)) {
             if (StringUtils.isEmpty(year)) {
@@ -261,7 +261,13 @@ public class MediaMetadataFactory {
                         break;
                     }
                 }
+                
+                // couldn't find a year match, but there was a good hit without a year
+                if (res==null) {
+                    res = results.get(0);
+                }
             }
+
         }
         
         return res;
