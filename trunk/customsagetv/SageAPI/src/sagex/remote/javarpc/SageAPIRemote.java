@@ -150,7 +150,7 @@ public class SageAPIRemote implements ISageAPIProvider {
      * Create a custom hostname verifier to avoid SSL errors about the connection hostname not
      * matching the hostname on the certificate.
      */
-    private class RemoteSageAPIHostnameVerifier implements HostnameVerifier
+    private static class RemoteSageAPIHostnameVerifier implements HostnameVerifier
     {
         public boolean verify(String s, SSLSession sslsession)
         {
@@ -161,7 +161,7 @@ public class SageAPIRemote implements ISageAPIProvider {
     /**
      * Always trust server SSL certificates
      */
-    private class RemoteSageAPITrustManager implements X509TrustManager
+    private static class RemoteSageAPITrustManager implements X509TrustManager
     {
         public void checkClientTrusted(X509Certificate[] ax509certificate, String s)
             throws CertificateException

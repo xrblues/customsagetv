@@ -53,6 +53,7 @@ public class MediaHandler implements SageHandler {
             
             if (mediaFileId == null) {
                 help(resp, "Missing mediafile");
+                return;
             }
             
             Object sageMedia = getMediaFile(mediaFileId);
