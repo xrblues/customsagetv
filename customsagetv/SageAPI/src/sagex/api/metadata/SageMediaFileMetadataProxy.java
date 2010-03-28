@@ -2,6 +2,7 @@ package sagex.api.metadata;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import sagex.api.MediaFileAPI;
 import sagex.api.metadata.StringList.Adapter;
 import sagex.util.ILog;
 import sagex.util.LogProvider;
+import sagex.util.TypesUtil;
 
 /**
  * This Class will eventually provide a Proxy between the {@link ISageMetadata}
@@ -44,11 +46,7 @@ public class SageMediaFileMetadataProxy implements InvocationHandler {
             if (args[0] == null) {
                 MediaFileAPI.SetMediaFileMetadata(sageMediaFile, md.value(), null);
             } else {
-                if (args[0].getClass().isPrimitive() || args[0].getClass().equals(String.class)) {
-                    MediaFileAPI.SetMediaFileMetadata(sageMediaFile, md.value(), String.valueOf(args[0]));
-                } else {
-                    log.warn("Setting of datatype not implemented: " + args[0].getClass());
-                }
+                MediaFileAPI.SetMediaFileMetadata(sageMediaFile, md.value(), TypesUtil.toString(args[0]));
             }
             return null;
         }
@@ -87,9 +85,9 @@ public class SageMediaFileMetadataProxy implements InvocationHandler {
                 } else {
                     log.warn("Unknown List Type: " + cl);
                 }
-
             }
-            return MediaFileAPI.GetMediaFileMetadata(sageMediaFile, md.value());
+            
+            return convertFromString(MediaFileAPI.GetMediaFileMetadata(sageMediaFile, md.value()), method);
         }
 
         // account for non standard methods
@@ -99,6 +97,10 @@ public class SageMediaFileMetadataProxy implements InvocationHandler {
         }
 
         return MediaFileAPI.GetMediaFileMetadata(sageMediaFile, md.value());
+    }
+
+    private Object convertFromString(String value, Method method) {
+        return TypesUtil.fromString(value, method.getReturnType());
     }
 
     private Object isSet(String key) {

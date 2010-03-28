@@ -74,8 +74,7 @@ public class LogProvider {
             logClass = (Class<ILog>) Class.forName("sagex.Log4jLog");
             logInit = logClass.getConstructor(Class.class);
         } catch (Throwable t) {
-            t.printStackTrace();
-            System.out.println("Log4j Not Found.  Logging Disabled.");
+            System.out.println("Using default logging, since log4j is not in the classpath.");
         }
     }
     

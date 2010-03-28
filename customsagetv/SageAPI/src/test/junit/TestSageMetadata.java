@@ -4,25 +4,36 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import sagex.SageAPI;
+import sagex.api.MediaFileAPI;
 import sagex.api.metadata.ISageCastMember;
 import sagex.api.metadata.ISageMetadataALL;
 import sagex.api.metadata.SageCastMember;
 import sagex.api.metadata.SageMetadata;
 import sagex.api.metadata.StringList;
 import sagex.api.metadata.StringList.Adapter;
+import sagex.stub.StubSageAPI;
 import sagex.util.ILog;
 import sagex.util.LogProvider;
 
 
 public class TestSageMetadata {
+    @BeforeClass
+    public static void setup() {
+        LogProvider.useSystemOut();
+        SageAPI.setProvider(new StubSageAPI());
+    }
+    
     @Test
     public void testStringList() {
         final Map<String,String> map = new HashMap<String, String>();
@@ -66,10 +77,8 @@ public class TestSageMetadata {
     
     @Test
     public void testSageMetadata() {
-        LogProvider.useSystemOut();
         ILog log = LogProvider.getLogger(TestSageMetadata.class);
         log.debug("Logger init");
-        
         
         ISageMetadataALL all = SageMetadata.create(ISageMetadataALL.class);
         assertNull(all.getAiringTime());
@@ -97,5 +106,16 @@ public class TestSageMetadata {
         
         System.out.println("Properties....");
         props.list(System.out);
+    }
+    
+    @Test
+    public void testSageMediaFileMetadata() {
+        Object o = MediaFileAPI.AddMediaFile(new File("target/test/test.avi"), "test");
+        ISageMetadataALL md = SageMetadata.create(o, ISageMetadataALL.class);
+        assertNotNull("Metadata was null",md);
+        md.setEpisodeName("Hello");
+        assertEquals("Hello", md.getEpisodeName());
+        md.setPartNumber(3);
+        assertEquals(3, md.getPartNumber());
     }
 }
