@@ -132,4 +132,13 @@ public interface Labels extends Constants {
 
     @DefaultStringValue("<b>Remove Property Files</b>")
     String deleteProperties();
+
+    @DefaultStringValue("Backup Wiz.bin")
+    String backupWizBin();
+
+    @DefaultStringValue("Backup History")
+    String backupHistory();
+
+    @DefaultStringValue("No Backup Files")
+    String nobackupfiles();
 }

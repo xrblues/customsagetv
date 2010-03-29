@@ -7,6 +7,7 @@ import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.ui.browser.BrowsePanel;
 import org.jdna.bmt.web.client.ui.browser.MetadataService;
 import org.jdna.bmt.web.client.ui.browser.MetadataServiceAsync;
+import org.jdna.bmt.web.client.ui.debug.BackupPanel;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesPanel;
 import org.jdna.bmt.web.client.ui.status.StatusPanel;
 import org.jdna.bmt.web.client.ui.util.CommandItem;
@@ -78,19 +79,27 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
             }
 
             private void showToolsMenu(Widget offset) {
-                PopupPanel pp = new PopupPanel();
+                final PopupPanel pp = new PopupPanel();
                 pp.setAutoHideEnabled(true);
                 pp.setAnimationEnabled(true);
                 VerticalPanel vp = new VerticalPanel();
                 //vp.add(new CommandItem(null, "Find/Remove Property Files", null));
                 vp.add(new CommandItem(null, "Create Support Request", new Command() {
                     public void execute() {
+                        pp.hide();
                         showSupportRequestDialog();
                     }
                 }));
                 vp.add(new CommandItem(null, "Clean .properties", new Command() {
                     public void execute() {
+                        pp.hide();
                         showCleanPropertiesDialog();
+                    }
+                }));
+                vp.add(new CommandItem(null, "Manage Backups", new Command() {
+                    public void execute() {
+                        pp.hide();
+                        History.newItem("backup");
                     }
                 }));
                 pp.setWidget(vp);
@@ -136,13 +145,10 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
 
         Application.events().addHandler(ErrorEvent.TYPE, this);
         
-        History.fireCurrentHistoryState();
-        
-        //setStatusPanel();
-        
         Window.addResizeHandler(this);
         Window.enableScrolling(false);
         
+        History.fireCurrentHistoryState();
     }
 
     private void showSupportRequestDialog() {
@@ -169,6 +175,10 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
 
     private void setStatusPanel() {
         setPanel(new StatusPanel());
+    }
+
+    private void setBackupPanel() {
+        setPanel(new BackupPanel());
     }
 
     private void setPanel(Widget panel) {
@@ -221,8 +231,8 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
             setConfigurePanel();
         } else if ("browsing".equals(section)) {
             setBrowsePanel(params);
-        //} else if ("scan".equals(section)) {
-        //    setScanPanel();
+        } else if ("backup".equals(section)) {
+            setBackupPanel();
         //} else if ("refresh".equals(section)) {
         //    setRefreshPanel();
         //} else {
@@ -230,6 +240,7 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         }
     }
     
+
     /**
      * History Tokens are like,
      * section/name:value/name:value

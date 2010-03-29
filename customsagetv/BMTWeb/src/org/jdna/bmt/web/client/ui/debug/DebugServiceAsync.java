@@ -12,4 +12,6 @@ public interface DebugServiceAsync {
     public void updateTimestamp(GWTMediaFile file, AsyncCallback<Long> callback);
     public void createSupportRequest(SupportOptions options, AsyncCallback<String> callback);
     void removeMetadataProperties(AsyncCallback<Integer> callback);
+    void backupWizBin(AsyncCallback<Void> callback);
+    void getWizBinBackups(AsyncCallback<String[]> callback);
 }
