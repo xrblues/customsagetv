@@ -2,7 +2,6 @@ package org.jdna.util;
 
 import java.util.ArrayList;
 
-import org.apache.commons.codec.language.RefinedSoundex;
 import org.apache.log4j.Logger;
 
 /**

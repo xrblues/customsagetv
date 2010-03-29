@@ -1,10 +1,6 @@
 package test;
 
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.codec.language.RefinedSoundex;
 
 
 

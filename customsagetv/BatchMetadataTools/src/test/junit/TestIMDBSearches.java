@@ -1,5 +1,8 @@
 package test.junit;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.util.List;
 
 import org.jdna.media.metadata.MediaMetadataFactory;
@@ -8,7 +11,6 @@ import org.jdna.media.metadata.SearchQuery.Field;
 import org.jdna.media.metadata.impl.imdb.IMDBMetaDataProvider;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import sagex.phoenix.fanart.IMetadataSearchResult;
 import sagex.phoenix.fanart.MediaType;
