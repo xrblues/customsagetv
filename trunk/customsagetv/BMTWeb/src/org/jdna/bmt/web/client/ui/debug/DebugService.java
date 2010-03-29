@@ -17,4 +17,6 @@ public interface DebugService extends RemoteService {
     public long updateTimestamp(GWTMediaFile file);
     public String createSupportRequest(SupportOptions options);
     public int removeMetadataProperties();
+    public void backupWizBin();
+    public String[] getWizBinBackups();
 }

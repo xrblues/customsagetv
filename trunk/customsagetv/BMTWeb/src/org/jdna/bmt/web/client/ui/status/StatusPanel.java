@@ -55,19 +55,20 @@ public class StatusPanel extends Composite implements ResizeHandler {
         
         grid.setWidth("100%");
         
+        initWidget(scroller);
         addStatus(new SimpleStatus(labels.statusPhoenix(), labels.statusPhoenixDesc(), "phoenix"));
         addStatus(new SimpleStatus(labels.metadataTools(), labels.metadataToolsDesc(), "bmt"));
         addStatus(new SimpleStatus(labels.sagetv(), labels.sagetvDesc(), "sagetv"));
         addStatus(new SimpleStatus(labels.jars(), labels.jarsDesc(), "jars"));
         addStatus(new SystemMessageStatus());
-        initWidget(scroller);
         resize();
     }
     
     @Override
     protected void onAttach() {
-        resizeHandler = Window.addResizeHandler(this);
         super.onAttach();
+        
+        resizeHandler = Window.addResizeHandler(this);
     }
 
     @Override
@@ -77,16 +78,20 @@ public class StatusPanel extends Composite implements ResizeHandler {
     }
 
     
-    public void addStatus(HasStatus status) {
-        final StatusBox sb = new StatusBox(status); 
-        grid.add(sb);
-        status.update(new AsyncCallback<Void>() {
-            public void onFailure(Throwable caught) {
-                sb.resize();
-            }
+    public void addStatus(final HasStatus status) {
+        DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                final StatusBox sb = new StatusBox(status); 
+                grid.add(sb);
+                status.update(new AsyncCallback<Void>() {
+                    public void onFailure(Throwable caught) {
+                        sb.resize();
+                    }
 
-            public void onSuccess(Void result) {
-                sb.resize();
+                    public void onSuccess(Void result) {
+                        sb.resize();
+                    }
+                });
             }
         });
     }

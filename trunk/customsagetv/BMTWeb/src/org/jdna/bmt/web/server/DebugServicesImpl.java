@@ -2,13 +2,17 @@ package org.jdna.bmt.web.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.ui.app.SupportOptions;
 import org.jdna.bmt.web.client.ui.debug.DebugService;
+import org.jdna.media.BackupConfiguration;
 import org.jdna.media.metadata.CompositeMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadata;
 import org.jdna.media.metadata.IMediaMetadataPersistence;
@@ -27,6 +31,7 @@ import sagex.api.enums.AiringAPIEnum;
 import sagex.api.enums.ChannelAPIEnum;
 import sagex.api.enums.MediaFileAPIEnum;
 import sagex.api.enums.ShowAPIEnum;
+import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.FanartUtil;
 import sagex.phoenix.util.PropertiesUtils;
 import sagex.phoenix.vfs.sage.SageMediaFile;
@@ -34,6 +39,8 @@ import sagex.phoenix.vfs.sage.SageMediaFile;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class DebugServicesImpl extends RemoteServiceServlet implements DebugService {
+    private Logger log = Logger.getLogger(DebugServicesImpl.class);
+    
     private static final long serialVersionUID = 1L;
 
     public DebugServicesImpl() {
@@ -248,5 +255,27 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
 
     public int removeMetadataProperties() {
         return Tools.removeMetadataProperties(Configuration.GetVideoLibraryImportPaths());
+    }
+
+    public void backupWizBin() {
+        try {
+            Troubleshooter.backupWizBin();
+        } catch (Exception e) {
+            log.warn("Backup Failed!", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String[] getWizBinBackups() {
+        BackupConfiguration cfg = GroupProxy.get(BackupConfiguration.class);
+        File dir = new File(cfg.getBackupFolder());
+        File files[] = dir.listFiles();
+        List<String> backups = new ArrayList<String>();
+        if (files!=null && files.length>0) {
+            for (File f : files) {
+                backups.add(f.getAbsolutePath());
+            }
+        }
+        return backups.toArray(new String[] {});
     }
 }

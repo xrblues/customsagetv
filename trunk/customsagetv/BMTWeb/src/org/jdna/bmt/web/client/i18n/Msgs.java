@@ -83,4 +83,10 @@ public interface Msgs extends Messages {
 
     @DefaultMessage("{0} - {1}%")
     String scanStatus(String status, int d);
+
+    @DefaultMessage("You are about to backup your Wiz.bin database.  Press OK to backup, Cancel to abort.")
+    String backupWizBin();
+
+    @DefaultMessage("Unable to get backup list")
+    String unableToGetBackupList();
 }

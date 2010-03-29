@@ -5,6 +5,7 @@ import org.jdna.bmt.web.client.util.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -111,5 +112,11 @@ public class Dialogs {
         panel.setCellHorizontalAlignment(btn, HasHorizontalAlignment.ALIGN_RIGHT);
         dialog.center();
         dialog.show();
+    }
+    
+    public static void confirm(String message, DialogHandler<Void> handler) {
+        if (Window.confirm(message)) {
+            handler.onSave(null);
+        }
     }
 }
