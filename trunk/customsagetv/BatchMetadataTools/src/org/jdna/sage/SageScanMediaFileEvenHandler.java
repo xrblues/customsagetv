@@ -141,10 +141,10 @@ public class SageScanMediaFileEvenHandler implements ScanMediaFileEventHandler {
 
         private void notifyResults(ProgressTracker<MetadataItem> tracker2) {
             log.info("Metadata Scan Completed.  Updated: " + tracker2.getSuccessCount() + "; Failed: " + tracker2.getFailedCount() + "; Skipped: " + tracker2.getSkippedCount());
-            if (pluginConfig.getUseSystemMessagesForStatus()) {
-                SystemMessageEvent evt = new SystemMessageEvent(SysEventMessageID.SCAN_COMPLETE_STATUS, Severity.INFO, "Metadata Scan Completed.  Updated: " + tracker2.getSuccessCount() + "; Failed: " + tracker2.getFailedCount() + "; Skipped: " + tracker2.getSkippedCount());
-                Phoenix.getInstance().getEventBus().fireEvent(evt);
-            }
+            //if (pluginConfig.getUseSystemMessagesForStatus()) {
+            //    SystemMessageEvent evt = new SystemMessageEvent(SysEventMessageID.SCAN_COMPLETE_STATUS, Severity.INFO, "Metadata Scan Completed.  Updated: " + tracker2.getSuccessCount() + "; Failed: " + tracker2.getFailedCount() + "; Skipped: " + tracker2.getSkippedCount());
+            //    Phoenix.getInstance().getEventBus().fireEvent(evt);
+            //}
             
             // clear the tracker, for the next round.
             tracker2.clear();

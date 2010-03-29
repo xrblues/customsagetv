@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdna.media.metadata.IMediaArt;
@@ -25,6 +24,7 @@ import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.FanartUtil;
 import sagex.phoenix.fanart.MediaArtifactType;
 import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.util.FileUtils;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.util.PathUtils;
 
@@ -39,6 +39,15 @@ public class FanartStorage {
         boolean localFanart = false;
         if (metadataConfig.isFanartEnabled() && !StringUtils.isEmpty(metadataConfig.getFanartCentralFolder())) {
             log.info("Using Central Fanart: " + metadataConfig.getFanartCentralFolder());
+            File f = new File(metadataConfig.getFanartCentralFolder());
+            if (!f.exists()) {
+                log.info("Fanart Folder does not exist. Creating: " + metadataConfig.getFanartCentralFolder());
+                FileUtils.mkdirsQuietly(f);
+                if (!f.exists()) {
+                    log.warn("Failed to create Central Fanart Folder: " + metadataConfig.getFanartCentralFolder() + "; Fanart will not be saved.");
+                    return;
+                }
+            }
             for (MediaArtifactType mt : MediaArtifactType.values()) {
                 saveCentralFanart(title, md, mt, options);
             }

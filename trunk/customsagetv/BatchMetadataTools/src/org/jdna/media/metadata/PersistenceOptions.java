@@ -22,6 +22,7 @@ public class PersistenceOptions {
     // if false, then those subsystems will never be called
     private boolean updateFanart              = true;
     private boolean updateMetadata            = true;
+    private boolean automaticPlugin = false;
 
     public PersistenceOptions() {
     }
@@ -153,5 +154,13 @@ public class PersistenceOptions {
      */
     public void setUpdateMetadata(boolean updateMetadata) {
         this.updateMetadata = updateMetadata;
+    }
+
+    public void setUsingAutomaticPlugin(boolean b) {
+        this.automaticPlugin  = true;
+    }
+    
+    public boolean isUsingAutomaticPlugin() {
+        return automaticPlugin;
     }
 }

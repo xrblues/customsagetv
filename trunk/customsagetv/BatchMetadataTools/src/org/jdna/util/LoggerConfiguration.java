@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 public class LoggerConfiguration {
