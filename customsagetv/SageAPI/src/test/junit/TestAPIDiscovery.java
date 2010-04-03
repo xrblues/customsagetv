@@ -1,9 +1,9 @@
 package test.junit;
 
+import junit.framework.TestCase;
 import sagex.ISageAPIProvider;
 import sagex.SageAPI;
 import sagex.stub.NullSageAPIProvider;
-import junit.framework.TestCase;
 
 public class TestAPIDiscovery extends TestCase {
     public void testDiscovery() {

@@ -10,6 +10,7 @@ import java.util.Properties;
 import sagex.api.MediaFileAPI;
 import sagex.util.ILog;
 import sagex.util.LogProvider;
+import sagex.util.ReflectionUtil;
 
 /**
  * SageTV Metadata Class. This class should always contain the complete list of

@@ -3,6 +3,9 @@ package sagex;
 import java.net.URI;
 import java.util.Properties;
 
+import sagex.api.Global;
+import sagex.api.MediaFileAPI;
+import sagex.api.WidgetAPI;
 import sagex.remote.EmbeddedSageAPIProvider;
 import sagex.remote.api.ServiceFactory;
 import sagex.remote.javarpc.SageAPIRemote;
@@ -10,8 +13,35 @@ import sagex.remote.rmi.RMISageAPI;
 import sagex.remote.server.SimpleDatagramClient;
 import sagex.stub.NullSageAPIProvider;
 import sagex.stub.StubSageAPI;
+import sagex.util.ILog;
+import sagex.util.LogProvider;
 
+/**
+ * Provides a wrapper for the SageTV services.  This class enables the SageTV instance to be a
+ * remote instance.  If you don't force the provider, then it will be auto-discovered.
+ * If you want to force a provider, then you can set the System property <b>sagex.SageAPI.remoteUrl</b>
+ * <pre>
+ * Examples
+ * System.setProperty("sagex.SageAPI.remoteUrl","http://remotehost:port/");
+ * System.setProperty("sagex.SageAPI.remoteUrl", "rmi://remotehost:port");
+ * </pre>
+ * While the setting of a remoteUrl is optional, if you do set it, you have to set it before calling
+ * any other sagex apis.
+ * <br/>
+ * 
+ * SageAPI depends on an {@link ISageAPIProvider} instance, which means that you can create your
+ * own provider, or you can forcefully set a provider using the setProvider() method.  Once you
+ * set a provider it global and public for all other SageAPI calls.
+ * <br/>
+ * 
+ * While you can use {@link SageAPI} directly it is recommended that you use the 
+ * convenience classes, such as {@link MediaFileAPI}, {@link WidgetAPI}, {@link Global}, etc.
+ * 
+ * @author seans
+ *
+ */
 public class SageAPI {
+    private static ILog log = LogProvider.getLogger(SageAPI.class);
     private static ISageAPIProvider       remoteProvider           = null;
     private static ISageAPIProvider       provider                 = null;
     private static Properties             remoteProviderProperties = null;
@@ -21,7 +51,7 @@ public class SageAPI {
         try {
             scriptingServices = new ServiceFactory();
         } catch (Throwable t) {
-            System.out.println("Scripting Services Disabled because: " + t.getMessage());
+            log.warn("Scripting Services Disabled",t);
         }
     }
 
@@ -34,7 +64,7 @@ public class SageAPI {
                     // System.out.println("INFO: Attempting to set Remote API Provider...");
                     setProvider(getRemoteProvider());
                 } catch (Throwable tt) {
-                    System.out.println("ERROR: No Remote Provider, using Null API Provider (this is ok some times).");
+                    log.warn("No Remote Provider, using Null API Provider (this is ok some times).");
                     setProvider(new NullSageAPIProvider());
                 }
             }
@@ -87,7 +117,7 @@ public class SageAPI {
         try {
             return SageAPI.getProvider().callService(serviceName, args);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warn("call() failed for: " + serviceName, e);
             return null;
         }
     }
@@ -98,7 +128,7 @@ public class SageAPI {
         try {
             return SageAPI.getProvider().callService(context, serviceName, args);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warn("call() failed for: " + serviceName, e);
             return null;
         }
     }

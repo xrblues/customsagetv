@@ -6,7 +6,6 @@ import sagex.SageAPI;
 import sagex.UIContext;
 import sagex.api.Configuration;
 import sagex.api.Global;
-import sagex.api.MediaFileAPI;
 import sagex.api.WidgetAPI;
 
 /**

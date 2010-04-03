@@ -71,9 +71,10 @@ public class LogProvider {
     
     static {
         try {
-            logClass = (Class<ILog>) Class.forName("sagex.Log4jLog");
+            logClass = (Class<ILog>) Class.forName("sagex.util.Log4jLog");
             logInit = logClass.getConstructor(Class.class);
         } catch (Throwable t) {
+            //t.printStackTrace();
             System.out.println("Using default logging, since log4j is not in the classpath.");
         }
     }

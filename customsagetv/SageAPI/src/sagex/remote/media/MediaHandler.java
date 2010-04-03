@@ -167,7 +167,9 @@ public class MediaHandler implements SageHandler {
         // get the media file that we are going to be using
         // TODO: Maybe cache this for performance reasons
         Object sageImage = MediaFileAPI.GetThumbnail(sagefile);
+        if (sageImage==null) throw new Exception("Unable to get MediaThumbnail for: " + sagefile);
         BufferedImage img = Utility.GetImageAsBufferedImage(sageImage);
+        if (img==null) throw new Exception("Unable to get MediaThumbnail for: " + sagefile);
         resp.setContentType("image/png");
         OutputStream os = resp.getOutputStream();
         ImageIO.write((RenderedImage) img, "png", os);

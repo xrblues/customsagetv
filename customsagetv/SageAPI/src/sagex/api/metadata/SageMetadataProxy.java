@@ -9,6 +9,7 @@ import java.util.Map;
 
 import sagex.util.ILog;
 import sagex.util.LogProvider;
+import sagex.util.ReflectionUtil;
 
 public class SageMetadataProxy implements InvocationHandler {
     private ILog                log  = LogProvider.getLogger(SageMetadataProxy.class);

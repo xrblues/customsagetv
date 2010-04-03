@@ -1,26 +1,27 @@
 package test;
 
-import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 
 import sagex.SageAPI;
-import sagex.UIContext;
-import sagex.api.Global;
-import sagex.api.enums.MediaFileAPIEnum;
-import sagex.api.enums.SageCommandEnum;
 import sagex.util.ILog;
+import sagex.util.Log4jConfigurator;
 import sagex.util.LogProvider;
 
 public class TestMisc {
     public static void main(String args[]) throws ParseException {
-        BasicConfigurator.configure();
+        //BasicConfigurator.configure();
+        Log4jConfigurator.configureQuietly("sagex-api");
+        Log4jConfigurator.configureQuietly("sagex-api");
+        
+        Logger log = Logger.getLogger(SageAPI.class);
+        log.info("Have a sagex api logger");
+        
+        ILog ilog = LogProvider.getLogger(SageAPI.class);
+        ilog.info("Using ILog instance");
         
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
         Date d = f.parse("2001-12-23");

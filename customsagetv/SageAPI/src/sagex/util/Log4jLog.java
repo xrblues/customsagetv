@@ -9,6 +9,11 @@ import org.apache.log4j.Logger;
  *
  */
 public class Log4jLog implements ILog {
+    static {
+        // configure us for log4j
+        Log4jConfigurator.configureQuietly("sagex-api");
+    }
+    
     private Logger log = null;
     
     @SuppressWarnings("unchecked")
