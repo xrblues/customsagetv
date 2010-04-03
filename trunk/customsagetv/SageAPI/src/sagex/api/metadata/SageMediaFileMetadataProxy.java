@@ -2,7 +2,6 @@ package sagex.api.metadata;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +10,7 @@ import sagex.api.MediaFileAPI;
 import sagex.api.metadata.StringList.Adapter;
 import sagex.util.ILog;
 import sagex.util.LogProvider;
+import sagex.util.ReflectionUtil;
 import sagex.util.TypesUtil;
 
 /**

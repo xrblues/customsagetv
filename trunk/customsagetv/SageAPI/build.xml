@@ -4,7 +4,7 @@
 
 	<property name="target" value="target" />
 	<property name="name" value="sagex.api" />
-	<property name="version" value="6.6.7-beta" />
+	<property name="version" value="6.6.9-beta" />
 	<property name="jarname" value="${name}.jar" />
 
 	<path id="SageAPI.classpath">
@@ -13,9 +13,11 @@
 		<pathelement location="libs/log4j-1.2.15.jar" />
 		<pathelement location="libs/metadata-updater-1.5.jar" />
 		<pathelement location="libs/Sage.jar" />
+		<pathelement location="../SagePlugin/bin" />
 	</path>
 
 	<path id="AppClasspath">
+		<pathelement location="../SagePlugin/bin" />
 		<pathelement location="target/classes" />
 		<fileset dir="libs" includes="*.jar" />
 	</path>
@@ -57,6 +59,7 @@
 		<mkdir dir="${target}/sage/JARs" />
 		<jar destfile="${target}/sage/JARs/${jarname}">
 			<fileset dir="target/classes" includes="sagex/**" />
+			<fileset dir="src" includes="sagex-api.log4j.properties"/>
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Specification-Title" value="Sage API Extension" />

@@ -16,19 +16,26 @@ public class ThumbnailRequestHandler implements SageMediaRequestHandler {
 
         File thFile = null;
         if (MediaFileAPI.IsDVD(sagefile)) {
-            thFile = new File(file.getParentFile(), file.getName() + ".jpg");
-            if (!thFile.exists()) {
-                thFile = new File(file, "folder.jpg");
+            try {
+                thFile = new File(file.getParentFile().getParentFile(), file.getParentFile().getName() + ".jpg");
+                if (!thFile.exists()) {
+                    thFile = new File(file, "folder.jpg");
+                    if (!thFile.exists()) {
+                        thFile = new File(file.getParentFile(), "folder.jpg");
+                    }
+                }
+            } catch (Exception e) {
+                // ignore
             }
         }
-        
-        if (thFile==null) {
+
+        if (thFile == null) {
             String name = file.getName();
             name = name.substring(0, name.lastIndexOf('.'));
             name += ".jpg";
             thFile = new File(file.getParentFile(), name);
         }
-        
+
         // write sage thumbnail for this file
         if (thFile == null || !thFile.exists()) {
             MediaHandler.writeSageImage(sagefile, resp);

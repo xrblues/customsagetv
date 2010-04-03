@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SageTVPlugin>
+	<Name>Sage API Extensions</Name>
+	<Identifier>sagex-api</Identifier>
+	<Description>
+	Provides Java wrappers to the SageTV core API.  
+	</Description>
+	<Author>Stuckless</Author>
+	<CreationDate>2010.03.25</CreationDate>
+	<ModificationDate>2010.03.25</ModificationDate>
+	<Version>6.6.8</Version>
+	<OS>Windows</OS>
+	<OS>Linux</OS>
+	<OS>Mac</OS>
+	<Desktop>false</Desktop>
+	<Webpage>http://code.google.com/p/customsagetv/wiki/RemoteHttpApiForSageTV</Webpage>
+	<PluginType>JAR</PluginType>
+	<Package>
+		<PackageType>JAR</PackageType>
+		<Location>http://download.sage.tv/downloads/sagex-api.zip</Location>
+		<MD5>98279873098720987ab09830cef</MD5>
+		<Overwrite>true</Overwrite> <!-- Defaults to true -->
+	</Package>
+</SageTVPlugin>

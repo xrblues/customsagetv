@@ -2,7 +2,6 @@ package sagex.stub;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 public class PropertiesStubAPIProxy implements StubAPIProxy {
     private boolean debug = false;
