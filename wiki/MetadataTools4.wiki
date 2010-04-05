@@ -132,4 +132,7 @@ SeriesName - EpisodeName.avi
 }}}
 
 == Exclude some Files/Directories ==
-In the Configuration, search for "exclude" and then add a regular expression that will match the folder that you want to exclude.  As a rule of thumb with regular expressions, less is better.  So, instead of putting a complete path, that may not validate, try using just the foldername itself, without the complete path.
+In the Configuration, search for "ignore" and then add a regular expression that will match the folder that you want to exclude.  As a rule of thumb with regular expressions, less is better.  So, instead of putting a complete path, that may not validate, try using just the foldername itself, without the complete path.  The Web UI includes a simple Regex editor/test panel when you are entering regular expressions.  It includes 3 boxes, The Regular Express, Sample Data and Results.  You fill in the Regular Expression and some sample data, and then hit the Test button.  You can then see if the Results contain the expected results based on the sample data that your provided.
+
+Regex Example
+http://forums.sagetv.com/forums/attachment.php?attachmentid=9978&stc=1&d=1270493911&img=sample.png
