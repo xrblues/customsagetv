@@ -55,4 +55,8 @@
 	<group label="Video Sources" editor="videoSourcesEditor">
 		<description>Configure Video Sources / Library Import Directories</description>
 	</group>
+
+	<group label="Sage Properties Viewer" editor="viewSageProperties">
+		<description>View Sage Properties</description>
+	</group>
 </configuration>

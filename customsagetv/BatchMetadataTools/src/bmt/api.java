@@ -15,6 +15,11 @@ import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.Group;
 
 public class api {
+    static {
+        // TODO: Later, we need to initialize bmt in one location
+        BMT.init();
+    }
+    
     private static final Logger log = Logger.getLogger(api.class);
     
     public static String GetVersion() {

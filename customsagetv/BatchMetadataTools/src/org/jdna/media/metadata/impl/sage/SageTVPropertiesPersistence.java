@@ -23,12 +23,10 @@ import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.MediaArt;
 import org.jdna.media.metadata.MediaMetadata;
 import org.jdna.media.metadata.MetadataAPI;
-import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataKey;
 import org.jdna.media.metadata.PersistenceOptions;
 import org.jdna.media.metadata.impl.imdb.IMDBUtils;
 import org.jdna.util.PropertiesUtils;
-import org.jdna.util.Singleton;
 import org.jdna.util.SortedProperties;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
@@ -42,7 +40,6 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     private static final Logger       log         = Logger.getLogger(SageTVPropertiesPersistence.class);
 
     private SageMetadataConfiguration cfg         = new SageMetadataConfiguration();
-    private MetadataConfiguration     metadataCfg = new MetadataConfiguration();
 
     public SageTVPropertiesPersistence() {
         if (!SageProperty.isPropertySetValid()) {
@@ -59,13 +56,10 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
     }
 
     private File getPropertyFile(IMediaResource mediaFile) {
-        File f = PathUtils.getFirstFile((IMediaFile)mediaFile);
+        File f = PathUtils.getFirstFile((IMediaFile) mediaFile);
         return FanartUtil.resolvePropertiesFile(f);
     }
 
-    /**
-     * We only load the metadata for the first part of a MediaFile.
-     */
     @SuppressWarnings("unchecked")
     private Map<String, String> loadProperties(IMediaResource mf) throws Exception {
         File propFile = getPropertyFile(mf);
@@ -89,16 +83,11 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
         if (!(mediaFile instanceof IMediaFile)) {
             throw new IOException("Can only store metadata for IMedaiFile.TYPE_FILE objects.  Not a valid file: " + PathUtils.getLocation(mediaFile));
         }
-        
-        MetadataAPI.normalizeMetadata((IMediaFile)mediaFile, md, options);
+
+        MetadataAPI.normalizeMetadata((IMediaFile) mediaFile, md, options);
 
         Map<String, String> props;
-        try {
-            props = loadProperties(mediaFile);
-        } catch (Exception e) {
-            log.error("There was an error trying reload the existing properties.  We may lose some data.", e);
-            props = new HashMap<String, String>();
-        }
+        props = new HashMap<String, String>();
 
         // add the filename and file uri
         props.put(SageProperty.FILENAME.sageKey, PathUtils.getName(mediaFile));
@@ -439,7 +428,8 @@ public class SageTVPropertiesPersistence implements IMediaMetadataPersistence {
 
     public static Map<String, String> getSageTVMetadataMap(IMediaFile mediaFile, IMediaMetadata md, PersistenceOptions options) {
         try {
-            return Singleton.get(SageTVPropertiesPersistence.class).getMetadataProperties(mediaFile, md, options);
+            SageTVPropertiesPersistence persist = new SageTVPropertiesPersistence();
+            return persist.getMetadataProperties(mediaFile, md, options);
         } catch (IOException e) {
             log.error("Unabled to get Metadata Properties for: " + PathUtils.getLocation(mediaFile), e);
         }

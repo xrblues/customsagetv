@@ -36,7 +36,6 @@ import org.jdna.process.MetadataItem;
 import org.jdna.process.MetadataProcessor;
 import org.jdna.util.JarInfo;
 import org.jdna.util.JarUtil;
-import org.jdna.util.LoggerConfiguration;
 
 import sagex.SageAPI;
 import sagex.api.Global;
@@ -59,6 +58,7 @@ import sagex.phoenix.vfs.impl.FileResourceFactory;
 import sagex.phoenix.vfs.util.PathUtils;
 import sagex.remote.json.JSONException;
 import sagex.remote.json.JSONObject;
+import sagex.util.Log4jConfigurator;
 
 /**
  * This is an engine that will process one of more directories and files and
@@ -70,8 +70,7 @@ import sagex.remote.json.JSONObject;
  */
 @CommandLineProcess(acceptExtraArgs = true, description = "Import/Update TV/Movie information from an external source such as imdb or thetvdb.")
 public class MetadataUpdater {
-    public static final Logger    APPLOG                = Logger.getLogger(MetadataUpdater.class.getName() + ".APPLOG");
-    private static final Logger   log                   = Logger.getLogger(MetadataUpdater.class);
+    private final Logger   log                   = Logger.getLogger(MetadataUpdater.class);
 
     private MetadataConfiguration metadataConfig        = null;
     private BMTSageAPIProvider    proxyAPI              = null;
@@ -117,7 +116,7 @@ public class MetadataUpdater {
     }
 
     public void run(String args[]) throws Exception {
-        LoggerConfiguration.configure();
+        Log4jConfigurator.configure("bmt", this.getClass().getClassLoader());
         upgrade();
 
         // set the SageAPI provider to be ourself, so that we can

@@ -1,6 +1,7 @@
 package org.jdna.metadataupdater;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,14 +23,17 @@ import org.jdna.media.BackupConfiguration;
 
 import sagex.api.Configuration;
 import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.util.SageTV;
 
 public class Troubleshooter {
-    private static final Logger log =  Logger.getLogger(Troubleshooter.class);
+    private static final Logger log = Logger.getLogger(Troubleshooter.class);
+
     public static class StubFileZipper extends DirectoryWalker {
         ZipOutputStream zos;
+
         public StubFileZipper(ZipOutputStream zos) {
             super();
-            this.zos=zos;
+            this.zos = zos;
         }
 
         public List zip(File startDirectory) throws IOException {
@@ -69,47 +73,92 @@ public class Troubleshooter {
 
     public static File createSupportZip(String problemDescription, boolean includeLogs, boolean includeProps, List<File> locations) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
-        File output = new File("bmtsupport-"+sdf.format(Calendar.getInstance().getTime())+".zip");
+        File output = new File("bmtsupport-" + sdf.format(Calendar.getInstance().getTime()) + ".zip");
         return createSupportZip(problemDescription, includeLogs, includeProps, locations, output);
     }
-    
+
     /**
-     * Attempts to zip up various log files, props, and stub video locations for support purpsoses.
+     * Attempts to zip up various log files, props, and stub video locations for
+     * support purpsoses.
      * 
      * @param problemDescription
      * @param includeLogs
      * @param includeProps
      * @param locations
-     * @throws Exception 
+     * @throws Exception
      */
     public static File createSupportZip(String problemDescription, boolean includeLogs, boolean includeProps, List<File> locations, File output) throws Exception {
-        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(output));
-        if (problemDescription!=null) {
-            ZipEntry ze = new ZipEntry("PROBLEM.txt");
-            zos.putNextEntry(ze);
-            zos.write(problemDescription.getBytes());
-            zos.closeEntry();
+        final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(output));
+        if (problemDescription == null) {
+            problemDescription = "-- NO PROBLEM ENTERED --";
         }
-        
+        ZipEntry ze = new ZipEntry("PROBLEM.txt");
+        zos.putNextEntry(ze);
+        zos.write(problemDescription.getBytes());
+        addString(zos, "\n");
+        addString(zos, "    BMT Version:  " + Version.VERSION);
+        addString(zos, "Phoenix Version:  " + phoenix.api.GetVersion());
+        addString(zos, "  Sagex Version:  " + sagex.api.Version.GetVersion());
+        addString(zos, "   Java Version:  " + System.getProperty("java.version"));
+        addString(zos, "   Sage Version:  " + SageTV.getSageVersion());
+        addString(zos, " Java Classpath:  " + System.getProperty("java.class.path"));
+        addString(zos, "\n");
+        zos.closeEntry();
+
         if (includeLogs) {
-            addFile(zos, new File("bmt.log"));
-            addFile(zos, new File("phoenix.log"));
-            addFile(zos, new File("mailcheck.log"));
+            File dir = new File(".");
+            dir.listFiles(new FileFilter() {
+                public boolean accept(File f) {
+                    if (f.getName().endsWith(".log") || f.getName().endsWith("log4j.properties")) {
+                        try {
+                            // remove path info
+                            addFile(zos, new File(f.getName()));
+                        } catch (Exception e) {
+                            log.warn("Could not add " + f + " to support zip.");
+                        }
+                    }
+                    return false;
+                }
+            });
             addFile(zos, new File("sagetv_0.txt"));
-            addFile(zos, new File("log4j.properties"));
+            dir = new File("logs");
+            if (dir.exists()) {
+                dir.listFiles(new FileFilter() {
+                    public boolean accept(File f) {
+                        if (f.getName().endsWith(".log") || f.getName().endsWith("log4j.properties")) {
+                            try {
+                                addFile(zos, f);
+                            } catch (Exception e) {
+                                log.warn("Could not add " + f + " to support zip.");
+                            }
+                        }
+                        return false;
+                    }
+                });
+            }
         }
-        
+
         if (includeProps) {
             addFile(zos, new File("Sage.properties"));
         }
-        
-        if (locations!=null && locations.size()>0) {
-            for (File loc: locations) {
+
+        if (locations != null && locations.size() > 0) {
+            for (File loc : locations) {
                 addStubLocation(zos, loc);
             }
         }
         zos.close();
         return output;
+    }
+
+    private static void addString(ZipOutputStream zos, String string) {
+        try {
+            zos.write(string.getBytes());
+            zos.write("\n".getBytes());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private static void addStubLocation(ZipOutputStream zos, File loc) throws IOException {
@@ -129,7 +178,7 @@ public class Troubleshooter {
             zos.closeEntry();
         }
     }
-    
+
     public static void backupWizBin() throws Exception {
         BackupConfiguration cfg = GroupProxy.get(BackupConfiguration.class);
         File outdir = new File(cfg.getBackupFolder());
@@ -139,11 +188,11 @@ public class Troubleshooter {
                 throw new IOException("Failed to create backup dir: " + outdir);
             }
         }
-        
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
-        File output = new File(outdir, "Wiz.bin-"+sdf.format(Calendar.getInstance().getTime()));
+        File output = new File(outdir, "Wiz.bin-" + sdf.format(Calendar.getInstance().getTime()));
         if (output.exists()) throw new IOException("Backup file exists: " + output.getAbsolutePath());
-        
+
         File input = new File("Wiz.bin");
         FileInputStream fis = null;
         FileOutputStream fos = null;
@@ -152,10 +201,10 @@ public class Troubleshooter {
             fos = new FileOutputStream(output);
             IOUtils.copyLarge(fis, fos);
         } finally {
-            if (fis!=null) {
+            if (fis != null) {
                 IOUtils.closeQuietly(fis);
             }
-            if (fos!=null) {
+            if (fos != null) {
                 fos.flush();
                 IOUtils.closeQuietly(fos);
             }

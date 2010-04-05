@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="package" name="MovieMetadataUpdater" xmlns:ivy="antlib:org.apache.ivy.ant">
-	<property environment="env" />
-	<property name="sage.home" value="${env.SAGE_HOME}" />
-	<property name="target" value="1.5" />
-	<property name="source" value="1.5" />
+	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
+	<property file="build.properties" />
 
+	<property environment="env" />
+
+	<property name="src.dir" location="src" />
+	<property name="target.dir" location="target" />
+	<property name="build.dir" location="${target.dir}/build" />
+	<property name="dist.dir" location="${target.dir}/dist" />
 	<property name="libs" value="lib" />
-	<property name="targetDir" value="target" />
+
 	<property name="name" value="metadata-updater" />
-	<property name="version" value="4.0-beta17" />
-	<property name="jarname" value="${name}.jar" />
+	<property name="version" value="4.0" />
+	<property name="build-number" value="21" />
+
 	<property name="launcher" value="MetadataTool" />
 	<property name="mainClass" value="org.jdna.metadataupdater.MetadataUpdater" />
+
+	<path id="project.class.path">
+		<pathelement location="${build.dir}/classes" />
+		<fileset dir="${libs}" includes="*.jar" />
+	</path>
 
 	<!-- BEGIN IVY DEPENDENDCY MANAGER -->
 	<property name="ivy.install.version" value="2.0.0-beta1" />
@@ -40,114 +50,91 @@
 	</target>
 
 	<target name="resolve" description="retrieve dependencies with ivy">
-		<!-- Pull these dependencies from the SageHome/JARs folder -->
-		<copy todir="lib" file="${sage.home}/JARs/Sage.jar" failonerror="false" />
-		<copy todir="lib" file="${sage.home}/JARs/phoenix.jar" failonerror="false" />
-		<copy todir="lib" file="${sage.home}/JARs/sagex.api.jar" failonerror="false" />
-		<copy todir="lib" file="${sage.home}/JARs/nielm_sageimdb.jar" failonerror="false" />
-		<copy todir="lib" file="${sage.home}/JARs/nielm_sageutls.jar" failonerror="false" />
-
-		<!-- This will simply update the phoenix and sagex.api from dev environment, if you have one -->
-		<copy todir="lib" file="../Phoenix/target/phoenix.jar" failonerror="false" />
-		<copy todir="lib" file="../SageAPI/target/sagex.api.jar" failonerror="false" />
 		<ivy:retrieve />
 	</target>
 
 	<!-- END IVY DEPENDENDCY MANAGER -->
 
 	<target name="init" depends="clean,init-ivy,resolve">
-		<delete dir="bin" failonerror="false" />
-		<delete dir="${targetDir}" failonerror="false" />
-		<mkdir dir="${targetDir}" />
-		<mkdir dir="bin" />
-		<copy includeemptydirs="false" todir="bin">
-			<fileset dir="src" excludes="**/*.launch, **/*.java" />
-		</copy>
+		<mkdir dir="${target.dir}" />
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.dir}/sage" />
+		<mkdir dir="${build.dir}/sage/JARs" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${dist.dir}/packages/" />
+
+		<echo message="SageTV library location: ${sage.lib.dir}" />
+
+		<!-- Pull these dependencies from the SageHome/JARs folder -->
+		<copy todir="lib" file="${sage.lib.dir}/JARs/Sage.jar" failonerror="false" />
+		<copy todir="lib" file="${sage.lib.dir}/JARs/phoenix.jar" failonerror="false" />
+		<copy todir="lib" file="${sage.lib.dir}/JARs/sagex.api.jar" failonerror="false" />
+		<copy todir="lib" file="${sage.lib.dir}/JARs/nielm_sageimdb.jar" failonerror="false" />
+		<copy todir="lib" file="${sage.lib.dir}/JARs/nielm_sageutls.jar" failonerror="false" />
+
+		<!-- This will simply update the phoenix and sagex.api from dev environment, if you have one -->
+		<copy todir="lib" file="../Phoenix/target/phoenix.jar" failonerror="false" />
+		<copy todir="lib" file="../SageAPI/target/sagex.api.jar" failonerror="false" />
 	</target>
 
-	<target name="all" depends="package" />
-	<target name="package" depends="package-tool" />
+	<target name="package" depends="init,package-tool" />
 
 	<target name="package-gwt">
-		<delete dir="bin/gwt" />
-		<mkdir dir="bin/gwt" />
+		<delete dir="${build.dir}/classes/gwt" />
+		<mkdir dir="${build.dir}/classes/gwt" />
 
-		<copy toDir="bin/gwt/src" failonerror="true">
+		<copy toDir="${build.dir}/classes/gwt" failonerror="true">
 			<fileset dir="src" includes="org/jdna/media/metadata/PersistenceOptions.java,org/jdna/media/metadata/SearchQuery.java,org/jdna/metadataupdater/Version.java,org/jdna/media/metadata/MetadataID.java,org/jdna/media/metadata/MetadataKey.java,org/jdna/media/IMediaFolder.java,org/jdna/media/metadata/ICastMember.java,org/jdna/media/metadata/IMediaMetadata.java,org/jdna/media/metadata/IMediaArt.java,org/jdna/media/metadata/IProviderInfo.java,org/jdna/media/metadata/IMediaMetadataPersistence.java,org/jdna/media/metadata/IMediaMetadataProvider.java,org/jdna/media/metadata/IMediaSearchResult.java,org/jdna/media/IMediaResource.java,org/jdna/media/IMediaResourceFilter.java,org/jdna/media/IMediaStackModel.java,org/jdna/media/IMediaFile.java,org/jdna/media/IMediaResourceVisitor.java,org/jdna/media/IPath.java">
 				<exclude name="**/impl/**" />
 			</fileset>
 		</copy>
 
-		<copy file="gwt/bmt.gwt.xml" todir="bin/gwt/" />
+		<copy file="resources/gwt/bmt.gwt.xml" todir="${build.dir}/classes/gwt/" />
 	</target>
 
-	<target name="update-bmtweb-for-testing">
-		<copy todir="../BMTWeb/war/testing/">
-			<fileset dir="resources/STVs/" />
-		</copy>
-		<copy todir="../BMTWeb/war/testing/">
-			<fileset dir="../Phoenix/src/main/STVs/"/>
-		</copy>
-	</target>
+	<target name="package-tool" depends="copyJars,package-gwt,jar,makeLaunch">
+		<mkdir dir="${build.dir}/sage" />
+		<mkdir dir="${build.dir}/sage/JARs" />
+		<mkdir dir="${build.dir}/sage/STVs/SageTV3/" />
+		<mkdir dir="${build.dir}/sage/STVs/Phoenix/vfs/" />
 
-	<target name="package-war">
-		<mkdir dir="${targetDir}" />
-		<mkdir dir="${targetDir}/sage" />
-		<mkdir dir="${targetDir}/sage/jetty" />
-		<mkdir dir="${targetDir}/sage/jetty/webapps" />
-		<mkdir dir="${targetDir}/sage/jetty/contexts" />
-		<war destfile="${targetDir}/sage/jetty/webapps/bmt.war">
-			<fileset dir="../BMTWeb/war/" excludes="**/*.log*,log4j.properties,**/cache/**,**/scrapers/**,**/testing/**,**/STVs/**" />
-		</war>
-		<copy file="../BMTWeb/jetty/bmt.xml" todir="${targetDir}/sage/jetty/contexts" />
 
-		<!-- copy the metadata -->
-		<mkdir dir="${targetDir}/sage/" />
-		<copy todir="${targetDir}/sage/">
-			<fileset dir="resources" includes="STVs/**"/>
-		</copy>
-
-	</target>
-
-	<target name="package-tool" depends="init,copyJars,package-gwt,makeJar,makeLaunch,package-war">
-		<mkdir dir="${targetDir}/sage" />
-		<mkdir dir="${targetDir}/sage/JARs" />
-		<mkdir dir="${targetDir}/sage/STVs/SageTV3/" />
-		<mkdir dir="${targetDir}/sage/STVs/Phoenix/vfs/" />
-
-		<copy toDir="${targetDir}/sage/scrapers">
-			<fileset dir="scrapers">
-			</fileset>
+		<copy toDir="${build.dir}/sage/scrapers">
+			<fileset dir="scrapers" />
 		</copy>
 
 		<!-- deploy the vfs as a plugin -->
-		<copy toDir="${targetDir}/sage/STVs/Phoenix/vfs/" failonerror="true">
+		<copy toDir="${build.dir}/sage/STVs/Phoenix/vfs/" failonerror="true">
 			<fileset dir="../Phoenix/src/main/STVs/Phoenix/vfs/">
 			</fileset>
 		</copy>
 
-		<copy toDir="${targetDir}/sage">
+		<copy toDir="${build.dir}/sage">
 			<fileset dir="resources/props" />
 		</copy>
 
-		<copy toDir="${targetDir}/sage">
-			<fileset dir="docs">
+		<copy toDir="${build.dir}/sage">
+			<fileset dir="resources/docs">
 			</fileset>
 		</copy>
 
-		<zip destfile="${targetDir}/${name}-${version}.zip" basedir="${targetDir}/sage" />
+		<copy toDir="${build.dir}/sage/STVs">
+			<fileset dir="resources/STVs" />
+		</copy>
+
+		<zip destfile="${dist.dir}/${name}-${version}.zip" basedir="${build.dir}/sage" />
 	</target>
 
 	<target name="copyJars">
-		<copydir dest="${targetDir}/sage/JARs" src="${libs}" excludes="Sage*.jar,nielm*.jar,junit*.jar,easymock*.jar" />
-		<move file="${targetDir}/sage/JARs/commons-codec-1.3.jar" tofile="${targetDir}/sage/JARs/commons-codec.jar" />
-		<move file="${targetDir}/sage/JARs/commons-dbutils-1.3.jar" tofile="${targetDir}/sage/JARs/commons-dbutils.jar" />
-		<move file="${targetDir}/sage/JARs/commons-io-1.4.jar" tofile="${targetDir}/sage/JARs/commons-io.jar" />
-		<move file="${targetDir}/sage/JARs/commons-lang-2.4.jar" tofile="${targetDir}/sage/JARs/commons-lang.jar" />
-		<move file="${targetDir}/sage/JARs/log4j-1.2.15.jar" tofile="${targetDir}/sage/JARs/log4j.jar" />
-		<move file="${targetDir}/sage/JARs/lucene-core-2.4.1.jar" tofile="${targetDir}/sage/JARs/lucene-core.jar" />
-		<move file="${targetDir}/sage/JARs/h2-1.2.128.jar" tofile="${targetDir}/sage/JARs/h2.jar" />
-		<move file="${targetDir}/sage/JARs/htmlparser-1.6.jar" tofile="${targetDir}/sage/JARs/htmlparser.jar" />
+		<copydir dest="${build.dir}/sage/JARs" src="${libs}" excludes="Sage*.jar,nielm*.jar,junit*.jar,easymock*.jar" />
+		<move file="${build.dir}/sage/JARs/commons-codec-1.3.jar" tofile="${build.dir}/sage/JARs/commons-codec.jar" />
+		<move file="${build.dir}/sage/JARs/commons-dbutils-1.3.jar" tofile="${build.dir}/sage/JARs/commons-dbutils.jar" />
+		<move file="${build.dir}/sage/JARs/commons-io-1.4.jar" tofile="${build.dir}/sage/JARs/commons-io.jar" />
+		<move file="${build.dir}/sage/JARs/commons-lang-2.4.jar" tofile="${build.dir}/sage/JARs/commons-lang.jar" />
+		<move file="${build.dir}/sage/JARs/log4j-1.2.15.jar" tofile="${build.dir}/sage/JARs/log4j.jar" />
+		<move file="${build.dir}/sage/JARs/lucene-core-2.4.1.jar" tofile="${build.dir}/sage/JARs/lucene-core.jar" />
+		<move file="${build.dir}/sage/JARs/h2-1.2.128.jar" tofile="${build.dir}/sage/JARs/h2.jar" />
+		<move file="${build.dir}/sage/JARs/htmlparser-1.6.jar" tofile="${build.dir}/sage/JARs/htmlparser.jar" />
 	</target>
 
 	<target name="buildVersion">
@@ -160,25 +147,24 @@
 		</echo>
 	</target>
 
-	<path id="ApplicationClasspath">
-		<pathelement location="bin" />
-		<fileset dir="${libs}" includes="*.jar" />
-	</path>
-
-	<target name="build" depends="buildVersion">
-		<javac debug="true" source="${source}" target="${target}" classpathref="ApplicationClasspath" srcdir="src" destdir="bin">
+	<target name="compile" depends="buildVersion">
+		<mkdir dir="${build.dir}/classes" />
+		<copy includeemptydirs="false" todir="${build.dir}/classes">
+			<fileset dir="src" excludes="**/*.launch, **/*.java" />
+		</copy>
+		<javac debug="true" source="1.5" target="1.5" classpathref="project.class.path" srcdir="${src.dir}" destdir="${build.dir}/classes">
 		</javac>
 	</target>
 
-	<target name="makeJar" depends="build">
-		<jar destfile="${targetDir}/sage/JARs/${jarname}">
-			<fileset dir="bin" />
+	<target name="jar" depends="compile">
+		<jar destfile="${build.dir}/sage/JARs/${name}.jar">
+			<fileset dir="${build.dir}/classes" />
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
-				<attribute name="Specification-Title" value="Metadata Tools" />
+				<attribute name="Specification-Title" value="Metadata Tools for SageTV" />
 				<attribute name="Specification-Version" value="${version}  ${TODAY}" />
 				<attribute name="Specification-Vendor" value="Sean Stuckless" />
-				<attribute name="Implementation-Title" value="Metadata Tools" />
+				<attribute name="Implementation-Title" value="Metadata Tools for SageTV" />
 				<attribute name="Implementation-Version" value="${version}" />
 				<attribute name="Implementation-Vendor" value="Sean Stuckless" />
 			</manifest>
@@ -188,7 +174,7 @@
 	<target name="makeLaunch">
 		<!-- build the classpath for the entries that we want -->
 		<path id="project.classpath">
-			<fileset dir="${targetDir}/sage/JARs" includes="*.jar">
+			<fileset dir="${build.dir}/sage/JARs" includes="*.jar">
 			</fileset>
 		</path>
 
@@ -201,13 +187,13 @@
 			</chainedmapper>
 		</pathconvert>
 
-		<jar destfile="${targetDir}/sage/${launcher}.jar" whenempty="create">
+		<jar destfile="${build.dir}/sage/${launcher}.jar" whenempty="create">
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
-				<attribute name="Specification-Title" value="Batch Metadata Tools" />
+				<attribute name="Specification-Title" value="Command Line Metadata Tools for SageTV" />
 				<attribute name="Specification-Version" value="${version}" />
 				<attribute name="Specification-Vendor" value="jdna.org" />
-				<attribute name="Implementation-Title" value="Batch Metadata Tools" />
+				<attribute name="Implementation-Title" value="Command Line Metadata Tools for SageTV" />
 				<attribute name="Implementation-Version" value="${version}" />
 				<attribute name="Implementation-Vendor" value="jdna.org" />
 				<attribute name="Main-Class" value="${mainClass}" />
@@ -217,11 +203,52 @@
 	</target>
 
 	<target name="clean">
-		<delete dir="${targetDir}" />
+		<delete dir="${target.dir}" failonerror="true" />
 	</target>
 
-	<target name="generate-constants">
-		<xslt style="src/org/jdna/media/metadata/MetadataKey.xsl" in="src/org/jdna/media/metadata/MetadataKey.xml" out="src/org/jdna/media/metadata/MetadataKey.java">
-		</xslt>
+	<target name="package-plugin" depends="package">
+		<mkdir dir="${dist.dir}/packages/" />
+
+		<zip destfile="${dist.dir}/packages/bmt-jar.zip">
+			<zipfileset dir="${build.dir}/sage/JARs/" prefix="JARs" />
+		</zip>
+		<zip destfile="${dist.dir}/packages/bmt-system.zip">
+			<zipfileset dir="${build.dir}/sage/STVs/" prefix="STVs" />
+			<zipfileset dir="${build.dir}/sage/scrapers/" prefix="scrapers" />
+		</zip>
+	</target>
+
+	<!-- Create the plugin's package for SageTV 7.0 and later -->
+	<target name="dist-plugin" depends="package-plugin">
+		<copy todir="${dist.dir}/packages" file="resources/plugin/plugin.xml">
+		</copy>
+
+		<checksum file="${dist.dir}/packages/bmt-jar.zip" property="md5.jar" />
+		<checksum file="${dist.dir}/packages/bmt-system.zip" property="md5.system" />
+
+		<tstamp>
+			<format property="last-modified" pattern="yyyy.MM.dd" />
+		</tstamp>
+
+		<replace file="${dist.dir}/packages/plugin.xml" summary="yes">
+			<replacefilter token="@@last-modified@@" value="${last-modified}" />
+			<replacefilter token="@@version@@" value="${version}" />
+			<replacefilter token="@@jar-checksum@@" value="${md5.jar}" />
+			<replacefilter token="@@system-checksum@@" value="${md5.system}" />
+		</replace>
+	</target>
+
+	<!-- upload to sagetv plugin area -->
+	<target name="publish-plugin">
+		<!-- download commons-net so that we can use the ftp plugin -->
+		<mkdir dir="${user.home}/.ant/lib"/>
+		<get src="http://repo1.maven.org/maven2/commons-net/commons-net/1.4.1/commons-net-1.4.1.jar" dest="${user.home}/.ant/lib/commons-net-1.4.1.jar" usetimestamp="true" />
+		
+		<ftp remotedir="plugins/stuckless/bmt" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" action="mkdir"/>		
+		<ftp remotedir="plugins/stuckless/bmt" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" binary="true" action="send">
+			<fileset file="${dist.dir}/packages/bmt-jar.zip"/>
+			<fileset file="${dist.dir}/packages/bmt-system.zip"/>
+			<fileset file="${dist.dir}/packages/plugin.xml"/>
+		</ftp>
 	</target>
 </project>
