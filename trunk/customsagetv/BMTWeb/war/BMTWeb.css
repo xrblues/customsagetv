@@ -14,6 +14,10 @@ h1 {
 	font-weight: bold;
 }
 
+.simple-action {
+	margin-left: 10px;
+}
+
 /** Most GWT widgets already have a style name defined */
 .gwt-DialogBox {
   width: 400px;
@@ -192,6 +196,7 @@ h1 {
 	border: 2px solid #E2C822;
 	-moz-border-radius: 7px;
     border-radius: 7px;
+    text-align: center;
 }
 
 .DataDialog-ButtonBox {
@@ -356,3 +361,33 @@ h1 {
 .Data {
 	
 }
+
+.Header-Messages {
+	height: 25px;
+	border-bottom: 1px solid black;
+	margin-bottom: 3px;
+}
+
+.Header-Messages .INFO, .Header-Messages .WARN, .Header-Messages .ERROR {
+	font-weight: bold;
+	font-style: italic;
+}
+
+.Header-Messages .INFO {
+	color: blue;
+}
+
+.Header-Messages .WARN {
+	color: #E8691B;
+}
+
+.Header-Messages .ERROR {
+	color: #CD1315;
+}
+
+.FanartImageHover {
+}
+
+.FanartImageNormal {
+}
+

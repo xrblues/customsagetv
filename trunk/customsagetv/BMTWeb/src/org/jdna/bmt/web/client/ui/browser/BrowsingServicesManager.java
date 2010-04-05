@@ -5,7 +5,6 @@ import org.jdna.bmt.web.client.media.GWTFactoryInfo;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.media.SageQueryFolder;
-import org.jdna.bmt.web.client.ui.app.ErrorEvent;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.util.Log;
 
@@ -39,15 +38,18 @@ public class BrowsingServicesManager {
         final PopupPanel dialog = Dialogs.showWaitingPopup("Loading...");
         browser.browseChildren(folder, new AsyncCallback<GWTMediaResource[]>() {
             public void onFailure(Throwable caught) {
-                System.out.println("**** ERROR **** " + caught.getMessage());
-                Application.events().fireEvent(new ErrorEvent(Application.messages().failedToBrowseFolder(folder.getTitle()), caught));
                 dialog.hide();
+                Application.fireErrorEvent(Application.messages().failedToBrowseFolder(folder.getTitle()), caught);
             }
 
             public void onSuccess(GWTMediaResource[] result) {
                 folder.setChildren(result);
                 Application.events().fireEvent(new BrowseReplyEvent(folder));
                 dialog.hide();
+                if (result==null || result.length==0) {
+                    Application.fireErrorEvent(Application.messages().nothingToShowFor(folder.getTitle()));
+                    return;
+                }
             }
         });
     }

@@ -1,8 +1,6 @@
 package org.jdna.bmt.web.client.ui.app;
 
 import org.jdna.bmt.web.client.Application;
-import org.jdna.bmt.web.client.ui.util.Dialogs;
-import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -41,11 +39,11 @@ public class RefreshOptionsPanel extends Composite {
                 dialog.hide();
                 SageAPI.refreshLibrary(fullReindex.getValue(), new AsyncCallback<String>() {
                     public void onFailure(Throwable caught) {
-                        Log.error(Application.messages().failedToStartScan(), caught);
+                        Application.fireErrorEvent(Application.messages().failedToStartScan(), caught);
                     }
 
                     public void onSuccess(String result) {
-                        Dialogs.showMessage(result, 4000);
+                        Application.fireNotification(result);
                     }
                 });
             }

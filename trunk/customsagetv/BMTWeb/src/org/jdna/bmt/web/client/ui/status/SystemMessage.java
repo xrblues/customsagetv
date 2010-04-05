@@ -12,6 +12,8 @@ public class SystemMessage implements Serializable {
     private int typeCode;
     private String typeName;
     private String message;
+
+    private int id;
     
     
     public SystemMessage() {
@@ -127,5 +129,14 @@ public class SystemMessage implements Serializable {
      */
     public void setMessage(String message) {
         this.message = message;
+    }
+
+
+    public void setId(int id) {
+        this.id=id;
+    }
+    
+    public int getId() {
+        return id;
     }
 }

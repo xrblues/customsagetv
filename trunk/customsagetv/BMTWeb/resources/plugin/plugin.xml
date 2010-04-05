@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SageTVPlugin>
+  <Name>Metadata Tools for SageTV - Web Interface</Name>
+  <Identifier>bmtweb</Identifier>
+  <Description>Web Interface for Metadata Tools (bmt)</Description>
+  <Screenshot>http://forums.sagetv.com/forums/attachment.php?attachmentid=9772&stc=1&d=1266629522</Screenshot>
+  <DemoVideo></DemoVideo>
+  <Author>stuckless</Author>
+  <CreationDate>2008.07.19</CreationDate>
+  <ModificationDate>@@last-modified@@</ModificationDate>
+  <Version>@@version@@</Version>
+  <Desktop>false</Desktop>
+  <ResourcePath>bmtweb</ResourcePath>
+  <Webpage>http://forums.sagetv.com/forums/downloads.php?do=file&id=239</Webpage>
+
+  <Dependency>
+    <Plugin>Jetty</Plugin>
+    <MinVersion>1.7</MinVersion>
+  </Dependency>
+
+  <Dependency>
+    <Plugin>bmt</Plugin>
+    <MinVersion>4.0</MinVersion>
+  </Dependency>
+
+  <PluginType>Standard</PluginType>
+
+  <Package>
+    <PackageType>System</PackageType>
+    <Zipped>true</Zipped>
+    <Location>http://download.sage.tv/plugins/stuckless/bmt/bmt-war.zip</Location>
+    <MD5>@@war-checksum@@</MD5>
+  </Package>
+
+  <!-- context file must be installed after the war file -->
+  <Package>
+    <PackageType>System</PackageType>
+    <Zipped>true</Zipped>
+    <Location>http://download.sage.tv/plugins/stuckless/bmt/bmt-context.zip</Location>
+    <MD5>@@context-checksum@@</MD5>
+  </Package>
+</SageTVPlugin>

@@ -1,32 +1,40 @@
 package org.jdna.bmt.web.client;
 
 import org.jdna.bmt.web.client.ui.app.AppPanel;
-import org.jdna.metadataupdater.Version;
+import org.jdna.bmt.web.client.ui.status.StatusServices;
+import org.jdna.bmt.web.client.ui.status.StatusServicesAsync;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class BMTWeb implements EntryPoint {
-    /**
-     * The message displayed to the user when the server cannot be reached or
-     * returns an error.
-     */
-    private static final String        SERVER_ERROR    = "An error occurred while " + "attempting to contact the server. Please check your network " + "connection and try again.";
-
+    private static final String Title = "Metadata Tools for SageTV";
     /**
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        // Add the nameField and sendButton to the RootPanel
-        // Use RootPanel.get() to get the entire body element
-        //RootPanel.get().add(new PreferencesPanel());
-        // RootPanel.get().add(new StatusPanel());
         RootPanel.get().add(new AppPanel());
-        
-        Window.setTitle("Metadata Tools - " + Version.VERSION);
+        Window.setTitle(Title);
+        DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                StatusServicesAsync service = GWT.create(StatusServices.class);
+                service.getBMTVersion(new AsyncCallback<String>() {
+                    public void onSuccess(String result) {
+                        Window.setTitle(Title + "("+result+")");
+                    }
+                    
+                    public void onFailure(Throwable caught) {
+                    }
+                });
+            }
+        });
     }
 }

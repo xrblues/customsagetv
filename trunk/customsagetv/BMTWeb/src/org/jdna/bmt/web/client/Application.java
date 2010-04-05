@@ -1,9 +1,10 @@
 package org.jdna.bmt.web.client;
 
 import org.jdna.bmt.web.client.event.EventBus;
+import org.jdna.bmt.web.client.event.NotificationEvent;
+import org.jdna.bmt.web.client.event.NotificationEvent.MessageType;
 import org.jdna.bmt.web.client.i18n.Labels;
 import org.jdna.bmt.web.client.i18n.Msgs;
-import org.jdna.bmt.web.client.ui.app.ErrorEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
@@ -30,6 +31,10 @@ public class Application {
     }
 
     public static void fireErrorEvent(String msg, Throwable t) {
-        events().fireEvent(new ErrorEvent(msg, t));    
+        events().fireEvent(new NotificationEvent(MessageType.ERROR, msg, t));    
+    }
+
+    public static void fireNotification(String msg) {
+        events().fireEvent(new NotificationEvent(MessageType.INFO, msg));    
     }
 }

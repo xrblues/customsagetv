@@ -1,20 +1,30 @@
 package org.jdna.bmt.web.server;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.jdna.bmt.web.client.ui.prefs.Log4jPrefs;
 import org.jdna.bmt.web.client.ui.prefs.PrefItem;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesService;
+import org.jdna.bmt.web.client.ui.prefs.RegexValidation;
 import org.jdna.bmt.web.client.ui.prefs.VideoSource;
 import org.jdna.bmt.web.client.ui.prefs.VideoSource.SourceType;
 import org.jdna.util.SortedProperties;
@@ -24,6 +34,8 @@ import sagex.phoenix.configuration.Group;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.NewSearchGroup;
 import sagex.phoenix.util.PropertiesUtils;
+import sagex.util.Log4jConfigurator;
+import sagex.util.Log4jConfigurator.LogStruct;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -211,4 +223,124 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
         return getVideoSources();
     }
 
+    public List<PrefItem> getSageProperties() {
+        List<PrefItem> items = new ArrayList<PrefItem>();
+        Properties props = new Properties();
+        try {
+            PropertiesUtils.load(props, new File("Sage.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load Sage.properties");
+        }
+        
+        for (Object key : props.keySet()) {
+            PrefItem i = new PrefItem();
+            i.setKey(String.valueOf(key));
+            i.setLabel(String.valueOf(key));
+            i.setValue(String.valueOf(props.getProperty(String.valueOf(key))));
+            i.setType("string");
+            items.add(i);
+        }
+        
+        return items;
+    }
+
+    public String getSagePropertiesAsString() {
+        try {
+            return IOUtils.toString(new FileReader(new File("Sage.properties")));
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load Sage.properties");
+        }
+    }
+
+    public ArrayList<String> getSagePropertiesAsList() {
+        ArrayList<String> items = new ArrayList<String>();
+        Properties props = new Properties();
+        try {
+            PropertiesUtils.load(props, new File("Sage.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load Sage.properties");
+        }
+        
+        for (Map.Entry<Object, Object> es : props.entrySet()) {
+            items.add(es.getKey() + "=" + es.getValue());
+        }
+        
+        Collections.sort(items);
+        return items;
+    }
+
+    public RegexValidation validateRegex(RegexValidation val) {
+        try {
+            val.setResults(null);
+            Pattern p = Pattern.compile(val.getRegex());
+            LineIterator li = IOUtils.lineIterator(IOUtils.toInputStream(val.getSampleData(), "UTF-8"), "UTF-8");
+            while (li.hasNext()) {
+                String s = li.nextLine();
+                Matcher m = p.matcher(s);
+                if (m.find()) {
+                    if (val.getResults()==null) {
+                        val.setResults(s);
+                    } else {
+                        val.setResults(val.getResults() + "\n" + s);
+                    }
+                }
+            }
+            if (StringUtils.isEmpty(val.getResults())) {
+                val.setResults("Regex is valid, but it did not match anything.");
+            }
+        } catch (Exception e) {
+            val.setResults(ExceptionUtils.getStackTrace(e));
+            val.setValid(false);
+        }
+        return val;
+    }
+
+    public String[] getLog4jLoggers() {
+        Log4jConfigurator.LogStruct[] logs =  Log4jConfigurator.getConfiguredLogs();
+        if (logs==null) {
+            return null;
+        }
+        
+        String log[] = new String[logs.length];
+        for (int i=0;i<logs.length;i++) {
+            log[i] = logs[i].id;
+        }
+        return log;
+    }
+    
+    private LogStruct getLog(String log) {
+        Log4jConfigurator.LogStruct[] logs =  Log4jConfigurator.getConfiguredLogs();
+        if (logs==null) {
+            return null;
+        }
+        for (int i=0;i<logs.length;i++) {
+            if (log.equals(logs[i].id)) return logs[i];
+        }
+        return null;
+    }
+    
+    public ArrayList<PrefItem> getLog4jProperties(String logId) {
+        ArrayList<PrefItem> items = new ArrayList<PrefItem>();
+        LogStruct log = getLog(logId);
+        for (Map.Entry<Object, Object> me: log.properties.entrySet()) {
+            PrefItem pi = new PrefItem();
+            pi.setKey(String.valueOf(me.getKey()));
+            pi.setValue(String.valueOf(me.getValue()));
+            items.add(pi);
+        }
+        Collections.sort(items, new Comparator<PrefItem>() {
+            public int compare(PrefItem p1, PrefItem p2) {
+                return p1.getKey().compareTo(p2.getKey());
+            }
+        });
+        return items;
+    }
+
+    public void saveLog4jProperties(String logId, ArrayList<PrefItem> items) {
+        Properties props = new Properties();
+        for (PrefItem p: items) {
+            props.setProperty(p.getKey(), p.getValue());
+        }
+        Log4jConfigurator.reconfigure(logId, props);
+    }
 }

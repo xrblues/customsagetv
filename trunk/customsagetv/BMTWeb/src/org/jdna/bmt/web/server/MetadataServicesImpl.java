@@ -34,6 +34,7 @@ import org.jdna.media.metadata.IMediaMetadataPersistence;
 import org.jdna.media.metadata.IMediaMetadataProvider;
 import org.jdna.media.metadata.MediaMetadataFactory;
 import org.jdna.media.metadata.MediaMetadataPersistence;
+import org.jdna.media.metadata.MediaMetadataUtils;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataAPI;
 import org.jdna.media.metadata.MetadataConfiguration;
@@ -49,6 +50,7 @@ import org.jdna.url.UrlUtil;
 import sagex.api.MediaFileAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.IMetadataSearchResult;
+import sagex.phoenix.fanart.MediaArtifactType;
 import sagex.phoenix.fanart.MediaType;
 import sagex.phoenix.progress.IRunnableWithProgress;
 import sagex.phoenix.progress.ProgressTracker;
@@ -400,270 +402,72 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
             return reply;
         }
     }
-    
-    
-/*
-    
 
-    public List<GWTMediaSearchResult> searchForMetadata(GWTMediaFile mediaFile, SearchQueryOptions options) {
-        String provider = options.getProvider().get();
-        if (StringUtils.isEmpty(provider)) {
-            provider = new MetadataConfiguration().getDefaultProviderId();
-        }
-
-        GWTMediaMetadata item = mediaFile.getMetadata();
-
-        SearchQuery query = options.getSearchQuery();
-        try {
-            /*
-            if (!StringUtils.isEmpty(item.getString(MetadataKey.MEDIA_TITLE)) && !StringUtils.isEmpty(item.getString(MetadataKey.MEDIA_TYPE))) {
-                query = new SearchQuery();
-                if ("TV".equals(item.getString(MetadataKey.MEDIA_TYPE))) {
-                    query.setType(Type.TV);
-                    query.set(Field.DISC, item.getString(MetadataKey.DVD_DISC));
-                    query.set(Field.EPISODE, item.getString(MetadataKey.EPISODE));
-                    query.set(Field.EPISODE_TITLE, item.getString(MetadataKey.EPISODE_TITLE));
-                    query.set(Field.SEASON, item.getString(MetadataKey.SEASON));
-                } else {
-                    query.setType(Type.MOVIE);
-                }
-                query.set(Field.TITLE, item.getString(MetadataKey.MEDIA_TITLE));
-            } else {
-                log.debug("Searching Using Sage Media File");
-                SageMediaFile smf = new SageMediaFile(mediaFile.getSageMediaFileId());
-                log.debug("Sage Media File Created");
-                query = SearchQueryFactory.getInstance().createQuery(smf);
-                log.debug("Sage Query Created");
-            }
-
-            log.info("WebUI Search: " + query + " using provider: " + provider );
-
-            IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(provider);
-            List<IMediaSearchResult> results = prov.search(query);
-            List<GWTMediaSearchResult> reply = new ArrayList<GWTMediaSearchResult>();
-            for (IMediaSearchResult res : results) {
-                GWTMediaSearchResult rnew = new GWTMediaSearchResult();
-                rnew.setUrl(res.getUrl());
-                rnew.setProviderId(res.getProviderId());
-                rnew.setScore(res.getScore());
-                rnew.setTitle(res.getTitle());
-                rnew.setYear(res.getYear());
-                rnew.setId(res.getMetadataId());
-                rnew.setMediaFileId(mediaFile.getSageMediaFileId());
-                reply.add(rnew);
-            }
-            return reply;
-        } catch (Throwable e) {
-            if (query != null) {
-                log.error("Search Query failed: " + query, e);
-            } else {
-                log.error("Search failed for item: " + mediaFile.getLocation(), e);
-            }
-            throw new RuntimeException(e);
-        }
-    }
-
-    private GWTMediaFile createGWTMediaFile(IMediaResource res) {
-        GWTMediaFile item = new GWTMediaFile((IMediaFile) res);
-        if (res instanceof SageMediaFile) {
-            Object o = SageMediaFile.getSageMediaFileObject(res);
-            item.setSageMediaFileId(MediaFileAPI.GetMediaFileID(o));
-            if (MediaFileAPI.IsTVFile(o)) {
-                item.getSageRecording().set(true);
-                item.setTitle(ShowAPI.GetShowTitle(o));
-                item.setMinorTitle(ShowAPI.GetShowEpisode(o));
-            }
-            
-            // we need to load the custom metadata fields, to see if this is a TV file, etc
-            SageCustomMetadataPersistence p = new SageCustomMetadataPersistence();
-            IMediaMetadata md = p.loadMetaData(res);
-            if (MetadataAPI.isTV(md)) {
-                if (StringUtils.isEmpty(item.getMinorTitle())) {
-                    item.setMinorTitle(MetadataAPI.getEpisodeTitle(md));
-                }
-            }
-            
-            // add in default fanart locations
-            GWTMediaArt art = new GWTMediaArt();
-            String file =phoenix.api.GetFanartPoster(o);
-            if (file!=null) {
-                File f = new File(file);
-                art.setDownloadUrl(makeLocalMediaUrl(f.getAbsolutePath()));
-                art.setLabel(f.getAbsolutePath());
-                art.setExists(f.exists());
-                art.setLocal(true);
-                item.setDefaultPoster(art);
-            }
-
-            art = new GWTMediaArt();
-            file = phoenix.api.GetFanartBackground(o);
-            if (file!=null) {
-                File f = new File(file);
-                art.setDownloadUrl(makeLocalMediaUrl(f.getAbsolutePath()));
-                art.setLabel(f.getAbsolutePath());
-                art.setExists(f.exists());
-                art.setLocal(true);
-                item.setDefaultBackground(art);
-            }
-
-            art = new GWTMediaArt();
-            file = phoenix.api.GetFanartBanner(o);
-            if (file!=null) {
-                File f = new File(file);
-                art.setDownloadUrl(makeLocalMediaUrl(f.getAbsolutePath()));
-                art.setLabel(f.getAbsolutePath());
-                art.setExists(f.exists());
-                art.setLocal(true);
-                item.setDefaultBanner(art);
-            }
-            
-            
-            // add in default fanart locations
-            item.setDefaultPosterDir(phoenix.api.GetFanartPosterPath(o));
-            item.setDefaultBackgroundDir(phoenix.api.GetFanartBackgroundPath(o));
-            item.setDefaultBannerDir(phoenix.api.GetFanartBannerPath(o));
-            
-            Object airing = MediaFileAPI.GetMediaFileAiring(o);
-            Object origShow = AiringAPI.GetShow(airing);
-            if (airing!=null) {
-                item.setAiringId(String.valueOf(AiringAPI.GetAiringID(airing)));
-            }
-            if (origShow!=null) {
-                item.setShowId(ShowAPI.GetShowExternalID(origShow));
-            }
-        }
-        item.setPosterUrl("media/poster/" + item.getSageMediaFileId() + "?transform=[{name:scale,height:40},{name: reflection}]");
-        return item;
-    }
-    
-    private SageMediaFile createSageMediaFile(String uri) {
-        try {
-            File f = new File(new URI(uri));
-            Object mf = MediaFileAPI.GetMediaFileForFilePath(f);
-            return new SageMediaFile(mf);
-        } catch (Exception e) {
-            log.error("Failed to get SageMediaFile for: " + uri);
+    public ArrayList<GWTMediaArt> getFanart(GWTMediaFile file, MediaArtifactType artifact) {
+        Object sageMF = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
+        if (sageMF == null) {
+            log.error("Failed to get sage mediafile for: " + file);
             return null;
         }
-        
+        ArrayList<GWTMediaArt> files = new ArrayList<GWTMediaArt>();
+        log.debug("Getting fanart: " + file.getType() + "; " + artifact + "; " + sageMF);
+        String fanart[] = phoenix.api.GetFanartArtifacts(sageMF, null, null, artifact.name(), null, null);
+        if (fanart!=null) {
+            for (String fa : fanart) {
+                GWTMediaArt ma = new GWTMediaArt();
+                ma.setDeleted(false);
+                ma.setLocal(true);
+                ma.setLocalFile(fa);
+                ma.setLabel(fa);
+                ma.setDisplayUrl(makeLocalMediaUrl(fa));
+                files.add(ma);
+            }
+        }
+        return files;
     }
 
-    public ServiceReply<GWTMediaFile> saveMetadata(GWTMediaFile file, SaveOptions uiOptions) {
-        CompositeMediaMetadataPersistence persist = null;
-        
-        SageMediaFile smf = new SageMediaFile(file.getSageMediaFileId());
-        log.debug("Saving File: " + smf.getLocation());
-        PersistenceOptions options = new PersistenceOptions();
-        options.setOverwriteFanart(uiOptions.getOverwriteFanart().get());
-        options.setOverwriteMetadata(uiOptions.getOverwriteMetadata().get());
-        options.setImportAsTV(file.getSageRecording().get());
-
-        persist = new CompositeMediaMetadataPersistence();
-        if (uiOptions.getUpdateMetadata().get()) {
-            persist.add(new SageBackupPersistenceUsingSageXmlInfo());
-            persist.add(new SageShowPeristence());
-            persist.add(new SageCustomMetadataPersistence());
-            persist.add(new SageTVPropertiesPersistence());
+    public GWTMediaArt downloadFanart(GWTMediaFile file, MediaArtifactType artifact, GWTMediaArt ma) {
+        Object sageMF = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
+        if (sageMF == null) {
+            log.error("Failed to get sage mediafile for: " + file);
+            return null;
         }
-        
-        if (uiOptions.getUpdateFanart().get()) {
-            if (!uiOptions.getUpdateMetadata().get()) {
-                persist.add(new SageCustomMetadataPersistence());
-            }
-            persist.add(new CentralFanartPersistence());
-        }
-        
-        // TODO: Should probably ask the use if we want to use the default masks, etc.
-        options.setUseTitleMasks(false);
-        
-        try {
-            Object sageObject = smf.getSageMediaFileObject(smf);
-            if (MediaFileAPI.IsTVFile(sageObject) && !file.getSageRecording().get()) {
-                // moving a file from TV to non TV requiers some manipulation
-                log.warn("Moving File from TV to NON TV: " + smf.getLocation());
-                Object newMF = phoenix.api.RemoveMetadataFromMediaFile(sageObject);
-                if (newMF == null) {
-                    log.error("Failed strip metadata from TV File: " + file.getLocation());
-                } else {
-                    smf = new SageMediaFile(newMF);
-                }
-            }
-            
-            // process the fanart images
-            for (Iterator<IMediaArt> i = file.getMetadata().getFanart().iterator(); i.hasNext();) {
-                IMediaArt ma = i.next();
-                if (ma instanceof GWTMediaArt) {
-                    GWTMediaArt gma = (GWTMediaArt) ma;
-                    if (gma.isLocal()) {
-                        log.debug("Skipping Download of Local Fanart: " + gma.getLabel());
-                        i.remove();
-                    }
-                    if (gma.isDeleted() && gma.isLocal()) {
-                        try {
-                            File f = new File(gma.getLabel());
-                            f.delete();
-                        } catch (Throwable t) {
-                            log.error("Unablet to delete: " + gma.getDownloadUrl());
-                        }
-                    }
-                }
-            }
-            
-            persist.storeMetaData(file.getMetadata(), smf, options);
-            
-            log.debug("Metadata Saved... Reloading");
-
-            smf = createSageMediaFile(file.getLocation().toURI());
-            
-            // touch the file and tell sage to reload the metadata
-            // not needed, since we updated MF directly
-            //smf.touch();
-            //Global.RunLibraryImportScan(false);
-            
-            if (smf==null) {
-                throw new IOException("Unable to reload MediaFile after metadata was saved.");
-            }
-            
-            GWTMediaFile newMediaFile = createGWTMediaFile(smf);
-            if (newMediaFile==null) {
-                throw new IOException("Unable to create GWT MediaFile from SageMediaFile: " + smf);
-            }
-            
-            newMediaFile.attachMetadata(loadMetadata(newMediaFile));
-            
-            // return back the new metadata object
-            ServiceReply<GWTMediaFile> reply = new ServiceReply<GWTMediaFile>(0, "ok", newMediaFile);
-            return reply;
-        } catch (IOException e) {
-            ServiceReply<GWTMediaFile> reply = new ServiceReply<GWTMediaFile>(99, "Failed: " + e.getMessage(), null);
-            return reply;
-        }
+        String fanartDir = phoenix.api.GetFanartArtifactDir(sageMF, null, null, artifact.name(), null, null, true);
+        File dir =new File(fanartDir);
+        String name = new File(ma.getDownloadUrl()).getName();
+        File local = new File(dir, name);
+        MediaMetadataUtils.writeImageFromUrl(ma.getDownloadUrl(), local);
+        ma.setLocal(true);
+        ma.setLocalFile(local.getAbsolutePath());
+        ma.setDisplayUrl(makeLocalMediaUrl(local.getAbsolutePath()));
+        return ma;
     }
 
-    public List<GWTProviderInfo> getProviders() {
-        List<GWTProviderInfo> providers = new ArrayList<GWTProviderInfo>();
-        GWTProviderInfo system = new GWTProviderInfo();
-        system.setName("System Default");
-        system.setId(new MetadataConfiguration().getDefaultProviderId());
-        system.setDescription(system.getId());
-        providers.add(system);
-        List<IMediaMetadataProvider> provs = MediaMetadataFactory.getInstance().getMetaDataProviders();
-        Collections.sort(provs, new Comparator<IMediaMetadataProvider>() {
-            public int compare(IMediaMetadataProvider o1, IMediaMetadataProvider o2) {
-                return o1.getInfo().getName().compareToIgnoreCase(o2.getInfo().getName());
-            }
-        });
-        for (IMediaMetadataProvider p : MediaMetadataFactory.getInstance().getMetaDataProviders()) {
-            providers.add(new GWTProviderInfo(p.getInfo()));
+    public boolean deleteFanart(GWTMediaArt art) {
+        File f = new File(art.getLocalFile());
+        if (f.exists()) {
+            log.info("Removing Fanart Image: " + f);
+            return f.delete();
         }
-        return providers;
+        return false;
     }
 
-    public void cancelScan(String id) {
-        ScanProgressTracker tracker = (ScanProgressTracker) ProgressTrackerManager.getInstance().getProgress(id);
-        if (tracker!=null) {
-            tracker.setCancelled(true);
+    public void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art) {
+        Object sageMF = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
+        if (sageMF == null) {
+            log.error("Failed to get sage mediafile for: " + file);
+            return;
+        }
+        
+        File img=new File(art.getLocalFile());
+        if (img.exists()) {
+            if (type == MediaArtifactType.POSTER) {
+                phoenix.api.SetFanartPoster(sageMF, img);
+            } else if (type==MediaArtifactType.BACKGROUND) {
+                phoenix.api.SetFanartBackground(sageMF, img);
+            } else if (type==MediaArtifactType.BANNER) {
+                phoenix.api.SetFanartBanner(sageMF, img);
+            }
         }
     }
-    */
 }

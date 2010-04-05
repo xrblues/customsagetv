@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:org.jdna.bmt.web.client.ui.layout">
+	<ui:style>
+		.header {
+			margin-bottom: 10px;
+		}
+	</ui:style>
+	<g:VerticalPanel width="100%">
+		<g:cell horizontalAlignment="ALIGN_CENTER">
+			<g:HTMLPanel addStyleNames="InfoPanel {style.header}" width="65%">
+			The log4j configuration is an advanced panel for configuring the logging properties for various plugins.
+			If you don't know how to configure log4j, then you should not be editing these values.
+			For information on how to configure log4j check out <a href="http://www.vipan.com/htdocs/log4jhelp.html" target="_log4j">this guide</a>.
+			</g:HTMLPanel>
+		</g:cell>
+		<g:ListBox ui:field="logs"></g:ListBox>
+		<my:Simple2ColFormLayoutPanel ui:field="panel" width="100%"></my:Simple2ColFormLayoutPanel>
+		<g:HorizontalPanel width="100%">
+			<g:TextBox width="100%" ui:field="key"></g:TextBox>
+			<g:TextBox width="100%" ui:field="value"></g:TextBox>
+			<g:Button ui:field="add">Add</g:Button>
+		</g:HorizontalPanel>
+		<g:cell horizontalAlignment="ALIGN_RIGHT">
+			<g:Button ui:field="save">Save</g:Button>
+		</g:cell>
+	</g:VerticalPanel>
+</ui:UiBinder> 

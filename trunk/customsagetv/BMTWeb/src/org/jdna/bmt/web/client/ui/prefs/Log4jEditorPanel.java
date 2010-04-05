@@ -1,11 +1,11 @@
 package org.jdna.bmt.web.client.ui.prefs;
 
+import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.ui.input.FileChooserTextBox;
 import org.jdna.bmt.web.client.ui.input.InputBuilder;
 import org.jdna.bmt.web.client.ui.input.LargeStringTextBox;
 import org.jdna.bmt.web.client.ui.layout.Simple2ColFormLayoutPanel;
 import org.jdna.bmt.web.client.ui.util.UpdatablePanel;
-import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -25,12 +25,12 @@ public class Log4jEditorPanel extends Composite implements UpdatablePanel {
     public void onLoad() {
         preferencesService.getLog4jPreferences(new AsyncCallback<Log4jPrefs>() {
             public void onFailure(Throwable caught) {
-                Log.error("Failed to load log4j perferences", caught);
+                Application.fireErrorEvent("Failed to load log4j perferences", caught);
             }
 
             public void onSuccess(Log4jPrefs result) {
                 if (result == null) {
-                    Log.error("Log4j Returned No Preferences!");
+                    Application.fireErrorEvent("Log4j Returned No Preferences!");
                     return;
                 }
                 updatePanel(result);

@@ -4,14 +4,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.ui.status.StatusServices;
 import org.jdna.bmt.web.client.ui.status.StatusValue;
 import org.jdna.bmt.web.client.ui.status.SystemMessage;
 import org.jdna.bmt.web.client.util.StringUtils;
+import org.jdna.metadataupdater.Version;
 import org.jdna.util.JarInfo;
 import org.jdna.util.JarUtil;
 
@@ -25,9 +28,10 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 /**
  * The server side implementation of the RPC service.
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "deprecation" })
 public class StatusServicesImpl extends RemoteServiceServlet implements StatusServices {
     private static final Logger log  = Logger.getLogger(StatusServicesImpl.class);
+    private Map<Integer, Object> systemMessages = new HashMap<Integer, Object>();
     
     public StatusServicesImpl() {
         ServicesInit.init();
@@ -112,6 +116,7 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
     }
 
     public List<SystemMessage> getSystemMessages() {
+        systemMessages.clear();
         Object[] all = SystemMessageAPI.GetSystemMessages();
         List<SystemMessage> msgs = new ArrayList<SystemMessage>();
         for (Object o : all) {
@@ -123,7 +128,9 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
             sm.setTypeCode(SystemMessageAPI.GetSystemMessageTypeCode(o));
             sm.setTypeName(SystemMessageAPI.GetSystemMessageTypeName(o));
             sm.setMessage(SystemMessageAPI.GetSystemMessageString(o));
+            sm.setId(o.hashCode());
             msgs.add(sm);
+            systemMessages.put(o.hashCode(), o);
         }
         // reverse sort date
         Collections.sort(msgs, new Comparator<SystemMessage>() {
@@ -134,5 +141,23 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
             }
         });
         return msgs;
+    }
+
+    public String getBMTVersion() {
+        return Version.VERSION;
+    }
+
+    public void clearSystemMessages() {
+        SystemMessageAPI.DeleteAllSystemMessages();
+        systemMessages.clear();
+        return;
+    }
+
+    public void deleteSystemMessage(int id) {
+        Object o =systemMessages.get(id);
+        if (o!=null) {
+            systemMessages.remove(id);
+            SystemMessageAPI.DeleteSystemMessage(o);
+        }
     }
 }

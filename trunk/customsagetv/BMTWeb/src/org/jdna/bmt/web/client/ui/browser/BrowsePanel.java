@@ -5,7 +5,6 @@ import org.jdna.bmt.web.client.event.EventBus;
 import org.jdna.bmt.web.client.event.WaitingEvent;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
-import org.jdna.bmt.web.client.ui.app.ErrorEvent;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar;
 import org.jdna.bmt.web.client.ui.util.OKDialogHandler;
@@ -148,14 +147,14 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
             }
             this.currentFolder = browseableFolder;
             if (browseableFolder == null) {
-                Application.events().fireEvent(new ErrorEvent(Application.messages().failedToBrowseFolder("")));
+                Application.fireErrorEvent(Application.messages().failedToBrowseFolder(""));
                 return;
             }
 
             mainItems.clear();
             GWTMediaResource[] children = browseableFolder.getChildren();
             if (children == null) {
-                Application.events().fireEvent(new ErrorEvent(Application.messages().failedToBrowseFolder(browseableFolder.getTitle())));
+                Application.fireErrorEvent(Application.messages().failedToBrowseFolder(browseableFolder.getTitle()));
                 return;
             }
 

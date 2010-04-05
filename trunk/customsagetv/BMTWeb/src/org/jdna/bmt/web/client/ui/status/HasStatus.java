@@ -8,4 +8,5 @@ public interface HasStatus {
     public String getHelp();
     public Widget getStatusWidget();
     public void update(AsyncCallback<Void> callback);
+    public Widget getHeaderActionsWidget();
 }

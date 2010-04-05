@@ -2,6 +2,7 @@ package org.jdna.bmt.web.client.ui.prefs;
 
 import org.jdna.bmt.web.client.ui.input.ArrayEditorTextBox;
 import org.jdna.bmt.web.client.ui.input.FileChooserTextBox;
+import org.jdna.bmt.web.client.ui.input.RegexEditorTextBox;
 import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.user.client.ui.TextBox;
@@ -21,6 +22,8 @@ public class EditorFactory {
             return new ArrayEditorTextBox(tb, caption, ",");
         } else if ("array(;)".equals(id)) {
             return new ArrayEditorTextBox(tb, caption, ";");
+        } else if ("regex".equals(id)) {
+            return new RegexEditorTextBox(tb, caption);
         } else {
             Log.debug("Missing Editor: " + id + " for field: " + caption);
         }
@@ -29,9 +32,12 @@ public class EditorFactory {
 
     public static Widget createEditor(String editor) {
         if ("log4jEditor".equals(editor)) {
-            return new Log4jEditorPanel();
+            //return new Log4jEditorPanel();
+            return new Log4jPropertiesPanel();
         } else if ("videoSourcesEditor".equals(editor)) {
             return new VideoSourcesEditorPanel();
+        } else if ("viewSageProperties".equals(editor)) {
+            return new SagePropertiesViewerPanel();
         } else {
             Log.debug("Unknown Editor: " + editor);
         }

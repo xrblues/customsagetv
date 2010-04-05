@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.i18n.Msgs;
 import org.jdna.bmt.web.client.ui.layout.Simple2ColFormLayoutPanel;
-import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.UpdatablePanel;
-import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -22,7 +21,7 @@ public class PreferenceItemsPanel extends Composite implements UpdatablePanel {
     private PrefItem parentItem = null;
     private String header = null;
     private String headerDescription = null;
-    
+    private boolean hasItems = false;
 
     public PreferenceItemsPanel() {
         grid =  new Simple2ColFormLayoutPanel();
@@ -36,6 +35,7 @@ public class PreferenceItemsPanel extends Composite implements UpdatablePanel {
         header = parentItem.getLabel();
         headerDescription = parentItem.getDescription();
 
+        hasItems=false;
         PrefItem[] prefItems = parentItem.getChildren();
         if (prefItems != null) {
             List<PrefItem> items = new ArrayList<PrefItem>();
@@ -49,6 +49,7 @@ public class PreferenceItemsPanel extends Composite implements UpdatablePanel {
                 PrefItem pi = items.get(i);
                 PreferenceItemEditor editor = new PreferenceItemEditor(pi);
                 grid.add(editor.getLabel(), editor.getEditor());
+                hasItems=true;
             }
         }
     }
@@ -77,12 +78,12 @@ public class PreferenceItemsPanel extends Composite implements UpdatablePanel {
                     }
                     callback.onSuccess(PreferenceItemsPanel.this);
                 } else {
-                    Log.error(msgs.failedToSavePreferences());
+                    Application.fireErrorEvent(msgs.failedToSavePreferences());
                 }
             }
         });
         } else {
-            Dialogs.showMessage(msgs.nothingToSave());
+            Application.fireNotification(msgs.nothingToSave());
         }
     }
 
@@ -91,6 +92,6 @@ public class PreferenceItemsPanel extends Composite implements UpdatablePanel {
     }
 
     public boolean isReadonly() {
-        return grid.getRowCount()<=0;
+        return !hasItems;
     }
 }

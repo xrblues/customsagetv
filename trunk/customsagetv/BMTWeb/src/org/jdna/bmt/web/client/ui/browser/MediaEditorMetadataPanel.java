@@ -9,6 +9,7 @@ import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.ui.input.InputBuilder;
 import org.jdna.bmt.web.client.ui.layout.Simple2ColFormLayoutPanel;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
+import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar;
 import org.jdna.bmt.web.client.ui.util.ImagePopupLabel;
 import org.jdna.bmt.web.client.ui.util.OKDialogHandler;
@@ -22,6 +23,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -77,15 +80,6 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         
         HorizontalButtonBar hp = new HorizontalButtonBar();
 
-        /*
-        Button save = new Button("Save");
-        save.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                //saveMetadata(new SaveOptions());
-            }
-        });
-        */
-
         Button saveFanart = new Button("Save ...");
         saveFanart.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -120,9 +114,20 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         });
         
         // add our icon to the panel
-        Image img = new Image(mf.getThumbnailUrl());
+        final Image img = new Image();
+        img.addErrorHandler(new ErrorHandler() {
+            public void onError(ErrorEvent event) {
+                img.setUrl("images/128x128/video.png");
+            }
+        });
+        img.setUrl(mf.getThumbnailUrl());
         img.addStyleName("MediaMetadata-PosterSmall");
         img.addStyleName("clickable");
+        img.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                showFanartDialog();
+            }
+        });
         hp.add(img, Layout.Right);
 
         hp.add(back);
@@ -172,7 +177,9 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         panel.add("User Rating", InputBuilder.textbox().bind(metadata.getProperty(MetadataKey.USER_RATING)).widget());
 
         panel.add("Running Time", InputBuilder.textbox().bind(metadata.getProperty(MetadataKey.RUNNING_TIME)).widget());
-        panel.add("Duration", InputBuilder.textbox().bind(metadata.getProperty(MetadataKey.DURATION)).widget());
+        
+        // Duration cannot be set
+        //panel.add("Duration", InputBuilder.textbox().bind(metadata.getProperty(MetadataKey.DURATION)).widget());
 
 
         // Genres
@@ -221,6 +228,10 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         
         
         onChange(null);
+    }
+
+    protected void showFanartDialog() {
+        Dialogs.showAsDialog("Fanart", new FanartManagerPanel(mediaFile));
     }
 
     private void saveFanart() {

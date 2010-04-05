@@ -1,9 +1,9 @@
 package org.jdna.bmt.web.client.ui.util;
 
-import org.jdna.bmt.web.client.util.Log;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -18,28 +18,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Dialogs {
-    public static void showMessage(String message) {
-        showMessage(message, 2000);
-    }
-
-    public static void showMessage(String message, int time) {
-        final DecoratedPopupPanel pop = new DecoratedPopupPanel(true);
-        pop.setAnimationEnabled(true);
-        pop.center();
-        pop.setWidget(new Label(message));
-        pop.show();
-        Timer t = new Timer() {
-            @Override
-            public void run() {
-                if (pop.isVisible()) {
-                    pop.hide();
-                }
-            }
-        };
-        t.schedule(time);
-        Log.debug("dialog: " + message + "; time: " + time);
-    }
-
     public static PopupPanel showWaitingPopup(String message) {
         DecoratedPopupPanel pop = new DecoratedPopupPanel(true);
         pop.setAnimationEnabled(true);
@@ -110,8 +88,12 @@ public class Dialogs {
         });
         panel.add(btn);
         panel.setCellHorizontalAlignment(btn, HasHorizontalAlignment.ALIGN_RIGHT);
-        dialog.center();
         dialog.show();
+        DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                dialog.center();
+            }
+        });
     }
     
     public static void confirm(String message, DialogHandler<Void> handler) {

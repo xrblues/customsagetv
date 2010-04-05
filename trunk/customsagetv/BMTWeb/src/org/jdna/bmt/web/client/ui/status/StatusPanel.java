@@ -12,9 +12,13 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class StatusPanel extends Composite implements ResizeHandler {
     private Labels labels = Application.labels();
@@ -28,10 +32,25 @@ public class StatusPanel extends Composite implements ResizeHandler {
         public StatusBox(HasStatus status) {
             vp.setSpacing(5);
             vp.setWidth("100%");
+            
+            HorizontalPanel p = new HorizontalPanel();
+            p.setWidth("100%");
             Label l = new Label(status.getStatus());
             l.setTitle(status.getHelp());
             l.addStyleName("StatusBox-Title");
-            vp.add(l);
+            p.add(l);
+            p.setCellHorizontalAlignment(l, HasHorizontalAlignment.ALIGN_LEFT);
+            p.setCellVerticalAlignment(l, HasVerticalAlignment.ALIGN_MIDDLE);
+            
+            Widget actionsWidget = status.getHeaderActionsWidget();
+            if (actionsWidget!=null) {
+                System.out.println("Added Actions...");
+                p.add(actionsWidget);
+                p.setCellHorizontalAlignment(actionsWidget, HasHorizontalAlignment.ALIGN_RIGHT);
+                p.setCellVerticalAlignment(actionsWidget, HasVerticalAlignment.ALIGN_MIDDLE);
+            }
+            
+            vp.add(p);
             scroll.setWidget(status.getStatusWidget());
             vp.add(scroll);
             vp.addStyleName("StatusBox");

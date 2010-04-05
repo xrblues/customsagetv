@@ -1,7 +1,6 @@
 package org.jdna.bmt.web.client.ui.filechooser;
 
 import org.jdna.bmt.web.client.Application;
-import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -56,7 +55,7 @@ public class FileChooser extends Composite implements HasValue<String> {
                 if (selName.startsWith("[dir]")) {
                     chooserServices.listFiles(sel, new AsyncCallback<JSFileResult>() {
                         public void onFailure(Throwable caught) {
-                            Log.error(Application.messages().failedToGetFiles(), caught);
+                            Application.fireErrorEvent(Application.messages().failedToGetFiles(), caught);
                         }
     
                         public void onSuccess(JSFileResult result) {
@@ -78,7 +77,7 @@ public class FileChooser extends Composite implements HasValue<String> {
             public void onClick(ClickEvent event) {
                 chooserServices.listFiles((String)null, new AsyncCallback<JSFileResult>() {
                     public void onFailure(Throwable caught) {
-                        Log.error(Application.messages().failedToGetFiles(), caught);
+                        Application.fireErrorEvent(Application.messages().failedToGetFiles(), caught);
                     }
 
                     public void onSuccess(JSFileResult result) {
@@ -93,7 +92,7 @@ public class FileChooser extends Composite implements HasValue<String> {
             public void onClick(ClickEvent event) {
                 chooserServices.listFiles(".", new AsyncCallback<JSFileResult>() {
                     public void onFailure(Throwable caught) {
-                        Log.error(Application.messages().failedToGetFiles(), caught);
+                        Application.fireErrorEvent(Application.messages().failedToGetFiles(), caught);
                     }
 
                     public void onSuccess(JSFileResult result) {
@@ -119,7 +118,7 @@ public class FileChooser extends Composite implements HasValue<String> {
     private void initTree(String base) {
         chooserServices.listFiles(base, new AsyncCallback<JSFileResult>() {
             public void onFailure(Throwable caught) {
-                Log.error(Application.messages().failedToGetFiles(), caught);
+                Application.fireErrorEvent(Application.messages().failedToGetFiles(), caught);
             }
 
             public void onSuccess(JSFileResult result) {

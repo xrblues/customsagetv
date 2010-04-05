@@ -55,7 +55,17 @@
     <servlet-name>sageapi</servlet-name>
     <servlet-class>sagex.remote.SagexServlet</servlet-class>
   </servlet>
+
+  <servlet>
+    <servlet-name>view</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.ViewServlet</servlet-class>
+  </servlet>
   
+  <servlet-mapping>
+    <servlet-name>view</servlet-name>
+    <url-pattern>view</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>sage</servlet-name>
     <url-pattern>/bmtweb/sage</url-pattern>
