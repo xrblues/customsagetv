@@ -2,10 +2,10 @@ package org.jdna.bmt.web.client.ui.prefs;
 
 import java.util.List;
 
+import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.ui.input.FileChooserTextBox;
 import org.jdna.bmt.web.client.ui.prefs.VideoSource.SourceType;
 import org.jdna.bmt.web.client.ui.util.UpdatablePanel;
-import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.StringUtils;
 
 import com.google.gwt.core.client.GWT;
@@ -36,7 +36,7 @@ public class VideoSourcesEditorPanel extends Composite implements UpdatablePanel
     public void onLoad() {
         preferencesService.getVideoSources(new AsyncCallback<List<VideoSource>>() {
             public void onFailure(Throwable caught) {
-                Log.error("Failed to load video sources", caught);
+                Application.fireErrorEvent("Failed to load video sources", caught);
             }
 
             public void onSuccess(List<VideoSource> result) {

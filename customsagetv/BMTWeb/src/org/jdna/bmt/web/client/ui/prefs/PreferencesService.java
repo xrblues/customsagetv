@@ -1,6 +1,7 @@
 package org.jdna.bmt.web.client.ui.prefs;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -15,4 +16,11 @@ public interface PreferencesService extends RemoteService {
     public String saveLog4jPreferences(Log4jPrefs prefs);
     public List<VideoSource> getVideoSources();
     public List<VideoSource> saveVideoSources(List<VideoSource> sources);
+    public List<PrefItem> getSageProperties();
+    public String getSagePropertiesAsString();
+    public ArrayList<String> getSagePropertiesAsList();
+    public RegexValidation validateRegex(RegexValidation val);
+    public String[] getLog4jLoggers();
+    public ArrayList<PrefItem> getLog4jProperties(String log);
+    public void saveLog4jProperties(String log, ArrayList<PrefItem> items);
 }

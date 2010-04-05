@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jdna.bmt.web.client.Application;
+import org.jdna.bmt.web.client.animation.FadeOut;
+import org.jdna.bmt.web.client.event.NotificationEvent;
+import org.jdna.bmt.web.client.event.NotificationEventHandler;
+import org.jdna.bmt.web.client.event.NotificationEvent.MessageType;
 import org.jdna.bmt.web.client.ui.browser.BrowsePanel;
 import org.jdna.bmt.web.client.ui.browser.MetadataService;
 import org.jdna.bmt.web.client.ui.browser.MetadataServiceAsync;
@@ -31,6 +35,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
@@ -38,12 +43,14 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class AppPanel extends Composite implements ResizeHandler, HasResizeHandlers, ValueChangeHandler<String>, ErrorEventHandler {
+public class AppPanel extends Composite implements ResizeHandler, HasResizeHandlers, ValueChangeHandler<String>, NotificationEventHandler {
     public static AppPanel INSTANCE = null;
     private final MetadataServiceAsync browserService = GWT.create(MetadataService.class);
     
     private DockPanel dp = new DockPanel();
     private Widget curPanel = null;
+    
+    private Label message = new Label();
     
     public AppPanel() {
         INSTANCE = this;
@@ -131,6 +138,15 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         dp.add(header, DockPanel.NORTH);
         dp.setCellHorizontalAlignment(header, HasHorizontalAlignment.ALIGN_RIGHT);
         
+        HorizontalPanel messages = new HorizontalPanel();
+        messages.addStyleName("Header-Messages");
+        messages.setWidth("100%");
+        messages.add(message);
+        messages.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        messages.setCellHorizontalAlignment(message, HasHorizontalAlignment.ALIGN_CENTER);
+        messages.setCellVerticalAlignment(message, HasVerticalAlignment.ALIGN_MIDDLE);
+        dp.add(messages, DockPanel.NORTH);
+        
         initWidget(dp);
         
         History.addValueChangeHandler(this);
@@ -143,7 +159,7 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
             Log.debug("Using init history: " + initToken);
         }
 
-        Application.events().addHandler(ErrorEvent.TYPE, this);
+        Application.events().addHandler(NotificationEvent.TYPE, this);
         
         Window.addResizeHandler(this);
         Window.enableScrolling(false);
@@ -265,7 +281,19 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         return params;
     }
 
-    public void onError(ErrorEvent event) {
-        Log.error(event.getMessage(), event.getException());
+    public void onNotification(org.jdna.bmt.web.client.event.NotificationEvent event) {
+        if (event.getMessageType()==MessageType.ERROR) {
+            Log.error(event.getMessage(), event.getException());
+        } else {
+            Log.debug(event.getMessage());
+        }
+        message.setText(event.getMessage());
+        message.getElement().getStyle().setOpacity(1.0);
+        message.removeStyleName(MessageType.ERROR.name());
+        message.removeStyleName(MessageType.WARN.name());
+        message.removeStyleName(MessageType.INFO.name());
+        message.addStyleName(event.getMessageType().name());
+        FadeOut out = new FadeOut(message);
+        out.run(1000, System.currentTimeMillis()+3000);
     }
 }

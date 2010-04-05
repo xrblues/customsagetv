@@ -84,4 +84,8 @@ public class SimpleStatus implements HasStatus {
             }
         });
     }
+
+    public Widget getHeaderActionsWidget() {
+        return null;
+    }
 }

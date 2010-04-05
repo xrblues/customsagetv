@@ -1,0 +1,22 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		
+	</ui:style>
+	<g:VerticalPanel width="100%">
+		<g:Label>Regular Expression</g:Label>
+		<g:HorizontalPanel>
+			<g:cell width="100%">
+				<g:TextBox width="100%" ui:field="regex"></g:TextBox>
+			</g:cell>
+			<g:Button ui:field="test">Test</g:Button>
+		</g:HorizontalPanel>
+
+		<g:Label>Sample Data</g:Label>
+		<g:TextArea width="100%" ui:field="sampleData" visibleLines="5"></g:TextArea>
+
+		<g:Label>Results</g:Label>
+		<g:TextArea width="100%" ui:field="results" visibleLines="5"></g:TextArea>
+	</g:VerticalPanel>
+</ui:UiBinder> 

@@ -9,4 +9,8 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface StatusServices extends RemoteService {
     public List<StatusValue> getStatusInfo(String base);
     public List<SystemMessage> getSystemMessages();
+    public void clearSystemMessages();
+    public void deleteSystemMessage(int id);
+    public String getBMTVersion();
+    
 }

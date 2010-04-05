@@ -34,7 +34,7 @@ public class BackupPanel extends Composite {
                             public void onSuccess(Void result) {
                                 pp.hide();
                                 refresh();
-                                Dialogs.showMessage("Backup Complete");
+                                Application.fireNotification("Backup Complete");
                             }
                             
                             public void onFailure(Throwable caught) {

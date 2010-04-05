@@ -1,12 +1,15 @@
 package org.jdna.bmt.web.client.ui.util;
 
+import java.util.Iterator;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class HorizontalButtonBar extends Composite {
+public class HorizontalButtonBar extends Composite implements HasWidgets {
     public static enum Layout {Right, Left}
     
     private HorizontalPanel panel = new HorizontalPanel();
@@ -52,5 +55,13 @@ public class HorizontalButtonBar extends Composite {
         panel.removeStyleName("HorizontalButtonBar");
         panel.setSpacing(1);
         buttons.setSpacing(3);
+    }
+
+    public Iterator<Widget> iterator() {
+        return buttons.iterator();
+    }
+
+    public boolean remove(Widget w) {
+        return buttons.remove(w);
     }
 }

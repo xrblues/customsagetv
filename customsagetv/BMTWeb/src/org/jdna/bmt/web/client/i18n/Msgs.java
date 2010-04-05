@@ -89,4 +89,7 @@ public interface Msgs extends Messages {
 
     @DefaultMessage("Unable to get backup list")
     String unableToGetBackupList();
+
+    @DefaultMessage("No media items for folder {0}")
+    String nothingToShowFor(String title);
 }

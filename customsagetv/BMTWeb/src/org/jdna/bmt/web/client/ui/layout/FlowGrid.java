@@ -15,9 +15,17 @@ public class FlowGrid extends Composite implements HasWidgets {
     private int cols = 0;
     private FlexTable grid = new FlexTable();
     
+    public FlowGrid() {
+        initWidget(grid);
+    }
+
     public FlowGrid(int cols) {
         this.cols=cols;
         initWidget(grid);
+    }
+    
+    public void setCols(int cols) {
+        this.cols = cols;
     }
 
     public void add(String text) {
@@ -28,7 +36,6 @@ public class FlowGrid extends Composite implements HasWidgets {
         int col = widgetCount % (cols);
         int row = (int)((float)widgetCount / (float)cols);
         
-        if (col==0) System.out.println("");
         grid.setWidget(row, col, w);
         grid.getCellFormatter().setAlignment(row, col, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_TOP);
         widgetCount++;

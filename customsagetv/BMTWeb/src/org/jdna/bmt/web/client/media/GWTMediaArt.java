@@ -13,9 +13,11 @@ public class GWTMediaArt implements IMediaArt, Serializable {
     private String id;
     private String label;
     private String downloadUrl;
+    private String localFile;
     private boolean exists = true;
     private boolean local = true;
     private boolean delete = false;
+    private String displayUrl;
 
     public GWTMediaArt() {
     }
@@ -97,5 +99,21 @@ public class GWTMediaArt implements IMediaArt, Serializable {
     
     public void setDeleted(boolean deleted) {
         this.delete=deleted;
+    }
+
+    public void setLocalFile(String localFile) {
+        this.localFile = localFile;
+    }
+
+    public String getLocalFile() {
+        return localFile;
+    }
+
+    public void setDisplayUrl(String displayUrl) {
+        this.displayUrl = displayUrl;
+    }
+
+    public String getDisplayUrl() {
+        return displayUrl;
     }
 }

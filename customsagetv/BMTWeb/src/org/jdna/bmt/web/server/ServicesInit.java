@@ -8,6 +8,7 @@ import org.apache.log4j.BasicConfigurator;
 
 import sagex.SageAPI;
 import sagex.phoenix.Phoenix;
+import bmt.BMT;
 
 public class ServicesInit {
     private static boolean initialized = false;
@@ -38,7 +39,9 @@ public class ServicesInit {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
+            
+            // initialize bmt...
+            BMT.init();
         }
     }
 }

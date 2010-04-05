@@ -2,12 +2,11 @@ package org.jdna.bmt.web.client.ui.prefs;
 
 
 import org.jdna.bmt.web.client.Application;
+import org.jdna.bmt.web.client.animation.Effects;
 import org.jdna.bmt.web.client.i18n.Labels;
 import org.jdna.bmt.web.client.i18n.Msgs;
-import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.SimpleScrollPanel;
 import org.jdna.bmt.web.client.ui.util.UpdatablePanel;
-import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.StringUtils;
 
 import com.google.gwt.core.client.GWT;
@@ -35,8 +34,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PreferencesPanel extends Composite {
+    private static final int FADE_VALUE = 500;
     protected final Msgs msgs = Application.messages();
     protected final Labels labels = Application.labels();
+    
     
     private static class EditorPanel extends Composite {
         DockPanel main = new DockPanel();
@@ -77,6 +78,7 @@ public class PreferencesPanel extends Composite {
             buttonPanel.setVisible(false);
             
             if (widget!=null) {
+                widget.getElement().getStyle().setOpacity(0.0);
                 editor=widget;
                 main.add(editor, DockPanel.CENTER);
                 if (widget instanceof UpdatablePanel) {
@@ -88,13 +90,15 @@ public class PreferencesPanel extends Composite {
                     this.updatable = null;
                     header.setText("");
                 }
+                
+                Effects.fadeIn(widget, FADE_VALUE);
             }
         }
 
         protected void savePreferences() {
             updatable.save(new AsyncCallback<UpdatablePanel>() {
                 public void onFailure(Throwable caught) {
-                    Log.error(Application.messages().failedToSavePreferences(), caught);
+                    Application.fireErrorEvent(Application.messages().failedToSavePreferences(), caught);
                 }
 
                 public void onSuccess(UpdatablePanel result) {
@@ -104,7 +108,7 @@ public class PreferencesPanel extends Composite {
         }
         
         public void setStatus(String msg) {
-            Dialogs.showMessage(msg);
+            Application.fireNotification(msg);
         }
     }
 
@@ -120,7 +124,7 @@ public class PreferencesPanel extends Composite {
     public PreferencesPanel() {
         main.setWidth("100%");
         main.setSpacing(10);
-        
+        tree.setAnimationEnabled(true);
         tree.addOpenHandler(new OpenHandler<TreeItem>() {
             public void onOpen(OpenEvent<TreeItem> event) {
                 tree.setSelectedItem(event.getTarget(), false);
@@ -220,7 +224,7 @@ public class PreferencesPanel extends Composite {
 
                 public void onSuccess(PrefItem result) {
                     if (result==null || result.getChildren()==null || result.getChildren().length==0) {
-                        Log.error(Application.messages().nothingFoundFor(search.getValue()));
+                        Application.fireErrorEvent(Application.messages().nothingFoundFor(search.getValue()));
                     } else {
                         updateSearch(result);
                     }
@@ -270,7 +274,7 @@ public class PreferencesPanel extends Composite {
         if (!StringUtils.isEmpty(prefGroup.getEditor())) {
             editPanel.setEditorWidget(EditorFactory.createEditor(prefGroup.getEditor()));
         } else {
-            if (prefGroup.getChildren()==null) {
+            if (prefGroup.getChildren()==null || prefGroup.getChildren().length==0) {
                 // fetch items
                 ti.setState(true, true);
                 editPanel.setEditorWidget(null);

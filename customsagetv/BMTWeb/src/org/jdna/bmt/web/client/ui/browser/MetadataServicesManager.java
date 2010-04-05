@@ -1,13 +1,17 @@
 package org.jdna.bmt.web.client.ui.browser;
 
+import java.util.ArrayList;
+
 import org.jdna.bmt.web.client.Application;
+import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
-import org.jdna.bmt.web.client.ui.app.ErrorEvent;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
+
+import sagex.phoenix.fanart.MediaArtifactType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
@@ -16,7 +20,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 public class MetadataServicesManager {
     private static final MetadataServicesManager instance = new MetadataServicesManager();
-    private MetadataServiceAsync service = GWT.create(MetadataService.class);
+    private static final MetadataServiceAsync service = GWT.create(MetadataService.class);
     
     public MetadataServicesManager() {
     }
@@ -28,8 +32,7 @@ public class MetadataServicesManager {
     public void scan(final GWTMediaFolder folder, final PersistenceOptionsUI options) {
         service.scan(folder, options, new AsyncCallback<String>() {
             public void onFailure(Throwable caught) {
-                System.out.println("**** ERROR **** " + caught.getMessage());
-                Application.events().fireEvent(new ErrorEvent(Application.messages().failedToScan(folder.getTitle()), caught));
+                Application.fireErrorEvent(Application.messages().failedToScan(folder.getTitle()), caught);
             }
 
             public void onSuccess(String progressId) {
@@ -199,5 +202,17 @@ public class MetadataServicesManager {
                 }
             }
         });
+    }
+    
+    public void loadFanart(GWTMediaFile file, MediaArtifactType type, AsyncCallback<ArrayList<GWTMediaArt>> callback) {
+        service.getFanart(file, type, callback);
+    }
+
+    public void downloadFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt ma, AsyncCallback<GWTMediaArt> callback) {
+        service.downloadFanart(file, type, ma, callback);
+    }
+    
+    public static MetadataServiceAsync service() {
+        return service;
     }
 }
