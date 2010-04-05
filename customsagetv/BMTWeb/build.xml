@@ -107,6 +107,20 @@
 	<target name="dist" depends="zip, dist-plugin">
 	</target>
 
+	<!-- upload to sagetv plugin area -->
+	<target name="publish-plugin">
+		<!-- download commons-net so that we can use the ftp plugin -->
+		<mkdir dir="${user.home}/.ant/lib"/>
+		<get src="http://repo1.maven.org/maven2/commons-net/commons-net/1.4.1/commons-net-1.4.1.jar" dest="${user.home}/.ant/lib/commons-net-1.4.1.jar" usetimestamp="true" />
+		
+		<ftp remotedir="plugins/stuckless/bmtweb" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" action="mkdir"/>		
+		<ftp remotedir="plugins/stuckless/bmtweb" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" binary="true" action="send">
+			<fileset file="${dist.dir}/packages/bmt-war.zip"/>
+			<fileset file="${dist.dir}/packages/bmt-context.zip"/>
+			<fileset file="${dist.dir}/packages/plugin.xml"/>
+		</ftp>
+	</target>
+	
 	<target name="dist-publish" depends="gcode">
 		<!-- Publish to Sage7 Plugin area -->
 		<!-- Publish to google code -->
