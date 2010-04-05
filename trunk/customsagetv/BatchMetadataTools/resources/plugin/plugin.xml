@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SageTVPlugin>
+  <Name>Metadata Tools for SageTV</Name>
+  <Identifier>bmt</Identifier>
+  <Description>Automatically fetches metadata/fanart for Movies and TV shows.  This is the core metadata updater, it does not include the Web Interface.  You can install the Web Interface separately if you want.</Description>
+  <Screenshot>http://forums.sagetv.com/forums/attachment.php?attachmentid=9772&stc=1&d=1266629522</Screenshot>
+  <DemoVideo></DemoVideo>
+  <Author>stuckless</Author>
+  <ModificationDate>@@last-modified@@</ModificationDate>
+  <Version>@@version@@</Version>
+  <Desktop>false</Desktop>
+  <ResourcePath>bmt</ResourcePath>
+  <Webpage>http://forums.sagetv.com/forums/downloads.php?do=file&id=239</Webpage>
+
+  <PluginType>Standard</PluginType>
+
+  <Package>
+    <PackageType>JAR</PackageType>
+    <Zipped>true</Zipped>
+    <Location>http://download.sage.tv/plugins/stuckless/bmt/bmt-jar.zip</Location>
+    <MD5>@@jar-checksum@@</MD5>
+  </Package>
+  
+  <Package>
+    <PackageType>System</PackageType>
+    <Zipped>true</Zipped>
+    <Location>http://download.sage.tv/plugins/stuckless/bmt/bmt-system.zip</Location>
+    <MD5>@@system-checksum@@</MD5>
+  </Package>
+  
+  <ImplementationClass>bmt.BMTPluginActivator</ImplementationClass>
+</SageTVPlugin>

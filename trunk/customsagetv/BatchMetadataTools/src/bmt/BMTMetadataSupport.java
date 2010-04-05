@@ -46,13 +46,14 @@ import sagex.phoenix.vfs.impl.FileResourceFactory;
  * 
  */
 public class BMTMetadataSupport implements IMetadataSupport {
-    private static final Logger log = Logger.getLogger(BMTMetadataSupport.class);
+    private final Logger log = Logger.getLogger(BMTMetadataSupport.class);
     private OnDemandConfiguration ondemandConfig = GroupProxy.get(OnDemandConfiguration.class);
     private MetadataConfiguration metadataConfig = GroupProxy.get(MetadataConfiguration.class); 
     
     private ProgressTrackerManager trackerManager = new ProgressTrackerManager();
     
     public BMTMetadataSupport() {
+        BMT.init();
     }
 
     public boolean updateMetadataForResult(Object media, IMetadataSearchResult result, Map<String, String> perOptions) {

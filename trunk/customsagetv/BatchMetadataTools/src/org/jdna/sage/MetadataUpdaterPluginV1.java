@@ -18,9 +18,8 @@ import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.event.message.SystemMessageEvent;
 import sagex.phoenix.event.message.SystemMessageEvent.Severity;
 import sagex.phoenix.fanart.FanartUtil;
-import sagex.phoenix.plugin.Plugin.State;
 import sagex.phoenix.util.PropertiesUtils;
-import bmt.BMTActivator;
+import bmt.BMT;
 
 /**
  * A MetadataUpdaterPlugin that will fetch metadata for new movies.
@@ -59,14 +58,8 @@ public class MetadataUpdaterPluginV1 implements MediaFileMetadataParser {
         try {
             if (!init) {
                 init=true;
-                log.debug("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
-                log.info("    BMT Version:  " + Version.VERSION);
-                log.debug("Phoenix Version:  " + phoenix.api.GetVersion());
-                log.debug("  Sagex Version:  " + sagex.api.Version.GetVersion());
-                log.debug("   Java Version:  " + System.getProperty("java.version"));
-                log.debug(" Java Classpath:  " + System.getProperty("java.class.path"));
-                log.debug("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
-                
+                BMT.init();
+
                 log.info("Registering the ScanMediaFileEventHandler");
                 final SageScanMediaFileEvenHandler handler = new SageScanMediaFileEvenHandler();
                 Phoenix.getInstance().getEventBus().addHandler(ScanMediaFileEvent.TYPE, handler);
@@ -75,10 +68,6 @@ public class MetadataUpdaterPluginV1 implements MediaFileMetadataParser {
                        handler.shutDown(); 
                    }
                 });
-                
-                log.info("Registering URL Cache Monitor");
-                BMTActivator act = new BMTActivator();
-                act.pluginChanged(null, State.STARTING);
             }
         } catch (Throwable e) {
             log.warn("Failed while initializing the BMT Plugin!", e);
