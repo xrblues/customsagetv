@@ -11,10 +11,14 @@ public class StubSageAPI implements ISageAPIProvider {
     private Map<String, StubAPIProxy> proxies = new HashMap<String, StubAPIProxy>();
     private MediaFileAPIProxy mediaFileProxy = null;
     private PropertiesStubAPIProxy props = null;
+    private WidgetAPIProxy widgetAPI = null;
     
     public StubSageAPI() {
         defaultProxies();
         defaultMediaFileAPI();
+        
+        widgetAPI = new WidgetAPIProxy();
+        widgetAPI.attach(this);
     }
     
     private void defaultProxies() {
@@ -85,5 +89,9 @@ public class StubSageAPI implements ISageAPIProvider {
 
     public boolean isDebugEnabled() {
         return debugCalls;
+    }
+    
+    public WidgetAPIProxy getWidgetAPIProxy() {
+        return widgetAPI;
     }
 }

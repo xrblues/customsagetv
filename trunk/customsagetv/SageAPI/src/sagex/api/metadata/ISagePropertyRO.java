@@ -32,4 +32,7 @@ public interface ISagePropertyRO extends ISageMetadata {
 
     @SageProperty("Duration")
     public long getDuration();
+
+    @SageProperty("Picture.Resolution")
+    public String getPictureResolution();
 }

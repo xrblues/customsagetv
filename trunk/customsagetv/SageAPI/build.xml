@@ -2,10 +2,27 @@
 <project basedir="." default="package" name="SageAPI">
 	<property environment="env" />
 
-	<property name="target" value="target" />
+	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
+	<property file="build.properties" />
+	<!-- sage.lib.dir should be defined in the build.properties -->
+	<!-- <property name="sage.lib.dir"/> -->
+	<!-- bmt.lib.dir should be defined in the build.properties -->
+	<!-- <property name="bmt.lib.dir"/> -->
+	<!-- bmt.core.lib should be defined in the build.properties -->
+	<!-- <property name="bmt.core.lib"/> -->
+	<!-- Configure path to GWT SDK  in the build .properties -->
+	<!-- <property name="gwt.sdk" location="" /> -->
+
+	<property name="src.dir" location="src" />
+	<property name="target" location="target" />
+	<property name="build.dir" location="${target}/build" />
+	<property name="dist.dir" location="${target}/dist" />
+
 	<property name="name" value="sagex.api" />
-	<property name="version" value="6.6.9-beta" />
+	<property name="version" value="7.0.6.0" />
 	<property name="jarname" value="${name}.jar" />
+	
+	<property name="createAPI" value="true"/>
 
 	<path id="SageAPI.classpath">
 		<pathelement location="bin" />
@@ -23,25 +40,25 @@
 	</path>
 
 	<target name="package" depends="init,build,makeJar,javadoc">
-		<mkdir dir="${target}/sage/jetty/contexts/" />
-		<mkdir dir="${target}/sage/sagex/services/" />
-		<copy file="jetty/contexts/sagex.xml" todir="${target}/sage/jetty/contexts/" />
-		<copy file="sagex/services/sagex.js" todir="${target}/sage/sagex/services/" />
+		<mkdir dir="${build.dir}/sage/jetty/contexts/" />
+		<mkdir dir="${build.dir}/sage/sagex/services/" />
+		<copy file="jetty/contexts/sagex.xml" todir="${build.dir}/sage/jetty/contexts/" />
+		<copy file="sagex/services/sagex.js" todir="${build.dir}/sage/sagex/services/" />
 		<zip file="${target}/${name}-${version}.zip">
 			<fileset dir="${target}/sage" includes="**/**" />
 		</zip>
 	</target>
 
 	<target name="build" depends="cleanGeneratedAPI,buildVersion,generateSageAPI">
+		<mkdir dir="target/classes" />
 		<copy todir="target/classes">
 			<fileset dir="src" excludes="**/*.java" />
 		</copy>
-		<mkdir dir="target/classes" />
 		<javac debug="true" classpathref="AppClasspath" source="1.5" target="1.5" srcdir="src" destdir="target/classes">
 		</javac>
 	</target>
 
-	<target name="buildVersion">
+	<target name="buildVersion" if="createAPI">
 		<mkdir dir="src/sagex/api/" />
 		<echo file="src/sagex/api/Version.java">
 			package sagex.api;
@@ -56,8 +73,8 @@
 	</target>
 
 	<target name="makeJar">
-		<mkdir dir="${target}/sage/JARs" />
-		<jar destfile="${target}/sage/JARs/${jarname}">
+		<mkdir dir="${build.dir}/sage/JARs" />
+		<jar destfile="${build.dir}/sage/JARs/${jarname}">
 			<fileset dir="target/classes" includes="sagex/**" />
 			<fileset dir="src" includes="sagex-api.log4j.properties"/>
 			<manifest>
@@ -69,29 +86,32 @@
 				<attribute name="Implementation-Version" value="${version}" />
 				<attribute name="Implementation-Vendor" value="Sean Stuckless" />
 			</manifest>
-
 		</jar>
+		<copy file="${build.dir}/sage/JARs/${jarname}" todir="target" failonerror="false" />
+		<copy file="${build.dir}/sage/JARs/${jarname}" tofile="${target}/sagex-api-${version}.jar" failonerror="false" />
 
 		<!-- update the MovieMetadata project, if it exists -->
-		<copy file="${target}/sage/JARs/${jarname}" todir="target" failonerror="false" />
-		<copy file="${target}/sage/JARs/${jarname}" todir="../MovieMetadataUpdater/lib/" failonerror="false" />
-		<copy file="${target}/sage/JARs/${jarname}" todir="../Phoenix/lib/" failonerror="false" />
+		<copy file="${build.dir}/sage/JARs/${jarname}" todir="../MovieMetadataUpdater/lib/" failonerror="false" />
+		<copy file="${build.dir}/sage/JARs/${jarname}" todir="../Phoenix/lib/" failonerror="false" />
 	</target>
 
-	<target name="init">
+	<target name="init" depends="clean">
 		<!-- <delete dir="cache" failonerror="false"/> -->
-		<delete dir="target" failonerror="false" />
-		<mkdir dir="target" />
-		<mkdir dir="target/sage" />
+		<mkdir dir="${target}" />
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${build.dir}/sage"/>
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${dist.dir}/packages"/>
 		<copy includeemptydirs="false" todir="bin">
 			<fileset dir="src" excludes="**/*.launch, **/*.java" />
 		</copy>
 	</target>
-	<target name="clean">
+	
+	<target name="clean" if="createAPI">
 		<delete dir="target" />
 	</target>
 
-	<target name="javadoc">
+	<target name="javadoc" if="createAPI">
 		<mkdir dir="target/sage/docs/${name}/api" />
 		<javadoc author="true" destdir="target/sage/docs/${name}/api" classpathref="AppClasspath">
 			<fileset dir="src" excludes="**/*.properties,**/*.json" />
@@ -102,14 +122,64 @@
 		</javadoc>
 	</target>
 
-	<target name="cleanGeneratedAPI">
-		<!-- Causing too many issues...
-        <delete dir="src/sagex/api/" includes="*.java">
-    	</delete>
-    	-->
+	<target name="cleanGeneratedAPI" if="createAPI">
 	</target>
 
-	<target name="generateSageAPI" depends="init">
+	<target name="generateSageAPI" if="createAPI" depends="init">
 		<java classname="org.jdna.sage.api.generator.Main" classpathref="SageAPI.classpath" fork="true" />
 	</target>
+	
+	<target name="package-system">
+		<delete dir="${dist.dir}/packages"/>
+		<mkdir dir="${dist.dir}/packages"/>
+		<zip destfile="${dist.dir}/packages/sagex-api-services.zip">
+			<zipfileset file="sagex/services/sagex.js" prefix="sagex/services" />
+			<zipfileset file="jetty/contexts/sagex.xml" prefix="jetty/contexts" />
+		</zip>
+	</target>
+	
+	<target name="package-jar">
+		<zip destfile="${dist.dir}/packages/sagex-api-jar.zip">
+			<zipfileset file="${target}/sagex-api-${version}.jar" prefix="" />
+		</zip>
+	</target>
+	
+	<!-- Create the plugin's package for SageTV 7.0 and later -->
+	<target name="dist-plugin" depends="package, package-system, package-jar">
+		<copy todir="${dist.dir}/packages" file="resources/plugin/plugin.xml"/>
+		<copy todir="${dist.dir}/packages" file="resources/plugin/plugin-services.xml"/>
+
+		<checksum file="${dist.dir}/packages/sagex-api-services.zip" property="md5.system" />
+		<checksum file="${dist.dir}/packages/sagex-api-jar.zip" property="md5.jar" />
+
+		<tstamp>
+			<format property="last-modified" pattern="yyyy.MM.dd"/>
+		</tstamp>
+		
+		<replace file="${dist.dir}/packages/plugin.xml" summary="yes">
+			<replacefilter token="@@last-modified@@" value="${last-modified}" />
+			<replacefilter token="@@version@@" value="${version}" />
+			<replacefilter token="@@system-checksum@@" value="${md5.system}" />
+			<replacefilter token="@@jar-checksum@@" value="${md5.jar}" />
+		</replace>
+		
+		<replace file="${dist.dir}/packages/plugin-services.xml" summary="yes">
+			<replacefilter token="@@last-modified@@" value="${last-modified}" />
+			<replacefilter token="@@version@@" value="${version}" />
+			<replacefilter token="@@system-checksum@@" value="${md5.system}" />
+			<replacefilter token="@@jar-checksum@@" value="${md5.jar}" />
+		</replace>
+	</target>
+	
+	<!-- upload to sagetv plugin area -->
+	<target name="publish-plugin">
+		<!-- download commons-net so that we can use the ftp plugin -->
+		<mkdir dir="${user.home}/.ant/lib"/>
+		<get src="http://repo1.maven.org/maven2/commons-net/commons-net/1.4.1/commons-net-1.4.1.jar" dest="${user.home}/.ant/lib/commons-net-1.4.1.jar" usetimestamp="true" />
+		
+		<ftp remotedir="plugins/stuckless/sagex-api" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" action="mkdir"/>		
+		<ftp remotedir="plugins/stuckless/sagex-api" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" binary="true" action="send">
+			<fileset dir="${dist.dir}/packages/"/>
+		</ftp>
+	</target>	
 </project>

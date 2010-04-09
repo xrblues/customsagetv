@@ -12,6 +12,7 @@ import sage.SageTVPlugin;
 import sage.SageTVPluginRegistry;
 import sagex.SageAPI;
 import sagex.plugin.AbstractPlugin;
+import sagex.plugin.ConfigValueChangeHandler;
 import sagex.plugin.PluginProperty;
 import sagex.plugin.SageEvent;
 import sagex.stub.StubSageAPI;
@@ -19,6 +20,7 @@ import sagex.stub.StubSageAPI;
 public class TestSagexPlugin {
     private class MyPlugin extends AbstractPlugin {
         public int onSomethingHandled = 0;
+        public int enabledChangedCount = 0;
 
         public MyPlugin(SageTVPluginRegistry registry) {
             super(registry);
@@ -51,6 +53,11 @@ public class TestSagexPlugin {
             System.out.println("On Something Called with map");
             onSomethingHandled++;
         }
+        
+        @ConfigValueChangeHandler("test/sagex/enabled")
+        public void handleConfigChanged(String setting) {
+            enabledChangedCount++;
+        }
     }
     
     @BeforeClass
@@ -64,8 +71,18 @@ public class TestSagexPlugin {
         p.setConfigValue("test/sagex/port", "8000");
         assertEquals("8000", p.getConfigValue("test/sagex/port"));
 
+        assertEquals(0, p.enabledChangedCount);
+        p.setConfigValue("test/sagex/enabled", "true");
+        assertEquals("propety changed called when value didn't change", 0, p.enabledChangedCount);
+
         p.setConfigValue("test/sagex/enabled", "false");
         assertEquals("false", p.getConfigValue("test/sagex/enabled"));
+        assertEquals(1, p.enabledChangedCount);
+
+        // do it again...
+        p.setConfigValue("test/sagex/enabled", "false");
+        assertEquals("false", p.getConfigValue("test/sagex/enabled"));
+        assertEquals("Property Changed was called when value didn't change", 1, p.enabledChangedCount);
 
         assertEquals("ONE;TWO", p.getConfigValue("test/sagex/choice"));
         p.setConfigValues("test/sagex/choice", new String[] { "ONE", "THREE" });
