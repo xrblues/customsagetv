@@ -14,6 +14,9 @@ public class RMISageAPI implements ISageAPIProvider {
     protected RMISageAPI() {
     }
 
+    public RMISageAPI(String host) {
+        this(host, 1098);
+    }
     public RMISageAPI(String host, int port) {
         this.host = host;
         this.port = port;
@@ -30,7 +33,7 @@ public class RMISageAPI implements ISageAPIProvider {
         RemoteRequest req = new RemoteRequest(context, name, args);
         Object replyData = null;
         Registry registry = LocateRegistry.getRegistry(host, port);
-        SageRemoteCommand server = (SageRemoteCommand) registry.lookup(SageRemoteCommandServer.SERVER_BINDING);
+        SageRemoteCommand server = (SageRemoteCommand) registry.lookup(SageRMIServer.SERVER_BINDING);
         RemoteResponse resp = server.executeCommand(req);
         if (resp.hasError()) {
             System.out.println("Got an Error from the remote side: " + resp.getErrorCode() + "; " + resp.getErrorMessage());

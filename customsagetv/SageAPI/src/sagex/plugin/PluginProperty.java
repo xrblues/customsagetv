@@ -7,8 +7,18 @@ public class PluginProperty {
     private String help;
     private String label;
     private String setting;
+    private String optionSep;
+    private String visibleOnSetting;
+
+    public PluginProperty(int type, String setting, String defaultValue, String label, String help) {
+        this(type, setting, defaultValue, label, help, null, null);
+    }
 
     public PluginProperty(int type, String setting, String defaultValue, String label, String help, String[] options) {
+        this(type, setting, defaultValue, label, help, options, ";");
+    }
+    
+    public PluginProperty(int type, String setting, String defaultValue, String label, String help, String[] options, String optionSep) {
         super();
         this.type = type;
         this.setting = setting;
@@ -16,6 +26,7 @@ public class PluginProperty {
         this.label = label;
         this.help = help;
         this.options = options;
+        this.optionSep = optionSep;
     }
 
     public String getSetting() {
@@ -41,4 +52,21 @@ public class PluginProperty {
     public String[] getOptions() {
         return options;
     }
+
+    public void setOptionSep(String optionSep) {
+        this.optionSep = optionSep;
+    }
+
+    public String getOptionSep() {
+        return optionSep;
+    }
+
+    public void setVisibleOnSetting(String visibleOnSetting) {
+        this.visibleOnSetting = visibleOnSetting;
+    }
+
+    public String getVisibleOnSetting() {
+        return visibleOnSetting;
+    }
+
 }

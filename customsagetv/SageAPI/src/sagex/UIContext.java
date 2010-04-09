@@ -59,9 +59,16 @@ public final class UIContext {
                 ui = new UIContext(ctx);
                 setCurrentContext(ui);
             } else {
+                String names[] = Global.GetUIContextNames();
+                if (names != null && names.length==1) {
+                    log.info("Auto Selecting the only context in use: " + names[0]);
+                    ui = new UIContext(names[0]);
+                    setCurrentContext(ui);
+                }
+            }
+            
+            if (ui==null) {
                 log.warn("No Context was found!");
-                // no valid context
-                return null;
             }
         }
         

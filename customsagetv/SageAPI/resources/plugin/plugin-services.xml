@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SageTVPlugin>
+  <Name>SageTV Remote API Services for HTTP and RMI</Name>
+  <Identifier>sagex-api-services</Identifier>
+  <Description>Rest and RMI services for SageTV (note Rest services require Jetty Plugin)</Description>
+  <Author>stuckless</Author>
+  <CreationDate>2008.10.05</CreationDate>
+  <ModificationDate>@@last-modified@@</ModificationDate>
+  <Version>@@version@@</Version>
+  <Desktop>false</Desktop>
+  <ResourcePath>sagex-api</ResourcePath>
+  <Webpage><![CDATA[http://forums.sagetv.com/forums/showthread.php?t=36044]]></Webpage>
+
+  <Dependency>
+    <Plugin>Jetty</Plugin>
+    <MinVersion>1.7</MinVersion>
+  </Dependency>
+
+  <Dependency>
+    <Plugin>sagex-api</Plugin>
+    <MinVersion>7.0.6</MinVersion>
+  </Dependency>
+
+  <PluginType>System</PluginType>
+
+  <Package>
+    <PackageType>System</PackageType>
+    <Location>http://download.sage.tv/plugins/stuckless/sagex-api/sagex-api-services.zip</Location>
+    <MD5>@@system-checksum@@</MD5>
+  </Package>
+  
+  <!-- Plugin Class is in the core sagex-api jar -->
+  <ImplementationClass>sagex.plugin.SageRemoteAPIPlugin</ImplementationClass>
+</SageTVPlugin>
