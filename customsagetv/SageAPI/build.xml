@@ -22,7 +22,8 @@
 	<property name="version" value="7.0.6.0" />
 	<property name="jarname" value="${name}.jar" />
 	
-	<property name="createAPI" value="true"/>
+	<!--<property name="createAPI" value="true"/>-->
+	<property name="createJAVADOC" value="true"/>
 
 	<path id="SageAPI.classpath">
 		<pathelement location="bin" />
@@ -50,7 +51,10 @@
 	</target>
 
 	<target name="build" depends="cleanGeneratedAPI,buildVersion,generateSageAPI">
-		<mkdir dir="target/classes" />
+		<mkdir dir="target/classes/jetty" />
+		<copy todir="target/classes/jetty">
+			<fileset dir="jetty" includes="**/*.xml"/>
+		</copy>
 		<copy todir="target/classes">
 			<fileset dir="src" excludes="**/*.java" />
 		</copy>
@@ -75,7 +79,7 @@
 	<target name="makeJar">
 		<mkdir dir="${build.dir}/sage/JARs" />
 		<jar destfile="${build.dir}/sage/JARs/${jarname}">
-			<fileset dir="target/classes" includes="sagex/**" />
+			<fileset dir="target/classes" includes="sagex/**,jetty/**" />
 			<fileset dir="src" includes="sagex-api.log4j.properties"/>
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
@@ -107,11 +111,11 @@
 		</copy>
 	</target>
 	
-	<target name="clean" if="createAPI">
+	<target name="clean">
 		<delete dir="target" />
 	</target>
 
-	<target name="javadoc" if="createAPI">
+	<target name="javadoc" if="createJAVADOC">
 		<mkdir dir="target/sage/docs/${name}/api" />
 		<javadoc author="true" destdir="target/sage/docs/${name}/api" classpathref="AppClasspath">
 			<fileset dir="src" excludes="**/*.properties,**/*.json" />
@@ -134,7 +138,6 @@
 		<mkdir dir="${dist.dir}/packages"/>
 		<zip destfile="${dist.dir}/packages/sagex-api-services.zip">
 			<zipfileset file="sagex/services/sagex.js" prefix="sagex/services" />
-			<zipfileset file="jetty/contexts/sagex.xml" prefix="jetty/contexts" />
 		</zip>
 	</target>
 	
