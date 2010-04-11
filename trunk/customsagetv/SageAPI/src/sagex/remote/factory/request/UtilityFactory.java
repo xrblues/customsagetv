@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 4/9/10 9:30 PM
+ * Generated Date/Time: 4/10/10 2:37 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/UtilityFactory.html'>UtilityFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -343,6 +343,18 @@ public class UtilityFactory {
    }
    if (command.equals("GetFileAsString")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFileAsString",parameters,java.io.File.class);
+   }
+   if (command.equals("IsLocalRestartNeeded")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsLocalRestartNeeded",parameters,null);
+   }
+   if (command.equals("IsServerRestartNeeded")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsServerRestartNeeded",parameters,null);
+   }
+   if (command.equals("Restart")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"Restart",parameters,null);
+   }
+   if (command.equals("ServerRestart")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"ServerRestart",parameters,null);
    }
    throw new RuntimeException("Invalid UtilityFactory Command: "+command);
    }

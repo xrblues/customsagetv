@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 4/9/10 9:30 PM
+ * Generated Date/Time: 4/10/10 2:37 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/WidgetAPI.html'>WidgetAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -162,6 +162,41 @@ the newly created Widget
  */
 public static Object AddWidget (UIContext _uicontext,java.lang.String WidgetType) {
   Object o = sagex.SageAPI.call(_uicontext, "AddWidget", new Object[] {WidgetType});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+Creates a new Widget of the specified type and adds it to the STV. This also allows specifying the desired symbol to use for the Widget.
+ If the symbol is already in use; then a new symbol will automatically be assigned to this Widget instead.
+
+Parameters:
+WidgetType- the type of the new Widget
+Returns:
+the newly created Widget
+Since:
+7.0
+ */
+public static Object AddWidgetWithSymbol (java.lang.String WidgetType, java.lang.String Symbol) {
+  Object o = sagex.SageAPI.call("AddWidgetWithSymbol", new Object[] {WidgetType,Symbol});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Creates a new Widget of the specified type and adds it to the STV. This also allows specifying the desired symbol to use for the Widget.
+ If the symbol is already in use; then a new symbol will automatically be assigned to this Widget instead.
+
+Parameters:
+WidgetType- the type of the new Widget
+Returns:
+the newly created Widget
+Since:
+7.0
+ */
+public static Object AddWidgetWithSymbol (UIContext _uicontext,java.lang.String WidgetType, java.lang.String Symbol) {
+  Object o = sagex.SageAPI.call(_uicontext, "AddWidgetWithSymbol", new Object[] {WidgetType,Symbol});
   if (o!=null) return (Object) o;
   return null;
 }
@@ -928,6 +963,64 @@ Since:
 public static Object GetUIWidgetContext (UIContext _uicontext) {
   Object o = sagex.SageAPI.call(_uicontext, "GetUIWidgetContext", (Object[])null);
   if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+Returns the value of the 'STVName' Attribute under the Global Theme Widget. This is used for dependencies relating to plugins.
+
+Returns:
+the value of the 'STVName' Attribute under the Global Theme Widget
+Since:
+7.0
+ */
+public static java.lang.String GetSTVName () {
+  Object o = sagex.SageAPI.call("GetSTVName", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the value of the 'STVName' Attribute under the Global Theme Widget. This is used for dependencies relating to plugins.
+
+Returns:
+the value of the 'STVName' Attribute under the Global Theme Widget
+Since:
+7.0
+ */
+public static java.lang.String GetSTVName (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetSTVName", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Returns the value of the 'STVVersion' Attribute under the Global Theme Widget. This is used for dependencies relating to plugins.
+
+Returns:
+the value of the 'STVVersion' Attribute under the Global Theme Widget
+Since:
+7.0
+ */
+public static java.lang.String GetSTVVersion () {
+  Object o = sagex.SageAPI.call("GetSTVVersion", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the value of the 'STVVersion' Attribute under the Global Theme Widget. This is used for dependencies relating to plugins.
+
+Returns:
+the value of the 'STVVersion' Attribute under the Global Theme Widget
+Since:
+7.0
+ */
+public static java.lang.String GetSTVVersion (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetSTVVersion", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
   return null;
 }
 

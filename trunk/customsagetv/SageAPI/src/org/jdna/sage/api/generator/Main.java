@@ -14,9 +14,12 @@ import org.jdna.configuration.ConfigurationManager;
 import org.jdna.configuration.PropertiesConfigurationProvider;
 import org.jdna.sage.api.generator.MethodParser.SageMethod;
 
+import sagex.util.ILog;
+import sagex.util.LogProvider;
+
 @CommandLineProcess(acceptExtraArgs = false, description = "Generates a Typed Sage API from the SageTV JavaDoc.")
 public class Main {
-	private static final Logger log = Logger.getLogger(Main.class);
+	private static final ILog log = LogProvider.getLogger(Main.class);
 
 	public static class ClassMetadata {
 		public String name;
@@ -36,6 +39,7 @@ public class Main {
 	}
 
 	public static void main(String args[]) {
+	    LogProvider.useSystemOut();
 		try {
 			// process the command line
 			CommandLine cl = new CommandLine("Generate SageTV API (" + Version.VERSION + ")", "java MetadataTool", args);
