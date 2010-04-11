@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 4/9/10 9:30 PM
+ * Generated Date/Time: 4/10/10 2:37 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/WidgetAPIFactory.html'>WidgetAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -30,6 +30,9 @@ public class WidgetAPIFactory {
    }
    if (command.equals("AddWidget")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AddWidget",parameters,java.lang.String.class);
+   }
+   if (command.equals("AddWidgetWithSymbol")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AddWidgetWithSymbol",parameters,java.lang.String.class,java.lang.String.class);
    }
    if (command.equals("RemoveWidget")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"RemoveWidget",parameters,Object.class);
@@ -111,6 +114,12 @@ public class WidgetAPIFactory {
    }
    if (command.equals("GetUIWidgetContext")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIWidgetContext",parameters,null);
+   }
+   if (command.equals("GetSTVName")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSTVName",parameters,null);
+   }
+   if (command.equals("GetSTVVersion")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSTVVersion",parameters,null);
    }
    throw new RuntimeException("Invalid WidgetAPIFactory Command: "+command);
    }

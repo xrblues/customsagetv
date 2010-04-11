@@ -25,10 +25,10 @@
 
   <Package>
     <PackageType>System</PackageType>
-    <Location>http://download.sage.tv/plugins/stuckless/sagex-api/sagex-api-services.zip</Location>
+    <Location>http://download.sage.tv/plugins/stuckless/sagex-api/sagex-api-services-@@version@@.zip</Location>
     <MD5>@@system-checksum@@</MD5>
   </Package>
 
   <!-- Plugin Class is in the core sagex-api jar -->
-  <ImplementationClass>sagex.plugin.SageRemoteAPIPlugin</ImplementationClass>
+  <ImplementationClass>sagex.plugin.impl.SagexRemoteAPIPlugin</ImplementationClass>
 </SageTVPlugin>

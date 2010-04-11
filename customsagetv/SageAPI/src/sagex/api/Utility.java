@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 4/9/10 9:30 PM
+ * Generated Date/Time: 4/10/10 2:37 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -3521,6 +3521,132 @@ public static java.lang.String GetFileAsString (UIContext _uicontext,java.io.Fil
   Object o = sagex.SageAPI.call(_uicontext, "GetFileAsString", new Object[] {FilePath});
   if (o!=null) return (java.lang.String) o;
   return null;
+}
+
+/**
+Returns true if the local instance of SageTV needs to be restarted due to a plugin install/uninstall
+
+Returns:
+true if the local instance of SageTV needs to be restarted due to a plugin install/uninstall, false otherwise
+Since:
+7.0
+ */
+public static boolean IsLocalRestartNeeded () {
+  Object o = sagex.SageAPI.call("IsLocalRestartNeeded", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the local instance of SageTV needs to be restarted due to a plugin install/uninstall
+
+Returns:
+true if the local instance of SageTV needs to be restarted due to a plugin install/uninstall, false otherwise
+Since:
+7.0
+ */
+public static boolean IsLocalRestartNeeded (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsLocalRestartNeeded", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Returns true if the server instance of SageTV needs to be restarted due to a plugin install/uninstall
+
+Returns:
+true if the server instance of SageTV needs to be restarted due to a plugin install/uninstall, false otherwise
+Since:
+7.0
+ */
+public static boolean IsServerRestartNeeded () {
+  Object o = sagex.SageAPI.call("IsServerRestartNeeded", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the server instance of SageTV needs to be restarted due to a plugin install/uninstall
+
+Returns:
+true if the server instance of SageTV needs to be restarted due to a plugin install/uninstall, false otherwise
+Since:
+7.0
+ */
+public static boolean IsServerRestartNeeded (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsServerRestartNeeded", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Restarts the local instance of SageTV. Sometimes needed after a plugin install/uninstall. If you want to restart
+ the local and server instance; then perform the restart on the server first. This is only supported on
+ Windows and Linux currently. If this is called from a SageTVClient running on the same machine as the server, this will invoke
+ a restart of the locally running server as well in order to ensure proper file upgrade synchronization.
+
+Returns:
+true if restarting is supported (Although the restart will likely complete and the method will never return), false otherwise (Mac OS X does not have restart support)
+Since:
+7.0
+ */
+public static boolean Restart () {
+  Object o = sagex.SageAPI.call("Restart", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Restarts the local instance of SageTV. Sometimes needed after a plugin install/uninstall. If you want to restart
+ the local and server instance; then perform the restart on the server first. This is only supported on
+ Windows and Linux currently. If this is called from a SageTVClient running on the same machine as the server, this will invoke
+ a restart of the locally running server as well in order to ensure proper file upgrade synchronization.
+
+Returns:
+true if restarting is supported (Although the restart will likely complete and the method will never return), false otherwise (Mac OS X does not have restart support)
+Since:
+7.0
+ */
+public static boolean Restart (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "Restart", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Restarts the server instance of SageTV. Sometimes needed after a plugin install/uninstall. If you want to restart
+ the local and server instance; then perform the restart on the server first. This is only supported on
+ Windows servers and Linux servers currently.
+
+Returns:
+true if restarting is supported (Although the restart will likely complete and the method will never return), false otherwise (Mac OS X server does not have restart support)
+Since:
+7.0
+ */
+public static boolean ServerRestart () {
+  Object o = sagex.SageAPI.call("ServerRestart", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Restarts the server instance of SageTV. Sometimes needed after a plugin install/uninstall. If you want to restart
+ the local and server instance; then perform the restart on the server first. This is only supported on
+ Windows servers and Linux servers currently.
+
+Returns:
+true if restarting is supported (Although the restart will likely complete and the method will never return), false otherwise (Mac OS X server does not have restart support)
+Since:
+7.0
+ */
+public static boolean ServerRestart (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "ServerRestart", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 }

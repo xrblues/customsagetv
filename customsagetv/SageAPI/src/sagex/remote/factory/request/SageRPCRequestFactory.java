@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 4/9/10 9:30 PM
+ * Generated Date/Time: 4/10/10 2:37 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -813,6 +813,59 @@ static {
    commands.put("DoesPlaylistHaveVideo","PlaylistAPI");
    commands.put("AddPlaylist","PlaylistAPI");
    commands.put("GetNowPlayingList","PlaylistAPI");
+   commands.put("GetSageTVPluginRegistry","PluginAPI");
+   commands.put("GetAllAvailablePlugins","PluginAPI");
+   commands.put("GetInstalledPlugins","PluginAPI");
+   commands.put("GetInstalledClientPlugins","PluginAPI");
+   commands.put("GetAllPluginVersions","PluginAPI");
+   commands.put("IsPluginInstalled","PluginAPI");
+   commands.put("IsClientPluginInstalled","PluginAPI");
+   commands.put("IsPluginInstalledSameVersion","PluginAPI");
+   commands.put("IsClientPluginInstalledSameVersion","PluginAPI");
+   commands.put("IsPluginEnabled","PluginAPI");
+   commands.put("IsPluginFailed","PluginAPI");
+   commands.put("IsPluginDesktopOnly","PluginAPI");
+   commands.put("IsPluginBeta","PluginAPI");
+   commands.put("RefreshAvailablePlugins","PluginAPI");
+   commands.put("CanPluginBeDisabled","PluginAPI");
+   commands.put("GetPluginName","PluginAPI");
+   commands.put("GetPluginIdentifier","PluginAPI");
+   commands.put("GetPluginAuthor","PluginAPI");
+   commands.put("GetPluginReleaseNotes","PluginAPI");
+   commands.put("GetPluginModificationDate","PluginAPI");
+   commands.put("GetPluginInstallDate","PluginAPI");
+   commands.put("GetPluginDescription","PluginAPI");
+   commands.put("GetPluginVersion","PluginAPI");
+   commands.put("GetPluginResourcePath","PluginAPI");
+   commands.put("GetPluginScreenshots","PluginAPI");
+   commands.put("GetPluginDemoVideos","PluginAPI");
+   commands.put("GetPluginWebsites","PluginAPI");
+   commands.put("GetPluginType","PluginAPI");
+   commands.put("GetPluginDependencies","PluginAPI");
+   commands.put("IsPluginObject","PluginAPI");
+   commands.put("DisablePlugin","PluginAPI");
+   commands.put("EnablePlugin","PluginAPI");
+   commands.put("GetPluginIncompatabilityReason","PluginAPI");
+   commands.put("GetClientPluginIncompatabilityReason","PluginAPI");
+   commands.put("IsPluginCompatible","PluginAPI");
+   commands.put("IsClientPluginCompatible","PluginAPI");
+   commands.put("InstallPlugin","PluginAPI");
+   commands.put("InstallClientPlugin","PluginAPI");
+   commands.put("UninstallPlugin","PluginAPI");
+   commands.put("GetPluginProgress","PluginAPI");
+   commands.put("GetClientPluginProgress","PluginAPI");
+   commands.put("AreClientPluginsSupported","PluginAPI");
+   commands.put("GetPluginConfigSettings","PluginAPI");
+   commands.put("GetPluginConfigValue","PluginAPI");
+   commands.put("GetPluginConfigValues","PluginAPI");
+   commands.put("GetPluginConfigType","PluginAPI");
+   commands.put("SetPluginConfigValue","PluginAPI");
+   commands.put("SetPluginConfigValues","PluginAPI");
+   commands.put("GetPluginConfigOptions","PluginAPI");
+   commands.put("GetPluginConfigHelpText","PluginAPI");
+   commands.put("GetPluginConfigLabel","PluginAPI");
+   commands.put("ResetPluginConfiguration","PluginAPI");
+   commands.put("IsPluginConfigurable","PluginAPI");
    commands.put("GetAllSeriesInfo","SeriesInfoAPI");
    commands.put("GetSeriesTitle","SeriesInfoAPI");
    commands.put("GetSeriesDescription","SeriesInfoAPI");
@@ -1016,12 +1069,17 @@ static {
    commands.put("CalculateMD5Sum","Utility");
    commands.put("GetTimeSinceLastInput","Utility");
    commands.put("GetFileAsString","Utility");
+   commands.put("IsLocalRestartNeeded","Utility");
+   commands.put("IsServerRestartNeeded","Utility");
+   commands.put("Restart","Utility");
+   commands.put("ServerRestart","Utility");
    commands.put("LoadSTVFile","WidgetAPI");
    commands.put("ImportSTVFile","WidgetAPI");
    commands.put("IsSTVModified","WidgetAPI");
    commands.put("GetAllWidgets","WidgetAPI");
    commands.put("GetWidgetsByType","WidgetAPI");
    commands.put("AddWidget","WidgetAPI");
+   commands.put("AddWidgetWithSymbol","WidgetAPI");
    commands.put("RemoveWidget","WidgetAPI");
    commands.put("AddWidgetChild","WidgetAPI");
    commands.put("InsertWidgetChild","WidgetAPI");
@@ -1049,6 +1107,8 @@ static {
    commands.put("FindWidgetBySymbol","WidgetAPI");
    commands.put("GetDefaultSTVFile","WidgetAPI");
    commands.put("GetUIWidgetContext","WidgetAPI");
+   commands.put("GetSTVName","WidgetAPI");
+   commands.put("GetSTVVersion","WidgetAPI");
 }
 
 
@@ -1098,6 +1158,9 @@ static {
       }
       if ("PlaylistAPI".equals(api)) {
          return PlaylistAPIFactory.createRequest(context, command, parameters);
+      }
+      if ("PluginAPI".equals(api)) {
+         return PluginAPIFactory.createRequest(context, command, parameters);
       }
       if ("SeriesInfoAPI".equals(api)) {
          return SeriesInfoAPIFactory.createRequest(context, command, parameters);

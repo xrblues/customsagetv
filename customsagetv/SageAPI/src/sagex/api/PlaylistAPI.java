@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 4/9/10 9:30 PM
+ * Generated Date/Time: 4/10/10 2:37 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/PlaylistAPI.html'>PlaylistAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -127,7 +127,7 @@ Parameters:
 Playlist- the Playlist object
 Index- the 0-based index into the Playlist to get the item type for
 Returns:
-the type of item at the specified index in the Playlist; one of "Airing", "Album", "Playlist" or "" ("Airing" is used for MediaFile items)
+the type of item at the specified index in the Playlist; one of "Airing", "Album", "Playlist" or "" ("Airing" is used for MediaFile items), "MediaFile" will be returned for temporary MediaFile objects that are not in the database
  */
 public static java.lang.String GetPlaylistItemTypeAt (Object Playlist, int Index) {
   Object o = sagex.SageAPI.call("GetPlaylistItemTypeAt", new Object[] {Playlist,Index});
@@ -143,7 +143,7 @@ Parameters:
 Playlist- the Playlist object
 Index- the 0-based index into the Playlist to get the item type for
 Returns:
-the type of item at the specified index in the Playlist; one of "Airing", "Album", "Playlist" or "" ("Airing" is used for MediaFile items)
+the type of item at the specified index in the Playlist; one of "Airing", "Album", "Playlist" or "" ("Airing" is used for MediaFile items), "MediaFile" will be returned for temporary MediaFile objects that are not in the database
  */
 public static java.lang.String GetPlaylistItemTypeAt (UIContext _uicontext,Object Playlist, int Index) {
   Object o = sagex.SageAPI.call(_uicontext, "GetPlaylistItemTypeAt", new Object[] {Playlist,Index});
