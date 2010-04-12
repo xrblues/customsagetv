@@ -3,7 +3,11 @@
 	<property environment="env" />
 
 	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
+	<property file="${user.home}/AntCommon/build.properties" />
+	
+	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
 	<property file="build.properties" />
+	
 	<!-- sage.lib.dir should be defined in the build.properties -->
 	<!-- <property name="sage.lib.dir"/> -->
 	<!-- bmt.lib.dir should be defined in the build.properties -->
@@ -21,7 +25,7 @@
 	<property name="name" value="sagex.api" />
 	<property name="version" value="7.0.6.2" />
 	<property name="jarname" value="${name}.jar" />
-	
+
 	<!--
 	<property name="createAPI" value="true"/>
 	<property name="createJAVADOC" value="true"/>
@@ -42,7 +46,7 @@
 		<fileset dir="libs" includes="*.jar" />
 	</path>
 
-	<target name="package" depends="init,build,makeJar,javadoc">
+	<target name="package" depends="init,build,makeJar,javadoc,package-javadoc">
 		<mkdir dir="${build.dir}/sage/jetty/contexts/" />
 		<mkdir dir="${build.dir}/sage/sagex/services/" />
 		<copy file="jetty/contexts/sagex.xml" todir="${build.dir}/sage/jetty/contexts/" />
@@ -55,7 +59,7 @@
 	<target name="build" depends="cleanGeneratedAPI,buildVersion,generateSageAPI">
 		<mkdir dir="target/classes/jetty" />
 		<copy todir="target/classes/jetty">
-			<fileset dir="jetty" includes="**/*.xml"/>
+			<fileset dir="jetty" includes="**/*.xml" />
 		</copy>
 		<copy todir="target/classes">
 			<fileset dir="src" excludes="**/*.java" />
@@ -82,7 +86,7 @@
 		<mkdir dir="${build.dir}/sage/JARs" />
 		<jar destfile="${build.dir}/sage/JARs/${jarname}">
 			<fileset dir="target/classes" includes="sagex/**,jetty/**" />
-			<fileset dir="src" includes="sagex-api.log4j.properties"/>
+			<fileset dir="src" includes="sagex-api.log4j.properties" />
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Specification-Title" value="Sage API Extension" />
@@ -104,22 +108,22 @@
 	<target name="init" depends="clean">
 		<!-- <delete dir="cache" failonerror="false"/> -->
 		<mkdir dir="${target}" />
-		<mkdir dir="${build.dir}"/>
-		<mkdir dir="${build.dir}/sage"/>
-		<mkdir dir="${dist.dir}"/>
-		<mkdir dir="${dist.dir}/packages"/>
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.dir}/sage" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${dist.dir}/packages" />
 		<copy includeemptydirs="false" todir="bin">
 			<fileset dir="src" excludes="**/*.launch, **/*.java" />
 		</copy>
 	</target>
-	
+
 	<target name="clean">
 		<delete dir="target" />
 	</target>
 
 	<target name="javadoc" if="createJAVADOC">
-		<mkdir dir="target/sage/docs/${name}/api" />
-		<javadoc author="true" destdir="target/sage/docs/${name}/api" classpathref="AppClasspath">
+		<mkdir dir="target/docs/${name}/api" />
+		<javadoc author="true" destdir="target/docs/" classpathref="AppClasspath">
 			<fileset dir="src" excludes="**/*.properties,**/*.json" />
 			<header>
 				<![CDATA[SageTV Remote APIs for SageTV Project]]>
@@ -134,40 +138,46 @@
 	<target name="generateSageAPI" if="createAPI" depends="init">
 		<java classname="org.jdna.sage.api.generator.Main" classpathref="SageAPI.classpath" fork="true" />
 	</target>
-	
+
+	<target name="package-javadoc" if="createJAVADOC">
+		<zip destfile="${target}/sagex-api-javadoc-${version}.zip">
+			<zipfileset dir="target/docs/" prefix="sagex-api-javadoc" />
+		</zip>
+	</target>
+
 	<target name="package-system">
-		<delete dir="${dist.dir}/packages"/>
-		<mkdir dir="${dist.dir}/packages"/>
+		<delete dir="${dist.dir}/packages" />
+		<mkdir dir="${dist.dir}/packages" />
 		<zip destfile="${dist.dir}/packages/sagex-api-services-${version}.zip">
 			<zipfileset file="sagex/services/sagex.js" prefix="sagex/services" />
 		</zip>
 	</target>
-	
+
 	<target name="package-jar">
 		<zip destfile="${dist.dir}/packages/sagex-api-jar-${version}.zip">
 			<zipfileset file="${target}/sagex-api-${version}.jar" prefix="" />
 		</zip>
 	</target>
-	
+
 	<!-- Create the plugin's package for SageTV 7.0 and later -->
 	<target name="dist-plugin" depends="package, package-system, package-jar">
-		<copy tofile="${dist.dir}/packages/plugin-${version}.xml" file="resources/plugin/plugin.xml"/>
-		<copy tofile="${dist.dir}/packages/plugin-services-${version}.xml" file="resources/plugin/plugin-services.xml"/>
+		<copy tofile="${dist.dir}/packages/plugin-${version}.xml" file="resources/plugin/plugin.xml" />
+		<copy tofile="${dist.dir}/packages/plugin-services-${version}.xml" file="resources/plugin/plugin-services.xml" />
 
 		<checksum file="${dist.dir}/packages/sagex-api-services-${version}.zip" property="md5.system" />
 		<checksum file="${dist.dir}/packages/sagex-api-jar-${version}.zip" property="md5.jar" />
 
 		<tstamp>
-			<format property="last-modified" pattern="yyyy.MM.dd"/>
+			<format property="last-modified" pattern="yyyy.MM.dd" />
 		</tstamp>
-		
+
 		<replace file="${dist.dir}/packages/plugin-${version}.xml" summary="yes">
 			<replacefilter token="@@last-modified@@" value="${last-modified}" />
 			<replacefilter token="@@version@@" value="${version}" />
 			<replacefilter token="@@system-checksum@@" value="${md5.system}" />
 			<replacefilter token="@@jar-checksum@@" value="${md5.jar}" />
 		</replace>
-		
+
 		<replace file="${dist.dir}/packages/plugin-services-${version}.xml" summary="yes">
 			<replacefilter token="@@last-modified@@" value="${last-modified}" />
 			<replacefilter token="@@version@@" value="${version}" />
@@ -175,16 +185,35 @@
 			<replacefilter token="@@jar-checksum@@" value="${md5.jar}" />
 		</replace>
 	</target>
-	
+
 	<!-- upload to sagetv plugin area -->
 	<target name="publish-plugin">
 		<!-- download commons-net so that we can use the ftp plugin -->
-		<mkdir dir="${user.home}/.ant/lib"/>
+		<mkdir dir="${user.home}/.ant/lib" />
 		<get src="http://repo1.maven.org/maven2/commons-net/commons-net/1.4.1/commons-net-1.4.1.jar" dest="${user.home}/.ant/lib/commons-net-1.4.1.jar" usetimestamp="true" />
-		
-		<ftp remotedir="plugins/stuckless/sagex-api" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" action="mkdir"/>		
+
+		<ftp remotedir="plugins/stuckless/sagex-api" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" action="mkdir" />
 		<ftp remotedir="plugins/stuckless/sagex-api" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" binary="true" action="send">
-			<fileset dir="${dist.dir}/packages/"/>
+			<fileset dir="${dist.dir}/packages/" />
 		</ftp>
-	</target>	
+	</target>
+	
+	<target name="publish-googlecode" description="Upload build to Google Code">
+		<get dest="${user.home}/.ant/lib/ant-googlecode.jar" src="http://ant-googlecode.googlecode.com/files/ant-googlecode-0.0.2.jar" usetimestamp="true"/>
+		<available file="${gc.upload.settings}" property="gc.upload.enable" />
+		<fail message="${gc.upload.settings} file does not exist!" unless="gc.upload.enable" />
+		<property file="${gc.upload.settings}" />
+		<fail message="gc.username must be defined in ${gc.upload.settings}" unless="gc.username" />
+		<fail message="gc.password must be defined in ${gc.upload.settings}" unless="gc.password" />
+		<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" name="gcupload">
+			<classpath>
+			      <fileset dir="${user.home}/.ant/lib/">
+			        <include name="**/*.jar"/>
+			      </fileset>
+			</classpath>
+		</taskdef>
+		<gcupload targetfilename="${target}/sagex-api-${version}.zip"  filename="${target}/sagex-api-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="sagephoenix" summary="Phoenix API ${version}" labels="QA-Snapshot,Type-Archive,OpSys-All" />
+		<gcupload targetfilename="${target}/sagex-api-javadoc-${version}.zip"  filename="${target}/sagex-api-javadoc-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="sagephoenix" summary="Phoenix API JavaDoc ${version}" labels="QA-Snapshot,Type-Archive,OpSys-All" />
+	</target>
+	
 </project>
