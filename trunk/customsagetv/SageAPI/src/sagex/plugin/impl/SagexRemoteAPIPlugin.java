@@ -26,8 +26,8 @@ public class SagexRemoteAPIPlugin extends AbstractPlugin {
 
         addProperty(SageTVPlugin.CONFIG_BOOL, SagexConfiguration.PROP_ENABLE_RMI, "true", "Enable RMI Remote API", "Allows you to access the SageTV server remotely using the sagex remote apis over Java/RMI");
         addProperty(SageTVPlugin.CONFIG_INTEGER, SagexConfiguration.PROP_RMI_PORT, "1098", "RMI Port", "Only change this if you absolutely require the RMI server to use another port.  If you do change this, then remote clients will need to be updated as well to use the correct port.")
-                .setVisibleOnSetting(SagexConfiguration.PROP_ENABLE_RMI);
-        addProperty(SageTVPlugin.CONFIG_BOOL, SagexConfiguration.PROP_ENABLE_DISCOVERY, "true", "Enable RMI Discovery", "Enables remote clients to automatically discover SageTV Servers)").setVisibleOnSetting(SagexConfiguration.PROP_ENABLE_RMI);
+                .setVisibleOnSetting(this,SagexConfiguration.PROP_ENABLE_RMI);
+        addProperty(SageTVPlugin.CONFIG_BOOL, SagexConfiguration.PROP_ENABLE_DISCOVERY, "true", "Enable RMI Discovery", "Enables remote clients to automatically discover SageTV Servers)").setVisibleOnSetting(this, SagexConfiguration.PROP_ENABLE_RMI);
         addProperty(SageTVPlugin.CONFIG_BOOL, SagexConfiguration.PROP_ENABLE_HTTP, "true", "Enable HTTP Restful API", "Enables the HTTP Rest API for SageTV (Note this requires the Jetty Plugin)");
 
         String defPort = "8080";
@@ -44,8 +44,7 @@ public class SagexRemoteAPIPlugin extends AbstractPlugin {
             }
         }
 
-        addProperty(SageTVPlugin.CONFIG_INTEGER, SagexConfiguration.PROP_HTTP_PORT, defPort, "HTTP Port", "This value should be the same as youre Jetty HTTP Port (usually autodetected)").setVisibleOnSetting(SagexConfiguration.PROP_ENABLE_HTTP);
-
+        addProperty(SageTVPlugin.CONFIG_INTEGER, SagexConfiguration.PROP_HTTP_PORT, defPort, "HTTP Port", "This value should be the same as youre Jetty HTTP Port (usually autodetected)").setVisibleOnSetting(this, SagexConfiguration.PROP_ENABLE_HTTP);
     }
 
     @ConfigValueChangeHandler(SagexConfiguration.PROP_ENABLE_RMI)
