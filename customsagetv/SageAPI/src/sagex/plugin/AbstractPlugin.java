@@ -8,7 +8,6 @@ import java.util.Map;
 
 import sage.SageTVPlugin;
 import sage.SageTVPluginRegistry;
-import sagex.api.Configuration;
 import sagex.util.ILog;
 import sagex.util.LogProvider;
 import sagex.util.TypesUtil;
@@ -30,6 +29,15 @@ import sagex.util.TypesUtil;
  * unregistered when your plugin stops. For this reason, if you override the
  * start() and stop() methods, you should call super.start() and supert.stop()
  * accordingly.
+ * 
+ * If use the {@link ConfigValueChangeHandler} annotation on a method then that method will be called
+ * when the value changes.  The method can either accept no parameters, or it can accept
+ * a single String argument, which will be the setting id.
+ * 
+ * If you use the {@link ButtonClickHandler} annotation on a method, then that method will be called
+ * as a button click event for the given setting, provided the setting is configured as CONFIG_BUTTON as
+ * per the {@link SageTVPlugin} constant.  ButtonClickHandlers are used if you need to be notified when the
+ * user clicks your button.
  * 
  * @author seans
  */
@@ -67,18 +75,60 @@ public class AbstractPlugin implements SageTVPlugin {
         }
     }
 
-    protected void addProperty(PluginProperty prop) {
-        props.put(prop.getSetting(), prop);
+    /**
+     * Add a new PluginPropety to be managed by this plugin.
+     * 
+     * @param prop {@link PluginProperty} instance
+     * @return {@link PluginProperty}
+     */
+    protected PluginProperty addProperty(PluginProperty prop) {
+        return props.put(prop.getSetting(), prop);
     }
 
+    /**
+     * Convenience method for adding a property
+     * 
+     * @param type
+     * @param setting
+     * @param defaultValue
+     * @param label
+     * @param help
+     * @return
+     */
     public PluginProperty addProperty(int type, String setting, String defaultValue, String label, String help) {
         return addProperty(type, setting, defaultValue, label, help, null, null);
     }
 
+    /**
+     * Convenience method for adding a property
+     * @param type
+     * @param setting
+     * @param defaultValue
+     * @param label
+     * @param help
+     * @param options
+     * @return
+     */
     public PluginProperty addProperty(int type, String setting, String defaultValue, String label, String help, String[] options) {
         return addProperty(type, setting, defaultValue, label, help, options, ";");
     }
 
+    /**
+     * Convenience method for adding a property.  Once a property is added, you can get a reference to the newly added {@link PluginProperty}
+     * that be used to further configure the property.
+     * 
+     * The defaule {@link IPropertyPersistence} for newly added properties is {@link ClientPropertyPersistence} but you can
+     * change that after the fact by calling setPeristence on the property to set another persistence such as {@link ServerPropertyPersistence}
+     * 
+     * @param type a Data Type from {@link SageTVPlugin}
+     * @param setting the setting/property id. Usually represents a configuration property in Sage.properties
+     * @param defaultValue the default value for your property
+     * @param label the label for your property
+     * @param help user help for your property
+     * @param options if you property is a list of values, then this is an array of possible values for your property
+     * @param optionSep this is the separator for your values, default is semi-colon
+     * @return newly created property that has been added to the plugin
+     */
     public PluginProperty addProperty(int type, String setting, String defaultValue, String label, String help, String[] options, String optionSep) {
         PluginProperty p = new PluginProperty(type, setting, defaultValue, label, help, options, optionSep);
         addProperty(p);
@@ -97,10 +147,16 @@ public class AbstractPlugin implements SageTVPlugin {
         return null;
     }
 
+    /**
+     * Called when the plugin starts.  If you override, then call super.start();
+     */
     public void start() {
         registerEvents();
     }
 
+    /**
+     * Called when the plugin stops. If you override, then call super.stop();
+     */
     public void stop() {
         unregisterEvents();
     }
@@ -188,18 +244,27 @@ public class AbstractPlugin implements SageTVPlugin {
         }
     }
 
+    /**
+     * get the help for a given property
+     */
     public String getConfigHelpText(String setting) {
         PluginProperty c = getPluginPropertyForSetting(setting);
         if (c == null) return null;
         return c.getHelp();
     }
 
+    /**
+     * get the label for a given property
+     */
     public String getConfigLabel(String setting) {
         PluginProperty c = getPluginPropertyForSetting(setting);
         if (c == null) return null;
         return c.getLabel();
     }
 
+    /**
+     * Get the value list for a given property
+     */
     public String[] getConfigOptions(String setting) {
         PluginProperty c = getPluginPropertyForSetting(setting);
         if (c == null) return null;
@@ -207,63 +272,125 @@ public class AbstractPlugin implements SageTVPlugin {
     }
 
     /**
-     * Will only return the 'visible' settings.
+     * Will only return the 'visible' settings.  ie, isVisible() is evalutes for each property, and only those
+     * that are visible are returned in this list.
      */
     public String[] getConfigSettings() {
         List<String> settings = new ArrayList<String>();
         for (PluginProperty p : props.values()) {
             boolean visible = true;
+            // support old stype visible on setting
             if (p.getVisibleOnSetting() != null) {
                 visible = getConfigBoolValue(p.getVisibleOnSetting());
             }
+            
+            // support new style of visibility handler
+            if (visible) {
+                visible=p.isVisible();
+            }
+            
             if (visible) settings.add(p.getSetting());
         }
         return settings.toArray(new String[] {});
     }
 
+    /**
+     * get the data type for the given property as defined in {@link SageTVPlugin}
+     */
     public int getConfigType(String setting) {
         PluginProperty c = getPluginPropertyForSetting(setting);
         if (c == null) return 0;
         return c.getType();
     }
 
+    /**
+     * get the current value for the given property
+     */
     public String getConfigValue(String setting) {
         PluginProperty p = getPluginPropertyForSetting(setting);
         if (p != null) {
-            return Configuration.GetProperty(setting, p.getDefaultValue());
+            return p.getValue();
         }
         return null;
     }
 
+    /**
+     * if the property is a value list property, then get it's values as String array.
+     */
     public String[] getConfigValues(String setting) {
         PluginProperty p = getPluginPropertyForSetting(setting);
         String s = getConfigValue(setting);
         if (s == null) return null;
-        return s.split("\\s*" + p.getOptionSep() + "\\s*");
+        return s.split("\\s*" + p.getValueSep() + "\\s*");
     }
 
+    /**
+     * sets all property values to their default values
+     */
     public void resetConfig() {
         for (Map.Entry<String, PluginProperty> me : props.entrySet()) {
             setConfigValue(me.getKey(), me.getValue().getDefaultValue());
         }
     }
 
+    /**
+     * sets a property value
+     */
     public void setConfigValue(String setting, String value) {
         PluginProperty p = getPluginPropertyForSetting(setting);
         if (p == null) return;
+        
+        // TODO: Use SageTV constant once 7.0.7 is released
+        if (p.getType()==8) {
+            //p.setValue(value);
+            fireButtonClick(setting, value);
+            return;
+        }
+        
         String val = getConfigValue(setting);
         if (val != null && !val.equals(value)) {
-            Configuration.SetProperty(setting, value);
+            p.setValue(value);
             propertyChanged(setting);
         }
     }
 
+    protected void fireButtonClick(String setting, String value) {
+        boolean fired = false;
+        for (Method m : this.getClass().getMethods()) {
+            ButtonClickHandler e = m.getAnnotation(ButtonClickHandler.class);
+            try {
+                if (e != null && e.value().equals(setting)) {
+                    Class cls[] = m.getParameterTypes();
+                    m.setAccessible(true);
+                    if (cls.length == 0) {
+                        m.invoke(this, (Object[]) null);
+                        fired = true;
+                    } else {
+                        m.invoke(this, setting, value);
+                        fired = true;
+                    }
+                }
+            } catch (Exception ex) {
+                log.warn("Failed to dispatch button event for: " + setting + " to method " + m.getName() + " in class " + this.getClass().getName(), ex);
+            }
+        }
+
+        if (!fired) {
+            log.warn("Failed to handle ButtonClickHandler: '" + setting + "' in class: " + this.getClass().getName());
+        }
+    }
+
+    /**
+     * if set the string array as a property value by serializing the values a string where each value in the array
+     * is separated by the value separator, which by default is a semi-colon.  ie, if you pass ing ["A","B","C"], then
+     * the serialized string is "A;B;C"
+     */
     public void setConfigValues(String setting, String[] values) {
         PluginProperty p = getPluginPropertyForSetting(setting);
         if (values != null) {
             String v = "";
             for (int i = 0; i < values.length; i++) {
-                if (i > 0) v += p.getOptionSep();
+                if (i > 0) v += p.getValueSep();
                 v += values[i];
             }
             setConfigValue(setting, v);
@@ -272,10 +399,20 @@ public class AbstractPlugin implements SageTVPlugin {
         }
     }
 
+    /**
+     * convenience method to return the given property as an int
+     * @param setting
+     * @return int value or 0 if it fails
+     */
     public int getConfigIntValue(String setting) {
         return TypesUtil.toInt(getConfigValue(setting), 0);
     }
 
+    /**
+     * convenience method to return the given property as a boolean value
+     * @param setting
+     * @return boolean value or false if it fails
+     */
     public boolean getConfigBoolValue(String setting) {
         return TypesUtil.toBoolean(getConfigValue(setting), false);
     }
