@@ -22,8 +22,8 @@
 	<property name="build.dir" location="${target}/build" />
 	<property name="dist.dir" location="${target}/dist" />
 
-	<property name="name" value="sagex.api" />
-	<property name="version" value="7.0.6.3" />
+	<property name="name" value="sagex-api" />
+	<property name="version" value="7.0.6.5" />
 	<property name="jarname" value="${name}.jar" />
 
 	<!--
@@ -155,7 +155,7 @@
 
 	<target name="package-jar">
 		<zip destfile="${dist.dir}/packages/sagex-api-jar-${version}.zip">
-			<zipfileset file="${target}/sagex-api-${version}.jar" prefix="" />
+			<zipfileset file="${target}/sagex-api.jar" prefix="" />
 		</zip>
 	</target>
 
@@ -184,6 +184,10 @@
 			<replacefilter token="@@system-checksum@@" value="${md5.system}" />
 			<replacefilter token="@@jar-checksum@@" value="${md5.jar}" />
 		</replace>
+
+		<!-- copy to the s7 local dir for testing -->
+		<copy file="${dist.dir}/packages/plugin-${version}.xml" todir="${sage.home}/DeveloperPlugins/" failonerror="false" />
+		<copy file="${dist.dir}/packages/plugin-services-${version}.xml" todir="${sage.home}/DeveloperPlugins/" failonerror="false" />
 	</target>
 
 	<!-- upload to sagetv plugin area -->
@@ -196,6 +200,41 @@
 		<ftp remotedir="plugins/stuckless/sagex-api" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" binary="true" action="send">
 			<fileset dir="${dist.dir}/packages/" />
 		</ftp>
+		
+		<!-- notify sagetv about the new plugin -->
+		<loadfile property="ManifestXmlContents" srcfile="${dist.dir}/packages/plugin-${version}.xml"/>
+	    <post to="http://sagetv.com/pluginsubmit.html"
+	        verbose="true" failonerror="true" wantresponse="true" property="PostResponse">
+	        <prop name="Name" value="Sean Stuckless"/>
+	        <prop name="Email" value="seans.tuckless@gmail.com"/>
+	        <prop name="Username" value="${sage.uploaduser}"/>
+	        <prop name="PluginID" value="sagex-api"/>
+	        <prop name="Manifest" value="${ManifestXmlContents}"/>
+	    	
+	    	<!-- New Plugin, Upgraded Plugin, Remove Plugin --> 
+	        <prop name="RequestType" value="Upgraded Plugin"/>
+	        <prop name="Comments" value="This is an automated plugin upgrade submission"/>
+	        <prop name="B1" value=""/>
+	    </post>
+		<echo message="${PostResponse}"/>
+
+		<!-- notify sagetv about the new plugin -->
+		<loadfile property="ManifestXmlContents" srcfile="${dist.dir}/packages/plugin-services-${version}.xml"/>
+	    <post to="http://sagetv.com/pluginsubmit.html"
+	        verbose="true" failonerror="true" wantresponse="true" property="PostResponse">
+	        <prop name="Name" value="Sean Stuckless"/>
+	        <prop name="Email" value="seans.tuckless@gmail.com"/>
+	        <prop name="Username" value="${sage.uploaduser}"/>
+	        <prop name="PluginID" value="sagex-api-services"/>
+	        <prop name="Manifest" value="${ManifestXmlContents}"/>
+	    	
+	    	<!-- New Plugin, Upgraded Plugin, Remove Plugin --> 
+	        <prop name="RequestType" value="Upgraded Plugin"/>
+	        <prop name="Comments" value="This is an automated plugin upgrade submission"/>
+	        <prop name="B1" value=""/>
+	    </post>
+		<echo message="${PostResponse}"/>
+	
 	</target>
 	
 	<target name="publish-googlecode" description="Upload build to Google Code">
