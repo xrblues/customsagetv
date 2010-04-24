@@ -340,8 +340,7 @@ public class AbstractPlugin implements SageTVPlugin {
         PluginProperty p = getPluginPropertyForSetting(setting);
         if (p == null) return;
         
-        // TODO: Use SageTV constant once 7.0.7 is released
-        if (p.getType()==8) {
+        if (p.getType()==SageTVPlugin.CONFIG_BUTTON) {
             //p.setValue(value);
             fireButtonClick(setting, value);
             return;
