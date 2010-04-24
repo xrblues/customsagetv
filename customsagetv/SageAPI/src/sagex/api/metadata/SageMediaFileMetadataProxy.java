@@ -31,6 +31,10 @@ public class SageMediaFileMetadataProxy implements InvocationHandler {
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if ("toString".equals(method.getName())) {
+            return "SageMediaFileMetadataProxy["+sageMediaFile+"]";
+        }
+
         if ("isSet".equals(method.getName())) {
             return isSet((String) args[0]);
         }

@@ -38,8 +38,10 @@ public class DatagramServer {
 						// handle request
 						if (listener != null) {
 							byte[] reply = listener.onDatagramPacketReceived(packet);
-							packet = new DatagramPacket(reply, reply.length, packet.getAddress(), packet.getPort());
-							socket.send(packet);
+							if (reply!=null) {
+    							packet = new DatagramPacket(reply, reply.length, packet.getAddress(), packet.getPort());
+    							socket.send(packet);
+							}
 						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block

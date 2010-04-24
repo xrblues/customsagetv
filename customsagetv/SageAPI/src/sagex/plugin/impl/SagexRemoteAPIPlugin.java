@@ -23,7 +23,7 @@ public class SagexRemoteAPIPlugin extends AbstractPlugin {
 
     public SagexRemoteAPIPlugin(SageTVPluginRegistry registry) {
         super(registry);
-
+        
         addProperty(SageTVPlugin.CONFIG_BOOL, SagexConfiguration.PROP_ENABLE_RMI, "true", "Enable RMI Remote API", "Allows you to access the SageTV server remotely using the sagex remote apis over Java/RMI");
         addProperty(SageTVPlugin.CONFIG_INTEGER, SagexConfiguration.PROP_RMI_PORT, "1098", "RMI Port", "Only change this if you absolutely require the RMI server to use another port.  If you do change this, then remote clients will need to be updated as well to use the correct port.")
                 .setVisibleOnSetting(this,SagexConfiguration.PROP_ENABLE_RMI);

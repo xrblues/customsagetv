@@ -17,14 +17,14 @@ import sagex.util.ILog;
 import sagex.util.LogProvider;
 
 public class SageRMIServer {
-    private ILog                         log            = LogProvider.getLogger(SageRMIServer.class);
-    public static final String           SERVER_BINDING = "SageJavaRPC";
-    private static SageRMIServer         instance       = new SageRMIServer();
+    private ILog                 log            = LogProvider.getLogger(SageRMIServer.class);
+    public static final String   SERVER_BINDING = "SageJavaRPC";
+    private static SageRMIServer instance       = new SageRMIServer();
 
-    private DatagramServer               udpServer      = null;
-    private Properties                   serverInfo     = null;
+    private DatagramServer       udpServer      = null;
+    private Properties           serverInfo     = null;
 
-    private boolean                      isRunning      = false;
+    private boolean              isRunning      = false;
 
     public SageRMIServer() {
     }
@@ -74,14 +74,19 @@ public class SageRMIServer {
         udpServer = new DatagramServer(DatagramServer.MULTICAST_GROUP, DatagramServer.MULTICAST_PORT, new DatagramListener() {
             public byte[] onDatagramPacketReceived(DatagramPacket packet) {
                 try {
-                    // just ship the properties as plain text as the
-                    // response.
-                    // this is friendly to all clients that want to find out
-                    // where the server is located
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    serverInfo.list(new PrintStream(baos));
-                    baos.flush();
-                    return baos.toByteArray();
+                    String msg = new String(packet.getData(), packet.getOffset(), packet.getLength());
+                    if (msg != null && msg.startsWith("Discover")) {
+                        log.info("Received Discovery Request: " + msg);
+                        // just ship the properties as plain text as the
+                        // response.
+                        // this is friendly to all clients that want to find out
+                        // where the server is located
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        serverInfo.list(new PrintStream(baos));
+                        baos.flush();
+                        return baos.toByteArray();
+                    }
+                    return null;
                 } catch (Exception e) {
                     e.printStackTrace();
                     return "".getBytes();
