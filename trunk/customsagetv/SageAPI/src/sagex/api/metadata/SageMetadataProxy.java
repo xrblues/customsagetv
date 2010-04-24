@@ -21,6 +21,10 @@ public class SageMetadataProxy implements InvocationHandler {
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if ("toString".equals(method.getName())) {
+            return "SageMetadataProxy["+data.size()+" items]";
+        }
+        
         if ("isSet".equals(method.getName())) {
             return isSet((String) args[0]);
         }

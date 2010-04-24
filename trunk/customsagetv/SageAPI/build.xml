@@ -186,8 +186,9 @@
 		</replace>
 
 		<!-- copy to the s7 local dir for testing -->
-		<copy file="${dist.dir}/packages/plugin-${version}.xml" todir="${sage.home}/DeveloperPlugins/" failonerror="false" />
-		<copy file="${dist.dir}/packages/plugin-services-${version}.xml" todir="${sage.home}/DeveloperPlugins/" failonerror="false" />
+		<copy todir="${sage.home}/DeveloperPlugins/" failonerror="false">
+			<fileset dir="${dist.dir}/packages/"/>
+		</copy>
 	</target>
 
 	<!-- upload to sagetv plugin area -->

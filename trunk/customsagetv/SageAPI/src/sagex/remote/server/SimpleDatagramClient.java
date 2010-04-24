@@ -5,18 +5,26 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.SocketException;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import sagex.util.ILog;
+import sagex.util.LogProvider;
 
 public class SimpleDatagramClient {
+    private ILog log = LogProvider.getLogger(SimpleDatagramClient.class);
+    
 	public SimpleDatagramClient() {
 	}
 
 	public void send(final String msg, final String server, final int port, final DatagramPacketHandler listener, final long timeout) throws Exception {
+        final MulticastSocket socket=new MulticastSocket();
 		Runnable client = new Runnable() {
 			public void run() {
-				MulticastSocket socket=null;
 				try {
-					socket = new MulticastSocket();
+				    log.info("Starting Datagram Client on " + server + ":" + port);
 					InetAddress group = InetAddress.getByName(server);
 					socket.joinGroup(group);
 
@@ -26,16 +34,26 @@ public class SimpleDatagramClient {
 					socket.send(packet);
 
 					// get response
-					buf = new byte[1024];
-					packet = new DatagramPacket(buf, buf.length);
-					socket.receive(packet);
-
-					// display response
-					listener.onDatagramPacketReceived(packet);
+					while (true) {
+    					buf = new byte[1024];
+    					packet = new DatagramPacket(buf, buf.length);
+    					socket.receive(packet);
+    
+    					// display response
+    					listener.onDatagramPacketReceived(packet);
+    					
+    					if (timeout==0) {
+    					    // basically do it once
+    					    break;
+    					}
+					}
+				} catch (SocketException se) {
+				    log.warn("Shutting Down: " + se.getMessage());
 				} catch (Throwable t) {
 					listener.onFailure(t);
 				} finally {
-					if (socket!=null) socket.close();
+				    log.info("Datagram Client is shutting down");
+					socket.close();
 				}
 			}
 		};
@@ -45,22 +63,31 @@ public class SimpleDatagramClient {
 			client.run();
 		} else {
 			// start the connection in a thread and then wait for a reply
-			Thread t = new Thread(client);
+			final Thread t = new Thread(client);
 			t.start();
-			
-			long waittil = System.currentTimeMillis() + timeout;
-			while (t.isAlive()) {
-				if (System.currentTimeMillis() > waittil) {
-					listener.onFailure(new RuntimeException("Timed out waiting for a Sage Server Reply."));
-					t.stop();
-					break;
-				} else {
-					Thread.sleep(100);
-				}
-			}
+
+            final Timer timer = new Timer(true);
+			// kill this thread after the timeout
+			TimerTask tt = new TimerTask() {
+                @Override
+                public void run() {
+                    log.info("Killing Datagram client after timeout");
+                    socket.close();
+                }
+            };
+            
+			timer.schedule(tt, timeout);
 		}
 	}
 
+	/**
+	 * @deprecated use discoverRemoteServers
+	 * 
+	 * @param timeout
+	 * @return
+	 * @throws Exception
+	 */
+	@Deprecated
 	public static Properties findRemoteServer(final long timeout) throws Exception {
 		final Properties props = new Properties();
 		SimpleDatagramClient client = new SimpleDatagramClient();
@@ -78,7 +105,7 @@ public class SimpleDatagramClient {
 				throw new RuntimeException(t);
 			}
 		}, timeout);
-
+		
 		return props;
 	}
 }

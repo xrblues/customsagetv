@@ -101,8 +101,12 @@ public class Log4jConfigurator {
         // see if users are using a default override, if so, then just configure that
         File override = new File("default.log4j.properties");
         if (override.exists()) {
+            if (logs.containsKey("default")) {
+                // default already configured
+                return;
+            }
             if (configureFile("default", override)) {
-                Logger.getLogger("Using override log4j settings from " + override);
+                log("log4j has been configured Using default log4j settings from " + override);
                 return;
             }
         }
@@ -113,12 +117,12 @@ public class Log4jConfigurator {
             // BasicConfigurator.configure();
             Logger.getRootLogger().addAppender(new ConsoleAppender(new SimpleLayout(), ConsoleAppender.SYSTEM_OUT));
             Logger.getRootLogger().setLevel(Level.INFO);
-            Logger.getRootLogger().info("Configured Root Logger");
+            log("Configured Root Logger");
         }
 
         if (logs.get(id) != null) {
             // already configured.
-            Logger.getRootLogger().warn("Logger was already configured: " + id + "; Skipping.");
+            log("Logger was already configured: " + id + "; Skipping.");
             return;
         }
 
@@ -135,7 +139,7 @@ public class Log4jConfigurator {
             if (loader == null) loader = Log4jConfigurator.class.getClassLoader();
             if (configureAndCloseStream(id, f, loader.getResourceAsStream(propname))) return;
         } catch (Exception e) {
-            Logger.getRootLogger().warn("Failed to configure logging for: " + id + " using resource: " + propname);
+            log("Failed to configure logging for: " + id + " using resource: " + propname);
         }
 
         // just abort :(
@@ -156,7 +160,7 @@ public class Log4jConfigurator {
         try {
             configure(id);
         } catch (Exception e) {
-            Logger.getRootLogger().warn("Failed to configure: " + id, e);
+            log("Failed to configure: " + id, e);
         }
     }
 
@@ -164,7 +168,7 @@ public class Log4jConfigurator {
         try {
             configure(id, loader);
         } catch (Exception e) {
-            Logger.getRootLogger().warn("Failed to configure: " + id, e);
+            log("Failed to configure: " + id, e);
         }
     }
 
@@ -191,7 +195,7 @@ public class Log4jConfigurator {
             try {
                 return configureAndCloseStream(id, file, new FileInputStream(file));
             } catch (FileNotFoundException e) {
-                Logger.getRootLogger().warn("Failed to configure logger for file: " + file, e);
+                log("Failed to configure logger for file: " + file, e);
             }
         }
         return false;
@@ -218,10 +222,10 @@ public class Log4jConfigurator {
             log.logFile = file;
             log.properties = props;
             logs.put(id, log);
-            Logger.getRootLogger().info("Configured Logging for: " + id + " using file: " + file);
+            log("Configured Logging for: " + id + " using file: " + file);
             return true;
         } catch (Exception e) {
-            Logger.getRootLogger().info("Failed to configure Logging for: " + id + " using file: " + file);
+            log("Failed to configure Logging for: " + id + " using file: " + file);
         }
         return false;
     }
@@ -246,7 +250,7 @@ public class Log4jConfigurator {
     public static void reconfigure(String id, Properties props) {
         LogStruct log = logs.get(id);
         if (log==null) {
-            Logger.getRootLogger().warn("No Logger for: " + id);
+            log("No Logger for: " + id);
             return;
         }
         PropertyConfigurator.configure(props);
@@ -256,7 +260,7 @@ public class Log4jConfigurator {
             fos = new FileOutputStream(log.logFile);
             props.store(fos, "reconfigured");
         } catch (IOException e) {
-            Logger.getRootLogger().warn("Failed to save log properties for: " + id, e);
+            log("Failed to save log properties for: " + id, e);
         } finally {
             if (fos!=null) {
                 try {
@@ -265,6 +269,21 @@ public class Log4jConfigurator {
                 }
             }
         }
-        Logger.getRootLogger().info("Logger: " + id + " has been reconfigured.");
+        log("Logger: " + id + " has been reconfigured.");
+    }
+    
+    private static void log(String msg) {
+        log(msg,null);
+    }
+    
+    private static void log(String msg, Throwable t) {
+        if (t!=null) {
+            Logger.getRootLogger().warn(msg, t);
+            System.out.println("LOG4J: " + msg);
+            t.printStackTrace();
+        } else {
+            Logger.getRootLogger().info(msg);
+            System.out.println("LOG4J: " + msg);
+        }
     }
 }
