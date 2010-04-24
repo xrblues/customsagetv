@@ -69,7 +69,11 @@ public class PluginProperty {
         this.help = help;
         this.options = options;
         this.valueSep = optionSep;
-        this.persistence = new ClientPropertyPersistence();
+        if (type==SageTVPlugin.CONFIG_BUTTON) {
+            this.persistence = new NoPropertyPersistence();
+        } else {
+            this.persistence = new ClientPropertyPersistence();
+        }
     }
 
     /**
