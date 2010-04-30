@@ -93,6 +93,14 @@ public class PluginProperty {
     }
     
     /**
+     * set the label
+     * @return
+     */
+    public void setLabel(String label) {
+        this.label = label ;
+    }
+    
+    /**
      * get the user help
      * @return
      */
@@ -100,6 +108,14 @@ public class PluginProperty {
         return help;
     }
     
+    /**
+     * set the user help
+     * @return
+     */
+    public void setHelp(String help) {
+        this.help = help;
+    }
+
     /**
      * get the data type as defined by {@link SageTVPlugin}
      * @return
@@ -117,11 +133,19 @@ public class PluginProperty {
     }
     
     /**
-     * get the possible options for this property or null, if there are none. (only value if the type is set to CONFIG_CHOICE)
+     * get the possible options for this property or null, if there are none. (only valid if the type is set to CONFIG_CHOICE)
      * @return
      */
     public String[] getOptions() {
         return options;
+    }
+
+    /**
+     * set the possible options for this property or null, if there are none. (only valid if the type is set to CONFIG_CHOICE)
+     * @return
+     */
+    public void setOptions(String[] options) {
+        this.options = options;
     }
 
     /**
