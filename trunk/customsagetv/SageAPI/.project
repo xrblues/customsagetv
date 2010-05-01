@@ -3,7 +3,6 @@
 	<name>SageAPI</name>
 	<comment></comment>
 	<projects>
-		<project>SagePlugin</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -23,7 +23,7 @@
 	<property name="dist.dir" location="${target}/dist" />
 
 	<property name="name" value="sagex-api" />
-	<property name="version" value="7.0.6.6" />
+	<property name="version" value="7.0.7.0" />
 	<property name="jarname" value="${name}.jar" />
 
 	<!--
@@ -36,12 +36,11 @@
 		<pathelement location="libs/htmlparser.jar" />
 		<pathelement location="libs/log4j-1.2.15.jar" />
 		<pathelement location="libs/metadata-updater-1.5.jar" />
-		<pathelement location="libs/Sage.jar" />
-		<pathelement location="../SagePlugin/bin" />
+		<pathelement location="${sage.home}/Sage.jar" />
 	</path>
 
 	<path id="AppClasspath">
-		<pathelement location="../SagePlugin/bin" />
+		<pathelement location="${sage.home}/Sage.jar" />
 		<pathelement location="target/classes" />
 		<fileset dir="libs" includes="*.jar" />
 	</path>
@@ -140,7 +139,7 @@
 	</target>
 
 	<target name="package-javadoc" if="createJAVADOC">
-		<zip destfile="${target}/sagex-api-javadoc-${version}.zip">
+		<zip destfile="${target}/${name}-javadoc-${version}.zip">
 			<zipfileset dir="target/docs/" prefix="sagex-api-javadoc" />
 		</zip>
 	</target>
@@ -148,37 +147,37 @@
 	<target name="package-system">
 		<delete dir="${dist.dir}/packages" />
 		<mkdir dir="${dist.dir}/packages" />
-		<zip destfile="${dist.dir}/packages/sagex-api-services-${version}.zip">
+		<zip destfile="${dist.dir}/packages/${name}-services-${version}.zip">
 			<zipfileset file="sagex/services/sagex.js" prefix="sagex/services" />
 		</zip>
 	</target>
 
 	<target name="package-jar">
-		<zip destfile="${dist.dir}/packages/sagex-api-jar-${version}.zip">
+		<zip destfile="${dist.dir}/packages/${name}-${version}.zip">
 			<zipfileset file="${target}/sagex-api.jar" prefix="" />
 		</zip>
 	</target>
 
 	<!-- Create the plugin's package for SageTV 7.0 and later -->
-	<target name="dist-plugin" depends="package, package-system, package-jar">
-		<copy tofile="${dist.dir}/packages/plugin-${version}.xml" file="resources/plugin/plugin.xml" />
-		<copy tofile="${dist.dir}/packages/plugin-services-${version}.xml" file="resources/plugin/plugin-services.xml" />
+	<target name="dist-plugin" depends="package, package-system, package-jar" description="Creates all the zips, plugins, etc">
+		<copy tofile="${dist.dir}/packages/${name}-${version}.xml" file="resources/plugin/plugin.xml" />
+		<copy tofile="${dist.dir}/packages/${name}-services-${version}.xml" file="resources/plugin/plugin-services.xml" />
 
-		<checksum file="${dist.dir}/packages/sagex-api-services-${version}.zip" property="md5.system" />
-		<checksum file="${dist.dir}/packages/sagex-api-jar-${version}.zip" property="md5.jar" />
+		<checksum file="${dist.dir}/packages/${name}-services-${version}.zip" property="md5.system" />
+		<checksum file="${dist.dir}/packages/${name}-${version}.zip" property="md5.jar" />
 
 		<tstamp>
 			<format property="last-modified" pattern="yyyy.MM.dd" />
 		</tstamp>
 
-		<replace file="${dist.dir}/packages/plugin-${version}.xml" summary="yes">
+		<replace file="${dist.dir}/packages/${name}-${version}.xml" summary="yes">
 			<replacefilter token="@@last-modified@@" value="${last-modified}" />
 			<replacefilter token="@@version@@" value="${version}" />
 			<replacefilter token="@@system-checksum@@" value="${md5.system}" />
 			<replacefilter token="@@jar-checksum@@" value="${md5.jar}" />
 		</replace>
 
-		<replace file="${dist.dir}/packages/plugin-services-${version}.xml" summary="yes">
+		<replace file="${dist.dir}/packages/${name}-services-${version}.xml" summary="yes">
 			<replacefilter token="@@last-modified@@" value="${last-modified}" />
 			<replacefilter token="@@version@@" value="${version}" />
 			<replacefilter token="@@system-checksum@@" value="${md5.system}" />
@@ -192,7 +191,7 @@
 	</target>
 
 	<!-- upload to sagetv plugin area -->
-	<target name="publish-plugin">
+	<target name="publish-plugin" description="Uploads the Plugin to SageTV">
 		<!-- download commons-net so that we can use the ftp plugin -->
 		<mkdir dir="${user.home}/.ant/lib" />
 		<get src="http://repo1.maven.org/maven2/commons-net/commons-net/1.4.1/commons-net-1.4.1.jar" dest="${user.home}/.ant/lib/commons-net-1.4.1.jar" usetimestamp="true" />
@@ -201,32 +200,42 @@
 		<ftp remotedir="plugins/stuckless/sagex-api" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" binary="true" action="send">
 			<fileset dir="${dist.dir}/packages/" />
 		</ftp>
-		
-		<!-- notify sagetv about the new plugin -->
-		<loadfile property="ManifestXmlContents" srcfile="${dist.dir}/packages/plugin-${version}.xml"/>
-	    <post to="http://sagetv.com/pluginsubmit.html"
-	        verbose="true" failonerror="true" wantresponse="true" property="PostResponse">
-	        <prop name="Name" value="Sean Stuckless"/>
-	        <prop name="Email" value="seans.tuckless@gmail.com"/>
-	        <prop name="Username" value="${sage.uploaduser}"/>
-	        <prop name="PluginID" value="sagex-api"/>
-	        <prop name="Manifest" value="${ManifestXmlContents}"/>
-	    	
-	    	<!-- New Plugin, Upgraded Plugin, Remove Plugin --> 
-	        <prop name="RequestType" value="Upgraded Plugin"/>
-	        <prop name="Comments" value="This is an automated plugin upgrade submission"/>
-	        <prop name="B1" value=""/>
-	    </post>
-		<echo message="${PostResponse}"/>
+	</target>
 
+	<!-- 
+	ant contrib needed for http post
+	http://sourceforge.net/projects/ant-contrib/files/ 
+	-->
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+	<target name="notify-sagetv-plugin" description="Notifies SageTV about the new Plugin">
 		<!-- notify sagetv about the new plugin -->
-		<loadfile property="ManifestXmlContents" srcfile="${dist.dir}/packages/plugin-services-${version}.xml"/>
-	    <post to="http://sagetv.com/pluginsubmit.html"
+		<loadfile property="ManifestXmlContents" srcfile="${dist.dir}/packages/${name}-${version}.xml"/>
+	    <post to="http://download.sagetv.com/pluginsubmit.html"
+	        verbose="true" failonerror="false" wantresponse="false">
+	        <prop name="Name" value="Sean Stuckless"/>
+	        <prop name="Email" value="seans.stuckless@gmail.com"/>
+	        <prop name="Username" value="${sage.forumuser}"/>
+	        <prop name="PluginID" value="${name}"/>
+	        <prop name="Manifest" value="${ManifestXmlContents}"/>
+	    	
+	    	<!-- New Plugin, Upgraded Plugin, Remove Plugin --> 
+	        <prop name="RequestType" value="Test Plugin"/>
+	        <!-- <prop name="RequestType" value="Upgraded Plugin"/> -->
+	        <prop name="Comments" value="This is an automated plugin upgrade submission"/>
+	        <prop name="B1" value=""/>
+	    </post>
+	</target>
+
+	<target name="notify-sagetv-services" description="Notifies SageTV about the new Plugin">
+		<!-- notify sagetv about the new plugin -->
+		<loadfile property="ManifestXmlContents" srcfile="${dist.dir}/packages/${name}-services-${version}.xml"/>
+	    <post to="http://download.sagetv.com/pluginsubmit.html"
 	        verbose="true" failonerror="true" wantresponse="true" property="PostResponse">
 	        <prop name="Name" value="Sean Stuckless"/>
-	        <prop name="Email" value="seans.tuckless@gmail.com"/>
-	        <prop name="Username" value="${sage.uploaduser}"/>
-	        <prop name="PluginID" value="sagex-api-services"/>
+	        <prop name="Email" value="seans.stuckless@gmail.com"/>
+	        <prop name="Username" value="${sage.forumuser}"/>
+	        <prop name="PluginID" value="${name}-services"/>
 	        <prop name="Manifest" value="${ManifestXmlContents}"/>
 	    	
 	    	<!-- New Plugin, Upgraded Plugin, Remove Plugin --> 
@@ -235,7 +244,6 @@
 	        <prop name="B1" value=""/>
 	    </post>
 		<echo message="${PostResponse}"/>
-	
 	</target>
 	
 	<target name="publish-googlecode" description="Upload build to Google Code">

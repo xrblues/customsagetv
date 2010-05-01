@@ -79,7 +79,7 @@ public class SageMetadata {
                         try {
                             if (m.getName().startsWith("is") || m.getName().startsWith("get")) {
                                 if (md.isSet(p.value())) {
-                                    Object val = m.invoke(md, null);
+                                    Object val = m.invoke(md, (Object[])null);
                                     if (val != null) {
                                         if (m.getReturnType().isAssignableFrom(List.class)) {
                                             Class clType = ReflectionUtil.getGenericReturnType(m);
@@ -134,7 +134,7 @@ public class SageMetadata {
                         try {
                             if (m.getName().startsWith("is") || m.getName().startsWith("get")) {
                                 if (md.isSet(p.value())) {
-                                    Object val = m.invoke(md, null);
+                                    Object val = m.invoke(md, (Object[])null);
                                     if (val != null) {
                                         if (m.getReturnType().isAssignableFrom(List.class)) {
                                             Class clType = ReflectionUtil.getGenericReturnType(m);
