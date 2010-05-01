@@ -23,16 +23,20 @@ import sagex.util.TypesUtil;
 public class SageMediaFileMetadataProxy implements InvocationHandler {
     private ILog   log           = LogProvider.getLogger(SageMediaFileMetadataProxy.class);
     private Object sageMediaFile = null;
+    private int id = 0;
+    private String title = null;
     private Map<String, List<ISageCastMember>> lists = new HashMap<String, List<ISageCastMember>>();
     
     public SageMediaFileMetadataProxy(Object sageMediaFile) {
         this.sageMediaFile = sageMediaFile;
-        log.debug("SageMediaFileMetadataProxy Proxy class created.");
+        this.id = MediaFileAPI.GetMediaFileID(sageMediaFile);
+        this.title = MediaFileAPI.GetMediaTitle(sageMediaFile);
+        log.debug("SageMediaFileMetadataProxy Proxy created for Sage Media Item: " + title + "; " + id);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if ("toString".equals(method.getName())) {
-            return "SageMediaFileMetadataProxy["+sageMediaFile+"]";
+            return "SageMediaFileMetadataProxy["+id+";"+title+"]";
         }
 
         if ("isSet".equals(method.getName())) {
@@ -41,7 +45,7 @@ public class SageMediaFileMetadataProxy implements InvocationHandler {
 
         SageProperty md = method.getAnnotation(SageProperty.class);
         if (md == null) {
-            log.warn("Missing MD annotation on method: " + method.getName());
+            log.warn("Missing MD annotation on method: " + method.getName() + "; " + id + "; " + title);
             return null;
         }
 
@@ -90,8 +94,9 @@ public class SageMediaFileMetadataProxy implements InvocationHandler {
                     log.warn("Unknown List Type: " + cl);
                 }
             }
-            
-            return convertFromString(MediaFileAPI.GetMediaFileMetadata(sageMediaFile, md.value()), method);
+            Object val = convertFromString(MediaFileAPI.GetMediaFileMetadata(sageMediaFile, md.value()), method);
+            log.debug("Getting Metadata Item; Field: " + md.value() + "; MediaFile[" + id + "; Title: " + title + "]; Value: " + val + "; Method: " + method.getName());
+            return val;
         }
 
         // account for non standard methods

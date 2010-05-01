@@ -18,7 +18,7 @@
 
   <Dependency>
     <Plugin>sagex-api</Plugin>
-    <MinVersion>7.0.6</MinVersion>
+    <MinVersion>7.0.7.0</MinVersion>
   </Dependency>
 
   <PluginType>Standard</PluginType>
