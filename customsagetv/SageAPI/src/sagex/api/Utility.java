@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 4/10/10 2:37 PM
+ * Generated Date/Time: 5/16/10 7:38 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1612,7 +1612,7 @@ public static Object LoadImageFile (UIContext _uicontext,java.io.File FilePath) 
 /**
 Returns a MetaImage object that refers to a specified image resource. This can be used to load images from URLs, JAR resources or the file system.It also has a secondary purpose where you can pass it a MetaImage and then it will load that image into
  the current image cache so it will render as fast as possible in the next drawing cycle. Good for preloading
- the next image in a slideshow.
+ the next image in a slideshow. If a MetaImage is passed in; this call will not return until that image is loaded into the cache.
 
 
 Parameters:
@@ -1630,7 +1630,7 @@ public static Object LoadImage (java.lang.Object Resource) {
  * UI Context Aware Call<br/>
 Returns a MetaImage object that refers to a specified image resource. This can be used to load images from URLs, JAR resources or the file system.It also has a secondary purpose where you can pass it a MetaImage and then it will load that image into
  the current image cache so it will render as fast as possible in the next drawing cycle. Good for preloading
- the next image in a slideshow.
+ the next image in a slideshow. If a MetaImage is passed in; this call will not return until that image is loaded into the cache.
 
 
 Parameters:

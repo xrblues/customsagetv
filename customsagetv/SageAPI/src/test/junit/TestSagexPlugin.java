@@ -1,6 +1,7 @@
 package test.junit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +54,18 @@ public class TestSagexPlugin {
             System.out.println("On Something Called with map");
             onSomethingHandled++;
         }
+
+        @SageEvent(value="onBackground", background=true)
+        public void handleOnSomething5(Map args) {
+            System.out.println("On background called, sleeping for 5 seconds");
+            System.out.println("ThreadName:  " + Thread.currentThread().getName());
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+            System.out.println("ThreadName:  " + Thread.currentThread().getName() + "; done");
+        }
         
         @ConfigValueChangeHandler("test/sagex/enabled")
         public void handleConfigChanged(String setting) {
@@ -92,5 +105,13 @@ public class TestSagexPlugin {
         assertEquals("Event should have been called twice", 4, p.onSomethingHandled);
 
         p.sageEvent("NotHandled", null);
+        
+        long l = System.currentTimeMillis(); 
+        p.sageEvent("onBackground", new HashMap());
+        long l2 = System.currentTimeMillis();
+        if (l2-l > 1000) {
+        	fail("Background task did not run in the background");
+        }
+        System.out.println("Test Complete");
     }
 }

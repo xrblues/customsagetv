@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 4/10/10 2:37 PM
+ * Generated Date/Time: 5/16/10 7:38 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/PluginAPIFactory.html'>PluginAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -26,7 +26,10 @@ public class PluginAPIFactory {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetInstalledClientPlugins",parameters,null);
    }
    if (command.equals("GetAllPluginVersions")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAllPluginVersions",parameters,Object.class);
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAllPluginVersions",parameters,java.lang.Object.class);
+   }
+   if (command.equals("GetAvailablePluginForID")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAvailablePluginForID",parameters,java.lang.String.class);
    }
    if (command.equals("IsPluginInstalled")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsPluginInstalled",parameters,Object.class);
@@ -171,6 +174,9 @@ public class PluginAPIFactory {
    }
    if (command.equals("IsPluginConfigurable")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsPluginConfigurable",parameters,Object.class);
+   }
+   if (command.equals("GetPluginImplementation")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPluginImplementation",parameters,Object.class);
    }
    throw new RuntimeException("Invalid PluginAPIFactory Command: "+command);
    }

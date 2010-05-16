@@ -1,10 +1,13 @@
 package sagex.plugin;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import sage.SageTVPlugin;
 import sage.SageTVPluginRegistry;
@@ -39,12 +42,18 @@ import sagex.util.TypesUtil;
  * per the {@link SageTVPlugin} constant.  ButtonClickHandlers are used if you need to be notified when the
  * user clicks your button.
  * 
+ * If your plugin needs to handle sagetv events, you can define a method and then use the
+ * {@link SageEvent} annotation to indicate that method should be called on that event name. If
+ * your task is a long running tasking, ie, it could take several seconds to complete, then it
+ * is recommended that you use the background=true attribute on the annotation to have your
+ * event handled in a background thread.
+ * 
  * @author seans
  */
 public class AbstractPlugin implements SageTVPlugin {
     protected ILog                        log   = LogProvider.getLogger(this.getClass());
     protected Map<String, PluginProperty> props = new LinkedHashMap<String, PluginProperty>();
-
+    protected Timer backgroundTaskTimer = null;
     protected SageTVPluginRegistry        pluginRegistry;
 
     public AbstractPlugin(SageTVPluginRegistry registry) {
@@ -177,15 +186,19 @@ public class AbstractPlugin implements SageTVPlugin {
                     Class cls[] = m.getParameterTypes();
                     m.setAccessible(true);
                     if (cls.length == 0) {
-                        m.invoke(this, (Object[]) null);
+                        //m.invoke(this, (Object[]) null);
+                    	invoke(e.background(), m, this, (Object[])null);
                     } else {
                         if (cls.length == 2) {
-                            m.invoke(this, new Object[] { eventName, eventVars });
+                            //m.invoke(this, new Object[] { eventName, eventVars });
+                        	invoke(e.background(), m, this, eventName, eventVars);
                         } else {
                             if (cls[0] == String.class) {
-                                m.invoke(this, new Object[] { eventName });
+                                // m.invoke(this, new Object[] { eventName });
+                            	invoke(e.background(), m, this, eventName);
                             } else {
-                                m.invoke(this, new Object[] { eventVars });
+                                //m.invoke(this, new Object[] { eventVars });
+                            	invoke(e.background(), m, this, eventVars);
                             }
                         }
                     }
@@ -199,6 +212,49 @@ public class AbstractPlugin implements SageTVPlugin {
         if (!fired) {
             log.warn("Failed to handled SageEvent: '" + eventName + "' in class: " + this.getClass().getName());
         }
+    }
+    
+    /**
+     * Will invoke the method in a background thread.
+     * 
+     * @param background if true, then the method will be invoked in a background thread
+     * @param m method
+     * @param o object
+     * @param args args
+     * @return null if run in the background
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    private Object invoke(boolean background, final Method m, final Object o, final Object... args) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    	if (background) {
+        	if (backgroundTaskTimer==null) {
+        		// we do not create a timer until we need one
+        		// potential for 2 exact threads to hit this at the
+        		// same time, but that's not an issue.. the timers
+        		// will still be invoked.
+        		backgroundTaskTimer = new Timer();
+        	}
+
+    		backgroundTaskTimer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					try {
+						m.invoke(o, args);
+					} catch (IllegalArgumentException e) {
+						log.warn("Illegal Argument", e);
+					} catch (IllegalAccessException e) {
+						log.warn("Illegal Access", e);
+					} catch (InvocationTargetException e) {
+						log.warn("Invocation Target Exception", e.getTargetException());
+					}
+				}
+			}, 0);
+    		
+    		return null;
+    	} else {
+    		return m.invoke(o, args);
+    	}
     }
 
     /**

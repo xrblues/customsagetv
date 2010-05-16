@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 4/10/10 2:37 PM
+ * Generated Date/Time: 5/16/10 7:38 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/PluginAPI.html'>PluginAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -121,12 +121,14 @@ public static Object[] GetInstalledClientPlugins (UIContext _uicontext) {
 /**
 Returns an array of Plugin objects which represent all of the versions available of the specified plugin in the repository
 
+Parameters:
+Plugin- the Plugin object to check, this can either be a Plugin object or a String representing a Plugin ID
 Returns:
 an array of Plugin objects which represent all of the versions available of the specified plugin in the repository
 Since:
 7.0
  */
-public static Object[] GetAllPluginVersions (Object Plugin) {
+public static Object[] GetAllPluginVersions (java.lang.Object Plugin) {
   return (Object[]) sagex.SageAPI.call("GetAllPluginVersions", new Object[] {Plugin});
 }
 
@@ -134,13 +136,48 @@ public static Object[] GetAllPluginVersions (Object Plugin) {
  * UI Context Aware Call<br/>
 Returns an array of Plugin objects which represent all of the versions available of the specified plugin in the repository
 
+Parameters:
+Plugin- the Plugin object to check, this can either be a Plugin object or a String representing a Plugin ID
 Returns:
 an array of Plugin objects which represent all of the versions available of the specified plugin in the repository
 Since:
 7.0
  */
-public static Object[] GetAllPluginVersions (UIContext _uicontext,Object Plugin) {
+public static Object[] GetAllPluginVersions (UIContext _uicontext,java.lang.Object Plugin) {
   return (Object[]) sagex.SageAPI.call(_uicontext, "GetAllPluginVersions", new Object[] {Plugin});
+}
+
+/**
+Returns the plugin in the repository for the specified plugin ID
+
+Parameters:
+PluginID- the plugin identifier
+Returns:
+the plugin in the repository for the specified plugin ID
+Since:
+7.0
+ */
+public static Object GetAvailablePluginForID (java.lang.String PluginID) {
+  Object o = sagex.SageAPI.call("GetAvailablePluginForID", new Object[] {PluginID});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the plugin in the repository for the specified plugin ID
+
+Parameters:
+PluginID- the plugin identifier
+Returns:
+the plugin in the repository for the specified plugin ID
+Since:
+7.0
+ */
+public static Object GetAvailablePluginForID (UIContext _uicontext,java.lang.String PluginID) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetAvailablePluginForID", new Object[] {PluginID});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 /**
@@ -991,7 +1028,7 @@ Enables the specified Plugin if it can be enabled/disabled.
 Parameters:
 Plugin- the specified Plugin object
 Returns:
-true if it was successfully enabled, false otherwise
+true if it was successfully enabled, false otherwise; this will also return true even if the plugin does not have the ability to be enabled/disabled
 Since:
 7.0
  */
@@ -1008,7 +1045,7 @@ Enables the specified Plugin if it can be enabled/disabled.
 Parameters:
 Plugin- the specified Plugin object
 Returns:
-true if it was successfully enabled, false otherwise
+true if it was successfully enabled, false otherwise; this will also return true even if the plugin does not have the ability to be enabled/disabled
 Since:
 7.0
  */
@@ -1475,7 +1512,7 @@ public static java.lang.String[] GetPluginConfigValues (UIContext _uicontext,Obj
 
 /**
 Gets the setting type for the specified configuration setting for the specified Plugin object.
- The possible values are "Boolean", "Integer", "Text", "Choice", "Multichoice", "File" or "Directory".
+ The possible values are "Boolean", "Integer", "Text", "Choice", "Multichoice", "File", "Directory", "Button" or "Password".
  Only enabled plugins can be configured.
 
 Parameters:
@@ -1495,7 +1532,7 @@ public static java.lang.String GetPluginConfigType (Object Plugin, java.lang.Str
 /**
  * UI Context Aware Call<br/>
 Gets the setting type for the specified configuration setting for the specified Plugin object.
- The possible values are "Boolean", "Integer", "Text", "Choice", "Multichoice", "File" or "Directory".
+ The possible values are "Boolean", "Integer", "Text", "Choice", "Multichoice", "File", "Directory", "Button" or "Password".
  Only enabled plugins can be configured.
 
 Parameters:
@@ -1745,6 +1782,45 @@ public static boolean IsPluginConfigurable (UIContext _uicontext,Object Plugin) 
   Object o = sagex.SageAPI.call(_uicontext, "IsPluginConfigurable", new Object[] {Plugin});
   if (o!=null) return (Boolean) o;
   return false;
+}
+
+/**
+Returns the actual object that implements the sage.SageTVPlugin interface for the specified Plugin. This will only be valid
+ if the Plugin has an actual implementation and is being called on a plugin that is valid in this context (i.e. you can't call it on a 
+ server plugin in the client JVM). DO NOT use this object to start/stop or perform other behaviors that are normally done by the
+ SageTV core on that object.
+
+Parameters:
+Plugin- the specified Plugin object
+Returns:
+the actual plugin implementation object for the specified plugin, or null if it can't be obtained or doesn't exist
+Since:
+7.0
+ */
+public static Object GetPluginImplementation (Object Plugin) {
+  Object o = sagex.SageAPI.call("GetPluginImplementation", new Object[] {Plugin});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the actual object that implements the sage.SageTVPlugin interface for the specified Plugin. This will only be valid
+ if the Plugin has an actual implementation and is being called on a plugin that is valid in this context (i.e. you can't call it on a 
+ server plugin in the client JVM). DO NOT use this object to start/stop or perform other behaviors that are normally done by the
+ SageTV core on that object.
+
+Parameters:
+Plugin- the specified Plugin object
+Returns:
+the actual plugin implementation object for the specified plugin, or null if it can't be obtained or doesn't exist
+Since:
+7.0
+ */
+public static Object GetPluginImplementation (UIContext _uicontext,Object Plugin) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetPluginImplementation", new Object[] {Plugin});
+  if (o!=null) return (Object) o;
+  return null;
 }
 
 }

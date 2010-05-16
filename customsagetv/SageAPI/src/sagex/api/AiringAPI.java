@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 4/10/10 2:37 PM
+ * Generated Date/Time: 5/16/10 7:38 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AiringAPI.html'>AiringAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -588,6 +588,8 @@ public static long GetWatchedDuration (UIContext _uicontext,Object Airing) {
 
 /**
 Gets the time the user started watching this Airing. This time is relative to the Airing itself; not real time.
+ If this is the first time watching this Airing; then this will return the time the Airing started recording.
+ If this Airing has been watched previously; then the minimum value for this will be the Airing start time.
 
 Parameters:
 Airing- the Airing object
@@ -603,6 +605,8 @@ public static long GetWatchedStartTime (Object Airing) {
 /**
  * UI Context Aware Call<br/>
 Gets the time the user started watching this Airing. This time is relative to the Airing itself; not real time.
+ If this is the first time watching this Airing; then this will return the time the Airing started recording.
+ If this Airing has been watched previously; then the minimum value for this will be the Airing start time.
 
 Parameters:
 Airing- the Airing object
@@ -617,6 +621,8 @@ public static long GetWatchedStartTime (UIContext _uicontext,Object Airing) {
 
 /**
 Gets the time the user finished watching this Airing. This time is relative to the Airing itself; not real time.
+ If this Airing is currently being watched, this will be the maximum of any prior watch end time and the
+ current playback time in the Airing.
 
 Parameters:
 Airing- the Airing object
@@ -632,6 +638,8 @@ public static long GetWatchedEndTime (Object Airing) {
 /**
  * UI Context Aware Call<br/>
 Gets the time the user finished watching this Airing. This time is relative to the Airing itself; not real time.
+ If this Airing is currently being watched, this will be the maximum of any prior watch end time and the
+ current playback time in the Airing.
 
 Parameters:
 Airing- the Airing object

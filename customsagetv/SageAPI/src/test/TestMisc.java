@@ -5,6 +5,7 @@ import java.util.List;
 import sagex.SageAPI;
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
+import sagex.api.PluginAPI;
 import sagex.api.metadata.ISageCastMember;
 import sagex.api.metadata.ISageMetadataALL;
 import sagex.api.metadata.SageMetadata;
@@ -49,7 +50,6 @@ public class TestMisc {
         //MediaFileAPI.SetMediaFileMetadata(mf, "Title", "Stupid Title");
         System.out.println("SAGE Title2: " + MediaFileAPI.GetMediaFileMetadata(mf, "Title"));
         //System.out.println("SAGE2 Title: " + SageTV.api("GetMediaFileMetadata", new Object[] {mf, "Title"}));
-        
         
         //UIContext ctx = new UIContext("001d098ac46c");
         //SageAPI.setProvider(new SageAPIRemote("rmi://localhost:1098"));
