@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 4/10/10 2:37 PM
+ * Generated Date/Time: 5/16/10 7:38 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -639,6 +639,7 @@ static {
    commands.put("IsTVFile","MediaFileAPI");
    commands.put("GetSegmentFiles","MediaFileAPI");
    commands.put("GetMediaTitle","MediaFileAPI");
+   commands.put("GetMediaFileRelativePath","MediaFileAPI");
    commands.put("GetParentDirectory","MediaFileAPI");
    commands.put("GetSize","MediaFileAPI");
    commands.put("GetFullImage","MediaFileAPI");
@@ -818,6 +819,7 @@ static {
    commands.put("GetInstalledPlugins","PluginAPI");
    commands.put("GetInstalledClientPlugins","PluginAPI");
    commands.put("GetAllPluginVersions","PluginAPI");
+   commands.put("GetAvailablePluginForID","PluginAPI");
    commands.put("IsPluginInstalled","PluginAPI");
    commands.put("IsClientPluginInstalled","PluginAPI");
    commands.put("IsPluginInstalledSameVersion","PluginAPI");
@@ -866,6 +868,7 @@ static {
    commands.put("GetPluginConfigLabel","PluginAPI");
    commands.put("ResetPluginConfiguration","PluginAPI");
    commands.put("IsPluginConfigurable","PluginAPI");
+   commands.put("GetPluginImplementation","PluginAPI");
    commands.put("GetAllSeriesInfo","SeriesInfoAPI");
    commands.put("GetSeriesTitle","SeriesInfoAPI");
    commands.put("GetSeriesDescription","SeriesInfoAPI");

@@ -77,7 +77,7 @@ public class SageAPIBuilder {
     }
 
     public void buildChannel(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("Channel", ChannelAPI.class, parent, handler, null);
+        buildObject("Channel", ChannelAPI.class, parent, handler, new String[] {"GetChannelLogo"});
     }
 
     public void buildFavorite(Object parent, BuilderHandler handler) throws Exception {
