@@ -66,7 +66,7 @@ h1 {
 	background-repeat: repeat-x;
 }
 
-.AppPanel-Header, .AppPanel-Header a, .AppPanel-Header a:link, .AppPanel-Header a:visited {
+.AppPanel-Header, .AppPanel-Header a, .AppPanel-Header a:link, .AppPanel-Header a:visited, .AppPanel-Header .gwt-Label {
 	background-color: transparent;
 	color: white;
 }

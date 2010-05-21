@@ -31,6 +31,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Grid;
@@ -45,12 +46,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class AppPanel extends Composite implements ResizeHandler, HasResizeHandlers, ValueChangeHandler<String>, NotificationEventHandler {
     public static AppPanel INSTANCE = null;
-    private final MetadataServiceAsync browserService = GWT.create(MetadataService.class);
-    
+   
     private DockPanel dp = new DockPanel();
     private Widget curPanel = null;
     
     private Label message = new Label();
+    private Label server = new Label();
     
     public AppPanel() {
         INSTANCE = this;
@@ -119,9 +120,7 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         header.setWidth("100%");
         header.addStyleName("AppPanel-Header");
 
-        Label l = new Label(Application.labels().appTitle());
-        l.addStyleName("AppPanel-Title");
-        header.setWidget(0, 0, l);
+        header.setWidget(0, 0, new HeaderTitleSection());
         header.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
         
         HorizontalPanel hp = new HorizontalPanel();

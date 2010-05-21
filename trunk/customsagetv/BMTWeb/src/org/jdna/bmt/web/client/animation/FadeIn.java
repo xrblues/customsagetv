@@ -34,5 +34,6 @@ public class FadeIn extends Animation {
         // TODO Auto-generated method stub
         super.onStart();
         style.setOpacity(0.0);
+        widget.setVisible(true);
     }
 }

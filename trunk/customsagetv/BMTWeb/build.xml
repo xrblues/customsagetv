@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="Metadata Toola for SageTV - Web Interface" default="dist">
+	<property environment="env" />
+
+	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
+	<property file="${user.home}/AntCommon/build.properties" />
+	
 	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
 	<property file="build.properties" />
+
 	<!-- sage.lib.dir should be defined in the build.properties -->
 	<!-- <property name="sage.lib.dir"/> -->
 	<!-- bmt.lib.dir should be defined in the build.properties -->
@@ -17,7 +23,7 @@
 	<property name="build.dir" location="${target}/build" />
 	<property name="dist.dir" location="${target}/dist" />
 
-	<property name="version" value="4.0" />
+	<property name="version" value="4.0.27" />
 
 	<!-- for debugging turn off gwt compile -->
 	<!-- <property name="no-gwt-compile" value="true" /> -->
@@ -74,37 +80,42 @@
 	</target>
 
 	<target name="package-context">
-		<zip destfile="${dist.dir}/packages/bmt-context.zip">
+		<zip destfile="${dist.dir}/packages/bmtweb-context-${version}.zip">
 			<zipfileset file="resources/jetty/bmt.xml" prefix="jetty/contexts" />
 		</zip>
 	</target>
 
 	<target name="package-war">
-		<zip destfile="${dist.dir}/packages/bmt-war.zip">
+		<zip destfile="${dist.dir}/packages/bmtweb-war-${version}.zip">
 			<zipfileset file="${build.dir}/bmt.war" prefix="jetty/webapps" />
 		</zip>
 	</target>
 
 	<!-- Create the plugin's package for SageTV 7.0 and later -->
-	<target name="dist-plugin" depends="package-context, package-war">
-		<copy todir="${dist.dir}/packages" file="resources/plugin/plugin.xml">
+	<target name="dist-plugin" depends="package-context, package-war" description="Build SageTV Plugin">
+		<copy tofile="${dist.dir}/packages/bmtweb-plugin-${version}.xml" file="resources/plugin/plugin.xml">
 		</copy>
 
-		<checksum file="${dist.dir}/packages/bmt-context.zip" property="md5.context" />
-		<checksum file="${dist.dir}/packages/bmt-war.zip" property="md5.war" />
+		<checksum file="${dist.dir}/packages/bmtweb-context-${version}.zip" property="md5.context" />
+		<checksum file="${dist.dir}/packages/bmtweb-war-${version}.zip" property="md5.war" />
 
 		<tstamp>
 			<format property="last-modified" pattern="yyyy.MM.dd"/>
 		</tstamp>
-		<replace file="${dist.dir}/packages/plugin.xml" summary="yes">
+		
+		<replace file="${dist.dir}/packages/bmtweb-plugin-${version}.xml" summary="yes">
 			<replacefilter token="@@last-modified@@" value="${last-modified}" />
 			<replacefilter token="@@version@@" value="${version}" />
 			<replacefilter token="@@context-checksum@@" value="${md5.context}" />
 			<replacefilter token="@@war-checksum@@" value="${md5.war}" />
 		</replace>
+		
+		<copy todir="${sage.home}/DeveloperPlugins/" failonerror="false">
+			<fileset dir="${dist.dir}/packages/"/>
+		</copy>
 	</target>
 
-	<target name="dist" depends="zip, dist-plugin">
+	<target name="dist" depends="zip, dist-plugin" description="Rebuilds everything (gwt compile, etc) and then Builds the SageTV plugins">
 	</target>
 
 	<!-- upload to sagetv plugin area -->
@@ -113,29 +124,12 @@
 		<mkdir dir="${user.home}/.ant/lib"/>
 		<get src="http://repo1.maven.org/maven2/commons-net/commons-net/1.4.1/commons-net-1.4.1.jar" dest="${user.home}/.ant/lib/commons-net-1.4.1.jar" usetimestamp="true" />
 		
-		<ftp remotedir="plugins/stuckless/bmtweb" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" action="mkdir"/>		
-		<ftp remotedir="plugins/stuckless/bmtweb" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" binary="true" action="send">
-			<fileset file="${dist.dir}/packages/bmt-war.zip"/>
-			<fileset file="${dist.dir}/packages/bmt-context.zip"/>
-			<fileset file="${dist.dir}/packages/plugin.xml"/>
+		<ftp remotedir="plugins/stuckless/bmt" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" action="mkdir"/>		
+		<ftp remotedir="plugins/stuckless/bmt" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" binary="true" action="send">
+			<fileset dir="${dist.dir}/packages/" />
 		</ftp>
 	</target>
 	
-	<target name="dist-publish" depends="gcode">
-		<!-- Publish to Sage7 Plugin area -->
-		<!-- Publish to google code -->
-	</target>
-	
-	<target name="gcode" depends="dist" description="Upload build to Google Code">
-		<available file="${gc.upload.settings}" property="gc.upload.enable" />
-		<fail message="${gc.upload.settings} file does not exist!" unless="gc.upload.enable" />
-		<property file="${gc.upload.settings}" />
-		<fail message="gc.username must be defined in ${gc.upload.settings}" unless="gc.username" />
-		<fail message="gc.password must be defined in ${gc.upload.settings}" unless="gc.password" />
-		<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" name="gcupload" />
-		<gcupload username="${gc.username}" password="${gc.password}" projectname="customsagetv" filename="${sjq.zip}" targetfilename="${sjq.zip}" summary="BMT Web UI - Requires BMT Core" labels="QA-Snapshot,Type-Archive,OpSys-All" />
-	</target>
-
 	<target name="clean">
 		<delete dir="${target}" />
 	</target>
