@@ -7,19 +7,32 @@ import org.jdna.metadataupdater.Version;
 import org.jdna.url.CachedUrlCleanupTask;
 
 import sagex.phoenix.Phoenix;
+import sagex.phoenix.util.SageTV;
 import sagex.util.Log4jConfigurator;
 
+/**
+ * Use S7 Plugin instead... this will no longer do anything in S7
+ * 
+ * @author seans
+ * 
+ */
+@Deprecated
 public class BMT {
     private static boolean initialized = false;
 
+    @Deprecated
     public static synchronized void init() {
         try {
             if (initialized) return;
             initialized = true;
-
-            // configure logging
             Log4jConfigurator.configureQuietly("bmt", BMT.class.getClassLoader());
-
+            
+            String sageVer = SageTV.getSageVersion();
+            if (sageVer != null && sageVer.startsWith("7.")) {
+                Logger log = Logger.getLogger(BMT.class);
+                log.info("BMT.init() is deprecated in S7");
+                return;
+            }
             Logger log = Logger.getLogger(BMT.class);
             log.info("========= BEGIN BATCH METADATA TOOLS ENVIRONMENT ==============");
             log.info("    BMT Version:  " + Version.VERSION);

@@ -3,6 +3,8 @@ package org.jdna.metadataupdater;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -102,6 +104,10 @@ public class MetadataUpdater {
     private String query = null;
     private boolean support=false;
 
+    private String notifyUrl = null;
+    private String notifyUser = null;
+    private String notifyPassword = null;
+
     /**
      * This method only needs to be called from the command line. All other
      * processes should use the MetadataUpdater directly and NOT call the main()
@@ -168,34 +174,21 @@ public class MetadataUpdater {
         log.debug("Java Classpath:  " + System.getProperty("java.class.path"));
         log.debug("Fanart Enabled:  " + phoenix.api.IsFanartEnabled());
 
-        int removed = 0;
         String metadataPattern = "metadata-updater-([a-zA-Z0-9-_\\.]+).jar";
         String sagexPattern = "sagex.api-([a-zA-Z0-9-_\\.]+).jar";
-        removed += cleanJars(new File("JARs"), metadataPattern);
-        removed += cleanJars(new File("libs"), metadataPattern);
-        removed += cleanJars(new File("JARs"), sagexPattern);
-        removed += cleanJars(new File("libs"), sagexPattern);
-        if (removed > 0) {
+        List<File> notRemoved = new ArrayList<File>();
+        notRemoved.addAll(Tools.cleanJars(new File("JARs"), metadataPattern));
+        notRemoved.addAll(Tools.cleanJars(new File("libs"), metadataPattern));
+        notRemoved.addAll(Tools.cleanJars(new File("JARs"), sagexPattern));
+        notRemoved.addAll(Tools.cleanJars(new File("libs"), sagexPattern));
+        if (notRemoved.size() > 0) {
+            for (File f : notRemoved) {
+                f.deleteOnExit();
+            }
             System.out.println("System is being shutdown so that old jar libraries can be removed.");
             System.exit(1);
         }
         log.debug("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
-    }
-
-    public static int cleanJars(File libDir, String pattern) {
-        int removed = 0;
-        Pattern p = Pattern.compile(pattern);
-        if (libDir.exists()) {
-            for (File f : libDir.listFiles()) {
-                Matcher m = p.matcher(f.getName());
-                if (m.find()) {
-                    System.out.println("Removing Jar: " + f.getName());
-                    if (!f.delete()) f.deleteOnExit();
-                    removed++;
-                }
-            }
-        }
-        return removed;
     }
 
     /**
@@ -403,10 +396,19 @@ public class MetadataUpdater {
         // check if we need to refresh sage tv
         if (notifySageTV) {
             try {
-                System.out.println("Notifying Sage to Refresh Imported Media");
-                proxyAPI.enableRemoteAPI(true);
-                Global.RunLibraryImportScan(false);
+                if (notifyUrl!=null) {
+                    System.out.println("Notifying Sage to Refresh Imported Media via " + notifyUrl);
+                    URL url = new URL(notifyUrl);
+                    URLConnection conn = url.openConnection();
+                    HTTPUtils.configueURLConnection(conn, notifyUser, notifyPassword);
+                    Object content = conn.getContent();
+                } else {
+                    System.out.println("Notifying Sage to Refresh Imported Media using RMI");
+                    proxyAPI.enableRemoteAPI(true);
+                    Global.RunLibraryImportScan(false);
+                }
             } catch (Throwable t) {
+                System.out.println("Failed to notify SageTV: " + t.getMessage());
                 log.error("Failed to notify sagetv for update", t);
             }
         }
@@ -721,6 +723,37 @@ public class MetadataUpdater {
     }
 
     /**
+     * Notify SageTV to refresh it's media, using the following url
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "notifyURL", description = "Notify SageTV to refresh it's Media Library using the provided URL")
+    public void setNotifySageTVURL(String url) {
+        notifyUrl = url;
+        setNotifySageTV(true);
+    }
+
+    /**
+     * Username for Notify Url
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "notifyUsername", description = "Username that is required for the notify url")
+    public void setNotifyUsername(String user) {
+        this.notifyUser=user;
+    }
+    
+    /**
+     * Username for Notify Url
+     * 
+     * @param s
+     */
+    @CommandLineArg(name = "notifyPassword", description = "Password that is required for the notify url")
+    public void setNotifyPassword(String pass) {
+        this.notifyPassword=pass;
+    }
+    
+    /**
      * forces the search type
      * 
      * @param s
@@ -772,14 +805,10 @@ public class MetadataUpdater {
 
     @CommandLineArg(name = "jarclean", description = "Remove duplicate JARs from the JARs area")
     public void setDoCleanJars(boolean b) {
-        List<JarInfo> jars = JarUtil.findDuplicateJars(new File("JARs"));
-        for (JarInfo ji : jars) {
-            System.out.printf("Removing %s: %s (%s)\n", ji.getFile(), ji.getTitle(), ji.getVersion());
-            ji.getFile().deleteOnExit();
+        List<File> ji = Tools.renameConflictedJars(new File("JARs"));
+        for (File i : ji) {
+            System.out.printf("Could not rename %s.\n\n",i);
         }
-        
-        System.out.printf("Removed %s jars.\n\n", jars.size());
-        
         System.exit(0);
     }
 

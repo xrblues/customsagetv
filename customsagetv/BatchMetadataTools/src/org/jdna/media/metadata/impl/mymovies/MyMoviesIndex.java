@@ -12,10 +12,13 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.SimpleFSDirectory;
+import org.apache.lucene.util.Version;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataUtil;
 import org.w3c.dom.Element;
@@ -31,8 +34,8 @@ public class MyMoviesIndex implements MyMoviesNodeVisitor {
     private File                   indexDir = null;
 
     private Searcher               searcher = null;
-    private Analyzer               analyzer = new StandardAnalyzer();
-    private QueryParser            parser   = new QueryParser("title", analyzer);
+    private Analyzer               analyzer = new StandardAnalyzer(Version.LUCENE_30);
+    private QueryParser            parser   = new QueryParser(Version.LUCENE_30, "title", analyzer);
 
     public static MyMoviesIndex getInstance() {
         return indexer;
@@ -44,7 +47,7 @@ public class MyMoviesIndex implements MyMoviesNodeVisitor {
     }
 
     public void beginIndexing() throws Exception {
-        writer = new IndexWriter(getIndexDir(), new StandardAnalyzer(), true);
+        writer = new IndexWriter(new SimpleFSDirectory(getIndexDir()), analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
     }
 
     public void endIndexing() throws Exception {
@@ -63,7 +66,7 @@ public class MyMoviesIndex implements MyMoviesNodeVisitor {
 
         log.debug("Opening Lucene Index: " + indexDir.getAbsolutePath());
 
-        reader = IndexReader.open(indexDir);
+        reader = IndexReader.open(new SimpleFSDirectory(indexDir));
         searcher = new IndexSearcher(reader);
     }
 
@@ -85,7 +88,7 @@ public class MyMoviesIndex implements MyMoviesNodeVisitor {
         name=org.jdna.util.StringUtils.removeHtml(name);
         
         // index titles
-        doc.add(new Field("title", name, Field.Store.YES, Field.Index.TOKENIZED));
+        doc.add(new Field("title", name, Field.Store.YES, Field.Index.ANALYZED));
 
         // Store release date but not index
         doc.add(new Field("release", date, Field.Store.YES, Field.Index.NO));
@@ -99,13 +102,14 @@ public class MyMoviesIndex implements MyMoviesNodeVisitor {
         if (searcher == null) openIndex();
 
         Query query = parser.parse(title);
-        Hits hits = searcher.search(query);
+        TopDocs hits = searcher.search(query, 10);
 
-        int l = hits.length();
+        int l = hits.totalHits;
         List<IMetadataSearchResult> results = new ArrayList<IMetadataSearchResult>(l);
 
         for (int i = 0; i < l; i++) {
-            Document d = hits.doc(i);
+            ScoreDoc sd = hits.scoreDocs[i];
+            Document d = searcher.doc(sd.doc);
             String name = d.get("title");
             String date = d.get("release");
             String id = d.get("id");
