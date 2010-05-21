@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Metadata Toola for SageTV - Web Interface" default="dist">
+	<property environment="env" />
+
+	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
+	<property file="${user.home}/AntCommon/build.properties" />
+	
+	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
+	<property file="build.properties" />
+
+	<!-- sage.lib.dir should be defined in the build.properties -->
+	<!-- <property name="sage.lib.dir"/> -->
+	<!-- bmt.lib.dir should be defined in the build.properties -->
+	<!-- <property name="bmt.lib.dir"/> -->
+	<!-- bmt.core.lib should be defined in the build.properties -->
+	<!-- <property name="bmt.core.lib"/> -->
+	<!-- Configure path to GWT SDK  in the build .properties -->
+	<!-- <property name="gwt.sdk" location="" /> -->
+
+	<property name="src.dir" location="src" />
+	<property name="target" location="target" />
+	<property name="build.dir" location="${target}/build" />
+	<property name="dist.dir" location="${target}/dist" />
+
+	<property name="version" value="4.0.27" />
+
+	<!-- for debugging turn off gwt compile -->
+	<!-- <property name="no-gwt-compile" value="true" /> -->
+
+	<path id="project.class.path">
+		<fileset dir="war/WEB-INF/lib" includes="**/*.jar" />
+		<fileset dir="${bmt.lib.dir}" includes="**/*.jar" />
+		<pathelement location="${bmt.core.lib}" />
+		<pathelement location="${gwt.sdk}/gwt-user.jar" />
+		<fileset dir="${gwt.sdk}" includes="gwt-dev*.jar" />
+	</path>
+
+
+	<target name="init" depends="clean">
+		<tstamp />
+
+		<echo message="SageTV library location: ${sage.lib.dir}" />
+
+		<mkdir dir="${target}" />
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${dist.dir}/packages" />
+	</target>
+
+	<target name="compile" depends="init,gwtc">
+		<!-- Note, there is no real javac compiling for gwt web projects -->
+	</target>
+
+	<target name="gwtc" description="GWT compile to JavaScript" unless="no-gwt-compile">
+		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+			<classpath>
+				<pathelement location="${src.dir}" />
+				<path refid="project.class.path" />
+			</classpath>
+			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+			<jvmarg value="-Xmx256M" />
+			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+			<arg value="org.jdna.bmt.web.BMTWeb" />
+		</java>
+	</target>
+
+	<target name="war" depends="compile">
+		<war destfile="${build.dir}/bmt.war">
+			<fileset dir="war" excludes="**/*.log*,log4j.properties,**/cache/**,**/scrapers/**,**/testing/**,**/STVs/**,Sage.properties,**/logs/**,**/Backups/**" />
+		</war>
+	</target>
+
+	<target name="zip" depends="war">
+		<!-- is for Sage 6.x compatibility -->
+		<zip destfile="${dist.dir}/bmtweb-${version}.zip">
+			<zipfileset file="resources/jetty/bmt.xml" prefix="jetty/contexts" />
+			<zipfileset file="${build.dir}/bmt.war" prefix="jetty/webapps" />
+		</zip>
+	</target>
+
+	<target name="package-context">
+		<zip destfile="${dist.dir}/packages/bmtweb-context-${version}.zip">
+			<zipfileset file="resources/jetty/bmt.xml" prefix="jetty/contexts" />
+		</zip>
+	</target>
+
+	<target name="package-war">
+		<zip destfile="${dist.dir}/packages/bmtweb-war-${version}.zip">
+			<zipfileset file="${build.dir}/bmt.war" prefix="jetty/webapps" />
+		</zip>
+	</target>
+
+	<!-- Create the plugin's package for SageTV 7.0 and later -->
+	<target name="dist-plugin" depends="package-context, package-war" description="Build SageTV Plugin">
+		<copy tofile="${dist.dir}/packages/bmtweb-plugin-${version}.xml" file="resources/plugin/plugin.xml">
+		</copy>
+
+		<checksum file="${dist.dir}/packages/bmtweb-context-${version}.zip" property="md5.context" />
+		<checksum file="${dist.dir}/packages/bmtweb-war-${version}.zip" property="md5.war" />
+
+		<tstamp>
+			<format property="last-modified" pattern="yyyy.MM.dd"/>
+		</tstamp>
+		
+		<replace file="${dist.dir}/packages/bmtweb-plugin-${version}.xml" summary="yes">
+			<replacefilter token="@@last-modified@@" value="${last-modified}" />
+			<replacefilter token="@@version@@" value="${version}" />
+			<replacefilter token="@@context-checksum@@" value="${md5.context}" />
+			<replacefilter token="@@war-checksum@@" value="${md5.war}" />
+		</replace>
+		
+		<copy todir="${sage.home}/DeveloperPlugins/" failonerror="false">
+			<fileset dir="${dist.dir}/packages/"/>
+		</copy>
+	</target>
+
+	<target name="dist" depends="zip, dist-plugin" description="Rebuilds everything (gwt compile, etc) and then Builds the SageTV plugins">
+	</target>
+
+	<!-- upload to sagetv plugin area -->
+	<target name="publish-plugin">
+		<!-- download commons-net so that we can use the ftp plugin -->
+		<mkdir dir="${user.home}/.ant/lib"/>
+		<get src="http://repo1.maven.org/maven2/commons-net/commons-net/1.4.1/commons-net-1.4.1.jar" dest="${user.home}/.ant/lib/commons-net-1.4.1.jar" usetimestamp="true" />
+		
+		<ftp remotedir="plugins/stuckless/bmt" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" action="mkdir"/>		
+		<ftp remotedir="plugins/stuckless/bmt" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" binary="true" action="send">
+			<fileset dir="${dist.dir}/packages/" />
+		</ftp>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${target}" />
+	</target>
+</project>

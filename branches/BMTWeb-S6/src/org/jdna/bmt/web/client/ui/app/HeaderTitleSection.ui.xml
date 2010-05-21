@@ -1,0 +1,26 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:org.jdna.bmt.web.client.ui.util">
+	<ui:style>
+	.servers {
+		margin-left: 20px;
+	}
+	.server {
+		text-decoration: underline;
+		margin-left: 5px;
+	}
+	.serverLabel {
+		font-weight: bold;
+	}
+	</ui:style>
+	<g:HorizontalPanel>
+		<g:Label ui:field="title" addStyleNames="AppPanel-Title"/>
+		<g:VerticalPanel ui:field="serverInfo" visible="false">
+			<g:HorizontalPanel addStyleNames="{style.servers}">
+				<g:Label addStyleNames="{style.serverLabel}">Server:&nbsp;</g:Label>
+				<g:Label ui:field="server" addStyleNames="clickable {style.server}">Locating...</g:Label>
+			</g:HorizontalPanel>
+		</g:VerticalPanel>
+	</g:HorizontalPanel>
+</ui:UiBinder> 

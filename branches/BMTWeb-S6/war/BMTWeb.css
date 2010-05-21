@@ -1,0 +1,393 @@
+/** Add css rules here for your application. */
+
+
+/** Example rules used by the template application (remove for your app) */
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  color: #777777;
+  margin: 40px 0px 70px;
+  text-align: center;
+}
+
+.form-label {
+	font-weight: bold;
+}
+
+.simple-action {
+	margin-left: 10px;
+}
+
+/** Most GWT widgets already have a style name defined */
+.gwt-DialogBox {
+  width: 400px;
+}
+
+.dialogVPanel {
+  margin: 5px;
+}
+
+/** Set ids using widget.getElement().setId("idOfElement") */
+#closeButton {
+  margin: 15px 6px 6px;
+}
+
+.bmt-PrefPanelTitle, .StatusBox-Title {
+  	font-size: 1.2em;
+	font-weight: bold;
+    margin-bottom: 10px;
+  	color: #777777;
+}
+
+.StatusBox {
+	border: 5px solid #F2F2F2;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -khtml-border-radius: 20px;
+    border-radius: 20px;
+    background-color: #F2F2F2;
+}
+
+.StatusBox-Title {
+	  	font-size: 1.2em;
+  	text-decoration: underline;
+}
+
+.warn {
+	color: #E8691B;
+}
+
+.error {
+	color: #CD1315;
+}
+
+.AppPanel-Header {
+	background-image: url("gradient-back3.jpg");
+	background-repeat: repeat-x;
+}
+
+.AppPanel-Header, .AppPanel-Header a, .AppPanel-Header a:link, .AppPanel-Header a:visited, .AppPanel-Header .gwt-Label {
+	background-color: transparent;
+	color: white;
+}
+
+
+.AppPanel-Title {
+  	font-size: 1.8em;
+	font-weight: bold;
+	color: white;
+}
+
+.Row-Even td.RowCell {
+	border-bottom: 1px dotted black;
+}
+
+.Row-Odd td.RowCell {
+	border-bottom: 1px dotted black;
+		xbackground-color: #F3F3F3;
+}
+
+.MediaItem {
+	border-bottom: 1px solid black;
+	cursor: pointer;
+}
+
+.MediaItem-Image {
+	height: 120px;
+}
+
+.MediaItem_hover {
+	background-color: #F3F3F3;
+}
+
+.MediaItem_selected {
+	background-color: #909090;
+}
+
+.MediaItem_updated {
+	background-color: #03932A;
+}
+
+.MediaItem-PrimaryTitle {
+
+}
+
+.MediaItem-MinorTitle {
+	font-size: smaller;
+	font-style: italic;
+}
+
+.MissingImage {
+	border: 3px solid black;
+	background-color: #F3F3F3;
+}
+
+.Arrow {
+	background:transparent url(listArrow.png) no-repeat scroll right center;
+	color:inherit;
+	display:block;
+	background-color: black;
+}
+
+.HelpLabel-icon {
+	cursor: pointer;
+}
+
+.HelpLabel-Property {
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+
+.HelpLabel-HelpText {
+	padding-bottom: 10px;
+}
+
+.App-Configure {
+	background-image: url("images/16x16/applications-system.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
+.App-Status {
+	background-image: url("images/16x16/dialog-information.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
+.App-Scan {
+	background-image: url("images/16x16/system-search.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
+.App-Browse {
+	background-image: url("images/16x16/folder-saved-search.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
+.App-Refresh {
+	background-image: url("images/16x16/view-refresh.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
+.App-Toolmenu {
+	background-image: url("images/16x16/preferences-system.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
+
+.ImagePopupLabel-label {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.VideosSource-Deleted {
+	text-decoration: line-through;
+	color: red;
+}
+
+.VideoSource-Row td {
+	border-bottom: 1px dotted black; 
+}
+
+.InfoPanel, .DataDialog-HeaderBox {
+	xbackground-color: #EDEFF4;
+	background-color: #FFF9D7;
+	border-color: #E2C822;
+	margin: 5 5 5 5;
+	padding: 5 5 5 5;
+	border: 2px solid #E2C822;
+	-moz-border-radius: 7px;
+    border-radius: 7px;
+    text-align: center;
+}
+
+.DataDialog-ButtonBox {
+	padding-top: 5px;
+}
+
+.ProgressPanel-Cancel {
+	font-size: x-small;
+	text-decoration: underline;
+	color: black;
+	font-style: italic;
+}
+
+.BrowsePanel {
+}
+
+.BrowsePanel .MediaItem {
+	float: left;
+	border: 2px groove black;
+	width: 150px;
+	height: 200px;
+	min-height: 100px;
+	min-width: 50px;
+	margin: 10 10 10 10;
+	padding: 5 5 5 5;
+
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.MediaItem .MediaItem-Title1 {
+	font-weight: bold;
+}
+
+.MediaItem .MediaItem-Title2 {
+	font-style: italic;
+	font-size: smaller;
+}
+
+.MediaMetadata-PosterSmall {
+	height: 40px;
+}
+
+.BrowsePanel .MediaFolder {
+}
+
+.SideMenuItem {
+	height: 30px;
+	border-bottom: 1px solid black;
+	cursor: pointer;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.hover {
+	background-color: #F3F3F3;
+}
+
+.SideMenuItem-selected {
+	background-color: #909090;
+}
+
+. SideMenuItem-Label {
+}
+
+.SideMenuPanel-Label {
+	border-bottom: 3px solid black;
+}
+
+.SideMenuPanel-LabelText {
+	font-size: larger;
+	font-weight: bold;	
+	overflow: hidden;
+}
+
+.HorizontalButtonBar {
+	background-color: #F3F3F3;
+	border-top: 1px solid black;
+	border-bottom: 2px solid black;
+}
+
+.ScanSideMenuItem-status {
+	font-size: small;
+	font-weight: normal;
+	font-style: italic;	
+	overflow: hidden;
+}
+
+.CastMember-Title1 {
+  	font-size: 1.1em;
+  	font-weight: bold;
+}
+
+.CastMember-Title2 {
+  	font-style: italic;
+}
+
+.StatusValue-LabelSeparator {
+	font-weight: bold;
+	font-size: larger;
+	font-style: italic;
+	padding-top: 5px;
+}
+
+.SearchBox {
+	border: 2px groove black;
+}
+
+.SearchBox input {
+	border: hidden;
+}
+
+.SearchBox-Empty {
+	color: #909090;
+	font-style: italic;
+}
+
+.SystemMessage {
+	border-bottom: 1px dotted black;
+	padding-bottom: 5px;
+}
+
+.SystemMessage-Header {
+	font-weight: bold;
+}
+
+.SystemMessage-Level2 {
+	color: orange;
+}
+.SystemMessage-Level3 {
+	color: red;
+}
+
+.CommandItem {
+	cursor: pointer;
+}
+
+.CommandItem-Hover {
+	background-color: #F3F3F3;
+	text-decoration: underline;
+}
+
+.CommandItem-Icon {
+	padding-right: 3px;
+}
+
+.SideMenuItem .HorizontalButtonBar {
+	background-color: transparent;
+	border: none;
+}
+
+.Header {
+  	font-size: 1.8em;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+.Data {
+	
+}
+
+.Header-Messages {
+	height: 25px;
+	border-bottom: 1px solid black;
+	margin-bottom: 3px;
+}
+
+.Header-Messages .INFO, .Header-Messages .WARN, .Header-Messages .ERROR {
+	font-weight: bold;
+	font-style: italic;
+}
+
+.Header-Messages .INFO {
+	color: blue;
+}
+
+.Header-Messages .WARN {
+	color: #E8691B;
+}
+
+.Header-Messages .ERROR {
+	color: #CD1315;
+}
+
+.FanartImageHover {
+}
+
+.FanartImageNormal {
+}
+
