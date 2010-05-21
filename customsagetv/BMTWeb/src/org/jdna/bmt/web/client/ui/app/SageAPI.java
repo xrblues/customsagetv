@@ -100,4 +100,8 @@ public class SageAPI {
             Application.fireErrorEvent("Failed to call: " + url, e);
         }
     }
+    
+    public static SageServiceAsync getService() {
+        return api;
+    }
 }
