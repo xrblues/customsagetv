@@ -26,6 +26,7 @@ public class api {
         return Version.VERSION;
     }
     
+    @Deprecated
     public static void InstallBMTPlugin() {
         log.debug("BMT Plugin is being installed.");
         String bmtClass=org.jdna.sage.MetadataUpdaterPlugin.class.getName();
@@ -65,6 +66,7 @@ public class api {
         }
     }
 
+    @Deprecated
     public static void RemoveBMTPlugin() {
         String bmtClass=org.jdna.sage.MetadataUpdaterPlugin.class.getName();
         String plugins = Configuration.GetServerProperty("mediafile_metadata_parser_plugins",null);
@@ -76,6 +78,7 @@ public class api {
         }
     }
     
+    @Deprecated
     public static void SetBMTPluginInstalled(boolean on) {
         if (on) {
             InstallBMTPlugin();
@@ -84,6 +87,7 @@ public class api {
         }
     }
     
+    @Deprecated
     public static boolean IsBMTPluginInstalled() {
         String bmtClass=org.jdna.sage.MetadataUpdaterPlugin.class.getName();
         String plugins = Configuration.GetServerProperty("mediafile_metadata_parser_plugins",null);

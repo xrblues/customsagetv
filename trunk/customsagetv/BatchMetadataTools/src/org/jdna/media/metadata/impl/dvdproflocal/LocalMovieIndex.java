@@ -13,10 +13,14 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.SimpleFSDirectory;
+import org.apache.lucene.util.Version;
 import org.jdna.media.metadata.MediaSearchResult;
 import org.jdna.media.metadata.MetadataConfiguration;
 import org.jdna.media.metadata.MetadataUtil;
@@ -34,8 +38,8 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
     private File                   indexDir = null;
 
     private Searcher               searcher = null;
-    private Analyzer               analyzer = new StandardAnalyzer();
-    private QueryParser            parser   = new QueryParser("title", analyzer);
+    private Analyzer               analyzer = new StandardAnalyzer(Version.LUCENE_30);
+    private QueryParser            parser   = new QueryParser(Version.LUCENE_30, "title", analyzer);
 
     public MetadataConfiguration cfg = GroupProxy.get(MetadataConfiguration.class);
     
@@ -49,7 +53,7 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
     }
 
     public void beginIndexing() throws Exception {
-        writer = new IndexWriter(getIndexDir(), new StandardAnalyzer(), true);
+        writer = new IndexWriter(new SimpleFSDirectory(getIndexDir()), analyzer, true, IndexWriter.MaxFieldLength.LIMITED);
     }
 
     public void endIndexing() throws Exception {
@@ -68,7 +72,7 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
 
         log.debug("Opening Lucene Index: " + indexDir.getAbsolutePath());
 
-        reader = IndexReader.open(indexDir);
+        reader = IndexReader.open(new SimpleFSDirectory(indexDir));
         searcher = new IndexSearcher(reader);
     }
 
@@ -90,12 +94,12 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
         title=org.jdna.util.StringUtils.removeHtml(title);
         
         // index titles
-        doc.add(new Field("title", title, Field.Store.YES, Field.Index.TOKENIZED));
+        doc.add(new Field("title", title, Field.Store.YES, Field.Index.ANALYZED));
 
         // store the alt title, if there is one.
         if(!StringUtils.isEmpty(altTitle)) {
             altTitle = org.jdna.util.StringUtils.removeHtml(altTitle);
-            doc.add(new Field("alttitle", altTitle, Field.Store.YES, Field.Index.TOKENIZED));
+            doc.add(new Field("alttitle", altTitle, Field.Store.YES, Field.Index.ANALYZED));
         }
 
         // Store release date but not index
@@ -117,13 +121,14 @@ public class LocalMovieIndex implements IDVDProfMovieNodeVisitor {
             query = parser.parse(title);
         }
         
-        Hits hits = searcher.search(query);
+        TopDocs hits = searcher.search(query, 10);
         
-        int l = hits.length();
+        int l = hits.totalHits;
         List<IMetadataSearchResult> results = new ArrayList<IMetadataSearchResult>(l);
 
         for (int i = 0; i < l; i++) {
-            Document d = hits.doc(i);
+            ScoreDoc sd = hits.scoreDocs[i];
+            Document d = searcher.doc(sd.doc);
             String name = d.get("title");
             String altTitle = d.get("alttitle");
             String date = d.get("release");

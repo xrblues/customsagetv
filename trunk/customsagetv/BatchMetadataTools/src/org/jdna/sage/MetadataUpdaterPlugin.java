@@ -71,8 +71,10 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
             return null;
         }
 
+        log.debug("BMT: AutomatiPlugin: File: " + file + "; arg: " + arg);
+        
         if (!pluginConfig.getEnabled()) {
-            log.warn("BMT Automatic Plugin Disabled.");
+            log.warn("BMT Automatic Plugin Disabled; Returning null");
             return null;
         }
 
@@ -112,6 +114,8 @@ public class MetadataUpdaterPlugin implements MediaFileMetadataParser {
         // no need to touch files when using the automatic plugin
         options.setTouchingFiles(false);
 
+        //options.setDownloadFanartInBackground(true);
+        
         // tell the persistence engines that we are using the automatic plugin...
         options.setUsingAutomaticPlugin(true);
         

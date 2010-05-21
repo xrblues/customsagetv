@@ -94,12 +94,18 @@ public class TVDBItemParser {
                     addSeasonEpisodeInfoByTitle(md, title);
                 }
 
-                if (StringUtils.isEmpty(MetadataAPI.getEpisodeTitle(md)) || StringUtils.isEmpty(MetadataAPI.getSeason(md)) || StringUtils.isEmpty(MetadataAPI.getEpisode(md))) {
-                    throw new Exception("Did not find a valid season and episode; Search Season: " + season + "; Episode: " + episode + "; Search Date: " + date + "; Search Title: " + title);
+                if (StringUtils.isEmpty(MetadataAPI.getSeason(md))) {
+                    throw new Exception("Cannot process TV without a valid season; Result: " + result);
                 }
-
-                if (!StringUtils.isEmpty(MetadataAPI.getSeason(md))) {
-                    addBanners(md, season);
+                
+                if (StringUtils.isEmpty(MetadataAPI.getDisc(md))) {
+                    // if it's not disc based, then check that we have a valid series info
+                    if (StringUtils.isEmpty(MetadataAPI.getEpisodeTitle(md)) || StringUtils.isEmpty(MetadataAPI.getEpisode(md))) {
+                        throw new Exception("Did not find a valid season and episode; Episode: " + episode + "; Search Date: " + date + "; Search Title: " + title);
+                    }
+                } else {
+                    // TODO: gather all the episode titles and add them to the description
+                    // TODO: set the episode title to be "23 episodes"
                 }
                 
                 md.setProviderId(TVDBMetadataProvider.PROVIDER_ID);
@@ -107,6 +113,7 @@ public class TVDBItemParser {
 
                 // now add in banners and actors, no point in doing it early
                 addActors(md);
+                addBanners(md, season);
                 addBanners(md, null);
             } catch (Exception e) {
                 log.warn("Failed while parsing series: " + result, e);
