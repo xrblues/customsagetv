@@ -105,7 +105,7 @@ And you should have a `GenericTunerPlugin.so`.
  gentuner.LOCAL TUNE REMOTE_NAME_HERE 123
  }}}
  etc
- * Copy your version of gentuner to where the plugin can find it:
+ * Copy your version of gentuner to where the plugin expects it. Note that currently the Generic Tuner Plugin has the path to gentuner hardcoded to `/opt/sagetv/server/gentuner`. You can create a symlink or recompile if you need to put the plugin elsewhere.
  {{{
  cp gentuner.LOCAL /opt/sagetv/server/gentuner
  }}}
@@ -114,6 +114,7 @@ And you should have a `GenericTunerPlugin.so`.
   Unfortunately, SageTV does not provide an easy way to change the tuning plugin for a video souce after the source is initially configured.
  Your options are:
    * Remove the video source and re-add it, selecting "Generic Tuner" when asked to select a tuning plugin. Note that removing and re-adding the video source will likely involve other work to get the configuration back to where you had it.
+ Or: _(not recommended, does not work as expected)_ 
    * After stopping the SageTV process, edit the Sage.properties file and change the appropriate "tuning_plugin" value to be:
      {{{/opt/sagetv/server/irtunerplugins/GenericTunerPlugin.so}}}
  * Stop and start SageTV
