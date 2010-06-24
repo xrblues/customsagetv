@@ -13,14 +13,14 @@ import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.ui.status.StatusServices;
 import org.jdna.bmt.web.client.ui.status.StatusValue;
 import org.jdna.bmt.web.client.ui.status.SystemMessage;
-import org.jdna.bmt.web.client.util.StringUtils;
 import org.jdna.metadataupdater.Version;
 import org.jdna.util.JarInfo;
 import org.jdna.util.JarUtil;
 
-import sagex.api.Configuration;
 import sagex.api.Global;
 import sagex.api.SystemMessageAPI;
+import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.metadata.MetadataConfiguration;
 import sagex.phoenix.util.SageTV;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -41,18 +41,12 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
         try {
             List<StatusValue> status = new LinkedList<StatusValue>();
             if ("phoenix".equals(statusType)) {
+            	MetadataConfiguration config = GroupProxy.get(MetadataConfiguration.class);
                 status.add(new StatusValue("Version", phoenix.api.GetVersion()));
                 status.add(new StatusValue("sagex.api Version", sagex.api.Version.GetVersion(), warn(!phoenix.api.IsAtLeastVersion(sagex.api.Version.GetVersion(), phoenix.api.GetRequiredSagexApiVersion()))));
+                status.add(new StatusValue("Automatic Metadata/Fanart Lookups Enabled", String.valueOf(config.isAutomatedFanartEnabled())));
                 status.add(new StatusValue("Fanart Enabled", String.valueOf(phoenix.api.IsFanartEnabled()), warn(!phoenix.api.IsFanartEnabled()), "Fanart Cannot work if it is not enabled :)"));
                 status.add(new StatusValue("Fanart Folder", phoenix.api.GetFanartCentralFolder(), error(!new File(phoenix.api.GetFanartCentralFolder()).exists())));
-
-            } else if ("bmt".equals(statusType)) {
-                status.add(new StatusValue("Version", bmt.api.GetVersion()));
-                String plugins = Configuration.GetServerProperty("mediafile_metadata_parser_plugins", null);
-                boolean isMDPluginEnabled = plugins != null && plugins.indexOf("org.jdna.sage.MetadataUpdaterPlugin") != -1;
-                status.add(new StatusValue("Automatic Plugin Enabled (Server)", String.valueOf(isMDPluginEnabled), warn(!isMDPluginEnabled)));
-                String fields = Configuration.GetServerProperty("custom_metadata_properties", null);
-                status.add(new StatusValue("Custom Fields Configured", String.valueOf(!StringUtils.isEmpty(fields)), warn(StringUtils.isEmpty(fields))));
 
             } else if ("sagetv".equals(statusType)) {
                 status.add(new StatusValue("Version", SageTV.getSageVersion()));
@@ -63,6 +57,7 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
                 if (!Global.IsDoingLibraryImportScan()) {
                     status.add(new StatusValue("Recordings Used Diskspace", String.format("%,.2f G", ((float) Global.GetUsedVideoDiskspace()) / 1000.0f / 1000.0f / 1000.0f)));
                 }
+                
                 status.add(new StatusValue("Library Import Scan in Progress", String.valueOf(Global.IsDoingLibraryImportScan()), warn(Global.IsDoingLibraryImportScan())));
 
                 Runtime runtime = Runtime.getRuntime();

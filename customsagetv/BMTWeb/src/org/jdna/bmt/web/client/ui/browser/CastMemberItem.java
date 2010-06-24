@@ -1,7 +1,8 @@
 package org.jdna.bmt.web.client.ui.browser;
 
 import org.jdna.bmt.web.client.ui.util.SideMenuItem;
-import org.jdna.media.metadata.ICastMember;
+
+import sagex.phoenix.metadata.ICastMember;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
@@ -9,9 +10,18 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CastMemberItem extends SideMenuItem<ICastMember> {
-
-    public CastMemberItem(String label, String iconUrl, ClickHandler onclick) {
+    private String title;
+    private String role;
+    
+	public CastMemberItem(String title, String label, String iconUrl, ClickHandler onclick) {
         super(label, iconUrl, onclick);
+        this.title=title;
+    }
+
+	public CastMemberItem(String title, String label, String role, String iconUrl, ClickHandler onclick) {
+        super(label, iconUrl, onclick);
+        this.title=title;
+        this.role=role;
     }
 
     /* (non-Javadoc)
@@ -29,26 +39,12 @@ public class CastMemberItem extends SideMenuItem<ICastMember> {
         vp.add(l1);
         
         Label l2 = null;
-        if (cm.getType() == ICastMember.ACTOR) {
-            if (cm.getPart()!=null) {
-                l2 = new Label(cm.getPart());
-            } else {
-                l2 = new Label("Actor");
-            }
+        if (role!=null) {
+            l2 = new Label(role);
+        } else {
+            l2 = new Label(title);
         }
-        
-        if (cm.getType() == ICastMember.DIRECTOR) {
-            l2 = new Label("Director");
-        }
-        
-        if (cm.getType() == ICastMember.WRITER) {
-            l2 = new Label("Writer");
-        }
-
-        if (cm.getType() == ICastMember.OTHER) {
-            l2 = new Label("Other");
-        }
-        
+            
         if (l2!=null) {
             l2.setStyleName("CastMember-Title2");
             vp.add(l2);

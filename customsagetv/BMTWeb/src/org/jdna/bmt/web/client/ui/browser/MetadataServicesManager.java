@@ -11,7 +11,7 @@ import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
 
-import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.metadata.MediaArtifactType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;

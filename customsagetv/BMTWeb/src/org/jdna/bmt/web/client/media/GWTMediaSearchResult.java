@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import sagex.phoenix.fanart.IMetadataSearchResult;
-import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.metadata.IMetadataSearchResult;
+import sagex.phoenix.metadata.MediaType;
 
 public class GWTMediaSearchResult implements Serializable, IMetadataSearchResult {
     private static final long serialVersionUID = 1L;
@@ -13,7 +13,7 @@ public class GWTMediaSearchResult implements Serializable, IMetadataSearchResult
     private String providerId;
     private float score;
     private String title;
-    private String year;
+    private int year;
     private int mediaFileId;
     private MediaType type;
     private String id;
@@ -42,7 +42,7 @@ public class GWTMediaSearchResult implements Serializable, IMetadataSearchResult
         return title;
     }
 
-    public String getYear() {
+    public int getYear() {
         return year;
     }
 
@@ -58,7 +58,7 @@ public class GWTMediaSearchResult implements Serializable, IMetadataSearchResult
         this.title = title;
     }
 
-    public void setYear(String year) {
+    public void setYear(int year) {
         this.year = year;
     }
 
@@ -89,4 +89,50 @@ public class GWTMediaSearchResult implements Serializable, IMetadataSearchResult
     public void setId(String id) {
         this.id=id;
     }
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("GWTMediaSearchResult [");
+		if (extra != null) {
+			builder.append("extra=");
+			builder.append(extra);
+			builder.append(", ");
+		}
+		if (id != null) {
+			builder.append("id=");
+			builder.append(id);
+			builder.append(", ");
+		}
+		builder.append("mediaFileId=");
+		builder.append(mediaFileId);
+		builder.append(", ");
+		if (providerId != null) {
+			builder.append("providerId=");
+			builder.append(providerId);
+			builder.append(", ");
+		}
+		builder.append("score=");
+		builder.append(score);
+		builder.append(", ");
+		if (title != null) {
+			builder.append("title=");
+			builder.append(title);
+			builder.append(", ");
+		}
+		if (type != null) {
+			builder.append("type=");
+			builder.append(type);
+			builder.append(", ");
+		}
+		if (url != null) {
+			builder.append("url=");
+			builder.append(url);
+			builder.append(", ");
+		}
+		builder.append("year=");
+		builder.append(year);
+		builder.append("]");
+		return builder.toString();
+	}
 }

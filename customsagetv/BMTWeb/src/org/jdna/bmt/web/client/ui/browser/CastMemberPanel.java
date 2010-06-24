@@ -1,12 +1,11 @@
 package org.jdna.bmt.web.client.ui.browser;
 
-import java.util.List;
-
 import org.jdna.bmt.web.client.media.GWTCastMember;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
-import org.jdna.media.metadata.ICastMember;
+
+import sagex.phoenix.metadata.ICastMember;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -33,11 +32,23 @@ public class CastMemberPanel extends Composite implements ClickHandler {
         GWTMediaMetadata md = file.getMetadata();
         if (md==null) return;
         
-        List<ICastMember> cast = md.getCastMembers();
-        if (cast==null || cast.size()==0) return;
-        
-        for (ICastMember c : cast) {
-            CastMemberItem cm = new CastMemberItem(c.getName(), null, this);
+        for (ICastMember c : md.getDirectors()) {
+            CastMemberItem cm = new CastMemberItem("Director", c.getName(), null, this);
+            cm.setUserData(c);
+            panel.add(cm);
+        }
+        for (ICastMember c : md.getWriters()) {
+            CastMemberItem cm = new CastMemberItem("Writer", c.getName(), null, this);
+            cm.setUserData(c);
+            panel.add(cm);
+        }
+        for (ICastMember c : md.getActors()) {
+            CastMemberItem cm = new CastMemberItem("Actor", c.getName(), c.getRole(), null, this);
+            cm.setUserData(c);
+            panel.add(cm);
+        }
+        for (ICastMember c : md.getGuests()) {
+            CastMemberItem cm = new CastMemberItem("Guest", c.getName(), c.getRole(), null, this);
             cm.setUserData(c);
             panel.add(cm);
         }

@@ -23,7 +23,7 @@
 	<property name="build.dir" location="${target}/build" />
 	<property name="dist.dir" location="${target}/dist" />
 
-	<property name="version" value="4.0.27" />
+	<property name="version" value="4.1.0" />
 
 	<!-- for debugging turn off gwt compile -->
 	<!-- <property name="no-gwt-compile" value="true" /> -->
@@ -115,7 +115,7 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="zip, dist-plugin" description="Rebuilds everything (gwt compile, etc) and then Builds the SageTV plugins">
+	<target name="dist" depends="zip, dist-plugin" description="Rebuilds everything (gwt compile, etc) and then Builds the SageTV plugins (calls dist-plugin)">
 	</target>
 
 	<!-- upload to sagetv plugin area -->

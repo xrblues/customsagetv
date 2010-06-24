@@ -1,6 +1,7 @@
 package org.jdna.bmt.web.server;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
@@ -23,7 +24,13 @@ public class ServicesInit {
                 
                 try {
                     System.out.println("*** BEGIN Copying Phoenix files for Testing.... ***");
-                    FileUtils.copyDirectory(new File("/home/seans/DevelopmentProjects/workspaces/sage/Phoenix/src/main/STVs/Phoenix/"), new File("testing/Phoenix/"));
+                    FileUtils.copyDirectory(new File("/home/seans/DevelopmentProjects/workspaces/sagetv/Phoenix/src/main/STVs/Phoenix/"), new File("testing/Phoenix/"), new FileFilter() {
+						@Override
+						public boolean accept(File pathname) {
+							if (pathname.getName().endsWith(".svn")) return false;
+							return true;
+						}
+					});
                     System.out.println("*** END Copying Phoenix files for Testing.... ***");
                 } catch (IOException e) {
                     // TODO Auto-generated catch block

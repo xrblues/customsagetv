@@ -9,8 +9,6 @@ import org.jdna.bmt.web.client.event.NotificationEvent;
 import org.jdna.bmt.web.client.event.NotificationEventHandler;
 import org.jdna.bmt.web.client.event.NotificationEvent.MessageType;
 import org.jdna.bmt.web.client.ui.browser.BrowsePanel;
-import org.jdna.bmt.web.client.ui.browser.MetadataService;
-import org.jdna.bmt.web.client.ui.browser.MetadataServiceAsync;
 import org.jdna.bmt.web.client.ui.debug.BackupPanel;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesPanel;
 import org.jdna.bmt.web.client.ui.status.StatusPanel;
@@ -18,7 +16,6 @@ import org.jdna.bmt.web.client.ui.util.CommandItem;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.util.Log;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
@@ -75,7 +72,15 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         Hyperlink refresh = new Hyperlink(Application.labels().refreshLibrary(), "refresh");
         refresh.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                setRefreshPanel();
+                SageAPI.refreshLibrary(false, new AsyncCallback<String>() {
+                    public void onFailure(Throwable caught) {
+                        Application.fireErrorEvent(Application.messages().failedToStartScan(), caught);
+                    }
+
+                    public void onSuccess(String result) {
+                        Application.fireNotification(result);
+                    }
+                });
             }
         });
         refresh.addStyleName("App-Refresh");
