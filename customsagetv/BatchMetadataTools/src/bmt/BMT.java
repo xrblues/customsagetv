@@ -1,12 +1,8 @@
 package bmt;
 
-import java.util.Calendar;
-
 import org.apache.log4j.Logger;
 import org.jdna.metadataupdater.Version;
-import org.jdna.url.CachedUrlCleanupTask;
 
-import sagex.phoenix.Phoenix;
 import sagex.phoenix.util.SageTV;
 import sagex.util.Log4jConfigurator;
 
@@ -41,10 +37,6 @@ public class BMT {
             log.info("   Java Version:  " + System.getProperty("java.version"));
             log.info(" Java Classpath:  " + System.getProperty("java.class.path"));
             log.info("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
-
-            // Add clean up tasks
-            log.info("Registering URL Cache Cleaner Process");
-            Phoenix.getInstance().getTaskManager().scheduleTask(CachedUrlCleanupTask.TaskID, new CachedUrlCleanupTask(), Calendar.getInstance().getTime(), 24 * 60 * 60 * 1000);
         } catch (Throwable t) {
             Logger.getRootLogger().error("Failed to initialize BMT!", t);
         }

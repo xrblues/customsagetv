@@ -2,15 +2,10 @@ package org.jdna.metadataupdater;
 
 import java.util.List;
 
-import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.IMediaArt;
-import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.media.metadata.IMediaMetadataPersistence;
-import org.jdna.media.metadata.MetadataAPI;
-import org.jdna.media.metadata.MetadataKey;
-import org.jdna.util.PersistenceFactory;
-
-import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.metadata.ICastMember;
+import sagex.phoenix.metadata.IMediaArt;
+import sagex.phoenix.metadata.IMetadata;
+import sagex.phoenix.progress.IProgressMonitor;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaResource;
 import sagex.phoenix.vfs.IMediaResourceVisitor;
@@ -19,82 +14,57 @@ import sagex.phoenix.vfs.util.PathUtils;
 
 public class ListMovieVisitor implements IMediaResourceVisitor {
     private boolean verbose = false;
-    private IMediaMetadataPersistence persistence;
 
-    public ListMovieVisitor(boolean verbose) {
-        this.verbose = verbose;
-        this.persistence = PersistenceFactory.getPropertiesPersistence();
-        System.out.printf("\nListing Movies\n- = Missing MetaData;\n");
-    }
-
-    public boolean visit(IMediaResource resource) {
+	public boolean visit(IMediaResource resource, IProgressMonitor monitor) {
         if (resource.isType(MediaResourceType.ANY_VIDEO.value())) {
             if (verbose) {
                 showMetadata((IMediaFile) resource);
             } else {
-                IMediaMetadata md = persistence.loadMetaData(resource);
                 IMediaFile mediaFile = (IMediaFile) resource;
-                String code = ((md == null) ? "-" : " ");
+                String code = " ";
                 System.out.printf("%s %-40s (%s)\n", code, mediaFile.getTitle(), PathUtils.getLocation(mediaFile));
             }
         }
         return true;
+	}
+
+	public ListMovieVisitor(boolean verbose) {
+        this.verbose = verbose;
+        System.out.printf("\nListing Movies\n- = Missing MetaData;\n");
     }
 
     public void showMetadata(IMediaFile mf) {
-        printMetadata(persistence.loadMetaData(mf), PathUtils.getName(mf), PathUtils.getLocation(mf));
+        printMetadata(mf.getMetadata(), PathUtils.getName(mf), PathUtils.getLocation(mf));
     }
     
-    public static void printMetadata(IMediaMetadata md, String name, String location) {
+    public static void printMetadata(IMetadata md, String name, String location) {
         if (md == null) {
             System.out.println("No Metadata for: " + location);
         } else {
             col2("--- BEGIN:", name);
             col2("Movie:", name);
-            col2("Title:", MetadataAPI.getMediaTitle(md));
-            col2("Plot:", MetadataAPI.getDescription(md));
-            col2("Genres:", toGenreString(MetadataAPI.getGenres(md)));
-            col2("MPAA Rating:", md.getString(MetadataKey.MPAA_RATING));
-            col2("MPAA Rating Full:", md.getString(MetadataKey.MPAA_RATING_DESCRIPTION));
-            col2("User Rating:", MetadataAPI.getUserRating(md));
-            col2("Company:", md.getString(MetadataKey.COMPANY));
-            col2("Year:", MetadataAPI.getYear(md));
-            col2("Release Date:", MetadataAPI.getReleaseDate(md));
-            col2("Runtime:", MetadataAPI.getRuntime(md));
-            col2("Aspect Ratio:", md.getString(MetadataKey.ASPECT_RATIO));
-            col2("Provider DataId:", (MetadataAPI.getProviderDataId(md)==null?"Not Set":MetadataAPI.getProviderDataId(md)));
-            col2("Provider Id:", MetadataAPI.getProviderId(md));
-            if (MetadataAPI.getMediaArt(md, MediaArtifactType.POSTER) != null) {
-                List<IMediaArt> maArr = MetadataAPI.getMediaArt(md, MediaArtifactType.POSTER);
+            col2("Title:", md.getMediaTitle());
+            col2("Plot:", md.getDescription());
+            col2("Genres:", toGenreString(md.getGenres()));
+            col2("MPAA Rating:", md.getRated());
+            col2("MPAA Rating Full:", md.getExtendedRatings());
+            col2("User Rating:", md.getUserRating());
+            col2("Year:", md.getYear());
+            col2("Release Date:", md.getOriginalAirDate());
+            col2("Runtime:", md.getRunningTime());
+            col2("Provider DataId:", md.getMediaProviderDataID());
+            col2("Provider Id:", md.getMediaProviderID());
+                List<IMediaArt> maArr = md.getFanart();
                 for (int i=0;i<maArr.size();i++) {
-                    col2(String.format("Poster %s:", i+1), maArr.get(i).getDownloadUrl());
+                    col2(String.format("%s %s:", maArr.get(i).getType(), i+1), maArr.get(i).getDownloadUrl());
                 }
-            } else {
-                col2("Poster:", "No Poster");
-            }
-            if (MetadataAPI.getMediaArt(md, MediaArtifactType.BACKGROUND) != null) {
-                List<IMediaArt> maArr = MetadataAPI.getMediaArt(md, MediaArtifactType.BACKGROUND);
-                for (int i=0;i<maArr.size();i++) {
-                    col2(String.format("Background %s:", i+1), maArr.get(i).getDownloadUrl());
-                }
-            } else {
-                col2("Background:", "No Background");
-            }
-            if (MetadataAPI.getMediaArt(md, MediaArtifactType.BANNER) != null) {
-                List<IMediaArt> maArr = MetadataAPI.getMediaArt(md, MediaArtifactType.BANNER);
-                for (int i=0;i<maArr.size();i++) {
-                    col2(String.format("Banner %s:", i+1), maArr.get(i).getDownloadUrl());
-                }
-            } else {
-                col2("Banner:", "No Banner");
-            }
-            col2("Directors:", toSimpleCastString(MetadataAPI.getCastMembers(md, ICastMember.DIRECTOR)));
-            col2("Writers:", toSimpleCastString(MetadataAPI.getCastMembers(md, ICastMember.WRITER)));
-            List<ICastMember> actors = MetadataAPI.getCastMembers(md, ICastMember.ACTOR);
+            col2("Directors:", toSimpleCastString(md.getDirectors()));
+            col2("Writers:", toSimpleCastString(md.getWriters()));
+            List<ICastMember> actors = md.getActors();
             if (actors != null) {
                 col2("Actors:", "-----------");
                 for (ICastMember cm : actors) {
-                    col2(cm.getName() + ":", cm.getPart());
+                    col2(cm.getName() + ":", cm.getRole());
                 }
             } else {
                 col2("Actors:", "-- NONE --");
@@ -122,7 +92,7 @@ public class ListMovieVisitor implements IMediaResourceVisitor {
         return sb.toString();
     }
 
-    private static void col2(String c1, String c2) {
+    private static void col2(String c1, Object c2) {
         System.out.printf("%25s %s\n", c1, c2);
     }
 

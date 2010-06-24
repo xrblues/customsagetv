@@ -4,38 +4,54 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.jdna.media.metadata.IMediaMetadataPersistence;
-import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.PersistenceOptions;
-import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQueryFactory;
-import org.jdna.media.metadata.SearchQuery.Field;
-import org.jdna.media.metadata.impl.sage.SageProperty;
-import org.jdna.process.InteractiveMetadataProcessor;
-import org.jdna.process.MetadataItem;
 
-import sagex.phoenix.fanart.IMetadataSearchResult;
-import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.Phoenix;
+import sagex.phoenix.metadata.IMetadataOptions;
+import sagex.phoenix.metadata.IMetadataSearchResult;
+import sagex.phoenix.metadata.search.SearchQuery;
+import sagex.phoenix.metadata.search.SearchQueryFactory;
+import sagex.phoenix.metadata.search.SearchQuery.Field;
+import sagex.phoenix.progress.IProgressMonitor;
 import sagex.phoenix.progress.ProgressTracker;
 import sagex.phoenix.vfs.IMediaFile;
+import sagex.phoenix.vfs.IMediaResource;
+import sagex.phoenix.vfs.IMediaResourceVisitor;
 
-public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProcessor {
-    private Logger log         = Logger.getLogger(this.getClass());
+public class ConsoleInteractiveMetadataVisitor implements IMediaResourceVisitor {
+	private Logger log = Logger.getLogger(ConsoleInteractiveMetadataVisitor.class);
 
-    private int    displaySize = 10;
+	private enum State {Ignore, Search}
+	private State state = State.Search;
+	
+	private IMetadataOptions options = null;
+	private int displaySize;
+	
+	public ConsoleInteractiveMetadataVisitor(int displaySize, IMetadataOptions options) {
+		this.options=options;
+		this.displaySize=displaySize;
+	}
 
-    public ConsoleInteractiveMetadataProcessor(MediaType forceType, Map<MediaType, IMediaMetadataProvider> providers, IMediaMetadataPersistence persistence, PersistenceOptions options, int displaySize) {
-        super(forceType, providers, persistence, options);
-        this.displaySize = displaySize;
-    }
-
-    @Override
-    protected IMetadataSearchResult selectResult(IMediaFile mf, SearchQuery query, List<IMetadataSearchResult> results, ProgressTracker<MetadataItem> monitor) {
-        // Let's prompt for results
-        // draw the screen, and let the input handler decide what to do next
+	public boolean visit(IMediaResource res, IProgressMonitor monitor) {
+		state = State.Search;
+		while (state == State.Search && !(monitor.isCancelled() || monitor.isDone())) {
+			try {
+				SearchQuery query = SearchQueryFactory.getInstance().createQuery((IMediaFile) res);
+				List<IMetadataSearchResult> results = Phoenix.getInstance().getMetadataManager().search(query);
+				IMetadataSearchResult result = selectResult((IMediaFile)res, query, results, (ProgressTracker<IMediaFile>) monitor);
+				if (state!=State.Ignore && result!=null) {
+					Phoenix.getInstance().getMetadataManager().updateMetadata((IMediaFile) res, Phoenix.getInstance().getMetadataManager().getMetdata(result), options);
+				}
+			} catch (Exception e) {
+				log.warn("Interactive Search Failed!", e);
+				message("Error: " + e.getMessage());
+			}
+		}
+		return true;
+	}
+	
+    protected IMetadataSearchResult selectResult(IMediaFile mf, SearchQuery query, List<IMetadataSearchResult> results, ProgressTracker<IMediaFile> monitor) {
         log.debug("Showing Results for: " + query);
         renderResults("Search Results: " + query.get(SearchQuery.Field.QUERY), results, displaySize);
 
@@ -58,7 +74,7 @@ public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProc
             message("If you want to create an advanced query, then specify the query as...");
             message("{Field: 'value', Field: 'Value', Field: 'value', ...}");
             message("Where Field is one of the following Field names...");
-            message(" " + SageProperty.MEDIA_TYPE.sageKey +": [TV, Movies, Music]");
+            message(" MediaType: [TV, Movies, Music]");
             for (String s : SearchQueryFactory.getJSONQueryFields()) {
                 message(" " + s);
             }
@@ -109,13 +125,15 @@ public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProc
             
             IMetadataSearchResult sr = results.get(n);
             log.debug("User's Selected Title: " + sr.getTitle());
-            // TODO: remember the selected title
-            // ConfigurationManager.getInstance().setMetadataIdForTitle(query.get(SearchQuery.Field.QUERY), sr.getMetadataId());
             return sr;
         }
     }
 
-    public void renderResults(String title, List<IMetadataSearchResult> results, int max) {
+    private void setState(State state) {
+    	this.state=state;
+	}
+
+	public void renderResults(String title, List<IMetadataSearchResult> results, int max) {
         System.out.printf("\n\n%s\n", title);
         if (results==null) {
             System.out.println("No Results!");
@@ -147,5 +165,5 @@ public class ConsoleInteractiveMetadataProcessor extends InteractiveMetadataProc
 
         return resp;
     }
-
+	
 }

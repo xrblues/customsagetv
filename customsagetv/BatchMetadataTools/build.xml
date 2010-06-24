@@ -15,7 +15,7 @@
 	<property name="libs" value="lib" />
 
 	<property name="name" value="metadata-updater" />
-	<property name="version" value="4.0.27" />
+	<property name="version" value="4.1.0" />
 
 	<property name="launcher" value="MetadataTool" />
 	<property name="mainClass" value="org.jdna.metadataupdater.MetadataUpdater" />
@@ -87,7 +87,7 @@
 		<mkdir dir="${build.dir}/classes/gwt/src" />
 
 		<copy toDir="${build.dir}/classes/gwt/src" failonerror="true">
-			<fileset dir="src" includes="org/jdna/media/metadata/PersistenceOptions.java,org/jdna/media/metadata/SearchQuery.java,org/jdna/metadataupdater/Version.java,org/jdna/media/metadata/MetadataID.java,org/jdna/media/metadata/MetadataKey.java,org/jdna/media/IMediaFolder.java,org/jdna/media/metadata/ICastMember.java,org/jdna/media/metadata/IMediaMetadata.java,org/jdna/media/metadata/IMediaArt.java,org/jdna/media/metadata/IProviderInfo.java,org/jdna/media/metadata/IMediaMetadataPersistence.java,org/jdna/media/metadata/IMediaMetadataProvider.java,org/jdna/media/metadata/IMediaSearchResult.java,org/jdna/media/IMediaResource.java,org/jdna/media/IMediaResourceFilter.java,org/jdna/media/IMediaStackModel.java,org/jdna/media/IMediaFile.java,org/jdna/media/IMediaResourceVisitor.java,org/jdna/media/IPath.java">
+			<fileset dir="src" includes="org/jdna/metadataupdater/Version.java">
 				<exclude name="**/impl/**" />
 			</fileset>
 		</copy>
@@ -136,14 +136,6 @@
 
 	<target name="copyJars">
 		<copydir dest="${build.dir}/sage/JARs" src="${libs}" excludes="Sage*.jar,sage-plugin.jar,nielm*.jar,junit*.jar,easymock*.jar" />
-		<move file="${build.dir}/sage/JARs/commons-codec-1.3.jar" tofile="${build.dir}/sage/JARs/commons-codec.jar" />
-		<move file="${build.dir}/sage/JARs/commons-dbutils-1.3.jar" tofile="${build.dir}/sage/JARs/commons-dbutils.jar" />
-		<move file="${build.dir}/sage/JARs/commons-io-1.4.jar" tofile="${build.dir}/sage/JARs/commons-io.jar" />
-		<move file="${build.dir}/sage/JARs/commons-lang-2.4.jar" tofile="${build.dir}/sage/JARs/commons-lang.jar" />
-		<move file="${build.dir}/sage/JARs/log4j-1.2.15.jar" tofile="${build.dir}/sage/JARs/log4j.jar" />
-		<move file="${build.dir}/sage/JARs/lucene-core-2.4.1.jar" tofile="${build.dir}/sage/JARs/lucene-core.jar" />
-		<move file="${build.dir}/sage/JARs/h2-1.2.128.jar" tofile="${build.dir}/sage/JARs/h2.jar" />
-		<move file="${build.dir}/sage/JARs/htmlparser-1.6.jar" tofile="${build.dir}/sage/JARs/htmlparser.jar" />
 	</target>
 
 	<target name="buildVersion">
@@ -222,8 +214,7 @@
 			<zipfileset file="${build.dir}/sage/JARs/metadata-updater.jar" prefix="" />
 		</zip>
 		<zip destfile="${dist.dir}/packages/bmt-system-${version}.zip">
-			<zipfileset dir="${build.dir}/sage/STVs/" prefix="STVs" />
-			<zipfileset dir="${build.dir}/sage/scrapers/" prefix="scrapers" />
+			<zipfileset file="${build.dir}/sage/MetadataTool.jar" prefix="" />
 		</zip>
 	</target>
 

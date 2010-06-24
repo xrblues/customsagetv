@@ -16,15 +16,12 @@ import java.util.Properties;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
-import org.jdna.media.metadata.impl.sage.SageProperty;
 import org.jdna.sage.MetadataUpdaterPlugin;
-import org.jdna.sage.PluginConfiguration;
-import org.jdna.util.Pair;
-import org.jdna.util.ParserUtils;
 
 import sagex.api.MediaFileAPI;
-import sagex.phoenix.configuration.proxy.GroupProxy;
-import sagex.phoenix.fanart.IMetadataSearchResult;
+import sagex.phoenix.metadata.IMetadataSearchResult;
+import sagex.phoenix.util.Pair;
+import sagex.phoenix.util.ParserUtils;
 import test.junit.lib.InitBMT;
 
 public class MetadataPluginTestCase extends TestCase {
@@ -78,8 +75,8 @@ public class MetadataPluginTestCase extends TestCase {
         File propFile = getFile("test/Movies/Terminator.avi.properties");
         Properties props = new Properties();
         props.load(new FileInputStream(propFile));
-        assertEquals("MediaTitle incorrect", "The Terminator", props.getProperty(SageProperty.MEDIA_TITLE.sageKey));
-        assertEquals("MediaTitle incorrect", "The Terminator", props.getProperty(SageProperty.DISPLAY_TITLE.sageKey));
+        assertEquals("MediaTitle incorrect", "The Terminator", props.getProperty("MediaTitle"));
+        assertEquals("MediaTitle incorrect", "The Terminator", props.getProperty("Title"));
         
         // save the file stamp on the properties file, search and test again, test that the on demand search will overwrite.
         long lastModified = propFile.lastModified();
@@ -91,8 +88,6 @@ public class MetadataPluginTestCase extends TestCase {
     }
     
     public void testMediaFilePlugin() throws FileNotFoundException, IOException {
-        PluginConfiguration pluginConf = GroupProxy.get(PluginConfiguration.class);
-
         try {
             FileUtils.deleteDirectory(makeDir("test"));
         } catch (IOException e) {
@@ -144,7 +139,6 @@ public class MetadataPluginTestCase extends TestCase {
         Object mf = MediaFileAPI.AddMediaFile(makeFile("test/Movies/" + movie), "Movies");
         assertEquals("mediafile not added", title, MediaFileAPI.GetMediaTitle(mf));
 
-        PluginConfiguration pluginConf = new PluginConfiguration();
         MetadataUpdaterPlugin plugin = new MetadataUpdaterPlugin();
         Object results = plugin.extractMetadata(getFile("test/Movies/" + movie), null);
         
@@ -163,8 +157,8 @@ public class MetadataPluginTestCase extends TestCase {
         File propFile = getFile("test/Movies/"+movie+".properties");
         Properties props = new Properties();
         props.load(new FileInputStream(propFile));
-        assertEquals("MediaTitle incorrect", shortTitle, props.getProperty(SageProperty.MEDIA_TITLE.sageKey));
-        assertEquals("MediaTitle incorrect", shortTitle, props.getProperty(SageProperty.DISPLAY_TITLE.sageKey));
+        assertEquals("MediaTitle incorrect", shortTitle, props.getProperty("MediaTitle"));
+        assertEquals("MediaTitle incorrect", shortTitle, props.getProperty("Title"));
 
         // test the a second attempt does not update the properties
         long lastModified = propFile.lastModified();

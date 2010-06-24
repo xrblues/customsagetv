@@ -19,10 +19,8 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.jdna.media.BackupConfiguration;
 
 import sagex.api.Configuration;
-import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.util.SageTV;
 
 public class Troubleshooter {
@@ -180,8 +178,7 @@ public class Troubleshooter {
     }
 
     public static void backupWizBin() throws Exception {
-        BackupConfiguration cfg = GroupProxy.get(BackupConfiguration.class);
-        File outdir = new File(cfg.getBackupFolder());
+        File outdir = new File("Backups");
         if (!outdir.exists()) {
             log.debug("Creating Backup Folder: " + outdir.getAbsolutePath());
             if (!outdir.mkdirs()) {
