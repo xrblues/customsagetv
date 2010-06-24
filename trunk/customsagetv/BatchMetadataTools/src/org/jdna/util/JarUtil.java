@@ -12,7 +12,8 @@ import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import sagex.phoenix.util.NumberUtils;
+import org.apache.commons.lang.math.NumberUtils;
+
 
 public class JarUtil {
     private static Pattern jarPat = Pattern.compile("(.*)-([0-9]+\\.[0-9]+.*)\\.jar");
@@ -122,8 +123,8 @@ public class JarUtil {
         String v2[] = baseVersion.split("\\.");
         
         for (int i =0;i<v1.length&&i<v2.length;i++) {
-            int n1 = NumberUtils.parseInt(v1[i],-1);
-            int n2 = NumberUtils.parseInt(v2[i],-1);
+            int n1 = NumberUtils.toInt(v1[i],-1);
+            int n2 = NumberUtils.toInt(v2[i],-1);
             if (n1>n2) return true;
             if (n1<n2) return false;
         }

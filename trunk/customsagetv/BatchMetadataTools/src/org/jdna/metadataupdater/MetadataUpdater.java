@@ -1,65 +1,30 @@
 package org.jdna.metadataupdater;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.jdna.cmdline.CommandLine;
 import org.jdna.cmdline.CommandLineArg;
 import org.jdna.cmdline.CommandLineProcess;
-import org.jdna.configuration.ConfigurationManager;
-import org.jdna.media.metadata.IMediaMetadataPersistence;
-import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.MediaMetadataFactory;
-import org.jdna.media.metadata.MediaMetadataPersistence;
-import org.jdna.media.metadata.MetadataConfiguration;
-import org.jdna.media.metadata.MetadataKey;
-import org.jdna.media.metadata.PersistenceOptions;
-import org.jdna.media.metadata.SearchQueryFactory;
-import org.jdna.media.metadata.impl.xbmc.XbmcScraper;
-import org.jdna.media.metadata.impl.xbmc.XbmcScraperParser;
-import org.jdna.media.metadata.impl.xbmc.XbmcScraperProcessor;
-import org.jdna.media.metadata.impl.xbmc.XbmcUrl;
-import org.jdna.media.util.RefreshMetadataVisitor;
-import org.jdna.process.InteractiveMetadataProcessor;
-import org.jdna.process.MetadataItem;
-import org.jdna.process.MetadataProcessor;
-import org.jdna.util.JarInfo;
-import org.jdna.util.JarUtil;
 
 import sagex.SageAPI;
 import sagex.api.Global;
-import sagex.api.WidgetAPI;
 import sagex.phoenix.Phoenix;
-import sagex.phoenix.configuration.IConfigurationElement;
-import sagex.phoenix.configuration.IConfigurationMetadataVisitor;
-import sagex.phoenix.configuration.proxy.GroupProxy;
-import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.metadata.AutomaticMetadataVisitor;
+import sagex.phoenix.metadata.IMetadataProvider;
+import sagex.phoenix.progress.BasicProgressMonitor;
 import sagex.phoenix.progress.ProgressTracker;
 import sagex.phoenix.progress.TrackedItem;
+import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaFolder;
 import sagex.phoenix.vfs.IMediaResource;
-import sagex.phoenix.vfs.MediaFolderTraversal;
-import sagex.phoenix.vfs.MediaResourceType;
 import sagex.phoenix.vfs.VirtualMediaFolder;
-import sagex.phoenix.vfs.filters.IResourceFilter;
-import sagex.phoenix.vfs.filters.MediaTypeFilter;
 import sagex.phoenix.vfs.impl.FileResourceFactory;
 import sagex.phoenix.vfs.util.PathUtils;
-import sagex.remote.json.JSONException;
-import sagex.remote.json.JSONObject;
 import sagex.util.Log4jConfigurator;
 
 /**
@@ -74,40 +39,24 @@ import sagex.util.Log4jConfigurator;
 public class MetadataUpdater {
     private final Logger   log                   = Logger.getLogger(MetadataUpdater.class);
 
-    private MetadataConfiguration metadataConfig        = null;
     private BMTSageAPIProvider    proxyAPI              = null;
 
     private String[]              files;
     private boolean               listMedia             = false;
     private boolean               listProvders          = false;
     private boolean               offline               = false;
-    private boolean               showMetadata          = false;
-    private boolean               showProperties        = false;
-    private boolean               dontUpdate            = false;
     private boolean               prompt                = true;
-    private boolean               showSupportedMetadata = false;
 
-    private PersistenceOptions    options               = null;
-
-    private MediaType             searchType            = null;
-    private String                tvProviders           = null;
-    private String                movieProviders        = null;
-    private String                musicProviders        = null;
-
-    private String                reportType;
     private boolean               automaticUpdate       = true;
-    private boolean               recurse               = true;
     private int                   displaySize           = 10;
-    private boolean               refreshMetadata       = false;
     private boolean               notifySageTV          = false;
-    private boolean               rememberSelection     = true;
-    private String query = null;
+
     private boolean support=false;
 
     private String notifyUrl = null;
     private String notifyUser = null;
     private String notifyPassword = null;
-
+    
     /**
      * This method only needs to be called from the command line. All other
      * processes should use the MetadataUpdater directly and NOT call the main()
@@ -123,16 +72,11 @@ public class MetadataUpdater {
 
     public void run(String args[]) throws Exception {
         Log4jConfigurator.configure("bmt", this.getClass().getClassLoader());
-        upgrade();
 
         // set the SageAPI provider to be ourself, so that we can
         // intercept all Sage Commands
         proxyAPI = new BMTSageAPIProvider();
         SageAPI.setProvider(proxyAPI);
-
-        // init config objects
-        metadataConfig = GroupProxy.get(MetadataConfiguration.class);
-        options = new PersistenceOptions();
 
         try {
             String title = "Batch MetaData Tools (" + Version.VERSION + ")";
@@ -219,59 +163,9 @@ public class MetadataUpdater {
             return;
         }
 
-        // dump our properties
-        if (showProperties) {
-            PrintWriter pw = new PrintWriter(System.out);
-            Phoenix.getInstance().getConfigurationMetadataManager().getMetadata().visit(new IConfigurationMetadataVisitor() {
-                public void accept(IConfigurationElement el) {
-                    if (el.getElementType() == IConfigurationElement.GROUP) {
-                        System.out.println("# -- Group: " + el.getLabel());
-                    }
-                    if (el.getElementType() == IConfigurationElement.FIELD) {
-                        System.out.printf("# %s\n", (el.getDescription() == null ? el.getLabel() : el.getDescription()));
-                        System.out.printf("%s=%s\n\n", el.getId(), phoenix.api.GetProperty(el.getId()));
-                    }
-                }
-            });
-            pw.flush();
-            pw.close();
-            System.out.flush();
-            return;
-        }
-
-        // show the supported metadata fields
-        if (showSupportedMetadata) {
-            System.out.println("Supported Metadata Fields");
-            MetadataKey values[] = Arrays.copyOf(MetadataKey.values(), MetadataKey.values().length);
-            Arrays.sort(values, new Comparator<MetadataKey>() {
-                public int compare(MetadataKey o1, MetadataKey o2) {
-                    return o1.getId().compareTo(o2.getId());
-                }
-            });
-            for (MetadataKey k : values) {
-                System.out.printf("%20s : %s\n", k.getId(), k.getDescription());
-            }
-            return;
-        }
-
         // show the known metadata providers
         if (listProvders) {
-            renderProviders(MediaMetadataFactory.getInstance().getMetaDataProviders());
-            return;
-        }
-
-        // do reports
-        if (reportType != null) {
-            System.out.println("Requesting a Fanart report: " + reportType + " on the SageTV Server.");
-            try {
-                String result = (String) WidgetAPI.EvaluateExpression("phoenix_api_RunPhoenixDiagnostics(\"" + reportType + "\")");
-                if (result == null) {
-                    throw new Exception("Failed to execute the report on the server.");
-                }
-                System.out.println(result);
-            } catch (Throwable e) {
-                System.out.println("Report Failed.  Most likely cause is that the sagex.api Remote APIs are not installed on the server.");
-            }
+            renderProviders(Phoenix.getInstance().getMetadataManager().getProviders());
             return;
         }
 
@@ -310,63 +204,16 @@ public class MetadataUpdater {
         } else {
             // check if we are just listing movies
             if (listMedia) {
-                MediaFolderTraversal.walk(parentFolder, recurse, new ListMovieVisitor(false));
+                parentFolder.accept(new ListMovieVisitor(false), new BasicProgressMonitor(), IMediaResource.DEEP_UNLIMITED);
                 return;
             }
 
-            // we are showing info for these...
-            if (showMetadata) {
-                MediaFolderTraversal.walk(parentFolder, recurse, new ListMovieVisitor(true));
-                return;
-            }
+            ProgressTracker<IMediaFile> progress = new ProgressTracker<IMediaFile>(new ConsoleProgressMonitor());
 
-            // Now we are doing the real work....
-            // setup the providers
-            Map<MediaType, IMediaMetadataProvider> providers = new HashMap<MediaType, IMediaMetadataProvider>();
-            String tv = metadataConfig.getTVProviders();
-            tv = (tvProviders == null) ? tv : tvProviders;
-            providers.put(MediaType.TV, MediaMetadataFactory.getInstance().getProvider(tv, MediaType.TV));
-
-            String movie = metadataConfig.getMovieProviders();
-            movie = (movieProviders == null) ? movie : movieProviders;
-            providers.put(MediaType.MOVIE, MediaMetadataFactory.getInstance().getProvider(movie, MediaType.MOVIE));
-
-            // String music = metadataConfig.getMusicProviders();
-            // Phoenix.getInstance().getEventBus().addHandler(
-            // ScanMediaFileEvent.class.getName(),
-            // new AutomaticScanMediaFileEventHandler(music, MediaType.MUSIC));
-
-            // set the persistence engine...
-            IMediaMetadataPersistence persistence = null;
-            if (dontUpdate) {
-                persistence = new STDOUTPersistence();
-            } else {
-                persistence = new MediaMetadataPersistence();
-            }
-
-            // set some basic options for commandline use
-            options.setImportAsTV(false);
-            options.setUseTitleMasks(true);
-            options.setCreateProperties(true);
-
-            IResourceFilter filter = new MediaTypeFilter(MediaResourceType.ANY_VIDEO);
-            ProgressTracker<MetadataItem> progress = new ProgressTracker<MetadataItem>(new ConsoleProgressMonitor());
-
-            if (refreshMetadata) {
-                System.out.println("Refreshing ONLY files that have been modified.");
-                MediaFolderTraversal.walk(parentFolder, recurse, new RefreshMetadataVisitor(persistence, options, progress));
-                System.out.printf("Refresh complete.  Refreshed %s ; Skipped %s.\n", progress.getSuccessfulItems().size(), progress.getFailedItems().size());
-            } else {
                 if (automaticUpdate) {
-                    MetadataProcessor processor = new MetadataProcessor(searchType, providers, persistence, options);
-                    processor.setDefaultQueryArgs(query);
-                    processor.addFilter(filter);
-                    processor.setRecurse(recurse);
-                    processor.process(parentFolder, progress);
+                	parentFolder.accept(new AutomaticMetadataVisitor(null),progress, IMediaResource.DEEP_UNLIMITED);
                 } else {
-                    // manual update, prompt and select
-                    InteractiveMetadataProcessor processor = new ConsoleInteractiveMetadataProcessor(searchType, providers, persistence, options, displaySize);
-                    processor.process(parentFolder, recurse, filter, progress);
+                	parentFolder.accept(new ConsoleInteractiveMetadataVisitor(displaySize,null),progress, IMediaResource.DEEP_UNLIMITED);
                 }
 
                 // now that we've scanned the files, let's check the results...
@@ -375,23 +222,21 @@ public class MetadataUpdater {
 
                 if (automaticUpdate && progress.getFailedItems().size() > 0 && prompt) {
                     while (!progress.isCancelled() && progress.getFailedItems().peek() != null) {
-                        TrackedItem<MetadataItem> item = progress.getFailedItems().pop();
-                        System.out.println("  File: " + PathUtils.getLocation(item.getItem().getFile()));
+                        TrackedItem<IMediaFile> item = progress.getFailedItems().pop();
+                        System.out.println("  File: " + PathUtils.getLocation(item.getItem()));
                         System.out.println("Reason: " + item.getMessage());
                         System.out.println("---------------------------------");
-                        InteractiveMetadataProcessor processor = new ConsoleInteractiveMetadataProcessor(searchType, providers, persistence, options, displaySize);
-                        processor.process(item.getItem().getFile(), recurse, filter, progress);
+                        item.getItem().accept(new ConsoleInteractiveMetadataVisitor(displaySize, null), new ConsoleProgressMonitor(), IMediaResource.DEEP_UNLIMITED);
                         System.out.println("---------------------------------");
                     }
                 } else {
-                    for (TrackedItem<MetadataItem> item : progress.getFailedItems()) {
-                        System.out.println("  File: " + PathUtils.getLocation(item.getItem().getFile()));
+                    for (TrackedItem<IMediaFile> item : progress.getFailedItems()) {
+                        System.out.println("  File: " + PathUtils.getLocation(item.getItem()));
                         System.out.println("Reason: " + item.getMessage());
                         System.out.println("---------------------------------");
                     }
                 }
             }
-        }
 
         // check if we need to refresh sage tv
         if (notifySageTV) {
@@ -401,7 +246,7 @@ public class MetadataUpdater {
                     URL url = new URL(notifyUrl);
                     URLConnection conn = url.openConnection();
                     HTTPUtils.configueURLConnection(conn, notifyUser, notifyPassword);
-                    Object content = conn.getContent();
+                    conn.getContent();
                 } else {
                     System.out.println("Notifying Sage to Refresh Imported Media using RMI");
                     proxyAPI.enableRemoteAPI(true);
@@ -414,25 +259,12 @@ public class MetadataUpdater {
         }
     }
 
-    public void renderProviders(List<IMediaMetadataProvider> providers) {
+    public void renderProviders(List<IMetadataProvider> providers) {
         System.out.println("\n\nInstalled Metadata Providers (*=default");
-        for (IMediaMetadataProvider p : providers) {
+        for (IMetadataProvider p : providers) {
             System.out.printf("%1s %-20s\n", "", p.getInfo().getId());
             System.out.println("   - " + p.getInfo().getName());
             System.out.println("   - " + p.getInfo().getDescription() + "\n");
-        }
-    }
-
-    public void upgrade() {
-        deleteFile(new File("scrapers/xbmc/video/tvcom.xml"));
-        deleteFile(new File("scrapers/xbmc/video/tvcom.png"));
-        deleteFile(new File("scrapers/xbmc/video/tvdb.xml"));
-        deleteFile(new File("scrapers/xbmc/video/tvdb.png"));
-    }
-
-    private void deleteFile(File f) {
-        if (f.exists()) {
-            log.debug("Deleted File: " + f.getAbsolutePath() + "; Deleted: " + f.delete());
         }
     }
 
@@ -444,61 +276,6 @@ public class MetadataUpdater {
     @CommandLineArg(name = "EXTRAARGS", description = "Internal Arg that collects files passed on the command line. do not set.")
     public void setFiles(String files[]) {
         this.files = files;
-    }
-
-    /**
-     * enable/disable directory recursion
-     * 
-     * @param b
-     */
-    @CommandLineArg(name = "recurse", description = "Recursively process sub directories. (default true)")
-    public void setRecurse(boolean b) {
-        this.recurse = b;
-    }
-
-    /**
-     * if set to true, it will ignore exising metadata and fetch new information
-     * even it doesn't need to.
-     * 
-     * @param b
-     */
-    @CommandLineArg(name = "overwrite", description = "Overwrite metadata and fanart. (default false)")
-    public void setOverwrite(boolean b) {
-        options.setOverwriteFanart(b);
-        options.setOverwriteMetadata(b);
-    }
-
-    /**
-     * if set to true, will overwrite metadata
-     * 
-     * @param b
-     */
-    @CommandLineArg(name = "overwriteMetadata", description = "Overwrite metadata. (default false)")
-    public void setOverwriteMetadata(boolean b) {
-        options.setOverwriteMetadata(b);
-    }
-
-    /**
-     * if set to true, it will overwrite fanart
-     * 
-     * @param b
-     */
-    @CommandLineArg(name = "overwriteFanart", description = "Overwrite fanart. (default false)")
-    public void setOverwriteFanart(boolean b) {
-        options.setOverwriteFanart(b);
-    }
-
-    @CommandLineArg(name = "fanartEnabled", description = "Enable fanart support (backgrounds, banners, extra posters, etc). (default true)")
-    public void setEnableFanart(boolean b) {
-        metadataConfig.setFanartEnabled(b);
-    }
-
-    @CommandLineArg(name = "fanartFolder", description = "Central Fanart Folder location")
-    public void setForceThumbnailOverwrite(String folder) {
-        metadataConfig.setFanartEnabled(true);
-        metadataConfig.setCentralFanartFolder(folder);
-
-        log.debug("Central Fanart Enabled; Using Folder: " + metadataConfig.getFanartCentralFolder());
     }
 
     /**
@@ -532,17 +309,6 @@ public class MetadataUpdater {
     }
 
     /**
-     * if true, then it will attempt to refresh metadata for entries that
-     * already have metadata by using the providerDataUrl for the media file.
-     * 
-     * @param b
-     */
-    @CommandLineArg(name = "refresh", description = "refresh metadata for items that have been modified (ie, .properties file has manually been edited).")
-    public void setRefreshMetadata(boolean b) {
-        this.refreshMetadata = b;
-    }
-
-    /**
      * enable/disable offline video support. Offline videos are empty video
      * files with metadata and thumbnails. A user would create these if the
      * video did exist in his/her collection but they are currently offline.
@@ -555,103 +321,7 @@ public class MetadataUpdater {
     }
 
     /**
-     * update the timestamp on a file
-     * 
-     * @param b
-     */
-    @CommandLineArg(name = "touch", description = "Touch (update timestamp) on a given file/folder (default false)")
-    public void setTouch(boolean b) {
-        options.setTouchingFiles(b);
-    }
-
-    /**
-     * Set tv metadata provider.
-     * 
-     * @param s
-     */
-    @CommandLineArg(name = "tvProviders", description = "Set the TV metadata providers. Comma separated, no spaces.")
-    public void setTVMetadataProvider(String s) {
-        log.info("Setting the tv providers: " + s);
-        tvProviders = s;
-    }
-
-    /**
-     * Set tv metadata provider.
-     * 
-     * @param s
-     */
-    @CommandLineArg(name = "movieProviders", description = "Set the movie metadata providers. Comma separated, no spaces.")
-    public void setMovieMetadataProvider(String s) {
-        log.info("Setting the movie providers: " + s);
-        movieProviders = s;
-    }
-
-    @CommandLineArg(name = "query", description = "Specify a query as a JSON String.  Use --queryHelp for help")
-    public void setQuery(String s)  {
-        this.query=s;
-        // this will throw an exception if the query is bad
-        try {
-            new JSONObject(s);
-        } catch (JSONException e) {
-            System.out.println("Invalid JSON String: " + s);
-            exit(e.getMessage());
-        }
-    }
-
-    @CommandLineArg(name = "queryHelp", description = "Show JSON Query Help")
-    public void setQueryHelp(boolean b) throws Exception {
-        System.out.println("You can specify a query as a json string.  This is an advanced option and is meant to be used in rare cases where you need more control over the query from the commandline.");
-        System.out.println("Usage --query=\"{field1: 'value1', field2: 'value2', field3: 'value3', ...}\"");
-        System.out.println("Query Fields:");
-        for (String s : SearchQueryFactory.getJSONQueryFields()) {
-            System.out.println("   " + s);
-        }
-        exit(null);
-    }
-
-    /**
-     * Set music metadata provider.
-     * 
-     * @param s
-     */
-    @CommandLineArg(name = "musicProviders", description = "Set the music metadata providers. Comma separated, no spaces.")
-    public void setMusicMetadataProvider(String s) {
-        log.info("Setting the music providers: " + s);
-        musicProviders = s;
-    }
-
-    /**
-     * Show Metadata Information for a given movie
-     * 
-     * @param s
-     */
-    @CommandLineArg(name = "listMetadata", description = "List the current metadata/properties for media items")
-    public void setShowMetadata(boolean b) {
-        this.showMetadata = b;
-    }
-
-    /**
-     * Show Metadata Properties supported by this application.
-     * 
-     * @param
-     */
-    @CommandLineArg(name = "listSupportedMetadata", description = "List the supported metadata properties")
-    public void setShowMetadataProperties(boolean b) {
-        this.showSupportedMetadata = b;
-    }
-
-    /**
-     * Dump Current Configuration Properties
-     * 
-     * @param s
-     */
-    @CommandLineArg(name = "listProperties", description = "List the current configuration")
-    public void setShowProperties(boolean b) {
-        this.showProperties = b;
-    }
-
-    /**
-     * Dump Current Configuration Properties
+     * prompt for selection
      * 
      * @param s
      */
@@ -673,43 +343,6 @@ public class MetadataUpdater {
     @CommandLineArg(name = "support", description = "build a zip file with information for support")
     public void setSupport(boolean b) {
         support = b;
-    }
-
-    @CommandLineArg(name = "fanartOnly", description = "Only process fanart, ignore updating metadata (default false)")
-    public void setFanartOnly(boolean b) {
-        options.setUpdateFanart(b);
-        options.setUpdateMetadata(!b);
-        options.setOverwriteFanart(b);
-        options.setOverwriteMetadata(!b);
-    }
-
-    @CommandLineArg(name = "metadataOnly", description = "Only process metadata, ignore updating fanart (default false)")
-    public void setMetadataOnly(boolean b) {
-        options.setUpdateMetadata(b);
-        options.setUpdateFanart(!b);
-        options.setOverwriteMetadata(b);
-        options.setOverwriteFanart(!b);
-    }
-
-    @CommandLineArg(name = "renameFilePattern", description = "Renames the file(s) being processed according to the pattern given.")
-    public void setRenameFilePattern(String pattern) {
-        options.setFileRenamePattern(pattern);
-    }
-
-    @CommandLineArg(name = "setProperty", description = "Sets a configuration property (--setProperty=name:value) (use --showProperties to get property list)")
-    public void setPropertu(String propAndVal) {
-        Pattern p = Pattern.compile("([^:]+):(.*)");
-        Matcher m = p.matcher(propAndVal);
-        if (m.find()) {
-            String n = m.group(1);
-            String v = m.group(2);
-            if (n == null || v == null) {
-                throw new RuntimeException("Malformed Property: " + propAndVal);
-            }
-            Phoenix.getInstance().getConfigurationManager().setClientProperty(n, v);
-        } else {
-            throw new RuntimeException("Invalid Property: " + propAndVal);
-        }
     }
 
     /**
@@ -754,26 +387,6 @@ public class MetadataUpdater {
     }
     
     /**
-     * forces the search type
-     * 
-     * @param s
-     */
-    @CommandLineArg(name = "searchType", description = "Force the search type ('tv', 'movie', or 'music', default will autoselect based on media")
-    public void setTVSearch(String s) {
-        this.searchType = MediaType.valueOf(s);
-    }
-
-    /**
-     * perform the phoenix tests on the sage server
-     * 
-     * @param s
-     */
-    @CommandLineArg(name = "report", description = "Perform a 'quick' or 'detailed' report on fanart (use this to debug farart for an item).")
-    public void setPerformTests(String reportType) {
-        this.reportType = reportType;
-    }
-
-    /**
      * Enable SageTV remote configuration
      * 
      * @param s
@@ -783,92 +396,12 @@ public class MetadataUpdater {
         proxyAPI.enableRemoteAPI(remote);
     }
 
-    /**
-     * @param s
-     */
-    @CommandLineArg(name = "out", description = "Don't update anything, just dump results to stdout")
-    public void setDontUpdate(boolean out) {
-        this.dontUpdate = out;
-    }
-
-    @CommandLineArg(name = "jarinfo", description = "Print information about the sagetv JARs")
-    public void setDoJarInfo(boolean b) {
-        List<JarInfo> jars = JarUtil.getJarInfo(new File("JARs"));
-        System.out.println();
-        for (JarInfo ji : jars) {
-            System.out.printf("%s: %s (%s)\n", ji.getFile(), ji.getTitle(), ji.getVersion());
-        }
-        System.out.println();
-        
-        System.exit(0);
-    }
-
-    @CommandLineArg(name = "jarclean", description = "Remove duplicate JARs from the JARs area")
-    public void setDoCleanJars(boolean b) {
-        List<File> ji = Tools.renameConflictedJars(new File("JARs"));
-        for (File i : ji) {
-            System.out.printf("Could not rename %s.\n\n",i);
-        }
-        System.exit(0);
-    }
-
-    /**
-     * Test Xbmc Scraper
-     * 
-     * @param s
-     */
-    @CommandLineArg(name = "testXbmcScraper", description = "Test XbmcScraper; Pass ScraperPath,Function,ScraperUrl (for debugging only)")
-    public void testXbmcScraper(String cmdArgs) {
-        try {
-            String parts[] = cmdArgs.split(",");
-            if (parts == null || parts.length < 3) {
-                System.err.println("testXbmcScraper requires Function and Url in the form; ScraperFile,Function,Url");
-            } else {
-                XbmcScraperParser parser = new XbmcScraperParser();
-                System.err.println("Loading Scraper: " + parts[0]);
-                XbmcScraper scraper = parser.parseScraper(new File(parts[0].trim()));
-                XbmcScraperProcessor proc = new XbmcScraperProcessor(scraper);
-                System.err.println("Loading Url: " + parts[2].trim());
-                XbmcUrl url = new XbmcUrl(parts[2].trim());
-                System.err.println("Executing Function: " + parts[1].trim());
-                String xml = (proc.executeFunction(parts[1].trim(), new String[] { "", url.getTextContent(), url.toExternalForm() }));
-                if (xml == null || xml.trim().length() == 0) {
-                    throw new Exception("Invalid Function or URL!");
-                }
-
-                FileWriter fw = new FileWriter(parts[1].trim() + ".xml");
-                IOUtils.write(xml, fw);
-                fw.flush();
-                fw.close();
-
-                System.err.println("Wrote: " + parts[1].trim() + ".xml");
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-        }
-        System.exit(0);
-    }
-
     public String[] getFiles() {
         return files;
     }
 
     public void exit(String string) {
         System.out.println(string);
-        try {
-            if (rememberSelection) {
-                ConfigurationManager.getInstance().saveTitleMappings();
-            }
-
-            Phoenix.getInstance().getConfigurationManager().save();
-        } catch (Exception e) {
-            log.error("Failed to save configuration before exit.", e);
-        }
         System.exit(1);
-    }
-
-    public PersistenceOptions getPersistenceOptions() {
-        return options;
     }
 }

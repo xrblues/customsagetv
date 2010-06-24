@@ -6,11 +6,11 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdna.util.PropertiesUtils;
-import org.jdna.util.SortedProperties;
 
 import sagex.ISageAPIProvider;
 import sagex.SageAPI;
+import sagex.phoenix.util.PropertiesUtils;
+import sagex.phoenix.util.SortedProperties;
 
 public class BMTSageAPIProvider implements ISageAPIProvider {
     private static final Logger log      = Logger.getLogger(BMTSageAPIProvider.class);
