@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/PlaylistAPIFactory.html'>PlaylistAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -66,6 +66,12 @@ public class PlaylistAPIFactory {
    }
    if (command.equals("GetNowPlayingList")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetNowPlayingList",parameters,null);
+   }
+   if (command.equals("GetPlaylistProperty")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPlaylistProperty",parameters,Object.class,java.lang.String.class);
+   }
+   if (command.equals("SetPlaylistProperty")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetPlaylistProperty",parameters,Object.class,java.lang.String.class,java.lang.String.class);
    }
    throw new RuntimeException("Invalid PlaylistAPIFactory Command: "+command);
    }

@@ -48,6 +48,17 @@ import sagex.util.TypesUtil;
  * is recommended that you use the background=true attribute on the annotation to have your
  * event handled in a background thread.
  * 
+ * You can control "where" a plugin property's value should be stored by setting a {@link IPropertyPersistence} 
+ * implementation on the {@link PluginProperty}.  The default implementation uses {@link ClientPropertyPersistence} but
+ * there is also a {@link ServerPropertyPersistence} as well.
+ * 
+ * If a property has some special case for determining when it should be shown, then you can set a custom {@link IPropertyVisibility}
+ * implementation for the class.  Currently you can control a property's visibily using another property, but you
+ * write your own implementation for your needs.
+ * 
+ * If a property requires some special validation BEFORE it can set, then you can add a {@link IPropertyValidator}
+ * implementation to your property.  By default, properties do not have validators, and there are no prebuilt validators.
+ * 
  * @author seans
  */
 public class AbstractPlugin implements SageTVPlugin {
@@ -402,8 +413,18 @@ public class AbstractPlugin implements SageTVPlugin {
             return;
         }
         
+        if (p.getValidator()!=null) {
+        	try {
+				p.getValidator().validate(setting, value);
+			} catch (Throwable e) {
+				log.warn("Property Validation failed for setting: " + setting + "; value: " + value, e);
+				throw new RuntimeException(e.getMessage(), e);
+			}
+        }
+        
         String val = getConfigValue(setting);
-        if (val != null && !val.equals(value)) {
+        if ((value==null && val!=null) || 
+        	 value!=null && !value.equals(val)) {
             p.setValue(value);
             propertyChanged(setting);
         }

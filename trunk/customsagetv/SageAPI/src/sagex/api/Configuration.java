@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Configuration.html'>Configuration</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -3241,7 +3241,7 @@ public static void SetOverscanScaleHeight (UIContext _uicontext,float Amount) {
 
 /**
 Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the left side.
- Equivalent to (GetOverscanOffsetX() * 1.0 / GetFullUIWidth())
+ Equivalent to (GetOverscanOffsetX() * 1.0 / (GetFullUIWidth() * GetOverscanScaleWidth()))
 
 Returns:
 a floating point value which specifies the percent of the UI that is taken up by overscan on the left side
@@ -3257,7 +3257,7 @@ public static float GetOverscanInsetLeft () {
 /**
  * UI Context Aware Call<br/>
 Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the left side.
- Equivalent to (GetOverscanOffsetX() * 1.0 / GetFullUIWidth())
+ Equivalent to (GetOverscanOffsetX() * 1.0 / (GetFullUIWidth() * GetOverscanScaleWidth()))
 
 Returns:
 a floating point value which specifies the percent of the UI that is taken up by overscan on the left side
@@ -3272,7 +3272,7 @@ public static float GetOverscanInsetLeft (UIContext _uicontext) {
 
 /**
 Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the right side.
- Equivalent to 1.0 - (GetOverscanOffsetX() * 1.0 / GetFullUIWidth()) - GetOverscanScaleWidth()
+ Equivalent to (1.0 - (GetOverscanOffsetX() * 1.0 / GetFullUIWidth()) - GetOverscanScaleWidth())/GetOverscanScaleWidth()
 
 Returns:
 a floating point value which specifies the percent of the UI that is taken up by overscan on the right side
@@ -3288,7 +3288,7 @@ public static float GetOverscanInsetRight () {
 /**
  * UI Context Aware Call<br/>
 Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the right side.
- Equivalent to 1.0 - (GetOverscanOffsetX() * 1.0 / GetFullUIWidth()) - GetOverscanScaleWidth()
+ Equivalent to (1.0 - (GetOverscanOffsetX() * 1.0 / GetFullUIWidth()) - GetOverscanScaleWidth())/GetOverscanScaleWidth()
 
 Returns:
 a floating point value which specifies the percent of the UI that is taken up by overscan on the right side
@@ -3303,7 +3303,7 @@ public static float GetOverscanInsetRight (UIContext _uicontext) {
 
 /**
 Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the top
- Equivalent to (GetOverscanOffsetY() * 1.0 / GetFullUIHeight())
+ Equivalent to (GetOverscanOffsetY() * 1.0 / (GetFullUIHeight() * GetOverscanScaleHeight())))
 
 Returns:
 a floating point value which specifies the percent of the UI that is taken up by overscan on the top
@@ -3319,7 +3319,7 @@ public static float GetOverscanInsetTop () {
 /**
  * UI Context Aware Call<br/>
 Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the top
- Equivalent to (GetOverscanOffsetY() * 1.0 / GetFullUIHeight())
+ Equivalent to (GetOverscanOffsetY() * 1.0 / (GetFullUIHeight() * GetOverscanScaleHeight())))
 
 Returns:
 a floating point value which specifies the percent of the UI that is taken up by overscan on the top
@@ -3334,7 +3334,7 @@ public static float GetOverscanInsetTop (UIContext _uicontext) {
 
 /**
 Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the bottom
- Equivalent to 1.0 - (GetOverscanOffsetY() * 1.0 / GetFullUIHeight()) - GetOverscanScaleHeight()
+ Equivalent to (1.0 - (GetOverscanOffsetY() * 1.0 / GetFullUIHeight()) - GetOverscanScaleHeight())/GetOverscanScaleHeight()
 
 Returns:
 a floating point value which specifies the percent of the UI that is taken up by overscan on the bottom
@@ -3350,7 +3350,7 @@ public static float GetOverscanInsetBottom () {
 /**
  * UI Context Aware Call<br/>
 Returns a floating point value which specifies the percent of the UI that is taken up by overscan on the bottom
- Equivalent to 1.0 - (GetOverscanOffsetY() * 1.0 / GetFullUIHeight()) - GetOverscanScaleHeight()
+ Equivalent to (1.0 - (GetOverscanOffsetY() * 1.0 / GetFullUIHeight()) - GetOverscanScaleHeight())/GetOverscanScaleHeight()
 
 Returns:
 a floating point value which specifies the percent of the UI that is taken up by overscan on the bottom

@@ -1,20 +1,52 @@
 package test;
 
-import java.io.File;
-
-import sagex.api.AiringAPI;
+import sagex.SageAPI;
+import sagex.api.Global;
 import sagex.api.MediaFileAPI;
-import sagex.api.ShowAPI;
+import sagex.api.MediaNodeAPI;
+import sagex.remote.rmi.RMISageAPI;
 
 public class TestSageMediaFileAPI {
     public static void main(String args[]) {
-        //Object mf = MediaFileAPI.GetMediaFileForFilePath(new File("/home/FileServer/Media/Videos/VideoCollection/Movies/New2/Changeling-cd1.avi"));
-        Object mf = MediaFileAPI.GetMediaFileForFilePath(new File("/home/FileServer/Media/Videos/VideoCollection/TV/30 Rock/Season 2/30.Rock.S02E15 - Cooter.avi"));
-        Object airing = MediaFileAPI.GetMediaFileAiring(mf);
-        Object show = AiringAPI.GetShow(airing);
-        System.out.println("Title: " + ShowAPI.GetShowTitle(show));
-        System.out.println(" Desc: " + ShowAPI.GetShowDescription(show));
+    	SageAPI.setProvider(new RMISageAPI("seans-desktop"));
+    	System.out.println(Global.GetServerAddress());
+    	
+    	Object node = MediaNodeAPI.GetMediaSource("FileSystem");
+    	if (MediaNodeAPI.IsNodeFolder(node)) {
+    		System.out.println("Folder: " + MediaNodeAPI.GetNodePrimaryLabel(node));
+    		Object nodes[] = MediaNodeAPI.GetNodeChildren(node);
+    		if (nodes!=null) {
+    			for (Object o: nodes) {
+    				if (MediaNodeAPI.IsNodeFolder(o)) {
+    					System.out.println("Folder: " + MediaNodeAPI.GetNodePrimaryLabel(o));
+    				} else {
+    					System.out.println("Item: " + MediaNodeAPI.GetNodePrimaryLabel(o));
+    				}
+    			}
+    		}
+    	}
 
-        //ShowAPI.AddShow(Title, IsFirstRun, Episode, Description, Duration, Category, SubCategory, PeopleList, RolesListForPeopleList, Rated, ExpandedRatingsList, Year, ParentalRating, MiscList, ExternalID, Language, OriginalAirDate)
+    	System.out.println("================================");
+    	node = MediaNodeAPI.GetMediaSource("VideosByFolder");
+    	if (MediaNodeAPI.IsNodeFolder(node)) {
+    		System.out.println("Folder: " + MediaNodeAPI.GetNodePrimaryLabel(node));
+    		Object nodes[] = MediaNodeAPI.GetNodeChildren(node);
+    		if (nodes!=null) {
+    			for (Object o: nodes) {
+    				if (MediaNodeAPI.IsNodeFolder(o)) {
+    					System.out.println("Folder: " + MediaNodeAPI.GetNodePrimaryLabel(o));
+    					System.out.println("    --: " + MediaNodeAPI.GetNodeFullPath(o));
+    				} else {
+    					System.out.println("Item: " + MediaNodeAPI.GetNodePrimaryLabel(o));
+    					System.out.println("  --: " + MediaNodeAPI.GetNodeDataType(o));
+    					System.out.println("  --: " + MediaFileAPI.GetMediaTitle(o));
+    				}
+    			}
+    		}
+    	}
+
+    	
+    	
+    	System.out.println("DONE");
     }
 }

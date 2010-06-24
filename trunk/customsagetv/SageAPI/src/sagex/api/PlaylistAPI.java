@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/PlaylistAPI.html'>PlaylistAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -476,6 +476,74 @@ public static Object GetNowPlayingList (UIContext _uicontext) {
   Object o = sagex.SageAPI.call(_uicontext, "GetNowPlayingList", (Object[])null);
   if (o!=null) return (Object) o;
   return null;
+}
+
+/**
+Returns a property value for a specified Playlist. This must have been set using SetPlaylistProperty.
+ Returns the empty string when the property is undefined.
+
+Parameters:
+Playlist- the Playlist object
+PropertyName- the name of the property
+Returns:
+the property value for the specified Playlist, or the empty string if it is not defined
+Since:
+7.0
+ */
+public static java.lang.String GetPlaylistProperty (Object Playlist, java.lang.String PropertyName) {
+  Object o = sagex.SageAPI.call("GetPlaylistProperty", new Object[] {Playlist,PropertyName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a property value for a specified Playlist. This must have been set using SetPlaylistProperty.
+ Returns the empty string when the property is undefined.
+
+Parameters:
+Playlist- the Playlist object
+PropertyName- the name of the property
+Returns:
+the property value for the specified Playlist, or the empty string if it is not defined
+Since:
+7.0
+ */
+public static java.lang.String GetPlaylistProperty (UIContext _uicontext,Object Playlist, java.lang.String PropertyName) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetPlaylistProperty", new Object[] {Playlist,PropertyName});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Sets a property for this Playlist. This can be any name/value combination (but the name cannot be null). If the value is null;
+ then the specified property will be removed from this Playlist. This only impacts the return values from GetPlaylistProperty and has no other side effects.
+
+Parameters:
+Playlist- the Playlist object
+PropertyName- the name of the property
+PropertyValue- the value of the property
+Since:
+7.0
+ */
+public static void SetPlaylistProperty (Object Playlist, java.lang.String PropertyName, java.lang.String PropertyValue) {
+   sagex.SageAPI.call("SetPlaylistProperty", new Object[] {Playlist,PropertyName,PropertyValue});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sets a property for this Playlist. This can be any name/value combination (but the name cannot be null). If the value is null;
+ then the specified property will be removed from this Playlist. This only impacts the return values from GetPlaylistProperty and has no other side effects.
+
+Parameters:
+Playlist- the Playlist object
+PropertyName- the name of the property
+PropertyValue- the value of the property
+Since:
+7.0
+ */
+public static void SetPlaylistProperty (UIContext _uicontext,Object Playlist, java.lang.String PropertyName, java.lang.String PropertyValue) {
+   sagex.SageAPI.call(_uicontext, "SetPlaylistProperty", new Object[] {Playlist,PropertyName,PropertyValue});
 }
 
 }

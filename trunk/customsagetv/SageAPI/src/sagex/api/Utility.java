@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -2988,7 +2988,8 @@ public static void SetScrollPosition (UIContext _uicontext,float RelativeX, floa
 }
 
 /**
-Clears the cache that links Widgets to the in memory-menu representations for this UI.
+Clears the cache that links Widgets to the in memory-menu representations for this UI. This also clears the back/forward history
+ to remove any references contained in there as well.
 
 Since:
 6.2
@@ -2999,7 +3000,8 @@ public static void ClearMenuCache () {
 
 /**
  * UI Context Aware Call<br/>
-Clears the cache that links Widgets to the in memory-menu representations for this UI.
+Clears the cache that links Widgets to the in memory-menu representations for this UI. This also clears the back/forward history
+ to remove any references contained in there as well.
 
 Since:
 6.2

@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/GlobalFactory.html'>GlobalFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -150,6 +150,9 @@ public class GlobalFactory {
    }
    if (command.equals("GetUIComponentForVariable")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIComponentForVariable",parameters,java.lang.String.class,java.lang.Object.class);
+   }
+   if (command.equals("GetUIComponentContext")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIComponentContext",parameters,null);
    }
    if (command.equals("SetFocusToUIComponent")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetFocusToUIComponent",parameters,java.lang.Object.class);

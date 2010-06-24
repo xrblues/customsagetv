@@ -1,5 +1,7 @@
 package sagex.plugin;
 
+
+
 /**
  * Interface definition for implementation classes that listen for events from the SageTV core
  *
@@ -32,32 +34,30 @@ package sagex.plugin;
 
  * As found in http://download.sagetv.com/SageTVEventListener.java
  * 
- * @deprecated use the contstants class.  Enums can't be used in the SageEvent annotation
  * @author seans
  */
-@Deprecated
-public enum SageEventEnum {
-	 MediaFileImported,
-	 ImportingStarted,
-	 ImportingCompleted,
-	 RecordingCompleted, 
-	 RecordingStarted,
-	 RecordingStopped,
-	 AllPluginsLoaded,
-	 RecordingScheduleChanged,
-	 ConflictStatusChanged,
-	 SystemMessagePosted,
-	 EPGUpdateCompleted,
-	 MediaFileRemoved,
-	 PlaybackStopped,
-	 PlaybackFinished,
-	 PlaybackStarted,
-	 FavoriteAdded,
-	 FavoriteModified,
-	 FavoriteRemoved,
-	 PlaylistAdded,
-	 PlaylistModified,
-	 PlaylistRemoved,
-	 ClientConnected,
-	 ClientDisconnected
+public final class SageEvents {
+	 public static final String MediaFileImported="MediaFileImported";
+	 public static final String ImportingStarted="ImportingStarted";
+	 public static final String ImportingCompleted="ImportingCompleted";
+	 public static final String RecordingCompleted="RecordingCompleted"; 
+	 public static final String RecordingStarted="RecordingStarted";
+	 public static final String RecordingStopped="RecordingStopped";
+	 public static final String AllPluginsLoaded="AllPluginsLoaded";
+	 public static final String RecordingScheduleChanged="RecordingScheduleChanged";
+	 public static final String ConflictStatusChanged="ConflictStatusChanged";
+	 public static final String SystemMessagePosted="SystemMessagePosted";
+	 public static final String EPGUpdateCompleted="EPGUpdateCompleted";
+	 public static final String MediaFileRemoved="MediaFileRemoved";
+	 public static final String PlaybackStopped="PlaybackStopped";
+	 public static final String PlaybackFinished="PlaybackFinished";
+	 public static final String PlaybackStarted="PlaybackStarted";
+	 public static final String FavoriteAdded="FavoriteAdded";
+	 public static final String FavoriteModified="FavoriteModified";
+	 public static final String FavoriteRemoved="FavoriteRemoved";
+	 public static final String PlaylistAdded="PlaylistAdded";
+	 public static final String PlaylistModified="PlaylistModified";
+	 public static final String PlaylistRemoved="PlaylistRemoved";
+	 public static final String ClientConnected="ClientConnected";
+	 public static final String ClientDisconnected="ClientDisconnected";
 }

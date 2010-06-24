@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/DatabaseFactory.html'>DatabaseFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -277,6 +277,9 @@ public class DatabaseFactory {
    }
    if (command.equals("IsDatabaseMemoryMaxed")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsDatabaseMemoryMaxed",parameters,null);
+   }
+   if (command.equals("StringLeadingArticles")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"StringLeadingArticles",parameters,java.lang.String.class);
    }
    throw new RuntimeException("Invalid DatabaseFactory Command: "+command);
    }

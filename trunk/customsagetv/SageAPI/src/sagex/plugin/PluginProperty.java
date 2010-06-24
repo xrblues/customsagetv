@@ -23,6 +23,7 @@ public class PluginProperty {
 
     private IPropertyPersistence persistence = null;
     private IPropertyVisibility visibility = null;
+    private IPropertyValidator validator = null;
     
     /**
      * Convenience constructor
@@ -258,4 +259,24 @@ public class PluginProperty {
     public void setVisibleOnSetting(String visibleOnSetting) {
         this.visibleOnSetting = visibleOnSetting;
     }
+
+    /**
+     * get the validator associated with this property
+     * 
+     * @return
+     */
+	public IPropertyValidator getValidator() {
+		return validator;
+	}
+
+	/**
+	 * Sets the validator for this plugin property
+	 * 
+	 * @param validator
+	 * @return
+	 */
+	public PluginProperty setValidator(IPropertyValidator validator) {
+		this.validator = validator;
+		return this;
+	}
 }
