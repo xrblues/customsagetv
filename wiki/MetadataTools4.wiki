@@ -6,6 +6,8 @@ http://customsagetv.googlecode.com/svn/trunk/customsagetv/BMTWeb/war/gradient-ba
 
 = Introduction =
 
+NOTE: This documentation is out of date, and does not reflect the current state of BMT.
+
 Metadata Tools (aka BMT) is a collection of tools for managing and fetching metadata.  Currently it supports fetching metadata from imdb.com, themoviedb.com, tvdb.com.  It also have some support for pulling metadata and fanart from existing DVDProfiler or MyMovies collections.  DVDProfiler and MyMovies support is limited.
 
 Metadata Tools provides a Web UI interface for configuration and managing metadata.  There is also a commandline interface, and metadata can be fetched automatically when new media is added to your collection, if the automatic plugin is also installed and enabled.
