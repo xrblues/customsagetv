@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/PluginAPI.html'>PluginAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -663,6 +663,39 @@ Since:
  */
 public static long GetPluginModificationDate (UIContext _uicontext,Object Plugin) {
   Object o = sagex.SageAPI.call(_uicontext, "GetPluginModificationDate", new Object[] {Plugin});
+  if (o!=null) return (Long) o;
+  return 0l;
+}
+
+/**
+Gets the creation date of the specified Plugin object
+
+Parameters:
+Plugin- the specified Plugin object
+Returns:
+the creation date of the specified Plugin object
+Since:
+7.0
+ */
+public static long GetPluginCreationDate (Object Plugin) {
+  Object o = sagex.SageAPI.call("GetPluginCreationDate", new Object[] {Plugin});
+  if (o!=null) return (Long) o;
+  return 0l;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the creation date of the specified Plugin object
+
+Parameters:
+Plugin- the specified Plugin object
+Returns:
+the creation date of the specified Plugin object
+Since:
+7.0
+ */
+public static long GetPluginCreationDate (UIContext _uicontext,Object Plugin) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetPluginCreationDate", new Object[] {Plugin});
   if (o!=null) return (Long) o;
   return 0l;
 }

@@ -2,7 +2,7 @@ package sagex.api.enums;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageCommandEnum.html'>SageCommandEnum</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -109,7 +109,11 @@ LeftOrSkipBkwd("Left/Skip Bkwd"),
 UpOrVolumeUp("Up/Volume Up"),
 DownOrVolumeDown("Down/Volume Down"),
 Online("Online"),
-VideoOutput("Video Output");
+VideoOutput("Video Output"),
+ScrollLeft("Scroll Left"),
+ScrollRight("Scroll Right"),
+ScrollUp("Scroll Up"),
+ScrollDown("Scroll Down");
 
 
 private String command;

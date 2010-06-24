@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Database.html'>Database</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -284,7 +284,7 @@ SortTechnique- the technique to sort the data by; this can be a java.util.Compar
          which then explicitly controls the sort, or it can be one of the named sorting techniques of: 
          Intelligent, ChannelNumber, CaseInsensitive, FavoritePriority, Natural or a method name. If null is passed then the elements "natural" sorting is used.
 Returns:
-the sorted data, for passed in Maps this'll be a sorted Map; for Collections or arrays this will be an array of the
+the sorted data, for passed in Maps this'll be a sorted Map; for Collections or arrays this will be an Object[] array
  */
 public static java.lang.Object Sort (java.lang.Object Data, boolean Descending, java.lang.Object SortTechnique) {
   Object o = sagex.SageAPI.call("Sort", new Object[] {Data,Descending,SortTechnique});
@@ -307,7 +307,7 @@ SortTechnique- the technique to sort the data by; this can be a java.util.Compar
          which then explicitly controls the sort, or it can be one of the named sorting techniques of: 
          Intelligent, ChannelNumber, CaseInsensitive, FavoritePriority, Natural or a method name. If null is passed then the elements "natural" sorting is used.
 Returns:
-the sorted data, for passed in Maps this'll be a sorted Map; for Collections or arrays this will be an array of the
+the sorted data, for passed in Maps this'll be a sorted Map; for Collections or arrays this will be an Object[] array
  */
 public static java.lang.Object Sort (UIContext _uicontext,java.lang.Object Data, boolean Descending, java.lang.Object SortTechnique) {
   Object o = sagex.SageAPI.call(_uicontext, "Sort", new Object[] {Data,Descending,SortTechnique});
@@ -327,7 +327,7 @@ Data- the data to sort, this must be a java.util.Collection, a java.util.Map, or
 Descending- if true then the data will be sorted in descending order, if false then the order will be reversed
 SortByMethod- the method to call on each data item to get the value it should be sorted by, if this is null then the data elements are converted to Strings directly and then compared
 Returns:
-the sorted data, for passed in Maps this'll be a sorted Map; for Collections or arrays this will be an array of the
+the sorted data, for passed in Maps this'll be a sorted Map; for Collections or arrays this will be an Object[] array
 Since:
 5.1
  */
@@ -350,7 +350,7 @@ Data- the data to sort, this must be a java.util.Collection, a java.util.Map, or
 Descending- if true then the data will be sorted in descending order, if false then the order will be reversed
 SortByMethod- the method to call on each data item to get the value it should be sorted by, if this is null then the data elements are converted to Strings directly and then compared
 Returns:
-the sorted data, for passed in Maps this'll be a sorted Map; for Collections or arrays this will be an array of the
+the sorted data, for passed in Maps this'll be a sorted Map; for Collections or arrays this will be an Object[] array
 Since:
 5.1
  */
@@ -1655,6 +1655,43 @@ public static boolean IsDatabaseMemoryMaxed (UIContext _uicontext) {
   Object o = sagex.SageAPI.call(_uicontext, "IsDatabaseMemoryMaxed", (Object[])null);
   if (o!=null) return (Boolean) o;
   return false;
+}
+
+/**
+Strips any leading 'a, an or the' prefixes from the passed in string and returns the resulting string.
+ If the property "ui/ignore_the_when_sorting" is set to false, this method will do nothing. The articles stripped
+ by this method can be defined with the property "ui/prefixes_to_ignore_on_sort".
+
+Parameters:
+Text- the string to strip the leading articles from
+Returns:
+the String after the leading articles have been stripped from the past in string
+Since:
+7.0
+ */
+public static java.lang.String StringLeadingArticles (java.lang.String Text) {
+  Object o = sagex.SageAPI.call("StringLeadingArticles", new Object[] {Text});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Strips any leading 'a, an or the' prefixes from the passed in string and returns the resulting string.
+ If the property "ui/ignore_the_when_sorting" is set to false, this method will do nothing. The articles stripped
+ by this method can be defined with the property "ui/prefixes_to_ignore_on_sort".
+
+Parameters:
+Text- the string to strip the leading articles from
+Returns:
+the String after the leading articles have been stripped from the past in string
+Since:
+7.0
+ */
+public static java.lang.String StringLeadingArticles (UIContext _uicontext,java.lang.String Text) {
+  Object o = sagex.SageAPI.call(_uicontext, "StringLeadingArticles", new Object[] {Text});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 }

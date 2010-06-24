@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPI.html'>FavoriteAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1070,9 +1070,13 @@ Parameters:
 Favorite- the Favorite object
 FirstRuns- true if first runs should be recorded with this favorite, false otherwise
 ReRuns- true if rerusn should be recorded with this Favorite, false otherwise
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetRunStatus (Object Favorite, boolean FirstRuns, boolean ReRuns) {
-   sagex.SageAPI.call("SetRunStatus", new Object[] {Favorite,FirstRuns,ReRuns});
+public static boolean SetRunStatus (Object Favorite, boolean FirstRuns, boolean ReRuns) {
+  Object o = sagex.SageAPI.call("SetRunStatus", new Object[] {Favorite,FirstRuns,ReRuns});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1084,9 +1088,13 @@ Parameters:
 Favorite- the Favorite object
 FirstRuns- true if first runs should be recorded with this favorite, false otherwise
 ReRuns- true if rerusn should be recorded with this Favorite, false otherwise
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetRunStatus (UIContext _uicontext,Object Favorite, boolean FirstRuns, boolean ReRuns) {
-   sagex.SageAPI.call(_uicontext, "SetRunStatus", new Object[] {Favorite,FirstRuns,ReRuns});
+public static boolean SetRunStatus (UIContext _uicontext,Object Favorite, boolean FirstRuns, boolean ReRuns) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetRunStatus", new Object[] {Favorite,FirstRuns,ReRuns});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1095,9 +1103,13 @@ Sets the title that an Airing must match to be included in this Favorite.
 Parameters:
 Favorite- the Favorite object
 Title- the title that an Airing must match to be included in this Favorite, use the empty string or null if the title isn't a field that needs to match
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteTitle (Object Favorite, java.lang.String Title) {
-   sagex.SageAPI.call("SetFavoriteTitle", new Object[] {Favorite,Title});
+public static boolean SetFavoriteTitle (Object Favorite, java.lang.String Title) {
+  Object o = sagex.SageAPI.call("SetFavoriteTitle", new Object[] {Favorite,Title});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1107,9 +1119,13 @@ Sets the title that an Airing must match to be included in this Favorite.
 Parameters:
 Favorite- the Favorite object
 Title- the title that an Airing must match to be included in this Favorite, use the empty string or null if the title isn't a field that needs to match
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteTitle (UIContext _uicontext,Object Favorite, java.lang.String Title) {
-   sagex.SageAPI.call(_uicontext, "SetFavoriteTitle", new Object[] {Favorite,Title});
+public static boolean SetFavoriteTitle (UIContext _uicontext,Object Favorite, java.lang.String Title) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteTitle", new Object[] {Favorite,Title});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1119,9 +1135,13 @@ Parameters:
 Favorite- the Favorite object
 Category- the category that an Airing must match to be included in this Favorite, use the empty string or null if the category isn't a field that needs to match
 SubCategory- the category that an Airing must match to be included in this Favorite, use the empty string the subcategory doesn't need to match
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteCategories (Object Favorite, java.lang.String Category, java.lang.String SubCategory) {
-   sagex.SageAPI.call("SetFavoriteCategories", new Object[] {Favorite,Category,SubCategory});
+public static boolean SetFavoriteCategories (Object Favorite, java.lang.String Category, java.lang.String SubCategory) {
+  Object o = sagex.SageAPI.call("SetFavoriteCategories", new Object[] {Favorite,Category,SubCategory});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1132,9 +1152,13 @@ Parameters:
 Favorite- the Favorite object
 Category- the category that an Airing must match to be included in this Favorite, use the empty string or null if the category isn't a field that needs to match
 SubCategory- the category that an Airing must match to be included in this Favorite, use the empty string the subcategory doesn't need to match
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteCategories (UIContext _uicontext,Object Favorite, java.lang.String Category, java.lang.String SubCategory) {
-   sagex.SageAPI.call(_uicontext, "SetFavoriteCategories", new Object[] {Favorite,Category,SubCategory});
+public static boolean SetFavoriteCategories (UIContext _uicontext,Object Favorite, java.lang.String Category, java.lang.String SubCategory) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteCategories", new Object[] {Favorite,Category,SubCategory});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1144,9 +1168,13 @@ Parameters:
 Favorite- the Favorite object
 Person- the name of the person that needs to be included in an Airing for it to match this Favorite, use the empty string or null if person doesn't need to match
 Role- the name of the role the corresponding person needs to be in, or the emptry string or null if role doesn't matter
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoritePerson (Object Favorite, java.lang.String Person, java.lang.String Role) {
-   sagex.SageAPI.call("SetFavoritePerson", new Object[] {Favorite,Person,Role});
+public static boolean SetFavoritePerson (Object Favorite, java.lang.String Person, java.lang.String Role) {
+  Object o = sagex.SageAPI.call("SetFavoritePerson", new Object[] {Favorite,Person,Role});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1157,9 +1185,13 @@ Parameters:
 Favorite- the Favorite object
 Person- the name of the person that needs to be included in an Airing for it to match this Favorite, use the empty string or null if person doesn't need to match
 Role- the name of the role the corresponding person needs to be in, or the emptry string or null if role doesn't matter
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoritePerson (UIContext _uicontext,Object Favorite, java.lang.String Person, java.lang.String Role) {
-   sagex.SageAPI.call(_uicontext, "SetFavoritePerson", new Object[] {Favorite,Person,Role});
+public static boolean SetFavoritePerson (UIContext _uicontext,Object Favorite, java.lang.String Person, java.lang.String Role) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetFavoritePerson", new Object[] {Favorite,Person,Role});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1168,9 +1200,13 @@ Sets the rating that an Airing must match to be included in this Favorite.
 Parameters:
 Favorite- the Favorite object
 Rated- the rating that an Airing must match to be included in this Favorite, use the empty string or null if rating isn't a field that needs to match
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteRated (Object Favorite, java.lang.String Rated) {
-   sagex.SageAPI.call("SetFavoriteRated", new Object[] {Favorite,Rated});
+public static boolean SetFavoriteRated (Object Favorite, java.lang.String Rated) {
+  Object o = sagex.SageAPI.call("SetFavoriteRated", new Object[] {Favorite,Rated});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1180,9 +1216,13 @@ Sets the rating that an Airing must match to be included in this Favorite.
 Parameters:
 Favorite- the Favorite object
 Rated- the rating that an Airing must match to be included in this Favorite, use the empty string or null if rating isn't a field that needs to match
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteRated (UIContext _uicontext,Object Favorite, java.lang.String Rated) {
-   sagex.SageAPI.call(_uicontext, "SetFavoriteRated", new Object[] {Favorite,Rated});
+public static boolean SetFavoriteRated (UIContext _uicontext,Object Favorite, java.lang.String Rated) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteRated", new Object[] {Favorite,Rated});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1191,9 +1231,13 @@ Sets the year that an Airing must match to be included in this Favorite.
 Parameters:
 Favorite- the Favorite object
 Year- the year that an Airing must match to be included in this Favorite, use the empty string or null if year isn't a field that needs to match
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteYear (Object Favorite, java.lang.String Year) {
-   sagex.SageAPI.call("SetFavoriteYear", new Object[] {Favorite,Year});
+public static boolean SetFavoriteYear (Object Favorite, java.lang.String Year) {
+  Object o = sagex.SageAPI.call("SetFavoriteYear", new Object[] {Favorite,Year});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1203,9 +1247,13 @@ Sets the year that an Airing must match to be included in this Favorite.
 Parameters:
 Favorite- the Favorite object
 Year- the year that an Airing must match to be included in this Favorite, use the empty string or null if year isn't a field that needs to match
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteYear (UIContext _uicontext,Object Favorite, java.lang.String Year) {
-   sagex.SageAPI.call(_uicontext, "SetFavoriteYear", new Object[] {Favorite,Year});
+public static boolean SetFavoriteYear (UIContext _uicontext,Object Favorite, java.lang.String Year) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteYear", new Object[] {Favorite,Year});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1214,9 +1262,13 @@ Sets the parental rating that an Airing must match to be included in this Favori
 Parameters:
 Favorite- the Favorite object
 ParentalRating- the parental rating that an Airing must match to be included in this Favorite, use the empty string or null if parental rating isn't a field that needs to match
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteParentalRating (Object Favorite, java.lang.String ParentalRating) {
-   sagex.SageAPI.call("SetFavoriteParentalRating", new Object[] {Favorite,ParentalRating});
+public static boolean SetFavoriteParentalRating (Object Favorite, java.lang.String ParentalRating) {
+  Object o = sagex.SageAPI.call("SetFavoriteParentalRating", new Object[] {Favorite,ParentalRating});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1226,9 +1278,13 @@ Sets the parental rating that an Airing must match to be included in this Favori
 Parameters:
 Favorite- the Favorite object
 ParentalRating- the parental rating that an Airing must match to be included in this Favorite, use the empty string or null if parental rating isn't a field that needs to match
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteParentalRating (UIContext _uicontext,Object Favorite, java.lang.String ParentalRating) {
-   sagex.SageAPI.call(_uicontext, "SetFavoriteParentalRating", new Object[] {Favorite,ParentalRating});
+public static boolean SetFavoriteParentalRating (UIContext _uicontext,Object Favorite, java.lang.String ParentalRating) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteParentalRating", new Object[] {Favorite,ParentalRating});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1241,9 +1297,13 @@ Sets the keyword string that an Airing must match to be included in this Favorit
 Parameters:
 Favorite- the Favorite object
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteKeyword (Object Favorite, java.lang.String Keyword) {
-   sagex.SageAPI.call("SetFavoriteKeyword", new Object[] {Favorite,Keyword});
+public static boolean SetFavoriteKeyword (Object Favorite, java.lang.String Keyword) {
+  Object o = sagex.SageAPI.call("SetFavoriteKeyword", new Object[] {Favorite,Keyword});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1257,9 +1317,13 @@ Sets the keyword string that an Airing must match to be included in this Favorit
 Parameters:
 Favorite- the Favorite object
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteKeyword (UIContext _uicontext,Object Favorite, java.lang.String Keyword) {
-   sagex.SageAPI.call(_uicontext, "SetFavoriteKeyword", new Object[] {Favorite,Keyword});
+public static boolean SetFavoriteKeyword (UIContext _uicontext,Object Favorite, java.lang.String Keyword) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteKeyword", new Object[] {Favorite,Keyword});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1268,9 +1332,13 @@ Sets the channel name (call sign) that an Airing must be on to be included in th
 Parameters:
 Favorite- the Favorite object
 Channel- the channel name (String) or Channel object (Channel) that an Airing must be on to be included in this Favorite, use null or the empty string if channel doesn't matter; you may also use a semicolon or comma-delimited list of channel names for mult-channel favorites
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteChannel (Object Favorite, java.lang.Object Channel) {
-   sagex.SageAPI.call("SetFavoriteChannel", new Object[] {Favorite,Channel});
+public static boolean SetFavoriteChannel (Object Favorite, java.lang.Object Channel) {
+  Object o = sagex.SageAPI.call("SetFavoriteChannel", new Object[] {Favorite,Channel});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1280,9 +1348,13 @@ Sets the channel name (call sign) that an Airing must be on to be included in th
 Parameters:
 Favorite- the Favorite object
 Channel- the channel name (String) or Channel object (Channel) that an Airing must be on to be included in this Favorite, use null or the empty string if channel doesn't matter; you may also use a semicolon or comma-delimited list of channel names for mult-channel favorites
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteChannel (UIContext _uicontext,Object Favorite, java.lang.Object Channel) {
-   sagex.SageAPI.call(_uicontext, "SetFavoriteChannel", new Object[] {Favorite,Channel});
+public static boolean SetFavoriteChannel (UIContext _uicontext,Object Favorite, java.lang.Object Channel) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteChannel", new Object[] {Favorite,Channel});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1291,9 +1363,13 @@ Sets the network name that an Airing must be on to be included in this Favorite.
 Parameters:
 Favorite- the Favorite object
 Network- the network name that an Airing must be on to be included in this Favorite, use null or the empty string if network doesn't matter
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteNetwork (Object Favorite, java.lang.String Network) {
-   sagex.SageAPI.call("SetFavoriteNetwork", new Object[] {Favorite,Network});
+public static boolean SetFavoriteNetwork (Object Favorite, java.lang.String Network) {
+  Object o = sagex.SageAPI.call("SetFavoriteNetwork", new Object[] {Favorite,Network});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1303,9 +1379,13 @@ Sets the network name that an Airing must be on to be included in this Favorite.
 Parameters:
 Favorite- the Favorite object
 Network- the network name that an Airing must be on to be included in this Favorite, use null or the empty string if network doesn't matter
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteNetwork (UIContext _uicontext,Object Favorite, java.lang.String Network) {
-   sagex.SageAPI.call(_uicontext, "SetFavoriteNetwork", new Object[] {Favorite,Network});
+public static boolean SetFavoriteNetwork (UIContext _uicontext,Object Favorite, java.lang.String Network) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteNetwork", new Object[] {Favorite,Network});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1316,9 +1396,13 @@ Favorite- the Favorite object
 Timeslot- the timeslot that an Airing must be in to be included in this Favorite, use null or the empty string if timeslot doesn't matter.
          The timeslot should be in one of three formats: 1) Day Time, 2) Day, 3) Time. Where Day is a day of the week, and Time is an
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteTimeslot (Object Favorite, java.lang.String Timeslot) {
-   sagex.SageAPI.call("SetFavoriteTimeslot", new Object[] {Favorite,Timeslot});
+public static boolean SetFavoriteTimeslot (Object Favorite, java.lang.String Timeslot) {
+  Object o = sagex.SageAPI.call("SetFavoriteTimeslot", new Object[] {Favorite,Timeslot});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1330,9 +1414,13 @@ Favorite- the Favorite object
 Timeslot- the timeslot that an Airing must be in to be included in this Favorite, use null or the empty string if timeslot doesn't matter.
          The timeslot should be in one of three formats: 1) Day Time, 2) Day, 3) Time. Where Day is a day of the week, and Time is an
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
+Returns:
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
  */
-public static void SetFavoriteTimeslot (UIContext _uicontext,Object Favorite, java.lang.String Timeslot) {
-   sagex.SageAPI.call(_uicontext, "SetFavoriteTimeslot", new Object[] {Favorite,Timeslot});
+public static boolean SetFavoriteTimeslot (UIContext _uicontext,Object Favorite, java.lang.String Timeslot) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteTimeslot", new Object[] {Favorite,Timeslot});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1447,7 +1535,7 @@ Timeslot- the timeslot that an Airing must be in to be included in this Favorite
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
-the updated Favorite object
+the updated Favorite object, or if the changes would make this Favorite the same as an existing Favorite, the other existing Favorite is returned
  */
 public static Object UpdateFavorite (Object Favorite, java.lang.String Title, boolean FirstRuns, boolean ReRuns, java.lang.String Category, java.lang.String SubCategory, java.lang.String Person, java.lang.String RoleForPerson, java.lang.String Rated, java.lang.String Year, java.lang.String ParentalRating, java.lang.String Network, java.lang.String ChannelCallSign, java.lang.String Timeslot, java.lang.String Keyword) {
   Object o = sagex.SageAPI.call("UpdateFavorite", new Object[] {Favorite,Title,FirstRuns,ReRuns,Category,SubCategory,Person,RoleForPerson,Rated,Year,ParentalRating,Network,ChannelCallSign,Timeslot,Keyword});
@@ -1479,7 +1567,7 @@ Timeslot- the timeslot that an Airing must be in to be included in this Favorite
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
-the updated Favorite object
+the updated Favorite object, or if the changes would make this Favorite the same as an existing Favorite, the other existing Favorite is returned
  */
 public static Object UpdateFavorite (UIContext _uicontext,Object Favorite, java.lang.String Title, boolean FirstRuns, boolean ReRuns, java.lang.String Category, java.lang.String SubCategory, java.lang.String Person, java.lang.String RoleForPerson, java.lang.String Rated, java.lang.String Year, java.lang.String ParentalRating, java.lang.String Network, java.lang.String ChannelCallSign, java.lang.String Timeslot, java.lang.String Keyword) {
   Object o = sagex.SageAPI.call(_uicontext, "UpdateFavorite", new Object[] {Favorite,Title,FirstRuns,ReRuns,Category,SubCategory,Person,RoleForPerson,Rated,Year,ParentalRating,Network,ChannelCallSign,Timeslot,Keyword});

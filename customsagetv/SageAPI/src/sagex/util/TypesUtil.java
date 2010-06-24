@@ -104,6 +104,12 @@ public class TypesUtil {
         return null;
     }
     
+    /**
+     * Converts primitives and Date into a String.  For a date, the value is the Date.getTime() long value.
+     * 
+     * @param in
+     * @return
+     */
     public static String toString(Object in) {
         if (in==null) return null;
         Class type = in.getClass();
@@ -120,8 +126,7 @@ public class TypesUtil {
         } else if (type == double.class || type == Double.class) {
             return String.valueOf(in);
         } else if (type == Date.class) {
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            return f.format(in);
+        	return String.valueOf(((Date)in).getTime());
         } else {
             log.warn("Unhandled toString() conversion, return null for type: " + type);
         }

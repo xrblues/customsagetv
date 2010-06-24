@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -423,6 +423,7 @@ static {
    commands.put("GetFilesWithImportPrefix","Database");
    commands.put("GetMediaFilesWithImportPrefix","Database");
    commands.put("IsDatabaseMemoryMaxed","Database");
+   commands.put("StringLeadingArticles","Database");
    commands.put("IsFirstRunsAndReRuns","FavoriteAPI");
    commands.put("IsFirstRunsOnly","FavoriteAPI");
    commands.put("IsReRunsOnly","FavoriteAPI");
@@ -528,6 +529,7 @@ static {
    commands.put("GetVariableFromContext","Global");
    commands.put("GetVisibilityForVariable","Global");
    commands.put("GetUIComponentForVariable","Global");
+   commands.put("GetUIComponentContext","Global");
    commands.put("SetFocusToUIComponent","Global");
    commands.put("GetTableFocusedVisibleRow","Global");
    commands.put("GetTableFocusedVisibleColumn","Global");
@@ -814,6 +816,8 @@ static {
    commands.put("DoesPlaylistHaveVideo","PlaylistAPI");
    commands.put("AddPlaylist","PlaylistAPI");
    commands.put("GetNowPlayingList","PlaylistAPI");
+   commands.put("GetPlaylistProperty","PlaylistAPI");
+   commands.put("SetPlaylistProperty","PlaylistAPI");
    commands.put("GetSageTVPluginRegistry","PluginAPI");
    commands.put("GetAllAvailablePlugins","PluginAPI");
    commands.put("GetInstalledPlugins","PluginAPI");
@@ -835,6 +839,7 @@ static {
    commands.put("GetPluginAuthor","PluginAPI");
    commands.put("GetPluginReleaseNotes","PluginAPI");
    commands.put("GetPluginModificationDate","PluginAPI");
+   commands.put("GetPluginCreationDate","PluginAPI");
    commands.put("GetPluginInstallDate","PluginAPI");
    commands.put("GetPluginDescription","PluginAPI");
    commands.put("GetPluginVersion","PluginAPI");

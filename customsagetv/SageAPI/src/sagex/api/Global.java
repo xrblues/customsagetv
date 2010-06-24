@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 5/16/10 7:38 PM
+ * Generated Date/Time: 6/20/10 6:09 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Global.html'>Global</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1204,6 +1204,43 @@ Since:
  */
 public static java.lang.Object GetUIComponentForVariable (UIContext _uicontext,java.lang.String MatchName, java.lang.Object MatchValue) {
   Object o = sagex.SageAPI.call(_uicontext, "GetUIComponentForVariable", new Object[] {MatchName,MatchValue});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+Returns the UI component that this execution originated from. For
+ 'green' process chains; this will correspond to the UI component that received the event. For 'blue'
+ UI chains; this will correspond to the UI component who's conditionality is being determined or who's data
+ is being evaluated. This will be null if there is no UI context; such as for non-UI hooks and calls made from
+ Java directly.
+
+Returns:
+the UIComponent that corresponds to the UI context used for the current evaluation, null if there is no context
+Since:
+7.0
+ */
+public static java.lang.Object GetUIComponentContext () {
+  Object o = sagex.SageAPI.call("GetUIComponentContext", (Object[])null);
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the UI component that this execution originated from. For
+ 'green' process chains; this will correspond to the UI component that received the event. For 'blue'
+ UI chains; this will correspond to the UI component who's conditionality is being determined or who's data
+ is being evaluated. This will be null if there is no UI context; such as for non-UI hooks and calls made from
+ Java directly.
+
+Returns:
+the UIComponent that corresponds to the UI context used for the current evaluation, null if there is no context
+Since:
+7.0
+ */
+public static java.lang.Object GetUIComponentContext (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetUIComponentContext", (Object[])null);
   if (o!=null) return (java.lang.Object) o;
   return null;
 }
