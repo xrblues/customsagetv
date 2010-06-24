@@ -34,6 +34,7 @@ public class DebugPanel extends Composite {
     private Label lastModified = new Label();
     public DebugPanel(final GWTMediaFile file) {
         this.file=file;
+        /*
         HorizontalPanel hp = new HorizontalPanel();
         hp.setWidth("100%");
         hp.add(lastModified);
@@ -52,11 +53,13 @@ public class DebugPanel extends Composite {
             }
         });
         updateLastModified(file.lastModified());
+        */
         listbox.addItem("Wiz.bin", "wiz.bin");
         listbox.addItem("Custom Metadata Fields", "custom");
         listbox.addItem("GWTMediaFile", "GWTMediaFile");
         listbox.addItem("BMT Metadata", "metadata");
         listbox.addItem(".properties", ".properties");
+        listbox.addItem("sage7metadata", "sage7metadata");
         //listbox.addItem("Fanart Metadata", "fanart");
         listbox.addChangeHandler(new ChangeHandler() {
             public void onChange(ChangeEvent event) {
@@ -66,7 +69,7 @@ public class DebugPanel extends Composite {
         listbox.setWidth("100%");
         VerticalPanel vp = new VerticalPanel();
         vp.setWidth("100%");
-        vp.add(hp);
+        //vp.add(hp);
         vp.add(listbox);
         
         propPanel.setWidth("100%");

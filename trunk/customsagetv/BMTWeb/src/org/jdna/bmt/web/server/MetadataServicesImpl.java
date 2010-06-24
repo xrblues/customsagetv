@@ -1,16 +1,12 @@
 package org.jdna.bmt.web.server;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.media.GWTCastMember;
 import org.jdna.bmt.web.client.media.GWTMediaArt;
@@ -26,41 +22,35 @@ import org.jdna.bmt.web.client.ui.browser.PersistenceOptionsUI;
 import org.jdna.bmt.web.client.ui.browser.ProgressStatus;
 import org.jdna.bmt.web.client.ui.browser.SearchQueryOptions;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
-import org.jdna.media.metadata.CompositeMediaMetadataPersistence;
-import org.jdna.media.metadata.ICastMember;
-import org.jdna.media.metadata.IMediaArt;
-import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.media.metadata.IMediaMetadataPersistence;
-import org.jdna.media.metadata.IMediaMetadataProvider;
-import org.jdna.media.metadata.MediaMetadataFactory;
-import org.jdna.media.metadata.MediaMetadataPersistence;
-import org.jdna.media.metadata.MediaMetadataUtils;
-import org.jdna.media.metadata.MediaSearchResult;
-import org.jdna.media.metadata.MetadataAPI;
-import org.jdna.media.metadata.MetadataConfiguration;
-import org.jdna.media.metadata.PersistenceOptions;
-import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQuery.Field;
-import org.jdna.process.MetadataItem;
-import org.jdna.process.MetadataProcessor;
-import org.jdna.sage.media.SageCustomMetadataPersistence;
-import org.jdna.sage.media.SageShowPeristence;
-import org.jdna.url.UrlUtil;
+import org.jdna.bmt.web.client.util.Property;
 
-import sagex.api.MediaFileAPI;
+import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.proxy.GroupProxy;
-import sagex.phoenix.fanart.IMetadataSearchResult;
-import sagex.phoenix.fanart.MediaArtifactType;
-import sagex.phoenix.fanart.MediaType;
-import sagex.phoenix.progress.IRunnableWithProgress;
-import sagex.phoenix.progress.ProgressTracker;
-import sagex.phoenix.progress.ProgressTrackerManager;
+import sagex.phoenix.metadata.CastMember;
+import sagex.phoenix.metadata.ICastMember;
+import sagex.phoenix.metadata.IMediaArt;
+import sagex.phoenix.metadata.IMetadata;
+import sagex.phoenix.metadata.IMetadataOptions;
+import sagex.phoenix.metadata.IMetadataProvider;
+import sagex.phoenix.metadata.IMetadataSearchResult;
+import sagex.phoenix.metadata.MediaArt;
+import sagex.phoenix.metadata.MediaArtifactType;
+import sagex.phoenix.metadata.MediaType;
+import sagex.phoenix.metadata.MetadataConfiguration;
+import sagex.phoenix.metadata.MetadataException;
+import sagex.phoenix.metadata.MetadataOptions;
+import sagex.phoenix.metadata.PhoenixMetadataSupport;
+import sagex.phoenix.metadata.persistence.PersistenceUtil;
+import sagex.phoenix.metadata.proxy.MetadataProxy;
+import sagex.phoenix.metadata.search.MetadataSearchUtil;
+import sagex.phoenix.metadata.search.SearchQuery;
+import sagex.phoenix.metadata.search.SearchQuery.Field;
 import sagex.phoenix.progress.TrackedItem;
+import sagex.phoenix.util.DateUtils;
+import sagex.phoenix.util.url.UrlUtil;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaFolder;
 import sagex.phoenix.vfs.MediaResourceType;
-import sagex.phoenix.vfs.filters.AndResourceFilter;
-import sagex.phoenix.vfs.filters.MediaTypeFilter;
 import sagex.phoenix.vfs.sage.SageMediaFile;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -70,165 +60,99 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @SuppressWarnings("serial")
 public class MetadataServicesImpl extends RemoteServiceServlet implements MetadataService {
+	PhoenixMetadataSupport support = new PhoenixMetadataSupport();
+	
     private Logger log = Logger.getLogger(MetadataServicesImpl.class);
-    private ProgressTrackerManager trackerManager = new ProgressTrackerManager();
-    private MetadataConfiguration config = GroupProxy.get(MetadataConfiguration.class);
 
     public MetadataServicesImpl() {
     }
     
-    public GWTMediaMetadata getMetadata(GWTMediaSearchResult result, GWTPersistenceOptions mdOptions) {
-        IMediaMetadataProvider prov = MediaMetadataFactory.getInstance().getProvider(result.getProviderId(), result.getMediaType());
-        try {
-            IMediaFile smf = phoenix.api.GetMediaFile(MediaFileAPI.GetMediaFileForID(result.getMediaFileId()));
-            
-            // create a set of persistence options for just returning metadata
-            PersistenceOptions options = new PersistenceOptions();
-            options.setUseTitleMasks(mdOptions.isUseTitleMasks());
-            options.setImportAsTV(mdOptions.isImportAsTV());
-            MediaSearchResult msr = new MediaSearchResult(result);
-            return newMetadata(MetadataAPI.normalizeMetadata(smf, prov.getMetaData(msr), options));
-        } catch (Exception e) {
-            log.error("Metadata Retreival Failed!", e);
-            throw new RuntimeException(e);
-        }
-    }
-
     public List<GWTProviderInfo> getProviders() {
-        List<IMediaMetadataProvider> providers = MediaMetadataFactory.getInstance().getMetaDataProviders();
+        List<IMetadataProvider> providers = Phoenix.getInstance().getMetadataManager().getProviders();
         List<GWTProviderInfo> info = new ArrayList<GWTProviderInfo>();
-        for (IMediaMetadataProvider p : providers) {
+        for (IMetadataProvider p : providers) {
             info.add(new GWTProviderInfo(p.getInfo()));
         }
         return info;
     }
 
-    public ProgressStatus[] getScansInProgress() {
-        List<ProgressStatus> all = new ArrayList<ProgressStatus>();
-        for (String id : trackerManager.getProgressIds()) {
-            all.add(getStatus(id));
-        }
-        return all.toArray(new ProgressStatus[] {});
-    }
-
-    public ProgressStatus getStatus(String id) {
-        log.debug("Getting Progress Status for: " + id);
-        ProgressStatus status = new ProgressStatus();
-        status.setProgressId(id);
-        
-        ProgressTracker<MetadataItem> tracker = (ProgressTracker<MetadataItem>) trackerManager.getProgress(id);
-        if (tracker==null) {
-            log.debug("No Tracker for Id: " + id);
-            status.setIsDone(true);
-        } else {
-            updateProgressStatus(status, tracker);
-        }
-        return status;
-    }
-    
-    private void updateProgressStatus(ProgressStatus status, ProgressTracker<MetadataItem> tracker) {
-        log.debug("Tracker: "+ tracker.getLabel()+ "; %: " + tracker.internalWorked() + "; total items: " + tracker.getTotalWork() + "; worked: " + tracker.getWorked());
-        status.setComplete(tracker.internalWorked());
-        status.setIsCancelled(tracker.isCancelled());
-        status.setIsDone(tracker.isDone());
-        status.setStatus(tracker.getTaskName());
-        status.setTotalWork(tracker.getTotalWork());
-        status.setWorked(tracker.getWorked());
-        status.setSuccessCount(tracker.getSuccessfulItems().size());
-        status.setFailedCount(tracker.getFailedItems().size());
-        status.setLabel(tracker.getLabel());
-        status.setDate(tracker.getLastUpdated());
-    }
-
-    public void cancelScan(String id) {
-        ProgressTracker<MetadataItem> tracker = (ProgressTracker<MetadataItem>) trackerManager.getProgress(id);
-        if (tracker!=null) {
-            tracker.setCancelled(true);
-            log.debug("Cancelled Scan: " + id);
-        }
-    }
-    
-    public void removeScan(String progressId) {
-        cancelScan(progressId);
-        trackerManager.removeProgress(progressId);
-    }
-
-    public GWTMediaResource[] getProgressItems(String progressId, boolean b) {
-        log.debug("Getting Items for progress: " + progressId);
-        ProgressTracker<MetadataItem> tracker = (ProgressTracker<MetadataItem>) trackerManager.getProgress(progressId);
-        LinkedList<TrackedItem<MetadataItem>> items = null;
-        if (b) {
-            items = tracker.getSuccessfulItems();
-        } else {
-            items = tracker.getFailedItems();
-        }
-
-        List<GWTMediaResource> gwtitems = new ArrayList<GWTMediaResource>();
-        for (TrackedItem<MetadataItem> i : items) {
-            GWTMediaResource res = BrowsingServicesImpl.convertResource(i.getItem().getFile(), getThreadLocalRequest());
-            gwtitems.add(res);
-            if (i.getMessage()!=null) {
-                res.setMessage(i.getMessage());
-            }
-        }
-        GWTMediaResource all[] = (gwtitems.toArray(new GWTMediaResource[] {}));
-        log.debug("Created Reply with " + all.length + " items.");
-        return all;
-    }
-
     public GWTMediaMetadata loadMetadata(GWTMediaFile mediaFile) {
         try {
             log.debug("Fetching Current Metadata for Item: " + mediaFile.getSageMediaFileId() + "; " + mediaFile.getTitle());
+
+            IMediaFile mf = new SageMediaFile(null, phoenix.api.GetSageMediaFile(mediaFile.getSageMediaFileId()));
+            if (mf==null) throw new Exception("Invalid Media File: " + mediaFile);
             
-            // TODO: load metadata using EITHER the properties or show metadata
-            IMediaMetadataPersistence persist = new CompositeMediaMetadataPersistence(new SageShowPeristence(), new SageCustomMetadataPersistence());
-            IMediaMetadata md = persist.loadMetaData(new SageMediaFile(null, phoenix.api.GetSageMediaFile(mediaFile.getSageMediaFileId())));
-            return newMetadata(md);
+            GWTMediaMetadata md = newMetadata(mf, mf.getMetadata());
+            if (StringUtils.isEmpty(md.getMediaType().get())) {
+            	if (mf.isType(MediaResourceType.TV.value())) {
+            		md.getMediaType().set("TV");
+            	} else {
+            		md.getMediaType().set("Movie");
+            	}
+            }
+            return md;
         } catch (Throwable e) {
             log.error("Failed to get metadata: " + mediaFile.getSageMediaFileId() + "; " + mediaFile.getTitle(), e);
             throw new RuntimeException(e);
         }
     }
 
-    public GWTMediaMetadata newMetadata(IMediaMetadata source) {
+    public GWTMediaMetadata newMetadata(IMediaFile file, IMetadata source) {
         GWTMediaMetadata mi = new GWTMediaMetadata();
         if (source != null) {
-            MetadataAPI.copy(source, mi);
+        	mi.getDescription().set(source.getDescription());
+        	mi.getDiscNumber().set(String.valueOf(source.getDiscNumber()));
+        	mi.getEpisodeName().set(source.getEpisodeName());
+        	mi.getEpisodeNumber().set(String.valueOf(source.getEpisodeNumber()));
+        	mi.getExtendedRatings().set(source.getExtendedRatings());
+        	mi.getExternalID().set(source.getExternalID());
+        	mi.getIMDBID().set(source.getIMDBID());
+        	mi.getMediaProviderDataID().set(source.getMediaProviderDataID());
+        	mi.getMediaProviderID().set(source.getMediaProviderID());
+        	mi.getMediaTitle().set(source.getMediaTitle());
+        	mi.getMediaType().set(source.getMediaType());
+        	mi.getMisc().set(source.getMisc());
+        	mi.getOriginalAirDate().set(DateUtils.formatDate(source.getOriginalAirDate()));
+        	mi.getParentalRating().set(source.getParentalRating());
+        	mi.getRated().set(source.getRated());
+        	mi.getRunningTime().set(String.valueOf(source.getRunningTime()));
+        	mi.getSeasonNumber().set(String.valueOf(source.getSeasonNumber()));
+        	mi.getTitle().set(source.getTitle());
+        	mi.getUserRating().set(String.valueOf(source.getUserRating()));
+        	mi.getYear().set(String.valueOf(source.getYear()));
 
-            if (mi.getCastMembers() != null) {
-                List<GWTCastMember> cmlist = new ArrayList<GWTCastMember>();
-                for (ICastMember cm : mi.getCastMembers()) {
-                    cmlist.add(new GWTCastMember(cm));
-                }
-                mi.getCastMembers().clear();
-                mi.getCastMembers().addAll(cmlist);
-            }
+        	for (ICastMember cm : source.getActors()) {
+        		mi.getActors().add(new GWTCastMember(cm));
+        	}
 
-            if (mi.getFanart() != null) {
-                List<GWTMediaArt> malist = new ArrayList<GWTMediaArt>();
-                for (IMediaArt ma : mi.getFanart()) {
-                    GWTMediaArt gma = new GWTMediaArt(ma);
-                    if (gma.getDownloadUrl()!=null && gma.getDownloadUrl().startsWith("file")) {
-                        gma.setLocal(true);
-                        File f;
-                        try {
-                            f = new File(new URI(gma.getDownloadUrl()));
-                            gma.setLabel(f.getAbsolutePath());
-                            gma.setDownloadUrl(makeLocalMediaUrl(f.getAbsolutePath()));
-                        } catch (URISyntaxException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    } else {
-                        gma.setLabel(gma.getDownloadUrl());
-                        gma.setLocal(false);
-                    }
-                    malist.add(gma);
-                }
-                mi.getFanart().clear();
-                mi.getFanart().addAll(malist);
-            }
+        	for (ICastMember cm : source.getDirectors()) {
+        		mi.getDirectors().add(new GWTCastMember(cm));
+        	}
+
+        	for (ICastMember cm : source.getGuests()) {
+        		mi.getGuests().add(new GWTCastMember(cm));
+        	}
+        	
+        	for (ICastMember cm : source.getWriters()) {
+        		mi.getWriters().add(new GWTCastMember(cm));
+        	}
+        	
+        	for (String g: source.getGenres()) {
+        		mi.getGenres().add(new Property<String>(g));
+        	}
+        	
+        	for (IMediaArt ma: source.getFanart()) {
+        		mi.getFanart().add(new GWTMediaArt(ma));
+        	}
         }
+        
+        if(file!=null) {
+            // depending on if the file is a Recording or Not, some fields are readonly
+        	MetadataConfiguration config = GroupProxy.get(MetadataConfiguration.class);
+        	mi.getPreserveRecordingMetadata().set(config.getPreserverRecordingMetadata());
+        }
+    	
         return mi;
     }
 
@@ -236,16 +160,8 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
         List<GWTMediaSearchResult> results = new ArrayList<GWTMediaSearchResult>();
         try {
             MediaType type = MediaType.toMediaType(options.getType().get());
-            String prov = options.getProvider().get();
-            System.out.println("*** Using Search Provider: " + prov);
-            IMediaMetadataProvider provider = null;
-            if (prov!=null) {
-                provider = MediaMetadataFactory.getInstance().findById(prov); 
-            } else {
-                provider = MediaMetadataFactory.getInstance().getProvider(null, type);
-            }
-                
-            
+
+            // build a custom query from the options
             SearchQuery query = new SearchQuery();
             query.setMediaType(type);
             query.set(Field.QUERY, options.getSearchTitle().get());
@@ -255,7 +171,8 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
                 query.set(Field.EPISODE,options.getEpisode().get());
                 query.set(Field.SEASON,options.getSeason().get());
             }
-            List<IMetadataSearchResult> sresults = provider.search(query);
+            
+            List<IMetadataSearchResult> sresults = Phoenix.getInstance().getMetadataManager().search(query);
             if (sresults==null) throw new Exception("Search Failed for: " + query);
             for (IMetadataSearchResult r : sresults) {
                 GWTMediaSearchResult res = new GWTMediaSearchResult();
@@ -276,52 +193,90 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
         return results;
     }
 
-    public String scan(final GWTMediaFolder folder, final PersistenceOptionsUI options) {
-        log.debug("Scanning Folder: " + folder);
-        ProgressTracker<MetadataItem> tracker = new ProgressTracker<MetadataItem>();
-        tracker.setLabel(folder.getTitle());
-        
-        Map<MediaType, IMediaMetadataProvider> providers = new HashMap<MediaType, IMediaMetadataProvider>();
-        providers.put(MediaType.TV, MediaMetadataFactory.getInstance().getProvider(config.getTVProviders(), MediaType.TV));
-        providers.put(MediaType.MOVIE, MediaMetadataFactory.getInstance().getProvider(config.getMovieProviders(), MediaType.MOVIE));
-        
-        IMediaMetadataPersistence persistence = new MediaMetadataPersistence();
-        
-        PersistenceOptions poptions = new PersistenceOptions();
-        poptions.setImportAsTV(options.getImportTV().get());
-        poptions.setUpdateFanart(options.getUpdateFanart().get());
-        poptions.setOverwriteFanart(options.getOverwriteFanart().get());
-        poptions.setUpdateMetadata(options.getUpdateMetadata().get());
-        poptions.setOverwriteMetadata(options.getOverwriteMetadata().get());
-        poptions.setCreateProperties(options.getCreatePropertyFiles().get());
-        poptions.setTouchingFiles(!options.getUpdateWizBin().get());
-        poptions.setUpdateWizBin(options.getUpdateWizBin().get());
-        poptions.setUseTitleMasks(true);
-        
-        final AndResourceFilter filter = new AndResourceFilter(new MediaTypeFilter(MediaResourceType.ANY_VIDEO));
-        final IMediaFolder realFolder = BrowsingServicesImpl.getFolderRef(folder, getThreadLocalRequest());
-        
-        final MetadataProcessor processor = new MetadataProcessor(null, providers, persistence, poptions);
-        processor.setCollectItemsFirst(true);
-        String trackerId = trackerManager.runWithProgress(new IRunnableWithProgress<ProgressTracker<MetadataItem>>() {
-            public void run(ProgressTracker<MetadataItem> monitor) {
-                try {
-                    log.info("Starting Scan on folder: " + realFolder.getTitle());
-                    processor.setRecurse(options.getIncludeSubDirs().get());
-                    processor.addFilter(filter);
-                    processor.process(realFolder, monitor);
-                } catch (Throwable t) {
-                    log.error("Scan Failed!", t);
-                } finally {
-                    log.info("Scan completed: " + realFolder.getTitle());
-                    monitor.done();
-                }
-            }
-        }, tracker);
-        return trackerId;
+    public GWTMediaMetadata getMetadata(GWTMediaSearchResult result, GWTPersistenceOptions mdOptions) {
+        try {
+        	log.debug("Getting Metadata for result: " + result);
+            return newMetadata(null, Phoenix.getInstance().getMetadataManager().getMetdata(result));
+        } catch (Exception e) {
+            log.error("Metadata Retreival Failed!", e);
+            throw new RuntimeException(e);
+        }
     }
 
 
+    public String scan(final GWTMediaFolder folder, final PersistenceOptionsUI options) {
+        log.debug("Scanning Folder: " + folder);
+        IMediaFolder realFolder = BrowsingServicesImpl.getFolderRef(folder, getThreadLocalRequest());
+        IMetadataOptions opts = new MetadataOptions();
+        opts.setIsScanningOnlyMissingMetadata(options.getScanOnlyMissingMetadata().get());
+        opts.setIsScanningSubFolders(options.getIncludeSubDirs().get());
+        return (String) support.startMetadataScan(realFolder, opts);
+    }
+
+    public ProgressStatus[] getScansInProgress() {
+    	Object scans[] = support.getTrackers();
+    	
+        List<ProgressStatus> all = new ArrayList<ProgressStatus>();
+        for (Object id : scans) {
+            all.add(getStatus((String)id));
+        }
+        return all.toArray(new ProgressStatus[] {});
+    }
+
+    public ProgressStatus getStatus(String id) {
+        log.debug("Getting Progress Status for: " + id);
+        ProgressStatus status = new ProgressStatus();
+        status.setProgressId(id);
+        
+        if (id==null) {
+            log.debug("No Tracker for Id: " + id);
+            status.setIsDone(true);
+        } else {
+            status.setComplete(support.getMetadataScanComplete(id));
+            status.setIsCancelled(support.isMetadataScanCancelled(id));
+            status.setIsDone(!support.isMetadataScanRunning(id));
+            status.setStatus(support.getMetadataScanStatus(id));
+            status.setTotalWork(support.getTotalWork(id));
+            status.setWorked(support.getWorked(id));
+            status.setSuccessCount(support.getSkippedCount(id));
+            status.setFailedCount(support.getFailedCount(id));
+            status.setLabel(support.getMetadataScanLabel(id));
+            status.setDate(support.getMetadataScanLastUpdated(id));
+        }
+        return status;
+    }
+    
+    public void cancelScan(String id) {
+    	support.cancelMetadataScan(id);
+    }
+    
+    public void removeScan(String progressId) {
+        cancelScan(progressId);
+        support.removeMetadataScan(progressId);
+    }
+
+    public GWTMediaResource[] getProgressItems(String progressId, boolean b) {
+        log.debug("Getting Items for progress: " + progressId);
+        
+        LinkedList<TrackedItem<IMediaFile>> items = null;
+        if (b) {
+            items = support.getSuccessfulItems(progressId);
+        } else {
+            items = support.getFailedItems(progressId);
+        }
+
+        List<GWTMediaResource> gwtitems = new ArrayList<GWTMediaResource>();
+        for (TrackedItem<IMediaFile> i : items) {
+            GWTMediaResource res = BrowsingServicesImpl.convertResource(i.getItem(), getThreadLocalRequest());
+            gwtitems.add(res);
+            if (i.getMessage()!=null) {
+                res.setMessage(i.getMessage());
+            }
+        }
+        GWTMediaResource all[] = (gwtitems.toArray(new GWTMediaResource[] {}));
+        log.debug("Created Reply with " + all.length + " items.");
+        return all;
+    }
 
     private String makeLocalMediaUrl(String url) {
         return "media/get?i=" + UrlUtil.encode(url);
@@ -329,78 +284,64 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
 
     
     public ServiceReply<GWTMediaFile> saveMetadata(GWTMediaFile file, PersistenceOptionsUI uiOptions) {
-        Object sageMF = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
-        
-        IMediaFile smf = phoenix.api.GetMediaFile(sageMF);
-        
-        log.debug("Saving File: " + smf);
-        PersistenceOptions options = new PersistenceOptions();
-        options.setOverwriteFanart(uiOptions.getOverwriteFanart().get());
-        options.setOverwriteMetadata(uiOptions.getOverwriteMetadata().get());
-        options.setImportAsTV(file.getSageRecording().get());
-        options.setCreateDefaultSTVThumbnail(uiOptions.getCreateDefaultSTVThumbnail().get());
-        options.setCreateProperties(uiOptions.getCreatePropertyFiles().get());
-        options.setUpdateFanart(uiOptions.getUpdateFanart().get());
-        options.setUpdateMetadata(uiOptions.getUpdateMetadata().get());
+    	IMediaFile mf = new SageMediaFile(null, phoenix.api.GetSageMediaFile(file.getSageMediaFileId()));
+    	IMetadata md = MetadataProxy.newInstance();
+    	GWTMediaMetadata gmd = file.getMetadata();
+    	
+    	md.setDescription(gmd.getDescription().get());
+    	md.setDiscNumber(NumberUtils.toInt(gmd.getDiscNumber().get()));
+    	md.setEpisodeName(gmd.getEpisodeName().get());
+    	md.setEpisodeNumber(NumberUtils.toInt(gmd.getEpisodeNumber().get()));
+    	md.setExtendedRatings(gmd.getExtendedRatings().get());
+    	md.setExternalID(gmd.getExternalID().get());
+    	md.setIMDBID(gmd.getIMDBID().get());
+    	md.setMediaProviderDataID(gmd.getMediaProviderDataID().get());
+    	md.setMediaProviderID(gmd.getMediaProviderID().get());
+    	md.setMediaTitle(gmd.getMediaTitle().get());
+    	md.setMediaType(gmd.getMediaType().get());
+    	md.setMisc(gmd.getMisc().get());
+    	md.setOriginalAirDate(DateUtils.parseDate(gmd.getOriginalAirDate().get()));
+    	md.setParentalRating(gmd.getParentalRating().get());
+    	md.setRated(gmd.getRated().get());
+    	md.setRunningTime(NumberUtils.toLong(gmd.getRunningTime().get()));
+    	md.setSeasonNumber(NumberUtils.toInt(gmd.getSeasonNumber().get()));
+    	md.setTitle(gmd.getTitle().get());
+    	md.setUserRating(MetadataSearchUtil.parseUserRating(gmd.getUserRating().get()));
+    	md.setYear(NumberUtils.toInt(gmd.getYear().get()));
 
-        //options.setTouchingFiles(uiOptions.getTouchingFile().get());
-        options.setUpdateWizBin(uiOptions.getUpdateWizBin().get());
+    	for (ICastMember cm: gmd.getActors()) {
+    		md.getActors().add(new CastMember(cm));
+    	}
 
-        // TODO: Should probably ask the use if we want to use the default masks, etc.
-        options.setUseTitleMasks(false);
+    	for (ICastMember cm: gmd.getDirectors()) {
+    		md.getDirectors().add(new CastMember(cm));
+    	}
+    	
+    	for (ICastMember cm: gmd.getGuests()) {
+    		md.getGuests().add(new CastMember(cm));
+    	}
 
-        IMediaMetadataPersistence persist = new MediaMetadataPersistence();
-        
-        try {
-            if (MediaFileAPI.IsTVFile(sageMF) && !file.getSageRecording().get()) {
-                // moving a file from TV to non TV requiers some manipulation
-                log.warn("Moving File from TV to NON TV: " + smf);
-                Object newMF = phoenix.api.RemoveMetadataFromMediaFile(sageMF);
-                if (newMF == null) {
-                    log.error("Failed strip metadata from TV File: " + file);
-                } else {
-                    smf = phoenix.api.GetMediaFile(newMF);
-                }
-            }
-            
-            // process the fanart images
-            for (Iterator<IMediaArt> i = file.getMetadata().getFanart().iterator(); i.hasNext();) {
-                IMediaArt ma = i.next();
-                if (ma instanceof GWTMediaArt) {
-                    GWTMediaArt gma = (GWTMediaArt) ma;
-                    if (gma.isLocal()) {
-                        log.debug("Skipping Download of Local Fanart: " + gma.getLabel());
-                        i.remove();
-                    }
-                    if (gma.isDeleted() && gma.isLocal()) {
-                        try {
-                            File f = new File(gma.getLabel());
-                            f.delete();
-                        } catch (Throwable t) {
-                            log.error("Unablet to delete: " + gma.getDownloadUrl());
-                        }
-                    }
-                }
-            }
-            
-            persist.storeMetaData(file.getMetadata(), smf, options);
-            
-            log.debug("Metadata Saved... Reloading");
+    	for (ICastMember cm: gmd.getWriters()) {
+    		md.getWriters().add(new CastMember(cm));
+    	}
+    	
+    	for (Property<String> s: gmd.getGenres()) {
+    		md.getGenres().add(s.get());
+    	}
+    	
+    	for (IMediaArt ma : gmd.getFanart()) {
+    		md.getFanart().add(new MediaArt(ma));
+    	}
 
-            GWTMediaFile newMediaFile = (GWTMediaFile) BrowsingServicesImpl.convertResource(smf, getThreadLocalRequest());
-            if (newMediaFile==null) {
-                throw new IOException("Unable to create GWT MediaFile from SageMediaFile: " + smf);
-            }
-            
-            newMediaFile.attachMetadata(loadMetadata(newMediaFile));
-            
-            // return back the new metadata object
-            ServiceReply<GWTMediaFile> reply = new ServiceReply<GWTMediaFile>(0, "ok", newMediaFile);
-            return reply;
-        } catch (IOException e) {
-            ServiceReply<GWTMediaFile> reply = new ServiceReply<GWTMediaFile>(99, "Failed: " + e.getMessage(), null);
-            return reply;
-        }
+    	try {
+			Phoenix.getInstance().getMetadataManager().updateMetadata(mf, md, null);
+			file.attachMetadata(newMetadata(mf, mf.getMetadata()));
+		} catch (MetadataException e) {
+			log.warn("Failed to save metadata for file: " + mf, e);
+			return new ServiceReply<GWTMediaFile>(1, "Failed to save metadata/fanart: " + e.getMessage(), file);
+		}
+		
+		return new ServiceReply<GWTMediaFile>(0, "ok", file);
     }
 
     public ArrayList<GWTMediaArt> getFanart(GWTMediaFile file, MediaArtifactType artifact) {
@@ -418,7 +359,6 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
                 ma.setDeleted(false);
                 ma.setLocal(true);
                 ma.setLocalFile(fa);
-                ma.setLabel(fa);
                 ma.setDisplayUrl(makeLocalMediaUrl(fa));
                 files.add(ma);
             }
@@ -436,7 +376,7 @@ public class MetadataServicesImpl extends RemoteServiceServlet implements Metada
         File dir =new File(fanartDir);
         String name = new File(ma.getDownloadUrl()).getName();
         File local = new File(dir, name);
-        MediaMetadataUtils.writeImageFromUrl(ma.getDownloadUrl(), local);
+        PersistenceUtil.writeImageFromUrl(ma.getDownloadUrl(), local);
         ma.setLocal(true);
         ma.setLocalFile(local.getAbsolutePath());
         ma.setDisplayUrl(makeLocalMediaUrl(local.getAbsolutePath()));

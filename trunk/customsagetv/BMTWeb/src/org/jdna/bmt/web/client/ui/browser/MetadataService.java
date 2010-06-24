@@ -15,7 +15,7 @@ import org.jdna.bmt.web.client.media.GWTPersistenceOptions;
 import org.jdna.bmt.web.client.media.GWTProviderInfo;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
 
-import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.metadata.MediaArtifactType;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;

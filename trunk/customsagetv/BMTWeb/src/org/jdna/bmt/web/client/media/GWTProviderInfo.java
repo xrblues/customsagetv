@@ -1,20 +1,30 @@
 package org.jdna.bmt.web.client.media;
 
 import java.io.Serializable;
+import java.util.List;
 
-import org.jdna.media.metadata.IProviderInfo;
+import sagex.phoenix.metadata.IMetadataProviderInfo;
+import sagex.phoenix.metadata.MediaType;
 
-public class GWTProviderInfo implements IProviderInfo, Serializable {
-    private String description, iconUrl, id, name, type;
+public class GWTProviderInfo implements IMetadataProviderInfo, Serializable {
+	private static final long serialVersionUID = 1L;
+
+	private String description, iconUrl, id, name;
+
+	private List<MediaType> searchTypes;
+
+	private String fanartId;
     
     public GWTProviderInfo() {
     }
 
-    public GWTProviderInfo(IProviderInfo info) {
+    public GWTProviderInfo(IMetadataProviderInfo info) {
         this.description=info.getDescription();
         this.iconUrl=info.getIconUrl();
         this.id=info.getId();
         this.name=info.getName();
+        this.fanartId=info.getFanartProviderId();
+        this.searchTypes = info.getSupportedSearchTypes();
     }
     
     public String getDescription() {
@@ -33,28 +43,17 @@ public class GWTProviderInfo implements IProviderInfo, Serializable {
         return name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	@Override
+	public String getFanartProviderId() {
+		return fanartId;
+	}
 
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
-    }
+	@Override
+	public List<MediaType> getSupportedSearchTypes() {
+		return searchTypes;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return type;
-    }
-
+	@Override
+	public void setFanartProviderId(String fanartProvider) {
+	}
 }

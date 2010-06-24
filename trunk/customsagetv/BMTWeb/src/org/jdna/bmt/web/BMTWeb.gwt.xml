@@ -7,7 +7,7 @@
   <inherits name='com.google.gwt.http.HTTP'/>
   <inherits name="com.google.gwt.json.JSON" />
   <inherits name="gwt.phoenix"/>
-  <inherits name="gwt.bmt"/>
+  <!-- <inherits name="gwt.bmt"/> -->
 
   <!-- Inherit the default GWT style sheet.  You can change       -->
   <!-- the theme of your GWT application by uncommenting          -->

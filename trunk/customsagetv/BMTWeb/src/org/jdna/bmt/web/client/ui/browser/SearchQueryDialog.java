@@ -207,7 +207,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
                 }
             });
             table.setWidget(i, 0, label);
-            table.setWidget(i, 1, new Label(res.getYear()));
+            table.setWidget(i, 1, new Label(String.valueOf(res.getYear())));
             table.setWidget(i, 2, new Label(res.getProviderId()));
             table.getRowFormatter().addStyleName(i, rowStyleNames[i%2]);
         }

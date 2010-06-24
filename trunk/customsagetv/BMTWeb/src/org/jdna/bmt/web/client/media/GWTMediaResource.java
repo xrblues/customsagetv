@@ -2,7 +2,7 @@ package org.jdna.bmt.web.client.media;
 
 import java.io.Serializable;
 
-import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.metadata.MediaType;
 
 public class GWTMediaResource implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -71,7 +71,7 @@ public class Dialogs {
 
     public static void showAsDialog(String title, Widget body) {
         VerticalPanel panel = new VerticalPanel();
-        panel.setWidth("100%");
+        //panel.setWidth("100%");
         panel.add(body);
         Button btn = new Button("close");
         final DialogBox dialog = new DialogBox();
@@ -88,6 +88,7 @@ public class Dialogs {
         });
         panel.add(btn);
         panel.setCellHorizontalAlignment(btn, HasHorizontalAlignment.ALIGN_RIGHT);
+        dialog.setAutoHideOnHistoryEventsEnabled(true);
         dialog.show();
         DeferredCommand.addCommand(new Command() {
             public void execute() {

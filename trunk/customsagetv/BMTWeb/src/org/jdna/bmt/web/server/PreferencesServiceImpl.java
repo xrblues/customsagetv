@@ -27,13 +27,13 @@ import org.jdna.bmt.web.client.ui.prefs.PreferencesService;
 import org.jdna.bmt.web.client.ui.prefs.RegexValidation;
 import org.jdna.bmt.web.client.ui.prefs.VideoSource;
 import org.jdna.bmt.web.client.ui.prefs.VideoSource.SourceType;
-import org.jdna.util.SortedProperties;
 
 import sagex.api.Configuration;
 import sagex.phoenix.configuration.Group;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.NewSearchGroup;
 import sagex.phoenix.util.PropertiesUtils;
+import sagex.phoenix.util.SortedProperties;
 import sagex.util.Log4jConfigurator;
 import sagex.util.Log4jConfigurator.LogStruct;
 

@@ -67,7 +67,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
             GWTMediaFile file = new GWTMediaFile(null, r.getTitle());
             if (r instanceof IMediaFile) {
                 if (r.isType(MediaResourceType.TV.value())) {
-                    file.setMinorTitle(phoenix.api.GetEpisodeTitle(r));
+                    file.setMinorTitle(((IMediaFile) r).getMetadata().getEpisodeName());
                 }
                 Object sageMedia = phoenix.api.GetSageMediaFile(r);
                 if (sageMedia!=null) {

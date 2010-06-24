@@ -2,7 +2,6 @@ package org.jdna.bmt.web.client.ui.status;
 
 import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.i18n.Labels;
-import org.jdna.bmt.web.client.ui.layout.FlowGrid;
 
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -22,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class StatusPanel extends Composite implements ResizeHandler {
     private Labels labels = Application.labels();
-    private FlowGrid grid = new FlowGrid(2);
+    private VerticalPanel grid = new VerticalPanel();
     private ScrollPanel scroller = new ScrollPanel();
     private HandlerRegistration resizeHandler;
     
@@ -73,12 +72,11 @@ public class StatusPanel extends Composite implements ResizeHandler {
         scroller.setWidget(grid);
         
         grid.setWidth("100%");
+        grid.setSpacing(10);
         
         initWidget(scroller);
         addStatus(new SimpleStatus(labels.statusPhoenix(), labels.statusPhoenixDesc(), "phoenix"));
-        addStatus(new SimpleStatus(labels.metadataTools(), labels.metadataToolsDesc(), "bmt"));
         addStatus(new SimpleStatus(labels.sagetv(), labels.sagetvDesc(), "sagetv"));
-        addStatus(new SimpleStatus(labels.jars(), labels.jarsDesc(), "jars"));
         addStatus(new SystemMessageStatus());
         resize();
     }

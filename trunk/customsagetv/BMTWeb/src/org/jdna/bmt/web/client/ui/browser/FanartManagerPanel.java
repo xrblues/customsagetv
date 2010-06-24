@@ -9,7 +9,7 @@ import org.jdna.bmt.web.client.event.NotificationEventHandler;
 import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 
-import sagex.phoenix.fanart.MediaArtifactType;
+import sagex.phoenix.metadata.MediaArtifactType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -114,15 +114,14 @@ public class FanartManagerPanel extends Composite implements NotificationEventHa
             FanartImage img = (FanartImage) imagePanel.getWidget(0);
             img.onClick(null);
         }
-        System.out.println("Loaded images");
     }
 
     public void setImageUrl(String url) {
         image.setUrl(url);
         if (curType == MediaArtifactType.POSTER) {
-            image.setWidth("300px");
+            image.setWidth("200px");
         } else {
-            image.setWidth("600px");
+            image.setWidth("300px");
         }
     }
 

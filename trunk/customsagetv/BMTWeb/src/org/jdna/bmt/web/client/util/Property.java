@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Property<T> implements Serializable {
     private T value;
     private boolean visible=true;
+    private boolean readOnly=false;
     
     public Property() {
     }
@@ -28,4 +29,12 @@ public class Property<T> implements Serializable {
     public void setVisible(boolean vis) {
         this.visible=vis;
     }
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
+	}
 }

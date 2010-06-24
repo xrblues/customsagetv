@@ -6,11 +6,10 @@ import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.util.Property;
 import org.jdna.bmt.web.client.util.StringUtils;
-import org.jdna.media.metadata.MetadataKey;
-import org.jdna.media.metadata.SearchQuery;
-import org.jdna.media.metadata.SearchQuery.Field;
 
-import sagex.phoenix.fanart.MediaType;
+import sagex.phoenix.metadata.MediaType;
+import sagex.phoenix.metadata.search.SearchQuery;
+import sagex.phoenix.metadata.search.SearchQuery.Field;
 
 public class SearchQueryOptions implements Serializable {
     private Property<String> provider = new Property<String>();
@@ -26,13 +25,14 @@ public class SearchQueryOptions implements Serializable {
 
     public SearchQueryOptions(GWTMediaFile mf) {
         GWTMediaMetadata md = mf.getMetadata();
-        searchTitle.set(md.getString(MetadataKey.MEDIA_TITLE));
-        year.set(md.getString(MetadataKey.YEAR));
-        if ("TV".equals(md.getString(MetadataKey.MEDIA_TYPE))) {
+        searchTitle.set(md.getEpisodeName().get());
+        year.set(String.valueOf(md.getYear().get()));
+        if ("TV".equals(md.getMediaType().get())) {
             type.set("TV");
-            episodeTitle.set(md.getString(MetadataKey.EPISODE_TITLE));
-            episode.set(md.getString(MetadataKey.EPISODE));
-            season.set(md.getString(MetadataKey.SEASON));
+            searchTitle.set(md.getTitle().get());
+            episodeTitle.set(md.getEpisodeName().get());
+            episode.set(String.valueOf(md.getEpisodeNumber().get()));
+            season.set(String.valueOf(md.getSeasonNumber().get()));
         } else {
             type.set("Movie");
         }
@@ -78,39 +78,19 @@ public class SearchQueryOptions implements Serializable {
         return year;
     }
 
-    public void setYear(Property<String> year) {
-        this.year = year;
-    }
-
     public Property<String> getSeason() {
         return season;
-    }
-
-    public void setSeason(Property<String> season) {
-        this.season = season;
     }
 
     public Property<String> getEpisode() {
         return episode;
     }
 
-    public void setEpisode(Property<String> episode) {
-        this.episode = episode;
-    }
-
     public Property<String> getType() {
         return type;
     }
 
-    public void setType(Property<String> type) {
-        this.type = type;
-    }
-
     public Property<String> getProvider() {
         return provider;
-    }
-
-    public void setProvider(Property<String> provider) {
-        this.provider = provider;
     }
 }

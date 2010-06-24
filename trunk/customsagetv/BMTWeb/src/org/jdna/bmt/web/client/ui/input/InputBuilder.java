@@ -1,6 +1,7 @@
 package org.jdna.bmt.web.client.ui.input;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.jdna.bmt.web.client.util.Log;
@@ -21,6 +22,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.datepicker.client.DateBox;
 
 public class InputBuilder<W extends Widget, T> {
     
@@ -36,6 +38,10 @@ public class InputBuilder<W extends Widget, T> {
     
     public static InputBuilder<TextBox, String> textbox() {
         return textbox(new TextBox());
+    }
+
+    public static InputBuilder<DateBox, Date> datebox() {
+        return new InputBuilder<DateBox, Date>(new DateBox());
     }
 
     public static InputBuilder<TextBox, String> textbox(String id) {
@@ -101,7 +107,7 @@ public class InputBuilder<W extends Widget, T> {
     }
     
     public InputBuilder<W, T> bind(final Property<T> prop) {
-        if (widget instanceof HasValue) {
+        if (widget instanceof HasValue<?>) {
             HasValue<T> hasValue = (HasValue<T>)widget;
             hasValue.setValue(prop.get());
             hasValue.addValueChangeHandler(new ValueChangeHandler<T>() {
@@ -128,6 +134,12 @@ public class InputBuilder<W extends Widget, T> {
             });
         } else {
             Log.error("Widget is not a HasValue widget! " + widget);
+        }
+        
+        if (prop.isReadOnly()) {
+        	if (widget instanceof FocusWidget) {
+        		((FocusWidget) widget).setEnabled(false);
+        	}
         }
         
         return this;

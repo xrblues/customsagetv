@@ -12,15 +12,8 @@ import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.ui.app.SupportOptions;
 import org.jdna.bmt.web.client.ui.debug.DebugService;
-import org.jdna.media.BackupConfiguration;
-import org.jdna.media.metadata.CompositeMediaMetadataPersistence;
-import org.jdna.media.metadata.IMediaMetadata;
-import org.jdna.media.metadata.IMediaMetadataPersistence;
-import org.jdna.media.metadata.MetadataKey;
 import org.jdna.metadataupdater.Tools;
 import org.jdna.metadataupdater.Troubleshooter;
-import org.jdna.sage.media.SageCustomMetadataPersistence;
-import org.jdna.sage.media.SageShowPeristence;
 
 import sagex.SageAPI;
 import sagex.api.AiringAPI;
@@ -31,9 +24,11 @@ import sagex.api.enums.AiringAPIEnum;
 import sagex.api.enums.ChannelAPIEnum;
 import sagex.api.enums.MediaFileAPIEnum;
 import sagex.api.enums.ShowAPIEnum;
-import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.FanartUtil;
+import sagex.phoenix.metadata.IMetadata;
+import sagex.phoenix.metadata.MetadataUtil;
 import sagex.phoenix.util.PropertiesUtils;
+import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.sage.SageMediaFile;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -70,21 +65,39 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
         if ("fanart".equals(source)) {
             return fanart(file);
         }
+
+        if ("sage7metadata".equals(source)) {
+            return sage7metadata(file);
+        }
         
         return error("Source Not Implemented: " + source);
     }
 
-    private Map<String, String> getMediaFileMetaData(GWTMediaFile file) {
+    private Map<String, String> sage7metadata(GWTMediaFile file) {
         Map<String,String> map = new HashMap<String, String>();
+        
+        Object sage = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
+        IMediaFile mf = new SageMediaFile(null, sage);
+        IMetadata md = mf.getMetadata();
+        
+        Map<String,String> props = new HashMap<String, String>();
+        IMetadata newMD = MetadataUtil.createMetadata(props);
         try {
-            IMediaMetadataPersistence persist = new CompositeMediaMetadataPersistence(new SageShowPeristence(), new SageCustomMetadataPersistence());
-            IMediaMetadata md = persist.loadMetaData(new SageMediaFile(null, phoenix.api.GetSageMediaFile(file.getSageMediaFileId())));
-            for (MetadataKey k : MetadataKey.values()) {
-                map.put(k.name(), md.getString(k));
-            }
-        } catch (Exception e) {
+			MetadataUtil.copyMetadata(md, newMD);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to create metadata!", e);
+		}
+        
+        for (Map.Entry<String,String> me : props.entrySet()) {
+        	if (me.getValue()!=null) {
+        		map.put(String.valueOf(me.getKey()), String.valueOf(me.getValue()));
+        	}
         }
         return map;
+	}
+
+	private Map<String, String> getMediaFileMetaData(GWTMediaFile file) {
+		return sage7metadata(file);
     }
 
     private Map<String, String> getMediaFileData(GWTMediaFile file) {
@@ -267,8 +280,7 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
     }
 
     public String[] getWizBinBackups() {
-        BackupConfiguration cfg = GroupProxy.get(BackupConfiguration.class);
-        File dir = new File(cfg.getBackupFolder());
+        File dir = new File("backups");
         File files[] = dir.listFiles();
         List<String> backups = new ArrayList<String>();
         if (files!=null && files.length>0) {
