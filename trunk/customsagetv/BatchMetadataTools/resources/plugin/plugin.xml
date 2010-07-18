@@ -12,20 +12,28 @@
   <Webpage><![CDATA[http://forums.sagetv.com/forums/downloads.php?do=file&id=239]]></Webpage>
 
   <Dependency>
-    <Plugin>phoenix-api</Plugin>
-    <MinVersion>2.0.1</MinVersion>
+    <Plugin>phoenix-core</Plugin>
+    <MinVersion>2.0.5</MinVersion>
   </Dependency>
 
   <PluginType>Library</PluginType>
 
   <Package>
     <PackageType>JAR</PackageType>
-    <Location>http://download.sage.tv/plugins/stuckless/bmt/bmt-jar-@@version@@.zip</Location>
+    <Location>http://customsagetv.googlecode.com/files/bmt-jar-@@version@@.zip</Location>
     <MD5>@@jar-checksum@@</MD5>
   </Package>
   <Package>
     <PackageType>System</PackageType>
-    <Location>http://download.sage.tv/plugins/stuckless/bmt/bmt-system-@@version@@.zip</Location>
+    <Location>http://customsagetv.googlecode.com/files/bmt-system-@@version@@.zip</Location>
     <MD5>@@system-checksum@@</MD5>
   </Package>
+  <ReleaseNotes>
+4.2
+* updated version to match bmt web
+
+4.1
+* Moved all metadata related functions to Phoenix
+* This is a package stub for the commandline metadata operations
+  </ReleaseNotes>
 </SageTVPlugin>
