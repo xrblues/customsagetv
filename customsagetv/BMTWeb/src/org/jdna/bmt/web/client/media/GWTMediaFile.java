@@ -13,8 +13,11 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
     private int sageMediaFileId;
     
     public String fanartDir;
+    public String formattedTitle;
     
-    private Property<Boolean> sageRecording = new Property<Boolean>(false);
+	private Property<Boolean> sageRecording = new Property<Boolean>(false);
+    private Property<Boolean> libraryFile = new Property<Boolean>(false);
+    private Property<Boolean> watched = new Property<Boolean>(false);
     
     private GWTMediaMetadata metadata;
     
@@ -27,6 +30,14 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
     public GWTMediaFile(GWTMediaFolder parent, String title) {
         super(parent, title);
     }
+
+    public String getFormattedTitle() {
+		return formattedTitle;
+	}
+
+	public void setFormattedTitle(String formattedTitle) {
+		this.formattedTitle = formattedTitle;
+	}
 
     public boolean exists() {
         return exists;
@@ -58,6 +69,14 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
 
     public Property<Boolean> getSageRecording() {
         return sageRecording;
+    }
+
+    public Property<Boolean> getIsLibraryFile() {
+        return libraryFile;
+    }
+
+    public Property<Boolean> getIsWatched() {
+        return watched;
     }
 
     public String getShowId() {

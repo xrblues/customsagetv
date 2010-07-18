@@ -2,6 +2,8 @@ package org.jdna.bmt.web.client.ui.util;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -24,10 +26,20 @@ public class ImagePopupLabel extends Composite {
     }
     
     protected void popupImage() {
-        HorizontalPanel hp = new HorizontalPanel();
+        final HorizontalPanel hp = new HorizontalPanel();
         hp.setWidth("100%");
         hp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        Image image = new Image(url);
+        Image image = new Image();
+        image.addErrorHandler(new ErrorHandler() {
+			@Override
+			public void onError(ErrorEvent event) {
+				hp.clear();
+				hp.add(new Label("Unable to load image: " + url + "; This site may not permit other sites from embedding it's images."));
+			}
+		});
+        
+        image.setUrl(url.trim());
+        
         image.setWidth("300px");
         hp.add(image);
         Dialogs.showAsDialog(label.getText(), hp);

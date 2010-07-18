@@ -34,14 +34,14 @@ public class ScanSideMenuItem extends SideMenuItem implements ScanUpdateHandler 
             
             CommandItem cancel = new CommandItem("images/16x16/process-stop.png", "Cancel", new Command() {
                 public void execute() {
-                    MetadataServicesManager.getInstance().cancelScan(progressId);
+                    BrowsingServicesManager.getInstance().cancelScan(progressId);
                 }
             });
             buttons.add(cancel);
             
             CommandItem remove = new CommandItem("images/16x16/edit-delete.png", "Remove", new Command() {
                 public void execute() {
-                    MetadataServicesManager.getInstance().removeScan(progressId);
+                    BrowsingServicesManager.getInstance().removeScan(progressId);
                     removeItem();
                 }
             });

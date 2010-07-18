@@ -32,14 +32,14 @@ public class ScansPanel extends Composite implements ScanRequestHandler, ScansIn
 
             success.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    MetadataServicesManager.getInstance().requestItemsForProgress(progressId, true);
+                    BrowsingServicesManager.getInstance().requestItemsForProgress(progressId, true);
                 }
             });
             success.addStyleName("clickable");
 
             failed.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    MetadataServicesManager.getInstance().requestItemsForProgress(progressId, false);
+                    BrowsingServicesManager.getInstance().requestItemsForProgress(progressId, false);
                 }
             });
             failed.addStyleName("clickable");
@@ -66,7 +66,7 @@ public class ScansPanel extends Composite implements ScanRequestHandler, ScansIn
         protected void onAttach() {
             super.onAttach();
             handler = Application.events().addHandler(ScanUpdateEvent.TYPE, this);
-            MetadataServicesManager.getInstance().requestScanProgress(progressId);
+            BrowsingServicesManager.getInstance().requestScanProgress(progressId);
         }
 
 
@@ -111,7 +111,7 @@ public class ScansPanel extends Composite implements ScanRequestHandler, ScansIn
         scansInProgressHandler =  Application.events().addHandler(ScansInProgressEvent.TYPE, this);
         
         // Get the scans in progress
-        MetadataServicesManager.getInstance().requestScansInProgress();
+        BrowsingServicesManager.getInstance().requestScansInProgress();
 
         super.onAttach();
     }

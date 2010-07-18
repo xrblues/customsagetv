@@ -27,11 +27,6 @@
   </servlet>
 
   <servlet>
-    <servlet-name>metadata</servlet-name>
-    <servlet-class>org.jdna.bmt.web.server.MetadataServicesImpl</servlet-class>
-  </servlet>
-
-  <servlet>
     <servlet-name>browsing</servlet-name>
     <servlet-class>org.jdna.bmt.web.server.BrowsingServicesImpl</servlet-class>
   </servlet>
@@ -89,11 +84,6 @@
   <servlet-mapping>
     <servlet-name>status</servlet-name>
     <url-pattern>/bmtweb/status</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>metadata</servlet-name>
-    <url-pattern>/bmtweb/metadata</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

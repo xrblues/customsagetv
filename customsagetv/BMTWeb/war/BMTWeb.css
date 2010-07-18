@@ -84,7 +84,7 @@ h1 {
 
 .Row-Odd td.RowCell {
 	border-bottom: 1px dotted black;
-		xbackground-color: #F3F3F3;
+		background-color: #F3F3F3;
 }
 
 .MediaItem {
@@ -240,6 +240,11 @@ h1 {
 
 .MediaMetadata-PosterSmall {
 	height: 40px;
+}
+
+.MediaMetadata-LargeTitle {
+	font-size: 20px;
+	font-weight: bold;
 }
 
 .BrowsePanel .MediaFolder {
