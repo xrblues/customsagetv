@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPI.html'>FavoriteAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -197,8 +197,8 @@ true if this Favorite is configured to delete the original file after automatic 
 Since:
 7.0
  */
-public static boolean IsAutoDeleteAfterConversion (Object Favorite) {
-  Object o = sagex.SageAPI.call("IsAutoDeleteAfterConversion", new Object[] {Favorite});
+public static boolean IsDeleteAfterAutomaticConversion (Object Favorite) {
+  Object o = sagex.SageAPI.call("IsDeleteAfterAutomaticConversion", new Object[] {Favorite});
   if (o!=null) return (Boolean) o;
   return false;
 }
@@ -215,8 +215,8 @@ true if this Favorite is configured to delete the original file after automatic 
 Since:
 7.0
  */
-public static boolean IsAutoDeleteAfterConversion (UIContext _uicontext,Object Favorite) {
-  Object o = sagex.SageAPI.call(_uicontext, "IsAutoDeleteAfterConversion", new Object[] {Favorite});
+public static boolean IsDeleteAfterAutomaticConversion (UIContext _uicontext,Object Favorite) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsDeleteAfterAutomaticConversion", new Object[] {Favorite});
   if (o!=null) return (Boolean) o;
   return false;
 }

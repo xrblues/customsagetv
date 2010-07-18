@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/DatabaseFactory.html'>DatabaseFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -270,16 +270,16 @@ public class DatabaseFactory {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetDatabaseLastModifiedTime",parameters,java.lang.String.class);
    }
    if (command.equals("GetFilesWithImportPrefix")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFilesWithImportPrefix",parameters,java.lang.String.class,java.lang.String.class,boolean.class,boolean.class,boolean.class);
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFilesWithImportPrefix",parameters,java.lang.Object.class,java.lang.String.class,boolean.class,boolean.class,boolean.class);
    }
    if (command.equals("GetMediaFilesWithImportPrefix")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMediaFilesWithImportPrefix",parameters,java.lang.String.class,java.lang.String.class,boolean.class,boolean.class,boolean.class);
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMediaFilesWithImportPrefix",parameters,java.lang.Object.class,java.lang.String.class,boolean.class,boolean.class,boolean.class);
    }
    if (command.equals("IsDatabaseMemoryMaxed")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsDatabaseMemoryMaxed",parameters,null);
    }
-   if (command.equals("StringLeadingArticles")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"StringLeadingArticles",parameters,java.lang.String.class);
+   if (command.equals("StripLeadingArticles")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"StripLeadingArticles",parameters,java.lang.String.class);
    }
    throw new RuntimeException("Invalid DatabaseFactory Command: "+command);
    }
