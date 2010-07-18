@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="package-plugin" name="MovieMetadataUpdater" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project basedir="." default="dist-plugin" name="MovieMetadataUpdater" xmlns:ivy="antlib:org.apache.ivy.ant">
 	<property environment="env" />
 
 	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
@@ -15,7 +15,7 @@
 	<property name="libs" value="lib" />
 
 	<property name="name" value="metadata-updater" />
-	<property name="version" value="4.1.0" />
+	<property name="version" value="4.3" />
 
 	<property name="launcher" value="MetadataTool" />
 	<property name="mainClass" value="org.jdna.metadataupdater.MetadataUpdater" />
@@ -105,18 +105,6 @@
 		<mkdir dir="${build.dir}/sage" />
 		<mkdir dir="${build.dir}/sage/JARs" />
 		<mkdir dir="${build.dir}/sage/STVs/SageTV3/" />
-		<mkdir dir="${build.dir}/sage/STVs/Phoenix/vfs/" />
-
-
-		<copy toDir="${build.dir}/sage/scrapers">
-			<fileset dir="scrapers" />
-		</copy>
-
-		<!-- deploy the vfs as a plugin -->
-		<copy toDir="${build.dir}/sage/STVs/Phoenix/vfs/" failonerror="true">
-			<fileset dir="../Phoenix/src/main/STVs/Phoenix/vfs/">
-			</fileset>
-		</copy>
 
 		<copy toDir="${build.dir}/sage">
 			<fileset dir="resources/props" />
@@ -125,10 +113,6 @@
 		<copy toDir="${build.dir}/sage">
 			<fileset dir="resources/docs">
 			</fileset>
-		</copy>
-
-		<copy toDir="${build.dir}/sage/STVs">
-			<fileset dir="resources/STVs" />
 		</copy>
 
 		<zip destfile="${dist.dir}/${name}-${version}.zip" basedir="${build.dir}/sage" />
@@ -219,7 +203,7 @@
 	</target>
 
 	<!-- Create the plugin's package for SageTV 7.0 and later -->
-	<target name="dist-plugin" depends="package-plugin" description="Build SageTV Plugins">
+	<target name="dist-plugin" depends="package-plugin" description="Build SageTV Plugins (calls package)">
 		<copy tofile="${dist.dir}/packages/bmt-${version}.xml" file="resources/plugin/plugin.xml" failonerror="true" />
 
 		<checksum file="${dist.dir}/packages/bmt-jar-${version}.zip" property="md5.jar" />
@@ -243,8 +227,8 @@
 	</target>
 
 	<!-- upload to sagetv plugin area -->
+	<!--
 	<target name="publish-plugin">
-		<!-- download commons-net so that we can use the ftp plugin -->
 		<mkdir dir="${user.home}/.ant/lib" />
 		<get src="http://repo1.maven.org/maven2/commons-net/commons-net/1.4.1/commons-net-1.4.1.jar" dest="${user.home}/.ant/lib/commons-net-1.4.1.jar" usetimestamp="true" />
 
@@ -253,4 +237,37 @@
 			<fileset dir="${dist.dir}/packages/" />
 		</ftp>
 	</target>
+	-->
+	
+	<target name="publish-googlecode" description="Upload build to Google Code">
+		<get dest="${user.home}/.ant/lib/ant-googlecode.jar" src="http://ant-googlecode.googlecode.com/files/ant-googlecode-0.0.2.jar" usetimestamp="true"/>
+		<!-- <available file="${gc.upload.settings}" property="gc.upload.enable" /> -->
+		<!-- <fail message="${gc.upload.settings} file does not exist!" unless="gc.upload.enable" /> -->
+		<!-- <property file="${gc.upload.settings}" /> -->
+		<fail message="gc.username must be defined in ${gc.upload.settings}" unless="gc.username" />
+		<fail message="gc.password must be defined in ${gc.upload.settings}" unless="gc.password" />
+		<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" name="gcupload">
+			<classpath>
+			      <fileset dir="${user.home}/.ant/lib/">
+			        <include name="**/*.jar"/>
+			      </fileset>
+			</classpath>
+		</taskdef>
+		<gcupload targetfilename="bmt-jar-${version}.zip"  filename="${target.dir}/dist/packages/bmt-jar-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Metadata Tools JAR ${version} (Sage7 Plugin)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
+		<gcupload targetfilename="bmt-system-${version}.zip"  filename="${target.dir}/dist/packages/bmt-system-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Metadata Tools SYSTEM ${version} (Sage7 Plugin)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
+	</target>
+
+	<target name="notify-sagetv-bmt" description="Notifies SageTV about the new Plugin">
+		<get dest="target/slugger.zip" src="http://sagetv-addons.googlecode.com/files/slugger-dev-tools-0.0.1.zip"/>
+		<unzip dest="${user.home}/.ant/lib/" src="target/slugger.zip"/>
+        <taskdef classname="com.google.code.sagetvaddons.dev.ant.task.SageTvPluginSubmitter" name="sagesubmit">
+			<classpath>
+			      <fileset dir="${user.home}/.ant/lib/">
+			        <include name="**/*.jar"/>
+			      </fileset>
+			</classpath>
+        </taskdef>
+        <sagesubmit name="Sean Stuckless" user="${sage.forumuser}" email="sean.stuckless@gmail.com" pluginid="bmt" reqtype="UPGRADE" descriptor="${dist.dir}/packages/bmt-${version}.xml" />
+	</target>
+
 </project>
