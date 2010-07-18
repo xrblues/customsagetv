@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/WidgetAPI.html'>WidgetAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -205,7 +205,7 @@ public static Object AddWidgetWithSymbol (UIContext _uicontext,java.lang.String 
 Removes a Widget from the STV
 
 Parameters:
-Widget- the Widget to remove
+Widget- the Widget (or a String which represents the symbol for that Widget) to remove
  */
 public static void RemoveWidget (Object Widget) {
    sagex.SageAPI.call("RemoveWidget", new Object[] {Widget});
@@ -216,7 +216,7 @@ public static void RemoveWidget (Object Widget) {
 Removes a Widget from the STV
 
 Parameters:
-Widget- the Widget to remove
+Widget- the Widget (or a String which represents the symbol for that Widget) to remove
  */
 public static void RemoveWidget (UIContext _uicontext,Object Widget) {
    sagex.SageAPI.call(_uicontext, "RemoveWidget", new Object[] {Widget});
@@ -227,8 +227,8 @@ Creates a parent-child relationship between two Widgets. If the relationship alr
  This new child will be the last child of the parent.
 
 Parameters:
-WidgetParent- the Widget that should be the parent in the relationship
-WidgetChild- the Widget that should be the child in the relationship
+WidgetParent- the Widget (or a String which represents the symbol for that Widget) that should be the parent in the relationship
+WidgetChild- the Widget (or a String which represents the symbol for that Widget) that should be the child in the relationship
  */
 public static void AddWidgetChild (Object WidgetParent, Object WidgetChild) {
    sagex.SageAPI.call("AddWidgetChild", new Object[] {WidgetParent,WidgetChild});
@@ -240,8 +240,8 @@ Creates a parent-child relationship between two Widgets. If the relationship alr
  This new child will be the last child of the parent.
 
 Parameters:
-WidgetParent- the Widget that should be the parent in the relationship
-WidgetChild- the Widget that should be the child in the relationship
+WidgetParent- the Widget (or a String which represents the symbol for that Widget) that should be the parent in the relationship
+WidgetChild- the Widget (or a String which represents the symbol for that Widget) that should be the child in the relationship
  */
 public static void AddWidgetChild (UIContext _uicontext,Object WidgetParent, Object WidgetChild) {
    sagex.SageAPI.call(_uicontext, "AddWidgetChild", new Object[] {WidgetParent,WidgetChild});
@@ -252,8 +252,8 @@ Creates a parent-child relationship between two Widgets. Since parent-child rela
  specifying where in that order this relationship should be.
 
 Parameters:
-WidgetParent- the Widget that should be the parent in the relationship
-WidgetChild- the Widget that should be the child in the relationship
+WidgetParent- the Widget (or a String which represents the symbol for that Widget) that should be the parent in the relationship
+WidgetChild- the Widget (or a String which represents the symbol for that Widget) that should be the child in the relationship
 ChildIndex- the 0-based index in the parent's child relationships list that the new relationship should occupy
  */
 public static void InsertWidgetChild (Object WidgetParent, Object WidgetChild, int ChildIndex) {
@@ -266,8 +266,8 @@ Creates a parent-child relationship between two Widgets. Since parent-child rela
  specifying where in that order this relationship should be.
 
 Parameters:
-WidgetParent- the Widget that should be the parent in the relationship
-WidgetChild- the Widget that should be the child in the relationship
+WidgetParent- the Widget (or a String which represents the symbol for that Widget) that should be the parent in the relationship
+WidgetChild- the Widget (or a String which represents the symbol for that Widget) that should be the child in the relationship
 ChildIndex- the 0-based index in the parent's child relationships list that the new relationship should occupy
  */
 public static void InsertWidgetChild (UIContext _uicontext,Object WidgetParent, Object WidgetChild, int ChildIndex) {
@@ -279,8 +279,8 @@ Breaks a parent-child relationships between two Widgets. If the Widgets do not h
  then there is no effect.
 
 Parameters:
-WidgetParent- the parent of the Widget relationship to break
-WidgetChild- the child of the Widget relationship to break
+WidgetParent- the parent of the Widget (or a String which represents the symbol for that Widget) relationship to break
+WidgetChild- the child of the Widget (or a String which represents the symbol for that Widget) relationship to break
  */
 public static void RemoveWidgetChild (Object WidgetParent, Object WidgetChild) {
    sagex.SageAPI.call("RemoveWidgetChild", new Object[] {WidgetParent,WidgetChild});
@@ -292,8 +292,8 @@ Breaks a parent-child relationships between two Widgets. If the Widgets do not h
  then there is no effect.
 
 Parameters:
-WidgetParent- the parent of the Widget relationship to break
-WidgetChild- the child of the Widget relationship to break
+WidgetParent- the parent of the Widget (or a String which represents the symbol for that Widget) relationship to break
+WidgetChild- the child of the Widget (or a String which represents the symbol for that Widget) relationship to break
  */
 public static void RemoveWidgetChild (UIContext _uicontext,Object WidgetParent, Object WidgetChild) {
    sagex.SageAPI.call(_uicontext, "RemoveWidgetChild", new Object[] {WidgetParent,WidgetChild});
@@ -303,8 +303,8 @@ public static void RemoveWidgetChild (UIContext _uicontext,Object WidgetParent, 
 Returns true if the specified Widgets have a parent-child relationship.
 
 Parameters:
-WidgetParent- the parent Widget to test
-WidgetChild- the child Widget to test
+WidgetParent- the parent Widget (or a String which represents the symbol for that Widget) to test
+WidgetChild- the child Widget (or a String which represents the symbol for that Widget) to test
 Returns:
 true if the specified parent has a parent-child relationship with the specified child, false otherwise
  */
@@ -319,8 +319,8 @@ public static boolean IsWidgetParentOf (Object WidgetParent, Object WidgetChild)
 Returns true if the specified Widgets have a parent-child relationship.
 
 Parameters:
-WidgetParent- the parent Widget to test
-WidgetChild- the child Widget to test
+WidgetParent- the parent Widget (or a String which represents the symbol for that Widget) to test
+WidgetChild- the child Widget (or a String which represents the symbol for that Widget) to test
 Returns:
 true if the specified parent has a parent-child relationship with the specified child, false otherwise
  */
@@ -334,7 +334,7 @@ public static boolean IsWidgetParentOf (UIContext _uicontext,Object WidgetParent
 Returns the type of a Widget
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget (or a String which represents the symbol for that Widget) object
 Returns:
 the type name of the specified Widget
  */
@@ -349,7 +349,7 @@ public static java.lang.String GetWidgetType (Object Widget) {
 Returns the type of a Widget
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget (or a String which represents the symbol for that Widget) object
 Returns:
 the type name of the specified Widget
  */
@@ -363,7 +363,7 @@ public static java.lang.String GetWidgetType (UIContext _uicontext,Object Widget
 Returns true if the specified Widget has a property defined with the specified name
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 PropertyName- the name of the property to check existence of
 Returns:
 true if the specified Widget has a property defined with the specified name, false otherwise
@@ -379,7 +379,7 @@ public static boolean HasWidgetProperty (Object Widget, java.lang.String Propert
 Returns true if the specified Widget has a property defined with the specified name
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 PropertyName- the name of the property to check existence of
 Returns:
 true if the specified Widget has a property defined with the specified name, false otherwise
@@ -394,7 +394,7 @@ public static boolean HasWidgetProperty (UIContext _uicontext,Object Widget, jav
 Sets a property in a Widget to a specified value. If that property is already defined, this will overwrite it.
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 PropertyName- the name of the property to set in the Widget
 PropertyValue- the value to set the property to
  */
@@ -407,7 +407,7 @@ public static void SetWidgetProperty (Object Widget, java.lang.String PropertyNa
 Sets a property in a Widget to a specified value. If that property is already defined, this will overwrite it.
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 PropertyName- the name of the property to set in the Widget
 PropertyValue- the value to set the property to
  */
@@ -419,7 +419,7 @@ public static void SetWidgetProperty (UIContext _uicontext,Object Widget, java.l
 Returns the value for a specified property in a Widget
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 PropertyName- the name of the property to get
 Returns:
 the value for a specified property in a Widget
@@ -435,7 +435,7 @@ public static java.lang.String GetWidgetProperty (Object Widget, java.lang.Strin
 Returns the value for a specified property in a Widget
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 PropertyName- the name of the property to get
 Returns:
 the value for a specified property in a Widget
@@ -450,7 +450,7 @@ public static java.lang.String GetWidgetProperty (UIContext _uicontext,Object Wi
 Returns the name of the specified Widget
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 Returns:
 the name of the specified Widget
  */
@@ -465,7 +465,7 @@ public static java.lang.String GetWidgetName (Object Widget) {
 Returns the name of the specified Widget
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 Returns:
 the name of the specified Widget
  */
@@ -479,7 +479,7 @@ public static java.lang.String GetWidgetName (UIContext _uicontext,Object Widget
 Sets the name for a Widget
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 Name- the value to set the name to for this Widget
  */
 public static void SetWidgetName (Object Widget, java.lang.String Name) {
@@ -491,7 +491,7 @@ public static void SetWidgetName (Object Widget, java.lang.String Name) {
 Sets the name for a Widget
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 Name- the value to set the name to for this Widget
  */
 public static void SetWidgetName (UIContext _uicontext,Object Widget, java.lang.String Name) {
@@ -502,7 +502,7 @@ public static void SetWidgetName (UIContext _uicontext,Object Widget, java.lang.
 Gets the list of Widgets that are parents of the specified Widget. The ordering of this list has no effect.
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 Returns:
 a list of Widgets which are all parents of the specified Widget
  */
@@ -515,7 +515,7 @@ public static Object[] GetWidgetParents (Object Widget) {
 Gets the list of Widgets that are parents of the specified Widget. The ordering of this list has no effect.
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 Returns:
 a list of Widgets which are all parents of the specified Widget
  */
@@ -527,7 +527,7 @@ public static Object[] GetWidgetParents (UIContext _uicontext,Object Widget) {
 Gets the list of Widgets that are children of the specified Widget. The ordering of this list does have an effect.
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 Returns:
 a list of Widgets which are all children of the specified Widget
  */
@@ -540,7 +540,7 @@ public static Object[] GetWidgetChildren (Object Widget) {
 Gets the list of Widgets that are children of the specified Widget. The ordering of this list does have an effect.
 
 Parameters:
-Widget- the Widget object
+Widget- the Widget object (or a String which represents the symbol for that Widget)
 Returns:
 a list of Widgets which are all children of the specified Widget
  */
@@ -552,7 +552,7 @@ public static Object[] GetWidgetChildren (UIContext _uicontext,Object Widget) {
 Executes a Widget and the chain of child Widgets underneath it
 
 Parameters:
-Widget- the root of the Widget action chain to execute
+Widget- the root of the Widget (or a String which represents the symbol for that Widget) action chain to execute
 Returns:
 the value returned by the last executed Widget in the chain
  */
@@ -567,7 +567,7 @@ public static java.lang.Object ExecuteWidgetChain (Object Widget) {
 Executes a Widget and the chain of child Widgets underneath it
 
 Parameters:
-Widget- the root of the Widget action chain to execute
+Widget- the root of the Widget (or a String which represents the symbol for that Widget) action chain to execute
 Returns:
 the value returned by the last executed Widget in the chain
  */
@@ -581,7 +581,7 @@ public static java.lang.Object ExecuteWidgetChain (UIContext _uicontext,Object W
 Launches a new menu in SageTV with the specified Widget as the menu's definition.
 
 Parameters:
-Widget- the Widget object to use for the launched menu, this must be a Menu type Widget
+Widget- the Widget object (or a String which represents the symbol for that Widget) to use for the launched menu, this must be a Menu type Widget
  */
 public static void LaunchMenuWidget (Object Widget) {
    sagex.SageAPI.call("LaunchMenuWidget", new Object[] {Widget});
@@ -592,7 +592,7 @@ public static void LaunchMenuWidget (Object Widget) {
 Launches a new menu in SageTV with the specified Widget as the menu's definition.
 
 Parameters:
-Widget- the Widget object to use for the launched menu, this must be a Menu type Widget
+Widget- the Widget object (or a String which represents the symbol for that Widget) to use for the launched menu, this must be a Menu type Widget
  */
 public static void LaunchMenuWidget (UIContext _uicontext,Object Widget) {
    sagex.SageAPI.call(_uicontext, "LaunchMenuWidget", new Object[] {Widget});
@@ -628,7 +628,7 @@ Searches the children of the specified Widget for one with the specified type an
  is found then null is returned. If there are multiple matches then the first one is returned.
 
 Parameters:
-Widget- the Widget who's children should be searched
+Widget- the Widget (or a String which represents the symbol for that Widget) who's children should be searched
 Type- the type of the Widget to search for, if null than any type will match
 Name- the name that the Widget to search for must match, if null than any name will match
 Returns:
@@ -646,7 +646,7 @@ Searches the children of the specified Widget for one with the specified type an
  is found then null is returned. If there are multiple matches then the first one is returned.
 
 Parameters:
-Widget- the Widget who's children should be searched
+Widget- the Widget (or a String which represents the symbol for that Widget) who's children should be searched
 Type- the type of the Widget to search for, if null than any type will match
 Name- the name that the Widget to search for must match, if null than any name will match
 Returns:
@@ -663,7 +663,7 @@ Searches the parents of the specified Widget for one with the specified type and
  is found then null is returned. If there are multiple matches then the first one is returned.
 
 Parameters:
-Widget- the Widget who's parents should be searched
+Widget- the Widget (or a String which represents the symbol for that Widget) who's parents should be searched
 Type- the type of the Widget to search for, if null than any type will match
 Name- the name that the Widget to search for must match, if null than any name will match
 Returns:
@@ -681,7 +681,7 @@ Searches the parents of the specified Widget for one with the specified type and
  is found then null is returned. If there are multiple matches then the first one is returned.
 
 Parameters:
-Widget- the Widget who's parents should be searched
+Widget- the Widget (or a String which represents the symbol for that Widget) who's parents should be searched
 Type- the type of the Widget to search for, if null than any type will match
 Name- the name that the Widget to search for must match, if null than any name will match
 Returns:

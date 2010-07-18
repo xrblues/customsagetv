@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/PluginAPIFactory.html'>PluginAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -180,6 +180,9 @@ public class PluginAPIFactory {
    }
    if (command.equals("GetPluginImplementation")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPluginImplementation",parameters,Object.class);
+   }
+   if (command.equals("IsPluginStartupComplete")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsPluginStartupComplete",parameters,null);
    }
    throw new RuntimeException("Invalid PluginAPIFactory Command: "+command);
    }

@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/GlobalFactory.html'>GlobalFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -310,20 +310,38 @@ public class GlobalFactory {
    if (command.equals("StartFileDownload")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"StartFileDownload",parameters,java.lang.String.class,java.lang.String.class,java.io.File.class);
    }
+   if (command.equals("StartBackgroundFileDownload")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"StartBackgroundFileDownload",parameters,java.lang.String.class,java.lang.String.class,java.io.File.class,java.util.Properties.class);
+   }
    if (command.equals("StartCircularFileDownload")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"StartCircularFileDownload",parameters,java.lang.String.class,java.lang.String.class,java.io.File.class);
    }
    if (command.equals("CancelFileDownload")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CancelFileDownload",parameters,null);
    }
+   if (command.equals("CancelBackgroundFileDownload")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CancelBackgroundFileDownload",parameters,java.io.File.class);
+   }
    if (command.equals("GetFileDownloadStatus")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFileDownloadStatus",parameters,null);
+   }
+   if (command.equals("GetBackgroundFileDownloadStatus")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetBackgroundFileDownloadStatus",parameters,java.io.File.class);
    }
    if (command.equals("GetFileDownloadStreamTime")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFileDownloadStreamTime",parameters,null);
    }
    if (command.equals("IsFileDownloadProgressivePlay")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsFileDownloadProgressivePlay",parameters,null);
+   }
+   if (command.equals("GetBackgroundFileDownloadStreamTime")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetBackgroundFileDownloadStreamTime",parameters,java.io.File.class);
+   }
+   if (command.equals("IsBackgroundFileDownloadProgressivePlay")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsBackgroundFileDownloadProgressivePlay",parameters,java.io.File.class);
+   }
+   if (command.equals("GetBackgroundFileDownloadTotalSize")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetBackgroundFileDownloadTotalSize",parameters,java.io.File.class);
    }
    if (command.equals("SetRemoteEventEncryptionEnabled")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetRemoteEventEncryptionEnabled",parameters,boolean.class);

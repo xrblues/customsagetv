@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Global.html'>Global</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -2837,7 +2837,8 @@ Instructs the file transfer engine to download the specified file from the serve
  download from remote http:// or ftp:// addresses; in that case just specify the URL in the ServerAddress argument and leave sourceFile as null.
  When downloading from http or ftp addresses, the target will be the server's filesystem for remote clients; otherwise it is the local filesystem.
  When smb:// URLs are specified; they will be access from the server's network for remote clients, otherwise the source will be from the local network.
- smb:// URLs target download will be the local filesystem.
+ smb:// URLs target download will be the local filesystem. Only one download process is allowed per-UI using the 'FileDownload' API calls. If you wish
+ to handle multiple downloads; then use the 'BackgroundFileDownload' API calls.
 
 Parameters:
 ServerAddress- the address of the SageTV server to download from, or null if you're using SageTVClient and you want to download from the server you're connected to, or a valid smb, http or ftp URL
@@ -2858,7 +2859,8 @@ Instructs the file transfer engine to download the specified file from the serve
  download from remote http:// or ftp:// addresses; in that case just specify the URL in the ServerAddress argument and leave sourceFile as null.
  When downloading from http or ftp addresses, the target will be the server's filesystem for remote clients; otherwise it is the local filesystem.
  When smb:// URLs are specified; they will be access from the server's network for remote clients, otherwise the source will be from the local network.
- smb:// URLs target download will be the local filesystem.
+ smb:// URLs target download will be the local filesystem. Only one download process is allowed per-UI using the 'FileDownload' API calls. If you wish
+ to handle multiple downloads; then use the 'BackgroundFileDownload' API calls.
 
 Parameters:
 ServerAddress- the address of the SageTV server to download from, or null if you're using SageTVClient and you want to download from the server you're connected to, or a valid smb, http or ftp URL
@@ -2869,6 +2871,55 @@ true if the copy process was successfully started, false if the file doesn't exi
  */
 public static boolean StartFileDownload (UIContext _uicontext,java.lang.String ServerAddress, java.lang.String SourceFile, java.io.File DestFile) {
   Object o = sagex.SageAPI.call(_uicontext, "StartFileDownload", new Object[] {ServerAddress,SourceFile,DestFile});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Instructs the file transfer engine to download the specified file from the server to the local destination file. You may also
+ download from remote http:// or ftp:// addresses; in that case just specify the URL in the ServerAddress argument and leave sourceFile as null.
+ When downloading from http or ftp addresses, the target will be the server's filesystem for remote clients; otherwise it is the local filesystem.
+ When smb:// URLs are specified; they will be access from the server's network for remote clients, otherwise the source will be from the local network.
+ smb:// URLs target download will be the local filesystem. This call is different then the regular StartFileDownload API call because it allows for multiple
+ downloads to occur at the same time. The 'key' for the downloads are the DestFile objects.
+
+Parameters:
+ServerAddress- the address of the SageTV server to download from, or null if you're using SageTVClient and you want to download from the server you're connected to, or a valid smb, http or ftp URL
+SourceFile- the file path on the server you want to download
+DestFile- the destination file for the file download
+RequestProperties- a Properties object that specifies the request properties to use in an HTTP download request, can be null
+Returns:
+true if the copy process was successfully started, false if the file doesn't exist on the server or it couldn't be contacted
+Since:
+7.0
+ */
+public static boolean StartBackgroundFileDownload (java.lang.String ServerAddress, java.lang.String SourceFile, java.io.File DestFile, java.util.Properties RequestProperties) {
+  Object o = sagex.SageAPI.call("StartBackgroundFileDownload", new Object[] {ServerAddress,SourceFile,DestFile,RequestProperties});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Instructs the file transfer engine to download the specified file from the server to the local destination file. You may also
+ download from remote http:// or ftp:// addresses; in that case just specify the URL in the ServerAddress argument and leave sourceFile as null.
+ When downloading from http or ftp addresses, the target will be the server's filesystem for remote clients; otherwise it is the local filesystem.
+ When smb:// URLs are specified; they will be access from the server's network for remote clients, otherwise the source will be from the local network.
+ smb:// URLs target download will be the local filesystem. This call is different then the regular StartFileDownload API call because it allows for multiple
+ downloads to occur at the same time. The 'key' for the downloads are the DestFile objects.
+
+Parameters:
+ServerAddress- the address of the SageTV server to download from, or null if you're using SageTVClient and you want to download from the server you're connected to, or a valid smb, http or ftp URL
+SourceFile- the file path on the server you want to download
+DestFile- the destination file for the file download
+RequestProperties- a Properties object that specifies the request properties to use in an HTTP download request, can be null
+Returns:
+true if the copy process was successfully started, false if the file doesn't exist on the server or it couldn't be contacted
+Since:
+7.0
+ */
+public static boolean StartBackgroundFileDownload (UIContext _uicontext,java.lang.String ServerAddress, java.lang.String SourceFile, java.io.File DestFile, java.util.Properties RequestProperties) {
+  Object o = sagex.SageAPI.call(_uicontext, "StartBackgroundFileDownload", new Object[] {ServerAddress,SourceFile,DestFile,RequestProperties});
   if (o!=null) return (Boolean) o;
   return false;
 }
@@ -2938,6 +2989,31 @@ public static void CancelFileDownload (UIContext _uicontext) {
 }
 
 /**
+Cancels a previous request that was made to perform a background file download.
+
+Parameters:
+DestFile- the destination file specified in the original download request
+Since:
+7.0
+ */
+public static void CancelBackgroundFileDownload (java.io.File DestFile) {
+   sagex.SageAPI.call("CancelBackgroundFileDownload", new Object[] {DestFile});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Cancels a previous request that was made to perform a background file download.
+
+Parameters:
+DestFile- the destination file specified in the original download request
+Since:
+7.0
+ */
+public static void CancelBackgroundFileDownload (UIContext _uicontext,java.io.File DestFile) {
+   sagex.SageAPI.call(_uicontext, "CancelBackgroundFileDownload", new Object[] {DestFile});
+}
+
+/**
 Gets the current status of a previously invoked file download process.
 
 Returns:
@@ -2960,6 +3036,41 @@ true if the file download process is completed and was a success, "Error" will b
  */
 public static java.lang.Object GetFileDownloadStatus (UIContext _uicontext) {
   Object o = sagex.SageAPI.call(_uicontext, "GetFileDownloadStatus", (Object[])null);
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+Gets the current status of a previously invoked file background download process.
+
+Parameters:
+DestFile- the destination file specified in the original download request
+Returns:
+true if the file download process is completed and was a success, "Error" will be the prefix if it was a failure, 
+          otherwise a localized status message indicating progress is returned
+Since:
+7.0
+ */
+public static java.lang.Object GetBackgroundFileDownloadStatus (java.io.File DestFile) {
+  Object o = sagex.SageAPI.call("GetBackgroundFileDownloadStatus", new Object[] {DestFile});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the current status of a previously invoked file background download process.
+
+Parameters:
+DestFile- the destination file specified in the original download request
+Returns:
+true if the file download process is completed and was a success, "Error" will be the prefix if it was a failure, 
+          otherwise a localized status message indicating progress is returned
+Since:
+7.0
+ */
+public static java.lang.Object GetBackgroundFileDownloadStatus (UIContext _uicontext,java.io.File DestFile) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetBackgroundFileDownloadStatus", new Object[] {DestFile});
   if (o!=null) return (java.lang.Object) o;
   return null;
 }
@@ -3028,6 +3139,115 @@ public static boolean IsFileDownloadProgressivePlay (UIContext _uicontext) {
   Object o = sagex.SageAPI.call(_uicontext, "IsFileDownloadProgressivePlay", (Object[])null);
   if (o!=null) return (Boolean) o;
   return false;
+}
+
+/**
+Gets the current stream time of a previously invoked file download process. This is only valid
+ for when the file being downloaded is an FLV, MP3, MP4 or Quicktime file
+
+Parameters:
+DestFile- the destination file specified in the original download request
+Returns:
+the stream time in milliseconds of the current download; or zero if it doesn't know or the download is completed
+Since:
+7.0
+ */
+public static long GetBackgroundFileDownloadStreamTime (java.io.File DestFile) {
+  Object o = sagex.SageAPI.call("GetBackgroundFileDownloadStreamTime", new Object[] {DestFile});
+  if (o!=null) return (Long) o;
+  return 0l;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the current stream time of a previously invoked file download process. This is only valid
+ for when the file being downloaded is an FLV, MP3, MP4 or Quicktime file
+
+Parameters:
+DestFile- the destination file specified in the original download request
+Returns:
+the stream time in milliseconds of the current download; or zero if it doesn't know or the download is completed
+Since:
+7.0
+ */
+public static long GetBackgroundFileDownloadStreamTime (UIContext _uicontext,java.io.File DestFile) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetBackgroundFileDownloadStreamTime", new Object[] {DestFile});
+  if (o!=null) return (Long) o;
+  return 0l;
+}
+
+/**
+Returns whether or not the current file being downloaded can be played back while being downloaded. This is only valid
+ for when the file being downloaded is an FLV, MP3, MP4 or Quicktime file. It will always be true for MP3 & FLV files; 
+ and for MP4/Quicktime files it'll be true if the sample section is before the movie data in the file. If this is true
+ and the download stream time is greater than zero; then it's OK to start progressive playback of downloaded media.
+
+Parameters:
+DestFile- the destination file specified in the original download request
+Returns:
+true if the current file being downloaded can potentially be played back while being downloaded, false if it definitely cannot be or is an invalid or completed download
+Since:
+7.0
+ */
+public static boolean IsBackgroundFileDownloadProgressivePlay (java.io.File DestFile) {
+  Object o = sagex.SageAPI.call("IsBackgroundFileDownloadProgressivePlay", new Object[] {DestFile});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns whether or not the current file being downloaded can be played back while being downloaded. This is only valid
+ for when the file being downloaded is an FLV, MP3, MP4 or Quicktime file. It will always be true for MP3 & FLV files; 
+ and for MP4/Quicktime files it'll be true if the sample section is before the movie data in the file. If this is true
+ and the download stream time is greater than zero; then it's OK to start progressive playback of downloaded media.
+
+Parameters:
+DestFile- the destination file specified in the original download request
+Returns:
+true if the current file being downloaded can potentially be played back while being downloaded, false if it definitely cannot be or is an invalid or completed download
+Since:
+7.0
+ */
+public static boolean IsBackgroundFileDownloadProgressivePlay (UIContext _uicontext,java.io.File DestFile) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsBackgroundFileDownloadProgressivePlay", new Object[] {DestFile});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Gets the total size of the specified background download target. This may not always be known in cases
+ where the server does not indicate the specific length of the file.
+
+Parameters:
+DestFile- the destination file specified in the original download request
+Returns:
+the size in bytes of the remote file being downloaded; zero if the download specified is complete or invalid
+Since:
+7.0
+ */
+public static long GetBackgroundFileDownloadTotalSize (java.io.File DestFile) {
+  Object o = sagex.SageAPI.call("GetBackgroundFileDownloadTotalSize", new Object[] {DestFile});
+  if (o!=null) return (Long) o;
+  return 0l;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the total size of the specified background download target. This may not always be known in cases
+ where the server does not indicate the specific length of the file.
+
+Parameters:
+DestFile- the destination file specified in the original download request
+Returns:
+the size in bytes of the remote file being downloaded; zero if the download specified is complete or invalid
+Since:
+7.0
+ */
+public static long GetBackgroundFileDownloadTotalSize (UIContext _uicontext,java.io.File DestFile) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetBackgroundFileDownloadTotalSize", new Object[] {DestFile});
+  if (o!=null) return (Long) o;
+  return 0l;
 }
 
 /**

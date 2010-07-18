@@ -2,7 +2,7 @@ package sagex.api.enums;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/GlobalEnum.html'>GlobalEnum</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -107,11 +107,17 @@ StartFileCopy,
 CancelFileCopy,
 GetFileCopyStatus,
 StartFileDownload,
+StartBackgroundFileDownload,
 StartCircularFileDownload,
 CancelFileDownload,
+CancelBackgroundFileDownload,
 GetFileDownloadStatus,
+GetBackgroundFileDownloadStatus,
 GetFileDownloadStreamTime,
 IsFileDownloadProgressivePlay,
+GetBackgroundFileDownloadStreamTime,
+IsBackgroundFileDownloadProgressivePlay,
+GetBackgroundFileDownloadTotalSize,
 SetRemoteEventEncryptionEnabled,
 CachePlaceshifterLogin,
 CanCachePlaceshifterLogin,

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SageTVPlugin>
-  <Name>SageTV API Extensions</Name>
+  <Name>sagex-api - SageTV API Extensions</Name>
   <Identifier>sagex-api</Identifier>
-  <Description>A set of API wrappers, utilities, and remote API capabilities for SageTV</Description>
+  <Description>SageTV API Wrappers with Remote API capabilities</Description>
   <Author>stuckless</Author>
   <CreationDate>2008.10.05</CreationDate>
   <ModificationDate>@@last-modified@@</ModificationDate>
@@ -15,7 +15,14 @@
 
   <Package>
     <PackageType>JAR</PackageType>
-    <Location>http://download.sage.tv/plugins/stuckless/sagex-api/sagex-api-@@version@@.zip</Location>
+    <Location>http://customsagetv.googlecode.com/files/sagex-api-@@version@@.zip</Location>
     <MD5>@@jar-checksum@@</MD5>
   </Package>
+
+  <ReleaseNotes>
+7.0.11.0
+* Added Validation Support (IPropertyValidator)
+* Fixed bug in the AbstractPlugin where null configuration values could never be set to a value.
+  </ReleaseNotes>
+
 </SageTVPlugin>

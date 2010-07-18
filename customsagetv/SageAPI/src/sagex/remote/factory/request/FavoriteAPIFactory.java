@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPIFactory.html'>FavoriteAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -31,8 +31,8 @@ public class FavoriteAPIFactory {
    if (command.equals("IsAutoDelete")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsAutoDelete",parameters,Object.class);
    }
-   if (command.equals("IsAutoDeleteAfterConversion")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsAutoDeleteAfterConversion",parameters,Object.class);
+   if (command.equals("IsDeleteAfterAutomaticConversion")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsDeleteAfterAutomaticConversion",parameters,Object.class);
    }
    if (command.equals("GetKeepAtMost")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetKeepAtMost",parameters,Object.class);

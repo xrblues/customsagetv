@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Database.html'>Database</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1550,7 +1550,7 @@ public static long GetDatabaseLastModifiedTime (UIContext _uicontext,java.lang.S
 Returns a list of java.io.File objects w/ the specified MediaMask whos import prefix matches that of the argument
 
 Parameters:
-MediaMask- string specifying what content types  ('M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
+MediaData- can either by a MediaMask string specifying what content types  ('M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay) or it can be an array/collection of the specific MediaFile objects to analyze
 ImportPrefix- a string specifying a subpath that must match the start of the import files path relative to its import root
 IncludeFiles- if true, then MediaFile objects with a complete prefix match will be returned
 IncludeFolders- if true, then MediaFile objects with a partial prefix match will be returned
@@ -1560,8 +1560,8 @@ a Vector or Map of java.io.File objects w/ the specified MediaMask whos import p
 Since:
 6.4
  */
-public static java.lang.Object GetFilesWithImportPrefix (java.lang.String MediaMask, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
-  Object o = sagex.SageAPI.call("GetFilesWithImportPrefix", new Object[] {MediaMask,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
+public static java.lang.Object GetFilesWithImportPrefix (java.lang.Object MediaData, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
+  Object o = sagex.SageAPI.call("GetFilesWithImportPrefix", new Object[] {MediaData,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
   if (o!=null) return (java.lang.Object) o;
   return null;
 }
@@ -1571,7 +1571,7 @@ public static java.lang.Object GetFilesWithImportPrefix (java.lang.String MediaM
 Returns a list of java.io.File objects w/ the specified MediaMask whos import prefix matches that of the argument
 
 Parameters:
-MediaMask- string specifying what content types  ('M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
+MediaData- can either by a MediaMask string specifying what content types  ('M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay) or it can be an array/collection of the specific MediaFile objects to analyze
 ImportPrefix- a string specifying a subpath that must match the start of the import files path relative to its import root
 IncludeFiles- if true, then MediaFile objects with a complete prefix match will be returned
 IncludeFolders- if true, then MediaFile objects with a partial prefix match will be returned
@@ -1581,8 +1581,8 @@ a Vector or Map of java.io.File objects w/ the specified MediaMask whos import p
 Since:
 6.4
  */
-public static java.lang.Object GetFilesWithImportPrefix (UIContext _uicontext,java.lang.String MediaMask, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
-  Object o = sagex.SageAPI.call(_uicontext, "GetFilesWithImportPrefix", new Object[] {MediaMask,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
+public static java.lang.Object GetFilesWithImportPrefix (UIContext _uicontext,java.lang.Object MediaData, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetFilesWithImportPrefix", new Object[] {MediaData,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
   if (o!=null) return (java.lang.Object) o;
   return null;
 }
@@ -1591,7 +1591,7 @@ public static java.lang.Object GetFilesWithImportPrefix (UIContext _uicontext,ja
 Returns a list or map of MediaFile objects w/ the specified MediaMask whos import prefix matches that of the argument
 
 Parameters:
-MediaMask- string specifying what content types  ('M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
+MediaData- can either by a MediaMask string specifying what content types  ('M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay) or it can be an array/collection of the specific MediaFile objects to analyze
 ImportPrefix- a string specifying a subpath that must match the start of the import files path relative to its import root
 IncludeFiles- if true, then MediaFile objects with a complete prefix match will be returned
 IncludeFolders- if true, then MediaFile objects with a partial prefix match will be returned
@@ -1601,8 +1601,8 @@ a Vector or Map of MediaFile objects w/ the specified MediaMask whos import pref
 Since:
 6.4
  */
-public static java.lang.Object GetMediaFilesWithImportPrefix (java.lang.String MediaMask, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
-  Object o = sagex.SageAPI.call("GetMediaFilesWithImportPrefix", new Object[] {MediaMask,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
+public static java.lang.Object GetMediaFilesWithImportPrefix (java.lang.Object MediaData, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
+  Object o = sagex.SageAPI.call("GetMediaFilesWithImportPrefix", new Object[] {MediaData,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
   if (o!=null) return (java.lang.Object) o;
   return null;
 }
@@ -1612,7 +1612,7 @@ public static java.lang.Object GetMediaFilesWithImportPrefix (java.lang.String M
 Returns a list or map of MediaFile objects w/ the specified MediaMask whos import prefix matches that of the argument
 
 Parameters:
-MediaMask- string specifying what content types  ('M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
+MediaData- can either by a MediaMask string specifying what content types  ('M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay) or it can be an array/collection of the specific MediaFile objects to analyze
 ImportPrefix- a string specifying a subpath that must match the start of the import files path relative to its import root
 IncludeFiles- if true, then MediaFile objects with a complete prefix match will be returned
 IncludeFolders- if true, then MediaFile objects with a partial prefix match will be returned
@@ -1622,8 +1622,8 @@ a Vector or Map of MediaFile objects w/ the specified MediaMask whos import pref
 Since:
 6.4
  */
-public static java.lang.Object GetMediaFilesWithImportPrefix (UIContext _uicontext,java.lang.String MediaMask, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
-  Object o = sagex.SageAPI.call(_uicontext, "GetMediaFilesWithImportPrefix", new Object[] {MediaMask,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
+public static java.lang.Object GetMediaFilesWithImportPrefix (UIContext _uicontext,java.lang.Object MediaData, java.lang.String ImportPrefix, boolean IncludeFiles, boolean IncludeFolders, boolean GroupFolders) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetMediaFilesWithImportPrefix", new Object[] {MediaData,ImportPrefix,IncludeFiles,IncludeFolders,GroupFolders});
   if (o!=null) return (java.lang.Object) o;
   return null;
 }
@@ -1669,8 +1669,8 @@ the String after the leading articles have been stripped from the past in string
 Since:
 7.0
  */
-public static java.lang.String StringLeadingArticles (java.lang.String Text) {
-  Object o = sagex.SageAPI.call("StringLeadingArticles", new Object[] {Text});
+public static java.lang.String StripLeadingArticles (java.lang.String Text) {
+  Object o = sagex.SageAPI.call("StripLeadingArticles", new Object[] {Text});
   if (o!=null) return (java.lang.String) o;
   return null;
 }
@@ -1688,8 +1688,8 @@ the String after the leading articles have been stripped from the past in string
 Since:
 7.0
  */
-public static java.lang.String StringLeadingArticles (UIContext _uicontext,java.lang.String Text) {
-  Object o = sagex.SageAPI.call(_uicontext, "StringLeadingArticles", new Object[] {Text});
+public static java.lang.String StripLeadingArticles (UIContext _uicontext,java.lang.String Text) {
+  Object o = sagex.SageAPI.call(_uicontext, "StripLeadingArticles", new Object[] {Text});
   if (o!=null) return (java.lang.String) o;
   return null;
 }

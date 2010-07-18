@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/PluginAPI.html'>PluginAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1590,11 +1590,15 @@ Parameters:
 Plugin- the specified Plugin object
 SettingName- the name of the plugin configuration setting
 SettingValue- the value to set the configuration setting to
+Returns:
+null on success, or if an exception occurred while setting the value, a string representation of the exception will be returned
 Since:
 7.0
  */
-public static void SetPluginConfigValue (Object Plugin, java.lang.String SettingName, java.lang.String SettingValue) {
-   sagex.SageAPI.call("SetPluginConfigValue", new Object[] {Plugin,SettingName,SettingValue});
+public static java.lang.String SetPluginConfigValue (Object Plugin, java.lang.String SettingName, java.lang.String SettingValue) {
+  Object o = sagex.SageAPI.call("SetPluginConfigValue", new Object[] {Plugin,SettingName,SettingValue});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1606,11 +1610,15 @@ Parameters:
 Plugin- the specified Plugin object
 SettingName- the name of the plugin configuration setting
 SettingValue- the value to set the configuration setting to
+Returns:
+null on success, or if an exception occurred while setting the value, a string representation of the exception will be returned
 Since:
 7.0
  */
-public static void SetPluginConfigValue (UIContext _uicontext,Object Plugin, java.lang.String SettingName, java.lang.String SettingValue) {
-   sagex.SageAPI.call(_uicontext, "SetPluginConfigValue", new Object[] {Plugin,SettingName,SettingValue});
+public static java.lang.String SetPluginConfigValue (UIContext _uicontext,Object Plugin, java.lang.String SettingName, java.lang.String SettingValue) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetPluginConfigValue", new Object[] {Plugin,SettingName,SettingValue});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1622,11 +1630,15 @@ Parameters:
 Plugin- the specified Plugin object
 SettingName- the name of the plugin configuration setting
 SettingValues- the values to set the configuration setting to
+Returns:
+null on success, or if an exception occurred while setting the value, a string representation of the exception will be returned
 Since:
 7.0
  */
-public static void SetPluginConfigValues (Object Plugin, java.lang.String SettingName, java.lang.String[] SettingValues) {
-   sagex.SageAPI.call("SetPluginConfigValues", new Object[] {Plugin,SettingName,SettingValues});
+public static java.lang.String SetPluginConfigValues (Object Plugin, java.lang.String SettingName, java.lang.String[] SettingValues) {
+  Object o = sagex.SageAPI.call("SetPluginConfigValues", new Object[] {Plugin,SettingName,SettingValues});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1639,11 +1651,15 @@ Parameters:
 Plugin- the specified Plugin object
 SettingName- the name of the plugin configuration setting
 SettingValues- the values to set the configuration setting to
+Returns:
+null on success, or if an exception occurred while setting the value, a string representation of the exception will be returned
 Since:
 7.0
  */
-public static void SetPluginConfigValues (UIContext _uicontext,Object Plugin, java.lang.String SettingName, java.lang.String[] SettingValues) {
-   sagex.SageAPI.call(_uicontext, "SetPluginConfigValues", new Object[] {Plugin,SettingName,SettingValues});
+public static java.lang.String SetPluginConfigValues (UIContext _uicontext,Object Plugin, java.lang.String SettingName, java.lang.String[] SettingValues) {
+  Object o = sagex.SageAPI.call(_uicontext, "SetPluginConfigValues", new Object[] {Plugin,SettingName,SettingValues});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -1854,6 +1870,39 @@ public static Object GetPluginImplementation (UIContext _uicontext,Object Plugin
   Object o = sagex.SageAPI.call(_uicontext, "GetPluginImplementation", new Object[] {Plugin});
   if (o!=null) return (Object) o;
   return null;
+}
+
+/**
+Returns true once all of the core plugins that are enabled have completed their startup process. This can be useful because
+ plugins are loaded asynchronously with the UI and sometimes a UI needs to wait for their startup process to be completed before it loads.
+ For client instances; this will return true once client and server plugin startup has completed.
+
+Returns:
+true once all of the core plugins that are enabled have completed their startup process, false otherwise
+Since:
+7.0
+ */
+public static boolean IsPluginStartupComplete () {
+  Object o = sagex.SageAPI.call("IsPluginStartupComplete", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true once all of the core plugins that are enabled have completed their startup process. This can be useful because
+ plugins are loaded asynchronously with the UI and sometimes a UI needs to wait for their startup process to be completed before it loads.
+ For client instances; this will return true once client and server plugin startup has completed.
+
+Returns:
+true once all of the core plugins that are enabled have completed their startup process, false otherwise
+Since:
+7.0
+ */
+public static boolean IsPluginStartupComplete (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsPluginStartupComplete", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 }

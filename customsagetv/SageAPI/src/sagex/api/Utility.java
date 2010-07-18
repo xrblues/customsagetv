@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -3649,6 +3649,41 @@ public static boolean ServerRestart (UIContext _uicontext) {
   Object o = sagex.SageAPI.call(_uicontext, "ServerRestart", (Object[])null);
   if (o!=null) return (Boolean) o;
   return false;
+}
+
+/**
+Gets the MAC address of the SageTV server at the specified hostname. This will only work if SageTV is running on that host.
+ This call uses a 3 second timeout internally.
+
+Parameters:
+Hostname- the hostname/IP of the SageTV server
+Returns:
+a String in the format 00:xx:xx:xx:xx:xx that represents the MAC of the server, or null if it fails
+Since:
+7.0
+ */
+public static java.lang.String QueryServerMacAddress (java.lang.String Hostname) {
+  Object o = sagex.SageAPI.call("QueryServerMacAddress", new Object[] {Hostname});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the MAC address of the SageTV server at the specified hostname. This will only work if SageTV is running on that host.
+ This call uses a 3 second timeout internally.
+
+Parameters:
+Hostname- the hostname/IP of the SageTV server
+Returns:
+a String in the format 00:xx:xx:xx:xx:xx that represents the MAC of the server, or null if it fails
+Since:
+7.0
+ */
+public static java.lang.String QueryServerMacAddress (UIContext _uicontext,java.lang.String Hostname) {
+  Object o = sagex.SageAPI.call(_uicontext, "QueryServerMacAddress", new Object[] {Hostname});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 }

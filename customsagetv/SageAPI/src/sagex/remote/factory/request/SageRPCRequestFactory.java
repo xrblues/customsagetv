@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 6/20/10 6:09 PM
+ * Generated Date/Time: 7/18/10 9:31 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -423,14 +423,14 @@ static {
    commands.put("GetFilesWithImportPrefix","Database");
    commands.put("GetMediaFilesWithImportPrefix","Database");
    commands.put("IsDatabaseMemoryMaxed","Database");
-   commands.put("StringLeadingArticles","Database");
+   commands.put("StripLeadingArticles","Database");
    commands.put("IsFirstRunsAndReRuns","FavoriteAPI");
    commands.put("IsFirstRunsOnly","FavoriteAPI");
    commands.put("IsReRunsOnly","FavoriteAPI");
    commands.put("IsFirstRuns","FavoriteAPI");
    commands.put("IsReRuns","FavoriteAPI");
    commands.put("IsAutoDelete","FavoriteAPI");
-   commands.put("IsAutoDeleteAfterConversion","FavoriteAPI");
+   commands.put("IsDeleteAfterAutomaticConversion","FavoriteAPI");
    commands.put("GetKeepAtMost","FavoriteAPI");
    commands.put("GetFavoriteDescription","FavoriteAPI");
    commands.put("GetFavoriteTitle","FavoriteAPI");
@@ -582,11 +582,17 @@ static {
    commands.put("CancelFileCopy","Global");
    commands.put("GetFileCopyStatus","Global");
    commands.put("StartFileDownload","Global");
+   commands.put("StartBackgroundFileDownload","Global");
    commands.put("StartCircularFileDownload","Global");
    commands.put("CancelFileDownload","Global");
+   commands.put("CancelBackgroundFileDownload","Global");
    commands.put("GetFileDownloadStatus","Global");
+   commands.put("GetBackgroundFileDownloadStatus","Global");
    commands.put("GetFileDownloadStreamTime","Global");
    commands.put("IsFileDownloadProgressivePlay","Global");
+   commands.put("GetBackgroundFileDownloadStreamTime","Global");
+   commands.put("IsBackgroundFileDownloadProgressivePlay","Global");
+   commands.put("GetBackgroundFileDownloadTotalSize","Global");
    commands.put("SetRemoteEventEncryptionEnabled","Global");
    commands.put("CachePlaceshifterLogin","Global");
    commands.put("CanCachePlaceshifterLogin","Global");
@@ -874,6 +880,7 @@ static {
    commands.put("ResetPluginConfiguration","PluginAPI");
    commands.put("IsPluginConfigurable","PluginAPI");
    commands.put("GetPluginImplementation","PluginAPI");
+   commands.put("IsPluginStartupComplete","PluginAPI");
    commands.put("GetAllSeriesInfo","SeriesInfoAPI");
    commands.put("GetSeriesTitle","SeriesInfoAPI");
    commands.put("GetSeriesDescription","SeriesInfoAPI");
@@ -1081,6 +1088,7 @@ static {
    commands.put("IsServerRestartNeeded","Utility");
    commands.put("Restart","Utility");
    commands.put("ServerRestart","Utility");
+   commands.put("QueryServerMacAddress","Utility");
    commands.put("LoadSTVFile","WidgetAPI");
    commands.put("ImportSTVFile","WidgetAPI");
    commands.put("IsSTVModified","WidgetAPI");
