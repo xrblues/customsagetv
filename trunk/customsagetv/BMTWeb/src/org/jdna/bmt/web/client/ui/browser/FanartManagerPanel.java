@@ -75,7 +75,7 @@ public class FanartManagerPanel extends Composite implements NotificationEventHa
         }
         GWTMediaArt ma = new GWTMediaArt();
         ma.setDownloadUrl(downloadUrl.getText());
-        MetadataServicesManager.getInstance().downloadFanart(file, curType, ma, new AsyncCallback<GWTMediaArt>() {
+        BrowsingServicesManager.getInstance().downloadFanart(file, curType, ma, new AsyncCallback<GWTMediaArt>() {
             public void onFailure(Throwable caught) {
                 Application.fireErrorEvent("Failed to download image", caught);
             }
@@ -90,7 +90,7 @@ public class FanartManagerPanel extends Composite implements NotificationEventHa
 
     private void loadFanart(final MediaArtifactType type) {
         curType=type;
-        MetadataServicesManager.getInstance().loadFanart(file, type, new AsyncCallback<ArrayList<GWTMediaArt>>() {
+        BrowsingServicesManager.getInstance().loadFanart(file, type, new AsyncCallback<ArrayList<GWTMediaArt>>() {
             public void onSuccess(ArrayList<GWTMediaArt> result) {
                 if (result==null || result.size()==0) {
                     Application.fireErrorEvent("Failed to load fanart for: " + type);
@@ -139,7 +139,7 @@ public class FanartManagerPanel extends Composite implements NotificationEventHa
     public void deleteImage(ClickEvent evt) {
         if(curImage!=null) {
             if (Window.confirm("Press OK to delete this image.  This cannot be undone.")) {
-                MetadataServicesManager.service().deleteFanart(curImage.getMediaArt(), new AsyncCallback<Boolean>() {
+                BrowsingServicesManager.getInstance().getServices().deleteFanart(curImage.getMediaArt(), new AsyncCallback<Boolean>() {
                     public void onFailure(Throwable caught) {
                         Application.fireErrorEvent("Unable to delete image", caught);
                     }
@@ -172,7 +172,7 @@ public class FanartManagerPanel extends Composite implements NotificationEventHa
     @UiHandler("makeDefault")
     public void makeDefaultImage(ClickEvent evt) {
         if (curImage!=null) {
-            MetadataServicesManager.service().makeDefaultFanart(file, curType, curImage.getMediaArt(), new AsyncCallback<Void>() {
+            BrowsingServicesManager.getInstance().getServices().makeDefaultFanart(file, curType, curImage.getMediaArt(), new AsyncCallback<Void>() {
                 public void onFailure(Throwable caught) {
                     Application.fireErrorEvent("Unable to make this the default iamge", caught);
                 }

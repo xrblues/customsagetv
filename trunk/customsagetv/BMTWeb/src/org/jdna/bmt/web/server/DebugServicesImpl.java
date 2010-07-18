@@ -20,6 +20,7 @@ import sagex.api.AiringAPI;
 import sagex.api.ChannelAPI;
 import sagex.api.Configuration;
 import sagex.api.MediaFileAPI;
+import sagex.api.ShowAPI;
 import sagex.api.enums.AiringAPIEnum;
 import sagex.api.enums.ChannelAPIEnum;
 import sagex.api.enums.MediaFileAPIEnum;
@@ -234,6 +235,16 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
             map.put(ChannelAPIEnum.GetChannelNetwork.name(),ChannelAPI.GetChannelNetwork(ch));
             map.put(ChannelAPIEnum.GetChannelNumber.name(),ChannelAPI.GetChannelNumber(ch));
             map.put(ChannelAPIEnum.GetStationID.name(),String.valueOf(ChannelAPI.GetStationID(ch)));
+        }
+        
+        String peeps[] = ShowAPI.GetPeopleAndCharacterListInShowInRole(sage, "Actor");
+        if (peeps!=null) {
+        	int i=1;
+        	for (String p : peeps) {
+        		map.put("Actor: " + i++, p);
+        	}
+        } else {
+        	map.put("No Actors", "GetPeopleAndCharacterListInShowInRole() returned nothing");
         }
         
         return map;

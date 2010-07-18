@@ -81,7 +81,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
                 options.getScanPath().set(currentFolder);
                 DataDialog.showDialog(new ScanOptionsPanel(options, new OKDialogHandler<PersistenceOptionsUI>() {
                     public void onSave(PersistenceOptionsUI data) {
-                        MetadataServicesManager.getInstance().scan(currentFolder, options);
+                        BrowsingServicesManager.getInstance().scan(currentFolder, options);
                     }
                 }));
             }

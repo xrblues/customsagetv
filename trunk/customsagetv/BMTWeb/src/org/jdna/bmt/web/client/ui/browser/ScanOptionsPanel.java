@@ -45,6 +45,7 @@ public class ScanOptionsPanel extends DataDialog<PersistenceOptionsUI> implement
         propPanel.getFlexTable().addClickHandler(this);
         dp.setWidth("100%");
         propPanel.setWidth("100%");
+        
         if (options.getIncludeSubDirs().isVisible()) {
             //propPanel.add("Include Sub Folders", InputBuilder.checkbox().bind(options.getIncludeSubDirs()).widget());
         }
@@ -52,6 +53,8 @@ public class ScanOptionsPanel extends DataDialog<PersistenceOptionsUI> implement
         if (options.getScanOnlyMissingMetadata().isVisible()) {
         	propPanel.add("Only update items that have not been updated previously", InputBuilder.checkbox().bind(options.getScanOnlyMissingMetadata()).widget());
         }
+       	propPanel.add("Import TV Files as Recordings", InputBuilder.checkbox().bind(options.getImportTVAsRecordings()).widget());
+        
         dp.setContent(propPanel);
         panel.add(dp);
         

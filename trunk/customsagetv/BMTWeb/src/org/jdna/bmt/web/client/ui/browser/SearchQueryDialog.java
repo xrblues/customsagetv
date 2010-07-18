@@ -17,7 +17,6 @@ import org.jdna.bmt.web.client.ui.util.DialogHandler;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.TitlePanel;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,8 +32,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements DialogHandler<SearchQueryOptions> {
-    private final MetadataServiceAsync browserService = GWT.create(MetadataService.class);
-
     private ListBox providers;
     private ListBox type;
     private TextBox episodeTitle;
@@ -52,7 +49,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         setHandler(this);
         this.file=file;
         
-        browserService.getProviders(new AsyncCallback<List<GWTProviderInfo>>() {
+        BrowsingServicesManager.getInstance().getServices().getProviders(new AsyncCallback<List<GWTProviderInfo>>() {
             public void onFailure(Throwable caught) {
                 Application.fireErrorEvent("Failed to get Metadata Sources!", caught);
             }
@@ -165,7 +162,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         resultPanelContainer.add(new Label("Results"));
         resultPanelContainer.add(panel);
         
-        browserService.searchForMetadata(file, getData(), new AsyncCallback<List<GWTMediaSearchResult>>() {
+        BrowsingServicesManager.getInstance().getServices().searchForMetadata(file, getData(), new AsyncCallback<List<GWTMediaSearchResult>>() {
             public void onFailure(Throwable caught) {
                 wait.hide();
                 resultPanelContainer.setVisible(false);
@@ -222,7 +219,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         options.setImportAsTV(file.getSageRecording().get());
         options.setUseTitleMasks(true);
 
-        browserService.getMetadata(res, options, new AsyncCallback<GWTMediaMetadata>() {
+        BrowsingServicesManager.getInstance().getServices().getMetadata(res, options, new AsyncCallback<GWTMediaMetadata>() {
             public void onFailure(Throwable caught) {
                 wait.hide();
                 Application.fireErrorEvent("Unable to get Metadata", caught);
@@ -230,7 +227,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
 
             public void onSuccess(GWTMediaMetadata result) {
                 file.attachMetadata(result);
-                MetadataServicesManager.getInstance().metadataUpdated(file);
+                BrowsingServicesManager.getInstance().metadataUpdated(file);
                 wait.hide();
                 hide();
             }

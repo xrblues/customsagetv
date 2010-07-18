@@ -8,6 +8,8 @@ import org.jdna.bmt.web.client.util.Property;
 public class PersistenceOptionsUI implements Serializable {
     private Property<Boolean> includeSubDirs = new Property<Boolean>(Boolean.TRUE);
     private Property<Boolean> scanOnlyMissingMetadata = new Property<Boolean>(Boolean.TRUE);
+    private Property<Boolean> importTVAsRecordings = new Property<Boolean>(Boolean.FALSE);
+    
 	private Property<GWTMediaFolder> folder = new Property<GWTMediaFolder>();
     
     public PersistenceOptionsUI() {
@@ -23,5 +25,9 @@ public class PersistenceOptionsUI implements Serializable {
 
 	public Property<GWTMediaFolder> getScanPath() {
 		return folder;
+	}
+
+	public Property<Boolean> getImportTVAsRecordings() {
+		return importTVAsRecordings;
 	}
 }

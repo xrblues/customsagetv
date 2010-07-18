@@ -42,15 +42,15 @@ public class StatusServicesImpl extends RemoteServiceServlet implements StatusSe
             List<StatusValue> status = new LinkedList<StatusValue>();
             if ("phoenix".equals(statusType)) {
             	MetadataConfiguration config = GroupProxy.get(MetadataConfiguration.class);
-                status.add(new StatusValue("Version", phoenix.api.GetVersion()));
-                status.add(new StatusValue("sagex.api Version", sagex.api.Version.GetVersion(), warn(!phoenix.api.IsAtLeastVersion(sagex.api.Version.GetVersion(), phoenix.api.GetRequiredSagexApiVersion()))));
+                status.add(new StatusValue("Version", phoenix.system.GetVersion()));
+                status.add(new StatusValue("sagex.api Version", sagex.api.Version.GetVersion(), warn(!phoenix.util.IsAtLeastVersion(sagex.api.Version.GetVersion(), phoenix.system.GetRequiredSagexApiVersion()))));
                 status.add(new StatusValue("Automatic Metadata/Fanart Lookups Enabled", String.valueOf(config.isAutomatedFanartEnabled())));
-                status.add(new StatusValue("Fanart Enabled", String.valueOf(phoenix.api.IsFanartEnabled()), warn(!phoenix.api.IsFanartEnabled()), "Fanart Cannot work if it is not enabled :)"));
-                status.add(new StatusValue("Fanart Folder", phoenix.api.GetFanartCentralFolder(), error(!new File(phoenix.api.GetFanartCentralFolder()).exists())));
+                status.add(new StatusValue("Fanart Enabled", String.valueOf(phoenix.fanart.IsFanartEnabled()), warn(!phoenix.fanart.IsFanartEnabled()), "Fanart Cannot work if it is not enabled :)"));
+                status.add(new StatusValue("Fanart Folder", phoenix.fanart.GetFanartCentralFolder(), error(!new File(phoenix.fanart.GetFanartCentralFolder()).exists())));
 
             } else if ("sagetv".equals(statusType)) {
                 status.add(new StatusValue("Version", SageTV.getSageVersion()));
-                status.add(new StatusValue("Required Version", phoenix.api.GetRequiredSageVersion(), warn(!phoenix.api.IsAtLeastVersion(SageTV.getSageVersion(), phoenix.api.GetRequiredSageVersion()))));
+                status.add(new StatusValue("Required Version", phoenix.system.GetRequiredSageVersion(), warn(!phoenix.util.IsAtLeastVersion(SageTV.getSageVersion(), phoenix.system.GetRequiredSageVersion()))));
                 status.add(new StatusValue("Java Version", System.getProperty("java.version")));
                 status.add(new StatusValue("Server", String.valueOf(!Global.IsClient()), warn(Global.IsClient()), "BMT Web UI should be running on the SageTV server."));
 

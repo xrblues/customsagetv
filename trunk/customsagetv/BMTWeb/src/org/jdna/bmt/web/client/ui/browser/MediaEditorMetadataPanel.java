@@ -28,6 +28,7 @@ import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -57,6 +58,7 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
     private PersistenceOptionsUI options = new PersistenceOptionsUI();
 
 	private int movieTitleRow;
+	private TextBox formattedTitle;
 	private TextBox movieTitle;
 	private TextBox showTitle;
 	private TextBox episodeName;
@@ -67,6 +69,10 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
 	private TextBox extendedRatings;
 	private TextBox runningTime;
 	private TextBox misc;
+	private TextBox externalId;
+	private CheckBox sageRecording;
+	private CheckBox archived;
+	private CheckBox watched;
     
     public MediaEditorMetadataPanel(GWTMediaFile mediaFile, BrowserView view) {
         this.browserView = view;
@@ -101,6 +107,12 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
             public void onClick(ClickEvent event) {
                 SearchQueryOptions options = new SearchQueryOptions(mediaFile);
                 DataDialog.showDialog(new SearchQueryDialog(mediaFile, options));
+            }
+        });
+
+        Button clearMetadata = new Button("Clear Metadata");
+        find.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
             }
         });
 
@@ -158,11 +170,15 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         panel.setWidth("99%");
         metadataContainer = panel;
         
-        // panel.add("Sage Recording?", InputBuilder.checkbox().bind(mediaFile.getSageRecording()).widget());
+        Label l = new Label(mediaFile.getFormattedTitle(), false);
+        l.addStyleName("MediaMetadata-LargeTitle");
+        metadataPanel.add(l);
         
+        panel.add(l,new Label());
+
+        panel.add("Sage Recording?", sageRecording=InputBuilder.checkbox().bind(mediaFile.getSageRecording()).widget());
         panel.add("Media Type", typeListBox=InputBuilder.combo(",Movie,TV").bind(metadata.getMediaType()).addChangeHandler(this).widget());
         panel.add("Fanart Title", InputBuilder.textbox().bind(metadata.getMediaTitle()).widget());
-        
         panel.add("Movie Title", movieTitle=InputBuilder.textbox("movie-title").bind(metadata.getEpisodeName()).widget());
         movieTitleRow = panel.getFlexTable().getRowCount()-1;
         
@@ -191,6 +207,9 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
 
         panel.add("Running Time", runningTime=InputBuilder.textbox().bind(metadata.getRunningTime()).widget());
         panel.add("Misc", misc=InputBuilder.textbox().bind(metadata.getMisc()).widget());
+        panel.add("ExternalId", externalId=InputBuilder.textbox().bind(metadata.getExternalID()).widget());
+        panel.add("Archived?", archived=InputBuilder.checkbox().bind(mediaFile.getIsLibraryFile()).widget());
+        panel.add("Watched?", watched=InputBuilder.checkbox().bind(mediaFile.getIsWatched()).widget());
         
         // Genres
         StringBuilder sb = new StringBuilder();
@@ -240,7 +259,7 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
     }
 
     protected void saveMetadata(PersistenceOptionsUI options) {
-        MetadataServicesManager.getInstance().saveMetadata(mediaFile, options);
+        BrowsingServicesManager.getInstance().saveMetadata(mediaFile, options);
     }
 
     public void setUpdateListener(AsyncCallback<GWTMediaFile> asyncCallback) {
@@ -254,7 +273,7 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
     protected void onAttach() {
         super.onAttach();
         metadataUpdatedHandler = Application.events().addHandler(MetadataUpdatedEvent.TYPE, this);
-        MetadataServicesManager.getInstance().requestUpdatedMetadata(mediaFile);
+        BrowsingServicesManager.getInstance().requestUpdatedMetadata(mediaFile);
     }
 
     /* (non-Javadoc)
@@ -267,11 +286,9 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
     }
 
     public void onMetadataUpdated(MetadataUpdatedEvent event) {
-        if (event.getFile() == mediaFile) {
-            // udpate
-            metadata = event.getFile().getMetadata();
-            init(event.getFile());
-        }
+        // udpate
+        metadata = event.getFile().getMetadata();
+        init(event.getFile());
     }
 
     public void onChange(ChangeEvent event) {
@@ -294,8 +311,17 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
 	    	extendedRatings.setEnabled(!mediaFile.getSageRecording().get());
 	    	runningTime.setEnabled(!mediaFile.getSageRecording().get());
 	    	misc.setEnabled(!mediaFile.getSageRecording().get());
+	    	externalId.setEnabled(!mediaFile.getSageRecording().get());
         }
         
+        if (mediaFile.getSageRecording().get()) {
+	    	externalId.setEnabled(false);
+	    	archived.setEnabled(true);
+        } else {
+	    	archived.setEnabled(false);
+        }
+        
+        //sageRecording.setEnabled(false);
         metadataContainer.stripe();
     }
 }
