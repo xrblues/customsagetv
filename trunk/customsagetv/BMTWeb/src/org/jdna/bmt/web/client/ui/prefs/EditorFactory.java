@@ -5,6 +5,7 @@ import org.jdna.bmt.web.client.ui.input.FileChooserTextBox;
 import org.jdna.bmt.web.client.ui.input.RegexEditorTextBox;
 import org.jdna.bmt.web.client.util.Log;
 
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -32,15 +33,15 @@ public class EditorFactory {
 
     public static Widget createEditor(String editor) {
         if ("log4jEditor".equals(editor)) {
-            //return new Log4jEditorPanel();
             return new Log4jPropertiesPanel();
+        } else if ("refreshConfigurations".equals(editor)) {
+            return new RefreshPanel();
         } else if ("videoSourcesEditor".equals(editor)) {
             return new VideoSourcesEditorPanel();
         } else if ("viewSageProperties".equals(editor)) {
             return new SagePropertiesViewerPanel();
         } else {
-            Log.debug("Unknown Editor: " + editor);
+        	return new Label("Unknown Editor: " + editor);
         }
-        return null;
     }
 }

@@ -264,7 +264,26 @@ public class PreferencesPanel extends Composite {
             }
         }
         
+        // Add in faked configuration panels
+        if (item == null) {
+        	tree.addItem(createFakePanel("Refresh Configurations", "Refresh External Configuration Files", "refreshConfigurations"));
+        	tree.addItem(createFakePanel("Sage Sources", "Add/Modify Sage Sources", "videoSourcesEditor"));
+        	tree.addItem(createFakePanel("Sage Properties", "View Sage Properties (Server)", "viewSageProperties"));
+        }
+        
         focusTreeItem(item);
+    }
+    
+    private TreeItem createFakePanel(String label, String description, String editor) {
+    	// add a new TreeItem for Refreshing Configurations
+    	TreeItem ti = new TreeItem();
+    	ti.setText(label);
+    	PrefItem pi = new PrefItem();
+    	pi.setDescription(description);
+    	pi.setLabel(label);
+    	pi.setEditor(editor);
+    	ti.setUserObject(pi);
+    	return ti;
     }
 
     private void focusTreeItem(TreeItem ti) {
