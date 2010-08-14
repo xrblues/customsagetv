@@ -1,0 +1,15 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:org.jdna.bmt.web.client.ui.layout">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+	</ui:style>
+	<g:VerticalPanel ui:field="panel" spacing="5">
+		<g:Button ui:field="refreshVFS">Refresh Virtual Filesystem</g:Button>
+		<g:Button ui:field="refreshMenus">Refresh Dynamic Menus</g:Button>
+		<g:Button ui:field="refreshMediaTitles">Refresh MediaTitles.xml</g:Button>
+	</g:VerticalPanel>
+</ui:UiBinder> 

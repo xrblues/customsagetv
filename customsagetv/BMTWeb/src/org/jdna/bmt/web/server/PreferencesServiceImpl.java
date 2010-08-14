@@ -343,4 +343,16 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
         }
         Log4jConfigurator.reconfigure(logId, props);
     }
+
+	@Override
+	public void refreshConfiguration(String id) {
+		if (id==null) throw new RuntimeException("Invalid Refresh ID");
+		if (REFRESH_VFS.equals("id")) {
+			phoenix.umb.ReloadViews();
+		} else if (REFRESH_MENUS.equals("id")) {
+			phoenix.menu.ReloadMenus();
+		} else if (REFRESH_MEDIA_TITLES.equals("id")) {
+			phoenix.umb.ReloadMediaTitles();
+		}
+	}
 }

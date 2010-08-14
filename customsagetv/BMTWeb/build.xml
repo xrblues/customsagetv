@@ -23,7 +23,7 @@
 	<property name="build.dir" location="${target}/build" />
 	<property name="dist.dir" location="${target}/dist" />
 
-	<property name="version" value="4.3" />
+	<property name="version" value="4.5.1" />
 
 	<!-- for debugging turn off gwt compile -->
 	<!-- <property name="no-gwt-compile" value="true" /> -->
@@ -50,9 +50,20 @@
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${dist.dir}" />
 		<mkdir dir="${dist.dir}/packages" />
+		
 	</target>
+	
+	<target name="buildVersion">
+		<echo file="src/org/jdna/bmt/web/client/Version.java">
+			package org.jdna.bmt.web.client;
 
-	<target name="compile" depends="init,gwtc">
+			public final class Version {
+			    public static final String VERSION = "${version}";
+			}
+		</echo>
+	</target>
+	
+	<target name="compile" depends="init,buildVersion,gwtc">
 		<!-- Note, there is no real javac compiling for gwt web projects -->
 	</target>
 

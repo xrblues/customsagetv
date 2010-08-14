@@ -9,6 +9,10 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("preferences")
 public interface PreferencesService extends RemoteService {
+	public String REFRESH_MENUS = "RefreshMenus";
+	public String REFRESH_VFS = "RefreshVFS";
+	public String REFRESH_MEDIA_TITLES = "RefreshMediaTitles";
+
     public PrefItem searchPreferences(String search);
     public PrefItem[] getPreferences(PrefItem parent);
     public boolean savePreferences(PrefItem[] preferences);
@@ -23,4 +27,5 @@ public interface PreferencesService extends RemoteService {
     public String[] getLog4jLoggers();
     public ArrayList<PrefItem> getLog4jProperties(String log);
     public void saveLog4jProperties(String log, ArrayList<PrefItem> items);
+    public void refreshConfiguration(String id);
 }

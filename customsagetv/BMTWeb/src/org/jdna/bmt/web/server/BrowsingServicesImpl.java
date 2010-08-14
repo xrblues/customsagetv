@@ -252,7 +252,15 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
         	mi.getEpisodeName().set(source.getEpisodeName());
         	mi.getEpisodeNumber().set(String.valueOf(source.getEpisodeNumber()));
         	mi.getExtendedRatings().set(source.getExtendedRatings());
-        	mi.getExternalID().set(source.getExternalID());
+        	
+        	// do not set an empty external id
+        	if (!StringUtils.isEmpty(source.getExternalID())) {
+        		mi.getExternalID().set(source.getExternalID());
+        	} else {
+        		if (file!=null && file.getMetadata()!=null) { 
+        			mi.getExternalID().set(file.getMetadata().getExternalID());
+        		}
+        	}
         	mi.getIMDBID().set(source.getIMDBID());
         	mi.getMediaProviderDataID().set(source.getMediaProviderDataID());
         	mi.getMediaProviderID().set(source.getMediaProviderID());
@@ -343,7 +351,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
         try {
         	log.debug("Getting Metadata for result: " + result);
         	MediaSearchResult res = new MediaSearchResult(result);
-            return newMetadata(null, Phoenix.getInstance().getMetadataManager().getMetdata(res));
+            return newMetadata(phoenix.media.GetMediaFile(phoenix.media.GetSageMediaFile(result.getMediaFileId())), Phoenix.getInstance().getMetadataManager().getMetdata(res));
         } catch (Exception e) {
             log.error("Metadata Retreival Failed!", e);
             throw new RuntimeException(e);

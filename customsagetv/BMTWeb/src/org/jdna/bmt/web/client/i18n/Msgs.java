@@ -92,4 +92,10 @@ public interface Msgs extends Messages {
 
     @DefaultMessage("No media items for folder {0}")
     String nothingToShowFor(String title);
+
+    @DefaultMessage("Configuration has been reloaded")
+	String configurationReloaded();
+
+    @DefaultMessage("Configuration failed to reload")
+	String configurationFailedToReload();
 }

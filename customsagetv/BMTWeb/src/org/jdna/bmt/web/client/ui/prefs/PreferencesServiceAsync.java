@@ -21,4 +21,5 @@ public interface PreferencesServiceAsync {
     void getLog4jLoggers(AsyncCallback<String[]> callback);
     void getLog4jProperties(String log, AsyncCallback<ArrayList<PrefItem>> callback);
     void saveLog4jProperties(String log, ArrayList<PrefItem> items, AsyncCallback<Void> callback);
+	void refreshConfiguration(String id, AsyncCallback<Void> callback);
 }

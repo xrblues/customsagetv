@@ -13,6 +13,7 @@ import org.jdna.bmt.web.client.media.SageQueryFolder;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
 import org.jdna.bmt.web.client.util.Log;
+import org.jdna.bmt.web.client.util.StringUtils;
 
 import sagex.phoenix.metadata.MediaArtifactType;
 
@@ -241,6 +242,15 @@ public class BrowsingServicesManager {
     }
     
     public void saveMetadata(final GWTMediaFile file, PersistenceOptionsUI options) {
+    	// Sage Bug: ExternalID cannot be null
+    	if (file.getMetadata()!=null) {
+    		org.jdna.bmt.web.client.util.Property<String> prop = file.getMetadata().getExternalID();
+    		if (prop!=null && StringUtils.isEmpty(prop.get())) {
+    			Application.fireErrorEvent("ExternalId Cannot be blank!");
+        		return;
+    		}
+    	}
+    	
         final PopupPanel save = Dialogs.showWaitingPopup("Saving...");
         browser.saveMetadata(file, options, new AsyncCallback<ServiceReply<GWTMediaFile>>() {
             public void onFailure(Throwable caught) {
