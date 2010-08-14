@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 7/18/10 9:31 AM
+ * Generated Date/Time: 8/11/10 3:51 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Database.html'>Database</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -188,10 +188,13 @@ Grouping method for data lists/maps. This will return a Map that uses a key->val
  order as in the pased in data. Use the GetSubgroup method to get the corresponding value for a key. 
  The key for each data element is determined by calling the specified 'Method' with that data element as the sole parameter.
  Each value in the map will be a java.util.Vector that contains the elements in the group.
+ There is a special Method called "Categories" which will allow items to fall into possibly more than one group. This will
+ group by Category and also by SubCategory all at the same level (if SubCategory is not defined, then it will not be used for an alternate grouping).
+ "Categories" grouping will also break up any category names that have comma or semicolon delimited lists and put the item into each of those.
 
 Parameters:
 Data- the data to perform the grouping on, must be a java.util.Collection, java.util.Map or an Array
-Method- the name of the Method to execute on each element to retrieve the key used for grouping
+Method- the name of the Method to execute on each element to retrieve the key used for grouping, see the note above regarding "Categories" as a special option
 Returns:
 a java.util.Map keyed with the values obtained from executing Method on the Data and with values that are Vectors of elements who's keys match
  */
@@ -208,10 +211,13 @@ Grouping method for data lists/maps. This will return a Map that uses a key->val
  order as in the pased in data. Use the GetSubgroup method to get the corresponding value for a key. 
  The key for each data element is determined by calling the specified 'Method' with that data element as the sole parameter.
  Each value in the map will be a java.util.Vector that contains the elements in the group.
+ There is a special Method called "Categories" which will allow items to fall into possibly more than one group. This will
+ group by Category and also by SubCategory all at the same level (if SubCategory is not defined, then it will not be used for an alternate grouping).
+ "Categories" grouping will also break up any category names that have comma or semicolon delimited lists and put the item into each of those.
 
 Parameters:
 Data- the data to perform the grouping on, must be a java.util.Collection, java.util.Map or an Array
-Method- the name of the Method to execute on each element to retrieve the key used for grouping
+Method- the name of the Method to execute on each element to retrieve the key used for grouping, see the note above regarding "Categories" as a special option
 Returns:
 a java.util.Map keyed with the values obtained from executing Method on the Data and with values that are Vectors of elements who's keys match
  */
@@ -1509,6 +1515,72 @@ Since:
  */
 public static java.lang.String[] GetAllCategories (UIContext _uicontext,java.lang.String MediaMask) {
   return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetAllCategories", new Object[] {MediaMask});
+}
+
+/**
+Gets all of the categories that are in the database. This is different than GetAllCategories because this one will break apart
+ any comma or semicolon delimited category lists into multiple different categories. i.e. if you have "Comedy; Horror" as a category
+ this API call will break it up into Comedy and Horror as two separate categories. This call will also coalesce any case-sensitive differences in category names.
+
+Returns:
+all of the names of categories that are in the database with multi-categories broken apart
+Since:
+7.0
+ */
+public static java.lang.String[] GetAllGroupingCategories () {
+  return (java.lang.String[]) sagex.SageAPI.call("GetAllGroupingCategories", (Object[])null);
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets all of the categories that are in the database. This is different than GetAllCategories because this one will break apart
+ any comma or semicolon delimited category lists into multiple different categories. i.e. if you have "Comedy; Horror" as a category
+ this API call will break it up into Comedy and Horror as two separate categories. This call will also coalesce any case-sensitive differences in category names.
+
+Returns:
+all of the names of categories that are in the database with multi-categories broken apart
+Since:
+7.0
+ */
+public static java.lang.String[] GetAllGroupingCategories (UIContext _uicontext) {
+  return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetAllGroupingCategories", (Object[])null);
+}
+
+/**
+Gets all of the categories that are in the database.
+ The content it references must also match one of the media types specified in the MediaMask.
+ This is different than GetAllCategories because this one will break apart
+ any comma or semicolon delimited category lists into multiple different categories. i.e. if you have "Comedy; Horror" as a category
+ this API call will break it up into Comedy and Horror as two separate categories. This call will also coalesce any case-sensitive differences in category names.
+
+Parameters:
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
+Returns:
+all of the names of categories that are in the database that also have content that matches the MediaMask with multi-categories broken apart
+Since:
+7.0
+ */
+public static java.lang.String[] GetAllGroupingCategories (java.lang.String MediaMask) {
+  return (java.lang.String[]) sagex.SageAPI.call("GetAllGroupingCategories", new Object[] {MediaMask});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets all of the categories that are in the database.
+ The content it references must also match one of the media types specified in the MediaMask.
+ This is different than GetAllCategories because this one will break apart
+ any comma or semicolon delimited category lists into multiple different categories. i.e. if you have "Comedy; Horror" as a category
+ this API call will break it up into Comedy and Horror as two separate categories. This call will also coalesce any case-sensitive differences in category names.
+
+Parameters:
+MediaMask- string specifying what content types to search (i.e. "TM" for TV & Music, 'T'=TV, 'M'=Music, 'V'=Video, 'D'=DVD, 'P'=Pictures, 'B'=BluRay)
+Returns:
+all of the names of categories that are in the database that also have content that matches the MediaMask with multi-categories broken apart
+Since:
+7.0
+ */
+public static java.lang.String[] GetAllGroupingCategories (UIContext _uicontext,java.lang.String MediaMask) {
+  return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetAllGroupingCategories", new Object[] {MediaMask});
 }
 
 /**

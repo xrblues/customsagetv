@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 7/18/10 9:31 AM
+ * Generated Date/Time: 8/11/10 3:51 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -3354,6 +3354,37 @@ Since:
  */
 public static boolean AreCoreAnimationsEnabled (UIContext _uicontext) {
   Object o = sagex.SageAPI.call(_uicontext, "AreCoreAnimationsEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Returns whether or not animation support is possible in the current UI environment. Certain clients (like the MVP) do not support animations;
+ and animations over remote connections are also disabled due to performance reasons.
+
+Returns:
+true if core animations are supported; false otherwise
+Since:
+7.0
+ */
+public static boolean AreCoreAnimationsSupported () {
+  Object o = sagex.SageAPI.call("AreCoreAnimationsSupported", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns whether or not animation support is possible in the current UI environment. Certain clients (like the MVP) do not support animations;
+ and animations over remote connections are also disabled due to performance reasons.
+
+Returns:
+true if core animations are supported; false otherwise
+Since:
+7.0
+ */
+public static boolean AreCoreAnimationsSupported (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "AreCoreAnimationsSupported", (Object[])null);
   if (o!=null) return (Boolean) o;
   return false;
 }

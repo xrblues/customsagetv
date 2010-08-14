@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 7/18/10 9:31 AM
+ * Generated Date/Time: 8/11/10 3:51 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaFileAPI.html'>MediaFileAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1507,9 +1507,9 @@ Returns a string for the corresponding metadata property in the MediaFile's form
  Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere,
  SeasonFinale, SeriesFinale, ExternalID, Album, Year, OriginalAirDate, ExtendedRatings, Misc, All "Role" Names, Format.Video.Codec,
  Format.Video.Resolution, Format.Video.Aspect, Format.Video.Bitrate, Format.Video.Width, Format.Video.Height, Format.Video.FPS,
- Format.Video.Interlaced, Format.Video.Progressive, Format.Audio.NumStreams, Format.Audio[.#].Codec, Format.Audio[.#].Channels,
- Format.Audio[.#].Language, Format.Audio[.#].SampleRate, Format.Audio[.#].BitsPerSample, Format.Subtitle.NumStreams,
- Format.Subtitle[.#].Codec, Format.Subtitle[.#].Language, Format.Container and Picture.Resolution
+ Format.Video.Interlaced, Format.Video.Progressive, Format.Video.Index, Format.Audio.NumStreams, Format.Audio[.#].Codec, Format.Audio[.#].Channels,
+ Format.Audio[.#].Language, Format.Audio[.#].SampleRate, Format.Audio[.#].BitsPerSample, Format.Audio[.#].Index, Format.Subtitle.NumStreams,
+ Format.Subtitle[.#].Codec, Format.Subtitle[.#].Language, Format.Subtitle[.#].Index, Format.Container and Picture.Resolution
 
 Parameters:
 MediaFile- the MediaFile object
@@ -1534,9 +1534,9 @@ Returns a string for the corresponding metadata property in the MediaFile's form
  Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere,
  SeasonFinale, SeriesFinale, ExternalID, Album, Year, OriginalAirDate, ExtendedRatings, Misc, All "Role" Names, Format.Video.Codec,
  Format.Video.Resolution, Format.Video.Aspect, Format.Video.Bitrate, Format.Video.Width, Format.Video.Height, Format.Video.FPS,
- Format.Video.Interlaced, Format.Video.Progressive, Format.Audio.NumStreams, Format.Audio[.#].Codec, Format.Audio[.#].Channels,
- Format.Audio[.#].Language, Format.Audio[.#].SampleRate, Format.Audio[.#].BitsPerSample, Format.Subtitle.NumStreams,
- Format.Subtitle[.#].Codec, Format.Subtitle[.#].Language, Format.Container and Picture.Resolution
+ Format.Video.Interlaced, Format.Video.Progressive, Format.Video.Index, Format.Audio.NumStreams, Format.Audio[.#].Codec, Format.Audio[.#].Channels,
+ Format.Audio[.#].Language, Format.Audio[.#].SampleRate, Format.Audio[.#].BitsPerSample, Format.Audio[.#].Index, Format.Subtitle.NumStreams,
+ Format.Subtitle[.#].Codec, Format.Subtitle[.#].Language, Format.Subtitle[.#].Index, Format.Container and Picture.Resolution
 
 Parameters:
 MediaFile- the MediaFile object

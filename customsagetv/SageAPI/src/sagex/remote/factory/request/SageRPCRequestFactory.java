@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 7/18/10 9:31 AM
+ * Generated Date/Time: 8/11/10 3:51 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -39,6 +39,7 @@ static {
    commands.put("GetRealWatchedStartTime","AiringAPI");
    commands.put("GetRealWatchedEndTime","AiringAPI");
    commands.put("SetWatched","AiringAPI");
+   commands.put("SetWatchedTimes","AiringAPI");
    commands.put("ClearWatched","AiringAPI");
    commands.put("GetLatestWatchedTime","AiringAPI");
    commands.put("IsWatchedCompletely","AiringAPI");
@@ -419,6 +420,8 @@ static {
    commands.put("GetAllPeople","Database");
    commands.put("GetAllCategories","Database");
    commands.put("GetAllCategories","Database");
+   commands.put("GetAllGroupingCategories","Database");
+   commands.put("GetAllGroupingCategories","Database");
    commands.put("GetDatabaseLastModifiedTime","Database");
    commands.put("GetFilesWithImportPrefix","Database");
    commands.put("GetMediaFilesWithImportPrefix","Database");
@@ -1079,6 +1082,7 @@ static {
    commands.put("AnimateDelayed","Utility");
    commands.put("SetCoreAnimationsEnabled","Utility");
    commands.put("AreCoreAnimationsEnabled","Utility");
+   commands.put("AreCoreAnimationsSupported","Utility");
    commands.put("GetUIRefreshLock","Utility");
    commands.put("ReleaseUIRefreshLock","Utility");
    commands.put("CalculateMD5Sum","Utility");
@@ -1110,6 +1114,7 @@ static {
    commands.put("GetWidgetParents","WidgetAPI");
    commands.put("GetWidgetChildren","WidgetAPI");
    commands.put("ExecuteWidgetChain","WidgetAPI");
+   commands.put("ExecuteWidgetChainInCurrentMenuContext","WidgetAPI");
    commands.put("LaunchMenuWidget","WidgetAPI");
    commands.put("GetCurrentSTVFile","WidgetAPI");
    commands.put("GetWidgetChild","WidgetAPI");

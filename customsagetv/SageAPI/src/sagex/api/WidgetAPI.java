@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 7/18/10 9:31 AM
+ * Generated Date/Time: 8/11/10 3:51 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/WidgetAPI.html'>WidgetAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -573,6 +573,41 @@ the value returned by the last executed Widget in the chain
  */
 public static java.lang.Object ExecuteWidgetChain (UIContext _uicontext,Object Widget) {
   Object o = sagex.SageAPI.call(_uicontext, "ExecuteWidgetChain", new Object[] {Widget});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+Executes a Widget and the chain of child Widgets underneath it. This will use the context of the currently loaded menu to do this which
+ is useful if you want to launch an OptionsMenu programatically w/ the proper parent context.
+
+Parameters:
+Widget- the root of the Widget (or a String which represents the symbol for that Widget) action chain to execute
+Returns:
+the value returned by the last executed Widget in the chain
+Since:
+7.0
+ */
+public static java.lang.Object ExecuteWidgetChainInCurrentMenuContext (Object Widget) {
+  Object o = sagex.SageAPI.call("ExecuteWidgetChainInCurrentMenuContext", new Object[] {Widget});
+  if (o!=null) return (java.lang.Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Executes a Widget and the chain of child Widgets underneath it. This will use the context of the currently loaded menu to do this which
+ is useful if you want to launch an OptionsMenu programatically w/ the proper parent context.
+
+Parameters:
+Widget- the root of the Widget (or a String which represents the symbol for that Widget) action chain to execute
+Returns:
+the value returned by the last executed Widget in the chain
+Since:
+7.0
+ */
+public static java.lang.Object ExecuteWidgetChainInCurrentMenuContext (UIContext _uicontext,Object Widget) {
+  Object o = sagex.SageAPI.call(_uicontext, "ExecuteWidgetChainInCurrentMenuContext", new Object[] {Widget});
   if (o!=null) return (java.lang.Object) o;
   return null;
 }
