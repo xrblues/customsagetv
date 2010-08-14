@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 7/18/10 9:31 AM
+ * Generated Date/Time: 8/11/10 3:51 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AiringAPIFactory.html'>AiringAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -87,6 +87,9 @@ public class AiringAPIFactory {
    }
    if (command.equals("SetWatched")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetWatched",parameters,Object.class);
+   }
+   if (command.equals("SetWatchedTimes")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetWatchedTimes",parameters,Object.class,long.class,long.class);
    }
    if (command.equals("ClearWatched")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"ClearWatched",parameters,Object.class);

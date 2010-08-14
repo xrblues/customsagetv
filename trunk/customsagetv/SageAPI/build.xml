@@ -23,7 +23,7 @@
 	<property name="dist.dir" location="${target}/dist" />
 
 	<property name="name" value="sagex-api" />
-	<property name="version" value="7.0.12.0" />
+	<property name="version" value="7.0.15.0" />
 	<property name="jarname" value="${name}.jar" />
 
 	<property name="createAPI" value="true"/>

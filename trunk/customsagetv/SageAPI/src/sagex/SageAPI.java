@@ -2,12 +2,14 @@ package sagex;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.DatagramPacket;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import sage.ar;
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
 import sagex.api.WidgetAPI;
@@ -161,21 +163,44 @@ public class SageAPI {
     public static Object call(String serviceName, Object[] args) {
         try {
             return SageAPI.getProvider().callService(serviceName, args);
-        } catch (Exception e) {
-            log.warn("call() failed for: " + serviceName, e);
-            return null;
+        } catch (InvocationTargetException ite) {
+        	if (ite.getTargetException()!=null) {
+        		logError(serviceName, args, ite.getTargetException());
+        	} else {
+        		logError(serviceName, args, ite);
+        	}
+        } catch (Throwable e) {
+    		logError(serviceName, args, e);
         }
+        return null;
     }
 
-    public static Object call(String context, String serviceName, Object[] args) {
-        // System.out.println("Using Context: " + context + " for command: " +
-        // serviceName);
+    private static void logError(String serviceName, Object[] args, Throwable t) {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("Call failed for Service: ").append(serviceName);
+    	if (args!=null && args.length>0) {
+    		sb.append("; Args: ");
+    		for (int i=0;i<args.length;i++) {
+    			if (i>0) sb.append(", ");
+    			sb.append(String.valueOf(i)).append(": ").append(args[i]);
+    		}
+    	}
+    	log.warn(sb.toString(), t);
+	}
+
+	public static Object call(String context, String serviceName, Object[] args) {
         try {
             return SageAPI.getProvider().callService(context, serviceName, args);
-        } catch (Exception e) {
-            log.warn("call() failed for: " + serviceName, e);
-            return null;
+        } catch (InvocationTargetException ite) {
+        	if (ite.getTargetException()!=null) {
+        		logError(serviceName, args, ite.getTargetException());
+        	} else {
+        		logError(serviceName, args, ite);
+        	}
+        } catch (Throwable e) {
+    		logError(serviceName, args, e);
         }
+        return null;
     }
 
     public static Object call(UIContext context, String serviceName, Object[] args) {

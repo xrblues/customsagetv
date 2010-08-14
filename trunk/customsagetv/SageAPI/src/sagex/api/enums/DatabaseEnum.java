@@ -2,7 +2,7 @@ package sagex.api.enums;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 7/18/10 9:31 AM
+ * Generated Date/Time: 8/11/10 3:51 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/DatabaseEnum.html'>DatabaseEnum</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -36,6 +36,7 @@ GetChannelsOnLineup,
 GetAllTitles,
 GetAllPeople,
 GetAllCategories,
+GetAllGroupingCategories,
 GetDatabaseLastModifiedTime,
 GetFilesWithImportPrefix,
 GetMediaFilesWithImportPrefix,

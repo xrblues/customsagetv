@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 7/18/10 9:31 AM
+ * Generated Date/Time: 8/11/10 3:51 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AiringAPI.html'>AiringAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -737,6 +737,41 @@ Airing- the Airing object
  */
 public static void SetWatched (UIContext _uicontext,Object Airing) {
    sagex.SageAPI.call(_uicontext, "SetWatched", new Object[] {Airing});
+}
+
+/**
+Updates the Watched information for this airing. The AiringEndTime should be an airing-relative time which indicates the time the
+ user has watched the show up until. The new watched end time will be the maximum of this value and the current watched end time. The
+ RealStartTime is the time (in real time) the user started watching this program at. Internally SageTV will set the start time of the watched
+ data to be the minimum of the recording start time and the airing start time; and the 'real' end time to be the current time.
+
+Parameters:
+Airing- the Airing object, there must be a corresponding MediaFile for this Airing
+WatchedEndTime- an airing-relative time which indicates the time the user has watched the show up until
+RealStartTime- the time (in real time) the user started watching this program at
+Since:
+7.0
+ */
+public static void SetWatchedTimes (Object Airing, long WatchedEndTime, long RealStartTime) {
+   sagex.SageAPI.call("SetWatchedTimes", new Object[] {Airing,WatchedEndTime,RealStartTime});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Updates the Watched information for this airing. The AiringEndTime should be an airing-relative time which indicates the time the
+ user has watched the show up until. The new watched end time will be the maximum of this value and the current watched end time. The
+ RealStartTime is the time (in real time) the user started watching this program at. Internally SageTV will set the start time of the watched
+ data to be the minimum of the recording start time and the airing start time; and the 'real' end time to be the current time.
+
+Parameters:
+Airing- the Airing object, there must be a corresponding MediaFile for this Airing
+WatchedEndTime- an airing-relative time which indicates the time the user has watched the show up until
+RealStartTime- the time (in real time) the user started watching this program at
+Since:
+7.0
+ */
+public static void SetWatchedTimes (UIContext _uicontext,Object Airing, long WatchedEndTime, long RealStartTime) {
+   sagex.SageAPI.call(_uicontext, "SetWatchedTimes", new Object[] {Airing,WatchedEndTime,RealStartTime});
 }
 
 /**

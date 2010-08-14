@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 7/18/10 9:31 AM
+ * Generated Date/Time: 8/11/10 3:51 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/DatabaseFactory.html'>DatabaseFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -264,6 +264,22 @@ public class DatabaseFactory {
       }
       if (parameters!=null && parameters.length == 1) {
          return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "GetAllCategories", parameters, java.lang.String.class);
+      }
+   }
+   if (command.equals("GetAllGroupingCategories")) {
+      if (parameters!=null && parameters.length == 0) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "GetAllGroupingCategories", parameters, null);
+      }
+      if (parameters!=null && parameters.length == 1) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "GetAllGroupingCategories", parameters, java.lang.String.class);
+      }
+   }
+   if (command.equals("GetAllGroupingCategories")) {
+      if (parameters!=null && parameters.length == 0) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "GetAllGroupingCategories", parameters, null);
+      }
+      if (parameters!=null && parameters.length == 1) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "GetAllGroupingCategories", parameters, java.lang.String.class);
       }
    }
    if (command.equals("GetDatabaseLastModifiedTime")) {

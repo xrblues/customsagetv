@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 7/18/10 9:31 AM
+ * Generated Date/Time: 8/11/10 3:51 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/UtilityFactory.html'>UtilityFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -328,6 +328,9 @@ public class UtilityFactory {
    }
    if (command.equals("AreCoreAnimationsEnabled")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AreCoreAnimationsEnabled",parameters,null);
+   }
+   if (command.equals("AreCoreAnimationsSupported")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AreCoreAnimationsSupported",parameters,null);
    }
    if (command.equals("GetUIRefreshLock")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetUIRefreshLock",parameters,null);
