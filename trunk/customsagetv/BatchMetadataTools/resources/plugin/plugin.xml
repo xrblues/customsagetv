@@ -13,7 +13,7 @@
 
   <Dependency>
     <Plugin>phoenix-core</Plugin>
-    <MinVersion>2.0.5</MinVersion>
+    <MinVersion>2.0.7</MinVersion>
   </Dependency>
 
   <PluginType>Library</PluginType>
