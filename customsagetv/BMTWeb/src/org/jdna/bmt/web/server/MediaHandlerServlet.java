@@ -36,7 +36,7 @@ public class MediaHandlerServlet extends HttpServlet {
         if (req.getParameter("i")!=null) {
             String img = req.getParameter("i");
             if (img==null) {
-                resp.sendError(404, "Unknown Image: " + img);
+                resp.sendError(404, "Image was null");
                 return;
             }
             

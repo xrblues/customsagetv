@@ -4,8 +4,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class RegexEditorTextBox extends EditorTextBox {
-    private boolean dirsOnly = false;
-    
     public class RegexPanel extends TextEditorPanel {
         public RegexPanel() {
             super(new RegexEditorPanel(RegexEditorTextBox.this.getValue()));

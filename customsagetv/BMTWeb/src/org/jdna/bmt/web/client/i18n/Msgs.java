@@ -81,7 +81,7 @@ public interface Msgs extends Messages {
     @DefaultMessage("Cleaning property files...")
     String cleaningProperties();
 
-    @DefaultMessage("{0} - {1}%")
+    @DefaultMessage("{0} - {1}")
     String scanStatus(String status, int d);
 
     @DefaultMessage("You are about to backup your Wiz.bin database.  Press OK to backup, Cancel to abort.")
@@ -93,9 +93,9 @@ public interface Msgs extends Messages {
     @DefaultMessage("No media items for folder {0}")
     String nothingToShowFor(String title);
 
-    @DefaultMessage("Configuration has been reloaded")
-	String configurationReloaded();
+    @DefaultMessage("Configuration ({0}) has been reloaded")
+	String configurationReloaded(String id);
 
-    @DefaultMessage("Configuration failed to reload")
-	String configurationFailedToReload();
+    @DefaultMessage("Configuration ({0}) failed to reload")
+	String configurationFailedToReload(String id);
 }

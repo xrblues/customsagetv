@@ -40,16 +40,16 @@ public class RefreshPanel extends Composite {
 		reload(PreferencesService.REFRESH_MEDIA_TITLES);
 	}
 	
-	private void reload(String id) {
+	private void reload(final String id) {
 		preferencesService.refreshConfiguration(id, new AsyncCallback<Void>() {
 			@Override
 			public void onSuccess(Void result) {
-				Application.fireNotification(Application.messages().configurationReloaded());
+				Application.fireNotification(Application.messages().configurationReloaded(id));
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				Application.fireErrorEvent(Application.messages().configurationFailedToReload());
+				Application.fireErrorEvent(Application.messages().configurationFailedToReload(id));
 			}
 		});
 	}

@@ -24,7 +24,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("browsing")
 public interface BrowsingService extends RemoteService {
-    public GWTMediaResource[] browseChildren(GWTMediaFolder folder);
+    public GWTMediaResource[] browseChildren(GWTMediaFolder folder, int start, int size);
     public GWTFactoryInfo[] getFactories(GWTFactoryInfo.SourceType sourceType);
     public GWTMediaFolder getFolderForSource(GWTFactoryInfo source, GWTMediaFolder parentFolder);
     
@@ -46,4 +46,8 @@ public interface BrowsingService extends RemoteService {
     
     public boolean deleteFanart(GWTMediaArt art);
     public void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art);
+    
+    public String applyBatchOperation(GWTMediaFolder folder, BatchOperation operation);
+    
+    public GWTMediaFolder searchMediaFiles(String search);
 }

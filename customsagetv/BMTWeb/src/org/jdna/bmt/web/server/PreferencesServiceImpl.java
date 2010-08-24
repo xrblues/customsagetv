@@ -56,8 +56,6 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
 
     public PrefItem[] getPreferences(PrefItem parent) {
         try {
-            List<PrefItem> items = new LinkedList<PrefItem>();
-
             Group group = null;
             if (parent == null) {
                 group = phoenix.api.GetConfigurationRoot();

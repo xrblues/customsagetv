@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration id="phoenix" label="Phoenix">
+	<description>WebUI Configuration</description>
+
+	<group path="bmt/web" label="WebUI Settings">
+		<description>WebUI Settings</description>
+		<field key="maxItemsPerView" label="Max Items Per View" defaultValue="15" type="int">
+			<description>Maximum # of media items to load per media view.</description>
+		</field>
+		
+		<field key="itemThumbnailTransform" label="Item Thumbnail Transformation" defaultValue="{name:scale,width:80,height:120}" type="string">
+			<description>Transformation to use for the Media Item thumbnail.</description>
+		</field>
+	</group>
+	
+</configuration>

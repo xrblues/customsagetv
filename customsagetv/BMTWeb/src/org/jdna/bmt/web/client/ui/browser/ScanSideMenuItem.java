@@ -113,7 +113,7 @@ public class ScanSideMenuItem extends SideMenuItem implements ScanUpdateHandler 
             } else {
                 System.out.println("Updating Progress: " + event.getProgressStatus().getProgressId() + "; " + event.getProgressStatus().getStatus());
                 setBusy(true);
-                setStatus(Application.messages().scanStatus(event.getProgressStatus().getStatus(), (int)(event.getProgressStatus().getComplete()*100)));
+                setStatus(Application.messages().scanStatus(event.getProgressStatus().getStatus(), (event.getProgressStatus().getWorked())));
             }
         } else {
             System.out.println("Ignoring progress for: " + event.getProgressStatus().getProgressId());

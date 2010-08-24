@@ -21,4 +21,8 @@ public class BrowseRequestEvent extends GwtEvent<BrowseRequestHandler> {
     public com.google.gwt.event.shared.GwtEvent.Type<BrowseRequestHandler> getAssociatedType() {
         return TYPE;
     }
+
+	public GWTMediaFolder getFolder() {
+		return folder;
+	}
 }

@@ -7,8 +7,10 @@ import com.google.gwt.event.shared.GwtEvent;
 public class BrowseReplyEvent extends GwtEvent<BrowseReplyHandler> {
     public static final GwtEvent.Type<BrowseReplyHandler> TYPE =  new GwtEvent.Type<BrowseReplyHandler>();
     private GWTMediaFolder folder = null;
+    private int start = 0;
+    private int size = 0;
     
-    public BrowseReplyEvent(GWTMediaFolder folder) {
+    public BrowseReplyEvent(GWTMediaFolder folder, int start, int size) {
         this.folder=folder;
     }
     
@@ -25,4 +27,12 @@ public class BrowseReplyEvent extends GwtEvent<BrowseReplyHandler> {
     public GWTMediaFolder getBrowseableFolder() {
         return folder;
     }
+
+	public int getStart() {
+		return start;
+	}
+
+	public int getSize() {
+		return size;
+	}
 }

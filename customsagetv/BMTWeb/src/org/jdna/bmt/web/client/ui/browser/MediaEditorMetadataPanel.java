@@ -55,7 +55,6 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
     private HandlerRegistration metadataUpdatedHandler = null;
     
     private BrowserView browserView;
-    private PersistenceOptionsUI options = new PersistenceOptionsUI();
 
 	private int movieTitleRow;
 	private TextBox formattedTitle;
@@ -111,7 +110,7 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         });
 
         Button clearMetadata = new Button("Clear Metadata");
-        find.addClickHandler(new ClickHandler() {
+        clearMetadata.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
             }
         });
@@ -314,7 +313,7 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
 	    	externalId.setEnabled(!mediaFile.getSageRecording().get());
         }
         
-        if (mediaFile.getSageRecording().get()) {
+        if (mediaFile!=null && mediaFile.getSageRecording().get()) {
 	    	externalId.setEnabled(false);
 	    	archived.setEnabled(true);
         } else {

@@ -93,7 +93,8 @@ h1 {
 }
 
 .MediaItem-Image {
-	height: 120px;
+	xheight: 120px;
+	width: 80px;
 }
 
 .MediaItem_hover {
@@ -227,6 +228,7 @@ h1 {
     -webkit-border-radius: 5px;
     -khtml-border-radius: 5px;
     border-radius: 5px;
+    overflow: hidden;
 }
 
 .MediaItem .MediaItem-Title1 {

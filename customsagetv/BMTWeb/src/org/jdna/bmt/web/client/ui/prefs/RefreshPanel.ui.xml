@@ -3,11 +3,18 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:my="urn:import:org.jdna.bmt.web.client.ui.layout">
 	<ui:style>
-		.important {
-			font-weight: bold;
+		.header {
+			margin-bottom: 10px;
 		}
 	</ui:style>
-	<g:VerticalPanel ui:field="panel" spacing="5">
+	<g:VerticalPanel ui:field="panel" spacing="5" width="100%">
+		<g:cell horizontalAlignment="ALIGN_CENTER">
+			<g:HTMLPanel addStyleNames="InfoPanel {style.header}" width="65%">
+			Some configurations require a reload/refresh before they take effect.  If you've manually modified the menus,
+			vfs, or MediaTitle.xml, then you can use these button to activate the changed.
+			</g:HTMLPanel>
+		</g:cell>
+	
 		<g:Button ui:field="refreshVFS">Refresh Virtual Filesystem</g:Button>
 		<g:Button ui:field="refreshMenus">Refresh Dynamic Menus</g:Button>
 		<g:Button ui:field="refreshMediaTitles">Refresh MediaTitles.xml</g:Button>

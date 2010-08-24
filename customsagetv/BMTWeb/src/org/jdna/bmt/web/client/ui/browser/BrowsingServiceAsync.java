@@ -20,7 +20,7 @@ import sagex.phoenix.metadata.MediaArtifactType;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface BrowsingServiceAsync {
-    public void browseChildren(GWTMediaFolder folder, AsyncCallback<GWTMediaResource[]> callback);
+    public void browseChildren(GWTMediaFolder folder, int start, int size, AsyncCallback<GWTMediaResource[]> callback);
     public void getFactories(GWTFactoryInfo.SourceType sourceType, AsyncCallback<GWTFactoryInfo[]> sources);
     public void getFolderForSource(GWTFactoryInfo source, GWTMediaFolder parentFolder, AsyncCallback<GWTMediaFolder> folder);
     
@@ -38,5 +38,7 @@ public interface BrowsingServiceAsync {
     void getFanart(GWTMediaFile file, MediaArtifactType artifact, AsyncCallback<ArrayList<GWTMediaArt>> callback);
     void downloadFanart(GWTMediaFile file, MediaArtifactType artifact, GWTMediaArt ma, AsyncCallback<GWTMediaArt> callback);
     void deleteFanart(GWTMediaArt art, AsyncCallback<Boolean> callback);
-    void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art, AsyncCallback<Void> callback);    
+    void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art, AsyncCallback<Void> callback);
+	void applyBatchOperation(GWTMediaFolder folder, BatchOperation operation, AsyncCallback<String> callback);
+	void searchMediaFiles(String search, AsyncCallback<GWTMediaFolder> callback);    
 }

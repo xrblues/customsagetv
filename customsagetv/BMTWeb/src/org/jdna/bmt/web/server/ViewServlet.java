@@ -57,7 +57,7 @@ public class ViewServlet extends HttpServlet {
             IOUtils.copyLarge(fis, os);
             os.flush();
             fis.close();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error("Failed to send file: " + f);
             resp.sendError(500, "Failed to get file " + f);
         } finally {
