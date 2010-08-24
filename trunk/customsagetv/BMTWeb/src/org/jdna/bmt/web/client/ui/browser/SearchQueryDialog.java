@@ -122,7 +122,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         providers.clear();
         for (GWTProviderInfo pi : result) {
            providers.addItem(pi.getName() + " -- ("+pi.getId()+")", pi.getId());
-           if ("TV".equals(type) && pi.getId()!=null && pi.getId().contains("tv")) {
+           if ("TV".equals(type.getValue(type.getSelectedIndex())) && pi.getId()!=null && pi.getId().contains("tv")) {
                providers.setSelectedIndex(providers.getItemCount()-1);
            }
         }

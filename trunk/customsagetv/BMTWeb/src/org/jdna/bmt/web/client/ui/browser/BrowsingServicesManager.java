@@ -9,7 +9,6 @@ import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
-import org.jdna.bmt.web.client.media.SageQueryFolder;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
 import org.jdna.bmt.web.client.util.Log;
@@ -29,32 +28,27 @@ public class BrowsingServicesManager {
     public BrowsingServicesManager() {
     }
     
-    public void browseSageFiles(String mask, final String title) {
-        browseFolder(new SageQueryFolder(mask, title));
-    }
-
     public static BrowsingServicesManager getInstance() {
         return instance;
     }
 
-    public void browseFolder(final GWTMediaFolder folder) {
-        // if the folder has children, then use them
-        if (folder.getChildren()!=null) {
-            Log.debug("Using Cached Items");
-            Application.events().fireEvent(new BrowseReplyEvent(folder));
-            return;
+    public void browseFolder(final GWTMediaFolder folder, final int start, final int pageSize) {
+        //if the folder has children, then use them
+        if (folder.isLoaded(start, pageSize)) {
+           Application.events().fireEvent(new BrowseReplyEvent(folder, start, pageSize));
+           return;
         }
         
         final PopupPanel dialog = Dialogs.showWaitingPopup("Loading...");
-        browser.browseChildren(folder, new AsyncCallback<GWTMediaResource[]>() {
+        browser.browseChildren(folder, start, pageSize, new AsyncCallback<GWTMediaResource[]>() {
             public void onFailure(Throwable caught) {
                 dialog.hide();
                 Application.fireErrorEvent(Application.messages().failedToBrowseFolder(folder.getTitle()), caught);
             }
 
             public void onSuccess(GWTMediaResource[] result) {
-                folder.setChildren(result);
-                Application.events().fireEvent(new BrowseReplyEvent(folder));
+                folder.addChildren(result);
+                Application.events().fireEvent(new BrowseReplyEvent(folder, start, pageSize));
                 dialog.hide();
                 if (result==null || result.length==0) {
                     Application.fireErrorEvent(Application.messages().nothingToShowFor(folder.getTitle()));
@@ -88,7 +82,7 @@ public class BrowsingServicesManager {
             }
             
             public void onSuccess(GWTMediaFolder result) {
-                browseFolder(result);
+           		browseFolder(result, 0, (result==null)?0:result.getPageSize());
             }
         });
     }
@@ -172,11 +166,11 @@ public class BrowsingServicesManager {
             }
 
             public void onSuccess(GWTMediaResource[] result) {
-                GWTMediaFolder folder = new GWTMediaFolder(null, (b)?"Success Items":"Failed Items");
-                folder.setChildren(result);
+                GWTMediaFolder folder = new GWTMediaFolder(null, (b)?"Success Items":"Failed Items", result.length);
+                folder.addChildren(result);
                 // disable actions on these folders
                 folder.setAllowActions(false);
-                Application.events().fireEvent(new BrowseReplyEvent(folder));
+                Application.events().fireEvent(new BrowseReplyEvent(folder, 0, result.length));
             }
         });
     }

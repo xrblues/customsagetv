@@ -43,6 +43,7 @@ public class HorizontalButtonBar extends Composite implements HasWidgets {
             rightButtons.add(w);
         } else {
             buttons.add(w);
+            buttons.setCellVerticalAlignment(w, HasVerticalAlignment.ALIGN_MIDDLE);
         }
     }
     

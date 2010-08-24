@@ -23,7 +23,7 @@
 	<property name="build.dir" location="${target}/build" />
 	<property name="dist.dir" location="${target}/dist" />
 
-	<property name="version" value="4.5.1" />
+	<property name="version" value="4.6" />
 
 	<!-- for debugging turn off gwt compile -->
 	<!-- <property name="no-gwt-compile" value="true" /> -->
@@ -97,6 +97,7 @@
 	<target name="package-context">
 		<zip destfile="${dist.dir}/packages/bmtweb-context-${version}.zip">
 			<zipfileset file="resources/jetty/bmt.xml" prefix="jetty/contexts" />
+			<zipfileset file="resources/configuration/bmt.xml" prefix="plugins/bmtweb/Configuration/" />
 		</zip>
 	</target>
 

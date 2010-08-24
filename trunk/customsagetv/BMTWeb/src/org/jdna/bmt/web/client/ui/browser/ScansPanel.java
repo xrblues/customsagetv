@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ScansPanel extends Composite implements ScanRequestHandler, ScansInProgressHandler {
-    private class ScanInfo extends Composite implements ScanUpdateHandler {
+    private static class ScanInfo extends Composite implements ScanUpdateHandler {
         private HandlerRegistration handler = null;
         private VerticalPanel panel = new VerticalPanel();
         private String progressId = null;

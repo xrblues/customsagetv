@@ -19,12 +19,12 @@
 
   <Dependency>
     <Plugin>phoenix-core</Plugin>
-    <MinVersion>2.0.7</MinVersion>
+    <MinVersion>2.0.10</MinVersion>
   </Dependency>
 
   <Dependency>
     <Plugin>bmt</Plugin>
-    <MinVersion>4.5</MinVersion>
+    <MinVersion>4.6</MinVersion>
   </Dependency>
 
   <PluginType>Standard</PluginType>
@@ -42,6 +42,14 @@
     <MD5>@@context-checksum@@</MD5>
   </Package>
   <ReleaseNotes>
+4.6
+* Changed the UI so that it will only load a small number of items per view.  Large Views were slow to load on the UI and very frustrating.
+* Fixed Success Count in scanner to show correctly
+* Fixed issue with Scanner, since the scan progress was not being updated correctly  
+* Added Batch Operations to folder views.  You can now set watched/unwatched, archived/unarchived, import/unimport as tv, clean metadata, remove fanart, and remove properties.
+* Can apply custom image transformation (ie, scale, etc) to a mediaitem thumbnail.
+* Added Search Box to the Browser
+
 4.5
 * Fixed bug where ExternalID could be null, and cause a Cross Linked Metadata Issue
 

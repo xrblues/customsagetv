@@ -134,6 +134,7 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
         String props = Configuration.GetProperty("custom_metadata_properties", null);
         if (props==null) {
             error("No Properties defined for: custom_metadata_properties");
+            return map;
         }
         
         String all[] = props.split("\\s*;\\s*");

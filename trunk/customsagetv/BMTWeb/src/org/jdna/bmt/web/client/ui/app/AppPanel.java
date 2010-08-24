@@ -48,7 +48,6 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
     private Widget curPanel = null;
     
     private Label message = new Label();
-    private Label server = new Label();
     
     public AppPanel() {
         INSTANCE = this;

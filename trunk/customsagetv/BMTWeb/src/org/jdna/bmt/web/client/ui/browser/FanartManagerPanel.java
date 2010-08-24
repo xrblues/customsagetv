@@ -145,7 +145,7 @@ public class FanartManagerPanel extends Composite implements NotificationEventHa
                     }
     
                     public void onSuccess(Boolean result) {
-                        if (result==Boolean.TRUE) {
+                        if (Boolean.TRUE.equals(result)) {
                             removeCurrentImage();
                         } else {
                             Application.fireErrorEvent("Unable to delete image");

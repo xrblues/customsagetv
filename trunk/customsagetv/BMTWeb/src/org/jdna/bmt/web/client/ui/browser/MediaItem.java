@@ -129,7 +129,7 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
 
     public void onClick(ClickEvent event) {
         if (res instanceof GWTMediaFolder) {
-            BrowsingServicesManager.getInstance().browseFolder((GWTMediaFolder) res);
+            BrowsingServicesManager.getInstance().browseFolder((GWTMediaFolder) res, 0, ((GWTMediaFolder) res).getPageSize());
         } else {
             view.setDisplay(new MediaEditorMetadataPanel((GWTMediaFile) res, view));
         }
