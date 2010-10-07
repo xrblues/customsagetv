@@ -24,18 +24,19 @@ SageTV documents their [http://download.sage.tv/api/ API] but unfortunately, the
 
 = Why create another API? =
 
+[http://forums.sagetv.com/forums/member.php?u=5484 Greg], a very competent SageTV developer, solved this API problem by creating a new [http://forums.sagetv.com/forums/downloads.php?do=file&id=128 API] that mirrored SageTV's intention.
 I needed it to do more, and something different, that the existing APIs did not support. 
 
-I wanted to be able to access the SageTV api remotely.  I tried to find the generator that Greg used to see if maybe I could modify it, but unfortunately the source wasn't released (or I couldn't find it).
+I wanted to be able to access the SageTV api remotely, primarily in Java, but also using http.
 
 I wanted the API to reflect what SageTV had documented.  In other words, I wasn't looking to create wrapper objects, etc, I just wanted to be able to use the API as SageTV had documented it.
 
-This new api achieves all of this.
+This new api achieves all of this, and more.
 
 = What makes it really different? =
-I took a 3 tier approach to this API.  Despite the 3 teirs, there isn't that much to it.  The first tier consists of a set of Static Classes and Methods that is auto generated from the SageTV javadoc.  This in itself is exactly what Greg had done.
+I took a 3 tier approach to this API.  Despite the 3 tiers, there isn't that much to it.  The first tier consists of a set of Static Classes and Methods that is auto generated from the SageTV javadoc.
 
-The generated Methods simply call a static method
+The generated Methods simply call a core static method
 {{{
    sagex.SageAPI.call(String name, Object[] args);
 }}}
@@ -46,23 +47,24 @@ The SageAPI layer accepts an ISageAPIProvider instance that is responsible for d
 
 One very interesting capability of using this API is that code written using this API can run inside the SageTV Process or Externally without code changes or recompiling.  This is one of the primary reasons why I created the API.  I have some projects that I'm working on, but I don't want to litter the SageTV jvm with these processes.  Now I an host these processes externally in another JVM.  I have process isolation, so that unstable code that I might write won't cause the SageTV process to fail.
 
-== ISageAPIProvider Implementations ==
+== API Provider Implementations ==
 
 === EmbeddedSageAPIProvider ===
 This provider is the provider that is used when the API is embedded into a running SageTV process.  This api is simply a pass through to the actual SageTV api as is.  There is no marshalling and unmarshalling of data, so it's very efficient at handling SageTV requests without creating a lot of extra objects.
 
 === Remote API Providers ===
-There are 2 remote Api providers instaled by default.  The default one is an RMI provider that will communicate with the sage server over RMI.  When you run client code and you do not force a remote provider, then it will use RMI.
+There are 2 remote Api providers installed by default.  The default one is an RMI provider that will communicate with the sage server over RMI.  When you run client code, and you do not force a remote provider, then it will use RMI.
 
 The second provider is a Http Provider.  This provider has some issues when running in Neil's web server.  (It's a limitation of the underlying server, not Neil's code).  In Jetty this Http provider works ok.
 
 Here is a list of current http enabled providers
  * /sagex/api - New API Handler
  * /sagex/media - New Media Handler
- * /sagex/rpcJava - Serialized Java Communications
- * /sagex/rpcXml - Default xml provider.  (deprecated).
 
-==== Installation for Niel's Web Server ====
+==== Sage7: Installation ====
+Use the plugin manager and install the "sagex-services".  It will install the Jetty web server, and configure and enable the RMI and Http services.
+
+==== Sage6: Installation for Niel's Web Server ====
 To install this Provider....
   * Install [http://forums.sagetv.com/forums/downloads.php?do=file&id=26 Nielm's Webserver Plugin]
   * Stop Sage Server
@@ -92,7 +94,7 @@ In your client code, you simply need to invoke the SageTV api and it should find
 		}
 }}}
 
-==== Installation for Jetty Server ====
+==== Sage6: Installation for Jetty Server ====
 
  * Install Jreichen's [http://forums.sagetv.com/forums/downloads.php?do=file&id=233 Jetty Plugin]
  * Install the sagex-api-VERSION.zip file into the SAGE_HOME directory
@@ -101,30 +103,8 @@ In your client code, you simply need to invoke the SageTV api and it should find
 === StubSageAPIProvider ===
 This is simply a testing stub.  It does nothing.  It can't be used for anything, but it does allow for some offline testing.
 
-= Future =
-The goal is to export the API as a set of xml and JSON services in addition to the Java RPC api.  This would allow for simpler integration into a web application.
-
-Autogenerating a set of typesafe json wrapper would be fairly trivial.
-
-Maybe this will be merged with Greg's API??  I do like the rpc ability and the thin wrapper approach, but I also agree with a comment that Greg stated... Maybe 1 extra api is enough ;)
-
 = Technical Details =
-The RPC server uses and existing Servlet engine and a UDP server.  The client, if it's not specifically configured with a RemoteSageAPIProvider will querry the server for it's address using udp.  It sends a message on the group 228.5.6.7 on the port 9998.  The RPC server sends back it's rpcJava url to the client.
-
-== Building The Source ==
-The project is an eclipe project.  All jars are provided, except for the Sage.jar.  You will need to copy that from your sage install and add it to the classpath for the project.
-
-=== Regenerating the API ===
-The code to regerate the API is in the org.jdna.sage.api.generator Package.  You can rebuild the source using the ant build file and the following command.
-{{{
-ant -f extra.xml generateSageAPI
-}}}
-
-=== Repackaging ===
-The default target in the extra.xml build file will repackage the library.
-{{{
-ant -f extra.xml
-}}}
+The RPC server uses and existing Servlet engine and a UDP server.  The client, if it's not specifically configured with a RemoteSageAPIProvider will querry the server for it's address using udp.  It sends a message on the group 228.5.6.7 on the port 9998.  The RPC server sends back it's url to the client.  If you have more than one Sage server on the network, running the sagex-services plugin, then the client will choose the first available server, and communicate with it.
 
 = Contributions =
 If you want to work on the project, or feel that something is missing.  Send me a message.
