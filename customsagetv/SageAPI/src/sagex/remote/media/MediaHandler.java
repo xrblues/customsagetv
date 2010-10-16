@@ -29,6 +29,7 @@ public class MediaHandler implements SageHandler {
         System.out.println("Media Servlet Handler Created.");
         handlers.put("properties", new PropertiesSageRequestHandler());
         handlers.put("thumbnail", new ThumbnailRequestHandler());
+        handlers.put("logo", new LogoRequestHandler());
         handlers.put("mediafile", new MediaFileRequestHandler());
 
         handlers.put("poster", new ProxySageMediaRequestHandler("sagex.phoenix.fanart.FanartMediaRequestHandler", "poster"));
@@ -37,6 +38,8 @@ public class MediaHandler implements SageHandler {
     }
 
     public void hanleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    	// URL looks like
+    	// /media/thumnail/213233
         // 0 - null
         // 1 - media
         // 2 - mediafile|thumbnail|debug
@@ -46,6 +49,15 @@ public class MediaHandler implements SageHandler {
                 throw new ServletException("missing media artifact type (ie, thumbnail, poster, etc)");
             }
             
+            // special case for logos
+            if ("logo".equals(args[2])) {
+            	SageMediaRequestHandler handler = handlers.get("logo");
+            	handler.processRequest(req, resp, args[3]);
+            	return;
+            }
+            
+            
+            // process mediafile requests
             String mediaFileId = req.getParameter("mediafile");
             if (mediaFileId == null) {
                 mediaFileId = args[3];
@@ -118,6 +130,9 @@ public class MediaHandler implements SageHandler {
         w.println("/sagex/media/mediafile?mediafile=/sagetv/vidoes/tv/futurama.avi");
         w.println("/sagex/media/background/3212321");
         w.println("NOTE: background, banner, and poster all require Phoenix Fanart APIs build 30 (1.30) or later.");
+        w.println("");
+        w.println("You can also fetch logos");
+        w.println("/sagex/media/logo/WTVDDT");
         w.println("</pre>");
         w.flush();
     }
@@ -166,10 +181,13 @@ public class MediaHandler implements SageHandler {
     public static void writeSageImage(Object sagefile, HttpServletResponse resp) throws Exception {
         // get the media file that we are going to be using
         // TODO: Maybe cache this for performance reasons
-        Object sageImage = MediaFileAPI.GetThumbnail(sagefile);
-        if (sageImage==null) throw new Exception("Unable to get MediaThumbnail for: " + sagefile);
+        writeSageImageFile(MediaFileAPI.GetThumbnail(sagefile), resp);
+    }
+
+    public static void writeSageImageFile(Object sageImage, HttpServletResponse resp) throws Exception {
+        if (sageImage==null) throw new Exception("No Image");
         BufferedImage img = Utility.GetImageAsBufferedImage(sageImage);
-        if (img==null) throw new Exception("Unable to get MediaThumbnail for: " + sagefile);
+        if (img==null) throw new Exception("Unable to get BufferedImage");
         resp.setContentType("image/png");
         OutputStream os = resp.getOutputStream();
         ImageIO.write((RenderedImage) img, "png", os);

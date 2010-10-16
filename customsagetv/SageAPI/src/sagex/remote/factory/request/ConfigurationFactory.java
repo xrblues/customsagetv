@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 8/11/10 3:51 PM
+ * Generated Date/Time: 10/15/10 1:04 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ConfigurationFactory.html'>ConfigurationFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -420,6 +420,21 @@ public class ConfigurationFactory {
    }
    if (command.equals("GetAvailableUILanguages")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAvailableUILanguages",parameters,null);
+   }
+   if (command.equals("GetSubpicAudioLanguageOptions")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSubpicAudioLanguageOptions",parameters,null);
+   }
+   if (command.equals("GetDefaultAudioLanguage")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetDefaultAudioLanguage",parameters,null);
+   }
+   if (command.equals("SetDefaultAudioLanguage")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetDefaultAudioLanguage",parameters,java.lang.String.class);
+   }
+   if (command.equals("GetDefaultSubpicLanguage")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetDefaultSubpicLanguage",parameters,null);
+   }
+   if (command.equals("SetDefaultSubpicLanguage")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetDefaultSubpicLanguage",parameters,java.lang.String.class);
    }
    if (command.equals("GetTimeZone")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetTimeZone",parameters,null);

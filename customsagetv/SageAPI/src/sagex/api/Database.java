@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 8/11/10 3:51 PM
+ * Generated Date/Time: 10/15/10 1:04 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Database.html'>Database</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -53,7 +53,7 @@ Filters data by a method. Each element in the 'Data' has the 'Method' executed o
 
 Parameters:
 Data- the data that is to be filtered; this can be a java.util.Collection, java.util.Map or an Array. For Maps & Collections the filtering is done IN-PLACE. For Maps the keys are used for the filtering.
-Method- This is what is evaluated with an element as the only argument. This can be a list of methods to test against separated by the '|' character.
+Method- This is what is evaluated with an element as the only argument. This can be a list of methods to test against separated by the '|' character. There is also a special 'UserCategories' option which will check the ManualRecord, Favorite and MediaFile "UserCategory" property as well as the Show Category & SubCategory for any matches against a comma-delimited list in the MatchValue parameter.
 MatchValue- the value to test the return value of Method against
 MatchedPasses- if true then matches are included in the return data, if false then everything that doesn't match is returned
 Returns:
@@ -74,7 +74,7 @@ Filters data by a method. Each element in the 'Data' has the 'Method' executed o
 
 Parameters:
 Data- the data that is to be filtered; this can be a java.util.Collection, java.util.Map or an Array. For Maps & Collections the filtering is done IN-PLACE. For Maps the keys are used for the filtering.
-Method- This is what is evaluated with an element as the only argument. This can be a list of methods to test against separated by the '|' character.
+Method- This is what is evaluated with an element as the only argument. This can be a list of methods to test against separated by the '|' character. There is also a special 'UserCategories' option which will check the ManualRecord, Favorite and MediaFile "UserCategory" property as well as the Show Category & SubCategory for any matches against a comma-delimited list in the MatchValue parameter.
 MatchValue- the value to test the return value of Method against
 MatchedPasses- if true then matches are included in the return data, if false then everything that doesn't match is returned
 Returns:

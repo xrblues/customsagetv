@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 8/11/10 3:51 PM
+ * Generated Date/Time: 10/15/10 1:04 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Global.html'>Global</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -3648,6 +3648,33 @@ Since:
  */
 public static java.lang.String[] DiscoverSageTVServers (UIContext _uicontext,long Timeout) {
   return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "DiscoverSageTVServers", new Object[] {Timeout});
+}
+
+/**
+Returns true if running on an 'embedded' platform. This will be true for the standalone environment on products like the HD300
+ and false otherwise. Used for making STVs that have different options based on whether they're on a PC vs. embedded system.
+
+Returns:
+true if running on an embedded system, false otherwise
+ */
+public static boolean IsEmbeddedSystem () {
+  Object o = sagex.SageAPI.call("IsEmbeddedSystem", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if running on an 'embedded' platform. This will be true for the standalone environment on products like the HD300
+ and false otherwise. Used for making STVs that have different options based on whether they're on a PC vs. embedded system.
+
+Returns:
+true if running on an embedded system, false otherwise
+ */
+public static boolean IsEmbeddedSystem (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsEmbeddedSystem", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**

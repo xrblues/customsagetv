@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 8/11/10 3:51 PM
+ * Generated Date/Time: 10/15/10 1:04 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaPlayerAPI.html'>MediaPlayerAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -659,9 +659,13 @@ Starts playback of the specified Playlist. The MediaPlayer will playback everyth
 
 Parameters:
 Playlist- the Playlist to being playback of
+Returns:
+true if the request was successful, a localized error message otherwise (failure will only occur due to parental control issues)
  */
-public static void StartPlaylist (Object Playlist) {
-   sagex.SageAPI.call("StartPlaylist", new Object[] {Playlist});
+public static int StartPlaylist (Object Playlist) {
+  Object o = sagex.SageAPI.call("StartPlaylist", new Object[] {Playlist});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -671,9 +675,13 @@ Starts playback of the specified Playlist. The MediaPlayer will playback everyth
 
 Parameters:
 Playlist- the Playlist to being playback of
+Returns:
+true if the request was successful, a localized error message otherwise (failure will only occur due to parental control issues)
  */
-public static void StartPlaylist (UIContext _uicontext,Object Playlist) {
-   sagex.SageAPI.call(_uicontext, "StartPlaylist", new Object[] {Playlist});
+public static int StartPlaylist (UIContext _uicontext,Object Playlist) {
+  Object o = sagex.SageAPI.call(_uicontext, "StartPlaylist", new Object[] {Playlist});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -683,9 +691,13 @@ Starts playback of the specified Playlist. The MediaPlayer will playback everyth
 Parameters:
 Playlist- the Playlist to being playback of
 StartIndex- the index in the playlist to start playing at (1-based index)
+Returns:
+true if the request was successful, a localized error message otherwise (failure will only occur due to parental control issues)
  */
-public static void StartPlaylistAt (Object Playlist, int StartIndex) {
-   sagex.SageAPI.call("StartPlaylistAt", new Object[] {Playlist,StartIndex});
+public static int StartPlaylistAt (Object Playlist, int StartIndex) {
+  Object o = sagex.SageAPI.call("StartPlaylistAt", new Object[] {Playlist,StartIndex});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**
@@ -696,9 +708,13 @@ Starts playback of the specified Playlist. The MediaPlayer will playback everyth
 Parameters:
 Playlist- the Playlist to being playback of
 StartIndex- the index in the playlist to start playing at (1-based index)
+Returns:
+true if the request was successful, a localized error message otherwise (failure will only occur due to parental control issues)
  */
-public static void StartPlaylistAt (UIContext _uicontext,Object Playlist, int StartIndex) {
-   sagex.SageAPI.call(_uicontext, "StartPlaylistAt", new Object[] {Playlist,StartIndex});
+public static int StartPlaylistAt (UIContext _uicontext,Object Playlist, int StartIndex) {
+  Object o = sagex.SageAPI.call(_uicontext, "StartPlaylistAt", new Object[] {Playlist,StartIndex});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 /**

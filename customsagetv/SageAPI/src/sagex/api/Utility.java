@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 8/11/10 3:51 PM
+ * Generated Date/Time: 10/15/10 1:05 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -3525,6 +3525,7 @@ public static long GetTimeSinceLastInput (UIContext _uicontext) {
 
 /**
 Opens the file at the specified path and reads the entire contents of it and returns it as a String.
+ This will use the server's filesystem if executed on SageTVClient.
 
 Parameters:
 FilePath- the file path
@@ -3542,6 +3543,7 @@ public static java.lang.String GetFileAsString (java.io.File FilePath) {
 /**
  * UI Context Aware Call<br/>
 Opens the file at the specified path and reads the entire contents of it and returns it as a String.
+ This will use the server's filesystem if executed on SageTVClient.
 
 Parameters:
 FilePath- the file path
