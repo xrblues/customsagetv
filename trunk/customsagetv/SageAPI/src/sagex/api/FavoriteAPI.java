@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 8/11/10 3:51 PM
+ * Generated Date/Time: 10/15/10 1:04 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPI.html'>FavoriteAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1535,7 +1535,7 @@ Timeslot- the timeslot that an Airing must be in to be included in this Favorite
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
-the updated Favorite object, or if the changes would make this Favorite the same as an existing Favorite, the other existing Favorite is returned
+the updated Favorite object, or if the changes would make this Favorite the same as an existing Favorite, the other existing Favorite is returned, null is returned if there was no valid criteria specified in the arguments
  */
 public static Object UpdateFavorite (Object Favorite, java.lang.String Title, boolean FirstRuns, boolean ReRuns, java.lang.String Category, java.lang.String SubCategory, java.lang.String Person, java.lang.String RoleForPerson, java.lang.String Rated, java.lang.String Year, java.lang.String ParentalRating, java.lang.String Network, java.lang.String ChannelCallSign, java.lang.String Timeslot, java.lang.String Keyword) {
   Object o = sagex.SageAPI.call("UpdateFavorite", new Object[] {Favorite,Title,FirstRuns,ReRuns,Category,SubCategory,Person,RoleForPerson,Rated,Year,ParentalRating,Network,ChannelCallSign,Timeslot,Keyword});
@@ -1567,7 +1567,7 @@ Timeslot- the timeslot that an Airing must be in to be included in this Favorite
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
-the updated Favorite object, or if the changes would make this Favorite the same as an existing Favorite, the other existing Favorite is returned
+the updated Favorite object, or if the changes would make this Favorite the same as an existing Favorite, the other existing Favorite is returned, null is returned if there was no valid criteria specified in the arguments
  */
 public static Object UpdateFavorite (UIContext _uicontext,Object Favorite, java.lang.String Title, boolean FirstRuns, boolean ReRuns, java.lang.String Category, java.lang.String SubCategory, java.lang.String Person, java.lang.String RoleForPerson, java.lang.String Rated, java.lang.String Year, java.lang.String ParentalRating, java.lang.String Network, java.lang.String ChannelCallSign, java.lang.String Timeslot, java.lang.String Keyword) {
   Object o = sagex.SageAPI.call(_uicontext, "UpdateFavorite", new Object[] {Favorite,Title,FirstRuns,ReRuns,Category,SubCategory,Person,RoleForPerson,Rated,Year,ParentalRating,Network,ChannelCallSign,Timeslot,Keyword});
@@ -1725,7 +1725,7 @@ Timeslot- the timeslot that an Airing must be in to be included in this Favorite
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
-the newly created Favorite object
+the newly created Favorite object, null is returned if there was no valid criteria specified in the arguments
  */
 public static Object AddFavorite (java.lang.String Title, boolean FirstRuns, boolean ReRuns, java.lang.String Category, java.lang.String SubCategory, java.lang.String Person, java.lang.String RoleForPerson, java.lang.String Rated, java.lang.String Year, java.lang.String ParentalRating, java.lang.String Network, java.lang.String ChannelCallSign, java.lang.String Timeslot, java.lang.String Keyword) {
   Object o = sagex.SageAPI.call("AddFavorite", new Object[] {Title,FirstRuns,ReRuns,Category,SubCategory,Person,RoleForPerson,Rated,Year,ParentalRating,Network,ChannelCallSign,Timeslot,Keyword});
@@ -1755,7 +1755,7 @@ Timeslot- the timeslot that an Airing must be in to be included in this Favorite
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
-the newly created Favorite object
+the newly created Favorite object, null is returned if there was no valid criteria specified in the arguments
  */
 public static Object AddFavorite (UIContext _uicontext,java.lang.String Title, boolean FirstRuns, boolean ReRuns, java.lang.String Category, java.lang.String SubCategory, java.lang.String Person, java.lang.String RoleForPerson, java.lang.String Rated, java.lang.String Year, java.lang.String ParentalRating, java.lang.String Network, java.lang.String ChannelCallSign, java.lang.String Timeslot, java.lang.String Keyword) {
   Object o = sagex.SageAPI.call(_uicontext, "AddFavorite", new Object[] {Title,FirstRuns,ReRuns,Category,SubCategory,Person,RoleForPerson,Rated,Year,ParentalRating,Network,ChannelCallSign,Timeslot,Keyword});

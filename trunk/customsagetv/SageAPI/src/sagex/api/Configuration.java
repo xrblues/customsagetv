@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 8/11/10 3:51 PM
+ * Generated Date/Time: 10/15/10 1:04 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Configuration.html'>Configuration</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -3587,6 +3587,125 @@ public static java.lang.String[] GetAvailableUILanguages (UIContext _uicontext) 
 }
 
 /**
+Gets the list of languages that are available to be used as presets for Audio tracks or Subpicture.
+
+Returns:
+the list of languages that are available to be used as presets for Audio tracks or Subpicture.
+ */
+public static java.lang.String[] GetSubpicAudioLanguageOptions () {
+  return (java.lang.String[]) sagex.SageAPI.call("GetSubpicAudioLanguageOptions", (Object[])null);
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the list of languages that are available to be used as presets for Audio tracks or Subpicture.
+
+Returns:
+the list of languages that are available to be used as presets for Audio tracks or Subpicture.
+ */
+public static java.lang.String[] GetSubpicAudioLanguageOptions (UIContext _uicontext) {
+  return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetSubpicAudioLanguageOptions", (Object[])null);
+}
+
+/**
+Gets the name of the preferred default language when selecting which audio stream to playback.
+
+Returns:
+the name of the preferred default language when selecting which audio stream to playback
+ */
+public static java.lang.String GetDefaultAudioLanguage () {
+  Object o = sagex.SageAPI.call("GetDefaultAudioLanguage", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the name of the preferred default language when selecting which audio stream to playback.
+
+Returns:
+the name of the preferred default language when selecting which audio stream to playback
+ */
+public static java.lang.String GetDefaultAudioLanguage (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetDefaultAudioLanguage", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Sets the name of the preferred default language when selecting which audio stream to playback. The values for this should be
+ obtained from GetSubpicAudioLanguageOptions.
+
+Parameters:
+Language- the name of the preferred default language when selecting which audio stream to playback
+ */
+public static void SetDefaultAudioLanguage (java.lang.String Language) {
+   sagex.SageAPI.call("SetDefaultAudioLanguage", new Object[] {Language});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sets the name of the preferred default language when selecting which audio stream to playback. The values for this should be
+ obtained from GetSubpicAudioLanguageOptions.
+
+Parameters:
+Language- the name of the preferred default language when selecting which audio stream to playback
+ */
+public static void SetDefaultAudioLanguage (UIContext _uicontext,java.lang.String Language) {
+   sagex.SageAPI.call(_uicontext, "SetDefaultAudioLanguage", new Object[] {Language});
+}
+
+/**
+Gets the name of the preferred default language when selecting which subpicture stream to playback. This
+ will be the empty string if subtitles are preferred to be off by default.
+
+Returns:
+the name of the preferred default language when selecting which subpicture stream to playback or the empty string for no subtitles
+ */
+public static java.lang.String GetDefaultSubpicLanguage () {
+  Object o = sagex.SageAPI.call("GetDefaultSubpicLanguage", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets the name of the preferred default language when selecting which subpicture stream to playback. This
+ will be the empty string if subtitles are preferred to be off by default.
+
+Returns:
+the name of the preferred default language when selecting which subpicture stream to playback or the empty string for no subtitles
+ */
+public static java.lang.String GetDefaultSubpicLanguage (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetDefaultSubpicLanguage", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Sets the name of the preferred default language when selecting which subpicture stream to playback. The values for this should be
+ obtained from GetSubpicAudioLanguageOptions, the value of null or the empty string is also allowed to indicate no subtitle track should be selected by default.
+
+Parameters:
+Language- the name of the preferred default language when selecting which subpicture stream to playback, null or the empty string can be used to prefer no subtitles
+ */
+public static void SetDefaultSubpicLanguage (java.lang.String Language) {
+   sagex.SageAPI.call("SetDefaultSubpicLanguage", new Object[] {Language});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sets the name of the preferred default language when selecting which subpicture stream to playback. The values for this should be
+ obtained from GetSubpicAudioLanguageOptions, the value of null or the empty string is also allowed to indicate no subtitle track should be selected by default.
+
+Parameters:
+Language- the name of the preferred default language when selecting which subpicture stream to playback, null or the empty string can be used to prefer no subtitles
+ */
+public static void SetDefaultSubpicLanguage (UIContext _uicontext,java.lang.String Language) {
+   sagex.SageAPI.call(_uicontext, "SetDefaultSubpicLanguage", new Object[] {Language});
+}
+
+/**
 Gets the name of the time zone that the application is currently configured to use
 
 Returns:
@@ -3615,7 +3734,7 @@ public static java.lang.String GetTimeZone (UIContext _uicontext) {
 Sets the name of the time zone that the application should use. This takes effect immediately.
 
 Parameters:
-TimeZone- tha name of the time zone to use, seeGetAllTimeZones()
+TimeZone- the name of the time zone to use, seeGetAllTimeZones()
  */
 public static void SetTimeZone (java.lang.String TimeZone) {
    sagex.SageAPI.call("SetTimeZone", new Object[] {TimeZone});
@@ -3626,7 +3745,7 @@ public static void SetTimeZone (java.lang.String TimeZone) {
 Sets the name of the time zone that the application should use. This takes effect immediately.
 
 Parameters:
-TimeZone- tha name of the time zone to use, seeGetAllTimeZones()
+TimeZone- the name of the time zone to use, seeGetAllTimeZones()
  */
 public static void SetTimeZone (UIContext _uicontext,java.lang.String TimeZone) {
    sagex.SageAPI.call(_uicontext, "SetTimeZone", new Object[] {TimeZone});

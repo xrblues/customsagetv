@@ -54,10 +54,10 @@ public class SageAPIBuilder {
             buildFavorite(parent, handler);
         } else if(ChannelAPI.IsChannelObject(parent)) {
             buildChannel(parent, handler);
+        } else if(SystemMessageAPI.IsSystemMessageObject(parent)) {
+            buildSystemMessage(parent, handler);
         } else if(PlaylistAPI.IsPlaylistObject(parent) || parent.toString().startsWith("Playlist[")) {
             buildPlaylist(parent, handler);
-        } else if(parent.toString().contains("SystemMessage")) {
-            buildSystemMessage(parent, handler);
         } else {
             String msg = "Unknown Object Type: " + parent.getClass().getName() + " for Sage Object: " + parent;
             handler.handleError(msg, new Exception(msg));

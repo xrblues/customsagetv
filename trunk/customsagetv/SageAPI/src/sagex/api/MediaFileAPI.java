@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 8/11/10 3:51 PM
+ * Generated Date/Time: 10/15/10 1:04 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaFileAPI.html'>MediaFileAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1290,6 +1290,7 @@ public static void MoveTVFileOutOfLibrary (UIContext _uicontext,Object MediaFile
 
 /**
 Returns true if the specified object is a MediaFile object. No automatic type conversion will be performed on the argument.
+ This will return false if the argument is a MediaFile object, BUT that object no longer exists in the SageTV database.
 
 Parameters:
 Object- the object to test to see if it is a MediaFile object
@@ -1305,6 +1306,7 @@ public static boolean IsMediaFileObject (java.lang.Object Object) {
 /**
  * UI Context Aware Call<br/>
 Returns true if the specified object is a MediaFile object. No automatic type conversion will be performed on the argument.
+ This will return false if the argument is a MediaFile object, BUT that object no longer exists in the SageTV database.
 
 Parameters:
 Object- the object to test to see if it is a MediaFile object
@@ -1507,9 +1509,9 @@ Returns a string for the corresponding metadata property in the MediaFile's form
  Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere,
  SeasonFinale, SeriesFinale, ExternalID, Album, Year, OriginalAirDate, ExtendedRatings, Misc, All "Role" Names, Format.Video.Codec,
  Format.Video.Resolution, Format.Video.Aspect, Format.Video.Bitrate, Format.Video.Width, Format.Video.Height, Format.Video.FPS,
- Format.Video.Interlaced, Format.Video.Progressive, Format.Video.Index, Format.Audio.NumStreams, Format.Audio[.#].Codec, Format.Audio[.#].Channels,
- Format.Audio[.#].Language, Format.Audio[.#].SampleRate, Format.Audio[.#].BitsPerSample, Format.Audio[.#].Index, Format.Subtitle.NumStreams,
- Format.Subtitle[.#].Codec, Format.Subtitle[.#].Language, Format.Subtitle[.#].Index, Format.Container and Picture.Resolution
+ Format.Video.Interlaced, Format.Video.Progressive, Format.Video.Index, Format.Video.ID, Format.Audio.NumStreams, Format.Audio[.#].Codec, Format.Audio[.#].Channels,
+ Format.Audio[.#].Language, Format.Audio[.#].SampleRate, Format.Audio[.#].BitsPerSample, Format.Audio[.#].Index, Format.Audio[.#].ID, Format.Subtitle.NumStreams,
+ Format.Subtitle[.#].Codec, Format.Subtitle[.#].Language, Format.Subtitle[.#].Index, Format.Subtitle[.#].ID, Format.Container and Picture.Resolution
 
 Parameters:
 MediaFile- the MediaFile object
@@ -1534,9 +1536,9 @@ Returns a string for the corresponding metadata property in the MediaFile's form
  Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere,
  SeasonFinale, SeriesFinale, ExternalID, Album, Year, OriginalAirDate, ExtendedRatings, Misc, All "Role" Names, Format.Video.Codec,
  Format.Video.Resolution, Format.Video.Aspect, Format.Video.Bitrate, Format.Video.Width, Format.Video.Height, Format.Video.FPS,
- Format.Video.Interlaced, Format.Video.Progressive, Format.Video.Index, Format.Audio.NumStreams, Format.Audio[.#].Codec, Format.Audio[.#].Channels,
- Format.Audio[.#].Language, Format.Audio[.#].SampleRate, Format.Audio[.#].BitsPerSample, Format.Audio[.#].Index, Format.Subtitle.NumStreams,
- Format.Subtitle[.#].Codec, Format.Subtitle[.#].Language, Format.Subtitle[.#].Index, Format.Container and Picture.Resolution
+ Format.Video.Interlaced, Format.Video.Progressive, Format.Video.Index, Format.Video.ID, Format.Audio.NumStreams, Format.Audio[.#].Codec, Format.Audio[.#].Channels,
+ Format.Audio[.#].Language, Format.Audio[.#].SampleRate, Format.Audio[.#].BitsPerSample, Format.Audio[.#].Index, Format.Audio[.#].ID, Format.Subtitle.NumStreams,
+ Format.Subtitle[.#].Codec, Format.Subtitle[.#].Language, Format.Subtitle[.#].Index, Format.Subtitle[.#].ID, Format.Container and Picture.Resolution
 
 Parameters:
 MediaFile- the MediaFile object

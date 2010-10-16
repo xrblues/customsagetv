@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 8/11/10 3:51 PM
+ * Generated Date/Time: 10/15/10 1:05 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -298,6 +298,11 @@ static {
    commands.put("GetUILanguage","Configuration");
    commands.put("SetUILanguage","Configuration");
    commands.put("GetAvailableUILanguages","Configuration");
+   commands.put("GetSubpicAudioLanguageOptions","Configuration");
+   commands.put("GetDefaultAudioLanguage","Configuration");
+   commands.put("SetDefaultAudioLanguage","Configuration");
+   commands.put("GetDefaultSubpicLanguage","Configuration");
+   commands.put("SetDefaultSubpicLanguage","Configuration");
    commands.put("GetTimeZone","Configuration");
    commands.put("SetTimeZone","Configuration");
    commands.put("GetAllTimeZones","Configuration");
@@ -610,6 +615,7 @@ static {
    commands.put("GetPreferredDisplayResolutions","Global");
    commands.put("SetDisplayResolution","Global");
    commands.put("DiscoverSageTVServers","Global");
+   commands.put("IsEmbeddedSystem","Global");
    commands.put("GetEmbeddedPanel","Global");
    commands.put("SetEmbeddedPanelBounds","Global");
    commands.put("GetAvailableUpdate","Global");
@@ -903,6 +909,11 @@ static {
    commands.put("GetSeriesCharacter","SeriesInfoAPI");
    commands.put("GetSeriesCharacterList","SeriesInfoAPI");
    commands.put("GetSeriesCharacterForActor","SeriesInfoAPI");
+   commands.put("GetSeriesID","SeriesInfoAPI");
+   commands.put("GetSeriesInfoForID","SeriesInfoAPI");
+   commands.put("AddSeriesInfo","SeriesInfoAPI");
+   commands.put("GetSeriesInfoProperty","SeriesInfoAPI");
+   commands.put("SetSeriesInfoProperty","SeriesInfoAPI");
    commands.put("IsShowEPGDataUnique","ShowAPI");
    commands.put("GetShowMisc","ShowAPI");
    commands.put("GetShowCategory","ShowAPI");
@@ -980,6 +991,16 @@ static {
    commands.put("GetEditorialNetwork","TVEditorialAPI");
    commands.put("HasEditorialImage","TVEditorialAPI");
    commands.put("GetEditorialImage","TVEditorialAPI");
+   commands.put("AddUserRecord","UserRecordAPI");
+   commands.put("GetUserRecordData","UserRecordAPI");
+   commands.put("SetUserRecordData","UserRecordAPI");
+   commands.put("GetUserRecord","UserRecordAPI");
+   commands.put("DeleteUserRecord","UserRecordAPI");
+   commands.put("GetAllUserRecords","UserRecordAPI");
+   commands.put("GetAllUserStores","UserRecordAPI");
+   commands.put("DeleteAllUserRecords","UserRecordAPI");
+   commands.put("IsUserRecordObject","UserRecordAPI");
+   commands.put("GetUserRecordNames","UserRecordAPI");
    commands.put("GetSubgroup","Utility");
    commands.put("Keystroke","Utility");
    commands.put("Size","Utility");
@@ -1197,6 +1218,9 @@ static {
       }
       if ("TVEditorialAPI".equals(api)) {
          return TVEditorialAPIFactory.createRequest(context, command, parameters);
+      }
+      if ("UserRecordAPI".equals(api)) {
+         return UserRecordAPIFactory.createRequest(context, command, parameters);
       }
       if ("Utility".equals(api)) {
          return UtilityFactory.createRequest(context, command, parameters);
