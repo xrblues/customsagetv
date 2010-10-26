@@ -2,6 +2,7 @@ package org.jdna.bmt.web.client.ui.browser;
 
 import org.jdna.bmt.web.client.ui.util.DialogHandler;
 
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -23,7 +24,7 @@ public class SaveOptionsPanel extends ScanOptionsPanel {
      * @see org.jdna.bmt.web.client.ui.browser.ScanOptionsPanel#updateButtonPanel(java.lang.Object)
      */
     @Override
-    protected void updateButtonPanel(Object buttonPan) {
+    protected void updateButtonPanel(HorizontalPanel buttonPan) {
         okButton.setText("Save");
     }
 }

@@ -43,7 +43,6 @@ public class StatusPanel extends Composite implements ResizeHandler {
             
             Widget actionsWidget = status.getHeaderActionsWidget();
             if (actionsWidget!=null) {
-                System.out.println("Added Actions...");
                 p.add(actionsWidget);
                 p.setCellHorizontalAlignment(actionsWidget, HasHorizontalAlignment.ALIGN_RIGHT);
                 p.setCellVerticalAlignment(actionsWidget, HasVerticalAlignment.ALIGN_MIDDLE);
@@ -58,7 +57,6 @@ public class StatusPanel extends Composite implements ResizeHandler {
         }
         
         public void resize() {
-            System.out.println("**** " + this.getOffsetHeight());
             if (this.getOffsetHeight()>150) {
                 scroll.setHeight("150px");
             }

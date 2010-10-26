@@ -39,6 +39,6 @@ public interface BrowsingServiceAsync {
     void downloadFanart(GWTMediaFile file, MediaArtifactType artifact, GWTMediaArt ma, AsyncCallback<GWTMediaArt> callback);
     void deleteFanart(GWTMediaArt art, AsyncCallback<Boolean> callback);
     void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art, AsyncCallback<Void> callback);
-	void applyBatchOperation(GWTMediaFolder folder, BatchOperation operation, AsyncCallback<String> callback);
-	void searchMediaFiles(String search, AsyncCallback<GWTMediaFolder> callback);    
+	void searchMediaFiles(String search, AsyncCallback<GWTMediaFolder> callback);
+	void discoverQueryOptions(GWTMediaFile file, AsyncCallback<SearchQueryOptions> callback);    
 }

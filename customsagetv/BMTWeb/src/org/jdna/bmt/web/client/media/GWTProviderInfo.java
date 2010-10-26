@@ -14,6 +14,8 @@ public class GWTProviderInfo implements IMetadataProviderInfo, Serializable {
 	private List<MediaType> searchTypes;
 
 	private String fanartId;
+	
+	private boolean userDefault = false;
     
     public GWTProviderInfo() {
     }
@@ -55,5 +57,13 @@ public class GWTProviderInfo implements IMetadataProviderInfo, Serializable {
 
 	@Override
 	public void setFanartProviderId(String fanartProvider) {
+	}
+
+	public void setUserDefault(boolean userDefault) {
+		this.userDefault = userDefault;
+	}
+
+	public boolean isUserDefault() {
+		return userDefault;
 	}
 }

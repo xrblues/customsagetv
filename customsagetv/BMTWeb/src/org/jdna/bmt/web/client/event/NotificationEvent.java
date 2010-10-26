@@ -1,16 +1,24 @@
 package org.jdna.bmt.web.client.event;
 
+import java.io.Serializable;
+
 import com.google.gwt.event.shared.GwtEvent;
 
-public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
-    public static final GwtEvent.Type<NotificationEventHandler> TYPE =  new GwtEvent.Type<NotificationEventHandler>();
+public class NotificationEvent extends GwtEvent<NotificationEventHandler> implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	public static final GwtEvent.Type<NotificationEventHandler> TYPE =  new GwtEvent.Type<NotificationEventHandler>();
 
     public static enum MessageType {INFO, ERROR, WARN}
     
     private MessageType messageType = MessageType.INFO;
     private String message;
     private Throwable exception;
-    
+
+    public NotificationEvent(Notification notice) {
+        this(MessageType.valueOf(notice.getMessageType().name()), notice.getMessage(), notice.getException());
+    }
+
     public NotificationEvent(String message) {
         this(MessageType.INFO, message, null);
     }

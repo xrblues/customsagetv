@@ -17,15 +17,22 @@ import org.jdna.bmt.web.client.ui.util.DialogHandler;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.TitlePanel;
 
+import sagex.phoenix.metadata.MediaType;
+
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -34,6 +41,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements DialogHandler<SearchQueryOptions> {
     private ListBox providers;
     private ListBox type;
+    private TextBox searchTitle;
+    private TextBox year;
     private TextBox episodeTitle;
     private TextBox episode;
     private TextBox season;
@@ -49,20 +58,6 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         setHandler(this);
         this.file=file;
         
-        BrowsingServicesManager.getInstance().getServices().getProviders(new AsyncCallback<List<GWTProviderInfo>>() {
-            public void onFailure(Throwable caught) {
-                Application.fireErrorEvent("Failed to get Metadata Sources!", caught);
-            }
-
-            public void onSuccess(List<GWTProviderInfo> result) {
-                if (result==null) {
-                    Application.fireErrorEvent("Error: Unable to find any metadata providers.");
-                    return;
-                }
-                updateProviders(result);
-            }
-        });
-
         initPanels();
         
         // don't close on save
@@ -92,8 +87,8 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         
         propPanel.add("Search Type", type);
         propPanel.add("Source", (providers=InputBuilder.combo("").bind(getData().getProvider()).widget()));
-        propPanel.add("Search Title", InputBuilder.textbox().bind(getData().getSearchTitle()).widget());
-        propPanel.add("Year", InputBuilder.textbox().bind(getData().getYear()).widget());
+        propPanel.add("Search Title", searchTitle=InputBuilder.textbox().bind(getData().getSearchTitle()).widget());
+        propPanel.add("Year", year=InputBuilder.textbox().bind(getData().getYear()).widget());
 
         panel.add(propPanel);
 
@@ -113,7 +108,21 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         resultPanelContainer.setVisible(false);
         
         setVisibleItems();
-        
+
+        BrowsingServicesManager.getInstance().getServices().getProviders(new AsyncCallback<List<GWTProviderInfo>>() {
+            public void onFailure(Throwable caught) {
+                Application.fireErrorEvent("Failed to get Metadata Sources!", caught);
+            }
+
+            public void onSuccess(List<GWTProviderInfo> result) {
+                if (result==null) {
+                    Application.fireErrorEvent("Error: Unable to find any metadata providers.");
+                    return;
+                }
+                updateProviders(result);
+            }
+        });
+
         return panel;
     }
     
@@ -122,11 +131,20 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         providers.clear();
         for (GWTProviderInfo pi : result) {
            providers.addItem(pi.getName() + " -- ("+pi.getId()+")", pi.getId());
-           if ("TV".equals(type.getValue(type.getSelectedIndex())) && pi.getId()!=null && pi.getId().contains("tv")) {
-               providers.setSelectedIndex(providers.getItemCount()-1);
+           String val = type.getValue(type.getSelectedIndex());
+           for (MediaType mt : pi.getSupportedSearchTypes()) {
+        	   if (mt.name().equalsIgnoreCase(val) && pi.isUserDefault()) { 
+        		   providers.setSelectedIndex(providers.getItemCount()-1);
+        		   DomEvent.fireNativeEvent(Document.get().createChangeEvent(), providers);
+        	   }
            }
         }
-        providers.setSelectedIndex(0);
+        
+        if (providers.getSelectedIndex()==-1) {
+        	providers.setSelectedIndex(0);
+        }
+        
+        setVisibleItems();
     }
 
     protected void setVisibleItems() {
@@ -245,4 +263,51 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
             okButton.setText("Search");
         }
     }
+
+	@Override
+	protected void updateButtonPanel(HorizontalPanel buttonPan) {
+		PushButton pb = new PushButton("Discover Defaults");
+		pb.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				discoverDefaults();
+			}
+		});
+		
+		// add some spacing between this button and the search button
+		pb.getElement().getStyle().setMarginRight(10, Unit.PX);
+		buttonPan.insert(pb, 0);
+	}
+
+	protected void discoverDefaults() {
+		BrowsingServicesManager.getInstance().getServices().discoverQueryOptions(file, new AsyncCallback<SearchQueryOptions>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Application.fireErrorEvent("Failed to get query options", caught);
+			}
+
+			@Override
+			public void onSuccess(SearchQueryOptions result) {
+				searchTitle.setText(result.getSearchTitle().get());
+				year.setText(result.getYear().get());
+				episodeTitle.setText(result.getEpisodeTitle().get());
+				season.setText(result.getSeason().get());
+				episode.setText(result.getEpisode().get());
+				
+				for (int i=0;i<type.getItemCount();i++) {
+					if (type.getValue(i).equals(result.getType().get())) {
+						type.setSelectedIndex(i);
+						break;
+					}
+				}
+				
+				for (int i=0;i<providers.getItemCount();i++) {
+					if (providers.getValue(i).equals(result.getProvider().get())) {
+						providers.setSelectedIndex(i);
+						break;
+					}
+				}
+			}
+		});
+	}
 }

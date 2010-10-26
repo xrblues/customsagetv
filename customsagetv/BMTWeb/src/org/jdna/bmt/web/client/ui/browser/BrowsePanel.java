@@ -7,8 +7,9 @@ import org.jdna.bmt.web.client.event.EventBus;
 import org.jdna.bmt.web.client.event.WaitingEvent;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
+import org.jdna.bmt.web.client.ui.BatchOperation;
+import org.jdna.bmt.web.client.ui.BatchOperations;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
-import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar;
 import org.jdna.bmt.web.client.ui.util.OKDialogHandler;
 
@@ -22,7 +23,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -111,40 +110,25 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         
         batchOperations = new ListBox();
         batchOperations.addItem("-- Batch Operations --", "--");
-        batchOperations.addItem("Set Watched", BatchOperation.WATCHED.name());
-        batchOperations.addItem("Set UnWatched", BatchOperation.UNWATCHED.name());
-        batchOperations.addItem("Set Archived", BatchOperation.ARCHIVE.name());
-        batchOperations.addItem("Set UnArchived", BatchOperation.UNARCHIVE.name());
-        batchOperations.addItem("Import As Recording", BatchOperation.IMPORTASRECORDING.name());
-        batchOperations.addItem("Move to Video Libary (For Recordings)", BatchOperation.UNIMPORTASRECORDING.name());
-        batchOperations.addItem("Remove Fanart Files", BatchOperation.CLEANFANART.name());
-        batchOperations.addItem("Remove .properties Files", BatchOperation.CLEANPROPERTIES.name());
-        batchOperations.addItem("Clear Custom Metadata Fields", BatchOperation.CLEARCUSTOMMETADATA.name());
+        
+        for (BatchOperation op: BatchOperations.getInstance().getBatchOperations()) {
+        	batchOperations.addItem(op.getLabel(), op.getLabel());
+        }
+        
         batchOperations.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
 				String value = batchOperations.getValue(batchOperations.getSelectedIndex());
 				if ("--".equals(value)) return;
-				
-				final PopupPanel dialog = Dialogs.showWaitingPopup("Applying batch operation...");
-				BrowsingServicesManager.getInstance().getServices().applyBatchOperation(currentFolder, BatchOperation.valueOf(value), new AsyncCallback<String>() {
-					@Override
-					public void onSuccess(String result) {
-						dialog.hide();
-						Application.fireNotification(result);
-						batchOperations.setSelectedIndex(0);
-						BrowsingServicesManager.getInstance().browseFolder(currentFolder, 0, currentFolder.getPageSize());
+				for (BatchOperation bo: BatchOperations.getInstance().getBatchOperations()) {
+					if (value.equals(bo.getLabel())) {
+						Application.runBatchOperation(currentFolder, bo);
+						break;
 					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						dialog.hide();
-						Application.fireErrorEvent("Operation Failed", caught);
-						batchOperations.setSelectedIndex(0);
-					}
-				});
+				}
 			}
 		});
+        
         browserActions.add(batchOperations);
         
         browserActions.setVisible(false);
@@ -178,7 +162,6 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
     
     @Override
     protected void onAttach() {
-        System.out.println("Attaching Browse Reply Event Handler");
         replyHandler = Application.events().addHandler(BrowseReplyEvent.TYPE, this);
         resizeHandler = Window.addResizeHandler(this);
         super.onAttach();
@@ -189,7 +172,6 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         super.onDetach();
         replyHandler.removeHandler();
         resizeHandler.removeHandler();
-        System.out.println("Detaching Browse Reply Event Handler");
     }
 
     public void onBrowseReply(BrowseReplyEvent event) {

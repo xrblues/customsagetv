@@ -94,8 +94,6 @@ public class BrowsingServicesManager {
             }
 
             public void onSuccess(String progressId) {
-                System.out.println("Scan Started; Progress Id: " + progressId);
-                
                 // notify listeners about the scan
                 Application.events().fireEvent(new ScanRequestEvent(folder, options, progressId));
                 
@@ -106,11 +104,9 @@ public class BrowsingServicesManager {
     }
 
     public void monitorProgress(final String progressId) {
-        System.out.println("Monitoring progress for: " + progressId);
         Timer timer = new Timer() {
             @Override
             public void run() {
-                System.out.println("Scanning For Progress for: " + progressId);
                 browser.getStatus(progressId, new AsyncCallback<ProgressStatus>() {
                     public void onFailure(Throwable caught) {
                         Application.fireErrorEvent("Scan Failed: " + caught.getMessage());
@@ -134,7 +130,6 @@ public class BrowsingServicesManager {
                         }
                         
                         if (result.isCancelled() || result.isDone()) {
-                            System.out.println("Scan was completed.");
                             cancel();
                         }
                         
@@ -160,7 +155,6 @@ public class BrowsingServicesManager {
     }
 
     public void requestItemsForProgress(String progressId, final boolean b) {
-        System.out.println("Getting items for progress: " + progressId);
         browser.getProgressItems(progressId, b, new AsyncCallback<GWTMediaResource[]>() {
             public void onFailure(Throwable caught) {
             }

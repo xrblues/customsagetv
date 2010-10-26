@@ -39,6 +39,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class MediaEditorMetadataPanel extends Composite implements MetadataUpdatedHandler, ChangeHandler {
     private GWTMediaFile mediaFile = null;
@@ -140,10 +141,10 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         hp.add(img, Layout.Right);
 
         hp.add(back);
-        hp.add(find);
-        //hp.add(save);
-        hp.add(saveFanart);
-
+        if (mf.getSageMediaFileId()>0) {
+	        hp.add(find);
+	        hp.add(saveFanart);
+        }
         
         metadataPanel.add(hp);
         metadataPanel.setCellHorizontalAlignment(hp, HasHorizontalAlignment.ALIGN_RIGHT);
@@ -297,8 +298,6 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         metadataContainer.getFlexTable().getRowFormatter().setVisible(movieTitleRow, !"TV".equals(typeListBox.getValue(typeListBox.getSelectedIndex())));
         
         if (mediaFile!=null && metadata!=null && metadata.getPreserveRecordingMetadata().get()) {
-        	System.out.println("*** Recording " + mediaFile.getSageRecording().get());
-        	
 	        // set the readonly fields
 	    	movieTitle.setEnabled(!mediaFile.getSageRecording().get());
 	    	showTitle.setEnabled(!mediaFile.getSageRecording().get());

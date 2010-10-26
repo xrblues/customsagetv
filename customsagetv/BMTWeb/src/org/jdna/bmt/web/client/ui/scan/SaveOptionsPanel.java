@@ -5,6 +5,7 @@ import org.jdna.bmt.web.client.ui.layout.Simple2ColFormLayoutPanel;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.ui.util.DialogHandler;
 
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -35,7 +36,7 @@ public class SaveOptionsPanel extends DataDialog<SaveOptions> {
     
     
     @Override
-    protected void updateButtonPanel(Object buttonPan) {
+    protected void updateButtonPanel(HorizontalPanel buttonPan) {
         super.updateButtonPanel(buttonPan);
         
         okButton.setText("Save");

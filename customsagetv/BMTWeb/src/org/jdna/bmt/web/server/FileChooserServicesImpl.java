@@ -52,7 +52,6 @@ public class FileChooserServicesImpl extends RemoteServiceServlet implements Fil
     public JSFileResult listRoots() {
         List<JSFile> files = new ArrayList<JSFile>();
         for (File f : File.listRoots()) {
-            System.out.println("**** Adding Root: " + f.getAbsolutePath() + "; " +f.getName());
             files.add(toJSFile(f));
         }
         return new JSFileResult(null, ROOT(), files.toArray(new JSFile[files.size()]));

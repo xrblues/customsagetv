@@ -71,13 +71,10 @@ public class SagePropertiesViewerPanel extends Composite implements UpdatablePan
             Application.fireErrorEvent("No Sage Properties");
             return;
         }
-        long t1 = System.currentTimeMillis();
         StringBuilder sb= new StringBuilder();
         for (String s: result) {
             sb.append(s+"<br/>");
         }
         grid.setHTML(sb.toString());
-        long t2 = System.currentTimeMillis();
-        System.out.println("RenderTime: " + (t2-t1));
     }
 }

@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.BasicConfigurator;
+import org.jdna.bmt.web.client.ui.BatchOperation;
+import org.jdna.bmt.web.client.ui.BatchOperations;
 
 import sagex.SageAPI;
 import sagex.phoenix.Phoenix;
@@ -45,6 +47,16 @@ public class ServicesInit {
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            }
+            
+            // initialize the batch operations, see if they are valid
+            for (BatchOperation bo : BatchOperations.getInstance().getBatchOperations()) {
+            	try {
+            		GlobalServicesImpl.createVisitor(bo);
+            	} catch (Throwable t) {
+            		bo.setLabel("** BROKEN ** " + bo.getLabel());
+            		t.printStackTrace();
+            	}
             }
             
             // initialize bmt...
