@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 10/15/10 1:04 PM
+ * Generated Date/Time: 10/25/10 8:20 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPI.html'>FavoriteAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */

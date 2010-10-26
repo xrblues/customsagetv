@@ -18,7 +18,7 @@
 
   <Dependency>
     <Plugin>sagex-api</Plugin>
-    <MinVersion>7.0.7.0</MinVersion>
+    <MinVersion>7.0.21</MinVersion>
   </Dependency>
 
   <PluginType>Standard</PluginType>
@@ -31,5 +31,11 @@
 
   <!-- Plugin Class is in the core sagex-api jar -->
   <ImplementationClass>sagex.plugin.impl.SagexRemoteAPIPlugin</ImplementationClass>
+
+  <ReleaseNotes>
+7.0.21
+* Added 404 when images are not found
+* Merged broconne's Music Image media handler patch
+  </ReleaseNotes>
   
 </SageTVPlugin>

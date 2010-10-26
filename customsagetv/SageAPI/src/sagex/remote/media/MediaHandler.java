@@ -5,6 +5,7 @@ import java.awt.image.RenderedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,6 +32,7 @@ public class MediaHandler implements SageHandler {
         handlers.put("thumbnail", new ThumbnailRequestHandler());
         handlers.put("logo", new LogoRequestHandler());
         handlers.put("mediafile", new MediaFileRequestHandler());
+        handlers.put("albumart", new AlbumArtHandler());
 
         handlers.put("poster", new ProxySageMediaRequestHandler("sagex.phoenix.fanart.FanartMediaRequestHandler", "poster"));
         handlers.put("background", new ProxySageMediaRequestHandler("sagex.phoenix.fanart.FanartMediaRequestHandler", "background"));
@@ -86,6 +88,8 @@ public class MediaHandler implements SageHandler {
             } else {
                 handler.processRequest(req, resp, sageMedia);
             }
+        } catch (FileNotFoundException e) {
+        	resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             help(resp, e);
         }
@@ -178,16 +182,16 @@ public class MediaHandler implements SageHandler {
         bis.close();
     }
 
-    public static void writeSageImage(Object sagefile, HttpServletResponse resp) throws Exception {
+    public static void writeSageImage(Object sagefile, HttpServletResponse resp) throws FileNotFoundException, Exception {
         // get the media file that we are going to be using
         // TODO: Maybe cache this for performance reasons
         writeSageImageFile(MediaFileAPI.GetThumbnail(sagefile), resp);
     }
 
-    public static void writeSageImageFile(Object sageImage, HttpServletResponse resp) throws Exception {
-        if (sageImage==null) throw new Exception("No Image");
+    public static void writeSageImageFile(Object sageImage, HttpServletResponse resp) throws FileNotFoundException, Exception {
+        if (sageImage==null) throw new FileNotFoundException("No Image");
         BufferedImage img = Utility.GetImageAsBufferedImage(sageImage);
-        if (img==null) throw new Exception("Unable to get BufferedImage");
+        if (img==null) throw new FileNotFoundException("Unable to get BufferedImage");
         resp.setContentType("image/png");
         OutputStream os = resp.getOutputStream();
         ImageIO.write((RenderedImage) img, "png", os);
