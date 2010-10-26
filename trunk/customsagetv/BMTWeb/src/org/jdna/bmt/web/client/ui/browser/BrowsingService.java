@@ -47,7 +47,6 @@ public interface BrowsingService extends RemoteService {
     public boolean deleteFanart(GWTMediaArt art);
     public void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art);
     
-    public String applyBatchOperation(GWTMediaFolder folder, BatchOperation operation);
-    
     public GWTMediaFolder searchMediaFiles(String search);
+    public SearchQueryOptions discoverQueryOptions(GWTMediaFile file);
 }

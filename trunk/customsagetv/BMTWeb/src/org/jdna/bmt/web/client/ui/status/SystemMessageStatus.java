@@ -61,7 +61,6 @@ public class SystemMessageStatus implements HasStatus {
 
             public void onSuccess(List<SystemMessage> result) {
                 panel.clear();
-                System.out.println("**** have " + result.size() + " messages");
                 for (SystemMessage sm : result) {
                     final DockPanel p = new DockPanel();
                     final SystemMessage msg = sm;

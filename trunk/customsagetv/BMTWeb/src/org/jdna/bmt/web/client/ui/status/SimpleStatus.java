@@ -70,9 +70,7 @@ public class SimpleStatus implements HasStatus {
                                 lab.setTitle(v.getReason());
                             }
                             panel.add(v.getLabel(), lab);
-                            System.out.println("STATUS: " + v.getLevel() + "; " + v.getLabel());
                             if (v.getLevel()== v.ERROR) {
-                                System.out.println("Adding Error!!!!; " + v.getLabel());
                                 panel.addRowStyle("error");
                             } else if (v.getLevel()== v.WARN) {
                                 panel.addRowStyle("warn");

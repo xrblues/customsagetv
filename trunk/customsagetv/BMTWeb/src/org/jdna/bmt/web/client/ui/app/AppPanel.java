@@ -1,13 +1,17 @@
 package org.jdna.bmt.web.client.ui.app;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.animation.FadeOut;
+import org.jdna.bmt.web.client.event.Notification;
 import org.jdna.bmt.web.client.event.NotificationEvent;
 import org.jdna.bmt.web.client.event.NotificationEventHandler;
 import org.jdna.bmt.web.client.event.NotificationEvent.MessageType;
+import org.jdna.bmt.web.client.ui.BatchOperation;
+import org.jdna.bmt.web.client.ui.BatchOperations;
 import org.jdna.bmt.web.client.ui.browser.BrowsePanel;
 import org.jdna.bmt.web.client.ui.debug.BackupPanel;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesPanel;
@@ -16,6 +20,7 @@ import org.jdna.bmt.web.client.ui.util.CommandItem;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.util.Log;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
@@ -27,6 +32,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -48,6 +54,8 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
     private Widget curPanel = null;
     
     private Label message = new Label();
+
+    final GlobalServiceAsync global = GWT.create(GlobalService.class);
     
     public AppPanel() {
         INSTANCE = this;
@@ -102,18 +110,23 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
                         showSupportRequestDialog();
                     }
                 }));
-                vp.add(new CommandItem(null, "Clean .properties", new Command() {
-                    public void execute() {
-                        pp.hide();
-                        showCleanPropertiesDialog();
-                    }
-                }));
                 vp.add(new CommandItem(null, "Manage Backups", new Command() {
                     public void execute() {
                         pp.hide();
                         History.newItem("backup");
                     }
                 }));
+                
+                for (BatchOperation op: BatchOperations.getInstance().getBatchOperations()) {
+                	final BatchOperation opFinal = op;
+                    vp.add(new CommandItem(null, op.getLabel(), new Command() {
+                        public void execute() {
+                            pp.hide();
+                            Application.runBatchOperation(null, opFinal);
+                        }
+                    }));
+                }
+                
                 pp.setWidget(vp);
                 pp.showRelativeTo(offset);
             }
@@ -168,14 +181,29 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         Window.enableScrolling(false);
         
         History.fireCurrentHistoryState();
+        
+        final Timer t = new Timer() {
+			@Override
+			public void run() {
+				global.getNotices(new AsyncCallback<ArrayList<Notification>>() {
+					@Override
+					public void onFailure(Throwable caught) {
+					}
+
+					@Override
+					public void onSuccess(ArrayList<Notification> result) {
+						for (Notification ne : result) {
+							Application.events().fireEvent(new NotificationEvent(ne));
+						}
+					}
+				});
+			}
+		};
+		t.scheduleRepeating(1000);
     }
 
     private void showSupportRequestDialog() {
         DataDialog.showDialog(new SupportDialog());
-    }
-    
-    private void showCleanPropertiesDialog() {
-        DataDialog.showDialog(new CleanPropertiesDialog());
     }
     
     protected void setBrowsePanel(Map<String,String> params) {
@@ -236,9 +264,6 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
 
     public void onValueChange(ValueChangeEvent<String> event) {
         Map<String,String> params = parseHistoryTokens(event.getValue());
-        for (Map.Entry<String, String> me : params.entrySet()) {
-            System.out.println("param: " + me.getKey() + "; value: " + me.getValue());
-        }
         String section = params.get("section");
         if(section==null) section=event.getValue();
         if (section==null || section.length()==0) section="status";

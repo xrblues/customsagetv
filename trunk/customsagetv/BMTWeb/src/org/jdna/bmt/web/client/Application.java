@@ -5,6 +5,13 @@ import org.jdna.bmt.web.client.event.NotificationEvent;
 import org.jdna.bmt.web.client.event.NotificationEvent.MessageType;
 import org.jdna.bmt.web.client.i18n.Labels;
 import org.jdna.bmt.web.client.i18n.Msgs;
+import org.jdna.bmt.web.client.media.GWTMediaFolder;
+import org.jdna.bmt.web.client.ui.BatchOperation;
+import org.jdna.bmt.web.client.ui.app.GlobalService;
+import org.jdna.bmt.web.client.ui.app.GlobalServiceAsync;
+import org.jdna.bmt.web.client.ui.util.DialogHandler;
+import org.jdna.bmt.web.client.ui.util.Dialogs;
+import org.jdna.bmt.web.client.ui.util.VoidCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
@@ -13,6 +20,7 @@ public class Application {
     private static final Labels i18nLabels = GWT.create(Labels.class);
     private static final Msgs i18nMessages = GWT.create(Msgs.class);
     private static final HandlerManager eventBus = EventBus.getHandlerManager();
+    private static final GlobalServiceAsync global = GWT.create(GlobalService.class);
     
     public static Labels labels() {
         return i18nLabels;
@@ -36,5 +44,41 @@ public class Application {
 
     public static void fireNotification(String msg) {
         events().fireEvent(new NotificationEvent(MessageType.INFO, msg));    
+    }
+    
+    /**
+     * Runs a Batch Folder Operation on the Server.  Folder can be null, and if so, then
+     * it will run it against all video files.
+     * 
+     * @param folder
+     * @param op
+     */
+    public static void runBatchOperation(final GWTMediaFolder folder, final BatchOperation op) {
+    	if (op.getConfirm()!=null) {
+	    	Dialogs.confirm(op.getConfirm(), new DialogHandler<Void>() {
+				@Override
+				public void onSave(Void data) {
+					runBatchOperationPrivate(folder, op);
+				}
+				
+				@Override
+				public void onCancel() {
+				}
+			});
+    	} else {
+			runBatchOperationPrivate(folder, op);
+    	}
+    }
+    
+    private static void runBatchOperationPrivate(GWTMediaFolder folder, BatchOperation op) {
+		if (op.getStartMessage()!=null) {
+			Application.fireNotification(op.getStartMessage());
+		}
+		
+		if (folder!=null) {
+			global.batchOperation(folder, op, new VoidCallback<Void>());
+		} else {
+			global.batchOperation(op, new VoidCallback<Void>());
+		}
     }
 }

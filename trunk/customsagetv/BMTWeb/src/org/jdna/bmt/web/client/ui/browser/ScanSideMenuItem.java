@@ -101,30 +101,22 @@ public class ScanSideMenuItem extends SideMenuItem implements ScanUpdateHandler 
         if (progressId.equals(event.getProgressStatus().getProgressId())) {
             progressStatus =  event.getProgressStatus();
             
-            System.out.println("Updating Progress: " + event.getProgressStatus().getProgressId());
             if (event.getProgressStatus().isCancelled()) {
-                System.out.println("Updating Progress: " + event.getProgressStatus().getProgressId() + "; Cancelled");
                 setStatus(Application.messages().cancelledWithStatus(event.getProgressStatus().getSuccessCount(), event.getProgressStatus().getFailedCount()));
                 setBusy(false);
             } else if (event.getProgressStatus().isDone()) {
-                System.out.println("Updating Progress: " + event.getProgressStatus().getProgressId() + "; Done");
                 setStatus(Application.messages().completeWithStatus(event.getProgressStatus().getSuccessCount(), event.getProgressStatus().getFailedCount()));
                 setBusy(false);
             } else {
-                System.out.println("Updating Progress: " + event.getProgressStatus().getProgressId() + "; " + event.getProgressStatus().getStatus());
                 setBusy(true);
                 setStatus(Application.messages().scanStatus(event.getProgressStatus().getStatus(), (event.getProgressStatus().getWorked())));
             }
-        } else {
-            System.out.println("Ignoring progress for: " + event.getProgressStatus().getProgressId());
         }
     }
     
     public void setStatus(String status) {
         if (getLabelWidget()!=null) {
             ((ItemActions)getLabelWidget()).setStatusText(status);
-        } else {
-            System.out.println("How Can label widget be null!!!!");
         }
     }
     

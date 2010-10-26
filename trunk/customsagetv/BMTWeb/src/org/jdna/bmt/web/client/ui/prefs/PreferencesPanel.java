@@ -240,7 +240,6 @@ public class PreferencesPanel extends Composite {
     }
 
     private void setStatus(String message) {
-        System.out.println("Status: " + message);
     }
 
     private void updateTreeItems(TreeItem item, PrefItem[] items) {

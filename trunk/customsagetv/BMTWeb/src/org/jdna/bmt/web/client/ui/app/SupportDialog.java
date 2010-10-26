@@ -12,6 +12,7 @@ import org.jdna.bmt.web.client.ui.util.Dialogs;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -74,7 +75,7 @@ public class SupportDialog extends DataDialog<SupportOptions> implements DialogH
      * @see org.jdna.bmt.web.client.ui.util.DataDialog#updateButtonPanel(java.lang.Object)
      */
     @Override
-    protected void updateButtonPanel(Object buttonPan) {
+    protected void updateButtonPanel(HorizontalPanel buttonPan) {
         getOkButton().setText(Application.labels().createSupportRequest());
     }
 }

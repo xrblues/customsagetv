@@ -45,6 +45,11 @@
     <servlet-name>debug</servlet-name>
     <servlet-class>org.jdna.bmt.web.server.DebugServicesImpl</servlet-class>
   </servlet>
+
+  <servlet>
+    <servlet-name>global</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.GlobalServicesImpl</servlet-class>
+  </servlet>
   
   <servlet>
     <servlet-name>sageapi</servlet-name>
@@ -94,6 +99,11 @@
   <servlet-mapping>
     <servlet-name>debug</servlet-name>
     <url-pattern>/bmtweb/debug</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>global</servlet-name>
+    <url-pattern>/bmtweb/global</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

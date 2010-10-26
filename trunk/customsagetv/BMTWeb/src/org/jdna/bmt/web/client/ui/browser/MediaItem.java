@@ -41,7 +41,6 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         panel.setStyleName("MediaItem");
         setTitles(res);
 
-        System.out.println("Setting Thubmnail Url: " + res.getThumbnailUrl());
         final Image img = new Image();
         img.addStyleName("MediaItem-Image");
         img.addErrorHandler(new ErrorHandler() {

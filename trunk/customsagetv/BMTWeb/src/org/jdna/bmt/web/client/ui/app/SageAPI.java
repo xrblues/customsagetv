@@ -39,7 +39,6 @@ public class SageAPI {
         arg.append("&encoder=json");
         final String url = GWT.getModuleBaseURL() + "sageapi/api?"+arg;
         
-        System.out.println("Calling: " + url);
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
         try {
             builder.sendRequest(null, new RequestCallback() {
@@ -72,7 +71,6 @@ public class SageAPI {
         arg.append("&encoder=json");
         final String url = GWT.getModuleBaseURL() + "sageapi/api?"+arg;
         
-        System.out.println("Calling: " + url);
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
         try {
             builder.sendRequest(null, new RequestCallback() {

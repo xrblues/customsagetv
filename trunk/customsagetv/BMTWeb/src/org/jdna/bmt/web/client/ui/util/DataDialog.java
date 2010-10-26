@@ -69,7 +69,7 @@ public class DataDialog<T> extends Composite {
      * to change the OK/Cancel button text.
      * @param buttonPan
      */
-    protected void updateButtonPanel(Object buttonPan) {
+    protected void updateButtonPanel(HorizontalPanel buttonPan) {
     }
     
     /**

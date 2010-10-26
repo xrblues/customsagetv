@@ -11,6 +11,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -33,7 +34,6 @@ public class ScanOptionsPanel extends DataDialog<PersistenceOptionsUI> implement
     
     @Override
     protected Widget getBodyWidget() {
-        System.out.println("Scan Options Panel");
         VerticalPanel panel = new VerticalPanel();
         panel.setWidth("100%");
 
@@ -62,7 +62,7 @@ public class ScanOptionsPanel extends DataDialog<PersistenceOptionsUI> implement
     }
 
     @Override
-    protected void updateButtonPanel(Object buttonPan) {
+    protected void updateButtonPanel(HorizontalPanel buttonPan) {
         okButton.setText("Scan");
     }
 
