@@ -102,6 +102,24 @@ public class BatchOperations {
 		op.setBackground(true);
 		op.setConfirm("Press OK to create .properties for every Video file in your collection (including TV, DVD, Bluray, etc)");
 		operations.add(op);
+
+		op = new BatchOperation();
+		op.setVisitorClass("sagex.phoenix.vfs.visitors.FixGenresVisitor");
+		op.setLabel("Fix Genres");
+		op.setStartMessage("Fixing Genres");
+		op.setCompleteMessage("Genres has been fixed");
+		op.setBackground(true);
+		op.setConfirm("Press OK to fix Genres.  This will replace all genres like 'Action/Adventure' with 2 genres 'Action' and 'Adventure'.  It will enforce that there never more than 2 genres per media item.");
+		operations.add(op);
+
+		op = new BatchOperation();
+		op.setVisitorClass("sagex.phoenix.vfs.visitors.ExportSageTV7ThumbnailVisitor");
+		op.setLabel("Export SageTV media thumbnail");
+		op.setStartMessage("Exporting SageTV media thumbnails");
+		op.setCompleteMessage("Thumbnails have been created");
+		op.setBackground(true);
+		op.setConfirm("Press OK to export a SageTV7 compatible thumbnail.  This will generate a .jpg in the same folder as the media item for each media file.  It will not overwrite existing thumbnails.");
+		operations.add(op);
 	}
 	
 	public List<BatchOperation> getBatchOperations() {

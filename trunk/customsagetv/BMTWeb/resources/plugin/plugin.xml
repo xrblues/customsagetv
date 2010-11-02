@@ -2,7 +2,7 @@
 <SageTVPlugin>
   <Name>Metadata Tools for SageTV - Web Interface</Name>
   <Identifier>bmtweb</Identifier>
-  <Description>Web Interface for Metadata Tools (bmt)</Description>
+  <Description>Web Interface for Metadata Tools (bmt).  Enables you to do edit metadata manualy or doing a lookup from the browser.</Description>
   <Screenshot><![CDATA[http://forums.sagetv.com/forums/attachment.php?attachmentid=9772&stc=1&d=1266629522]]></Screenshot>
   <Author>stuckless</Author>
   <CreationDate>2008.07.19</CreationDate>
@@ -19,7 +19,7 @@
 
   <Dependency>
     <Plugin>phoenix-core</Plugin>
-    <MinVersion>2.2</MinVersion>
+    <MinVersion>2.3</MinVersion>
   </Dependency>
 
   <Dependency>
@@ -42,6 +42,15 @@
     <MD5>@@context-checksum@@</MD5>
   </Package>
   <ReleaseNotes>
+4.9.1
+* Minor update that includes the ability to enable/disable channels (Configuration -> Channels) 
+
+4.9
+* Fixed bug in TV Scanner that caused some items to fail to be scanned correctly from the web ui
+* Fixed Group by Genres View
+* Fxied 'Movies' view to be 'Recorded Movies'
+* Added Batch Operations for generating .properties, generating thumbnails, and for fixing genres. 
+
 4.8
 * Updated to use newer phoenix apis
 * Fixed "metadata failed" error (imdb now works)
