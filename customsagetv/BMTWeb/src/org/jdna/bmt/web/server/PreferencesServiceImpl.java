@@ -21,6 +21,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.jdna.bmt.web.client.ui.prefs.Channel;
+import org.jdna.bmt.web.client.ui.prefs.ChannelNumberComparator;
 import org.jdna.bmt.web.client.ui.prefs.Log4jPrefs;
 import org.jdna.bmt.web.client.ui.prefs.PrefItem;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesService;
@@ -28,7 +30,9 @@ import org.jdna.bmt.web.client.ui.prefs.RegexValidation;
 import org.jdna.bmt.web.client.ui.prefs.VideoSource;
 import org.jdna.bmt.web.client.ui.prefs.VideoSource.SourceType;
 
+import sagex.api.ChannelAPI;
 import sagex.api.Configuration;
+import sagex.api.Global;
 import sagex.phoenix.configuration.Group;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.NewSearchGroup;
@@ -352,5 +356,52 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
 		} else if (REFRESH_MEDIA_TITLES.equals("id")) {
 			phoenix.umb.ReloadMediaTitles();
 		}
+	}
+
+	@Override
+	public ArrayList<Channel> getChannels() {
+		ArrayList<Channel> channels = new ArrayList<Channel>();
+		
+		Object allChan[] = ChannelAPI.GetAllChannels();
+		for (Object ch : allChan) {
+			Channel c = new Channel();
+			c.setNumber(ChannelAPI.GetChannelNumber(ch));
+			if (StringUtils.isEmpty(c.getNumber())) continue;
+			
+			c.setDescription(ChannelAPI.GetChannelDescription(ch));
+			c.setName(ChannelAPI.GetChannelName(ch));
+			c.setNetwork(ChannelAPI.GetChannelNetwork(ch));
+			c.enabled().set(ChannelAPI.IsChannelViewable(ch));
+			c.setStationId(ChannelAPI.GetStationID(ch));
+			channels.add(c);
+		}
+		
+		Collections.sort(channels, new ChannelNumberComparator());
+		return channels;
+	}
+
+	@Override
+	public ArrayList<Channel> saveChannels(ArrayList<Channel> channels) {
+		ArrayList<Channel> updated = new ArrayList<Channel>();
+		String lineups[] = Global.GetAllLineups();
+		if (lineups==null || lineups.length==0) {
+			// can't update
+			return updated;
+		}
+		
+		for (Channel c: channels) {
+			Object chan = ChannelAPI.GetChannelForStationID(c.getStationId());
+			if (chan!=null) {
+				if (ChannelAPI.IsChannelViewable(chan) != c.enabled().get()) {
+					for (String l: lineups) {
+						log.info("Channel was modified: " + c.getNumber() + "; Visible: " + c.enabled().get());
+						// it's been updated
+						ChannelAPI.SetChannelViewabilityForChannelOnLineup(chan, l, c.enabled().get());
+						updated.add(c);
+					}
+				}
+			}
+		}
+		return updated;
 	}
 }

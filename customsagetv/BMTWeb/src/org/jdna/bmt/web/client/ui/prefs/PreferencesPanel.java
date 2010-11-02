@@ -268,6 +268,7 @@ public class PreferencesPanel extends Composite {
         	tree.addItem(createFakePanel("Refresh Configurations", "Refresh External Configuration Files", "refreshConfigurations"));
         	tree.addItem(createFakePanel("Sage Sources", "Add/Modify Sage Sources", "videoSourcesEditor"));
         	tree.addItem(createFakePanel("Sage Properties", "View Sage Properties (Server)", "viewSageProperties"));
+        	tree.addItem(createFakePanel("Channels", "Configure Channels", "channels"));
         }
         
         focusTreeItem(item);

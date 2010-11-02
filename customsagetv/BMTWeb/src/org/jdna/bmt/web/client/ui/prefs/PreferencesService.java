@@ -28,4 +28,7 @@ public interface PreferencesService extends RemoteService {
     public ArrayList<PrefItem> getLog4jProperties(String log);
     public void saveLog4jProperties(String log, ArrayList<PrefItem> items);
     public void refreshConfiguration(String id);
+    
+    public ArrayList<Channel> getChannels();
+    public ArrayList<Channel> saveChannels(ArrayList<Channel> channels);
 }

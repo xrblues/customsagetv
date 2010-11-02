@@ -40,6 +40,8 @@ public class EditorFactory {
             return new VideoSourcesEditorPanel();
         } else if ("viewSageProperties".equals(editor)) {
             return new SagePropertiesViewerPanel();
+        } else if ("channels".equals(editor)) {
+            return new ChannelsEditorPanel();
         } else {
         	return new Label("Unknown Editor: " + editor);
         }

@@ -22,4 +22,7 @@ public interface PreferencesServiceAsync {
     void getLog4jProperties(String log, AsyncCallback<ArrayList<PrefItem>> callback);
     void saveLog4jProperties(String log, ArrayList<PrefItem> items, AsyncCallback<Void> callback);
 	void refreshConfiguration(String id, AsyncCallback<Void> callback);
+	void getChannels(AsyncCallback<ArrayList<Channel>> callback);
+	void saveChannels(ArrayList<Channel> channels,
+			AsyncCallback<ArrayList<Channel>> callback);
 }

@@ -125,7 +125,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 					IMetadata md = ((IMediaFile) r).getMetadata();
 					String minTitle = (md.getEpisodeName());
 					if (md.getSeasonNumber()>0) {
-						minTitle += (""+md.getSeasonNumber() + " x " + md.getEpisodeNumber());
+						minTitle += (" (s"+md.getSeasonNumber() + " e" + md.getEpisodeNumber() + ")");
 					}
 					file.setMinorTitle(minTitle);
 				}
