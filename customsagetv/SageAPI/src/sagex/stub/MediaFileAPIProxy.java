@@ -99,12 +99,12 @@ public class MediaFileAPIProxy implements StubAPIProxy {
         }
 
         if ("SetMediaFileMetadata".equals(cmd)) {
-            ((MediaFile)args[0]).props.setProperty((String)args[1], String.valueOf(args[2]));
+            ((MediaFile)args[0]).props.setProperty(String.valueOf(args[1]), String.valueOf(args[2]));
             return null;
         }
         
         if ("GetMediaFileMetadata".equals(cmd)) {
-            return ((MediaFile)args[0]).props.getProperty((String)args[1]);
+            return ((MediaFile)args[0]).props.getProperty(String.valueOf(args[1]));
         }
         
         if ("GetShowCategory".equals(cmd)) {

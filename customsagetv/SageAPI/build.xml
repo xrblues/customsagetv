@@ -23,7 +23,7 @@
 	<property name="dist.dir" location="${target}/dist" />
 
 	<property name="name" value="sagex-api" />
-	<property name="version" value="7.0.21.0" />
+	<property name="version" value="7.0.23.0" />
 	<property name="jarname" value="${name}.jar" />
 
 	<property name="createAPI" value="true"/>
@@ -241,7 +241,7 @@
 			</classpath>
 		</taskdef>
 		<gcupload targetfilename="sagex-api-${version}-sage6.zip"  filename="${target}/sagex-api-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API Wrappers ${version} (Sage6)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
-		<gcupload targetfilename="sagex-api-javadoc-${version}.zip"  filename="${target}/sagex-api-javadoc-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API Wrappers JavaDoc ${version}" labels="Featured,QA-Snapshot,Type-Archive,OpSys-All"/>
+		<gcupload targetfilename="sagex-api-javadoc-${version}.zip"  filename="${target}/sagex-api-javadoc-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API Wrappers JavaDoc ${version}" labels="QA-Snapshot,Type-Archive,OpSys-All"/>
 		<gcupload targetfilename="sagex-api-${version}.zip"  filename="${target}/dist/packages/sagex-api-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API Wrappers ${version} (Sage7 Plugin)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
 		<gcupload targetfilename="sagex-api-services-${version}.zip"  filename="${target}/dist/packages/sagex-api-services-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API HTTP Services ${version} (Sage7 Plugin)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
 	</target>
