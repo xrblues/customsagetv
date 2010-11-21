@@ -25,7 +25,7 @@ public class SagexServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     public interface SageHandler {
-        public void hanleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException;
+        public void handleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException;
     }
 
     private static ILog                     log          = LogProvider.getLogger(SagexServlet.class);
@@ -60,7 +60,7 @@ public class SagexServlet extends HttpServlet {
                 resp.sendError(404, "Sage Handle: " + args[1] + " not found!");
                 return;
             }
-            sh.hanleRequest(args, req, resp);
+            sh.handleRequest(args, req, resp);
         } catch (Throwable t) {
             log.warn("Failed to process Sage Handler!", t);
             resp.sendError(500, "Sage Servlet Failed: " + t.getMessage());

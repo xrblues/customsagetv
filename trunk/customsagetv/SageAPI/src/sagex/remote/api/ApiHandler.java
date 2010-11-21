@@ -74,7 +74,7 @@ public class ApiHandler implements SageHandler {
         }
     }
 
-    public void hanleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void handleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter pw = resp.getWriter();
 
         // 1=Arg1&2=Arg2&3=Arg3&context=123

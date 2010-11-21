@@ -28,7 +28,7 @@ public class XMLRPCHandler extends AbstractRPCHandler implements SageHandler {
 		System.out.println("Sage Xml RPC Servlet Created.");
 	}
 	
-	public void hanleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void handleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 0 - null
 		// 1 - rcpXml
 		// 2 - api

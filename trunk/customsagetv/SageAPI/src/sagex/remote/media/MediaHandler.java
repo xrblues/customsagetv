@@ -39,7 +39,7 @@ public class MediaHandler implements SageHandler {
         handlers.put("banner", new ProxySageMediaRequestHandler("sagex.phoenix.fanart.FanartMediaRequestHandler", "banner"));
     }
 
-    public void hanleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void handleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	// URL looks like
     	// /media/thumnail/213233
         // 0 - null
