@@ -1,71 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SageTVPlugin>
-  <Name>Metadata Tools for SageTV - Web Interface</Name>
-  <Identifier>bmtweb</Identifier>
-  <Description>Web Interface for Metadata Tools (bmt).  Enables you to do edit metadata manualy or doing a lookup from the browser.</Description>
-  <Screenshot><![CDATA[http://forums.sagetv.com/forums/attachment.php?attachmentid=9772&stc=1&d=1266629522]]></Screenshot>
-  <Author>stuckless</Author>
-  <CreationDate>2008.07.19</CreationDate>
-  <ModificationDate>@@last-modified@@</ModificationDate>
-  <Version>@@version@@</Version>
-  <Desktop>false</Desktop>
-  <ResourcePath>bmtweb</ResourcePath>
-  <Webpage><![CDATA[http://forums.sagetv.com/forums/downloads.php?do=file&id=239]]></Webpage>
+	<Name>Batch Metadata Tools - Web Interface</Name>
+	<Identifier>bmtweb</Identifier>
+	<Description>
+		Web Interface for Batch Metadata Tools, commonly referred
+		to as bmt. The web interface enables you to do edit metadata manually
+		from a web browser. In addition to simple editing of metadata, bmt is
+		build on the Phoenix APIs, and it provides a web interface to the
+		Phoenix Views. ie, It allows you to browser your media collection from
+		the web web browser. While browsing your collection you can also find
+		metadata and fanart for a group of media files, or for a single item.
+	</Description>
+	<Screenshot><![CDATA[http://forums.sagetv.com/forums/attachment.php?attachmentid=9772&stc=1&d=1266629522]]></Screenshot>
+	<Author>stuckless</Author>
+	<CreationDate>2008.07.19</CreationDate>
+	<ModificationDate>@@last-modified@@</ModificationDate>
+	<Version>@@version@@</Version>
+	<Desktop>false</Desktop>
+	<ResourcePath>bmtweb</ResourcePath>
+	<Webpage><![CDATA[http://forums.sagetv.com/forums/forumdisplay.php?f=46]]></Webpage>
 
-  <Dependency>
-    <Plugin>Jetty</Plugin>
-    <MinVersion>1.7</MinVersion>
-  </Dependency>
+	<Dependency>
+		<Plugin>Jetty</Plugin>
+		<MinVersion>1.7</MinVersion>
+	</Dependency>
 
-  <Dependency>
-    <Plugin>phoenix-core</Plugin>
-    <MinVersion>2.3</MinVersion>
-  </Dependency>
+	<Dependency>
+		<Plugin>phoenix-core</Plugin>
+		<MinVersion>2.3.3</MinVersion>
+	</Dependency>
 
-  <Dependency>
-    <Plugin>bmt</Plugin>
-    <MinVersion>4.8</MinVersion>
-  </Dependency>
+	<Dependency>
+		<Plugin>bmt</Plugin>
+		<MinVersion>4.8</MinVersion>
+	</Dependency>
 
-  <PluginType>Standard</PluginType>
+	<PluginType>Standard</PluginType>
 
-  <Package>
-    <PackageType>System</PackageType>
-    <Location>http://customsagetv.googlecode.com/files/bmtweb-war-@@version@@.zip</Location>
-    <MD5>@@war-checksum@@</MD5>
-  </Package>
+	<Package>
+		<PackageType>System</PackageType>
+		<Location>http://customsagetv.googlecode.com/files/bmtweb-war-@@version@@.zip
+		</Location>
+		<MD5>@@war-checksum@@</MD5>
+	</Package>
 
-  <!-- context file must be installed after the war file -->
-  <Package>
-    <PackageType>System</PackageType>
-    <Location>http://customsagetv.googlecode.com/files/bmtweb-context-@@version@@.zip</Location>
-    <MD5>@@context-checksum@@</MD5>
-  </Package>
-  <ReleaseNotes>
-4.9.1
-* Minor update that includes the ability to enable/disable channels (Configuration -> Channels) 
+	<!-- context file must be installed after the war file -->
+	<Package>
+		<PackageType>System</PackageType>
+		<Location>http://customsagetv.googlecode.com/files/bmtweb-context-@@version@@.zip
+		</Location>
+		<MD5>@@context-checksum@@</MD5>
+	</Package>
+	<ReleaseNotes>
+		4.9.2
+		* Minor update to add compatibility to a sagex-api change
+		 
+		4.9.1
+		* Minor update that includes the ability to
+		enable/disable channels
+		(Configuration -> Channels)
 
-4.9
-* Fixed bug in TV Scanner that caused some items to fail to be scanned correctly from the web ui
-* Fixed Group by Genres View
-* Fxied 'Movies' view to be 'Recorded Movies'
-* Added Batch Operations for generating .properties, generating thumbnails, and for fixing genres. 
+		4.9
+		* Fixed bug in TV
+		Scanner that caused some items to fail to be scanned
+		correctly from the
+		web ui
+		* Fixed Group by Genres View
+		* Fxied 'Movies' view to be
+		'Recorded Movies'
+		* Added Batch Operations for generating .properties,
+		generating
+		thumbnails, and for fixing genres.
 
-4.8
-* Updated to use newer phoenix apis
-* Fixed "metadata failed" error (imdb now works)
-* Searches will now use the selected metadata provider
- 
+		4.8
+		* Updated to use newer
+		phoenix apis
+		* Fixed "metadata failed" error (imdb now works)
+		* Searches
+		will now use the selected metadata provider
 
-4.6
-* Changed the UI so that it will only load a small number of items per view.  Large Views were slow to load on the UI and very frustrating.
-* Fixed Success Count in scanner to show correctly
-* Fixed issue with Scanner, since the scan progress was not being updated correctly  
-* Added Batch Operations to folder views.  You can now set watched/unwatched, archived/unarchived, import/unimport as tv, clean metadata, remove fanart, and remove properties.
-* Can apply custom image transformation (ie, scale, etc) to a mediaitem thumbnail.
-* Added Search Box to the Browser
 
-4.5
-* Fixed bug where ExternalID could be null, and cause a Cross Linked Metadata Issue
-  </ReleaseNotes>
+		4.6
+		* Changed the UI so that
+		it will only load a small number of items per
+		view. Large Views were
+		slow to load on the UI and very frustrating.
+		* Fixed Success Count in
+		scanner to show correctly
+		* Fixed issue with Scanner, since the scan
+		progress was not being
+		updated correctly
+		* Added Batch Operations to
+		folder views. You can now set
+		watched/unwatched, archived/unarchived,
+		import/unimport as tv, clean
+		metadata, remove fanart, and remove
+		properties.
+		* Can apply custom image transformation (ie, scale, etc) to
+		a mediaitem
+		thumbnail.
+		* Added Search Box to the Browser
+
+		4.5
+		* Fixed bug
+		where ExternalID could be null, and cause a Cross Linked
+		Metadata Issue
+	</ReleaseNotes>
 </SageTVPlugin>
