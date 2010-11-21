@@ -26,7 +26,11 @@ public class ServicesInit {
                 
                 try {
                     System.out.println("*** BEGIN Copying Phoenix files for Testing.... ***");
-                    FileUtils.copyDirectory(new File("/home/seans/DevelopmentProjects/workspaces/sagetv/Phoenix/src/main/STVs/Phoenix/"), new File("testing/Phoenix/"), new FileFilter() {
+                    File phoenix = new File("/home/sean/DevelopmentProjects/workspaces/sagetv/Phoenix/src/main/STVs/Phoenix/");
+                    if (!phoenix.exists()) {
+                    	throw new IOException("Invalid Phoenix Dir: " + phoenix);
+                    }
+                    FileUtils.copyDirectory(phoenix, new File("testing/Phoenix/"), new FileFilter() {
 						@Override
 						public boolean accept(File pathname) {
 							if (pathname.getName().endsWith(".svn")) return false;

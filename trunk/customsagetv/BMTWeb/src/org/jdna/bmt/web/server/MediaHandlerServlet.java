@@ -81,7 +81,7 @@ public class MediaHandlerServlet extends HttpServlet {
             }
             proxyMediaServlet(mediaUrl, req, resp);
         } else {
-            mediaHandler.hanleRequest(parts, req, resp);
+            mediaHandler.handleRequest(parts, req, resp);
         }
     }
 
