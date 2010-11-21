@@ -28,7 +28,7 @@ public class JsonRPCHandler extends AbstractRPCHandler implements SageHandler {
 		System.out.println("Sage Json RPC Servlet Created.");
 	}
 	
-	public void hanleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void handleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 0 - null
 		// 1 - rcpJson
 		// 2 - api

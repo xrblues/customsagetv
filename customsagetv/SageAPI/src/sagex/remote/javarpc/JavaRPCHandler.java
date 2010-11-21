@@ -21,7 +21,7 @@ public class JavaRPCHandler extends AbstractRPCHandler implements SageHandler {
 		System.out.println("Sage Java RPC Servlet Created.");
 	}
 
-	public void hanleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public void handleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String payload = req.getParameter(CMD_ARG);
 		resp.setContentType("text/plain");
 		PrintWriter pw = resp.getWriter();
