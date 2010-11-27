@@ -97,14 +97,10 @@ public class SagexServlet extends HttpServlet {
         log.info("Remote API Servlet initializing.");
         SagexConfiguration config = new SagexConfiguration();
         if (config.getBoolean(SagexConfiguration.PROP_ENABLE_HTTP, true)) {
-            // sagex.SageAPI.setProvider(new EmbeddedSageAPIProvider());
-
             // register our known handlers
-            sageHandlers.put(XMLRPCHandler.SAGE_RPC_PATH, new XMLRPCHandler());
-            sageHandlers.put(JavaRPCHandler.SAGE_RPC_PATH, new JavaRPCHandler());
-            sageHandlers.put(JsonRPCHandler.SAGE_RPC_PATH, new JsonRPCHandler());
             sageHandlers.put(MediaHandler.SERVLET_PATH, new MediaHandler());
-            sageHandlers.put(XMLXBMCHandler.SAGE_RPC_PATH, new XMLXBMCHandler());
+            
+            // This API handler handles json, nielm, and xml
             sageHandlers.put(ApiHandler.SAGE_RPC_PATH, new ApiHandler());
 
             log.info("Registered Handlers.");

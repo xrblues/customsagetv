@@ -14,6 +14,7 @@ public class SagexConfiguration {
     public static final String PROP_ENABLE_DISCOVERY = "sagex/api/enableRMIDiscovery";
     public static final String PROP_ENABLE_HTTP = "sagex/api/enableHTTP";
     public static final String PROP_HTTP_PORT = "sagex/api/httpPort";
+    public static final String PROP_REAPER_INTERVAL = "sagex/api/reaperInterval";
     
     public void set(String setting, String value) {
         Configuration.SetProperty(setting, value);

@@ -13,19 +13,21 @@ import sagex.remote.AbstractRPCHandler;
 import sagex.remote.RemoteRequest;
 import sagex.remote.RemoteResponse;
 import sagex.remote.SagexServlet.SageHandler;
+import sagex.remote.api.ApiHandler;
 import sagex.remote.factory.request.SageRPCRequestFactory;
 
 /**
  * Handles a XML RPC Request and Returns back an xml response
  * 
  * @author seans
- * 
+ * @deprecated - no longer supported - use {@link ApiHandler}
  */
 public class XMLRPCHandler extends AbstractRPCHandler implements SageHandler {
 	public static final String SAGE_RPC_PATH = "rpcXml";
 
 	public XMLRPCHandler() {
-		System.out.println("Sage Xml RPC Servlet Created.");
+		super();
+		log.info("Sage Xml RPC Servlet Created.");
 	}
 	
 	public void handleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

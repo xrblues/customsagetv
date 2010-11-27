@@ -2,10 +2,13 @@ package sagex.remote;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
 import sagex.SageAPI;
+import sagex.util.ILog;
+import sagex.util.LogProvider;
 
 /**
  * Accepts RemoteRequest object and returns a RemoteResponse object.
@@ -26,10 +29,27 @@ import sagex.SageAPI;
  * 
  */
 public abstract class AbstractRPCHandler implements IRCPHandler {
-	// for now we are using a weak hashmap, but we really should use a thread
-	// and clean out stale items ourself.
-	private Map<String, Object> objectRefs = new HashMap<String, Object>();
-
+	protected ILog log = LogProvider.getLogger(this.getClass()); 
+	
+	/**
+	 * Simple object reference for tracking when a reference has been accessed.
+	 * @author sean
+	 */
+	private class ObjRef {
+		private long accessed;
+		private Object object;
+		public ObjRef(Object o) {
+			this.object=o;
+			this.accessed=System.currentTimeMillis();
+		}
+	}
+	
+	private Map<String, ObjRef> objectRefs = new HashMap<String, ObjRef>();
+	
+	public AbstractRPCHandler() {
+		RemoteObjectReaper.getInstance().manageObjects(this);
+	}
+	
 	public void handleRPCCall(RemoteRequest request, RemoteResponse response) {
 		try {
 			// convert object references in the request into real sage references...
@@ -39,7 +59,7 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 					Object o = oArr[i];
 					if (o==null) continue;
 					if (o.getClass().isArray() && RemoteObjectRef.class.isAssignableFrom(o.getClass().getComponentType())) {
-						System.out.println("Converting Remote Object Reference Array into a Sage Array.");
+						log.debug("Converting Remote Object Reference Array into a Sage Array.");
 						// check if the incomming object parameter is an array of RemoteObjectReferences
 						// if so, then convert the array, into a real array
 						Object oo[] = (Object[])o;
@@ -51,7 +71,7 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 							oArr[i] = new Object[0];
 						}
 					} else if (o instanceof RemoteObjectRef) {
-						System.out.println("Converting Remote Object Reference into a Sage Reference.");
+						log.debug("Converting Remote Object Reference into a Sage Reference.");
 						RemoteObjectRef ref = (RemoteObjectRef) o;
 						// replace this reference with the real thing...
 						Object oref = getReference(ref);
@@ -128,8 +148,7 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 			// send back the data
 			response.setData(finalReply);
 		} catch (Throwable t) {
-			System.out.printf("----------- Sage Handling of a Remote Command Failed: %s ---------\n", request);
-			t.printStackTrace(System.out);
+			log.warn(String.format("----------- Sage Handling of a Remote Command Failed: %s ---------\n", request), t);
 			response.setError(404, "Command Failed: " + (request != null ? request.getCommand() : ""), t);
 		}
 	}
@@ -149,16 +168,40 @@ public abstract class AbstractRPCHandler implements IRCPHandler {
 	}
 
 	public Object getReference(RemoteObjectRef ref) {
-		if (ref == null)
-			throw new RuntimeException("Object Reference is null");
+		if (ref == null) throw new RuntimeException("RemoteObjectRef is null");
 		try {
-			return objectRefs.get(ref.getId());
+			ObjRef r = objectRefs.get(ref.getId());
+			if (r==null) {
+				throw new RuntimeException("No object reference for " + ref.getId());
+			}
+			r.accessed=System.currentTimeMillis();
+			return r.object;
 		} catch (Throwable t) {
-			throw new RuntimeException("Invalid Object Reference: " + ref.getId() + "; It may be that the reference has been cleaned up.");
+			throw new RuntimeException("Invalid Object Reference: " + ref.getId() + "; It may be that the reference has been cleaned up.", t);
 		}
 	}
 
 	public void setReference(RemoteObjectRef ref, Object o) {
-		objectRefs.put(ref.getId(), o);
+		log.debug("Adding Object Reference: " + ref.getId());
+		objectRefs.put(ref.getId(), new ObjRef(o));
+	}
+
+	/**
+	 * Iterates the object references, and cleans out any objects that have not been accessed in the maxexpiry time
+	 * 
+	 * @param maxexpiry expire objects that have not been accessed since this many ms
+	 */
+	public void cleanObjectReferences(long maxexpiry) {
+		int removed = 0;
+		for (Iterator<Map.Entry<String, ObjRef>> i = objectRefs.entrySet().iterator(); i.hasNext();) {
+			Map.Entry<String, ObjRef> me = i.next();
+			if (System.currentTimeMillis() - me.getValue().accessed > maxexpiry) {
+				i.remove();
+				removed++;
+			}
+		}
+		if (removed>0) {
+			log.info("Removed " + removed + " stale remote objects.");
+		}
 	}
 }

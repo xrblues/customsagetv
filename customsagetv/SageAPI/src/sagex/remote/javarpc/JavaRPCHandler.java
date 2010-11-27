@@ -12,13 +12,20 @@ import sagex.remote.MarshalUtils;
 import sagex.remote.RemoteRequest;
 import sagex.remote.RemoteResponse;
 import sagex.remote.SagexServlet.SageHandler;
+import sagex.remote.rmi.RMIRPCHandler;
 
+/**
+ * @deprecated use {@link RMIRPCHandler}
+ * @author sean
+ *
+ */
 public class JavaRPCHandler extends AbstractRPCHandler implements SageHandler {
 	public static final String SAGE_RPC_PATH = "rpcJava";
 	public static final String CMD_ARG = "request";
 
 	public JavaRPCHandler() {
-		System.out.println("Sage Java RPC Servlet Created.");
+		super();
+		log.info("Sage Java RPC Servlet Created.");
 	}
 
 	public void handleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

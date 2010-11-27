@@ -13,21 +13,24 @@ import sagex.remote.AbstractRPCHandler;
 import sagex.remote.RemoteRequest;
 import sagex.remote.RemoteResponse;
 import sagex.remote.SagexServlet.SageHandler;
+import sagex.remote.api.ApiHandler;
 import sagex.remote.factory.request.SageRPCRequestFactory;
 
 /**
  * Handles a JSON RPC Request and Returns back an json response
  * 
  * @author seans
- * 
+ * @deprecated - no longer supported - use {@link ApiHandler}
  */
 public class JsonRPCHandler extends AbstractRPCHandler implements SageHandler {
 	public static final String SAGE_RPC_PATH = "rpcJson";
 
 	public JsonRPCHandler() {
-		System.out.println("Sage Json RPC Servlet Created.");
+		super();
+		log.info("Sage Json RPC Servlet Created.");
 	}
 	
+	@Override
 	public void handleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 0 - null
 		// 1 - rcpJson

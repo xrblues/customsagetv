@@ -18,7 +18,7 @@
 
   <Dependency>
     <Plugin>sagex-api</Plugin>
-    <MinVersion>7.0.21</MinVersion>
+    <MinVersion>7.0.23</MinVersion>
   </Dependency>
 
   <PluginType>Standard</PluginType>
@@ -33,6 +33,10 @@
   <ImplementationClass>sagex.plugin.impl.SagexRemoteAPIPlugin</ImplementationClass>
 
   <ReleaseNotes>
+7.0.23.2
+* Deprecated legacy xml, json, xbmc, and java remote interfaces
+* Added RMI Reaper for cleaning up Remote RMI objects
+  
 7.0.21
 * Added 404 when images are not found
 * Merged broconne's Music Image media handler patch
