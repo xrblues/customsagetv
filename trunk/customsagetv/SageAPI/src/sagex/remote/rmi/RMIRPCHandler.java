@@ -11,5 +11,6 @@ import sagex.remote.AbstractRPCHandler;
 public class RMIRPCHandler extends AbstractRPCHandler {
     public RMIRPCHandler() {
         super();
+        log.info("RMI Sage API Handler created");
     }
 }

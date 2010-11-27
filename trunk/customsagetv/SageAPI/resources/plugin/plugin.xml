@@ -20,6 +20,10 @@
   </Package>
 
   <ReleaseNotes>
+7.0.23.2
+* Deprecated legacy xml, json, and xbmc remote interfaces
+* Added RMI Reaper for cleaning up Remote RMI objects
+
 7.0.11.0
 * Added Validation Support (IPropertyValidator)
 * Fixed bug in the AbstractPlugin where null configuration values could never be set to a value.
