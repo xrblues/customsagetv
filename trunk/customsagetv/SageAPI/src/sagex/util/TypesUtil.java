@@ -98,6 +98,8 @@ public class TypesUtil {
             return toDouble(value, 0.0d);
         } else if (returnType == Date.class) {
             return toDate(value);
+        } else if (returnType == Object.class) {
+            return value;
         } else {
             log.warn("Unhandled fromString() conversion, return null for type: " + returnType);
         }
@@ -127,6 +129,8 @@ public class TypesUtil {
             return String.valueOf(in);
         } else if (type == Date.class) {
         	return String.valueOf(((Date)in).getTime());
+        } else if (type == Object.class) {
+        	return in.toString();
         } else {
             log.warn("Unhandled toString() conversion, return null for type: " + type);
         }
