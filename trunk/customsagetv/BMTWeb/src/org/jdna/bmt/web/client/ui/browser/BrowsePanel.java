@@ -88,7 +88,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         });
         browserActions.add(backButton);
         
-        updateMetadataButton = new Button("Update Metadata", new ClickHandler() {
+        updateMetadataButton = new Button("Update Metadata ...", new ClickHandler() {
             public void onClick(ClickEvent event) {
                 final PersistenceOptionsUI options = new PersistenceOptionsUI();
                 options.getScanPath().set(currentFolder);

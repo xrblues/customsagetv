@@ -4,7 +4,21 @@
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-
+  <display-name>Batch Metadata Tools - Web Interface</display-name>
+  <description>
+		Web Interface for Batch Metadata Tools, commonly referred
+		to as bmt. The web interface enables you to do edit metadata manually
+		from a web browser. In addition to simple editing of metadata, bmt is
+		build on the Phoenix APIs, and it provides a web interface to the
+		Phoenix Views. ie, It allows you to browser your media collection from
+		the web web browser. While browsing your collection you can also find
+		metadata and fanart for a group of media files, or for a single item.
+		
+		BMT also provides a number of other batch tools for cleaning up metadata, or
+		performing some common operations.  Some of these include; Exporting a
+		.properties for some or all mediafiles; Cleaning up Genres; Setting the
+		watched status on files, etc
+  </description>
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>BMTWeb.html</welcome-file>

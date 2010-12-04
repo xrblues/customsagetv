@@ -10,6 +10,11 @@
 		Phoenix Views. ie, It allows you to browser your media collection from
 		the web web browser. While browsing your collection you can also find
 		metadata and fanart for a group of media files, or for a single item.
+		
+		BMT also provides a number of other batch tools for cleaning up metadata, or
+		performing some common operations.  Some of these include; Exporting a
+		.properties for some or all mediafiles; Cleaning up Genres; Setting the
+		watched status on files, etc
 	</Description>
 	<Screenshot><![CDATA[http://forums.sagetv.com/forums/attachment.php?attachmentid=9772&stc=1&d=1266629522]]></Screenshot>
 	<Author>stuckless</Author>
@@ -27,7 +32,7 @@
 
 	<Dependency>
 		<Plugin>phoenix-core</Plugin>
-		<MinVersion>2.3.3</MinVersion>
+		<MinVersion>2.3.6</MinVersion>
 	</Dependency>
 
 	<Dependency>
@@ -52,6 +57,11 @@
 		<MD5>@@context-checksum@@</MD5>
 	</Package>
 	<ReleaseNotes>
+		4.9.3
+		* Added Batch tools to clean up titles (ie, either adding relative path or removing relative path)
+		* Fixed Search Dialog on Find Metadata (numerous issues; it should not discover, search, and update correctly)
+		* Added TV Series Info Id and VFS Id fields to the metadata view
+		
 		4.9.2
 		* Minor update to add compatibility to a sagex-api change
 		 

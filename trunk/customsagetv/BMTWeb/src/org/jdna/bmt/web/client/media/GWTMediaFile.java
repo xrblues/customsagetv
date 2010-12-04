@@ -23,6 +23,8 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
     
     private String showId;
     private String airingId;
+    private String seriesInfoId;
+    private String vfsId;
     
     public GWTMediaFile() {
     }
@@ -86,7 +88,23 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
     public void setShowId(String showId) {
         this.showId = showId;
     }
+    
+    public String getSeriesInfoId() {
+    	return seriesInfoId;
+    }
+    
+    public void setSeriesInfoId(String id) {
+    	this.seriesInfoId=id;
+    }
 
+    public String getVFSID() {
+    	return vfsId;
+    }
+    
+    public void setVFSID(String id) {
+    	this.vfsId=id;
+    }
+    
     public String getAiringId() {
         return airingId;
     }

@@ -46,6 +46,7 @@ import sagex.phoenix.metadata.IMetadata;
 import sagex.phoenix.metadata.IMetadataOptions;
 import sagex.phoenix.metadata.IMetadataProvider;
 import sagex.phoenix.metadata.IMetadataSearchResult;
+import sagex.phoenix.metadata.ISeriesInfo;
 import sagex.phoenix.metadata.MediaArt;
 import sagex.phoenix.metadata.MediaArtifactType;
 import sagex.phoenix.metadata.MediaType;
@@ -53,6 +54,7 @@ import sagex.phoenix.metadata.MetadataConfiguration;
 import sagex.phoenix.metadata.MetadataException;
 import sagex.phoenix.metadata.PhoenixMetadataSupport;
 import sagex.phoenix.metadata.persistence.PersistenceUtil;
+import sagex.phoenix.metadata.provider.tvdb.TVDBMetadataProvider;
 import sagex.phoenix.metadata.proxy.MetadataProxy;
 import sagex.phoenix.metadata.search.MediaSearchResult;
 import sagex.phoenix.metadata.search.MetadataSearchUtil;
@@ -80,6 +82,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	private static final Logger log = Logger.getLogger(BrowsingServicesImpl.class);
 
 	public GWTMediaResource[] browseChildren(GWTMediaFolder folder, int start, int pageSize) {
+		log.info("Browsing Folder: " + folder.getTitle() + "; Start: " + start + "; Size: " + pageSize);
 		IMediaFolder vfsFolder = null;
 		vfsFolder = getFolderRef(folder);
 		List<GWTMediaResource> files = new ArrayList<GWTMediaResource>();
@@ -102,7 +105,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 
 	public static GWTMediaResource convertResource(IMediaResource r, HttpServletRequest req) {
 		if (r instanceof IMediaFolder) {
-			GWTMediaFolder folder = new GWTMediaFolder(null, phoenix.api.GetMediaTitle(r), ((IMediaFolder) r).getChildren().size());
+			GWTMediaFolder folder = new GWTMediaFolder(null, phoenix.media.GetTitle(r), ((IMediaFolder) r).getChildren().size());
 			folder.setResourceRef(String.valueOf(r.hashCode()));
 			setFolderRef((IMediaFolder) r, req);
 			folder.setPath(PathUtils.getLocation(r));
@@ -148,8 +151,14 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 					file.getSageRecording().set(MediaFileAPI.IsTVFile(sageMedia));
 					file.getIsLibraryFile().set(MediaFileAPI.IsLibraryFile(sageMedia));
 					file.getIsWatched().set(AiringAPI.IsWatched(sageMedia));
+					
+					ISeriesInfo info = phoenix.media.GetSeriesInfo((IMediaFile)r);
+					if (info!=null) {
+						file.setSeriesInfoId(info.getSeriesInfoID());
+					}
+					file.setVFSID(r.getId());
 				} else {
-					log.debug("Not a sage media object??");
+					log.warn("Not a sage media object??");
 				}
 				log.debug("Setting Last Modified: " + file + "; " + r.lastModified());
 				file.setLastModified(r.lastModified());
@@ -190,31 +199,31 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	}
 
 	public GWTMediaFolder getFolderForSource(GWTFactoryInfo source, GWTMediaFolder folder) {
-		log.debug("Getting Folder for source: " + source);
+		log.info("Getting Folder for source: " + source);
 
 		try {
 			if (source.getSourceType() == SourceType.View) {
-
 				ViewFactory factory = null;
-				if (source.getSourceType() == SourceType.View) {
-					factory = Phoenix.getInstance().getVFSManager().getVFSViewFactory().getFactory(source.getId());
-				} else {
-					log.warn("Inavlid Source: " + source.getId());
+				if (source.getSourceType() != SourceType.View) {
+					throw new Exception("Not a valid View Source: " + source.getId());
 				}
-
-				if (factory != null) {
-					IMediaFolder f = factory.create(null);
-					setFolderRef(f);
-					log.debug("**** Returning newly created folder: " + f);
-					return (GWTMediaFolder) convertResource(f);
-				} else {
-					log.warn("Failed to get factory for: " + source.getId());
+				
+				factory = Phoenix.getInstance().getVFSManager().getVFSViewFactory().getFactory(source.getId());
+				if (factory ==null) {
+					throw new Exception("No Factory for: " + source.getId());
 				}
-			} else {
-				log.error("Unhandled Factory: " + source.getId());
+				
+				IMediaFolder f = factory.create(null);
+				if (f==null) {
+					throw new Exception("Failed to create folder for " + source.getId());
+				}
+					
+				setFolderRef(f);
+				log.debug("Returning newly created folder: " + f.getTitle() + "; Size: " + f.getChildren().size());
+				return (GWTMediaFolder) convertResource(f);
 			}
 		} catch (Throwable t) {
-			t.printStackTrace();
+			log.warn("Failed to get folder for source: " + source.getId(), t);
 		}
 
 		return null;
@@ -695,13 +704,23 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			SearchQuery query = SearchQueryFactory.getInstance().createQuery(mf);
 
 			SearchQueryOptions options = new SearchQueryOptions();
-			options.getSearchTitle().set(query.get(Field.RAW_TITLE));
+			String title = query.get(Field.RAW_TITLE);
+			if (title!=null) {
+				title.trim();
+				title = title.replaceAll("[^a-zA-Z0-9]+$", "");
+			}
+			options.getSearchTitle().set(title);
 			options.getYear().set(query.get(Field.YEAR));
 			options.getType().set(query.getMediaType().sageValue());
 
 			options.getEpisodeTitle().set(query.get(Field.EPISODE_TITLE));
 			options.getEpisode().set(query.get(Field.EPISODE));
 			options.getSeason().set(query.get(Field.SEASON));
+			
+			if (query.getMediaType() == MediaType.TV) {
+				options.getProvider().set(TVDBMetadataProvider.ID);
+			}
+			
 			return options;
 		} catch (Throwable t) {
 			log.warn("discoverQueryOptions failed.", t);
