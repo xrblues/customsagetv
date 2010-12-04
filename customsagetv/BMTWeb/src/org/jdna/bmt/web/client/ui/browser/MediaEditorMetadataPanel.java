@@ -73,6 +73,9 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
 	private CheckBox sageRecording;
 	private CheckBox archived;
 	private CheckBox watched;
+	
+	private TextBox seriesInfoId;
+	private TextBox vfsId;
     
     public MediaEditorMetadataPanel(GWTMediaFile mediaFile, BrowserView view) {
         this.browserView = view;
@@ -226,9 +229,11 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         panel.add("Genre", new Label(sb.toString()));
         panel.add("IMDb Id", new Label(metadata.getIMDBID().get()));
         panel.add("Metadata Id", new Label(metadata.getMediaProviderDataID().get()));
-        panel.add("Media Id", new Label(String.valueOf(mediaFile.getSageMediaFileId())));
-        panel.add("Airing Id", new Label(String.valueOf(mediaFile.getAiringId())));
-        panel.add("Show Id", new Label(String.valueOf(mediaFile.getShowId())));
+        panel.add("Sage MediaFile Id", new Label(String.valueOf(mediaFile.getSageMediaFileId())));
+        panel.add("Sage Airing Id", new Label(String.valueOf(mediaFile.getAiringId())));
+        panel.add("Sage Show Id", new Label(String.valueOf(mediaFile.getShowId())));
+        panel.add("Sage Series Info Id", new Label(mediaFile.getSeriesInfoId()));
+        panel.add("VFS Id", new Label(mediaFile.getVFSID()));
         panel.add("Location", new Label(mediaFile.getPath()));
 
         cols.add(panel);

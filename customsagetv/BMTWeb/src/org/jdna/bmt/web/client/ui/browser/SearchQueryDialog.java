@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -289,14 +290,24 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
 			@Override
 			public void onSuccess(SearchQueryOptions result) {
 				searchTitle.setText(result.getSearchTitle().get());
+				ValueChangeEvent.fire(searchTitle, result.getSearchTitle().get());
+				
 				year.setText(result.getYear().get());
+				ValueChangeEvent.fire(year, result.getYear().get());
+
 				episodeTitle.setText(result.getEpisodeTitle().get());
+				ValueChangeEvent.fire(episodeTitle, result.getEpisodeTitle().get());
+				
 				season.setText(result.getSeason().get());
+				ValueChangeEvent.fire(season, result.getSeason().get());
+				
 				episode.setText(result.getEpisode().get());
+				ValueChangeEvent.fire(episode, result.getEpisode().get());
 				
 				for (int i=0;i<type.getItemCount();i++) {
 					if (type.getValue(i).equals(result.getType().get())) {
 						type.setSelectedIndex(i);
+						DomEvent.fireNativeEvent(Document.get().createChangeEvent(), type);
 						break;
 					}
 				}
@@ -304,6 +315,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
 				for (int i=0;i<providers.getItemCount();i++) {
 					if (providers.getValue(i).equals(result.getProvider().get())) {
 						providers.setSelectedIndex(i);
+						DomEvent.fireNativeEvent(Document.get().createChangeEvent(), providers);
 						break;
 					}
 				}

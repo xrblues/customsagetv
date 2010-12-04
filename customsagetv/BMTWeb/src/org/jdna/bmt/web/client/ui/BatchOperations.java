@@ -120,6 +120,36 @@ public class BatchOperations {
 		op.setBackground(true);
 		op.setConfirm("Press OK to export a SageTV7 compatible thumbnail.  This will generate a .jpg in the same folder as the media item for each media file.  It will not overwrite existing thumbnails.");
 		operations.add(op);
+
+		op = new BatchOperation();
+		op.setVisitorClass("sagex.phoenix.vfs.visitors.FixTitlesVisitor");
+		op.setVisitorArg(true);
+		op.setLabel("Add Relative Path to Titles");
+		op.setStartMessage("Adding Relative path to titles");
+		op.setCompleteMessage("Titles have been updated.  You may need to refresh the browser.");
+		op.setBackground(true);
+		op.setConfirm("Press OK to update the titles for ALL non Sage Recordings so that they include a relative path in the title.  Sage documents that Title field, for videos should have a relative path, but this appears to cause issues when grouping TV shows that are NOT a sage recording.");
+		operations.add(op);
+
+		op = new BatchOperation();
+		op.setVisitorClass("sagex.phoenix.vfs.visitors.FixTitlesVisitor");
+		op.setVisitorArg(false);
+		op.setLabel("Remove Relative Path from Titles");
+		op.setStartMessage("Removing Relative path from titles");
+		op.setCompleteMessage("Titles have been updated.  You may need to refresh the browser.");
+		op.setBackground(true);
+		op.setConfirm("Press OK to update the titles for ALL non Sage Recordings so that they no longer include a relative path in the title.  Sage documents that Title field, for videos (not recordings) should have a relative path, but this appears to cause issues when grouping TV shows that are NOT a sage recording.");
+		operations.add(op);
+
+		op = new BatchOperation();
+		op.setVisitorClass("sagex.phoenix.vfs.visitors.TVSeriesVisitor");
+		op.setLabel("Associate TV Series Information");
+		op.setStartMessage("Attempting to locate TVSeries information for TV files.  This may take awhile.");
+		op.setCompleteMessage("TV Series Scan is now complete");
+		op.setBackground(true);
+		op.setConfirm("Press OK to locate TV Series information for your TV Files.  This process will search both Recordings and TV files and attempt to associate a TV Series Info to each file.  In the event that we can't find a TV Series Info in the SageTV Series Information, then we will attempt to locate and add TV Series Info from TVDB");
+		operations.add(op);
+	
 	}
 	
 	public List<BatchOperation> getBatchOperations() {

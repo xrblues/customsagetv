@@ -82,7 +82,11 @@ public class BrowsingServicesManager {
             }
             
             public void onSuccess(GWTMediaFolder result) {
-           		browseFolder(result, 0, (result==null)?0:result.getPageSize());
+            	if (result==null) {
+            		onFailure(new Exception("Server Replied with no information"));
+            	} else {
+            		browseFolder(result, 0, (result==null)?0:result.getPageSize());
+            	}
             }
         });
     }
