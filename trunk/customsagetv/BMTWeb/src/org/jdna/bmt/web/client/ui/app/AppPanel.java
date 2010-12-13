@@ -5,24 +5,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jdna.bmt.web.client.Application;
+import org.jdna.bmt.web.client.Version;
 import org.jdna.bmt.web.client.animation.FadeOut;
 import org.jdna.bmt.web.client.event.Notification;
 import org.jdna.bmt.web.client.event.NotificationEvent;
-import org.jdna.bmt.web.client.event.NotificationEventHandler;
 import org.jdna.bmt.web.client.event.NotificationEvent.MessageType;
+import org.jdna.bmt.web.client.event.NotificationEventHandler;
 import org.jdna.bmt.web.client.ui.BatchOperation;
 import org.jdna.bmt.web.client.ui.BatchOperations;
 import org.jdna.bmt.web.client.ui.browser.BrowsePanel;
 import org.jdna.bmt.web.client.ui.debug.BackupPanel;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesPanel;
+import org.jdna.bmt.web.client.ui.prefs.PreferencesService;
+import org.jdna.bmt.web.client.ui.prefs.PreferencesServiceAsync;
 import org.jdna.bmt.web.client.ui.status.StatusPanel;
 import org.jdna.bmt.web.client.ui.util.CommandItem;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
+import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.util.Log;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -30,12 +38,14 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -92,6 +102,17 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         });
         refresh.addStyleName("App-Refresh");
 
+        
+        Hyperlink help = new Hyperlink(Application.labels().help(), "help");
+        help.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+            	showHelp();
+            }
+
+        });
+        help.addStyleName("App-Help");
+        
+        
         final Hyperlink toolMenu = new Hyperlink(Application.labels().toolMenu(), "toolmenu");
         toolMenu.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -110,10 +131,17 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
                         showSupportRequestDialog();
                     }
                 }));
+                
                 vp.add(new CommandItem(null, "Manage Backups", new Command() {
                     public void execute() {
                         pp.hide();
                         History.newItem("backup");
+                    }
+                }));
+
+                vp.add(new CommandItem(null, "Fix Custom Metadata Fields", new Command() {
+                    public void execute() {
+                    	fixCustomMetadataFields();
                     }
                 }));
                 
@@ -147,12 +175,14 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         hp.add(browse);
         hp.add(toolMenu);
         hp.add(refresh);
+        hp.add(help);
         
         header.setWidget(0,1,hp);
         header.getCellFormatter().setHorizontalAlignment(0,1,HasHorizontalAlignment.ALIGN_RIGHT);
         
         dp.add(header, DockPanel.NORTH);
         dp.setCellHorizontalAlignment(header, HasHorizontalAlignment.ALIGN_RIGHT);
+        dp.setCellVerticalAlignment(header, HasVerticalAlignment.ALIGN_MIDDLE);
         
         HorizontalPanel messages = new HorizontalPanel();
         messages.addStyleName("Header-Messages");
@@ -200,6 +230,22 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
 			}
 		};
 		t.scheduleRepeating(1000);
+
+		String showNewInstall = Cookies.getCookie("bmt-lastversion");
+		if (showNewInstall==null || !showNewInstall.equals(Version.VERSION)) {
+			Cookies.setCookie("bmt-lastversion", Version.VERSION);
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					DialogBox d = Dialogs.showAsDialog("Batch Metadata Tools Updated", new AboutDialog());
+					d.addCloseHandler(new CloseHandler<PopupPanel>() {
+						@Override
+						public void onClose(CloseEvent<PopupPanel> event) {
+						}
+					});
+				}
+			});
+		}
     }
 
     private void showSupportRequestDialog() {
@@ -227,6 +273,12 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
     private void setBackupPanel() {
         setPanel(new BackupPanel());
     }
+    
+	private void showHelp() {
+		Dialogs.showAsDialog("Help", new HelpDialog());
+		//BatchOperationsDialog d = new BatchOperationsDialog();
+		//d.show();
+	}
 
     private void setPanel(Widget panel) {
         if (curPanel!=null) {
@@ -275,6 +327,8 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
             setConfigurePanel();
         } else if ("browsing".equals(section)) {
             setBrowsePanel(params);
+        } else if ("support".equals(section)) {
+            showSupportRequestDialog();
         } else if ("backup".equals(section)) {
             setBackupPanel();
         //} else if ("refresh".equals(section)) {
@@ -324,4 +378,19 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         FadeOut out = new FadeOut(message);
         out.run(1000, System.currentTimeMillis()+3000);
     }
+
+    private void fixCustomMetadataFields() {
+    	 PreferencesServiceAsync preferencesService = GWT.create(PreferencesService.class);
+    	 preferencesService.refreshCustomMetadataFields(new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Application.fireErrorEvent("Failed to refresh fields", caught);
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				Application.fireNotification("The custom metadata fields have been reset.  SageTV will need to be restarted for the changes to take effect.");
+			}
+		});
+	}
 }

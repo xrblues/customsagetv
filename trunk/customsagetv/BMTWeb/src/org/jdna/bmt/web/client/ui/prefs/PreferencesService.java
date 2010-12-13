@@ -31,4 +31,6 @@ public interface PreferencesService extends RemoteService {
     
     public ArrayList<Channel> getChannels();
     public ArrayList<Channel> saveChannels(ArrayList<Channel> channels);
+    
+    public void refreshCustomMetadataFields();
 }

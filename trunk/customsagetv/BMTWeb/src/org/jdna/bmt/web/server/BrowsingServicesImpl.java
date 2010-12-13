@@ -18,6 +18,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.media.GWTCastMember;
 import org.jdna.bmt.web.client.media.GWTFactoryInfo;
+import org.jdna.bmt.web.client.media.GWTFactoryInfo.SourceType;
 import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
@@ -26,7 +27,6 @@ import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.media.GWTMediaSearchResult;
 import org.jdna.bmt.web.client.media.GWTPersistenceOptions;
 import org.jdna.bmt.web.client.media.GWTProviderInfo;
-import org.jdna.bmt.web.client.media.GWTFactoryInfo.SourceType;
 import org.jdna.bmt.web.client.ui.browser.BrowsingService;
 import org.jdna.bmt.web.client.ui.browser.PersistenceOptionsUI;
 import org.jdna.bmt.web.client.ui.browser.ProgressStatus;
@@ -43,7 +43,6 @@ import sagex.phoenix.metadata.CastMember;
 import sagex.phoenix.metadata.ICastMember;
 import sagex.phoenix.metadata.IMediaArt;
 import sagex.phoenix.metadata.IMetadata;
-import sagex.phoenix.metadata.IMetadataOptions;
 import sagex.phoenix.metadata.IMetadataProvider;
 import sagex.phoenix.metadata.IMetadataSearchResult;
 import sagex.phoenix.metadata.ISeriesInfo;
@@ -52,6 +51,7 @@ import sagex.phoenix.metadata.MediaArtifactType;
 import sagex.phoenix.metadata.MediaType;
 import sagex.phoenix.metadata.MetadataConfiguration;
 import sagex.phoenix.metadata.MetadataException;
+import sagex.phoenix.metadata.MetadataHints;
 import sagex.phoenix.metadata.PhoenixMetadataSupport;
 import sagex.phoenix.metadata.persistence.PersistenceUtil;
 import sagex.phoenix.metadata.provider.tvdb.TVDBMetadataProvider;
@@ -59,10 +59,11 @@ import sagex.phoenix.metadata.proxy.MetadataProxy;
 import sagex.phoenix.metadata.search.MediaSearchResult;
 import sagex.phoenix.metadata.search.MetadataSearchUtil;
 import sagex.phoenix.metadata.search.SearchQuery;
-import sagex.phoenix.metadata.search.SearchQueryFactory;
 import sagex.phoenix.metadata.search.SearchQuery.Field;
+import sagex.phoenix.metadata.search.SearchQueryFactory;
 import sagex.phoenix.progress.TrackedItem;
 import sagex.phoenix.util.DateUtils;
+import sagex.phoenix.util.Hints;
 import sagex.phoenix.util.url.UrlUtil;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaFolder;
@@ -340,8 +341,10 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			if (!StringUtils.isEmpty(source.getExternalID())) {
 				mi.getExternalID().set(source.getExternalID());
 			} else {
+				log.warn("ExternalID was empty. Re-populating the ExternalID.  This is most likely because the user has ExternalID in their list of custom_metadata_fields.");
 				if (file != null && file.getMetadata() != null) {
-					mi.getExternalID().set(file.getMetadata().getExternalID());
+					Object smf = phoenix.media.GetSageMediaFile(file);
+					mi.getExternalID().set(ShowAPI.GetShowExternalID(smf));
 				}
 			}
 			mi.getIMDBID().set(source.getIMDBID());
@@ -400,7 +403,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			MediaType type = MediaType.toMediaType(options.getType().get());
 
 			// build a custom query from the options
-			SearchQuery query = new SearchQuery();
+			SearchQuery query = new SearchQuery(Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions());
 			query.setMediaType(type);
 			query.set(Field.QUERY, options.getSearchTitle().get());
 			query.set(Field.YEAR, options.getYear().get());
@@ -449,10 +452,10 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		log.debug("Scanning Folder: " + folder);
 		try {
 			IMediaFolder realFolder = BrowsingServicesImpl.getFolderRef(folder, getThreadLocalRequest());
-			IMetadataOptions opts = Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions();
-			opts.setIsScanningOnlyMissingMetadata(options.getScanOnlyMissingMetadata().get());
-			opts.setIsScanningSubFolders(options.getIncludeSubDirs().get());
-			opts.setIsImportTVAsRecordings(options.getImportTVAsRecordings().get());
+			Hints opts = Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions();
+			opts.setBooleanHint(MetadataHints.SCAN_MISSING_METADATA_ONLY, options.getScanOnlyMissingMetadata().get());
+			opts.setBooleanHint(MetadataHints.SCAN_SUBFOLDERS, options.getIncludeSubDirs().get());
+			opts.setBooleanHint(MetadataHints.IMPORT_TV_AS_RECORDING, options.getImportTVAsRecordings().get());
 			return (String) support.startMetadataScan(realFolder, opts);
 		} catch (Exception e) {
 			log.warn("Failed to start metadata scan", e);
@@ -530,14 +533,15 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	}
 
 	public ServiceReply<GWTMediaFile> saveMetadata(GWTMediaFile file, PersistenceOptionsUI uiOptions) {
-		IMetadataOptions options = Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions();
+		Hints options = Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions();
 		// don't allow the persistence engine to do this, since we'll do it,
 		// later
-		options.setIsImportTVAsRecordings(false);
-		options.setIsScanningOnlyMissingMetadata(false);
-		options.setIsScanningSubFolders(false);
+		options.setBooleanHint(MetadataHints.IMPORT_TV_AS_RECORDING,false);
+		options.setBooleanHint(MetadataHints.SCAN_MISSING_METADATA_ONLY, false);
+		options.setBooleanHint(MetadataHints.SCAN_SUBFOLDERS, false);
 
-		IMediaFile mf = new SageMediaFile(null, phoenix.api.GetSageMediaFile(file.getSageMediaFileId()));
+		Object sageMF = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
+		IMediaFile mf = new SageMediaFile(null, sageMF);
 		IMetadata md = MetadataProxy.newInstance();
 		GWTMediaMetadata gmd = file.getMetadata();
 
@@ -546,7 +550,14 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		md.setEpisodeName(gmd.getEpisodeName().get());
 		md.setEpisodeNumber(NumberUtils.toInt(gmd.getEpisodeNumber().get()));
 		md.setExtendedRatings(gmd.getExtendedRatings().get());
-		md.setExternalID(gmd.getExternalID().get());
+		
+		if (StringUtils.isEmpty(gmd.getExternalID().get())) {
+			log.warn("ExternalID was empty: Using ExternalID from the Show.");
+			md.setExternalID(ShowAPI.GetShowExternalID(sageMF));
+		} else {
+			md.setExternalID(gmd.getExternalID().get());
+		}
+		
 		md.setIMDBID(gmd.getIMDBID().get());
 		md.setMediaProviderDataID(gmd.getMediaProviderDataID().get());
 		md.setMediaProviderID(gmd.getMediaProviderID().get());
@@ -701,14 +712,14 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		try {
 			Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
 			IMediaFile mf = phoenix.media.GetMediaFile(sageMF);
-			SearchQuery query = SearchQueryFactory.getInstance().createQuery(mf);
+			SearchQuery query = SearchQueryFactory.getInstance().createSageFriendlyQuery(mf, Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions());
 
 			SearchQueryOptions options = new SearchQueryOptions();
-			String title = query.get(Field.RAW_TITLE);
-			if (title!=null) {
-				title.trim();
-				title = title.replaceAll("[^a-zA-Z0-9]+$", "");
-			}
+			String title = query.get(Field.CLEAN_TITLE);
+//			if (title!=null) {
+//				title.trim();
+//				title = title.replaceAll("[^a-zA-Z0-9]+$", "");
+//			}
 			options.getSearchTitle().set(title);
 			options.getYear().set(query.get(Field.YEAR));
 			options.getType().set(query.getMediaType().sageValue());

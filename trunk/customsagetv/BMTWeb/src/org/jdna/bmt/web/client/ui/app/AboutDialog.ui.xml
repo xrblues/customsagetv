@@ -1,0 +1,27 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.info {
+			padding: 20px
+		}
+		.h {
+			text-align: center;
+		}
+	</ui:style>
+	
+	<g:HTMLPanel>
+		<h2 class="{style.h}">Batch Metadata Tools <span ui:field="version"></span></h2>
+		
+		<div class="{style.info}">
+		Batch Metadata Tools has been installed or updated.  You may want to check the
+		online <a target="_userguide" ui:field="userGuide">User Guide</a>, or the <a target="_aboutguide" ui:field="aboutGuide">About Guide</a>
+		to learn more about this product.
+		</div>
+		
+		<div class="{style.info}">
+		This message appears after a new installation or upgrade of Batch Metadata Tools.  This will not appear again until
+		a new update or installation happens.  You can still access the guides from the Help menu after you close this message.
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

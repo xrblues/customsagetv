@@ -10,17 +10,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.jdna.bmt.web.client.Version;
 import org.jdna.bmt.web.client.ui.status.StatusServices;
 import org.jdna.bmt.web.client.ui.status.StatusValue;
 import org.jdna.bmt.web.client.ui.status.SystemMessage;
-import org.jdna.metadataupdater.Version;
-import org.jdna.util.JarInfo;
-import org.jdna.util.JarUtil;
 
 import sagex.api.Global;
 import sagex.api.SystemMessageAPI;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.metadata.MetadataConfiguration;
+import sagex.phoenix.tools.support.JarInfo;
+import sagex.phoenix.tools.support.JarUtil;
 import sagex.phoenix.util.SageTV;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;

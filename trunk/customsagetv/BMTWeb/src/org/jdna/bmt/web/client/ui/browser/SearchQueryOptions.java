@@ -10,6 +10,7 @@ import org.jdna.bmt.web.client.util.StringUtils;
 import sagex.phoenix.metadata.MediaType;
 import sagex.phoenix.metadata.search.SearchQuery;
 import sagex.phoenix.metadata.search.SearchQuery.Field;
+import sagex.phoenix.util.Hints;
 
 public class SearchQueryOptions implements Serializable {
     private Property<String> provider = new Property<String>();
@@ -43,7 +44,7 @@ public class SearchQueryOptions implements Serializable {
     }
     
     public SearchQuery getSearchQuery() {
-        SearchQuery q = new SearchQuery();
+        SearchQuery q = new SearchQuery(new Hints());
         q.set(Field.QUERY, searchTitle.get());
         q.set(Field.YEAR, year.get());
         if ("TV".equals(type.get())) {

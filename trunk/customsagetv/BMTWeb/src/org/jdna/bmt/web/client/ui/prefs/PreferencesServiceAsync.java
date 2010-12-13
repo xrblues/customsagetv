@@ -25,4 +25,5 @@ public interface PreferencesServiceAsync {
 	void getChannels(AsyncCallback<ArrayList<Channel>> callback);
 	void saveChannels(ArrayList<Channel> channels,
 			AsyncCallback<ArrayList<Channel>> callback);
+	void refreshCustomMetadataFields(AsyncCallback<Void> callback);
 }

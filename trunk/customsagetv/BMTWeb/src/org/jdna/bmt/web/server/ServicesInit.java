@@ -11,7 +11,6 @@ import org.jdna.bmt.web.client.ui.BatchOperations;
 
 import sagex.SageAPI;
 import sagex.phoenix.Phoenix;
-import bmt.BMT;
 
 public class ServicesInit {
     private static boolean initialized = false;
@@ -62,9 +61,6 @@ public class ServicesInit {
             		t.printStackTrace();
             	}
             }
-            
-            // initialize bmt...
-            BMT.init();
         }
     }
 }

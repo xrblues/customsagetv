@@ -36,6 +36,7 @@ import sagex.api.Global;
 import sagex.phoenix.configuration.Group;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.NewSearchGroup;
+import sagex.phoenix.plugin.PhoenixPlugin;
 import sagex.phoenix.util.PropertiesUtils;
 import sagex.phoenix.util.SortedProperties;
 import sagex.util.Log4jConfigurator;
@@ -403,5 +404,10 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
 			}
 		}
 		return updated;
+	}
+	
+	@Override
+	public void refreshCustomMetadataFields() {
+		PhoenixPlugin.updateCustomMetadataFields();
 	}
 }
