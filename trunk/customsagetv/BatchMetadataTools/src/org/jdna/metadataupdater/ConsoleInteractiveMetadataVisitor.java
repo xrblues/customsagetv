@@ -8,13 +8,13 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import sagex.phoenix.Phoenix;
-import sagex.phoenix.metadata.IMetadataOptions;
 import sagex.phoenix.metadata.IMetadataSearchResult;
 import sagex.phoenix.metadata.search.SearchQuery;
-import sagex.phoenix.metadata.search.SearchQueryFactory;
 import sagex.phoenix.metadata.search.SearchQuery.Field;
+import sagex.phoenix.metadata.search.SearchQueryFactory;
 import sagex.phoenix.progress.IProgressMonitor;
 import sagex.phoenix.progress.ProgressTracker;
+import sagex.phoenix.util.Hints;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaResource;
 import sagex.phoenix.vfs.IMediaResourceVisitor;
@@ -25,11 +25,12 @@ public class ConsoleInteractiveMetadataVisitor implements IMediaResourceVisitor 
 	private enum State {Ignore, Search}
 	private State state = State.Search;
 	
-	private IMetadataOptions options = null;
 	private int displaySize;
+	private Hints options = null;
 	
-	public ConsoleInteractiveMetadataVisitor(int displaySize, IMetadataOptions options) {
+	public ConsoleInteractiveMetadataVisitor(int displaySize, Hints options) {
 		this.options=options;
+		if (this.options==null) this.options = Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions();
 		this.displaySize=displaySize;
 	}
 
@@ -37,7 +38,7 @@ public class ConsoleInteractiveMetadataVisitor implements IMediaResourceVisitor 
 		state = State.Search;
 		while (state == State.Search && !(monitor.isCancelled() || monitor.isDone())) {
 			try {
-				SearchQuery query = SearchQueryFactory.getInstance().createQuery((IMediaFile) res);
+				SearchQuery query = SearchQueryFactory.getInstance().createQueryFromFilename((IMediaFile) res, options);
 				List<IMetadataSearchResult> results = Phoenix.getInstance().getMetadataManager().search(query);
 				IMetadataSearchResult result = selectResult((IMediaFile)res, query, results, (ProgressTracker<IMediaFile>) monitor);
 				if (state!=State.Ignore && result!=null) {

@@ -19,6 +19,7 @@ import sagex.phoenix.metadata.IMetadataProvider;
 import sagex.phoenix.progress.BasicProgressMonitor;
 import sagex.phoenix.progress.ProgressTracker;
 import sagex.phoenix.progress.TrackedItem;
+import sagex.phoenix.tools.support.Troubleshooter;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaFolder;
 import sagex.phoenix.vfs.IMediaResource;
@@ -116,22 +117,7 @@ public class MetadataUpdater {
         log.debug(" Sagex Version:  " + sagex.api.Version.GetVersion());
         log.debug("  Java Version:  " + System.getProperty("java.version"));
         log.debug("Java Classpath:  " + System.getProperty("java.class.path"));
-        log.debug("Fanart Enabled:  " + phoenix.api.IsFanartEnabled());
-
-        String metadataPattern = "metadata-updater-([a-zA-Z0-9-_\\.]+).jar";
-        String sagexPattern = "sagex.api-([a-zA-Z0-9-_\\.]+).jar";
-        List<File> notRemoved = new ArrayList<File>();
-        notRemoved.addAll(Tools.cleanJars(new File("JARs"), metadataPattern));
-        notRemoved.addAll(Tools.cleanJars(new File("libs"), metadataPattern));
-        notRemoved.addAll(Tools.cleanJars(new File("JARs"), sagexPattern));
-        notRemoved.addAll(Tools.cleanJars(new File("libs"), sagexPattern));
-        if (notRemoved.size() > 0) {
-            for (File f : notRemoved) {
-                f.deleteOnExit();
-            }
-            System.out.println("System is being shutdown so that old jar libraries can be removed.");
-            System.exit(1);
-        }
+        log.debug("Fanart Enabled:  " + phoenix.fanart.IsFanartEnabled());
         log.debug("========= END BATCH METADATA TOOLS ENVIRONMENT ==============");
     }
 
