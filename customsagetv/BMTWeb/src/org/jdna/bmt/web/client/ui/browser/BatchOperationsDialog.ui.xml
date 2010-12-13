@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style type="org.jdna.bmt.web.client.ui.browser.BatchOperationsDialog.Style">
+	.listItem {
+		cursor: pointer;
+		height: 1cm;
+		vertical-align: middle;
+		border-bottom: 1px solid #E3E3E3;
+		display: block;
+		width: 100%;
+	}
+	
+	.buttonbar {
+		padding-top: 2mm;
+		padding-bottom: 2mm;
+		height: 1cm;
+		border: 1px solid black;
+	}
+	</ui:style>
+	<g:HTMLPanel width="6cm">
+		<g:ScrollPanel height="5cm" width="100%">
+			<g:VerticalPanel ui:field="batchOperations"/>
+		</g:ScrollPanel>
+		<div class="{style.buttonbar}" align="center" valign="middle">
+			<g:Button ui:field="closeButton">Close</g:Button>
+		</div>		
+	</g:HTMLPanel>
+</ui:UiBinder> 

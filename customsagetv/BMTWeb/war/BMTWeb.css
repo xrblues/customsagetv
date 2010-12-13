@@ -1,5 +1,41 @@
 /** Add css rules here for your application. */
+	@font-face {
+	  font-family: 'Ubuntu';
+	  font-style: normal;
+	  font-weight: normal;
+	  src: url('fonts/Ubuntu-R.ttf') format('truetype');
+	}
+	
+	@font-face {
+	  font-family: 'Ubuntu';
+	  font-style: normal;
+	  font-weight: bold;
+	  src: url('fonts/Ubuntu-B.ttf') format('truetype');
+	}
 
+	@font-face {
+	  font-family: 'Ubuntu';
+	  font-style: italic;
+	  font-weight: bold;
+	  src: url('fonts/Ubuntu-BI.ttf') format('truetype');
+	}
+
+	@font-face {
+	  font-family: 'Ubuntu';
+	  font-style: italic;
+	  font-weight: normal;
+	  src: url('fonts/Ubuntu-I.ttf') format('truetype');
+	}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: 'Ubuntu';
+}
+
+body * {
+	font-family: 'Ubuntu';
+}
 
 /** Example rules used by the template application (remove for your app) */
 h1 {
@@ -62,18 +98,23 @@ h1 {
 }
 
 .AppPanel-Header {
-	background-image: url("gradient-back3.jpg");
+	background-image: url("background.png");
+	xbackground-image: url("gradient-back3.jpg");
 	background-repeat: repeat-x;
+	height: 10mm;
+	border-bottom: 1px solid black;
 }
 
 .AppPanel-Header, .AppPanel-Header a, .AppPanel-Header a:link, .AppPanel-Header a:visited, .AppPanel-Header .gwt-Label {
 	background-color: transparent;
 	color: white;
+	font-weight: bold;
+	text-decoration: none;
 }
 
 
 .AppPanel-Title {
-  	font-size: 1.8em;
+  	font-size: 5mm;
 	font-weight: bold;
 	color: white;
 }
@@ -148,6 +189,7 @@ h1 {
 	background-repeat: no-repeat;
 	text-indent: 18px;
 }
+
 .App-Status {
 	background-image: url("images/16x16/dialog-information.png");
 	background-repeat: no-repeat;
@@ -165,6 +207,11 @@ h1 {
 }
 .App-Refresh {
 	background-image: url("images/16x16/view-refresh.png");
+	background-repeat: no-repeat;
+	text-indent: 18px;
+}
+.App-Help {
+	background-image: url("images/16x16/help-browser.png");
 	background-repeat: no-repeat;
 	text-indent: 18px;
 }
@@ -270,7 +317,7 @@ h1 {
 	background-color: #909090;
 }
 
-. SideMenuItem-Label {
+.SideMenuItem-Label {
 }
 
 .SideMenuPanel-Label {
@@ -396,5 +443,11 @@ h1 {
 }
 
 .FanartImageNormal {
+}
+
+.LoadMoreButton {
+	color: red;
+	font-weight: bold;
+	background-color: yellow;
 }
 

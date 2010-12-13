@@ -28,7 +28,7 @@ public interface Labels extends Constants {
     @DefaultStringValue("Refresh Library")
     String refreshLibrary();
 
-    @DefaultStringValue("Metadata Tools WebUI")
+    @DefaultStringValue("Batch Metadata Tools")
     String appTitle();
 
     @DefaultStringValue("Phoenix")
@@ -141,4 +141,10 @@ public interface Labels extends Constants {
 
     @DefaultStringValue("No Backup Files")
     String nobackupfiles();
+
+    @DefaultStringValue("Help")
+	String help();
+
+    @DefaultStringValue("Batch Operations")
+	String batchOperations();
 }

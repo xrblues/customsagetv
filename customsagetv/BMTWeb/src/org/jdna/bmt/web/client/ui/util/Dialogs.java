@@ -1,9 +1,9 @@
 package org.jdna.bmt.web.client.ui.util;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -69,7 +69,7 @@ public class Dialogs {
         dialog.show();
     }
 
-    public static void showAsDialog(String title, Widget body) {
+    public static DialogBox showAsDialog(String title, Widget body) {
         VerticalPanel panel = new VerticalPanel();
         //panel.setWidth("100%");
         panel.add(body);
@@ -90,13 +90,15 @@ public class Dialogs {
         panel.setCellHorizontalAlignment(btn, HasHorizontalAlignment.ALIGN_RIGHT);
         dialog.setAutoHideOnHistoryEventsEnabled(true);
         dialog.show();
-        DeferredCommand.addCommand(new Command() {
-            public void execute() {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
                 dialog.center();
-            }
+			}
         });
+        return dialog;
     }
-    
+
     public static void confirm(String message, DialogHandler<Void> handler) {
         if (Window.confirm(message)) {
             handler.onSave(null);

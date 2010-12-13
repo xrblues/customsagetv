@@ -12,9 +12,9 @@ import org.jdna.bmt.web.client.ui.layout.Simple2ColFormLayoutPanel;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar;
+import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar.Layout;
 import org.jdna.bmt.web.client.ui.util.ImagePopupLabel;
 import org.jdna.bmt.web.client.ui.util.WaitingPanel;
-import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar.Layout;
 import org.jdna.bmt.web.client.util.Property;
 
 import sagex.phoenix.metadata.IMediaArt;
@@ -39,7 +39,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 public class MediaEditorMetadataPanel extends Composite implements MetadataUpdatedHandler, ChangeHandler {
     private GWTMediaFile mediaFile = null;
@@ -305,7 +304,7 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         if (mediaFile!=null && metadata!=null && metadata.getPreserveRecordingMetadata().get()) {
 	        // set the readonly fields
 	    	movieTitle.setEnabled(!mediaFile.getSageRecording().get());
-	    	showTitle.setEnabled(!mediaFile.getSageRecording().get());
+	    	//showTitle.setEnabled(!mediaFile.getSageRecording().get());
 	    	episodeName.setEnabled(!mediaFile.getSageRecording().get());
 	    	description.setEnabled(!mediaFile.getSageRecording().get());
 	    	year.setEnabled(!mediaFile.getSageRecording().get());

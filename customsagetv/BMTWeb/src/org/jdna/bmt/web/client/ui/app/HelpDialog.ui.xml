@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.info {
+			padding: 20px
+		}
+		.h {
+			text-align: center;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<h2 class="{style.h}">Batch Metadata Tools <span ui:field="version"></span></h2>
+		
+		<div class="{style.info}">
+		You can try to find a solution from the resources below.
+		<ul>
+			<li><a target="_userguide" ui:field="userGuide">User Guide</a></li>
+			<li><a target="_aboutguide" ui:field="aboutGuide">About Guide</a></li>
+			<li><a target="_searchforums" href="http://forums.sagetv.com/forums/search.php?f=46">Search the Forums</a></li>
+			<li><a target="_browseforums" href="http://forums.sagetv.com/forums/forumdisplay.php?f=46">Browse the Forums</a></li>
+			<li><a href="#support">Create a Support Request</a></li>
+		</ul>
+		</div>
+		
+		<div style="width: 100%" align="center">
+			<div class="{style.info}">
+				<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+					<input type="hidden" name="cmd" value="_s-xclick"/>
+					<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----"/>
+					<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"/>
+					<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1"/>
+				</form>
+			</div>
+		</div>
+		
+	</g:HTMLPanel>
+</ui:UiBinder> 

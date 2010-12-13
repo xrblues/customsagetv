@@ -106,6 +106,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
             	BrowsingServicesManager.getInstance().browseFolder(currentFolder, currentFolder.getLoaded(), currentFolder.getPageSize());
             }
         });
+        loadMoreButton.addStyleName("LoadMoreButton");
         browserActions.add(loadMoreButton);
         
         batchOperations = new ListBox();

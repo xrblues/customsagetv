@@ -85,7 +85,7 @@ public class BrowsingServicesManager {
             	if (result==null) {
             		onFailure(new Exception("Server Replied with no information"));
             	} else {
-            		browseFolder(result, 0, (result==null)?0:result.getPageSize());
+            		browseFolder(result, 0, result.getPageSize());
             	}
             }
         });

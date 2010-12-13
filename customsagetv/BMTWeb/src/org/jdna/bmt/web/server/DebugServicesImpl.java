@@ -12,8 +12,6 @@ import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.ui.app.SupportOptions;
 import org.jdna.bmt.web.client.ui.debug.DebugService;
-import org.jdna.metadataupdater.Tools;
-import org.jdna.metadataupdater.Troubleshooter;
 
 import sagex.SageAPI;
 import sagex.api.AiringAPI;
@@ -28,6 +26,8 @@ import sagex.api.enums.ShowAPIEnum;
 import sagex.phoenix.fanart.FanartUtil;
 import sagex.phoenix.metadata.IMetadata;
 import sagex.phoenix.metadata.MetadataUtil;
+import sagex.phoenix.tools.support.Tools;
+import sagex.phoenix.tools.support.Troubleshooter;
 import sagex.phoenix.util.PropertiesUtils;
 import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.sage.SageMediaFile;

@@ -34,6 +34,7 @@ public class CommandItem extends Composite implements HasClickHandlers, MouseOut
         initWidget(container);
         container.add(layout);
         container.setWidth("100%");
+        container.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
         layout.setHeight("20px");
         this.icon=icon;
         this.label=label;
