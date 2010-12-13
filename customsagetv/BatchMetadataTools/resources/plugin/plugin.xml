@@ -13,7 +13,7 @@
 
   <Dependency>
     <Plugin>phoenix-core</Plugin>
-    <MinVersion>2.0.7</MinVersion>
+    <MinVersion>2.3.7</MinVersion>
   </Dependency>
 
   <PluginType>Library</PluginType>
@@ -29,6 +29,9 @@
     <MD5>@@system-checksum@@</MD5>
   </Package>
   <ReleaseNotes>
+4.9.4
+* This plugin is deprecated.  It will be removed at some point.
+
 4.2
 * updated version to match bmt web
 
