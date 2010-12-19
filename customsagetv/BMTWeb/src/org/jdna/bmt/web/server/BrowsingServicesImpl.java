@@ -52,6 +52,7 @@ import sagex.phoenix.metadata.MediaType;
 import sagex.phoenix.metadata.MetadataConfiguration;
 import sagex.phoenix.metadata.MetadataException;
 import sagex.phoenix.metadata.MetadataHints;
+import sagex.phoenix.metadata.MetadataUtil;
 import sagex.phoenix.metadata.PhoenixMetadataSupport;
 import sagex.phoenix.metadata.persistence.PersistenceUtil;
 import sagex.phoenix.metadata.provider.tvdb.TVDBMetadataProvider;
@@ -254,7 +255,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		return sources.toArray(new GWTFactoryInfo[sources.size()]);
 	}
 
-	PhoenixMetadataSupport support = new PhoenixMetadataSupport();
+	private transient PhoenixMetadataSupport support = new PhoenixMetadataSupport();
 
 	public List<GWTProviderInfo> getProviders() {
 		MetadataConfiguration cfg = GroupProxy.get(MetadataConfiguration.class);
@@ -308,7 +309,6 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			if (file==null) {
 				throw new Exception("Failed to get MediaFile for: " + mediaFile.getSageMediaFileId());
 			}
-			System.out.println("*** loadMetadata(): " + mediaFile);
 			IMediaFile mf = new SageMediaFile(null, file);
 			if (mf == null)
 				throw new Exception("Invalid Media File: " + mediaFile);
@@ -354,7 +354,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			mi.getMediaType().set(source.getMediaType());
 			mi.getMisc().set(source.getMisc());
 			mi.getOriginalAirDate().set(DateUtils.formatDate(source.getOriginalAirDate()));
-			mi.getParentalRating().set(source.getRated());
+			mi.getParentalRating().set(source.getParentalRating());
 			mi.getRated().set(source.getRated());
 			mi.getRunningTime().set(String.valueOf(source.getRunningTime()));
 			mi.getSeasonNumber().set(String.valueOf(source.getSeasonNumber()));
@@ -378,8 +378,9 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 				mi.getWriters().add(new GWTCastMember(cm));
 			}
 
-			for (String g : source.getGenres()) {
-				mi.getGenres().add(new Property<String>(g));
+			String g = StringUtils.join(source.getGenres(), ",");
+			if (!StringUtils.isEmpty(g)) {
+				mi.getGenres().set(g);
 			}
 
 			for (IMediaArt ma : source.getFanart()) {
@@ -391,7 +392,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			// depending on if the file is a Recording or Not, some fields are
 			// readonly
 			MetadataConfiguration config = GroupProxy.get(MetadataConfiguration.class);
-			mi.getPreserveRecordingMetadata().set(config.getPreserverRecordingMetadata());
+			mi.getPreserveRecordingMetadata().set(config.getPreserverRecordingMetadata() && file.isType(MediaResourceType.RECORDING.value()) && !MetadataUtil.isImportedRecording(file));
 		}
 
 		return mi;
@@ -411,6 +412,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 				query.set(Field.EPISODE_TITLE, options.getEpisodeTitle().get());
 				query.set(Field.EPISODE, options.getEpisode().get());
 				query.set(Field.SEASON, options.getSeason().get());
+				query.set(Field.EPISODE_DATE, options.getAiredDate().get());
 			}
 
 			List<IMetadataSearchResult> sresults = Phoenix.getInstance().getMetadataManager().search(options.getProvider().get(), query);
@@ -449,13 +451,18 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 
 	public String scan(final GWTMediaFolder folder, final PersistenceOptionsUI options) {
 
-		log.debug("Scanning Folder: " + folder);
 		try {
 			IMediaFolder realFolder = BrowsingServicesImpl.getFolderRef(folder, getThreadLocalRequest());
 			Hints opts = Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions();
-			opts.setBooleanHint(MetadataHints.SCAN_MISSING_METADATA_ONLY, options.getScanOnlyMissingMetadata().get());
 			opts.setBooleanHint(MetadataHints.SCAN_SUBFOLDERS, options.getIncludeSubDirs().get());
+			opts.setBooleanHint(MetadataHints.UPDATE_FANART, options.getUpdateFanart().get());
+			opts.setBooleanHint(MetadataHints.UPDATE_METADATA, options.getUpdateMetadata().get());
+			opts.setBooleanHint(MetadataHints.SCAN_MISSING_METADATA_ONLY, options.getScanOnlyMissingMetadata().get());
 			opts.setBooleanHint(MetadataHints.IMPORT_TV_AS_RECORDING, options.getImportTVAsRecordings().get());
+			opts.setBooleanHint(MetadataHints.REFRESH, options.getRefresh().get());
+			
+			log.info("Scanning Folder: " + folder + " with options " + opts);
+			
 			return (String) support.startMetadataScan(realFolder, opts);
 		} catch (Exception e) {
 			log.warn("Failed to start metadata scan", e);
@@ -566,6 +573,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		md.setMisc(gmd.getMisc().get());
 		md.setOriginalAirDate(DateUtils.parseDate(gmd.getOriginalAirDate().get()));
 		md.setRated(gmd.getRated().get());
+		md.setParentalRating(gmd.getParentalRating().get());
 		md.setRunningTime(NumberUtils.toLong(gmd.getRunningTime().get()));
 		md.setSeasonNumber(NumberUtils.toInt(gmd.getSeasonNumber().get()));
 		md.setRelativePathWithTitle(gmd.getTitle().get());
@@ -588,8 +596,15 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			md.getWriters().add(new CastMember(cm));
 		}
 
-		for (Property<String> s : gmd.getGenres()) {
-			md.getGenres().add(s.get());
+		String genres = gmd.getGenres().get();
+		if (!StringUtils.isEmpty(genres)) {
+			md.getGenres().clear();
+			String gens[] = genres.split("\\s*,\\s*");
+			for (String g: gens ) {
+				md.getGenres().add(g);
+			}
+		} else {
+			md.getGenres().clear();
 		}
 
 		for (IMediaArt ma : gmd.getFanart()) {
@@ -716,10 +731,6 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 
 			SearchQueryOptions options = new SearchQueryOptions();
 			String title = query.get(Field.CLEAN_TITLE);
-//			if (title!=null) {
-//				title.trim();
-//				title = title.replaceAll("[^a-zA-Z0-9]+$", "");
-//			}
 			options.getSearchTitle().set(title);
 			options.getYear().set(query.get(Field.YEAR));
 			options.getType().set(query.getMediaType().sageValue());
@@ -727,8 +738,10 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			options.getEpisodeTitle().set(query.get(Field.EPISODE_TITLE));
 			options.getEpisode().set(query.get(Field.EPISODE));
 			options.getSeason().set(query.get(Field.SEASON));
+			options.getAiredDate().set(query.get(Field.EPISODE_DATE));
 			
 			if (query.getMediaType() == MediaType.TV) {
+				// force tvdb
 				options.getProvider().set(TVDBMetadataProvider.ID);
 			}
 			

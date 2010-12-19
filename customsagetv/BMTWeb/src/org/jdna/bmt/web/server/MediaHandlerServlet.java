@@ -22,8 +22,8 @@ import sagex.SageAPI;
 import sagex.remote.media.MediaHandler;
 
 public class MediaHandlerServlet extends HttpServlet {
-    private MediaHandler mediaHandler = null;
-    private Logger log = null;
+    private transient MediaHandler mediaHandler = null;
+    private transient Logger log = null;
     public MediaHandlerServlet() {
         ServicesInit.init();
         mediaHandler = new MediaHandler();

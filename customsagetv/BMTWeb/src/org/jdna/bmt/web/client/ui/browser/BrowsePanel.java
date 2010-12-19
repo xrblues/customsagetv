@@ -51,6 +51,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
     private HorizontalButtonBar     browserActions = new HorizontalButtonBar();
     private Button backButton = null;
     private Button updateMetadataButton = null;
+    private Button refreshFanartButton = null;
 	private Button loadMoreButton = null;
 
     private HandlerRegistration replyHandler   = null;
@@ -101,6 +102,19 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         });
         browserActions.add(updateMetadataButton);
 
+        refreshFanartButton = new Button("Refresh Fanart", new ClickHandler() {
+            public void onClick(ClickEvent event) {
+            	if (Window.confirm("Press OK to update ALL your fanart for items in this folder, and it's children.")) {
+	                final PersistenceOptionsUI options = new PersistenceOptionsUI();
+	                options.getScanPath().set(currentFolder);
+	                options.getRefresh().set(true);
+	                options.getUpdateMetadata().set(false);
+                    BrowsingServicesManager.getInstance().scan(currentFolder, options);
+            	}
+            }
+        });
+        browserActions.add(refreshFanartButton);
+        
         loadMoreButton = new Button("Load More Items", new ClickHandler() {
             public void onClick(ClickEvent event) {
             	BrowsingServicesManager.getInstance().browseFolder(currentFolder, currentFolder.getLoaded(), currentFolder.getPageSize());

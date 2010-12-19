@@ -1,6 +1,8 @@
 package org.jdna.bmt.web.client.ui;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class BatchOperations {
@@ -149,6 +151,31 @@ public class BatchOperations {
 		op.setBackground(true);
 		op.setConfirm("Press OK to locate TV Series information for your TV Files.  This process will search both Recordings and TV files and attempt to associate a TV Series Info to each file.  In the event that we can't find a TV Series Info in the SageTV Series Information, then we will attempt to locate and add TV Series Info from TVDB");
 		operations.add(op);
+
+		op = new BatchOperation();
+		op.setVisitorClass("sagex.phoenix.metadata.fixes.FixParentalRatingsVisitor");
+		op.setLabel("Fix Parental Ratings");
+		op.setStartMessage("Fixes Parental Ratings");
+		op.setCompleteMessage("Parental Ratings have been fixed");
+		op.setBackground(true);
+		op.setConfirm("Press OK to fix parental ratings for your video and tv files.");
+		operations.add(op);
+
+		op = new BatchOperation();
+		op.setVisitorClass("sagex.phoenix.metadata.fixes.FixTVYearVisitor");
+		op.setLabel("Fix Year for TV Shows");
+		op.setStartMessage("Clearing Year information for TV shows");
+		op.setCompleteMessage("Year has been removed from TV Shows");
+		op.setBackground(true);
+		op.setConfirm("Press OK to remove the Year from your TV Shows.  The Year is not valid for TV shows, and having a year causes the Year to show in the Title.  Note: This does not change titles that actually have a Year in the title itself, it simply removes the Year field from the metadata.");
+		operations.add(op);
+		
+		Collections.sort(operations, new Comparator<BatchOperation>() {
+			@Override
+			public int compare(BatchOperation o1, BatchOperation o2) {
+				return o1.getLabel().compareTo(o2.getLabel());
+			}
+		});
 	
 	}
 	

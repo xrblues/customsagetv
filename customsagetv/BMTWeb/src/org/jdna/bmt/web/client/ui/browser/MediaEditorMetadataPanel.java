@@ -7,7 +7,6 @@ import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
-import org.jdna.bmt.web.client.ui.input.InputBuilder;
 import org.jdna.bmt.web.client.ui.layout.Simple2ColFormLayoutPanel;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
@@ -15,6 +14,13 @@ import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar.Layout;
 import org.jdna.bmt.web.client.ui.util.ImagePopupLabel;
 import org.jdna.bmt.web.client.ui.util.WaitingPanel;
+import org.jdna.bmt.web.client.ui.util.binder.CheckBinder;
+import org.jdna.bmt.web.client.ui.util.binder.DateBinder;
+import org.jdna.bmt.web.client.ui.util.binder.FieldManager;
+import org.jdna.bmt.web.client.ui.util.binder.ListBinder;
+import org.jdna.bmt.web.client.ui.util.binder.NumberBinder;
+import org.jdna.bmt.web.client.ui.util.binder.TextAreaBinder;
+import org.jdna.bmt.web.client.ui.util.binder.TextBinder;
 import org.jdna.bmt.web.client.util.Property;
 
 import sagex.phoenix.metadata.IMediaArt;
@@ -26,9 +32,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -37,7 +41,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MediaEditorMetadataPanel extends Composite implements MetadataUpdatedHandler, ChangeHandler {
@@ -47,34 +50,33 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
     private VerticalPanel metadataPanel = new VerticalPanel();
     
     private Simple2ColFormLayoutPanel metadataContainer = null;
-    private ListBox typeListBox=null;
-    private List<Integer> hideRows = new ArrayList<Integer>();
 
-    private AsyncCallback<GWTMediaFile> updateHandler;
-    
+    private List<Integer> tvRows = new ArrayList<Integer>();
+    private List<Integer> movieRows = new ArrayList<Integer>();
+
     private HandlerRegistration metadataUpdatedHandler = null;
     
     private BrowserView browserView;
 
-	private int movieTitleRow;
-	private TextBox formattedTitle;
-	private TextBox movieTitle;
-	private TextBox showTitle;
-	private TextBox episodeName;
-	private TextArea description;
-	private TextBox year;
-	private TextBox originalAirDate;
-	private TextBox parentalRatings;
-	private TextBox extendedRatings;
-	private TextBox runningTime;
-	private TextBox misc;
-	private TextBox externalId;
-	private CheckBox sageRecording;
-	private CheckBox archived;
-	private CheckBox watched;
+    private ListBinder typeListBox=null;
+	private TextBinder movieTitle;
+	private TextBinder showTitle;
+	private TextBinder episodeName;
+	private TextAreaBinder description;
+	private NumberBinder year;
+	private DateBinder originalAirDate;
+	private TextBinder mpaaRatings;
+	private TextBinder parentalRatings;
+	private TextBinder extendedRatings;
+	private NumberBinder runningTime;
+	private TextBinder misc;
+	private TextBinder externalId;
+	private CheckBinder sageRecording;
+	private CheckBinder archived;
+	private CheckBinder watched;
+	private TextBinder genres;
 	
-	private TextBox seriesInfoId;
-	private TextBox vfsId;
+	private FieldManager fields = new FieldManager();
     
     public MediaEditorMetadataPanel(GWTMediaFile mediaFile, BrowserView view) {
         this.browserView = view;
@@ -178,54 +180,78 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         
         panel.add(l,new Label());
 
-        panel.add("Sage Recording?", sageRecording=InputBuilder.checkbox().bind(mediaFile.getSageRecording()).widget());
-        panel.add("Media Type", typeListBox=InputBuilder.combo(",Movie,TV").bind(metadata.getMediaType()).addChangeHandler(this).widget());
-        panel.add("Fanart Title", InputBuilder.textbox().bind(metadata.getMediaTitle()).widget());
-        panel.add("Movie Title", movieTitle=InputBuilder.textbox("movie-title").bind(metadata.getEpisodeName()).widget());
-        movieTitleRow = panel.getFlexTable().getRowCount()-1;
+        sageRecording = (CheckBinder) fields.addField("sageRecording", new CheckBinder(mediaFile.getSageRecording()));
+        panel.add("Sage Recording?", sageRecording.getWidget());
+
+        typeListBox=(ListBinder) fields.addField("type", new ListBinder(metadata.getMediaType(),",Movie,TV"));
+        ((ListBox) typeListBox.getWidget()).addChangeHandler(this);
+        panel.add("Media Type", typeListBox.getWidget());
         
-        panel.add("Show Title", showTitle=InputBuilder.textbox("tv-title").bind(metadata.getTitle()).widget());
-        hideRows.add(panel.getFlexTable().getRowCount()-1);
-        panel.add("Episode Name", episodeName=InputBuilder.textbox("tv-episode-title").bind(metadata.getEpisodeName()).widget());
-        hideRows.add(panel.getFlexTable().getRowCount()-1);
-        panel.add("Season #", InputBuilder.textbox("tv-season").bind(metadata.getSeasonNumber()).widget());
-        hideRows.add(panel.getFlexTable().getRowCount()-1);
-        panel.add("Episode #", InputBuilder.textbox("tv-episode").bind(metadata.getEpisodeNumber()).widget());
-        hideRows.add(panel.getFlexTable().getRowCount()-1);
+        panel.add("Fanart Title", fields.addField("fanart-title", new TextBinder(metadata.getMediaTitle())).getWidget());
 
-        description = InputBuilder.textarea().bind(metadata.getDescription()).widget();
-        description.setWidth("300px");
-        description.setVisibleLines(5);
-        panel.add("Description", description);
-
-        panel.add("Year", year=InputBuilder.textbox().bind(metadata.getYear()).widget());
-        panel.add("Original Air Date", originalAirDate=InputBuilder.textbox().bind(metadata.getOriginalAirDate()).widget());
+        movieTitle=(TextBinder) fields.addField("movie-title", new TextBinder(metadata.getEpisodeName()));
+        panel.add("Movie Title", movieTitle.getWidget());
+        movieRows.add(panel.getFlexTable().getRowCount()-1);
         
-        panel.add("Disc #", InputBuilder.textbox().bind(metadata.getDiscNumber()).widget());
-
-        panel.add("Parental Rating", parentalRatings=InputBuilder.textbox().bind(metadata.getParentalRating()).widget());
-        panel.add("Extended Ratings", extendedRatings=InputBuilder.textbox().bind(metadata.getExtendedRatings()).widget());
-        panel.add("User Rating", InputBuilder.textbox().bind(metadata.getUserRating()).widget());
-
-        panel.add("Running Time", runningTime=InputBuilder.textbox().bind(metadata.getRunningTime()).widget());
-        panel.add("Misc", misc=InputBuilder.textbox().bind(metadata.getMisc()).widget());
-        panel.add("ExternalId", externalId=InputBuilder.textbox().bind(metadata.getExternalID()).widget());
-        panel.add("Archived?", archived=InputBuilder.checkbox().bind(mediaFile.getIsLibraryFile()).widget());
-        panel.add("Watched?", watched=InputBuilder.checkbox().bind(mediaFile.getIsWatched()).widget());
+        showTitle=(TextBinder) fields.addField("tv-title", new TextBinder(metadata.getTitle()));
+        panel.add("Show Title", showTitle.getWidget());
+        tvRows.add(panel.getFlexTable().getRowCount()-1);
         
-        // Genres
-        StringBuilder sb = new StringBuilder();
-        List<Property<String>> genres = metadata.getGenres();
-        if (genres!=null) {
-            for (int row=0;row<genres.size();row++) {
-                if (sb.length()>0) {
-                    sb.append(" / ");
-                }
-                sb.append(genres.get(row).get());
-            }
-        }
+        episodeName=(TextBinder) fields.addField("tv-episode-title", new TextBinder(metadata.getEpisodeName()));
+        panel.add("Episode Name", episodeName.getWidget());
+        tvRows.add(panel.getFlexTable().getRowCount()-1);
+        
+        panel.add("Season #", fields.addField("tv-season", new NumberBinder(metadata.getSeasonNumber(), true)).getWidget());
+        tvRows.add(panel.getFlexTable().getRowCount()-1);
+        
+        panel.add("Episode #", fields.addField("tv-episode", new NumberBinder(metadata.getEpisodeNumber(), true)).getWidget());
+        tvRows.add(panel.getFlexTable().getRowCount()-1);
 
-        panel.add("Genre", new Label(sb.toString()));
+        description = (TextAreaBinder) fields.addField("description", new TextAreaBinder(metadata.getDescription()));
+        description.getWidget().setWidth("300px");
+        ((TextArea) description.getWidget()).setVisibleLines(5);
+        panel.add("Description", description.getWidget());
+
+        year=(NumberBinder) fields.addField("year", new NumberBinder(metadata.getYear(), true));
+        panel.add("Year", year.getWidget());
+        movieRows.add(panel.getFlexTable().getRowCount()-1);
+        
+        genres = (TextBinder) fields.addField("genres", new TextBinder(metadata.getGenres()));
+        panel.add("Genres (Comma Separated)", genres.getWidget());
+        
+        originalAirDate=(DateBinder) fields.addField("oad", new DateBinder(metadata.getOriginalAirDate(),"yyyy-MM-dd"));
+        panel.add("Original Air Date", originalAirDate.getWidget());
+        
+        panel.add("Disc #", fields.addField("disc", new NumberBinder(metadata.getDiscNumber(),true)).getWidget());
+
+        mpaaRatings=(TextBinder) fields.addField("mpaa", new TextBinder(metadata.getRated()));
+        panel.add("MPAA Rating", mpaaRatings.getWidget());
+        movieRows.add(panel.getFlexTable().getRowCount()-1);
+
+        parentalRatings=(TextBinder) fields.addField("parental-ratings",new TextBinder(metadata.getParentalRating()));
+        panel.add("TV Rating", parentalRatings.getWidget());
+        tvRows.add(panel.getFlexTable().getRowCount()-1);
+
+        extendedRatings=(TextBinder) fields.addField("extended-ratings", new TextBinder(metadata.getExtendedRatings()));
+        panel.add("Extended Ratings", extendedRatings.getWidget());
+        panel.add("User Rating", fields.addField("user-rating", new NumberBinder(metadata.getUserRating(), true)).getWidget());
+
+        runningTime=(NumberBinder) fields.addField("running-time", new NumberBinder(metadata.getRunningTime()));
+        panel.add("Running Time", runningTime.getWidget());
+        
+        misc=(TextBinder) fields.addField("misc", new TextBinder(metadata.getMisc()));
+        panel.add("Misc", misc.getWidget());
+        
+        externalId=(TextBinder) fields.addField("externalid", new TextBinder(metadata.getExternalID()));
+        panel.add("ExternalId", externalId.getWidget());
+        
+        archived=(CheckBinder) fields.addField("archived", new CheckBinder(mediaFile.getIsLibraryFile()));
+        panel.add("Archived?", archived.getWidget());
+        tvRows.add(panel.getFlexTable().getRowCount()-1);
+
+        watched=(CheckBinder) fields.addField("watched",new CheckBinder(mediaFile.getIsWatched()));
+        panel.add("Watched?", watched.getWidget());
+        
         panel.add("IMDb Id", new Label(metadata.getIMDBID().get()));
         panel.add("Metadata Id", new Label(metadata.getMediaProviderDataID().get()));
         panel.add("Sage MediaFile Id", new Label(String.valueOf(mediaFile.getSageMediaFileId())));
@@ -252,6 +278,8 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         cols.add(cmPanel);
         cols.setCellWidth(cmPanel, "25%");
         
+        // update the UI
+        fields.updateFields();
         
         onChange(null);
     }
@@ -263,11 +291,12 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
     }
 
     protected void saveMetadata(PersistenceOptionsUI options) {
+    	// validate some fields
+    	
+    	// copy metadata
+    	fields.updateProperties();
+    	
         BrowsingServicesManager.getInstance().saveMetadata(mediaFile, options);
-    }
-
-    public void setUpdateListener(AsyncCallback<GWTMediaFile> asyncCallback) {
-        this.updateHandler = asyncCallback;
     }
 
     /* (non-Javadoc)
@@ -296,10 +325,14 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
     }
 
     public void onChange(ChangeEvent event) {
-        for (int i : hideRows) {
-            metadataContainer.getFlexTable().getRowFormatter().setVisible(i, "TV".equals(typeListBox.getValue(typeListBox.getSelectedIndex())));
+    	String mt = typeListBox.getText();
+        for (int i : tvRows) {
+            metadataContainer.getFlexTable().getRowFormatter().setVisible(i, "TV".equals(mt));
         }
-        metadataContainer.getFlexTable().getRowFormatter().setVisible(movieTitleRow, !"TV".equals(typeListBox.getValue(typeListBox.getSelectedIndex())));
+
+        for (int i : movieRows) {
+            metadataContainer.getFlexTable().getRowFormatter().setVisible(i, !"TV".equals(mt));
+        }
         
         if (mediaFile!=null && metadata!=null && metadata.getPreserveRecordingMetadata().get()) {
 	        // set the readonly fields

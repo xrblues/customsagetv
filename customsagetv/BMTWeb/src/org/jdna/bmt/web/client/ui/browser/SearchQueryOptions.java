@@ -13,13 +13,15 @@ import sagex.phoenix.metadata.search.SearchQuery.Field;
 import sagex.phoenix.util.Hints;
 
 public class SearchQueryOptions implements Serializable {
-    private Property<String> provider = new Property<String>();
+	private static final long serialVersionUID = 1L;
+	private Property<String> provider = new Property<String>();
     private Property<String> searchTitle = new Property<String>();
     private Property<String> episodeTitle = new Property<String>();
     private Property<String> year = new Property<String>();
     private Property<String> season = new Property<String>();
     private Property<String> episode = new Property<String>();
     private Property<String> type = new Property<String>();
+    private Property<String> airedDate = new Property<String>();
     
     public SearchQueryOptions() {
     }
@@ -34,6 +36,7 @@ public class SearchQueryOptions implements Serializable {
             episodeTitle.set(md.getEpisodeName().get());
             episode.set(String.valueOf(md.getEpisodeNumber().get()));
             season.set(String.valueOf(md.getSeasonNumber().get()));
+            airedDate.set(md.getOriginalAirDate().get());
         } else {
             type.set("Movie");
         }
@@ -52,6 +55,7 @@ public class SearchQueryOptions implements Serializable {
             q.set(Field.EPISODE_TITLE, episodeTitle.get());
             q.set(Field.EPISODE, episode.get());
             q.set(Field.SEASON, season.get());
+            q.set(Field.EPISODE_DATE, airedDate.get());
         } else {
             q.setMediaType(MediaType.MOVIE);
         }
@@ -94,4 +98,8 @@ public class SearchQueryOptions implements Serializable {
     public Property<String> getProvider() {
         return provider;
     }
+
+	public Property<String> getAiredDate() {
+		return airedDate;
+	}
 }

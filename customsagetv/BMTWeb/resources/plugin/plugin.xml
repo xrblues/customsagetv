@@ -32,7 +32,7 @@
 
 	<Dependency>
 		<Plugin>phoenix-core</Plugin>
-		<MinVersion>2.3.7</MinVersion>
+		<MinVersion>2.3.9</MinVersion>
 	</Dependency>
 
 	<PluginType>Standard</PluginType>
@@ -52,6 +52,14 @@
 		<MD5>@@context-checksum@@</MD5>
 	</Package>
 	<ReleaseNotes>
+4.9.5
+* Fixed Sage Imports View
+* Added Fanart Refresh
+* Exclude Filter now works in Missing Metadata View
+* Added Batch Operation to remove Year from Show Metadata
+* Added Manual TV Lookup by Date
+* Can edit genres from the web ui
+
 4.9.4
 * Fixed 'Discover Defaults' so that it works better with wildly named files.
 * TV Show Title can now be updated
@@ -81,39 +89,5 @@ web ui
 * Added Batch Operations for generating .properties,
 generating
 thumbnails, and for fixing genres.
-
-4.8
-* Updated to use newer
-phoenix apis
-* Fixed "metadata failed" error (imdb now works)
-* Searches
-will now use the selected metadata provider
-
-
-4.6
-* Changed the UI so that
-it will only load a small number of items per
-view. Large Views were
-slow to load on the UI and very frustrating.
-* Fixed Success Count in
-scanner to show correctly
-* Fixed issue with Scanner, since the scan
-progress was not being
-updated correctly
-* Added Batch Operations to
-folder views. You can now set
-watched/unwatched, archived/unarchived,
-import/unimport as tv, clean
-metadata, remove fanart, and remove
-properties.
-* Can apply custom image transformation (ie, scale, etc) to
-a mediaitem
-thumbnail.
-* Added Search Box to the Browser
-
-4.5
-* Fixed bug
-where ExternalID could be null, and cause a Cross Linked
-Metadata Issue
 	</ReleaseNotes>
 </SageTVPlugin>
