@@ -30,8 +30,8 @@ public class GWTMediaMetadata implements Serializable {
 	private Property<String> mediaType  = new Property<String>();
 	private Property<String> seasonNumber  = new Property<String>();
 	private Property<String> userRating = new Property<String>();
-
-	private List<Property<String>> genres = new ArrayList<Property<String>>();
+	private Property<String> genres = new Property<String>();
+	
 	private List<GWTCastMember> actors = new ArrayList<GWTCastMember>();
 	private List<GWTCastMember> directors = new ArrayList<GWTCastMember>();
 	private List<GWTCastMember> guests = new ArrayList<GWTCastMember>();
@@ -41,7 +41,7 @@ public class GWTMediaMetadata implements Serializable {
 	public GWTMediaMetadata() {
     }
 
-	public List<Property<String>> getGenres() {
+	public Property<String> getGenres() {
 		return genres;
 	}
 

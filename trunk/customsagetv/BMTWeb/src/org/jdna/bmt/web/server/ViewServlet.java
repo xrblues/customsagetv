@@ -14,7 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 public class ViewServlet extends HttpServlet {
-    private Logger log = Logger.getLogger(ViewServlet.class);
+    private transient Logger log = Logger.getLogger(ViewServlet.class);
     
     private static final long serialVersionUID = 1L;
 

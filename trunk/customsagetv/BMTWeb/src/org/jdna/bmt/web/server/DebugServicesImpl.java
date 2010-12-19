@@ -35,7 +35,7 @@ import sagex.phoenix.vfs.sage.SageMediaFile;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class DebugServicesImpl extends RemoteServiceServlet implements DebugService {
-    private Logger log = Logger.getLogger(DebugServicesImpl.class);
+    private transient Logger log = Logger.getLogger(DebugServicesImpl.class);
     
     private static final long serialVersionUID = 1L;
 

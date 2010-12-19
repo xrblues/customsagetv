@@ -20,9 +20,9 @@ import sagex.phoenix.vfs.IMediaResourceVisitor;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class GlobalServicesImpl extends RemoteServiceServlet implements GlobalService {
-	private Logger log = Logger.getLogger(GlobalServicesImpl.class);
+	private transient Logger log = Logger.getLogger(GlobalServicesImpl.class);
 
-	private Timer timer = new Timer("BatchOperations");
+	private transient Timer timer = new Timer("BatchOperations");
 
 	private static final long serialVersionUID = 1L;
 
