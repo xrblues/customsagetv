@@ -276,8 +276,6 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
     
 	private void showHelp() {
 		Dialogs.showAsDialog("Help", new HelpDialog());
-		//BatchOperationsDialog d = new BatchOperationsDialog();
-		//d.show();
 	}
 
     private void setPanel(Widget panel) {
@@ -331,10 +329,6 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
             showSupportRequestDialog();
         } else if ("backup".equals(section)) {
             setBackupPanel();
-        //} else if ("refresh".equals(section)) {
-        //    setRefreshPanel();
-        //} else {
-        //    setStatusPanel();
         }
     }
     
