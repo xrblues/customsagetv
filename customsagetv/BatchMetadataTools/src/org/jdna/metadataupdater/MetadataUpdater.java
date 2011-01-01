@@ -144,7 +144,7 @@ public class MetadataUpdater {
                 }
             }
             System.out.println("Creating Support Zip File...");
-            File out = Troubleshooter.createSupportZip("No Description: BMT Commandline", true, true, locations);
+            File out = Troubleshooter.createSupportZip("No Description: BMT Commandline", true, true, true);
             System.out.println("ZipFile Created: " + out.getPath());
             return;
         }
