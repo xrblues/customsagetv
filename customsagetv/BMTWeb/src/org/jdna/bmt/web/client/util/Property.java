@@ -3,7 +3,8 @@ package org.jdna.bmt.web.client.util;
 import java.io.Serializable;
 
 public class Property<T> implements Serializable {
-    private T value;
+	private static final long serialVersionUID = 1L;
+	private T value;
     private boolean visible=true;
     private boolean readOnly=false;
     

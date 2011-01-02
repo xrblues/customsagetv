@@ -21,7 +21,9 @@ public class FieldManager {
 
 	public void updateProperties() {
 		for (FieldBinder<?> f: fields.values()) {
-			f.updateProperty();
+			if (f.isEnabled()) {
+				f.updateProperty();
+			}
 		}
 	}
 	

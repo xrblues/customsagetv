@@ -3,7 +3,8 @@ package org.jdna.bmt.web.client.media;
 import java.io.Serializable;
 
 public class GWTPersistenceOptions implements Serializable {
-    private boolean importAsTV = false;
+	private static final long serialVersionUID = 1L;
+	private boolean importAsTV = false;
     private boolean useTitleMasks = true;
     
     public GWTPersistenceOptions() {

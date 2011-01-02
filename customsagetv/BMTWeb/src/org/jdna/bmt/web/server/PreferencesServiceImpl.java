@@ -350,12 +350,16 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
 	@Override
 	public void refreshConfiguration(String id) {
 		if (id==null) throw new RuntimeException("Invalid Refresh ID");
-		if (REFRESH_VFS.equals("id")) {
+		
+		log.info("Refreshing Configuration: " + id);
+		if (REFRESH_VFS.equals(id)) {
 			phoenix.umb.ReloadViews();
-		} else if (REFRESH_MENUS.equals("id")) {
+		} else if (REFRESH_MENUS.equals(id)) {
 			phoenix.menu.ReloadMenus();
-		} else if (REFRESH_MEDIA_TITLES.equals("id")) {
+		} else if (REFRESH_MEDIA_TITLES.equals(id)) {
 			phoenix.umb.ReloadMediaTitles();
+		} else {
+			throw new RuntimeException("Invalid Configuration to Refresh: " + id);
 		}
 	}
 

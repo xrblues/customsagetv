@@ -32,7 +32,6 @@ import org.jdna.bmt.web.client.ui.browser.PersistenceOptionsUI;
 import org.jdna.bmt.web.client.ui.browser.ProgressStatus;
 import org.jdna.bmt.web.client.ui.browser.SearchQueryOptions;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
-import org.jdna.bmt.web.client.util.Property;
 
 import sagex.api.AiringAPI;
 import sagex.api.MediaFileAPI;
@@ -547,11 +546,14 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		options.setBooleanHint(MetadataHints.SCAN_MISSING_METADATA_ONLY, false);
 		options.setBooleanHint(MetadataHints.SCAN_SUBFOLDERS, false);
 
+		
 		Object sageMF = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
 		IMediaFile mf = new SageMediaFile(null, sageMF);
 		IMetadata md = MetadataProxy.newInstance();
 		GWTMediaMetadata gmd = file.getMetadata();
 
+		System.out.println("** EpisodeName: " + gmd.getEpisodeName().get());
+		
 		md.setDescription(gmd.getDescription().get());
 		md.setDiscNumber(NumberUtils.toInt(gmd.getDiscNumber().get()));
 		md.setEpisodeName(gmd.getEpisodeName().get());
@@ -612,7 +614,9 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		}
 
 		try {
+			System.out.println("** EpisodeName2: " + md.getEpisodeName());
 			Phoenix.getInstance().getMetadataManager().updateMetadata(mf, md, null);
+			System.out.println("** EpisodeName3: " + md.getEpisodeName());
 
 			// test if we are making a recording
 			if (mf.isType(MediaResourceType.RECORDING.value()) && file.getSageRecording().get() == false) {
@@ -642,6 +646,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			// update the formatted title
 			file.setFormattedTitle(phoenix.media.GetFormattedTitle(mf));
 			file.attachMetadata(newMetadata(mf, mf.getMetadata()));
+			System.out.println("** EpisodeName3: " + file.getMetadata().getEpisodeName().get());
 		} catch (MetadataException e) {
 			log.warn("Failed to save metadata for file: " + mf, e);
 			return new ServiceReply<GWTMediaFile>(1, "Failed to save metadata/fanart: " + e.getMessage(), file);

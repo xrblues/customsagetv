@@ -102,7 +102,6 @@ h1 {
 	xbackground-image: url("gradient-back3.jpg");
 	background-repeat: repeat-x;
 	height: 10mm;
-	border-bottom: 1px solid black;
 }
 
 .AppPanel-Header, .AppPanel-Header a, .AppPanel-Header a:link, .AppPanel-Header a:visited, .AppPanel-Header .gwt-Label {
@@ -131,10 +130,12 @@ h1 {
 .MediaItem {
 	border-bottom: 1px solid black;
 	cursor: pointer;
+	width: 150px;
+	height: 200px;
+	overflow-x: hidden;
 }
 
 .MediaItem-Image {
-	xheight: 120px;
 	width: 80px;
 }
 
@@ -151,7 +152,6 @@ h1 {
 }
 
 .MediaItem-PrimaryTitle {
-
 }
 
 .MediaItem-MinorTitle {
@@ -265,9 +265,9 @@ h1 {
 	float: left;
 	border: 2px groove black;
 	width: 150px;
+	min-width: 150px;
 	height: 200px;
-	min-height: 100px;
-	min-width: 50px;
+	min-height: 200px;
 	margin: 10 10 10 10;
 	padding: 5 5 5 5;
 
@@ -275,7 +275,8 @@ h1 {
     -webkit-border-radius: 5px;
     -khtml-border-radius: 5px;
     border-radius: 5px;
-    overflow: hidden;
+    
+    table-layout: fixed;
 }
 
 .MediaItem .MediaItem-Title1 {
@@ -449,5 +450,22 @@ h1 {
 	color: red;
 	font-weight: bold;
 	background-color: yellow;
+}
+
+.Toast {
+	background-color: rgba(0,0,128,0.8);
+	border: 0;
+	color: white;
+	xbackground-color: black;
+	//opacity: 0.5;
+	padding: 10 10 10 10;
+	border: 5px solid #black;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -khtml-border-radius: 20px;
+}
+
+.Toast .gwt-Label {
+	color: white;
 }
 

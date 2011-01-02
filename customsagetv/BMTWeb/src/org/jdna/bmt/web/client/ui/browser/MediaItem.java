@@ -17,7 +17,6 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -27,7 +26,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MediaItem extends Composite implements HasClickHandlers, MouseOutHandler, MouseOverHandler, ClickHandler {
     private GWTMediaResource res;
-    private DockPanel        panel   = new DockPanel();
+    private VerticalPanel  vpanel   = new VerticalPanel();
     private VerticalPanel    titles  = new VerticalPanel();
     private HorizontalPanel  actions = new HorizontalPanel();
     private BrowserView      view    = null;
@@ -36,9 +35,11 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         this.view = view;
         this.res = res;
         titles.setWidth("100%");
-        panel.add(titles, DockPanel.NORTH);
-        panel.setCellVerticalAlignment(titles, HasVerticalAlignment.ALIGN_TOP);
-        panel.setStyleName("MediaItem");
+        vpanel.add(titles);
+        vpanel.setWidth("150px");
+        vpanel.setCellVerticalAlignment(titles, HasVerticalAlignment.ALIGN_TOP);
+        vpanel.setCellHeight(titles, "10px");
+        vpanel.setStyleName("MediaItem");
         setTitles(res);
 
         final Image img = new Image();
@@ -71,24 +72,24 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
             actions.add(img2);
         }
         
-        panel.add(img, DockPanel.CENTER);
-        panel.setCellHorizontalAlignment(img, HasHorizontalAlignment.ALIGN_CENTER);
-        panel.setCellVerticalAlignment(img, HasVerticalAlignment.ALIGN_BOTTOM);
+        vpanel.add(img);
+        vpanel.setCellHorizontalAlignment(img, HasHorizontalAlignment.ALIGN_CENTER);
+        vpanel.setCellVerticalAlignment(img, HasVerticalAlignment.ALIGN_BOTTOM);
 
-        panel.add(actions, DockPanel.SOUTH);
-        panel.setCellHorizontalAlignment(actions, HasHorizontalAlignment.ALIGN_RIGHT);
-        panel.setCellVerticalAlignment(actions, HasVerticalAlignment.ALIGN_BOTTOM);
-        panel.setCellHeight(actions, "20px");
+        vpanel.add(actions);
+        vpanel.setCellHorizontalAlignment(actions, HasHorizontalAlignment.ALIGN_RIGHT);
+        vpanel.setCellVerticalAlignment(actions, HasVerticalAlignment.ALIGN_BOTTOM);
+        vpanel.setCellHeight(actions, "20px");
 
         if (res instanceof GWTMediaFolder) {
-            panel.addStyleName("MediaFolder");
+            vpanel.addStyleName("MediaFolder");
         }
 
         if (res.getMessage() != null) {
-            panel.setTitle(res.getMessage());
+            vpanel.setTitle(res.getMessage());
         }
 
-        initWidget(panel);
+        initWidget(vpanel);
 
         addDomHandler(this, MouseOverEvent.getType());
         addDomHandler(this, MouseOutEvent.getType());
@@ -102,16 +103,14 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         titles.setCellHorizontalAlignment(title1, HasHorizontalAlignment.ALIGN_CENTER);
         title1.setStyleName("MediaItem-Title1");
 
-        //if (res2 instanceof GWTMediaFile) {
-            String epTitle = res2.getMinorTitle();
-            if (!StringUtils.isEmpty(epTitle) && !epTitle.equals(res.getTitle())) {
-                Label title2 = new Label(epTitle);
-                
-                titles.add(title2);
-                titles.setCellHorizontalAlignment(title2, HasHorizontalAlignment.ALIGN_CENTER);
-                title2.setStyleName("MediaItem-Title2");
-            }
-        //}
+        String epTitle = res2.getMinorTitle();
+        if (!StringUtils.isEmpty(epTitle) && !epTitle.equals(res.getTitle())) {
+            Label title2 = new Label(epTitle);
+            
+            titles.add(title2);
+            titles.setCellHorizontalAlignment(title2, HasHorizontalAlignment.ALIGN_CENTER);
+            title2.setStyleName("MediaItem-Title2");
+        }
     }
 
     public HandlerRegistration addClickHandler(ClickHandler handler) {
@@ -131,6 +130,7 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
             BrowsingServicesManager.getInstance().browseFolder((GWTMediaFolder) res, 0, ((GWTMediaFolder) res).getPageSize());
         } else {
             view.setDisplay(new MediaEditorMetadataPanel((GWTMediaFile) res, view));
+        	//view.setDisplay(new TabbedMetadataEditor());
         }
     }
 }

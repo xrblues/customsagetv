@@ -54,7 +54,7 @@ public class BatchOperations {
 		op = new BatchOperation();
 		op.setVisitorClass("sagex.phoenix.vfs.visitors.ImportAsRecordingVisitor");
 		op.setVisitorArg(true);
-		op.setLabel("Import as Recoding");
+		op.setLabel("Import as Recording");
 		op.setStartMessage("Importing videos as Recordings");
 		op.setBackground(false);
 		op.setConfirm("Press OK to Import the videos as Recordings");
@@ -63,7 +63,7 @@ public class BatchOperations {
 		op = new BatchOperation();
 		op.setVisitorClass("sagex.phoenix.vfs.visitors.ImportAsRecordingVisitor");
 		op.setVisitorArg(false);
-		op.setLabel("Un-import as Recoding");
+		op.setLabel("Un-import as Recording");
 		op.setStartMessage("Un-importing videos from Recordings");
 		op.setBackground(false);
 		op.setConfirm("Press OK to Un-import the videos from Recordings");

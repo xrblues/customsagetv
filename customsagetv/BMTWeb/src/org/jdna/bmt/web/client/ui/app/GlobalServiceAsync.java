@@ -13,4 +13,5 @@ public interface GlobalServiceAsync {
 	void getNotices(AsyncCallback<ArrayList<Notification>> callback);
 	void batchOperation(GWTMediaFolder folder, BatchOperation op, AsyncCallback<Void> callback);
 	void batchOperation(BatchOperation op, AsyncCallback<Void> callback);
+	void getLastVersion(AsyncCallback<String> callback);
 }

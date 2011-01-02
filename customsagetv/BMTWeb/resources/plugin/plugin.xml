@@ -3,18 +3,18 @@
 	<Name>Batch Metadata Tools - Web Interface</Name>
 	<Identifier>bmtweb</Identifier>
 	<Description>
-		Web Interface for Batch Metadata Tools, commonly referred
-		to as bmt. The web interface enables you to do edit metadata manually
-		from a web browser. In addition to simple editing of metadata, bmt is
-		build on the Phoenix APIs, and it provides a web interface to the
-		Phoenix Views. ie, It allows you to browser your media collection from
-		the web web browser. While browsing your collection you can also find
-		metadata and fanart for a group of media files, or for a single item.
+Web Interface for Batch Metadata Tools, commonly referred
+to as bmt. The web interface enables you to do edit metadata manually
+from a web browser. In addition to simple editing of metadata, bmt is
+build on the Phoenix APIs, and it provides a web interface to the
+Phoenix Views. ie, It allows you to browser your media collection from
+the web web browser. While browsing your collection you can also find
+metadata and fanart for a group of media files, or for a single item.
 		
-		BMT also provides a number of other batch tools for cleaning up metadata, or
-		performing some common operations.  Some of these include; Exporting a
-		.properties for some or all mediafiles; Cleaning up Genres; Setting the
-		watched status on files, etc
+BMT also provides a number of other batch tools for cleaning up metadata, or
+performing some common operations.  Some of these include; Exporting a
+.properties for some or all mediafiles; Cleaning up Genres; Setting the
+watched status on files, etc
 	</Description>
 	<Screenshot><![CDATA[http://forums.sagetv.com/forums/attachment.php?attachmentid=9772&stc=1&d=1266629522]]></Screenshot>
 	<Author>stuckless</Author>
@@ -32,7 +32,7 @@
 
 	<Dependency>
 		<Plugin>phoenix-core</Plugin>
-		<MinVersion>2.3.9</MinVersion>
+		<MinVersion>2.3.11</MinVersion>
 	</Dependency>
 
 	<PluginType>Standard</PluginType>
@@ -52,6 +52,18 @@
 		<MD5>@@context-checksum@@</MD5>
 	</Package>
 	<ReleaseNotes>
+4.9.6
+*	262	 WebUI: Scrolling handled by browser window   BMTWEB BMT	 
+*	263	 WebUI: Notifications are handled by notification manager   BMTWEB BMT	 
+*	265	 WebUI: Can't update Movie Title   BMTWEB BMT	 
+*	266	 Fix SageAiring-NoEpisode scraper   Phoenix	 
+*	267	 Add Movie.Year scraper   Phoenix	 
+*	269	 Ability to set a default poster   BMTWEB BMT	 
+*	270	 Some Movies showing S00E00   BMT	 
+*	274	 Refresh MediaTitles broken from the web ui   BMTWEB BMT	 
+*	276	 First time dialog shows every time   BMTWEB BMT	 
+*	277	 Title Scraping Tweaks   BMT
+
 4.9.5
 * Fixed Sage Imports View
 * Added Fanart Refresh

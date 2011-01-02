@@ -17,26 +17,22 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class BrowsePanel extends Composite implements BrowseReplyHandler, BrowserView, ResizeHandler {
-    private DockPanel           panel          = new DockPanel();
+public class BrowsePanel extends Composite implements BrowseReplyHandler, BrowserView {
+    private HorizontalPanel     hpanel          = new HorizontalPanel();
     private Panel               mainItems      = new FlowPanel();
     private VerticalPanel       sideSource = new VerticalPanel();
     private SourcesPanel        sources        = new SourcesPanel(this);
@@ -45,8 +41,8 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
     
     private GWTMediaFolder         currentFolder  = null;
 
-    private DockPanel           browser        = new DockPanel();
-    private ScrollPanel         browserScroller = new ScrollPanel();
+    private VerticalPanel       vbrowser        = new VerticalPanel();
+    private SimplePanel         browserScroller = new SimplePanel();
     
     private HorizontalButtonBar     browserActions = new HorizontalButtonBar();
     private Button backButton = null;
@@ -55,15 +51,14 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
 	private Button loadMoreButton = null;
 
     private HandlerRegistration replyHandler   = null;
-    private HandlerRegistration resizeHandler = null;
     private int lastScrollPosition;
     
     private ListBox batchOperations;
     
     public BrowsePanel() {
         super();
-        panel.setSpacing(5);
-        panel.setWidth("100%");
+        hpanel.setSpacing(5);
+        hpanel.setWidth("100%");
         sideSource.setWidth("220px");
         sideSource.add(search);
         search.setWidth("100%");
@@ -73,10 +68,11 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         scans.setVisible(false);
         sideSource.add(scans);
         scans.setWidth("100%");
-        panel.add(sideSource, DockPanel.WEST);
-        panel.setCellHorizontalAlignment(sideSource, HasHorizontalAlignment.ALIGN_LEFT);
-        panel.setCellVerticalAlignment(sideSource, HasVerticalAlignment.ALIGN_TOP);
-        panel.setCellWidth(sideSource, "300px");
+        
+        hpanel.add(sideSource);
+        hpanel.setCellHorizontalAlignment(sideSource, HasHorizontalAlignment.ALIGN_LEFT);
+        hpanel.setCellVerticalAlignment(sideSource, HasVerticalAlignment.ALIGN_TOP);
+        hpanel.setCellWidth(sideSource, "300px");
 
         
         // add browse actions
@@ -145,40 +141,29 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
 		});
         
         browserActions.add(batchOperations);
-        
         browserActions.setVisible(false);
-        
-        browserScroller.setWidth("100%");
-        browserScroller.setHeight("100%");
-        browserScroller.setAlwaysShowScrollBars(false);
         browserScroller.setWidget(mainItems);
         
-        browser.setWidth("100%");
-        browser.setStyleName("BrowsePanel-Actions");
-        browser.add(browserActions, DockPanel.NORTH);
-        browser.add(browserScroller, DockPanel.CENTER);
-
+        vbrowser.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+        vbrowser.setWidth("100%");
+        vbrowser.setStyleName("BrowsePanel-Actions");
+        vbrowser.add(browserActions);
+        vbrowser.setCellHeight(browserActions, "10px");
+        vbrowser.add(browserScroller);
         
-        
-        // new Action("Scan Folder", "Action-ScanFolder",
-        // ScanFolderEvent(path));
-        // new Action("Set Watched", "Action-SetWatched",
-        // SetWatchedEvent(path));
+        hpanel.add(vbrowser);
+        hpanel.setCellHorizontalAlignment(vbrowser, HasHorizontalAlignment.ALIGN_LEFT);
+        hpanel.setCellVerticalAlignment(vbrowser, HasVerticalAlignment.ALIGN_TOP);
+        hpanel.setCellWidth(vbrowser, "100%");
 
-        panel.add(browser, DockPanel.CENTER);
-        panel.setCellHorizontalAlignment(browser, HasHorizontalAlignment.ALIGN_LEFT);
-        panel.setCellVerticalAlignment(browser, HasVerticalAlignment.ALIGN_TOP);
-        panel.setCellWidth(browser, "100%");
+        hpanel.setStyleName("BrowsePanel");
 
-        panel.setStyleName("BrowsePanel");
-
-        initWidget(panel);
+        initWidget(hpanel);
     }
     
     @Override
     protected void onAttach() {
         replyHandler = Application.events().addHandler(BrowseReplyEvent.TYPE, this);
-        resizeHandler = Window.addResizeHandler(this);
         super.onAttach();
     }
 
@@ -186,17 +171,16 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
     protected void onDetach() {
         super.onDetach();
         replyHandler.removeHandler();
-        resizeHandler.removeHandler();
     }
 
     public void onBrowseReply(BrowseReplyEvent event) {
     	GWTMediaFolder browseableFolder = event.getBrowseableFolder();
         try {
-            // if the mainItems widget is not visible, then set it.
-            if (mainItems != browserScroller.getWidget()) {
-                mainItems.clear();
-                browserScroller.setWidget(mainItems);
-            }
+        	if (browserScroller.getWidget() != mainItems) {
+        		browserScroller.setWidget(mainItems);
+        	}
+    		mainItems.clear();
+
             
             // clear the view if we starting from scratch
             if (event.getStart()==0) {
@@ -227,7 +211,6 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
                 mainItems.add(mi);
             }
             
-            resize();
         } finally {
             // notify handlers that we are no longer waiting for data
             EventBus.getHandlerManager().fireEvent(new WaitingEvent(browseableFolder.getResourceRef(), false));
@@ -245,33 +228,14 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         return currentFolder;
     }
 
-    public void onResize(ResizeEvent event) {
-        onWindowResized(event.getWidth(), event.getHeight());
-    }
-    
-    public void onWindowResized(int windowWidth, int windowHeight) {
-        int scrollWidth = windowWidth - browserScroller.getAbsoluteLeft();
-        if (scrollWidth < 1) {
-            scrollWidth = 1;
-        }
-
-        int scrollHeight = windowHeight - browserScroller.getAbsoluteTop();
-        if (scrollHeight < 1) {
-            scrollHeight = 1;
-        }
-        browserScroller.setPixelSize(scrollWidth, scrollHeight);
-    }
-
     public void setDisplay(Widget w) {
         // save the scroll position
-        lastScrollPosition = browserScroller.getScrollPosition();
+        lastScrollPosition = Window.getScrollTop();
         
         setActionsVisible(false);
         Panel  p = new FlowPanel();
         p.add(w);
         browserScroller.setWidget(p);
-        
-        resize();
     }
 
     public void setActionsVisible(boolean b) {
@@ -282,18 +246,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         // just restore the mainitems
         setActionsVisible(true);
         browserScroller.setWidget(mainItems);
-        browserScroller.setScrollPosition(lastScrollPosition);
-        resize();
-    }
-    
-    private void resize() {
-        DeferredCommand.addCommand(new Command() {
-            public void execute() {
-                ResizeEvent evt = new ResizeEvent(Window.getClientWidth(), Window.getClientHeight()) {
-                    // no body
-                };
-                onResize(evt);
-            }
-        });
+        
+        Window.scrollTo(0, lastScrollPosition);
     }
 }

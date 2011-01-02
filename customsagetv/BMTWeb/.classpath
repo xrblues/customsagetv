@@ -4,6 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Phoenix"/>
 	<classpathentry kind="lib" path="/Phoenix/target/phoenix.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gson-1.5.jar"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER/GWT (2)"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

@@ -7,11 +7,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
+import org.jdna.bmt.web.client.Version;
 import org.jdna.bmt.web.client.event.Notification;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.ui.BatchOperation;
 import org.jdna.bmt.web.client.ui.app.GlobalService;
 
+import sagex.api.Configuration;
 import sagex.phoenix.progress.BasicProgressMonitor;
 import sagex.phoenix.progress.IProgressMonitor;
 import sagex.phoenix.vfs.IMediaResource;
@@ -83,5 +85,11 @@ public class GlobalServicesImpl extends RemoteServiceServlet implements GlobalSe
 			return c.newInstance(op.getVisitorArg());
 		}
 	}
-	
+
+	@Override
+	public String getLastVersion() {
+		String version = Configuration.GetServerProperty("bmt/web/lastVersion", "0");
+		Configuration.SetServerProperty("bmt/web/lastVersion", Version.VERSION);
+		return version;
+	}
 }

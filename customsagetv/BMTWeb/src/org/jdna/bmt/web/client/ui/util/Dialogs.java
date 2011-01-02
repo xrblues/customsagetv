@@ -20,7 +20,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class Dialogs {
     public static PopupPanel showWaitingPopup(String message) {
         DecoratedPopupPanel pop = new DecoratedPopupPanel(true);
-        pop.setAnimationEnabled(true);
         pop.center();
         HorizontalPanel hp = new HorizontalPanel();
         hp.add(new Label(message));
@@ -53,7 +52,6 @@ public class Dialogs {
         panel.add(new HTML(body));
         Button btn = new Button("close");
         final DialogBox dialog = new DialogBox();
-        dialog.setAnimationEnabled(true);
         dialog.setAutoHideEnabled(false);
         dialog.setModal(true);
         dialog.setWidget(panel);
@@ -75,7 +73,6 @@ public class Dialogs {
         panel.add(body);
         Button btn = new Button("close");
         final DialogBox dialog = new DialogBox();
-        dialog.setAnimationEnabled(true);
         dialog.setAutoHideEnabled(false);
         dialog.setGlassEnabled(true);
         dialog.setModal(true);
@@ -89,6 +86,7 @@ public class Dialogs {
         panel.add(btn);
         panel.setCellHorizontalAlignment(btn, HasHorizontalAlignment.ALIGN_RIGHT);
         dialog.setAutoHideOnHistoryEventsEnabled(true);
+        dialog.center();
         dialog.show();
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override

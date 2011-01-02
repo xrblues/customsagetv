@@ -1,7 +1,8 @@
 package org.jdna.bmt.web.client.util;
 
 public class StringIntAdapterProperty extends Property<String> {
-    private Property<Integer> prop = null;
+	private static final long serialVersionUID = 1L;
+	private Property<Integer> prop = null;
     public StringIntAdapterProperty(Property<Integer> prop) {
         super();
         this.prop=prop;

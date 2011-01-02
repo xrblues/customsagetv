@@ -17,6 +17,11 @@ public class BMTWeb implements EntryPoint {
      */
     public void onModuleLoad() {
     	Log.debug(Window.Location.getHref());
+    	
+    	if (Window.Location.getHref().contains("bmt5")) {
+    		Application.BMT5=true;
+    	}
+    	
     	if (Window.Location.getHref().endsWith("mobile")) {
     		Log.debug("Using Mobile");
     		//RootPanel.get().add(new AppPanelMobile());
