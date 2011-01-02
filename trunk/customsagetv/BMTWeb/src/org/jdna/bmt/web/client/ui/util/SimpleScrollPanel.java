@@ -1,10 +1,10 @@
 package org.jdna.bmt.web.client.ui.util;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -54,7 +54,7 @@ public class SimpleScrollPanel extends Composite implements ResizeHandler {
     }
 
     public void resize() {
-        DeferredCommand.addCommand(new Command() {
+        Scheduler.get().scheduleDeferred(new Command() {
             public void execute() {
                 ResizeEvent evt = new ResizeEvent(Window.getClientWidth(), Window.getClientHeight()) {
                     // no body

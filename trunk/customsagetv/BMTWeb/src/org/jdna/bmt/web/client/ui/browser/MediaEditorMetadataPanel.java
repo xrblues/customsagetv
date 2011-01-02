@@ -21,7 +21,6 @@ import org.jdna.bmt.web.client.ui.util.binder.ListBinder;
 import org.jdna.bmt.web.client.ui.util.binder.NumberBinder;
 import org.jdna.bmt.web.client.ui.util.binder.TextAreaBinder;
 import org.jdna.bmt.web.client.ui.util.binder.TextBinder;
-import org.jdna.bmt.web.client.util.Property;
 
 import sagex.phoenix.metadata.IMediaArt;
 
@@ -102,6 +101,9 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         Button saveFanart = new Button("Save");
         saveFanart.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
+            	
+            	System.out.println("CLIENT: EpisodeName: " + mediaFile.getMetadata().getEpisodeName().get());
+            	
             	saveMetadata(null);
             }
         });
@@ -189,17 +191,17 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         
         panel.add("Fanart Title", fields.addField("fanart-title", new TextBinder(metadata.getMediaTitle())).getWidget());
 
-        movieTitle=(TextBinder) fields.addField("movie-title", new TextBinder(metadata.getEpisodeName()));
-        panel.add("Movie Title", movieTitle.getWidget());
-        movieRows.add(panel.getFlexTable().getRowCount()-1);
-        
         showTitle=(TextBinder) fields.addField("tv-title", new TextBinder(metadata.getTitle()));
         panel.add("Show Title", showTitle.getWidget());
         tvRows.add(panel.getFlexTable().getRowCount()-1);
         
-        episodeName=(TextBinder) fields.addField("tv-episode-title", new TextBinder(metadata.getEpisodeName()));
+        episodeName=(TextBinder) fields.addField("episode-name", new TextBinder(metadata.getEpisodeName()));
         panel.add("Episode Name", episodeName.getWidget());
         tvRows.add(panel.getFlexTable().getRowCount()-1);
+        
+        movieTitle=(TextBinder) fields.addField("movie-title", new TextBinder(metadata.getEpisodeName()));
+        panel.add("Movie Title", movieTitle.getWidget());
+        movieRows.add(panel.getFlexTable().getRowCount()-1);
         
         panel.add("Season #", fields.addField("tv-season", new NumberBinder(metadata.getSeasonNumber(), true)).getWidget());
         tvRows.add(panel.getFlexTable().getRowCount()-1);
@@ -334,10 +336,12 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
             metadataContainer.getFlexTable().getRowFormatter().setVisible(i, !"TV".equals(mt));
         }
         
+        episodeName.setEnabled("TV".equals(mt));
+    	movieTitle.setEnabled(!"TV".equals(mt));
+        
         if (mediaFile!=null && metadata!=null && metadata.getPreserveRecordingMetadata().get()) {
 	        // set the readonly fields
 	    	movieTitle.setEnabled(!mediaFile.getSageRecording().get());
-	    	//showTitle.setEnabled(!mediaFile.getSageRecording().get());
 	    	episodeName.setEnabled(!mediaFile.getSageRecording().get());
 	    	description.setEnabled(!mediaFile.getSageRecording().get());
 	    	year.setEnabled(!mediaFile.getSageRecording().get());
@@ -356,7 +360,6 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
 	    	archived.setEnabled(false);
         }
         
-        //sageRecording.setEnabled(false);
         metadataContainer.stripe();
     }
 }

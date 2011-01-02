@@ -1,0 +1,28 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+		
+		.toastMessage {
+			color: white;
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		
+		.deleteIcon {
+			cursor: pointer;
+		}
+	</ui:style>
+	<g:HTMLPanel styleName="{style.toastMessage}" width="100%">
+		<table cellpadding="0" cellspacing="0" style="width:100%; color: inherit;">
+			<tr>
+				<td width="16px" style="padding-right: 20px;"><g:Image ui:field="infoIcon" url=""></g:Image></td>
+				<td nowrap="true"><span ui:field="message" class="{style.important}"></span></td>
+				<td width="16px" style="padding-left: 20px;"><g:Image styleName="{style.deleteIcon}" ui:field="deleteIcon" url="images/16x16/process-stop.png"></g:Image></td>
+			</tr>
+		</table>
+	</g:HTMLPanel>
+</ui:UiBinder> 

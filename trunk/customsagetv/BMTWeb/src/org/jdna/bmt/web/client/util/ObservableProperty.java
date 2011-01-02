@@ -5,7 +5,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class ObservableProperty<T> extends Property<T> implements Serializable {
-    private Set<PropertyObserver<T>> observers = new TreeSet<PropertyObserver<T>>();
+	private static final long serialVersionUID = 1L;
+
+	private Set<PropertyObserver<T>> observers = new TreeSet<PropertyObserver<T>>();
     
     private T oldValue;
     public ObservableProperty(T value) {

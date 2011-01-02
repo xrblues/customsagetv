@@ -56,17 +56,17 @@
 			</g:cell>
 			<g:Button ui:field="download" addStyleNames="{style.downloadBtn}">Download</g:Button>
 		</g:HorizontalPanel>
-		<g:HorizontalPanel addStyleNames="{style.image}">
+		<g:VerticalPanel addStyleNames="{style.image}" width="100%">
 			<g:cell horizontalAlignment="ALIGN_CENTER">
 				<g:Image width="200px" ui:field="image"></g:Image>
 			</g:cell>
-			<g:cell horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_TOP">
-				<g:VerticalPanel>
+			<g:cell horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_MIDDLE">
+				<g:HorizontalPanel>
 					<g:Button addStyleNames="{style.button}" ui:field="makeDefault">Make Default</g:Button>
 					<g:Button addStyleNames="{style.button}" ui:field="delete">Delete</g:Button>
-				</g:VerticalPanel>
+				</g:HorizontalPanel>
 			</g:cell>
-		</g:HorizontalPanel>
+		</g:VerticalPanel>
 		<g:ScrollPanel width="350px" ui:field="scroller"
 			alwaysShowScrollBars="false" addStyleNames="{style.scroller}">
 			<g:HorizontalPanel ui:field="imagePanel">

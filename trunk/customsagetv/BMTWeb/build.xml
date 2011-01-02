@@ -23,7 +23,7 @@
 	<property name="build.dir" location="${target}/build" />
 	<property name="dist.dir" location="${target}/dist" />
 
-	<property name="version" value="4.9.5" />
+	<property name="version" value="4.9.6" />
 
 	<!-- for debugging turn off gwt compile -->
 	<!-- <property name="no-gwt-compile" value="true" /> -->

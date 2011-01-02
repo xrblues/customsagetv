@@ -33,4 +33,12 @@ public abstract class FieldBinder<T> {
 			((HasEnabled) w).setEnabled(enabled);
 		}
 	}
+	
+	public boolean isEnabled() {
+		Widget w = getWidget();
+		if (w instanceof HasEnabled) {
+			return ((HasEnabled) w).isEnabled();
+		}
+		return true;
+	}
 }

@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.Version;
-import org.jdna.bmt.web.client.animation.FadeOut;
 import org.jdna.bmt.web.client.event.Notification;
 import org.jdna.bmt.web.client.event.NotificationEvent;
 import org.jdna.bmt.web.client.event.NotificationEvent.MessageType;
@@ -14,11 +13,13 @@ import org.jdna.bmt.web.client.event.NotificationEventHandler;
 import org.jdna.bmt.web.client.ui.BatchOperation;
 import org.jdna.bmt.web.client.ui.BatchOperations;
 import org.jdna.bmt.web.client.ui.browser.BrowsePanel;
+import org.jdna.bmt.web.client.ui.browser2.BrowserPanel;
 import org.jdna.bmt.web.client.ui.debug.BackupPanel;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesPanel;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesService;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesServiceAsync;
 import org.jdna.bmt.web.client.ui.status.StatusPanel;
+import org.jdna.bmt.web.client.ui.toast.Toaster;
 import org.jdna.bmt.web.client.ui.util.CommandItem;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
@@ -31,22 +32,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasResizeHandlers;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -57,27 +50,22 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class AppPanel extends Composite implements ResizeHandler, HasResizeHandlers, ValueChangeHandler<String>, NotificationEventHandler {
+public class AppPanel extends Composite implements ValueChangeHandler<String>, NotificationEventHandler {
     public static AppPanel INSTANCE = null;
    
-    private DockPanel dp = new DockPanel();
+    private VerticalPanel vp = new VerticalPanel();
     private Widget curPanel = null;
     
-    private Label message = new Label();
-
     final GlobalServiceAsync global = GWT.create(GlobalService.class);
+
+    Toaster toaster = new Toaster();
     
     public AppPanel() {
         INSTANCE = this;
-        dp.setWidth("100%");
-        dp.setHeight("100%");
+        vp.setWidth("100%");
+        vp.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
         
         Hyperlink status = new Hyperlink(Application.labels().status(), "status");
-        status.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                setStatusPanel();
-            }
-        });
         status.addStyleName("App-Status");
         
         Hyperlink configure = new Hyperlink(Application.labels().configure(), "configure");
@@ -86,7 +74,7 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         Hyperlink browse = new Hyperlink(Application.labels().browse(), "browsing/source:tv");
         browse.addStyleName("App-Browse");
 
-        Hyperlink refresh = new Hyperlink(Application.labels().refreshLibrary(), "refresh");
+        Label refresh = new Label(Application.labels().refreshLibrary());
         refresh.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 SageAPI.refreshLibrary(false, new AsyncCallback<String>() {
@@ -101,9 +89,10 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
             }
         });
         refresh.addStyleName("App-Refresh");
+        refresh.addStyleName("clickable");
 
         
-        Hyperlink help = new Hyperlink(Application.labels().help(), "help");
+        Label help = new Label(Application.labels().help());
         help.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
             	showHelp();
@@ -111,9 +100,9 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
 
         });
         help.addStyleName("App-Help");
-        
-        
-        final Hyperlink toolMenu = new Hyperlink(Application.labels().toolMenu(), "toolmenu");
+        help.addStyleName("clickable");
+
+        final Label toolMenu = new Label(Application.labels().toolMenu());
         toolMenu.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 showToolsMenu(toolMenu);
@@ -122,9 +111,7 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
             private void showToolsMenu(Widget offset) {
                 final PopupPanel pp = new PopupPanel();
                 pp.setAutoHideEnabled(true);
-                pp.setAnimationEnabled(true);
                 VerticalPanel vp = new VerticalPanel();
-                //vp.add(new CommandItem(null, "Find/Remove Property Files", null));
                 vp.add(new CommandItem(null, "Create Support Request", new Command() {
                     public void execute() {
                         pp.hide();
@@ -160,6 +147,7 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
             }
         });
         toolMenu.addStyleName("App-Toolmenu");
+        toolMenu.addStyleName("clickable");
 
         Grid header = new Grid(1,2);
         header.setWidth("100%");
@@ -180,20 +168,11 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         header.setWidget(0,1,hp);
         header.getCellFormatter().setHorizontalAlignment(0,1,HasHorizontalAlignment.ALIGN_RIGHT);
         
-        dp.add(header, DockPanel.NORTH);
-        dp.setCellHorizontalAlignment(header, HasHorizontalAlignment.ALIGN_RIGHT);
-        dp.setCellVerticalAlignment(header, HasVerticalAlignment.ALIGN_MIDDLE);
+        vp.add(header);
+        vp.setCellHorizontalAlignment(header, HasHorizontalAlignment.ALIGN_RIGHT);
+        vp.setCellVerticalAlignment(header, HasVerticalAlignment.ALIGN_MIDDLE);
         
-        HorizontalPanel messages = new HorizontalPanel();
-        messages.addStyleName("Header-Messages");
-        messages.setWidth("100%");
-        messages.add(message);
-        messages.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        messages.setCellHorizontalAlignment(message, HasHorizontalAlignment.ALIGN_CENTER);
-        messages.setCellVerticalAlignment(message, HasVerticalAlignment.ALIGN_MIDDLE);
-        dp.add(messages, DockPanel.NORTH);
-        
-        initWidget(dp);
+        initWidget(vp);
         
         History.addValueChangeHandler(this);
 
@@ -206,9 +185,6 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         }
 
         Application.events().addHandler(NotificationEvent.TYPE, this);
-        
-        Window.addResizeHandler(this);
-        Window.enableScrolling(false);
         
         History.fireCurrentHistoryState();
         
@@ -231,21 +207,28 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
 		};
 		t.scheduleRepeating(1000);
 
-		String showNewInstall = Cookies.getCookie("bmt-lastversion");
-		if (showNewInstall==null || !showNewInstall.equals(Version.VERSION)) {
-			Cookies.setCookie("bmt-lastversion", Version.VERSION);
-			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-				@Override
-				public void execute() {
-					DialogBox d = Dialogs.showAsDialog("Batch Metadata Tools Updated", new AboutDialog());
-					d.addCloseHandler(new CloseHandler<PopupPanel>() {
+		global.getLastVersion(new AsyncCallback<String>() {
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+
+			@Override
+			public void onSuccess(String lastVersion) {
+				if (lastVersion==null || !lastVersion.equals(Version.VERSION)) {
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 						@Override
-						public void onClose(CloseEvent<PopupPanel> event) {
+						public void execute() {
+							DialogBox d = Dialogs.showAsDialog("Batch Metadata Tools Updated", new AboutDialog());
+							d.addCloseHandler(new CloseHandler<PopupPanel>() {
+								@Override
+								public void onClose(CloseEvent<PopupPanel> event) {
+								}
+							});
 						}
 					});
 				}
-			});
-		}
+			}
+		});
     }
 
     private void showSupportRequestDialog() {
@@ -253,9 +236,13 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
     }
     
     protected void setBrowsePanel(Map<String,String> params) {
-        if (!(curPanel instanceof BrowsePanel)) {
-            setPanel(new BrowsePanel()); 
-        }
+    	if (Application.BMT5) {
+    		setPanel(new BrowserPanel());
+    	} else {
+	        if (!(curPanel instanceof BrowsePanel)) {
+	            setPanel(new BrowsePanel()); 
+	        }
+    	}
     }
 
     protected void setRefreshPanel() {
@@ -280,38 +267,14 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
 
     private void setPanel(Widget panel) {
         if (curPanel!=null) {
-            dp.remove(curPanel);
+            vp.remove(curPanel);
         }
-        dp.add(panel, DockPanel.CENTER);
-        dp.setCellHeight(panel, "100%");
+        vp.add(panel);
+        vp.setCellHeight(panel, "100%");
         curPanel = panel;
     }
 
-    public void onResize(ResizeEvent event) {
-        adjustSize(event.getWidth(), event.getHeight());
-        if (curPanel instanceof ResizeHandler) {
-            ((ResizeHandler) curPanel).onResize(event);
-        }
-    }
-
-    private void adjustSize(int width, int height) {
-        setPixelSize(width, height);
-    }
-    
-    public static void adjustWindowSize() {
-        DeferredCommand.addCommand(new Command() {
-            public void execute() {
-                ResizeEvent evt = new ResizeEvent(Window.getClientWidth(), Window.getClientHeight()) {
-                };
-                INSTANCE.onResize(evt);
-            }
-        });
-    }
-
-    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
-        return addHandler(handler, ResizeEvent.getType());
-    }
-
+        
     public void onValueChange(ValueChangeEvent<String> event) {
         Map<String,String> params = parseHistoryTokens(event.getValue());
         String section = params.get("section");
@@ -363,14 +326,14 @@ public class AppPanel extends Composite implements ResizeHandler, HasResizeHandl
         } else {
             Log.debug(event.getMessage());
         }
-        message.setText(event.getMessage());
-        message.getElement().getStyle().setOpacity(1.0);
-        message.removeStyleName(MessageType.ERROR.name());
-        message.removeStyleName(MessageType.WARN.name());
-        message.removeStyleName(MessageType.INFO.name());
-        message.addStyleName(event.getMessageType().name());
-        FadeOut out = new FadeOut(message);
-        out.run(1000, System.currentTimeMillis()+3000);
+        
+        if (event.getMessageType()==MessageType.ERROR) {
+            toaster.addErrorMessage(event.getMessage());
+        } else if (event.getMessageType()==MessageType.WARN) {
+            toaster.addWarnMessage(event.getMessage());
+        } else {
+        	toaster.addMessage(event.getMessage());
+        }
     }
 
     private void fixCustomMetadataFields() {

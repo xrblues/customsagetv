@@ -22,6 +22,8 @@ public class Application {
     private static final HandlerManager eventBus = EventBus.getHandlerManager();
     private static final GlobalServiceAsync global = GWT.create(GlobalService.class);
     
+    public static boolean BMT5 = false;
+    
     public static Labels labels() {
         return i18nLabels;
     }

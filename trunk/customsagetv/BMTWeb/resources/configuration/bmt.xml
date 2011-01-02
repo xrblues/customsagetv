@@ -11,6 +11,10 @@
 		<field key="itemThumbnailTransform" label="Item Thumbnail Transformation" defaultValue="{name:scale,width:80,height:120}" type="string">
 			<description>Transformation to use for the Media Item thumbnail.</description>
 		</field>
+
+		<field key="lastVersion" label="Last Version Check" defaultValue="0" type="string">
+			<description>This last known version of BMT.  If this version is not the same as the current version, then AboutDialog is shown.</description>
+		</field>
 	</group>
 	
 </configuration>

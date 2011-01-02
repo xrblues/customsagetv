@@ -5,8 +5,9 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Widget;
 
 public class FadeOut extends Animation {
-    private Widget widget;
-    private Style style;
+    protected Widget widget;
+    protected Style style;
+    
     public FadeOut(Widget w) {
         widget = w;
         style = widget.getElement().getStyle();

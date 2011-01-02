@@ -75,6 +75,22 @@
     <servlet-class>org.jdna.bmt.web.server.ViewServlet</servlet-class>
   </servlet>
   
+  
+  <!-- JSON Services -->
+  <servlet>
+    <servlet-name>json</servlet-name>
+    <display-name>json</display-name>
+    <description>Provides RESTful services for phoenix using json</description>
+    <servlet-class>sagex.phoenix.rest.ServiceServlet</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>fanart</servlet-name>
+    <display-name>fanart</display-name>
+    <description>Provider Images for Phoenix REST Media</description>
+    <servlet-class>sagex.phoenix.rest.FanartServlet</servlet-class>
+  </servlet>
+  
   <servlet-mapping>
     <servlet-name>view</servlet-name>
     <url-pattern>view</url-pattern>
@@ -124,4 +140,15 @@
     <servlet-name>sageapi</servlet-name>
     <url-pattern>/bmtweb/sageapi/*</url-pattern>
   </servlet-mapping>
+  
+  <!-- JSON Services -->
+  <servlet-mapping>
+    <servlet-name>json</servlet-name>
+    <url-pattern>/json/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>fanart</servlet-name>
+    <url-pattern>/fanart</url-pattern>
+  </servlet-mapping>
+    
 </web-app>
