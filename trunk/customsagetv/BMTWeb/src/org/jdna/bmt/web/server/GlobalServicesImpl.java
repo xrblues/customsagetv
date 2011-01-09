@@ -16,6 +16,7 @@ import org.jdna.bmt.web.client.ui.app.GlobalService;
 import sagex.api.Configuration;
 import sagex.phoenix.progress.BasicProgressMonitor;
 import sagex.phoenix.progress.IProgressMonitor;
+import sagex.phoenix.util.SageTV;
 import sagex.phoenix.vfs.IMediaResource;
 import sagex.phoenix.vfs.IMediaResourceVisitor;
 
@@ -87,9 +88,17 @@ public class GlobalServicesImpl extends RemoteServiceServlet implements GlobalSe
 	}
 
 	@Override
-	public String getLastVersion() {
-		String version = Configuration.GetServerProperty("bmt/web/lastVersion", "0");
-		Configuration.SetServerProperty("bmt/web/lastVersion", Version.VERSION);
-		return version;
+	public boolean showAboutDialog() {
+		String versionOld = Configuration.GetServerProperty("bmt/web/lastVersion", "0");
+		String versionCur = Version.VERSION;
+		
+		if (!phoenix.util.IsAtLeastVersion(versionOld, versionCur)) {
+			log.debug("Updating version to " + Version.VERSION);
+			Configuration.SetServerProperty("bmt/web/lastVersion", Version.VERSION);
+			Configuration.SaveProperties();
+			return true;
+		}
+		
+		return false;
 	}
 }

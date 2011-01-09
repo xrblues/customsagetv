@@ -32,7 +32,7 @@ watched status on files, etc
 
 	<Dependency>
 		<Plugin>phoenix-core</Plugin>
-		<MinVersion>2.3.11</MinVersion>
+		<MinVersion>2.3.12</MinVersion>
 	</Dependency>
 
 	<PluginType>Standard</PluginType>
@@ -52,6 +52,14 @@ watched status on files, etc
 		<MD5>@@context-checksum@@</MD5>
 	</Package>
 	<ReleaseNotes>
+4.9.7
+* fixed bug where the first time dialog would always show
+* added watched icon to the media file
+* added play icon to the media file (with play on client dialog)
+* fixed bug where bmt would overwrite metadata even if preserve metadata was enabled
+* Added Fanart caching to help when fanart hosted on servers
+* Added support for a null transform to allow the image apis to cache files without transforming them
+
 4.9.6
 *	262	 WebUI: Scrolling handled by browser window   BMTWEB BMT	 
 *	263	 WebUI: Notifications are handled by notification manager   BMTWEB BMT	 

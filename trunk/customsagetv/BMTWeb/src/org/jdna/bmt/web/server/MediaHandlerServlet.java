@@ -74,15 +74,15 @@ public class MediaHandlerServlet extends HttpServlet {
         String mediaUrl = "/media"+req.getPathInfo();
         String parts[] = mediaUrl.split("/");
         
-        if (SageAPI.isRemote()) {
-            //log.debug("Using Remote API for Images: " + mediaUrl);
-            if (!StringUtils.isEmpty(req.getQueryString())) {
-                mediaUrl += ("?" + req.getQueryString());
-            }
-            proxyMediaServlet(mediaUrl, req, resp);
-        } else {
+//        if (SageAPI.isRemote()) {
+//            //log.debug("Using Remote API for Images: " + mediaUrl);
+//            if (!StringUtils.isEmpty(req.getQueryString())) {
+//                mediaUrl += ("?" + req.getQueryString());
+//            }
+//            proxyMediaServlet(mediaUrl, req, resp);
+//        } else {
             mediaHandler.handleRequest(parts, req, resp);
-        }
+//        }
     }
 
     private void proxyMediaServlet(String url, HttpServletRequest req, HttpServletResponse resp) {

@@ -28,10 +28,14 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -40,6 +44,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MediaEditorMetadataPanel extends Composite implements MetadataUpdatedHandler, ChangeHandler {
@@ -74,6 +79,8 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
 	private CheckBinder archived;
 	private CheckBinder watched;
 	private TextBinder genres;
+
+	private CheckBinder preserveMetadata;
 	
 	private FieldManager fields = new FieldManager();
     
@@ -101,8 +108,6 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         Button saveFanart = new Button("Save");
         saveFanart.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-            	
-            	System.out.println("CLIENT: EpisodeName: " + mediaFile.getMetadata().getEpisodeName().get());
             	
             	saveMetadata(null);
             }
@@ -182,6 +187,19 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         
         panel.add(l,new Label());
 
+
+        if (mediaFile.getSageRecording().get()) {
+	        preserveMetadata = (CheckBinder) fields.addField("preserveRecording", new CheckBinder(metadata.getPreserveRecordingMetadata()));
+	        ((CheckBox)preserveMetadata.getWidget()).addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					preserveMetadata.updateProperty();
+					onChange(null);
+				}
+			});
+	        panel.add("Preserve Original Metadata?", preserveMetadata.getWidget());
+        }
+
         sageRecording = (CheckBinder) fields.addField("sageRecording", new CheckBinder(mediaFile.getSageRecording()));
         panel.add("Sage Recording?", sageRecording.getWidget());
 
@@ -246,6 +264,12 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         
         externalId=(TextBinder) fields.addField("externalid", new TextBinder(metadata.getExternalID()));
         panel.add("ExternalId", externalId.getWidget());
+        ((Label)panel.getLabelWidget(panel.getRowCount()-1)).addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				externalId.setEnabled(true);
+			}
+		});
         
         archived=(CheckBinder) fields.addField("archived", new CheckBinder(mediaFile.getIsLibraryFile()));
         panel.add("Archived?", archived.getWidget());
@@ -339,21 +363,24 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         episodeName.setEnabled("TV".equals(mt));
     	movieTitle.setEnabled(!"TV".equals(mt));
         
-        if (mediaFile!=null && metadata!=null && metadata.getPreserveRecordingMetadata().get()) {
+    	if (mediaFile==null || metadata==null) return;
+    	
+    	if (mediaFile.getSageRecording().get()) {
+        	boolean preserve = metadata.getPreserveRecordingMetadata().get();
 	        // set the readonly fields
-	    	movieTitle.setEnabled(!mediaFile.getSageRecording().get());
-	    	episodeName.setEnabled(!mediaFile.getSageRecording().get());
-	    	description.setEnabled(!mediaFile.getSageRecording().get());
-	    	year.setEnabled(!mediaFile.getSageRecording().get());
-	    	originalAirDate.setEnabled(!mediaFile.getSageRecording().get());
-	    	parentalRatings.setEnabled(!mediaFile.getSageRecording().get());
-	    	extendedRatings.setEnabled(!mediaFile.getSageRecording().get());
-	    	runningTime.setEnabled(!mediaFile.getSageRecording().get());
-	    	misc.setEnabled(!mediaFile.getSageRecording().get());
-	    	externalId.setEnabled(!mediaFile.getSageRecording().get());
-        }
-        
-        if (mediaFile!=null && mediaFile.getSageRecording().get()) {
+	    	movieTitle.setEnabled(!preserve);
+	    	showTitle.setEnabled(!preserve);
+	    	episodeName.setEnabled(!preserve);
+	    	description.setEnabled(!preserve);
+	    	year.setEnabled(!preserve);
+	    	originalAirDate.setEnabled(!preserve);
+	    	parentalRatings.setEnabled(!preserve);
+	    	extendedRatings.setEnabled(!preserve);
+	    	runningTime.setEnabled(!preserve);
+	    	misc.setEnabled(!preserve);
+	    	externalId.setEnabled(!preserve);
+	    	genres.setEnabled(!preserve);
+
 	    	externalId.setEnabled(false);
 	    	archived.setEnabled(true);
         } else {

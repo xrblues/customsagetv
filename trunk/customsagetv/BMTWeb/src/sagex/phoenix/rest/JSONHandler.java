@@ -17,7 +17,7 @@ import sagex.remote.SagexServlet.SageHandler;
 public abstract class JSONHandler implements SageHandler {
 	protected Logger log = Logger.getLogger(getClass());
 	
-	public class Help {
+	public static class Help {
 		public String title;
 		public String description;
 		public Map<String, String> parameters = new HashMap<String, String>();

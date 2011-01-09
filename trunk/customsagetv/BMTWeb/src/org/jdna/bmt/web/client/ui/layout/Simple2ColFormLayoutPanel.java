@@ -85,6 +85,11 @@ public class Simple2ColFormLayoutPanel extends Composite {
         return grid;
     }
     
+    
+    public Widget getLabelWidget(int row) {
+    	return grid.getWidget(row, 0);
+    }
+    
     public void stripe() {
         int s = grid.getRowCount();
         

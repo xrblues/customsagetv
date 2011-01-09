@@ -84,6 +84,7 @@
     <servlet-class>sagex.phoenix.rest.ServiceServlet</servlet-class>
   </servlet>
 
+  <!--  Fanart services -->
   <servlet>
     <servlet-name>fanart</servlet-name>
     <display-name>fanart</display-name>
@@ -146,9 +147,10 @@
     <servlet-name>json</servlet-name>
     <url-pattern>/json/*</url-pattern>
   </servlet-mapping>
+  
   <servlet-mapping>
     <servlet-name>fanart</servlet-name>
-    <url-pattern>/fanart</url-pattern>
+    <url-pattern>/fanart/*</url-pattern>
   </servlet-mapping>
     
 </web-app>

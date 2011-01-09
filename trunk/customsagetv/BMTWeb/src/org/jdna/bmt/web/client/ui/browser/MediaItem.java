@@ -4,8 +4,10 @@ import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.ui.debug.DebugDialog;
+import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.util.StringUtils;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
@@ -16,6 +18,7 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -46,6 +49,7 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         img.addStyleName("MediaItem-Image");
         img.addErrorHandler(new ErrorHandler() {
             public void onError(ErrorEvent event) {
+            	GWT.log("Could not load image: " + img.getUrl());
                 if (res instanceof GWTMediaFolder) {
                     img.setUrl("images/128x128/folder_video.png");
                 } else {
@@ -61,15 +65,34 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         }
 
         // set the actions
+        actions.setSpacing(10);
         if (!(res instanceof GWTMediaFolder)) {
             Image img2 = new Image("images/16x16/applications-system.png");
             img2.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    DebugDialog.show((GWTMediaFile) res);
                     event.stopPropagation();
+                    DebugDialog.show((GWTMediaFile) res);
                 }
             });
             actions.add(img2);
+            
+            if (((GWTMediaFile)res).getIsWatched().get()) {
+            	img2 = new Image("images/marker_watched.png");
+            	img2.setSize("16px", "16px");
+            	actions.insert(img2,0);
+            }
+
+            if (((GWTMediaFile)res).isPlayable()) {
+            	img2 = new Image("images/16x16/media-playback-start.png");
+            	img2.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+	                    event.stopPropagation();
+						playFile((GWTMediaFile)res);
+					}
+				});
+            	actions.insert(img2,0);
+            }
         }
         
         vpanel.add(img);
@@ -96,7 +119,12 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         addDomHandler(this, ClickEvent.getType());
     }
 
-    private void setTitles(GWTMediaResource res2) {
+    protected void playFile(GWTMediaFile res2) {
+    	//Window.alert("Playing File");
+    	Dialogs.showAsDialog("Play Video", new PlayOnClientDialogPanel(res2));
+	}
+
+	private void setTitles(GWTMediaResource res2) {
         titles.clear();
         Label title1 = new Label(res2.getTitle());
         titles.add(title1);
