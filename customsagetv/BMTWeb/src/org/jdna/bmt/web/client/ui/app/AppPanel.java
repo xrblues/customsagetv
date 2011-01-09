@@ -207,14 +207,14 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
 		};
 		t.scheduleRepeating(1000);
 
-		global.getLastVersion(new AsyncCallback<String>() {
+		global.showAboutDialog(new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
 			}
 
 			@Override
-			public void onSuccess(String lastVersion) {
-				if (lastVersion==null || !lastVersion.equals(Version.VERSION)) {
+			public void onSuccess(Boolean showDialog) {
+				if (showDialog!=null && showDialog) {
 					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 						@Override
 						public void execute() {

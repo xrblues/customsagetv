@@ -76,7 +76,7 @@ public class VFSService extends JSONHandler {
 		public static String TYPE_FOLDER = "folder";
 	}
 	
-	private class FullItem implements TVItem {
+	private static class FullItem implements TVItem {
 		public static final String actors = "actors";
 		public static final String description = "description";
 		public static final String directors = "directors";

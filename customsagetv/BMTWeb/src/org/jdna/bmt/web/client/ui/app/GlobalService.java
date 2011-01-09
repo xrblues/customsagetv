@@ -16,5 +16,5 @@ public interface GlobalService extends RemoteService {
 	public void batchOperation(GWTMediaFolder folder, BatchOperation op);
 	public void batchOperation(BatchOperation op);
 	
-	public String getLastVersion();
+	public boolean showAboutDialog();
 }

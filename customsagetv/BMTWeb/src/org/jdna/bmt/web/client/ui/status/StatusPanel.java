@@ -16,13 +16,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class StatusPanel extends Composite {
     private Labels labels = Application.labels();
+    
     private VerticalPanel grid = new VerticalPanel();
     
     private static class StatusBox extends Composite {
         VerticalPanel vp = new VerticalPanel();
         public StatusBox(HasStatus status) {
             vp.setSpacing(5);
-            vp.setWidth("100%");
+            vp.setWidth("750px");
             
             HorizontalPanel p = new HorizontalPanel();
             p.setWidth("100%");
@@ -63,6 +64,7 @@ public class StatusPanel extends Composite {
             public void execute() {
                 final StatusBox sb = new StatusBox(status); 
                 grid.add(sb);
+                grid.setCellHorizontalAlignment(sb, HasHorizontalAlignment.ALIGN_CENTER);
                 status.update(new AsyncCallback<Void>() {
                     public void onFailure(Throwable caught) {
                     }

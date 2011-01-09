@@ -34,7 +34,7 @@ public class ServiceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private Map<String, JSONHandler> services = new HashMap<String, JSONHandler>();
     
-    private Logger log = Logger.getLogger(this.getClass());
+    private transient Logger log = Logger.getLogger(this.getClass());
     
     /**
      * @see HttpServlet#HttpServlet()
@@ -130,32 +130,11 @@ public class ServiceServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		
-		try {
-			Log4jConfigurator.configure("phoenix-rest");
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		
-        if (SageAPI.isRemote()) {
-        	SageAPI.setProvider(new RMISageAPI("localhost"));
-            System.out.println("*** USING TEST PHOENIX DIR ****");
-            
-            try {
-                System.out.println("*** BEGIN Copying Phoenix files for Testing.... ***");
-                FileUtils.copyDirectory(new File("/home/sean/DevelopmentProjects/workspaces/sagetv/Phoenix/src/main/STVs/Phoenix/"), new File("testing/Phoenix/"), new FileFilter() {
-					@Override
-					public boolean accept(File pathname) {
-						if (pathname.getName().endsWith(".svn")) return false;
-						return true;
-					}
-				});
-                System.out.println("*** END Copying Phoenix files for Testing.... ***");
-            } catch (IOException e) {
-            	log.warn(e);
-            }
-            System.setProperty("phoenix/homeDir", "testing/Phoenix/");
-        }
-		
+//		try {
+//			Log4jConfigurator.configure("phoenix-rest");
+//		} catch (Exception e1) {
+//			e1.printStackTrace();
+//		}
 		
 		services.put(InfoService.ID, new InfoService());
 		services.put(EchoService.ID, new EchoService());
@@ -166,7 +145,7 @@ public class ServiceServlet extends HttpServlet {
 		
 		Phoenix.getInstance();
 		
-		BasicConfigurator.resetConfiguration();
-        BasicConfigurator.configure();
+//		BasicConfigurator.resetConfiguration();
+//        BasicConfigurator.configure();
 	}
 }

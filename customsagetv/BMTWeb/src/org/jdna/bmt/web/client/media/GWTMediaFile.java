@@ -26,6 +26,8 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
     private String seriesInfoId;
     private String vfsId;
     
+    private boolean isPlayable = false;
+    
     public GWTMediaFile() {
     }
     
@@ -130,4 +132,12 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
     public void setLastModified(long lastModified2) {
         this.lastModified=lastModified2;
     }
+
+	public void setPlayable(boolean isPlayable) {
+		this.isPlayable = isPlayable;
+	}
+
+	public boolean isPlayable() {
+		return isPlayable;
+	}
 }

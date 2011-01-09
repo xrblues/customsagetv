@@ -1,0 +1,18 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.title {
+			padding: 10 10 10 10;
+		}
+		.clients {
+			padding: 10 10 10 10;
+		}
+	</ui:style>
+	<g:VerticalPanel width="100%">
+		<g:Cell horizontalAlignment="ALIGN_CENTER" addStyleNames="{style.title}">
+			<g:HTMLPanel>Select a connected client from the list below or choose to add the item to the playlist</g:HTMLPanel>
+		</g:Cell>
+		<g:VerticalPanel ui:field="connectedClients" addStyleNames="{style.clients}" width="100%"/>
+	</g:VerticalPanel>
+</ui:UiBinder> 

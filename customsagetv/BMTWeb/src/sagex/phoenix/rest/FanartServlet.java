@@ -11,7 +11,7 @@ import sagex.phoenix.fanart.AdvancedFanartMediaRequestHandler;
 
 public class FanartServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private AdvancedFanartMediaRequestHandler handler = new AdvancedFanartMediaRequestHandler();
+    private transient AdvancedFanartMediaRequestHandler handler = new AdvancedFanartMediaRequestHandler();
     
     /**
      * @see HttpServlet#HttpServlet()

@@ -158,6 +158,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 						file.setSeriesInfoId(info.getSeriesInfoID());
 					}
 					file.setVFSID(r.getId());
+					file.setPlayable(! (r.isType(MediaResourceType.EPG_AIRING.value()) || r.isType(MediaResourceType.FOLDER.value())));
 				} else {
 					log.warn("Not a sage media object??");
 				}
@@ -540,20 +541,18 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 
 	public ServiceReply<GWTMediaFile> saveMetadata(GWTMediaFile file, PersistenceOptionsUI uiOptions) {
 		Hints options = Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions();
-		// don't allow the persistence engine to do this, since we'll do it,
-		// later
+		// don't worry import as recordings here, since we'll import it
+		// at the end of the logic section
 		options.setBooleanHint(MetadataHints.IMPORT_TV_AS_RECORDING,false);
 		options.setBooleanHint(MetadataHints.SCAN_MISSING_METADATA_ONLY, false);
 		options.setBooleanHint(MetadataHints.SCAN_SUBFOLDERS, false);
-
+		options.setBooleanHint(MetadataHints.PRESERVE_ORIGINAL_METADATA, file.getMetadata().getPreserveRecordingMetadata().get());
 		
-		Object sageMF = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
+		Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
 		IMediaFile mf = new SageMediaFile(null, sageMF);
 		IMetadata md = MetadataProxy.newInstance();
 		GWTMediaMetadata gmd = file.getMetadata();
 
-		System.out.println("** EpisodeName: " + gmd.getEpisodeName().get());
-		
 		md.setDescription(gmd.getDescription().get());
 		md.setDiscNumber(NumberUtils.toInt(gmd.getDiscNumber().get()));
 		md.setEpisodeName(gmd.getEpisodeName().get());
@@ -614,9 +613,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		}
 
 		try {
-			System.out.println("** EpisodeName2: " + md.getEpisodeName());
-			Phoenix.getInstance().getMetadataManager().updateMetadata(mf, md, null);
-			System.out.println("** EpisodeName3: " + md.getEpisodeName());
+			Phoenix.getInstance().getMetadataManager().updateMetadata(mf, md, options);
 
 			// test if we are making a recording
 			if (mf.isType(MediaResourceType.RECORDING.value()) && file.getSageRecording().get() == false) {
@@ -646,7 +643,6 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			// update the formatted title
 			file.setFormattedTitle(phoenix.media.GetFormattedTitle(mf));
 			file.attachMetadata(newMetadata(mf, mf.getMetadata()));
-			System.out.println("** EpisodeName3: " + file.getMetadata().getEpisodeName().get());
 		} catch (MetadataException e) {
 			log.warn("Failed to save metadata for file: " + mf, e);
 			return new ServiceReply<GWTMediaFile>(1, "Failed to save metadata/fanart: " + e.getMessage(), file);
@@ -656,14 +652,14 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	}
 
 	public ArrayList<GWTMediaArt> getFanart(GWTMediaFile file, MediaArtifactType artifact) {
-		Object sageMF = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
+		Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
 		if (sageMF == null) {
 			log.error("Failed to get sage mediafile for: " + file);
 			return null;
 		}
 		ArrayList<GWTMediaArt> files = new ArrayList<GWTMediaArt>();
 		log.debug("Getting fanart: " + file.getType() + "; " + artifact + "; " + sageMF);
-		String fanart[] = phoenix.api.GetFanartArtifacts(sageMF, null, null, artifact.name(), null, null);
+		String fanart[] = phoenix.fanart.GetFanartArtifacts(sageMF, null, null, artifact.name(), null, null);
 		if (fanart != null) {
 			for (String fa : fanart) {
 				GWTMediaArt ma = new GWTMediaArt();
@@ -678,12 +674,12 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	}
 
 	public GWTMediaArt downloadFanart(GWTMediaFile file, MediaArtifactType artifact, GWTMediaArt ma) {
-		Object sageMF = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
+		Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
 		if (sageMF == null) {
 			log.error("Failed to get sage mediafile for: " + file);
 			return null;
 		}
-		String fanartDir = phoenix.api.GetFanartArtifactDir(sageMF, null, null, artifact.name(), null, null, true);
+		String fanartDir = phoenix.fanart.GetFanartArtifactDir(sageMF, null, null, artifact.name(), null, null, true);
 		File dir = new File(fanartDir);
 		String name = new File(ma.getDownloadUrl()).getName();
 		File local = new File(dir, name);
@@ -704,7 +700,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	}
 
 	public void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art) {
-		Object sageMF = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
+		Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
 		if (sageMF == null) {
 			log.error("Failed to get sage mediafile for: " + file);
 			return;
@@ -713,11 +709,11 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		File img = new File(art.getLocalFile());
 		if (img.exists()) {
 			if (type == MediaArtifactType.POSTER) {
-				phoenix.api.SetFanartPoster(sageMF, img);
+				phoenix.fanart.SetFanartPoster(sageMF, img);
 			} else if (type == MediaArtifactType.BACKGROUND) {
-				phoenix.api.SetFanartBackground(sageMF, img);
+				phoenix.fanart.SetFanartBackground(sageMF, img);
 			} else if (type == MediaArtifactType.BANNER) {
-				phoenix.api.SetFanartBanner(sageMF, img);
+				phoenix.fanart.SetFanartBanner(sageMF, img);
 			}
 		}
 	}

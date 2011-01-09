@@ -18,6 +18,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Dialogs {
+	public interface NeedsDialog {
+		public void setDialogReference(DialogBox dialog);
+	}
+	
     public static PopupPanel showWaitingPopup(String message) {
         DecoratedPopupPanel pop = new DecoratedPopupPanel(true);
         pop.center();
@@ -69,8 +73,9 @@ public class Dialogs {
 
     public static DialogBox showAsDialog(String title, Widget body) {
         VerticalPanel panel = new VerticalPanel();
-        //panel.setWidth("100%");
+        panel.setWidth("100%");
         panel.add(body);
+        body.setWidth("100%");
         Button btn = new Button("close");
         final DialogBox dialog = new DialogBox();
         dialog.setAutoHideEnabled(false);
@@ -86,6 +91,11 @@ public class Dialogs {
         panel.add(btn);
         panel.setCellHorizontalAlignment(btn, HasHorizontalAlignment.ALIGN_RIGHT);
         dialog.setAutoHideOnHistoryEventsEnabled(true);
+        
+        if (body instanceof NeedsDialog) {
+        	((NeedsDialog) body).setDialogReference(dialog);
+        }
+        
         dialog.center();
         dialog.show();
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
