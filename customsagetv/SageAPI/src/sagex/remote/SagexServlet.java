@@ -12,12 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import sagex.plugin.impl.SagexConfiguration;
 import sagex.remote.api.ApiHandler;
-import sagex.remote.javarpc.JavaRPCHandler;
-import sagex.remote.jsonrpc.JsonRPCHandler;
 import sagex.remote.media.MediaHandler;
 import sagex.remote.rmi.SageRMIServer;
-import sagex.remote.xmlrpc.XMLRPCHandler;
-import sagex.remote.xmlxbmc.XMLXBMCHandler;
 import sagex.util.ILog;
 import sagex.util.LogProvider;
 

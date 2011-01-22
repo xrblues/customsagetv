@@ -7,10 +7,10 @@ package sagex.remote.factory.request;
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
-import java.util.Map;
-import sagex.remote.RemoteRequest;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+
+import sagex.remote.RemoteRequest;
 public class SageRPCRequestFactory {
 private static Map<String,String> commands = new HashMap<String,String>();
 static {

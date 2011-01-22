@@ -18,7 +18,19 @@ public class MediaFileRequestHandler implements SageMediaRequestHandler {
         if (!file.exists()) throw new FileNotFoundException(file.getAbsolutePath());
 
         resp.setHeader("Content-Length", String.valueOf(file.length()));
-        resp.setContentType("video/mpeg");
+        
+        if (MediaFileAPI.IsMusicFile(sagefile)) {
+            resp.setContentType("audio/mpeg");
+        } else if (MediaFileAPI.IsPictureFile(sagefile)) {
+        	resp.setContentType("image/jpeg");
+        } else {
+            resp.setContentType("video/mpeg");
+        }
+
+        String forceMime = req.getParameter("force-mime");
+        if (forceMime!=null&& forceMime.length()>0) {
+        	resp.setContentType(forceMime);
+        }
 
         OutputStream os = resp.getOutputStream();
         MediaHandler.copyStream(new FileInputStream(file), os);

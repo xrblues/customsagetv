@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import sage.ar;
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
 import sagex.api.WidgetAPI;

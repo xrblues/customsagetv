@@ -21,8 +21,11 @@ import javax.servlet.http.HttpServletResponse;
 import sagex.api.MediaFileAPI;
 import sagex.api.Utility;
 import sagex.remote.SagexServlet.SageHandler;
+import sagex.util.ILog;
+import sagex.util.LogProvider;
 
 public class MediaHandler implements SageHandler {
+	private ILog log = LogProvider.getLogger(this.getClass());
     public static final String                   SERVLET_PATH = "media";
     private Map<String, SageMediaRequestHandler> handlers     = new HashMap<String, SageMediaRequestHandler>();
 
@@ -58,7 +61,6 @@ public class MediaHandler implements SageHandler {
             	return;
             }
             
-            
             // process mediafile requests
             String mediaFileId = req.getParameter("mediafile");
             if (mediaFileId == null) {
@@ -66,39 +68,30 @@ public class MediaHandler implements SageHandler {
             }
             
             if (mediaFileId == null) {
-                help(resp, "Missing mediafile");
-                return;
+                throw new Exception("Missing mediafile parameter");
             }
             
             Object sageMedia = getMediaFile(mediaFileId);
 
             SageMediaRequestHandler handler = handlers.get(args[2]);
             if (handler == null) {
-                help(resp, "Unknown Media Command: " + args[2]);
-                return;
+                throw new Exception("Unknown Media Handler: " + args[2]);
             }
             
-            if ("poster".equals(args[2])) {
-                try {
-                    // try poster handler, and then the thumbnail handler
-                    handler.processRequest(req, resp, sageMedia);
-                } catch (Exception e) {
-                    handlers.get("thumbnail").processRequest(req, resp, sageMedia);
-                }
-            } else {
-                handler.processRequest(req, resp, sageMedia);
-            }
+            handler.processRequest(req, resp, sageMedia);
         } catch (FileNotFoundException e) {
+        	log.warn("404 - Not Found - " + req.getRequestURI() + "; " + e.getMessage());
         	resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         } catch (Exception e) {
-            help(resp, e);
+        	if (req.getParameter("help")!=null) {
+                help(resp, e);
+        	} else {
+        		log.warn("503 - Internal Error - " + req.getRequestURI(), e);
+            	resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() + "; Consider passing ?help=true to get a help page");
+        	}
         }
     }
     
-    private void help(HttpServletResponse resp, String msg) throws IOException {
-        help(resp, msg, null);
-    }
-
     private void help(HttpServletResponse resp, Throwable t) throws IOException {
         help(resp, t.getMessage(), t);
     }
@@ -131,7 +124,7 @@ public class MediaHandler implements SageHandler {
         w.println("<pre>");
         w.println("/sagex/media/thumbnail/3212321");
         w.println("/sagex/media/mediafile/3212321");
-        w.println("/sagex/media/mediafile?mediafile=/sagetv/vidoes/tv/futurama.avi");
+        w.println("/sagex/media/mediafile?mediafile=/sagetv/vidoes/tv/futurama.avi&force-mime=video/mpeg");
         w.println("/sagex/media/background/3212321");
         w.println("NOTE: background, banner, and poster all require Phoenix Fanart APIs build 30 (1.30) or later.");
         w.println("");
@@ -190,6 +183,9 @@ public class MediaHandler implements SageHandler {
 
     public static void writeSageImageFile(Object sageImage, HttpServletResponse resp) throws FileNotFoundException, Exception {
         if (sageImage==null) throw new FileNotFoundException("No Image");
+        // SEAN: Should block until the image is loaded
+        Utility.LoadImage(sageImage);
+        
         BufferedImage img = Utility.GetImageAsBufferedImage(sageImage);
         if (img==null) throw new FileNotFoundException("Unable to get BufferedImage");
         resp.setContentType("image/png");
