@@ -7,9 +7,7 @@ package sagex.remote.factory.request;
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
-import java.util.Map;
 import sagex.remote.RemoteRequest;
-import sagex.remote.xmlrpc.RequestHelper;
 
 public class MediaFileAPIFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {

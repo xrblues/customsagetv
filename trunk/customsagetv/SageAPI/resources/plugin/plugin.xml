@@ -20,6 +20,12 @@
   </Package>
 
   <ReleaseNotes>
+7.0.23.6
+* Added serialization for SeriesInfo from skiingwiz
+
+7.0.23.5
+* Minor bug fixes in the Media Thumbnail Handler 
+
 7.0.23.3
 * Fixed small bug in TypeUtils 
 

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import sagex.api.MediaFileAPI;
+import sagex.util.MetaImageUtil;
 
 public class ThumbnailRequestHandler implements SageMediaRequestHandler {
 
@@ -38,8 +39,7 @@ public class ThumbnailRequestHandler implements SageMediaRequestHandler {
 
         // write sage thumbnail for this file
         if (thFile == null || !thFile.exists()) {
-            MediaHandler.writeSageImage(sagefile, resp);
-            return;
+        	thFile = MetaImageUtil.getThumbnailImageFile(sagefile, 100, 2000);
         }
 
         resp.setContentType("image/jpeg");

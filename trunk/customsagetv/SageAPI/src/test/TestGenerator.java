@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.List;
 
 import org.jdna.sage.api.generator.MethodParser;
-import org.jdna.sage.api.generator.SageAPIGenerator;
 import org.jdna.sage.api.generator.MethodParser.SageMethod;
+import org.jdna.sage.api.generator.SageAPIGenerator;
 
 public class TestGenerator {
 	public static void main(String args[]) throws Exception {
