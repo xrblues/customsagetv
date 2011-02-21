@@ -27,6 +27,7 @@ public class SagexServlet extends HttpServlet {
     private static ILog                     log          = LogProvider.getLogger(SagexServlet.class);
     private static boolean                  initialized  = false;
     private static Map<String, SageHandler> sageHandlers = new HashMap<String, SageHandler>();
+    private static Map<String, Object> staticData = new HashMap<String, Object>();
 
     public SagexServlet() {
         log.info("Sage Remote API Servlet for Jetty is loaded.");
@@ -64,11 +65,6 @@ public class SagexServlet extends HttpServlet {
     }
 
     @Override
-    public void init() throws ServletException {
-        super.init();
-    }
-
-    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         if (!initialized) {
@@ -78,7 +74,20 @@ public class SagexServlet extends HttpServlet {
 
     @Override
     public void destroy() {
+    	log=null;
+    	initialized=false;
+    	sageHandlers.clear();
+    	staticData.clear();
         super.destroy();
+    }
+
+    /**
+     * Static area for putting arbitrary data
+     * 
+     * @return
+     */
+    public static Map<String, Object> getUserData() {
+    	return staticData;
     }
 
     /**

@@ -33,6 +33,9 @@
   <ImplementationClass>sagex.plugin.impl.SagexRemoteAPIPlugin</ImplementationClass>
 
   <ReleaseNotes>
+7.0.23.7
+* HTTP Services are password protected by default (can be turned off in the Plugin Configuration)
+
 7.0.23.2
 * Deprecated legacy xml, json, xbmc, and java remote interfaces
 * Added RMI Reaper for cleaning up Remote RMI objects

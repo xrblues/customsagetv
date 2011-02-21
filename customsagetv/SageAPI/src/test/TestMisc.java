@@ -24,6 +24,8 @@ public class TestMisc {
 			}
 		}
 		
+		Global.IsClient();
+		Global.IsServerUI();
 		
 		System.out.println("done");
 	}
