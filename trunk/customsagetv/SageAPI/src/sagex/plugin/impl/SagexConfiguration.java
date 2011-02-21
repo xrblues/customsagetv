@@ -15,6 +15,7 @@ public class SagexConfiguration {
     public static final String PROP_ENABLE_HTTP = "sagex/api/enableHTTP";
     public static final String PROP_HTTP_PORT = "sagex/api/httpPort";
     public static final String PROP_REAPER_INTERVAL = "sagex/api/reaperInterval";
+    public static final String PROP_SECURE_HTTP = "sagex/api/secureHttp";
     
     public void set(String setting, String value) {
         Configuration.SetProperty(setting, value);
