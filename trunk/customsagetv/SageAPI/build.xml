@@ -4,10 +4,10 @@
 
 	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
 	<property file="${user.home}/AntCommon/build.properties" />
-	
+
 	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
 	<property file="build.properties" />
-	
+
 	<!-- sage.lib.dir should be defined in the build.properties -->
 	<!-- <property name="sage.lib.dir"/> -->
 	<!-- bmt.lib.dir should be defined in the build.properties -->
@@ -23,15 +23,15 @@
 	<property name="dist.dir" location="${target}/dist" />
 
 	<property name="name" value="sagex-api" />
-	<property name="version" value="7.0.23.7" />
+	<property name="version" value="7.0.23.8" />
 	<property name="jarname" value="${name}.jar" />
 
 	<!--
 	<property name="createAPI" value="true"/>
 	-->
-	<property name="createJAVADOC" value="true"/>
-	
-	
+	<property name="createJAVADOC" value="true" />
+
+
 	<path id="SageAPI.classpath">
 		<pathelement location="bin" />
 		<pathelement location="libs/htmlparser.jar" />
@@ -150,6 +150,7 @@
 		<mkdir dir="${dist.dir}/packages" />
 		<zip destfile="${dist.dir}/packages/${name}-services-${version}.zip">
 			<zipfileset file="sagex/services/sagex.js" prefix="sagex/services" />
+			<zipfileset file="jetty/contexts/sagex.xml" prefix="jetty/contexts/" />
 		</zip>
 	</target>
 
@@ -187,7 +188,7 @@
 
 		<!-- copy to the s7 local dir for testing -->
 		<copy todir="${sage.home}/DeveloperPlugins/" failonerror="false">
-			<fileset dir="${dist.dir}/packages/"/>
+			<fileset dir="${dist.dir}/packages/" />
 		</copy>
 	</target>
 
@@ -203,50 +204,50 @@
 	</target>
 	-->
 
-	<target name="notify-sagetv-about-updated-plugins" depends="notify-sagetv-plugin, notify-sagetv-services" description="calls both the notify and notify services to let sage know that new plugins are available"/>
-	
+	<target name="notify-sagetv-about-updated-plugins" depends="notify-sagetv-plugin, notify-sagetv-services" description="calls both the notify and notify services to let sage know that new plugins are available" />
+
 	<target name="notify-sagetv-plugin" description="Notifies SageTV about the new Plugin">
-		<get dest="target/slugger.zip" src="http://sagetv-addons.googlecode.com/files/slugger-dev-tools-0.0.1.zip"/>
-		<unzip dest="${user.home}/.ant/lib/" src="target/slugger.zip"/>
-        <taskdef classname="com.google.code.sagetvaddons.dev.ant.task.SageTvPluginSubmitter" name="sagesubmit">
+		<get dest="target/slugger.zip" src="http://sagetv-addons.googlecode.com/files/slugger-dev-tools-0.0.1.zip" />
+		<unzip dest="${user.home}/.ant/lib/" src="target/slugger.zip" />
+		<taskdef classname="com.google.code.sagetvaddons.dev.ant.task.SageTvPluginSubmitter" name="sagesubmit">
 			<classpath>
-			      <fileset dir="${user.home}/.ant/lib/">
-			        <include name="**/*.jar"/>
-			      </fileset>
+				<fileset dir="${user.home}/.ant/lib/">
+					<include name="**/*.jar" />
+				</fileset>
 			</classpath>
-        </taskdef>
-        <sagesubmit name="Sean Stuckless" user="${sage.forumuser}" email="sean.stuckless@gmail.com" pluginid="${name}" reqtype="UPGRADE" descriptor="${dist.dir}/packages/${name}-${version}.xml" />
+		</taskdef>
+		<sagesubmit name="Sean Stuckless" user="${sage.forumuser}" email="sean.stuckless@gmail.com" pluginid="${name}" reqtype="UPGRADE" descriptor="${dist.dir}/packages/${name}-${version}.xml" />
 	</target>
 
 	<target name="notify-sagetv-services" description="Notifies SageTV about the new Plugin">
-		<get dest="target/slugger.zip" src="http://sagetv-addons.googlecode.com/files/slugger-dev-tools-0.0.1.zip"/>
-		<unzip dest="${user.home}/.ant/lib/" src="target/slugger.zip"/>
-        <taskdef classname="com.google.code.sagetvaddons.dev.ant.task.SageTvPluginSubmitter" name="sagesubmit">
+		<get dest="target/slugger.zip" src="http://sagetv-addons.googlecode.com/files/slugger-dev-tools-0.0.1.zip" />
+		<unzip dest="${user.home}/.ant/lib/" src="target/slugger.zip" />
+		<taskdef classname="com.google.code.sagetvaddons.dev.ant.task.SageTvPluginSubmitter" name="sagesubmit">
 			<classpath>
-			      <fileset dir="${user.home}/.ant/lib/">
-			        <include name="**/*.jar"/>
-			      </fileset>
+				<fileset dir="${user.home}/.ant/lib/">
+					<include name="**/*.jar" />
+				</fileset>
 			</classpath>
-        </taskdef>
-        <sagesubmit name="Sean Stuckless" user="${sage.forumuser}" email="sean.stuckless@gmail.com" pluginid="${name}-services" reqtype="UPGRADE" descriptor="${dist.dir}/packages/${name}-services-${version}.xml" />
+		</taskdef>
+		<sagesubmit name="Sean Stuckless" user="${sage.forumuser}" email="sean.stuckless@gmail.com" pluginid="${name}-services" reqtype="UPGRADE" descriptor="${dist.dir}/packages/${name}-services-${version}.xml" />
 	</target>
-	
+
 	<target name="publish-googlecode" description="Upload build to Google Code">
-		<get dest="${user.home}/.ant/lib/ant-googlecode.jar" src="http://ant-googlecode.googlecode.com/files/ant-googlecode-0.0.2.jar" usetimestamp="true"/>
+		<get dest="${user.home}/.ant/lib/ant-googlecode.jar" src="http://ant-googlecode.googlecode.com/files/ant-googlecode-0.0.2.jar" usetimestamp="true" />
 		<available file="${gc.upload.settings}" property="gc.upload.enable" />
 		<fail message="gc.username must be defined in ${gc.upload.settings}" unless="gc.username" />
 		<fail message="gc.password must be defined in ${gc.upload.settings}" unless="gc.password" />
 		<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" name="gcupload">
 			<classpath>
-			      <fileset dir="${user.home}/.ant/lib/">
-			        <include name="**/*.jar"/>
-			      </fileset>
+				<fileset dir="${user.home}/.ant/lib/">
+					<include name="**/*.jar" />
+				</fileset>
 			</classpath>
 		</taskdef>
-		<gcupload targetfilename="sagex-api-${version}-sage6.zip"  filename="${target}/sagex-api-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API Wrappers ${version} (Sage6)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
-		<gcupload targetfilename="sagex-api-javadoc-${version}.zip"  filename="${target}/sagex-api-javadoc-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API Wrappers JavaDoc ${version}" labels="QA-Snapshot,Type-Archive,OpSys-All"/>
-		<gcupload targetfilename="sagex-api-${version}.zip"  filename="${target}/dist/packages/sagex-api-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API Wrappers ${version} (Sage7 Plugin)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
-		<gcupload targetfilename="sagex-api-services-${version}.zip"  filename="${target}/dist/packages/sagex-api-services-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API HTTP Services ${version} (Sage7 Plugin)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
+		<gcupload targetfilename="sagex-api-${version}-sage6.zip" filename="${target}/sagex-api-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API Wrappers ${version} (Sage6)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
+		<gcupload targetfilename="sagex-api-javadoc-${version}.zip" filename="${target}/sagex-api-javadoc-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API Wrappers JavaDoc ${version}" labels="QA-Snapshot,Type-Archive,OpSys-All" />
+		<gcupload targetfilename="sagex-api-${version}.zip" filename="${target}/dist/packages/sagex-api-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API Wrappers ${version} (Sage7 Plugin)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
+		<gcupload targetfilename="sagex-api-services-${version}.zip" filename="${target}/dist/packages/sagex-api-services-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Sage API HTTP Services ${version} (Sage7 Plugin)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
 	</target>
-	
+
 </project>

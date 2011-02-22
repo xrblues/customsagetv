@@ -2,10 +2,6 @@ package sagex.plugin.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 import sage.SageTVPlugin;
@@ -85,11 +81,7 @@ public class SagexRemoteAPIPlugin extends AbstractPlugin {
     @ConfigValueChangeHandler(SagexConfiguration.PROP_ENABLE_HTTP)
     public void onHTTPEnabledChanged(String setting) {
         log.info("HTTP Enabled Flag Changed: " + getConfigBoolValue(setting));
-        if (getConfigBoolValue(setting)) {
-            stopHTTP();
-        } else {
-            startHTTP();
-        }
+        JettyInitializer.updateAuthentication();
     }
 
     @ConfigValueChangeHandler(SagexConfiguration.PROP_REAPER_INTERVAL)
@@ -104,62 +96,23 @@ public class SagexRemoteAPIPlugin extends AbstractPlugin {
      */
     @Override
     public void start() {
-        super.start();
-        
-        int delay = getConfigIntValue(SagexConfiguration.PROP_REAPER_INTERVAL);
-        if (delay != RemoteObjectReaper.getInstance().getReaperDelay()) {
-        	RemoteObjectReaper.getInstance().updateDelay(delay);
-        }
-        
-        log.info("Starting sagex-api-services Plugin");
-        if (getConfigBoolValue(SagexConfiguration.PROP_ENABLE_RMI)) {
-            SageRMIServer.getInstance().startServer();
-        }
-        startHTTP();
+    	try{
+	        super.start();
+	        
+	        int delay = getConfigIntValue(SagexConfiguration.PROP_REAPER_INTERVAL);
+	        if (delay != RemoteObjectReaper.getInstance().getReaperDelay()) {
+	        	RemoteObjectReaper.getInstance().updateDelay(delay);
+	        }
+	        
+	        log.info("Starting sagex-api-services Plugin");
+	        if (getConfigBoolValue(SagexConfiguration.PROP_ENABLE_RMI)) {
+	            SageRMIServer.getInstance().startServer();
+	        }
+    	} catch (Throwable t) {
+    		log.warn("Sagex Plugin failed to start correctly", t);
+    	}
     }
     
-    private void startHTTP() {
-        if (getConfigBoolValue(SagexConfiguration.PROP_ENABLE_HTTP)) {
-            String ctx = "jetty/contexts/sagex.xml";
-            File f = new File(ctx);
-            if (f.exists()) {
-                log.info("sagex.xml context exists... no action.");
-            } else {
-                InputStream is = null;
-                is = this.getClass().getClassLoader().getResourceAsStream(ctx);
-                if (is != null) {
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(f);
-                        byte buf[] = new byte[1024];
-                        int i =0;
-                        while ((i=is.read(buf))!=0) {
-                            fos.write(buf, 0, i);
-                        }
-                    } catch (FileNotFoundException e) {
-                        log.error("failed to install the sagex context", e);
-                    } catch (IOException e) {
-                        log.error("failed while reading/write the context file", e);
-                    } finally {
-                        if (fos != null) {
-                            try {
-                                fos.flush();
-                                fos.close();
-                            } catch (IOException e) {
-                            }
-                        }
-                        try {
-                            is.close();
-                        } catch (IOException e) {
-                        }
-                    }
-                } else {
-                    log.warn("Failed to read the sagex jetty context: " + ctx + " from the sagex-api jar");
-                }
-            }
-        }
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -171,17 +124,6 @@ public class SagexRemoteAPIPlugin extends AbstractPlugin {
         log.info("Stopping sagex-api-services Plugin");
         if (getConfigBoolValue(SagexConfiguration.PROP_ENABLE_RMI)) {
             SageRMIServer.getInstance().stopServer();
-        }
-    }
-    
-    private void stopHTTP() {
-        if (getConfigBoolValue(SagexConfiguration.PROP_ENABLE_HTTP)) {
-            File f = new File("jetty/contexts/sagex.xml");
-            if (f.exists()) {
-                if (!f.delete()) {
-                    log.warn("was unable to remove the sagex context: " + f);
-                }
-            }
         }
     }
 }
