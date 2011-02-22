@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.event.logical.shared.AttachEvent;
 
 public class FanartManagerPanel extends Composite implements NotificationEventHandler {
 
@@ -45,8 +44,10 @@ public class FanartManagerPanel extends Composite implements NotificationEventHa
     private MediaArtifactType curType=null;
     private HandlerRegistration handler;
     private FanartImage curImage;
+	private BrowsePanel controller;
     
-    public FanartManagerPanel(GWTMediaFile mf) {
+    public FanartManagerPanel(BrowsePanel controller, GWTMediaFile mf) {
+    	this.controller=controller;
         initWidget(uiBinder.createAndBindUi(this));
         this.file=mf;
         this.image.setUrl(mf.getThumbnailUrl());
@@ -76,7 +77,7 @@ public class FanartManagerPanel extends Composite implements NotificationEventHa
         }
         GWTMediaArt ma = new GWTMediaArt();
         ma.setDownloadUrl(downloadUrl.getText());
-        BrowsingServicesManager.getInstance().downloadFanart(file, curType, ma, new AsyncCallback<GWTMediaArt>() {
+        controller.downloadFanart(file, curType, ma, new AsyncCallback<GWTMediaArt>() {
             public void onFailure(Throwable caught) {
                 Application.fireErrorEvent("Failed to download image", caught);
             }
@@ -91,7 +92,7 @@ public class FanartManagerPanel extends Composite implements NotificationEventHa
 
     private void loadFanart(final MediaArtifactType type) {
         curType=type;
-        BrowsingServicesManager.getInstance().loadFanart(file, type, new AsyncCallback<ArrayList<GWTMediaArt>>() {
+        controller.loadFanart(file, type, new AsyncCallback<ArrayList<GWTMediaArt>>() {
             public void onSuccess(ArrayList<GWTMediaArt> result) {
                 if (result==null || result.size()==0) {
                     Application.fireErrorEvent("Failed to load fanart for: " + type);
@@ -140,7 +141,7 @@ public class FanartManagerPanel extends Composite implements NotificationEventHa
     public void deleteImage(ClickEvent evt) {
         if(curImage!=null) {
             if (Window.confirm("Press OK to delete this image.  This cannot be undone.")) {
-                BrowsingServicesManager.getInstance().getServices().deleteFanart(curImage.getMediaArt(), new AsyncCallback<Boolean>() {
+                controller.getServices().deleteFanart(curImage.getMediaArt(), new AsyncCallback<Boolean>() {
                     public void onFailure(Throwable caught) {
                         Application.fireErrorEvent("Unable to delete image", caught);
                     }
@@ -173,7 +174,7 @@ public class FanartManagerPanel extends Composite implements NotificationEventHa
     @UiHandler("makeDefault")
     public void makeDefaultImage(ClickEvent evt) {
         if (curImage!=null) {
-            BrowsingServicesManager.getInstance().getServices().makeDefaultFanart(file, curType, curImage.getMediaArt(), new AsyncCallback<Void>() {
+            controller.getServices().makeDefaultFanart(file, curType, curImage.getMediaArt(), new AsyncCallback<Void>() {
                 public void onFailure(Throwable caught) {
                     Application.fireErrorEvent("Unable to make this the default iamge", caught);
                 }

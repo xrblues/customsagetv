@@ -1,0 +1,56 @@
+package org.jdna.bmt.web.client.media;
+
+import java.io.Serializable;
+
+public class GWTAiringDetails implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	public long startTime;
+	public boolean firtRun;
+	public long duration;
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+
+	public boolean isFirtRun() {
+		return firtRun;
+	}
+
+	public void setFirtRun(boolean firtRun) {
+		this.firtRun = firtRun;
+	}
+
+	public long getDuration() {
+		return duration;
+	}
+
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
+	public String getNetwork() {
+		return network;
+	}
+
+	public void setNetwork(String network) {
+		this.network = network;
+	}
+
+	public String channel;
+	public String network;
+	
+	public GWTAiringDetails() {
+	}
+}

@@ -22,7 +22,7 @@ watched status on files, etc
 	<ModificationDate>@@last-modified@@</ModificationDate>
 	<Version>@@version@@</Version>
 	<Desktop>false</Desktop>
-	<ResourcePath>bmtweb</ResourcePath>
+	<ResourcePath>plugins/bmtweb</ResourcePath>
 	<Webpage><![CDATA[http://forums.sagetv.com/forums/forumdisplay.php?f=46]]></Webpage>
 
 	<Dependency>
@@ -32,7 +32,7 @@ watched status on files, etc
 
 	<Dependency>
 		<Plugin>phoenix-core</Plugin>
-		<MinVersion>2.3.12</MinVersion>
+		<MinVersion>2.3.18</MinVersion>
 	</Dependency>
 
 	<PluginType>Standard</PluginType>
@@ -52,6 +52,15 @@ watched status on files, etc
 		<MD5>@@context-checksum@@</MD5>
 	</Package>
 	<ReleaseNotes>
+4.9.10
+* Can change view categories
+* Added press and hold on video item, with options to delete or view generated thumbnails of video
+* Auto retry for failed metadata lookups (in phoenix-core, but listing it here as well)
+
+4.9.8
+* added plugin viewer (configuration -> SageTV Plugins)
+* minor changes required for the newer 2.3.14 phoenix.jar
+
 4.9.7
 * fixed bug where the first time dialog would always show
 * added watched icon to the media file

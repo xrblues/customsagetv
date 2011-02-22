@@ -20,15 +20,27 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
     private Property<Boolean> watched = new Property<Boolean>(false);
     
     private GWTMediaMetadata metadata;
+    private GWTAiringDetails airingDetails;
     
-    private String showId;
+	private String showId;
     private String airingId;
     private String seriesInfoId;
     private String vfsId;
     
     private boolean isPlayable = false;
     
-    public GWTMediaFile() {
+    private long duration;
+    private long size;
+    
+    public long getDuration() {
+		return duration;
+	}
+
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
+
+	public GWTMediaFile() {
     }
     
     public GWTMediaFile(GWTMediaFolder parent, String title) {
@@ -140,4 +152,21 @@ public class GWTMediaFile extends GWTMediaResource implements Serializable {
 	public boolean isPlayable() {
 		return isPlayable;
 	}
+
+	public GWTAiringDetails getAiringDetails() {
+		return airingDetails;
+	}
+
+	public void setAiringDetails(GWTAiringDetails airingDetails) {
+		this.airingDetails = airingDetails;
+	}
+
+	public void setSize(long size) {
+		this.size = size;
+	}
+
+	public long getSize() {
+		return size;
+	}
+
 }

@@ -12,6 +12,10 @@ import com.google.gwt.user.client.ui.Composite;
 
 public abstract class AbstractClickableItem extends Composite implements HasClickHandlers, MouseOutHandler, MouseOverHandler, ClickHandler {
     private String hoverStyleName="Hover";
+    
+	private HandlerRegistration mouseOver;
+	private HandlerRegistration mouseOut;
+	private HandlerRegistration clicked;
 
     public AbstractClickableItem() {
     }
@@ -59,8 +63,18 @@ public abstract class AbstractClickableItem extends Composite implements HasClic
     protected void onAttach() {
         super.onAttach();
         addStyleName("clickable");
-        addDomHandler(this, MouseOverEvent.getType());
-        addDomHandler(this, MouseOutEvent.getType());
-        addDomHandler(this, ClickEvent.getType());
+        mouseOver = addDomHandler(this, MouseOverEvent.getType());
+        mouseOut = addDomHandler(this, MouseOutEvent.getType());
+        clicked = addDomHandler(this, ClickEvent.getType());
     }
+
+	@Override
+	protected void onDetach() {
+		super.onDetach();
+		mouseOver.removeHandler();
+		mouseOut.removeHandler();
+		clicked.removeHandler();
+	}
+    
+    
 }

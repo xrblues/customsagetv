@@ -15,10 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import sagex.SageAPI;
 import sagex.remote.media.MediaHandler;
 
 public class MediaHandlerServlet extends HttpServlet {

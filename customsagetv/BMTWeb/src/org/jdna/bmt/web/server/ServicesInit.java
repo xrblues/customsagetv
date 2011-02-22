@@ -42,15 +42,16 @@ public class ServicesInit {
                     e.printStackTrace();
                 }
                 System.setProperty("phoenix/homeDir", "testing/Phoenix/");
+
+                try {
+                    // force bmt load the services, normally done using the plugin, but since we are running remotely, we need to do it.
+                    Phoenix.getInstance().initServices();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
             
-            try {
-                // force load the configuration metadata
-                Phoenix.getInstance().getConfigurationMetadataManager();
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
             
             // initialize the batch operations, see if they are valid
             for (BatchOperation bo : BatchOperations.getInstance().getBatchOperations()) {

@@ -1,0 +1,21 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:d="urn:import:com.google.gwt.dom.client">
+	<ui:style>
+	.porlet {
+		border: 1px solid black;
+	}
+	
+	.iframe {
+		overflow-x: hidden;
+		overflow-y: scroll;
+	}
+	</ui:style>
+	<g:HTMLPanel styleName="{style.porlet}">
+		<div>
+		<!-- Refresh, Configuration, Min, Max, Move, About -->
+		</div>
+		<iframe ui:field="iframe" styleName="{style.iframe}"></iframe>
+		<div></div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

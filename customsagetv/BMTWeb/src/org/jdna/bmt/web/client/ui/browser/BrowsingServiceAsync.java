@@ -4,7 +4,6 @@ package org.jdna.bmt.web.client.ui.browser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jdna.bmt.web.client.media.GWTFactoryInfo;
 import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
@@ -13,6 +12,8 @@ import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.media.GWTMediaSearchResult;
 import org.jdna.bmt.web.client.media.GWTPersistenceOptions;
 import org.jdna.bmt.web.client.media.GWTProviderInfo;
+import org.jdna.bmt.web.client.media.GWTView;
+import org.jdna.bmt.web.client.media.GWTViewCategories;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
 
 import sagex.phoenix.metadata.MediaArtifactType;
@@ -20,10 +21,7 @@ import sagex.phoenix.metadata.MediaArtifactType;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface BrowsingServiceAsync {
-    public void browseChildren(GWTMediaFolder folder, int start, int size, AsyncCallback<GWTMediaResource[]> callback);
-    public void getFactories(GWTFactoryInfo.SourceType sourceType, AsyncCallback<GWTFactoryInfo[]> sources);
-    public void getFolderForSource(GWTFactoryInfo source, GWTMediaFolder parentFolder, AsyncCallback<GWTMediaFolder> folder);
-    
+    void browseChildren(GWTMediaFolder folder, int start, int size, AsyncCallback<GWTMediaResource[]> callback);
     void scan(GWTMediaFolder folder, PersistenceOptionsUI options, AsyncCallback<String> callback);
     void loadMetadata(GWTMediaFile mediaFile, AsyncCallback<GWTMediaMetadata> callback);
     void getMetadata(GWTMediaSearchResult result, GWTPersistenceOptions options,AsyncCallback<GWTMediaMetadata> callback);
@@ -40,5 +38,8 @@ public interface BrowsingServiceAsync {
     void deleteFanart(GWTMediaArt art, AsyncCallback<Boolean> callback);
     void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art, AsyncCallback<Void> callback);
 	void searchMediaFiles(String search, AsyncCallback<GWTMediaFolder> callback);
-	void discoverQueryOptions(GWTMediaFile file, AsyncCallback<SearchQueryOptions> callback);    
+	void discoverQueryOptions(GWTMediaFile file, AsyncCallback<SearchQueryOptions> callback);
+	void getViews(String tag, AsyncCallback<GWTViewCategories> callback);    
+    void getView(GWTView view, AsyncCallback<GWTMediaFolder> folder);
+	void getViewCategories(AsyncCallback<ArrayList<GWTView>> callback);
 }

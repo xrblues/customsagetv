@@ -2,7 +2,6 @@ package org.jdna.bmt.web.client.ui.util.binder;
 
 import org.jdna.bmt.web.client.util.Property;
 
-import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;

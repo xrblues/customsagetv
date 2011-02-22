@@ -24,6 +24,8 @@ import org.apache.log4j.PropertyConfigurator;
 import org.jdna.bmt.web.client.ui.prefs.Channel;
 import org.jdna.bmt.web.client.ui.prefs.ChannelNumberComparator;
 import org.jdna.bmt.web.client.ui.prefs.Log4jPrefs;
+import org.jdna.bmt.web.client.ui.prefs.PluginDetail;
+import org.jdna.bmt.web.client.ui.prefs.PluginQuery;
 import org.jdna.bmt.web.client.ui.prefs.PrefItem;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesService;
 import org.jdna.bmt.web.client.ui.prefs.RegexValidation;
@@ -33,6 +35,7 @@ import org.jdna.bmt.web.client.ui.prefs.VideoSource.SourceType;
 import sagex.api.ChannelAPI;
 import sagex.api.Configuration;
 import sagex.api.Global;
+import sagex.api.PluginAPI;
 import sagex.phoenix.configuration.Group;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.NewSearchGroup;
@@ -63,7 +66,7 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
         try {
             Group group = null;
             if (parent == null) {
-                group = phoenix.api.GetConfigurationRoot();
+                group = phoenix.config.GetConfigurationRoot();
             } else {
                 group = groups.get(parent.getKey());
             }
@@ -84,7 +87,7 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
         log.debug("*** Search: " + search);
         PrefItem pi = new PrefItem();
         pi.setLabel("Search: " + search);
-        pi.setChildren(createChildenArray(phoenix.api.AddConfigurationSearch(search)));
+        pi.setChildren(createChildenArray(phoenix.config.AddConfigurationSearch(search)));
         return pi;
     }
 
@@ -106,17 +109,17 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
                 pi.setKey(String.valueOf(g.hashCode()));
                 groups.put(pi.getKey(), (Group) g);
             } else {
-                Object o = phoenix.api.GetProperty(g.getId());
+                Object o = phoenix.config.GetProperty(g.getId());
                 if (o != null) {
                     pi.setValue(String.valueOf(o));
                     pi.setResetValue(pi.getValue());
                 }
 
-                o = phoenix.api.GetConfigurationDefaultValue(g);
+                o = phoenix.config.GetConfigurationDefaultValue(g);
                 if (o != null) {
                     pi.setDefaultValue(String.valueOf(o));
                 }
-                pi.setType(phoenix.api.GetConfigurationFieldType(g));
+                pi.setType(phoenix.config.GetConfigurationFieldType(g));
             }
             items.add(pi);
         }
@@ -134,7 +137,7 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
     public boolean savePreferences(PrefItem[] preferences) {
         for (PrefItem pi : preferences) {
             log.info(String.format("Saving Preference (%s): %s=%s\n", pi.getLabel(), pi.getKey(), pi.getValue()));
-            phoenix.api.SetProperty(pi.getKey(), pi.getValue());
+            phoenix.config.SetProperty(pi.getKey(), pi.getValue());
         }
         return true;
     }
@@ -413,5 +416,124 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
 	@Override
 	public void refreshCustomMetadataFields() {
 		PhoenixPlugin.updateCustomMetadataFields();
+	}
+	
+	public ArrayList<PluginDetail> getPlugins(PluginQuery query) {
+		Object plugins[] = null;
+		ArrayList<PluginDetail> list = new ArrayList<PluginDetail>();
+		if (PluginQuery.SOURCE_INSTALLED.equals(query.Source)) {
+			plugins=PluginAPI.GetInstalledPlugins();
+		} else if (PluginQuery.SOURCE_CLIENT_INSTALLED.equals(query.Source)) {
+			plugins=PluginAPI.GetInstalledClientPlugins();
+		} else {
+			plugins=PluginAPI.GetAllAvailablePlugins();
+		}
+		
+		if (PluginQuery.QUERY_AUTHOR.equals(query.QueryType)) {
+			for (Object p: plugins) {
+				String auth = PluginAPI.GetPluginAuthor(p);
+				if (query.Query.equalsIgnoreCase(auth)) {
+					list.add(createPlugin(query, p));
+				} else if (auth!=null && auth.contains(query.Query)) {
+					list.add(createPlugin(query, p));
+				}
+			}
+		} else if (PluginQuery.QUERY_SEARCH_ALL.equals(query.QueryType)) {
+			String qstr = query.Query;
+			String qtype = null;
+			if (qstr==null) return null;
+			String parts[] = qstr.split("\\s*:\\s*");
+			if (parts.length>1) {
+				qstr=parts[1];
+				qtype=parts[0];
+			}
+			Pattern pat = Pattern.compile(Matcher.quoteReplacement(qstr), Pattern.CASE_INSENSITIVE);
+			for (Object p: plugins) {
+				// check for depends:plugin-id
+				if ("depends".equals(qtype)) {
+					String deps[] = PluginAPI.GetPluginDependencies(p);
+					if (deps!=null) {
+						for (String s: deps) {
+							Matcher m1 = pat.matcher(s);
+							if (m1.find()) {
+								list.add(createPlugin(query, p));
+								break;
+							}
+						}
+					}
+				} else {
+					// do normal searching
+					Matcher m1 = pat.matcher(PluginAPI.GetPluginName(p));
+					if (m1.find()) {
+						list.add(createPlugin(query, p));
+						continue;
+					}
+					m1 = pat.matcher(PluginAPI.GetPluginDescription(p));
+					if (m1.find()) {
+						list.add(createPlugin(query, p));
+						continue;
+					}
+					m1 = pat.matcher(PluginAPI.GetPluginIdentifier(p));
+					if (m1.find()) {
+						list.add(createPlugin(query, p));
+						continue;
+					}
+				}
+			}
+		} else {
+			for (Object p: plugins) {
+				if (query.Type!=null) {
+					if (query.Type.equalsIgnoreCase(PluginAPI.GetPluginType(p))) {
+						list.add(createPlugin(query, p));
+					}
+				} else {
+					list.add(createPlugin(query, p));
+				}
+			}
+		}
+		
+		Collections.sort(list, new Comparator<PluginDetail>() {
+			@Override
+			public int compare(PluginDetail o1, PluginDetail o2) {
+				if (o1.getName()==null) return -1;
+				if (o2.getName()==null) return 1;
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+		});
+		
+		return list;
+	}
+
+	private PluginDetail createPlugin(PluginQuery query, Object p) {
+		PluginDetail det = new PluginDetail();
+		det.setName(PluginAPI.GetPluginName(p));
+		det.setDescription(PluginAPI.GetPluginDescription(p));
+		det.setVersion(PluginAPI.GetPluginVersion(p));
+		det.setId(PluginAPI.GetPluginIdentifier(p));
+		det.setAuthor(PluginAPI.GetPluginAuthor(p));
+		det.setCreatedDate(PluginAPI.GetPluginCreationDate(p));
+		det.setDemoVideos(PluginAPI.GetPluginDemoVideos(p));
+		det.setPluginDependencies(PluginAPI.GetPluginDependencies(p));
+		det.setInstalledDate(PluginAPI.GetPluginInstallDate(p));
+		det.setLastModified(PluginAPI.GetPluginModificationDate(p));
+		det.setReleaseNotes(PluginAPI.GetPluginReleaseNotes(p));
+		det.setScreenShots(PluginAPI.GetPluginScreenshots(p));
+		det.setPluginWebsites(PluginAPI.GetPluginWebsites(p));
+		return det;
+	}
+	
+	@Override
+	public PluginDetail getPluginDetails(String id) {
+		if (id==null) return null;
+		
+		Object[] plugins=PluginAPI.GetAllAvailablePlugins();
+		if (plugins!=null) {
+			for (Object p: plugins) {
+				if (id.equals(PluginAPI.GetPluginIdentifier(p))) {
+					return createPlugin(null, p); 
+				}
+			}
+		}
+		return null;
 	}
 }

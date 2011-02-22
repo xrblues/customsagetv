@@ -32,8 +32,12 @@ public class SearchPanel extends Composite {
 	@UiField TextBox searchBox;
 	@UiField VerticalPanel searchResultsPanel;
 	@UiField Image searchButton;
+	
+	private BrowsePanel controller;
 
-	public SearchPanel() {
+	public SearchPanel(BrowsePanel controller) {
+		this.controller = controller;
+		
 		initWidget(uiBinder.createAndBindUi(this));
 		reset();
 		searchResultsPanel.setVisible(false);
@@ -78,20 +82,20 @@ public class SearchPanel extends Composite {
 			return;
 		}
 		
-		BrowsingServicesManager.getInstance().getServices().searchMediaFiles(searchBox.getText(), new AsyncCallback<GWTMediaFolder>() {
+		controller.getServices().searchMediaFiles(searchBox.getText(), new AsyncCallback<GWTMediaFolder>() {
 			@Override
 			public void onSuccess(final GWTMediaFolder result) {
 				if (result!=null) {
 					SideMenuItem<GWTMediaFolder> smi = new SideMenuItem<GWTMediaFolder>(searchBox.getText(), null, new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
-							BrowsingServicesManager.getInstance().browseFolder(result, 0, result.getPageSize());
+							controller.browseFolder(result, 0, result.getPageSize());
 						}
 					});
 					smi.setWidth("100%");
 					searchResultsPanel.setVisible(true);
 					searchResultsPanel.add(smi);
-					BrowsingServicesManager.getInstance().browseFolder(result, 0, result.getPageSize());
+					controller.browseFolder(result, 0, result.getPageSize());
 				} else {
 					Application.fireErrorEvent("Nothing found for " + searchBox.getText());
 				}

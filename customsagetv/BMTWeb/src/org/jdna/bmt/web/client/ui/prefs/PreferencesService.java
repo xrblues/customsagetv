@@ -33,4 +33,6 @@ public interface PreferencesService extends RemoteService {
     public ArrayList<Channel> saveChannels(ArrayList<Channel> channels);
     
     public void refreshCustomMetadataFields();
+    public ArrayList<PluginDetail> getPlugins(PluginQuery query);
+    public PluginDetail getPluginDetails(String id);
 }

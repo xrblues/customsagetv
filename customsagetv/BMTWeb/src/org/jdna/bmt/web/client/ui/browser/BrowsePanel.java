@@ -1,24 +1,40 @@
 package org.jdna.bmt.web.client.ui.browser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.event.EventBus;
 import org.jdna.bmt.web.client.event.WaitingEvent;
+import org.jdna.bmt.web.client.media.GWTMediaArt;
+import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
+import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
+import org.jdna.bmt.web.client.media.GWTView;
+import org.jdna.bmt.web.client.media.GWTViewCategories;
 import org.jdna.bmt.web.client.ui.BatchOperation;
 import org.jdna.bmt.web.client.ui.BatchOperations;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
+import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar;
 import org.jdna.bmt.web.client.ui.util.OKDialogHandler;
+import org.jdna.bmt.web.client.ui.util.ServiceReply;
+import org.jdna.bmt.web.client.util.Log;
+import org.jdna.bmt.web.client.util.MessageBus;
+import org.jdna.bmt.web.client.util.StringUtils;
 
+import sagex.phoenix.metadata.MediaArtifactType;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -27,17 +43,25 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class BrowsePanel extends Composite implements BrowseReplyHandler, BrowserView {
-    private HorizontalPanel     hpanel          = new HorizontalPanel();
+public class BrowsePanel extends Composite implements BrowserView {
+    public static final String MSG_PROGRESS_UPDATED = "progressupdated";
+	public static final String MSG_NEW_SCAN_STARTED = "newscanstarted";
+	public static final String MSG_METADATA_CHANGED = "metadatachanged";
+
+	private static BrowsingServiceAsync browser = GWT.create(BrowsingService.class);
+    
+    
+	private HorizontalPanel     hpanel          = new HorizontalPanel();
     private Panel               mainItems      = new FlowPanel();
     private VerticalPanel       sideSource = new VerticalPanel();
-    private SourcesPanel        sources        = new SourcesPanel(this);
+    //private SourcesPanel        sources        = new SourcesPanel(this);
     private ScansPanel          scans = new ScansPanel(this);
-    private SearchPanel         search = new SearchPanel();
+    private SearchPanel         search = new SearchPanel(this);
     
     private GWTMediaFolder         currentFolder  = null;
 
@@ -50,8 +74,9 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
     private Button refreshFanartButton = null;
 	private Button loadMoreButton = null;
 
-    private HandlerRegistration replyHandler   = null;
     private int lastScrollPosition;
+    
+    private MessageBus messageBus = new MessageBus();
     
     private ListBox batchOperations;
     
@@ -62,6 +87,9 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         sideSource.setWidth("220px");
         sideSource.add(search);
         search.setWidth("100%");
+        
+        ViewsListView sources = new ViewsListView(this);
+        
         sideSource.add(sources);
         sources.setWidth("100%");
         
@@ -79,7 +107,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         backButton = new Button("Back", new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if (currentFolder.getParent()!=null) {
-                    BrowsingServicesManager.getInstance().browseFolder(currentFolder.getParent(), 0, currentFolder.getPageSize());
+                    browseFolder(currentFolder.getParent(), 0, currentFolder.getPageSize());
                 }
             }
         });
@@ -91,7 +119,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
                 options.getScanPath().set(currentFolder);
                 DataDialog.showDialog(new ScanOptionsPanel(options, new OKDialogHandler<PersistenceOptionsUI>() {
                     public void onSave(PersistenceOptionsUI data) {
-                        BrowsingServicesManager.getInstance().scan(currentFolder, options);
+                        scan(currentFolder, options);
                     }
                 }));
             }
@@ -105,7 +133,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
 	                options.getScanPath().set(currentFolder);
 	                options.getRefresh().set(true);
 	                options.getUpdateMetadata().set(false);
-                    BrowsingServicesManager.getInstance().scan(currentFolder, options);
+                    scan(currentFolder, options);
             	}
             }
         });
@@ -113,7 +141,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         
         loadMoreButton = new Button("Load More Items", new ClickHandler() {
             public void onClick(ClickEvent event) {
-            	BrowsingServicesManager.getInstance().browseFolder(currentFolder, currentFolder.getLoaded(), currentFolder.getPageSize());
+            	browseFolder(currentFolder, currentFolder.getLoaded(), currentFolder.getPageSize());
             }
         });
         loadMoreButton.addStyleName("LoadMoreButton");
@@ -161,20 +189,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         initWidget(hpanel);
     }
     
-    @Override
-    protected void onAttach() {
-        replyHandler = Application.events().addHandler(BrowseReplyEvent.TYPE, this);
-        super.onAttach();
-    }
-
-    @Override
-    protected void onDetach() {
-        super.onDetach();
-        replyHandler.removeHandler();
-    }
-
-    public void onBrowseReply(BrowseReplyEvent event) {
-    	GWTMediaFolder browseableFolder = event.getBrowseableFolder();
+    public void onBrowseReply(GWTMediaFolder browseableFolder, int start, int size) {
         try {
         	if (browserScroller.getWidget() != mainItems) {
         		browserScroller.setWidget(mainItems);
@@ -183,7 +198,7 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
 
             
             // clear the view if we starting from scratch
-            if (event.getStart()==0) {
+            if (start==0) {
             	mainItems.clear();
             }
             
@@ -249,4 +264,312 @@ public class BrowsePanel extends Composite implements BrowseReplyHandler, Browse
         
         Window.scrollTo(0, lastScrollPosition);
     }
+    
+    public void browseFolder(final GWTMediaFolder folder, final int start, final int pageSize) {
+        //if the folder has children, then use them
+        if (folder.isLoaded(start, pageSize)) {
+           onBrowseReply(folder, start, pageSize);
+           return;
+        }
+        
+        final PopupPanel dialog = Dialogs.showWaitingPopup("Loading...");
+        browser.browseChildren(folder, start, pageSize, new AsyncCallback<GWTMediaResource[]>() {
+            public void onFailure(Throwable caught) {
+                dialog.hide();
+                Application.fireErrorEvent(Application.messages().failedToBrowseFolder(folder.getTitle()), caught);
+            }
+
+            public void onSuccess(GWTMediaResource[] result) {
+                folder.addChildren(result);
+                onBrowseReply(folder, start, pageSize);
+                dialog.hide();
+                if (result==null || result.length==0) {
+                    Application.fireErrorEvent(Application.messages().nothingToShowFor(folder.getTitle()));
+                    return;
+                }
+            }
+        });
+    }
+
+    public BrowsingServiceAsync getServices() {
+        return browser;
+    }
+
+    public void getView(final GWTView view) {
+        Log.debug("Browse View: " + view.getLabel());
+        browser.getView(view, new AsyncCallback<GWTMediaFolder>() {
+            public void onFailure(Throwable caught) {
+                Application.fireErrorEvent(Application.messages().failedToBrowseSource(view.getLabel()), caught);
+            }
+            
+            public void onSuccess(GWTMediaFolder result) {
+            	if (result==null) {
+            		onFailure(new Exception("Server Replied with no information"));
+            	} else {
+            		browseFolder(result, 0, result.getPageSize());
+            	}
+            }
+        });
+    }
+    
+    public void scan(final GWTMediaFolder folder, final PersistenceOptionsUI options) {
+        browser.scan(folder, options, new AsyncCallback<String>() {
+            public void onFailure(Throwable caught) {
+                Application.fireErrorEvent(Application.messages().failedToScan(folder.getTitle()), caught);
+            }
+
+            public void onSuccess(String progressId) {
+                // notify listeners about the scan
+            	Map<String, Object> args = new HashMap<String, Object>();
+            	args.put("folder", folder);
+            	args.put("options", options);
+            	args.put("progressid", progressId);
+            	messageBus.postMessage(MSG_NEW_SCAN_STARTED, args);
+                
+            	// show the scans panel
+            	scans.setVisible(true);
+            	
+                // Create a process that will monitor the progress and send event updates
+                monitorProgress(progressId);
+            }
+        });
+    }
+
+    public void monitorProgress(final String progressId) {
+        Timer timer = new Timer() {
+            @Override
+            public void run() {
+                browser.getStatus(progressId, new AsyncCallback<ProgressStatus>() {
+                    public void onFailure(Throwable caught) {
+                        Application.fireErrorEvent("Scan Failed: " + caught.getMessage());
+                        cancel();
+                        
+                        ProgressStatus result = new ProgressStatus();
+                        result.setProgressId(progressId);
+                        result.setIsDone(true);
+                        result.setStatus(caught.getMessage());
+
+                        // notify listeners about the update
+                        progressUpdated(result);
+                    }
+
+                    public void onSuccess(ProgressStatus result) {
+                        if (result == null) {
+                            // if there is no result, then set this to done
+                            result = new ProgressStatus();
+                            result.setProgressId(progressId);
+                            result.setIsDone(true);
+                        }
+                        
+                        if (result.isCancelled() || result.isDone()) {
+                            cancel();
+                        }
+                        
+                        // notify listeners about the update
+                        progressUpdated(result);
+                    }
+                });
+            }
+        };
+        timer.scheduleRepeating(400);
+    }
+    
+    /**
+     * on reply, sends a message to all listeners about the progress status
+     * 
+     * @param progressId
+     */
+    public void requestScanProgress(String progressId) {
+        browser.getStatus(progressId, new AsyncCallback<ProgressStatus>() {
+            public void onFailure(Throwable caught) {
+                Application.fireErrorEvent("Failed to get Scan progress", caught);
+            }
+
+            public void onSuccess(ProgressStatus result) {
+            	Map<String, Object> args = new HashMap<String, Object>();
+            	args.put(MSG_PROGRESS_UPDATED, result);
+                messageBus.postMessage(MSG_PROGRESS_UPDATED, args);
+            }
+        });
+    }
+
+    public void requestItemsForProgress(String progressId, final boolean b) {
+        browser.getProgressItems(progressId, b, new AsyncCallback<GWTMediaResource[]>() {
+            public void onFailure(Throwable caught) {
+            }
+
+            public void onSuccess(GWTMediaResource[] result) {
+                GWTMediaFolder folder = new GWTMediaFolder(null, (b)?"Success Items":"Failed Items", result.length);
+                folder.addChildren(result);
+                // disable actions on these folders
+                folder.setAllowActions(false);
+                onBrowseReply(folder, 0, result.length);
+            }
+        });
+    }
+    
+    public void cancelScan(String progressId) {
+        browser.cancelScan(progressId, new AsyncCallback<Void>() {
+            public void onFailure(Throwable caught) {
+            }
+
+            public void onSuccess(Void result) {
+            }
+        });
+    }
+    
+    public void requestScansInProgress(final HasInProgressStatuses status) {
+        browser.getScansInProgress(new AsyncCallback<ProgressStatus[]>() {
+            public void onFailure(Throwable caught) {
+                Application.fireErrorEvent("Failed to get Scans in progress", caught);
+            }
+
+            public void onSuccess(ProgressStatus[] result) {
+                if (result!=null && result.length>0) {
+                	scans.setVisible(true);
+                    status.setInProgress(result);
+
+                    for (ProgressStatus p : result) {
+                    	progressUpdated(p);
+                        
+                        if (! (p.isCancelled() || p.isDone())) {
+                            // monitor the progress
+                            monitorProgress(p.getProgressId());
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void removeScan(String progressId) {
+        browser.removeScan(progressId, new AsyncCallback<Void>() {
+            public void onFailure(Throwable caught) {
+            }
+
+            public void onSuccess(Void result) {
+            }
+        });
+    }
+    
+    public void requestUpdatedMetadata(final GWTMediaFile file, final HasMediaFile hasMediaFile) {
+        browser.loadMetadata(file, new AsyncCallback<GWTMediaMetadata>() {
+            public void onFailure(Throwable caught) {
+                Application.fireErrorEvent("Failed to get metadata for item: " + file.getTitle(), caught);
+            }
+
+            public void onSuccess(GWTMediaMetadata result) {
+                file.attachMetadata(result);
+                hasMediaFile.setMediaFile(file);
+            }
+        });
+    }
+    
+    public void saveMetadata(final GWTMediaFile file, PersistenceOptionsUI options, final HasMediaFile hasMediaFile) {
+    	// Sage Bug: ExternalID cannot be null
+    	if (file.getMetadata()!=null) {
+    		org.jdna.bmt.web.client.util.Property<String> prop = file.getMetadata().getExternalID();
+    		if (prop!=null && StringUtils.isEmpty(prop.get())) {
+    			Application.fireErrorEvent("ExternalId Cannot be blank!");
+        		return;
+    		}
+    	}
+    	
+        final PopupPanel save = Dialogs.showWaitingPopup("Saving...");
+        browser.saveMetadata(file, options, new AsyncCallback<ServiceReply<GWTMediaFile>>() {
+            public void onFailure(Throwable caught) {
+                save.hide();
+                Application.fireErrorEvent("Failed to save metadata for item: " + file.getTitle(), caught);
+            }
+
+            public void onSuccess(ServiceReply<GWTMediaFile> result) {
+                save.hide();
+                if (result==null || result.getCode()>0) {
+                    if (result==null) {
+                        Application.fireErrorEvent("Failed to save metadata for item: " + file.getTitle(), null);
+                    } else {
+                        Application.fireErrorEvent(result.getMessage(), null);
+                    }
+                } else {
+                	hasMediaFile.setMediaFile(result.getData());
+                }
+            }
+        });
+    }
+    
+    public void loadFanart(GWTMediaFile file, MediaArtifactType type, AsyncCallback<ArrayList<GWTMediaArt>> callback) {
+        browser.getFanart(file, type, callback);
+    }
+
+    public void downloadFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt ma, AsyncCallback<GWTMediaArt> callback) {
+        browser.downloadFanart(file, type, ma, callback);
+    }
+    
+    /**
+     * MessageBus used to communicate with panel components 
+     * 
+     * @return
+     */
+    public MessageBus getMessageBus() {
+    	return messageBus;
+    }
+
+    /**
+     * sends a message with the updated/changed metadata
+     * 
+     * @param file
+     */
+	public void metadataUpdated(GWTMediaFile file) {
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put("mediafile", file);
+		messageBus.postMessage(MSG_METADATA_CHANGED, args);
+	}
+
+    /**
+     * sends a message with the updated/changed progress
+     * 
+     * @param file
+     */
+	public void progressUpdated(ProgressStatus status) {
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put(MSG_PROGRESS_UPDATED, status);
+		messageBus.postMessage(MSG_PROGRESS_UPDATED, args);
+	}
+	
+	
+	public void getViewCategories(final HasViewCategories hasViewCats) {
+		browser.getViewCategories(new AsyncCallback<ArrayList<GWTView>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Application.fireErrorEvent("Failed to get view categories", caught);
+			}
+
+			@Override
+			public void onSuccess(ArrayList<GWTView> result) {
+				hasViewCats.setViewCategories(result);
+			}
+		});
+	}
+
+	public void getViews(final String tag, final HasViews hasViews) {
+		if (browser==null) {
+			throw new RuntimeException("** Browser is null");
+		}
+		
+		browser.getViews(tag, new AsyncCallback<GWTViewCategories>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Application.fireErrorEvent("Failed to get views for category " + tag, caught);
+			}
+
+			@Override
+			public void onSuccess(GWTViewCategories result) {
+				hasViews.setViews(result);
+			}
+		});
+	}
+
+	public void showViewThumbnails(GWTMediaFile res) {
+		setDisplay(new VideoThumbnailsPanel(res, this));
+	}
 }

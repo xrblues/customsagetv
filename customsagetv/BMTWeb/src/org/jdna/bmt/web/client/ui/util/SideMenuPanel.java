@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -41,6 +42,10 @@ public class SideMenuPanel extends Composite implements ClickHandler, WaitingHan
     public void addItem(SideMenuItem item) {
         items.add(item);
         item.addClickHandler(this);
+    }
+    
+    public HasWidgets getItems() {
+    	return items;
     }
     
     public void clearItems() {

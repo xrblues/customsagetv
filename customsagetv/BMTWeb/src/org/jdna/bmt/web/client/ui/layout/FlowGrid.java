@@ -43,6 +43,7 @@ public class FlowGrid extends Composite implements HasWidgets {
 
     public void clear() {
         grid.clear();
+        widgetCount=0;
     }
 
     public Iterator<Widget> iterator() {

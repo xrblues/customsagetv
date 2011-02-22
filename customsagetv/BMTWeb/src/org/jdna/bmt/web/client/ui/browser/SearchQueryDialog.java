@@ -48,11 +48,13 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
     private String rowStyleNames[] = new String[] {"Row-Even","Row-Odd"};
     private GWTMediaFile file = null;
 
-    FieldManager fields = new FieldManager();
+    private FieldManager fields = new FieldManager();
+	private BrowsePanel controller;
     
-    public SearchQueryDialog(GWTMediaFile file, SearchQueryOptions options) {
+    public SearchQueryDialog(BrowsePanel controller, GWTMediaFile file, SearchQueryOptions options) {
         super("Search Options", options, null);
         setHandler(this);
+        this.controller=controller;
         this.file=file;
         
         initPanels();
@@ -109,7 +111,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         fields.updateFields();
         setVisibleItems();
 
-        BrowsingServicesManager.getInstance().getServices().getProviders(new AsyncCallback<List<GWTProviderInfo>>() {
+        controller.getServices().getProviders(new AsyncCallback<List<GWTProviderInfo>>() {
             public void onFailure(Throwable caught) {
                 Application.fireErrorEvent("Failed to get Metadata Sources!", caught);
             }
@@ -214,7 +216,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         // force the properties to be updates from the UI
         fields.updateProperties();
         
-        BrowsingServicesManager.getInstance().getServices().searchForMetadata(file, getData(), new AsyncCallback<List<GWTMediaSearchResult>>() {
+        controller.getServices().searchForMetadata(file, getData(), new AsyncCallback<List<GWTMediaSearchResult>>() {
             public void onFailure(Throwable caught) {
                 wait.hide();
                 resultPanelContainer.setVisible(false);
@@ -271,7 +273,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
         options.setImportAsTV(file.getSageRecording().get());
         options.setUseTitleMasks(true);
 
-        BrowsingServicesManager.getInstance().getServices().getMetadata(res, options, new AsyncCallback<GWTMediaMetadata>() {
+        controller.getServices().getMetadata(res, options, new AsyncCallback<GWTMediaMetadata>() {
             public void onFailure(Throwable caught) {
                 wait.hide();
                 Application.fireErrorEvent("Unable to get Metadata", caught);
@@ -279,7 +281,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
 
             public void onSuccess(GWTMediaMetadata result) {
                 file.attachMetadata(result);
-                BrowsingServicesManager.getInstance().metadataUpdated(file);
+                controller.metadataUpdated(file);
                 wait.hide();
                 hide();
             }
@@ -314,7 +316,7 @@ public class SearchQueryDialog extends DataDialog<SearchQueryOptions> implements
 	}
 
 	protected void discoverDefaults() {
-		BrowsingServicesManager.getInstance().getServices().discoverQueryOptions(file, new AsyncCallback<SearchQueryOptions>() {
+		controller.getServices().discoverQueryOptions(file, new AsyncCallback<SearchQueryOptions>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				Application.fireErrorEvent("Failed to get query options", caught);
