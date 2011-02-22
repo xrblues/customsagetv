@@ -26,4 +26,6 @@ public interface PreferencesServiceAsync {
 	void saveChannels(ArrayList<Channel> channels,
 			AsyncCallback<ArrayList<Channel>> callback);
 	void refreshCustomMetadataFields(AsyncCallback<Void> callback);
+	void getPlugins(PluginQuery query, AsyncCallback<ArrayList<PluginDetail>> callback);
+	void getPluginDetails(String id, AsyncCallback<PluginDetail> callback);
 }

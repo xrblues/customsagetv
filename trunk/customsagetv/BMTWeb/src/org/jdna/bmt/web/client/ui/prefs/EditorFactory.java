@@ -42,6 +42,8 @@ public class EditorFactory {
             return new SagePropertiesViewerPanel();
         } else if ("channels".equals(editor)) {
             return new ChannelsEditorPanel();
+        } else if ("plugins".equals(editor)) {
+            return new PluginsEditorPanel();
         } else {
         	return new Label("Unknown Editor: " + editor);
         }

@@ -2,6 +2,7 @@ package org.jdna.bmt.web.server;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -16,9 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
+import org.jdna.bmt.web.client.media.GWTAiringDetails;
 import org.jdna.bmt.web.client.media.GWTCastMember;
-import org.jdna.bmt.web.client.media.GWTFactoryInfo;
-import org.jdna.bmt.web.client.media.GWTFactoryInfo.SourceType;
 import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
@@ -27,6 +27,8 @@ import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.media.GWTMediaSearchResult;
 import org.jdna.bmt.web.client.media.GWTPersistenceOptions;
 import org.jdna.bmt.web.client.media.GWTProviderInfo;
+import org.jdna.bmt.web.client.media.GWTView;
+import org.jdna.bmt.web.client.media.GWTViewCategories;
 import org.jdna.bmt.web.client.ui.browser.BrowsingService;
 import org.jdna.bmt.web.client.ui.browser.PersistenceOptionsUI;
 import org.jdna.bmt.web.client.ui.browser.ProgressStatus;
@@ -34,10 +36,12 @@ import org.jdna.bmt.web.client.ui.browser.SearchQueryOptions;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
 
 import sagex.api.AiringAPI;
+import sagex.api.ChannelAPI;
 import sagex.api.MediaFileAPI;
 import sagex.api.ShowAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.fanart.AdvancedFanartMediaRequestHandler;
 import sagex.phoenix.metadata.CastMember;
 import sagex.phoenix.metadata.ICastMember;
 import sagex.phoenix.metadata.IMediaArt;
@@ -60,7 +64,6 @@ import sagex.phoenix.metadata.search.MediaSearchResult;
 import sagex.phoenix.metadata.search.MetadataSearchUtil;
 import sagex.phoenix.metadata.search.SearchQuery;
 import sagex.phoenix.metadata.search.SearchQuery.Field;
-import sagex.phoenix.metadata.search.SearchQueryFactory;
 import sagex.phoenix.progress.TrackedItem;
 import sagex.phoenix.util.DateUtils;
 import sagex.phoenix.util.Hints;
@@ -72,6 +75,7 @@ import sagex.phoenix.vfs.MediaResourceType;
 import sagex.phoenix.vfs.sage.SageMediaFile;
 import sagex.phoenix.vfs.util.PathUtils;
 import sagex.phoenix.vfs.views.ViewFactory;
+import sagex.phoenix.vfs.views.ViewFolder;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -110,7 +114,8 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			folder.setResourceRef(String.valueOf(r.hashCode()));
 			setFolderRef((IMediaFolder) r, req);
 			folder.setPath(PathUtils.getLocation(r));
-			folder.setMinorTitle(folder.getPath());
+			
+			folder.setMinorTitle(((IMediaFolder) r).getChildren().size() + " items");
 
 			int maxItems = 5;
 			try {
@@ -120,6 +125,32 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			}
 
 			folder.setPageSize(maxItems);
+
+			if (r instanceof ViewFolder) {
+				List<String> hints = ((ViewFolder)r).getPresentation().getHints();
+				folder.getHints().addAll(hints);
+			}
+			
+			try {
+				ViewFolder par = (ViewFolder) r.getParent();
+				
+				if (par!=null && par.hasHint("series")) {
+					Map<String,String> args= new HashMap<String, String>();
+					args.put(AdvancedFanartMediaRequestHandler.PARAM_MEDIATYPE, MediaType.TV.name());
+					args.put(AdvancedFanartMediaRequestHandler.PARAM_TITLE, folder.getTitle());
+					args.put(AdvancedFanartMediaRequestHandler.PARAM_ARTIFACTTYPE, MediaArtifactType.POSTER.name());
+					String trans = (String) phoenix.config.GetProperty("bmt/web/itemThumbnailTransform");
+					if (!StringUtils.isEmpty(trans)) {
+						args.put(AdvancedFanartMediaRequestHandler.PARAM_TRANS_TRANSFORM, trans);
+						args.put(AdvancedFanartMediaRequestHandler.PARAM_TRANS_TAG, "bmtfanart");
+					}
+					String url = UrlUtil.buildURL("fanart", args); 
+					
+					folder.setThumbnailUrl(url);
+				}
+			} catch (Exception e) {
+				log.warn("Failed to calculate folder icon.", e);
+			}
 
 			return folder;
 		} else {
@@ -136,13 +167,26 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 				Object sageMedia = r.getMediaObject();
 				if (sageMedia != null) {
 					int id = MediaFileAPI.GetMediaFileID(sageMedia);
-					String url = "media/poster/" + id;
-
-					String transform = (String) phoenix.config.GetProperty("bmt/web/itemThumbnailTransform");
-					if (transform != null) {
-						url += ("?transform=" + transform);
+					Map<String,String> args= new HashMap<String, String>();
+					if (id>0) {
+						args.put(AdvancedFanartMediaRequestHandler.PARAM_MEDIAFILE, String.valueOf(id));
+					} else {
+						if (MetadataUtil.isRecordedMovie((IMediaFile) r)) {
+							args.put(AdvancedFanartMediaRequestHandler.PARAM_MEDIATYPE, MediaType.MOVIE.name());
+						} else {
+							args.put(AdvancedFanartMediaRequestHandler.PARAM_MEDIATYPE, MediaType.TV.name());
+						}
+						args.put(AdvancedFanartMediaRequestHandler.PARAM_TITLE, r.getTitle());
 					}
-					file.setThumbnailUrl(url);
+					args.put(AdvancedFanartMediaRequestHandler.PARAM_ARTIFACTTYPE, MediaArtifactType.POSTER.name());
+
+					String trans = (String) phoenix.config.GetProperty("bmt/web/itemThumbnailTransform");
+					if (!StringUtils.isEmpty(trans)) {
+						args.put(AdvancedFanartMediaRequestHandler.PARAM_TRANS_TRANSFORM, trans);
+						args.put(AdvancedFanartMediaRequestHandler.PARAM_TRANS_TAG, "bmtfanart");
+					}
+					
+					file.setThumbnailUrl(UrlUtil.buildURL("fanart", args));
 					file.setSageMediaFileId(id);
 					file.setAiringId(String.valueOf(AiringAPI.GetAiringID(sageMedia)));
 					file.setShowId(ShowAPI.GetShowExternalID(sageMedia));
@@ -152,19 +196,37 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 					file.getSageRecording().set(MediaFileAPI.IsTVFile(sageMedia));
 					file.getIsLibraryFile().set(MediaFileAPI.IsLibraryFile(sageMedia));
 					file.getIsWatched().set(AiringAPI.IsWatched(sageMedia));
-					
+					file.setDuration(AiringAPI.GetAiringDuration(sageMedia));
 					ISeriesInfo info = phoenix.media.GetSeriesInfo((IMediaFile)r);
 					if (info!=null) {
 						file.setSeriesInfoId(info.getSeriesInfoID());
 					}
 					file.setVFSID(r.getId());
 					file.setPlayable(! (r.isType(MediaResourceType.EPG_AIRING.value()) || r.isType(MediaResourceType.FOLDER.value())));
+					
+					File realfile = PathUtils.getFirstFile((IMediaFile) r);
+					if (realfile!=null) {
+						file.setSize(realfile.length());
+					}
 				} else {
 					log.warn("Not a sage media object??");
 				}
 				log.debug("Setting Last Modified: " + file + "; " + r.lastModified());
 				file.setLastModified(r.lastModified());
 				file.setFormattedTitle(phoenix.media.GetFormattedTitle(r));
+				
+				// if an epg airing, then set the airing details
+				if (r.isType(MediaResourceType.EPG_AIRING.value())) {
+					Object airing = r.getMediaObject();
+					Object chan = AiringAPI.GetChannel(airing);
+					GWTAiringDetails det = new GWTAiringDetails();
+					det.setChannel(ChannelAPI.GetChannelNumber(chan));
+					det.setNetwork(ChannelAPI.GetChannelName(chan));
+					det.setDuration(AiringAPI.GetAiringDuration(airing));
+					//det.setFirtRun(AiringAPI.is);
+					det.setStartTime(AiringAPI.GetAiringStartTime(airing));
+					file.setAiringDetails(det);
+				}
 			}
 			file.setPath(PathUtils.getLocation(r));
 			return file;
@@ -198,61 +260,6 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 
 	public static void setFolderRef(IMediaFolder folder, HttpServletRequest req) {
 		getFolderRefs(req).put(String.valueOf(folder.hashCode()), folder);
-	}
-
-	public GWTMediaFolder getFolderForSource(GWTFactoryInfo source, GWTMediaFolder folder) {
-		log.info("Getting Folder for source: " + source);
-
-		try {
-			if (source.getSourceType() == SourceType.View) {
-				ViewFactory factory = null;
-				if (source.getSourceType() != SourceType.View) {
-					throw new Exception("Not a valid View Source: " + source.getId());
-				}
-				
-				factory = Phoenix.getInstance().getVFSManager().getVFSViewFactory().getFactory(source.getId());
-				if (factory ==null) {
-					throw new Exception("No Factory for: " + source.getId());
-				}
-				
-				IMediaFolder f = factory.create(null);
-				if (f==null) {
-					throw new Exception("Failed to create folder for " + source.getId());
-				}
-					
-				setFolderRef(f);
-				log.debug("Returning newly created folder: " + f.getTitle() + "; Size: " + f.getChildren().size());
-				return (GWTMediaFolder) convertResource(f);
-			}
-		} catch (Throwable t) {
-			log.warn("Failed to get folder for source: " + source.getId(), t);
-		}
-
-		return null;
-	}
-
-	public GWTFactoryInfo[] getFactories(SourceType sourceType) {
-		List<GWTFactoryInfo> sources = new ArrayList<GWTFactoryInfo>();
-
-		if (sourceType == SourceType.View) {
-			List<ViewFactory> factories = phoenix.umb.GetViewFactories();
-			for (ViewFactory f : factories) {
-				if (f.isVisible()) {
-					GWTFactoryInfo s = new GWTFactoryInfo(sourceType, f.getName(), f.getLabel(), f.getDescription());
-					sources.add(s);
-				}
-			}
-		} else {
-			log.warn("Invalid/unhandled source type:  " + sourceType);
-		}
-
-		Collections.sort(sources, new Comparator<GWTFactoryInfo>() {
-			public int compare(GWTFactoryInfo o1, GWTFactoryInfo o2) {
-				return o1.getLabel().compareTo(o2.getLabel());
-			}
-		});
-
-		return sources.toArray(new GWTFactoryInfo[sources.size()]);
 	}
 
 	private transient PhoenixMetadataSupport support = new PhoenixMetadataSupport();
@@ -728,7 +735,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		try {
 			Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
 			IMediaFile mf = phoenix.media.GetMediaFile(sageMF);
-			SearchQuery query = SearchQueryFactory.getInstance().createSageFriendlyQuery(mf, Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions());
+			SearchQuery query = Phoenix.getInstance().getSearchQueryFactory().createSageFriendlyQuery(mf, Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions());
 
 			SearchQueryOptions options = new SearchQueryOptions();
 			String title = query.get(Field.CLEAN_TITLE);
@@ -750,6 +757,71 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		} catch (Throwable t) {
 			log.warn("discoverQueryOptions failed.", t);
 			throw new RuntimeException(t.getMessage());
+		}
+	}
+
+	@Override
+	public ArrayList<GWTView> getViewCategories() {
+		Set<String> tags = phoenix.umb.GetTags(false);
+		ArrayList<GWTView> viewTags = new ArrayList<GWTView>();
+		for (String s: tags) {
+			viewTags.add(new GWTView(s, phoenix.umb.GetTagLabel(s)));
+		}
+		return viewTags;
+	}
+
+	@Override
+	public GWTViewCategories getViews(String tag) {
+		GWTViewCategories cats = null;
+		
+
+		Collection<ViewFactory> factories = null;
+		if (tag==null) {
+			cats = new GWTViewCategories(null, "All Views");
+			factories = phoenix.umb.GetViewFactories();
+		} else {
+			cats = new GWTViewCategories(tag, phoenix.umb.GetTagLabel(tag));
+			factories = phoenix.umb.GetViewFactories(tag);
+		}
+		
+		for (ViewFactory f : factories) {
+			if (f.isVisible()) {
+				cats.getViews().add(new GWTView(f.getName(), f.getLabel()));
+			}
+		}
+
+		Collections.sort(cats.getViews(), new Comparator<GWTView>() {
+			public int compare(GWTView o1, GWTView o2) {
+				return o1.getLabel().compareTo(o2.getLabel());
+			}
+		});
+
+		return cats;
+	}
+
+	@Override
+	public GWTMediaFolder getView(GWTView view) {
+		log.info("Getting Folder for source: " + view.getId());
+
+		try {
+				ViewFactory factory = null;
+
+				factory = Phoenix.getInstance().getVFSManager().getVFSViewFactory().getFactory(view.getId());
+				if (factory ==null) {
+					throw new Exception("No Factory for: " + view.getId());
+				}
+				
+				IMediaFolder f = factory.create(null);
+				if (f==null) {
+					throw new Exception("Failed to create folder for " + view.getId());
+				}
+					
+				setFolderRef(f);
+				log.debug("Returning newly created folder: " + f.getTitle() + "; Size: " + f.getChildren().size());
+				return (GWTMediaFolder) convertResource(f);
+		} catch (Throwable t) {
+			log.warn("Failed to get folder for source: " + view.getId(), t);
+			throw new RuntimeException(t);
 		}
 	}
 }

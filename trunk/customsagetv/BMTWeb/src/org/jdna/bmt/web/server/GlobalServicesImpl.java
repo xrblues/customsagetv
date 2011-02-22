@@ -16,7 +16,6 @@ import org.jdna.bmt.web.client.ui.app.GlobalService;
 import sagex.api.Configuration;
 import sagex.phoenix.progress.BasicProgressMonitor;
 import sagex.phoenix.progress.IProgressMonitor;
-import sagex.phoenix.util.SageTV;
 import sagex.phoenix.vfs.IMediaResource;
 import sagex.phoenix.vfs.IMediaResourceVisitor;
 

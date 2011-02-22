@@ -3,10 +3,12 @@ package org.jdna.bmt.web.client.ui.util;
 import java.util.Iterator;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class HorizontalButtonBar extends Composite implements HasWidgets {
@@ -64,5 +66,11 @@ public class HorizontalButtonBar extends Composite implements HasWidgets {
 
     public boolean remove(Widget w) {
         return buttons.remove(w);
+    }
+    
+    public void addSpacer() {
+    	HTMLPanel w = new HTMLPanel("&nbsp;");
+    	w.addStyleName("h-spacer");
+    	add(w);
     }
 }

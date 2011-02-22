@@ -81,7 +81,6 @@ public class PlayOnClientDialogPanel extends Composite implements NeedsDialog {
 	public void playFileForClient(final ClientItem item) {
 		if (PLAYLIST_NAME.equals(item.getId())) {
 			final String url = "json/client?cmd=playlist&file="+file.getSageMediaFileId();
-			System.out.println("** PLAYLIST: " + url);
 			GWT.log("Playing URL: " + url);
 	        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
 	        try {

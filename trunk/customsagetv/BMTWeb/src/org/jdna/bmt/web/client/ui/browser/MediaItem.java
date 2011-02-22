@@ -1,25 +1,24 @@
 package org.jdna.bmt.web.client.ui.browser;
 
+import java.util.Date;
+
+import org.jdna.bmt.web.client.media.GWTAiringDetails;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
 import org.jdna.bmt.web.client.ui.debug.DebugDialog;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
+import org.jdna.bmt.web.client.ui.widgets.AbstractMouseAdapter;
+import org.jdna.bmt.web.client.ui.widgets.IconAction;
+import org.jdna.bmt.web.client.ui.widgets.PopupMenu;
+import org.jdna.bmt.web.client.ui.widgets.PopupMenu.SimpleMenuAdapter;
 import org.jdna.bmt.web.client.util.StringUtils;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -27,15 +26,22 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class MediaItem extends Composite implements HasClickHandlers, MouseOutHandler, MouseOverHandler, ClickHandler {
-    private GWTMediaResource res;
+public class MediaItem extends AbstractMouseAdapter {
+    private static final int MENU_VIDEO_THUMB = 1;
+	private static final int MENU_DELETE_FILE = 2;
+	private static final int MENU_DELETE_WRONG_RECORDING = 3;
+	private static final int MENU_DEBUG = 4;
+	
+	private GWTMediaResource res;
     private VerticalPanel  vpanel   = new VerticalPanel();
     private VerticalPanel    titles  = new VerticalPanel();
     private HorizontalPanel  actions = new HorizontalPanel();
-    private BrowserView      view    = null;
+	private BrowsePanel controller;
 
-    public MediaItem(final GWTMediaResource res, BrowserView view) {
-        this.view = view;
+    public MediaItem(final GWTMediaResource res, BrowsePanel controller) {
+    	super();
+    	
+        this.controller = controller;
         this.res = res;
         titles.setWidth("100%");
         vpanel.add(titles);
@@ -59,7 +65,11 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         });
         
         if (res instanceof GWTMediaFolder) {
-            img.setUrl("images/128x128/folder_video.png");
+        	if (res.getThumbnailUrl()!=null) {
+        		img.setUrl(res.getThumbnailUrl());
+        	} else {
+        		img.setUrl("images/128x128/folder_video.png");
+        	}
         } else {
             img.setUrl(res.getThumbnailUrl());
         }
@@ -67,32 +77,18 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         // set the actions
         actions.setSpacing(10);
         if (!(res instanceof GWTMediaFolder)) {
-            Image img2 = new Image("images/16x16/applications-system.png");
-            img2.addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent event) {
-                    event.stopPropagation();
-                    DebugDialog.show((GWTMediaFile) res);
-                }
-            });
-            actions.add(img2);
-            
             if (((GWTMediaFile)res).getIsWatched().get()) {
-            	img2 = new Image("images/marker_watched.png");
+            	Image img2 = new Image("images/marker_watched.png");
             	img2.setSize("16px", "16px");
             	actions.insert(img2,0);
             }
-
-            if (((GWTMediaFile)res).isPlayable()) {
-            	img2 = new Image("images/16x16/media-playback-start.png");
-            	img2.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-	                    event.stopPropagation();
-						playFile((GWTMediaFile)res);
-					}
-				});
-            	actions.insert(img2,0);
-            }
+            
+            actions.insert(new IconAction("images/16x16/media-playback-start.png") {
+				@Override
+				protected void onClick() {
+					playFile((GWTMediaFile)res);
+				}
+            }, 0);
         }
         
         vpanel.add(img);
@@ -113,10 +109,6 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         }
 
         initWidget(vpanel);
-
-        addDomHandler(this, MouseOverEvent.getType());
-        addDomHandler(this, MouseOutEvent.getType());
-        addDomHandler(this, ClickEvent.getType());
     }
 
     protected void playFile(GWTMediaFile res2) {
@@ -134,31 +126,76 @@ public class MediaItem extends Composite implements HasClickHandlers, MouseOutHa
         String epTitle = res2.getMinorTitle();
         if (!StringUtils.isEmpty(epTitle) && !epTitle.equals(res.getTitle())) {
             Label title2 = new Label(epTitle);
-            
             titles.add(title2);
             titles.setCellHorizontalAlignment(title2, HasHorizontalAlignment.ALIGN_CENTER);
             title2.setStyleName("MediaItem-Title2");
         }
-    }
+        
+        if (res2 instanceof GWTMediaFile && ((GWTMediaFile)res2).getAiringDetails()!=null) {
+        	GWTAiringDetails det = ((GWTMediaFile) res2).getAiringDetails();
+        	StringBuilder sb = new StringBuilder();
+        	
+        	DateTimeFormat fmt1 = DateTimeFormat.getFormat("E, L/d, h:MM a");
+            Label title = new Label(fmt1.format(new Date(det.getStartTime())));
+            titles.add(title);
+            titles.setCellHorizontalAlignment(title, HasHorizontalAlignment.ALIGN_CENTER);
+            title.setStyleName("MediaItem-Title2");
 
-    public HandlerRegistration addClickHandler(ClickHandler handler) {
-        return addDomHandler(handler, ClickEvent.getType());
-    }
-
-    public void onMouseOut(MouseOutEvent event) {
-        // TODO Auto-generated method stub
-    }
-
-    public void onMouseOver(MouseOverEvent event) {
-        // TODO Auto-generated method stub
-    }
-
-    public void onClick(ClickEvent event) {
-        if (res instanceof GWTMediaFolder) {
-            BrowsingServicesManager.getInstance().browseFolder((GWTMediaFolder) res, 0, ((GWTMediaFolder) res).getPageSize());
-        } else {
-            view.setDisplay(new MediaEditorMetadataPanel((GWTMediaFile) res, view));
-        	//view.setDisplay(new TabbedMetadataEditor());
+            String s = "on channel " + det.getChannel() + " (" + det.getNetwork() + ")";
+            title = new Label(s);
+            titles.add(title);
+            titles.setCellHorizontalAlignment(title, HasHorizontalAlignment.ALIGN_CENTER);
+            title.setStyleName("MediaItem-Title2");
         }
+	
+    }
+
+    public void onClick() {
+        if (res instanceof GWTMediaFolder) {
+            controller.browseFolder((GWTMediaFolder) res, 0, ((GWTMediaFolder) res).getPageSize());
+        } else {
+            controller.setDisplay(new MediaEditorMetadataPanel((GWTMediaFile) res, controller));
+        }
+    }
+    
+    public void onLongPress() {
+    	if (res instanceof GWTMediaFile) {
+	    	PopupMenu pm = new PopupMenu("Select MediaFile Action", new PopupMenu.MenuSelectionHandler() {
+				@Override
+				public void onMenuItemSelected(Object data) {
+					int id = (Integer)((SimpleMenuAdapter.SimpleItem)data).getId();
+					switch (id) {
+						case MENU_DELETE_FILE:
+							if (Window.confirm("Press OK to delete this file, permanently.  It will be removed from disk.")) {
+								removeFromParent();
+							}
+							break;
+						case MENU_DELETE_WRONG_RECORDING:
+							if (Window.confirm("Press OK to delete this file, permanently, since it was recording that was recorded incorrectly.  It will be removed from disk.")) {
+								removeFromParent();
+							}
+							break;
+						case MENU_DEBUG:
+							DebugDialog.show((GWTMediaFile) res);
+							break;
+						case MENU_VIDEO_THUMB:
+							controller.showViewThumbnails((GWTMediaFile)res);
+							break;
+					}
+				}
+			});
+
+	    	GWTMediaFile f = (GWTMediaFile) res;
+	    	SimpleMenuAdapter sma =  (SimpleMenuAdapter) pm.getListAdapter();
+	    	sma.addItem(MENU_VIDEO_THUMB, "View Video Thumbnails");
+	    	sma.addItem(MENU_DELETE_FILE, "Delete Media File");
+	    	if (f.getSageRecording().get()) {
+	    		sma.addItem(MENU_DELETE_WRONG_RECORDING, "Delete, Wrong Recording");
+	    	}
+	    	sma.addItem(MENU_DEBUG, "View Debug Metadata Details");
+	    	sma.fireDataChanged();
+	    	pm.center();
+	    	pm.show();
+    	}
     }
 }

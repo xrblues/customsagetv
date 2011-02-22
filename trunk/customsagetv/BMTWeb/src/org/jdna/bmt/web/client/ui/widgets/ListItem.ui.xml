@@ -1,0 +1,13 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+	.item {
+		vertical-align: middle;
+		height: 1cm;
+		border-bottom: 1px solid #000080;
+	}
+	
+	</ui:style>
+	<g:VerticalPanel ui:field="item" stylePrimaryName="ListItem" addStyleNames="{style.item}" width="100%"></g:VerticalPanel>
+</ui:UiBinder> 

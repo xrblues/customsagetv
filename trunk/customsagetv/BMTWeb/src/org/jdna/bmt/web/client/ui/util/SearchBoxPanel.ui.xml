@@ -1,0 +1,30 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+	.image {
+		cursor: pointer;
+		padding-left: 4px;
+		padding-right: 4px;
+	}
+	
+	.textbox {
+		border: hidden;
+	}
+	
+	.searchBox {
+		border: 2px groove black;
+		padding: 2 2 2 2;
+	}
+	
+	.searchBox-Empty {
+		color: #909090;
+		font-style: italic;
+	}
+	
+	</ui:style>
+	<g:HorizontalPanel ui:field="panel" styleName="{style.searchBox}">
+		<g:TextBox ui:field="text" styleName="{style.textbox}"></g:TextBox>
+		<g:Image ui:field="icon" url="images/16x16/system-search.png" styleName="{style.image}"></g:Image>
+	</g:HorizontalPanel>
+</ui:UiBinder> 

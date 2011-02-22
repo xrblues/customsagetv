@@ -173,6 +173,7 @@ public class PreferencesPanel extends Composite {
         VerticalPanel vp = new VerticalPanel();
         vp.setWidth("200px");
         vp.setSpacing(3);
+        
         HorizontalPanel hp = new HorizontalPanel();
         hp.setSpacing(4);
         hp.setWidth("100%");
@@ -266,6 +267,7 @@ public class PreferencesPanel extends Composite {
         	tree.addItem(createFakePanel("Sage Sources", "Add/Modify Sage Sources", "videoSourcesEditor"));
         	tree.addItem(createFakePanel("Sage Properties", "View Sage Properties (Server)", "viewSageProperties"));
         	tree.addItem(createFakePanel("Channels", "Configure Channels", "channels"));
+        	tree.addItem(createFakePanel("SageTV Plugins", "Manage Plugins", "plugins"));
         }
         
         focusTreeItem(item);

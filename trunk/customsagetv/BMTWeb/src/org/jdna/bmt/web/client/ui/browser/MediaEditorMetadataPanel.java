@@ -2,8 +2,8 @@ package org.jdna.bmt.web.client.ui.browser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
@@ -21,6 +21,7 @@ import org.jdna.bmt.web.client.ui.util.binder.ListBinder;
 import org.jdna.bmt.web.client.ui.util.binder.NumberBinder;
 import org.jdna.bmt.web.client.ui.util.binder.TextAreaBinder;
 import org.jdna.bmt.web.client.ui.util.binder.TextBinder;
+import org.jdna.bmt.web.client.util.MessageHandler;
 
 import sagex.phoenix.metadata.IMediaArt;
 
@@ -32,8 +33,6 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -44,10 +43,9 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class MediaEditorMetadataPanel extends Composite implements MetadataUpdatedHandler, ChangeHandler {
+public class MediaEditorMetadataPanel extends Composite implements ChangeHandler, HasMediaFile, MessageHandler {
     private GWTMediaFile mediaFile = null;
     private GWTMediaMetadata metadata = null;
     
@@ -57,10 +55,6 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
 
     private List<Integer> tvRows = new ArrayList<Integer>();
     private List<Integer> movieRows = new ArrayList<Integer>();
-
-    private HandlerRegistration metadataUpdatedHandler = null;
-    
-    private BrowserView browserView;
 
     private ListBinder typeListBox=null;
 	private TextBinder movieTitle;
@@ -83,9 +77,10 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
 	private CheckBinder preserveMetadata;
 	
 	private FieldManager fields = new FieldManager();
+	private BrowsePanel controller;
     
-    public MediaEditorMetadataPanel(GWTMediaFile mediaFile, BrowserView view) {
-        this.browserView = view;
+    public MediaEditorMetadataPanel(GWTMediaFile mediaFile, BrowsePanel controller) {
+        this.controller = controller;
         metadataPanel.setWidth("100%");
         metadataPanel.setSpacing(5);
         WaitingPanel p = new WaitingPanel();
@@ -94,6 +89,8 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         metadataPanel.setCellVerticalAlignment(p, HasVerticalAlignment.ALIGN_MIDDLE);
         initWidget(metadataPanel);
         this.mediaFile = mediaFile;
+        
+        controller.requestUpdatedMetadata(mediaFile, this);
     }
     
     private void init(GWTMediaFile mf) {
@@ -117,7 +114,7 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         find.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 SearchQueryOptions options = new SearchQueryOptions(mediaFile);
-                DataDialog.showDialog(new SearchQueryDialog(mediaFile, options));
+                DataDialog.showDialog(new SearchQueryDialog(controller, mediaFile, options));
             }
         });
 
@@ -130,7 +127,7 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         Button back = new Button("Back");
         back.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                browserView.back();
+                controller.back();
             }
         });
         
@@ -311,7 +308,7 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
     }
 
     protected void showFanartDialog() {
-    	Composite c = new FanartManagerPanel(mediaFile);
+    	Composite c = new FanartManagerPanel(controller, mediaFile);
     	//c.setPixelSize(600, 400);
         Dialogs.showAsDialog("Fanart", c);
     }
@@ -322,32 +319,7 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
     	// copy metadata
     	fields.updateProperties();
     	
-        BrowsingServicesManager.getInstance().saveMetadata(mediaFile, options);
-    }
-
-    /* (non-Javadoc)
-     * @see com.google.gwt.user.client.ui.Composite#onAttach()
-     */
-    @Override
-    protected void onAttach() {
-        super.onAttach();
-        metadataUpdatedHandler = Application.events().addHandler(MetadataUpdatedEvent.TYPE, this);
-        BrowsingServicesManager.getInstance().requestUpdatedMetadata(mediaFile);
-    }
-
-    /* (non-Javadoc)
-     * @see com.google.gwt.user.client.ui.Composite#onDetach()
-     */
-    @Override
-    protected void onDetach() {
-        super.onDetach();
-        metadataUpdatedHandler.removeHandler();
-    }
-
-    public void onMetadataUpdated(MetadataUpdatedEvent event) {
-        // udpate
-        metadata = event.getFile().getMetadata();
-        init(event.getFile());
+        controller.saveMetadata(mediaFile, options, this);
     }
 
     public void onChange(ChangeEvent event) {
@@ -368,9 +340,10 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
     	if (mediaFile.getSageRecording().get()) {
         	boolean preserve = metadata.getPreserveRecordingMetadata().get();
 	        // set the readonly fields
-	    	movieTitle.setEnabled(!preserve);
+	    	movieTitle.setEnabled(!"TV".equals(mt) && !preserve);
+	    	episodeName.setEnabled("TV".equals(mt) && !preserve);
+	    	
 	    	showTitle.setEnabled(!preserve);
-	    	episodeName.setEnabled(!preserve);
 	    	description.setEnabled(!preserve);
 	    	year.setEnabled(!preserve);
 	    	originalAirDate.setEnabled(!preserve);
@@ -389,4 +362,28 @@ public class MediaEditorMetadataPanel extends Composite implements MetadataUpdat
         
         metadataContainer.stripe();
     }
+
+	@Override
+	public void setMediaFile(GWTMediaFile file) {
+		init(file);
+	}
+
+	@Override
+	public void onMessageReceived(String msg, Map<String, ?> args) {
+		if (BrowsePanel.MSG_METADATA_CHANGED.equals(msg)) {
+			setMediaFile((GWTMediaFile) args.get("mediafile"));
+		}
+	}
+
+	@Override
+	protected void onAttach() {
+		super.onAttach();
+		controller.getMessageBus().addHandler(BrowsePanel.MSG_METADATA_CHANGED, this);
+	}
+
+	@Override
+	protected void onDetach() {
+		super.onDetach();
+		controller.getMessageBus().removeHandler(BrowsePanel.MSG_METADATA_CHANGED, this);
+	}
 }

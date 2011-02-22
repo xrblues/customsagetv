@@ -74,6 +74,11 @@
     <servlet-name>view</servlet-name>
     <servlet-class>org.jdna.bmt.web.server.ViewServlet</servlet-class>
   </servlet>
+
+  <servlet>
+    <servlet-name>videothumbnail</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.VideoThumbnailServlet</servlet-class>
+  </servlet>
   
   
   <!-- JSON Services -->
@@ -95,6 +100,11 @@
   <servlet-mapping>
     <servlet-name>view</servlet-name>
     <url-pattern>view</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>videothumbnail</servlet-name>
+    <url-pattern>videothumbnail</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

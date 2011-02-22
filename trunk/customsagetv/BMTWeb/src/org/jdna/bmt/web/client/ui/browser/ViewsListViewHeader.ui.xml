@@ -1,0 +1,16 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+	.header {
+		font-weight: bold;
+		border-bottom: 2px solid #000080;
+		padding-top: 3px;
+		padding-bottom: 3px;
+		cursor: pointer;
+	}
+	</ui:style>
+	<g:HTMLPanel addStyleNames="{style.header}" width="100%">
+		<g:Label  ui:field="headerText" width="100%"></g:Label>
+	</g:HTMLPanel>
+</ui:UiBinder> 

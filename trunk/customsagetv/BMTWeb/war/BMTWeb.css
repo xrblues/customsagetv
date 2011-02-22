@@ -46,6 +46,14 @@ h1 {
   text-align: center;
 }
 
+.h-spacer {
+	border-left: 1px dashed black;
+	margin-right: 5px;
+	margin-left: 5px;
+	width: 1px;
+	height: 100%;
+}
+
 .form-label {
 	font-weight: bold;
 }
@@ -139,7 +147,7 @@ h1 {
 	width: 80px;
 }
 
-.MediaItem_hover {
+.MediaItem-Hover {
 	background-color: #F3F3F3;
 }
 
@@ -469,3 +477,39 @@ h1 {
 	color: white;
 }
 
+/** BMT5 CSS **/
+.ListItem-Hover {
+	background-color: #F3F3F3;
+}
+
+.IconAction-Hover {
+	background-color: #000080;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+}
+
+.PopupMenu {
+	background-color: rgba(0,0,128,0.8);
+	border: 0;
+	color: white;
+	padding: 10 10 10 10;
+	border: 5px solid #black;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -khtml-border-radius: 10px;
+}
+
+.PopupMenu-Title {
+	font-weight: bold;
+	color: white;
+	padding-bottom: 5px;
+}
+
+.PopupMenu .gwt-Label {
+	color: white;
+}
+
+.PopupMenu .ListItem-Hover {
+	background-color: rgba(0,0,128,0.8);
+}

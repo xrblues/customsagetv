@@ -1,7 +1,5 @@
 package sagex.phoenix.rest;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -13,16 +11,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
-import sagex.SageAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.rest.JSONHandler.Help;
 import sagex.remote.SagexServlet.SageHandler;
-import sagex.remote.rmi.RMISageAPI;
-import sagex.util.Log4jConfigurator;
 
 /**
  * NOTES:

@@ -20,7 +20,8 @@ public class FieldManager {
 	}
 
 	public void updateProperties() {
-		for (FieldBinder<?> f: fields.values()) {
+		for (Map.Entry<String, FieldBinder<?>> me: fields.entrySet()) {
+			FieldBinder<?> f = me.getValue();
 			if (f.isEnabled()) {
 				f.updateProperty();
 			}

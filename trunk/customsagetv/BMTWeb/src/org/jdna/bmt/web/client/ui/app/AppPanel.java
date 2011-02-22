@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jdna.bmt.web.client.Application;
-import org.jdna.bmt.web.client.Version;
 import org.jdna.bmt.web.client.event.Notification;
 import org.jdna.bmt.web.client.event.NotificationEvent;
 import org.jdna.bmt.web.client.event.NotificationEvent.MessageType;
@@ -13,8 +12,8 @@ import org.jdna.bmt.web.client.event.NotificationEventHandler;
 import org.jdna.bmt.web.client.ui.BatchOperation;
 import org.jdna.bmt.web.client.ui.BatchOperations;
 import org.jdna.bmt.web.client.ui.browser.BrowsePanel;
-import org.jdna.bmt.web.client.ui.browser2.BrowserPanel;
 import org.jdna.bmt.web.client.ui.debug.BackupPanel;
+import org.jdna.bmt.web.client.ui.portal.Portal;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesPanel;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesService;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesServiceAsync;
@@ -64,6 +63,9 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
         INSTANCE = this;
         vp.setWidth("100%");
         vp.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
+
+        //Hyperlink portal = new Hyperlink(Application.labels().status(), "portal");
+        //portal.addStyleName("App-Portal");
         
         Hyperlink status = new Hyperlink(Application.labels().status(), "status");
         status.addStyleName("App-Status");
@@ -158,6 +160,7 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
         
         HorizontalPanel hp = new HorizontalPanel();
         hp.setSpacing(10);
+        //hp.add(portal);
         hp.add(status);
         hp.add(configure);
         hp.add(browse);
@@ -236,13 +239,9 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
     }
     
     protected void setBrowsePanel(Map<String,String> params) {
-    	if (Application.BMT5) {
-    		setPanel(new BrowserPanel());
-    	} else {
-	        if (!(curPanel instanceof BrowsePanel)) {
-	            setPanel(new BrowsePanel()); 
-	        }
-    	}
+        if (!(curPanel instanceof BrowsePanel)) {
+            setPanel(new BrowsePanel()); 
+        }
     }
 
     protected void setRefreshPanel() {
@@ -251,6 +250,10 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
 
     protected void setConfigurePanel() {
         setPanel(new PreferencesPanel());
+    }
+
+    protected void setPortalPanel() {
+        setPanel(new Portal());
     }
 
     private void setStatusPanel() {
@@ -286,6 +289,8 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
             setStatusPanel();
         } else if ("configure".equals(section)) {
             setConfigurePanel();
+        } else if ("portal".equals(section)) {
+            setPortalPanel();
         } else if ("browsing".equals(section)) {
             setBrowsePanel(params);
         } else if ("support".equals(section)) {

@@ -66,7 +66,7 @@ public class Toaster {
 			panel.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
 		          public void setPosition(int offsetWidth, int offsetHeight) {
 		            int left = (Window.getClientWidth() - offsetWidth) / 2;
-		            int top = (Window.getClientHeight() - offsetHeight) / 2;
+		            int top = ((Window.getClientHeight() - offsetHeight) / 2) + Window.getScrollTop();
 		            panel.setPopupPosition(left, top);
 		          }
 		    });

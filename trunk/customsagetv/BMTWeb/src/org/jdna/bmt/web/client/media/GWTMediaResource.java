@@ -1,6 +1,7 @@
 package org.jdna.bmt.web.client.media;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import sagex.phoenix.metadata.MediaType;
 
@@ -17,7 +18,17 @@ public class GWTMediaResource implements Serializable {
     private String path;
     private String message = null;
     
-    public GWTMediaResource() {
+    private ArrayList<String> hints = new ArrayList<String>();
+    
+    public ArrayList<String> getHints() {
+		return hints;
+	}
+    
+    public boolean hasHint(String hint) {
+    	return hints.contains(hint);
+    }
+
+	public GWTMediaResource() {
     }
     
     public GWTMediaResource(GWTMediaFolder parent, String title) {
