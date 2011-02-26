@@ -1,0 +1,75 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:my="urn:import:org.jdna.bmt.web.client.ui.util">
+	<ui:style>
+		.panel {
+			padding-left: 10px;
+		}
+		
+		.title {
+			font-variant: bold;
+			font-size: 1cm;
+		}
+		
+		.label {
+			margin-top: 5px;
+			font-weight: bold;
+			color: #000080;
+		}
+		
+		.episode {
+			font-style: italic;
+		}
+		
+		.poster {
+			margin-right: 10px;
+		}
+		
+		.description {
+			width: 10cm;
+		}
+	</ui:style>
+	<g:VerticalPanel styleName="{style.panel}" width="100%">
+		<my:HorizontalButtonBar width="100%">
+					<g:Button ui:field="back">Back</g:Button>
+					<g:Button ui:field="updateFanart">Update Fanart</g:Button>
+					<g:Button ui:field="record">Record</g:Button>
+					<g:Button ui:field="cancelRecord">Cancel Record</g:Button>
+					<g:Button ui:field="watched">Toggle Watched</g:Button>
+				</my:HorizontalButtonBar>
+		<g:Cell width="">
+			<g:HorizontalPanel width="">
+				<g:VerticalPanel>
+					<g:Image ui:field="poster" styleName="{style.poster}"/>
+					<g:HorizontalPanel>
+						<g:Image ui:field="firstRun" url="images/marker_firstrun.png"/>
+						<g:Image ui:field="watchedMarker" url="images/marker_watched.png"/>
+						<g:Image ui:field="manualRecord" url="images/marker_manual.png"/>
+					</g:HorizontalPanel>
+				</g:VerticalPanel>
+			<g:VerticalPanel>
+				<g:Label text="Show Title" ui:field="showTitle" styleName="{style.title}" />
+				<g:Label text="Episode Name" ui:field="episodeName"
+					styleName="{style.episode}" />
+				<g:Label text="Season/Episode" styleName="{style.label}" />
+				<g:Label ui:field="seasonEp"/>
+				<g:Label text="Description" styleName="{style.label}" />
+				<g:Label text="Description Text" ui:field="description" styleName="{style.description}"/>
+				<g:Label text="Aired Date" styleName="{style.label}"/>
+				<g:Label ui:field="aired"/>
+				<g:Label text="Duration" styleName="{style.label}"/>
+				<g:Label ui:field="duration"/>
+				<g:Label text="Channel" styleName="{style.label}"/>
+				<g:Label ui:field="channel"/>
+				<g:Label text="Category" styleName="{style.label}"/>
+				<g:Label ui:field="category"/>
+				<!-- 
+				<g:Label text="Actors" styleName="{style.label}"/>
+				<g:HTMLPanel ui:field="actors"/>
+				-->
+			</g:VerticalPanel>
+		</g:HorizontalPanel>
+		</g:Cell>
+
+	</g:VerticalPanel>
+</ui:UiBinder> 

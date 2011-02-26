@@ -223,8 +223,9 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 					det.setChannel(ChannelAPI.GetChannelNumber(chan));
 					det.setNetwork(ChannelAPI.GetChannelName(chan));
 					det.setDuration(AiringAPI.GetAiringDuration(airing));
-					//det.setFirtRun(AiringAPI.is);
+					det.setFirtRun(ShowAPI.IsShowFirstRun(airing));
 					det.setStartTime(AiringAPI.GetAiringStartTime(airing));
+					det.setManualRecord(AiringAPI.IsManualRecord(airing));
 					file.setAiringDetails(det);
 				}
 			}
@@ -823,5 +824,45 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			log.warn("Failed to get folder for source: " + view.getId(), t);
 			throw new RuntimeException(t);
 		}
+	}
+
+	@Override
+	public String record(GWTMediaFile file) {
+		String airingId = file.getAiringId();
+		Object sageAiring = AiringAPI.GetAiringForID(NumberUtils.toInt(airingId));
+		if (sageAiring==null) {
+			return "Failed to record Airing because the Airing id was not valid " + airingId;
+		}
+		
+		Object result = AiringAPI.Record(sageAiring);
+		if (result instanceof String) {
+			return (String)result;
+		}
+		
+		if (result instanceof Boolean) {
+			boolean b = (Boolean) result;
+			if (b) {
+				return "Recording was scheduled";
+			} else {
+				return "Recording was unable to be scheduled";
+			}
+		}
+		
+		return "Sage Message: " + result;
+	}
+
+	@Override
+	public void setWatched(GWTMediaFile file, boolean watched) {
+		Object sageAiring = AiringAPI.GetAiringForID(NumberUtils.toInt(file.getAiringId()));
+		if (watched) {
+			AiringAPI.SetWatched(sageAiring);
+		} else {
+			AiringAPI.ClearWatched(sageAiring);
+		}
+	}
+
+	@Override
+	public void cancelRecord(GWTMediaFile file) {
+		AiringAPI.CancelRecord(AiringAPI.GetAiringForID(NumberUtils.toInt(file.getAiringId())));
 	}
 }

@@ -32,7 +32,7 @@ watched status on files, etc
 
 	<Dependency>
 		<Plugin>phoenix-core</Plugin>
-		<MinVersion>2.3.18</MinVersion>
+		<MinVersion>2.3.19</MinVersion>
 	</Dependency>
 
 	<PluginType>Standard</PluginType>
@@ -52,6 +52,14 @@ watched status on files, etc
 		<MD5>@@context-checksum@@</MD5>
 	</Package>
 	<ReleaseNotes>
+4.9.11
+* Minor enhancements to Airing type items
+* Added simple Airing viewer
+* Can update fanart on Airings
+* Can issue Manual Record on Airing
+* Can toggle watched status on media files and Airings
+* Minor ui tweaks
+
 4.9.10
 * Can change view categories
 * Added press and hold on video item, with options to delete or view generated thumbnails of video

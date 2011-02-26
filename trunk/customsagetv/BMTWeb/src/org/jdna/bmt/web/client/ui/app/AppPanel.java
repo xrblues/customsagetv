@@ -1,8 +1,7 @@
 package org.jdna.bmt.web.client.ui.app;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.event.Notification;
@@ -73,7 +72,7 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
         Hyperlink configure = new Hyperlink(Application.labels().configure(), "configure");
         configure.setStyleName("App-Configure");
 
-        Hyperlink browse = new Hyperlink(Application.labels().browse(), "browsing/source:tv");
+        Hyperlink browse = new Hyperlink(Application.labels().browse(), "browse");
         browse.addStyleName("App-Browse");
 
         Label refresh = new Label(Application.labels().refreshLibrary());
@@ -238,9 +237,11 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
         DataDialog.showDialog(new SupportDialog());
     }
     
-    protected void setBrowsePanel(Map<String,String> params) {
+    protected void setBrowsePanel(List<String> params) {
         if (!(curPanel instanceof BrowsePanel)) {
-            setPanel(new BrowsePanel()); 
+            setPanel(new BrowsePanel(params)); 
+        } else {
+        	((BrowsePanel)curPanel).setParams(params);
         }
     }
 
@@ -279,52 +280,36 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
 
         
     public void onValueChange(ValueChangeEvent<String> event) {
-        Map<String,String> params = parseHistoryTokens(event.getValue());
-        String section = params.get("section");
-        if(section==null) section=event.getValue();
-        if (section==null || section.length()==0) section="status";
+    	String section="status";
+    	List<String> parts = new ArrayList<String>();
+    	if (event.getValue()!=null) {
+    		String arr[] = event.getValue().split("/");
+    		section=arr[0];
+    		if (arr.length>1) {
+    			for (int i=1;i<arr.length;i++) {
+    				parts.add(arr[i]);
+    			}
+    		}
+    	}
         
-        Log.debug("Setting Section: " + section);
+        Log.debug("Setting Section: " + event.getValue());
         if ("status".equals(section)) {
             setStatusPanel();
         } else if ("configure".equals(section)) {
             setConfigurePanel();
         } else if ("portal".equals(section)) {
             setPortalPanel();
-        } else if ("browsing".equals(section)) {
-            setBrowsePanel(params);
+        } else if ("browse".equals(section)) {
+            setBrowsePanel(parts);
         } else if ("support".equals(section)) {
             showSupportRequestDialog();
         } else if ("backup".equals(section)) {
             setBackupPanel();
+        } else {
+        	setStatusPanel();
         }
     }
     
-
-    /**
-     * History Tokens are like,
-     * section/name:value/name:value
-     * @return
-     */
-    private Map<String,String> parseHistoryTokens(String in) {
-        Map<String, String> params = new HashMap<String, String>();
-        
-        if (in!=null) {
-            String parts[] = in.split("/");
-            if (parts.length>=1) {
-                params.put("section", parts[0]);
-            }
-            if (parts.length>1) {
-                for (int i=1;i<parts.length;i++) {
-                    String nvp[] = parts[i].split(":");
-                    params.put(nvp[0], (nvp.length>1)?nvp[1]:null);
-                }
-            }
-        }
-        
-        return params;
-    }
-
     public void onNotification(org.jdna.bmt.web.client.event.NotificationEvent event) {
         if (event.getMessageType()==MessageType.ERROR) {
             Log.error(event.getMessage(), event.getException());

@@ -361,6 +361,8 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
 			phoenix.menu.ReloadMenus();
 		} else if (REFRESH_MEDIA_TITLES.equals(id)) {
 			phoenix.umb.ReloadMediaTitles();
+		} else if (REFRESH_IMAGE_CACHE.equals(id)) {
+			phoenix.fanart.ClearMemoryCaches();
 		} else {
 			throw new RuntimeException("Invalid Configuration to Refresh: " + id);
 		}

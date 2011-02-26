@@ -149,10 +149,10 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         hp.add(img, Layout.Right);
 
         hp.add(back);
-        if (mf.getSageMediaFileId()>0) {
+        //if (mf.getSageMediaFileId()>0) {
 	        hp.add(find);
 	        hp.add(saveFanart);
-        }
+        //}
         
         metadataPanel.add(hp);
         metadataPanel.setCellHorizontalAlignment(hp, HasHorizontalAlignment.ALIGN_RIGHT);

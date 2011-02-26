@@ -39,6 +39,11 @@ public class RefreshPanel extends Composite {
 	public void onRefreshMediaTitles(ClickEvent evt) {
 		reload(PreferencesService.REFRESH_MEDIA_TITLES);
 	}
+
+	@UiHandler("refreshImageCache")
+	public void onRefreshImageCache(ClickEvent evt) {
+		reload(PreferencesService.REFRESH_IMAGE_CACHE);
+	}
 	
 	private void reload(final String id) {
 		preferencesService.refreshConfiguration(id, new AsyncCallback<Void>() {

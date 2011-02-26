@@ -50,7 +50,16 @@ public class GWTAiringDetails implements Serializable {
 
 	public String channel;
 	public String network;
+	private boolean manual;
 	
 	public GWTAiringDetails() {
+	}
+
+	public boolean isManualRecord() {
+		return manual;
+	}
+	
+	public void setManualRecord(boolean record) {
+		this.manual=record;
 	}
 }
