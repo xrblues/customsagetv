@@ -115,4 +115,12 @@ public class GWTMediaResource implements Serializable {
     public String getMessage() {
         return message;
     }
+    
+    /**
+     * return true if this resources is not a real file, but rather an airing
+     * @return
+     */
+    public boolean isAiring() {
+    	return this instanceof GWTMediaFile && ((GWTMediaFile)this).getSageMediaFileId()==0;
+    }
 }

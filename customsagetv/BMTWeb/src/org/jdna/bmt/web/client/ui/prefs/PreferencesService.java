@@ -12,6 +12,7 @@ public interface PreferencesService extends RemoteService {
 	public String REFRESH_MENUS = "RefreshMenus";
 	public String REFRESH_VFS = "RefreshVFS";
 	public String REFRESH_MEDIA_TITLES = "RefreshMediaTitles";
+	public String REFRESH_IMAGE_CACHE = "RefreshImageCache";
 
     public PrefItem searchPreferences(String search);
     public PrefItem[] getPreferences(PrefItem parent);

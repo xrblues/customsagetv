@@ -42,4 +42,7 @@ public interface BrowsingServiceAsync {
 	void getViews(String tag, AsyncCallback<GWTViewCategories> callback);    
     void getView(GWTView view, AsyncCallback<GWTMediaFolder> folder);
 	void getViewCategories(AsyncCallback<ArrayList<GWTView>> callback);
+	void record(GWTMediaFile file, AsyncCallback<String> callback);
+	void setWatched(GWTMediaFile file, boolean watched,	AsyncCallback<Void> callback);
+	void cancelRecord(GWTMediaFile file, AsyncCallback<Void> callback);
 }

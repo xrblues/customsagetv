@@ -147,6 +147,10 @@ h1 {
 	width: 80px;
 }
 
+.xMediaItemPoster-Folder {
+	background: url("images/128x128/folder_video2.png");
+}
+
 .MediaItem-Hover {
 	background-color: #F3F3F3;
 }

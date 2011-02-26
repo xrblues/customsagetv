@@ -18,5 +18,6 @@
 		<g:Button ui:field="refreshVFS">Refresh Virtual Filesystem</g:Button>
 		<g:Button ui:field="refreshMenus">Refresh Dynamic Menus</g:Button>
 		<g:Button ui:field="refreshMediaTitles">Refresh MediaTitles.xml</g:Button>
+		<g:Button ui:field="refreshImageCache">Clear Loaded Image Cache</g:Button>
 	</g:VerticalPanel>
 </ui:UiBinder> 

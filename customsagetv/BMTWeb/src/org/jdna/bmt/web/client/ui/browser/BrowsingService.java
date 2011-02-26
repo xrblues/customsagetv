@@ -51,4 +51,8 @@ public interface BrowsingService extends RemoteService {
     public ArrayList<GWTView> getViewCategories();
     public GWTViewCategories getViews(String tag);
 	public GWTMediaFolder getView(GWTView view);
+	
+	public String record(GWTMediaFile file);
+	public void setWatched(GWTMediaFile file, boolean watched);
+	public void cancelRecord(GWTMediaFile file);
 }
