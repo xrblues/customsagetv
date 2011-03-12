@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ChannelAPI.html'>ChannelAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -741,6 +741,41 @@ all of the Channel objects that are defined in the system
  */
 public static Object[] GetAllChannels (UIContext _uicontext) {
   return (Object[]) sagex.SageAPI.call(_uicontext, "GetAllChannels", (Object[])null);
+}
+
+/**
+Returns a count of logos for this channel. This will either be 0, 1 or 2. This does NOT include user-supplied channel logos.
+ Since all channel logos have all types, this does not require a type argument.
+
+Parameters:
+Channel- the Channel object
+Returns:
+the number of logos for the specified Channel (does NOT include user-supplied logos)
+Since:
+7.1
+ */
+public static int GetChannelLogoCount (Object Channel) {
+  Object o = sagex.SageAPI.call("GetChannelLogoCount", new Object[] {Channel});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a count of logos for this channel. This will either be 0, 1 or 2. This does NOT include user-supplied channel logos.
+ Since all channel logos have all types, this does not require a type argument.
+
+Parameters:
+Channel- the Channel object
+Returns:
+the number of logos for the specified Channel (does NOT include user-supplied logos)
+Since:
+7.1
+ */
+public static int GetChannelLogoCount (UIContext _uicontext,Object Channel) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetChannelLogoCount", new Object[] {Channel});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 }

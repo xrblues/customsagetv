@@ -2,15 +2,15 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
-import java.util.HashMap;
 import java.util.Map;
-
 import sagex.remote.RemoteRequest;
+import java.util.Map;
+import java.util.HashMap;
 public class SageRPCRequestFactory {
 private static Map<String,String> commands = new HashMap<String,String>();
 static {
@@ -63,6 +63,11 @@ static {
    commands.put("GetAiringForID","AiringAPI");
    commands.put("AddAiring","AiringAPI");
    commands.put("AddAiringDetailed","AiringAPI");
+   commands.put("IsAiringAttributeSet","AiringAPI");
+   commands.put("GetAiringAttributeList","AiringAPI");
+   commands.put("GetAiringPartNumber","AiringAPI");
+   commands.put("GetAiringTotalParts","AiringAPI");
+   commands.put("GetAiringPremiereFinaleInfo","AiringAPI");
    commands.put("GetMediaFileForAiring","AiringAPI");
    commands.put("GetAiringOnAfter","AiringAPI");
    commands.put("GetAiringOnBefore","AiringAPI");
@@ -162,6 +167,7 @@ static {
    commands.put("GetChannelForStationID","ChannelAPI");
    commands.put("AddChannel","ChannelAPI");
    commands.put("GetAllChannels","ChannelAPI");
+   commands.put("GetChannelLogoCount","ChannelAPI");
    commands.put("SaveProperties","Configuration");
    commands.put("GetLibraryImportPaths","Configuration");
    commands.put("GetPictureLibraryImportPaths","Configuration");
@@ -322,6 +328,9 @@ static {
    commands.put("GetAudioOutputOptions","Configuration");
    commands.put("SetAudioOutput","Configuration");
    commands.put("GetHDMIAutodetectedConnector","Configuration");
+   commands.put("IsAdvancedDeinterlacingSupported","Configuration");
+   commands.put("IsAdvancedDeinterlacingEnabled","Configuration");
+   commands.put("SetAdvancedDeinterlacingEnabled","Configuration");
    commands.put("RunFilterAutoconfiguration","Configuration");
    commands.put("GetDXVAMpegMode","Configuration");
    commands.put("SetDXVAMpegMode","Configuration");
@@ -491,6 +500,7 @@ static {
    commands.put("AddFavorite","FavoriteAPI");
    commands.put("GetFavoriteProperty","FavoriteAPI");
    commands.put("SetFavoriteProperty","FavoriteAPI");
+   commands.put("GetFavoriteProperties","FavoriteAPI");
    commands.put("Refresh","Global");
    commands.put("RefreshArea","Global");
    commands.put("RefreshAreaForVariable","Global");
@@ -530,6 +540,8 @@ static {
    commands.put("TransmitCommandUsingInfraredTuningPlugin","Global");
    commands.put("DebugLog","Global");
    commands.put("CloseOptionsMenu","Global");
+   commands.put("CloseOptionsMenu","Global");
+   commands.put("IsOptionsMenuOpen","Global");
    commands.put("GetSageCommandNames","Global");
    commands.put("ApplyServiceLevelToLineup","Global");
    commands.put("SetFocusForVariable","Global");
@@ -612,10 +624,16 @@ static {
    commands.put("GetDisplayResolutionHeight","Global");
    commands.put("GetDisplayResolution","Global");
    commands.put("GetDisplayResolutionOptions","Global");
+   commands.put("GetDisplayResolutionDetails","Global");
    commands.put("GetPreferredDisplayResolutions","Global");
    commands.put("SetDisplayResolution","Global");
    commands.put("DiscoverSageTVServers","Global");
    commands.put("IsEmbeddedSystem","Global");
+   commands.put("IsEmbeddedServer","Global");
+   commands.put("IsPVR","Global");
+   commands.put("GetHotplugStorageMap","Global");
+   commands.put("IsDoingLibraryImportScan","Global");
+   commands.put("PrepareForFirmwareLoad","Global");
    commands.put("GetEmbeddedPanel","Global");
    commands.put("SetEmbeddedPanelBounds","Global");
    commands.put("GetAvailableUpdate","Global");
@@ -634,9 +652,6 @@ static {
    commands.put("TvtvActivateTrial","Global");
    commands.put("TvtvDownloadStations","Global");
    commands.put("TvtvConfigureInput","Global");
-   commands.put("GetHotplugStorageMap","Global");
-   commands.put("IsDoingLibraryImportScan","Global");
-   commands.put("GetFailedNetworkMounts","Global");
    commands.put("GetMediaFiles","MediaFileAPI");
    commands.put("GetMediaFiles","MediaFileAPI");
    commands.put("AddMediaFile","MediaFileAPI");
@@ -660,6 +675,7 @@ static {
    commands.put("GetParentDirectory","MediaFileAPI");
    commands.put("GetSize","MediaFileAPI");
    commands.put("GetFullImage","MediaFileAPI");
+   commands.put("GenerateThumbnail","MediaFileAPI");
    commands.put("GetThumbnail","MediaFileAPI");
    commands.put("IsThumbnailLoaded","MediaFileAPI");
    commands.put("HasSpecificThumbnail","MediaFileAPI");
@@ -687,6 +703,7 @@ static {
    commands.put("GetMediaFileForID","MediaFileAPI");
    commands.put("GetMediaFileFormatDescription","MediaFileAPI");
    commands.put("GetMediaFileMetadata","MediaFileAPI");
+   commands.put("GetMediaFileMetadataProperties","MediaFileAPI");
    commands.put("SetMediaFileMetadata","MediaFileAPI");
    commands.put("RotatePictureFile","MediaFileAPI");
    commands.put("FlipPictureFile","MediaFileAPI");
@@ -728,6 +745,7 @@ static {
    commands.put("CreateMediaNode","MediaNodeAPI");
    commands.put("GetNodeFullPath","MediaNodeAPI");
    commands.put("GetNodeTypePath","MediaNodeAPI");
+   commands.put("IsMediaNodeObject","MediaNodeAPI");
    commands.put("IsMediaPlayerFullyLoaded","MediaPlayerAPI");
    commands.put("IsMediaPlayerLoading","MediaPlayerAPI");
    commands.put("PlayFaster","MediaPlayerAPI");
@@ -833,6 +851,7 @@ static {
    commands.put("GetNowPlayingList","PlaylistAPI");
    commands.put("GetPlaylistProperty","PlaylistAPI");
    commands.put("SetPlaylistProperty","PlaylistAPI");
+   commands.put("GetPlaylistProperties","PlaylistAPI");
    commands.put("GetSageTVPluginRegistry","PluginAPI");
    commands.put("GetAllAvailablePlugins","PluginAPI");
    commands.put("GetInstalledPlugins","PluginAPI");
@@ -914,10 +933,13 @@ static {
    commands.put("AddSeriesInfo","SeriesInfoAPI");
    commands.put("GetSeriesInfoProperty","SeriesInfoAPI");
    commands.put("SetSeriesInfoProperty","SeriesInfoAPI");
+   commands.put("IsSeriesInfoObject","SeriesInfoAPI");
    commands.put("IsShowEPGDataUnique","ShowAPI");
    commands.put("GetShowMisc","ShowAPI");
    commands.put("GetShowCategory","ShowAPI");
    commands.put("GetShowSubCategory","ShowAPI");
+   commands.put("GetShowCategoriesString","ShowAPI");
+   commands.put("GetShowCategoriesList","ShowAPI");
    commands.put("GetShowDescription","ShowAPI");
    commands.put("GetShowEpisode","ShowAPI");
    commands.put("GetShowExpandedRatings","ShowAPI");
@@ -949,6 +971,10 @@ static {
    commands.put("GetAiringsForShow","ShowAPI");
    commands.put("GetShowForExternalID","ShowAPI");
    commands.put("GetShowSeriesInfo","ShowAPI");
+   commands.put("GetSeasonNumber","ShowAPI");
+   commands.put("GetEpisodeNumber","ShowAPI");
+   commands.put("GetShowImage","ShowAPI");
+   commands.put("GetShowImageCount","ShowAPI");
    commands.put("GetSystemAlertLevel","SystemMessageAPI");
    commands.put("GetSystemMessages","SystemMessageAPI");
    commands.put("ResetSystemAlertLevel","SystemMessageAPI");
@@ -1053,6 +1079,9 @@ static {
    commands.put("ExecuteProcessReturnOutput","Utility");
    commands.put("LoadImageFile","Utility");
    commands.put("LoadImage","Utility");
+   commands.put("SaveImageToFile","Utility");
+   commands.put("GetMetaImageSourceFile","Utility");
+   commands.put("IsMetaImage","Utility");
    commands.put("GetImageAsBufferedImage","Utility");
    commands.put("GetScaledImageAsBufferedImage","Utility");
    commands.put("UnloadImage","Utility");
@@ -1092,8 +1121,12 @@ static {
    commands.put("LocalizeString","Utility");
    commands.put("GetLocalIPAddress","Utility");
    commands.put("IsImportableFileType","Utility");
+   commands.put("GetSubnetMask","Utility");
+   commands.put("GetGatewayAddress","Utility");
+   commands.put("GetDNSAddress","Utility");
    commands.put("GuessMajorFileType","Utility");
    commands.put("TestPlaceshifterConnectivity","Utility");
+   commands.put("LookupIPForLocatorID","Utility");
    commands.put("CreateArray","Utility");
    commands.put("SetScrollPosition","Utility");
    commands.put("ClearMenuCache","Utility");
@@ -1107,6 +1140,7 @@ static {
    commands.put("GetUIRefreshLock","Utility");
    commands.put("ReleaseUIRefreshLock","Utility");
    commands.put("CalculateMD5Sum","Utility");
+   commands.put("ReloadNameserverCache","Utility");
    commands.put("GetTimeSinceLastInput","Utility");
    commands.put("GetFileAsString","Utility");
    commands.put("IsLocalRestartNeeded","Utility");
@@ -1114,6 +1148,7 @@ static {
    commands.put("Restart","Utility");
    commands.put("ServerRestart","Utility");
    commands.put("QueryServerMacAddress","Utility");
+   commands.put("ScanWirelessAPs","Utility");
    commands.put("LoadSTVFile","WidgetAPI");
    commands.put("ImportSTVFile","WidgetAPI");
    commands.put("IsSTVModified","WidgetAPI");

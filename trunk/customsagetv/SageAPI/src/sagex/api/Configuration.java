@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Configuration.html'>Configuration</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -4246,6 +4246,77 @@ public static java.lang.String GetHDMIAutodetectedConnector (UIContext _uicontex
   Object o = sagex.SageAPI.call(_uicontext, "GetHDMIAutodetectedConnector", (Object[])null);
   if (o!=null) return (java.lang.String) o;
   return null;
+}
+
+/**
+Returns true if the client supports doing advanced deinterlacing. This is only available on the HD300.
+
+Returns:
+true if the client supports doing advanced deinterlacing, false otherwise
+ */
+public static boolean IsAdvancedDeinterlacingSupported () {
+  Object o = sagex.SageAPI.call("IsAdvancedDeinterlacingSupported", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the client supports doing advanced deinterlacing. This is only available on the HD300.
+
+Returns:
+true if the client supports doing advanced deinterlacing, false otherwise
+ */
+public static boolean IsAdvancedDeinterlacingSupported (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsAdvancedDeinterlacingSupported", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Returns true if the client supports doing advanced deinterlacing and it is enabled. This is only available on the HD300.
+
+Returns:
+true if the client supports doing advanced deinterlacing and it is enabled, false otherwise
+ */
+public static boolean IsAdvancedDeinterlacingEnabled () {
+  Object o = sagex.SageAPI.call("IsAdvancedDeinterlacingEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the client supports doing advanced deinterlacing and it is enabled. This is only available on the HD300.
+
+Returns:
+true if the client supports doing advanced deinterlacing and it is enabled, false otherwise
+ */
+public static boolean IsAdvancedDeinterlacingEnabled (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsAdvancedDeinterlacingEnabled", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Allows enabling/disabling of advanced deinterlacing support. This is only available on the HD300.
+
+Parameters:
+Enabled- true if advanced deinterlacing should be enabled, false if it should be disabled
+ */
+public static void SetAdvancedDeinterlacingEnabled (boolean Enabled) {
+   sagex.SageAPI.call("SetAdvancedDeinterlacingEnabled", new Object[] {Enabled});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Allows enabling/disabling of advanced deinterlacing support. This is only available on the HD300.
+
+Parameters:
+Enabled- true if advanced deinterlacing should be enabled, false if it should be disabled
+ */
+public static void SetAdvancedDeinterlacingEnabled (UIContext _uicontext,boolean Enabled) {
+   sagex.SageAPI.call(_uicontext, "SetAdvancedDeinterlacingEnabled", new Object[] {Enabled});
 }
 
 /**

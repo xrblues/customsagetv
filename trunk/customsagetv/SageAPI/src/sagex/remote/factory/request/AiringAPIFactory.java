@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AiringAPIFactory.html'>AiringAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class AiringAPIFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -157,6 +159,21 @@ public class AiringAPIFactory {
    }
    if (command.equals("AddAiringDetailed")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AddAiringDetailed",parameters,java.lang.String.class,int.class,long.class,long.class,int.class,int.class,java.lang.String.class,boolean.class,boolean.class,boolean.class,boolean.class,boolean.class,java.lang.String.class);
+   }
+   if (command.equals("IsAiringAttributeSet")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsAiringAttributeSet",parameters,Object.class,java.lang.String.class);
+   }
+   if (command.equals("GetAiringAttributeList")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAiringAttributeList",parameters,Object.class);
+   }
+   if (command.equals("GetAiringPartNumber")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAiringPartNumber",parameters,Object.class);
+   }
+   if (command.equals("GetAiringTotalParts")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAiringTotalParts",parameters,Object.class);
+   }
+   if (command.equals("GetAiringPremiereFinaleInfo")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAiringPremiereFinaleInfo",parameters,Object.class);
    }
    if (command.equals("GetMediaFileForAiring")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMediaFileForAiring",parameters,Object.class);

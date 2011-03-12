@@ -2,7 +2,7 @@ package sagex.api.enums;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/GlobalEnum.html'>GlobalEnum</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -47,6 +47,7 @@ Fork,
 TransmitCommandUsingInfraredTuningPlugin,
 DebugLog,
 CloseOptionsMenu,
+IsOptionsMenuOpen,
 GetSageCommandNames,
 ApplyServiceLevelToLineup,
 SetFocusForVariable,
@@ -129,10 +130,16 @@ GetDisplayResolutionWidth,
 GetDisplayResolutionHeight,
 GetDisplayResolution,
 GetDisplayResolutionOptions,
+GetDisplayResolutionDetails,
 GetPreferredDisplayResolutions,
 SetDisplayResolution,
 DiscoverSageTVServers,
 IsEmbeddedSystem,
+IsEmbeddedServer,
+IsPVR,
+GetHotplugStorageMap,
+IsDoingLibraryImportScan,
+PrepareForFirmwareLoad,
 GetEmbeddedPanel,
 SetEmbeddedPanelBounds,
 GetAvailableUpdate,
@@ -150,8 +157,5 @@ TvtvLogoLink,
 TvtvCreateSpecificAccount,
 TvtvActivateTrial,
 TvtvDownloadStations,
-TvtvConfigureInput,
-GetHotplugStorageMap,
-IsDoingLibraryImportScan,
-GetFailedNetworkMounts
+TvtvConfigureInput
 }

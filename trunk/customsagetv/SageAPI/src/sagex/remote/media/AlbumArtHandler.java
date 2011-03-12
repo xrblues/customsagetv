@@ -15,6 +15,6 @@ import sagex.api.MediaFileAPI;
 public class AlbumArtHandler implements SageMediaRequestHandler {
     public void processRequest(HttpServletRequest req, HttpServletResponse resp, Object mediaFile) throws Exception {
     	Object album = MediaFileAPI.GetAlbumForFile(mediaFile);
-        MediaHandler.writeSageImageFile(AlbumAPI.GetAlbumArt(album), resp);
+        MediaHandler.writeSageImageFile(AlbumAPI.GetAlbumArt(album), req, resp);
     }
 }

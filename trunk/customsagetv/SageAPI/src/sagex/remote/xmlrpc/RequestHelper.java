@@ -4,8 +4,11 @@ import java.io.File;
 
 import sagex.api.AiringAPI;
 import sagex.api.ChannelAPI;
+import sagex.api.FavoriteAPI;
 import sagex.api.MediaFileAPI;
 import sagex.api.PlaylistAPI;
+import sagex.api.PluginAPI;
+import sagex.api.SeriesInfoAPI;
 import sagex.api.ShowAPI;
 import sagex.remote.RemoteObjectRef;
 import sagex.remote.RemoteRequest;
@@ -101,6 +104,27 @@ public class RequestHelper {
             Object retObj = new Object();
             try {
                 retObj = ShowAPI.GetShowForExternalID(cargs[1]);
+            } catch (Exception e) { }
+            return retObj;
+        } else if (str.startsWith("series")){
+            String cargs[] = str.split(":");
+            Object retObj = new Object();
+            try {
+                retObj = SeriesInfoAPI.GetSeriesInfoForID(cargs[1]);
+            } catch (Exception e) { }
+            return retObj;
+        } else if (str.startsWith("favorite")){
+            String cargs[] = str.split(":");
+            Object retObj = new Object();
+            try {
+                retObj = FavoriteAPI.GetFavoriteForID(Integer.parseInt(cargs[1]));
+            } catch (Exception e) { }
+            return retObj;
+        } else if (str.startsWith("plugin")){
+            String cargs[] = str.split(":");
+            Object retObj = new Object();
+            try {
+                retObj = PluginAPI.GetAvailablePluginForID(cargs[1]);
             } catch (Exception e) { }
             return retObj;
         } else if (str.startsWith("playlist")){

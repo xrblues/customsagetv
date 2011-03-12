@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaNodeAPI.html'>MediaNodeAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1267,6 +1267,39 @@ public static java.lang.String GetNodeTypePath (UIContext _uicontext,Object Medi
   Object o = sagex.SageAPI.call(_uicontext, "GetNodeTypePath", new Object[] {MediaNode});
   if (o!=null) return (java.lang.String) o;
   return null;
+}
+
+/**
+Returns true if the specified object is a MediaNode object. No automatic type conversion will be performed on the argument.
+
+Parameters:
+Object- the object to test to see if it is a MediaNode object
+Returns:
+true if the argument is a MediaNode object, false otherwise
+Since:
+7.1
+ */
+public static boolean IsMediaNodeObject (java.lang.Object Object) {
+  Object o = sagex.SageAPI.call("IsMediaNodeObject", new Object[] {Object});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the specified object is a MediaNode object. No automatic type conversion will be performed on the argument.
+
+Parameters:
+Object- the object to test to see if it is a MediaNode object
+Returns:
+true if the argument is a MediaNode object, false otherwise
+Since:
+7.1
+ */
+public static boolean IsMediaNodeObject (UIContext _uicontext,java.lang.Object Object) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsMediaNodeObject", new Object[] {Object});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 }

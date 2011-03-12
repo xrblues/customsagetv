@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/GlobalFactory.html'>GlobalFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class GlobalFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -126,7 +128,23 @@ public class GlobalFactory {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"DebugLog",parameters,java.lang.String.class);
    }
    if (command.equals("CloseOptionsMenu")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CloseOptionsMenu",parameters,null);
+      if (parameters!=null && parameters.length == 0) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "CloseOptionsMenu", parameters, null);
+      }
+      if (parameters!=null && parameters.length == 2) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "CloseOptionsMenu", parameters, java.lang.String.class,boolean.class);
+      }
+   }
+   if (command.equals("CloseOptionsMenu")) {
+      if (parameters!=null && parameters.length == 0) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "CloseOptionsMenu", parameters, null);
+      }
+      if (parameters!=null && parameters.length == 2) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "CloseOptionsMenu", parameters, java.lang.String.class,boolean.class);
+      }
+   }
+   if (command.equals("IsOptionsMenuOpen")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsOptionsMenuOpen",parameters,null);
    }
    if (command.equals("GetSageCommandNames")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSageCommandNames",parameters,null);
@@ -374,6 +392,9 @@ public class GlobalFactory {
    if (command.equals("GetDisplayResolutionOptions")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetDisplayResolutionOptions",parameters,null);
    }
+   if (command.equals("GetDisplayResolutionDetails")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetDisplayResolutionDetails",parameters,java.lang.String.class);
+   }
    if (command.equals("GetPreferredDisplayResolutions")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetPreferredDisplayResolutions",parameters,null);
    }
@@ -385,6 +406,21 @@ public class GlobalFactory {
    }
    if (command.equals("IsEmbeddedSystem")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsEmbeddedSystem",parameters,null);
+   }
+   if (command.equals("IsEmbeddedServer")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsEmbeddedServer",parameters,null);
+   }
+   if (command.equals("IsPVR")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsPVR",parameters,null);
+   }
+   if (command.equals("GetHotplugStorageMap")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetHotplugStorageMap",parameters,null);
+   }
+   if (command.equals("IsDoingLibraryImportScan")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsDoingLibraryImportScan",parameters,null);
+   }
+   if (command.equals("PrepareForFirmwareLoad")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"PrepareForFirmwareLoad",parameters,null);
    }
    if (command.equals("GetEmbeddedPanel")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetEmbeddedPanel",parameters,null);
@@ -439,15 +475,6 @@ public class GlobalFactory {
    }
    if (command.equals("TvtvConfigureInput")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"TvtvConfigureInput",parameters,java.lang.String.class,java.lang.String.class,java.lang.String.class);
-   }
-   if (command.equals("GetHotplugStorageMap")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetHotplugStorageMap",parameters,null);
-   }
-   if (command.equals("IsDoingLibraryImportScan")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsDoingLibraryImportScan",parameters,null);
-   }
-   if (command.equals("GetFailedNetworkMounts")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFailedNetworkMounts",parameters,null);
    }
    throw new RuntimeException("Invalid GlobalFactory Command: "+command);
    }

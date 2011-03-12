@@ -245,7 +245,7 @@ public class ApiHandler implements SageHandler {
         pw.println("<tr><td class=l>Example</td><td>/sagex/api?c=EvaluateExpression&1=Sort(GetMediaFiles(\"T\"),false,\"Intelligent\")</td></tr>");
         pw.println("<tr><td colspan=2><hr/></td></tr>");
         
-        pw.println("<p><b><i>NOTE: If the command arg expects a sage object, such mediafile, ariing, playlist, channel, show, etc, then you can still pass a reference to sage object, using mediafile:MEDIAFILE_ID, airing:AIRING_ID, playlist:PLAYLIST_NAME, etc.</i></b></p>");
+        pw.println("<p><b><i>NOTE: If the command arg expects a sage object, such mediafile, ariing, playlist, channel, show, plugin, favorite, series, etc, then you can still pass a reference to sage object, using mediafile:MEDIAFILE_ID, airing:AIRING_ID, playlist:PLAYLIST_NAME, etc.</i></b></p>");
         pw.println("<p>Example: /sages/api?c=IsMediaFileObject&1=mediafile:3231112");
         pw.println("<br/>");
 

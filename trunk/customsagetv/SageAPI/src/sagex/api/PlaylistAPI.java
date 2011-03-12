@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/PlaylistAPI.html'>PlaylistAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -544,6 +544,39 @@ Since:
  */
 public static void SetPlaylistProperty (UIContext _uicontext,Object Playlist, java.lang.String PropertyName, java.lang.String PropertyValue) {
    sagex.SageAPI.call(_uicontext, "SetPlaylistProperty", new Object[] {Playlist,PropertyName,PropertyValue});
+}
+
+/**
+Returns a java.util.Properties object that has all of the user-set properties for this Playlist in it.
+
+Parameters:
+Playlist- the Playlist object
+Returns:
+a java.util.Properties object that has all of the user-set properties for this Playlist in it; this is a copy of the original one so it is safe to modify it
+Since:
+7.1
+ */
+public static java.util.Properties GetPlaylistProperties (Object Playlist) {
+  Object o = sagex.SageAPI.call("GetPlaylistProperties", new Object[] {Playlist});
+  if (o!=null) return (java.util.Properties) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a java.util.Properties object that has all of the user-set properties for this Playlist in it.
+
+Parameters:
+Playlist- the Playlist object
+Returns:
+a java.util.Properties object that has all of the user-set properties for this Playlist in it; this is a copy of the original one so it is safe to modify it
+Since:
+7.1
+ */
+public static java.util.Properties GetPlaylistProperties (UIContext _uicontext,Object Playlist) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetPlaylistProperties", new Object[] {Playlist});
+  if (o!=null) return (java.util.Properties) o;
+  return null;
 }
 
 }

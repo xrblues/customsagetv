@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaFileAPI.html'>MediaFileAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -709,6 +709,57 @@ public static Object GetFullImage (UIContext _uicontext,Object MediaFile) {
   Object o = sagex.SageAPI.call(_uicontext, "GetFullImage", new Object[] {MediaFile});
   if (o!=null) return (Object) o;
   return null;
+}
+
+/**
+Generates a thumbnail for the specified MediaFile at the requested offset time in the file using the desired width & height.
+ The resulting thumbnail will be saved to the specified file. This call DOES NOT need to be used for GetThumbnail to work properly; this
+ API call is intended as an extra for developers who want additional thumbnails beyond the one that is normally auto-generated for MediaFiles.
+ This API call will not return until the generation of the thumbnail is complete. If both width & height are zero, then the size will be determined
+ automatically to match the aspect ratio of the video (the largest dimension will match what SageTV uses internally for thumbnail sizes). If only one
+ of width or height is zero, then the other dimension will be determined automatically to match the aspect ratio of the video.
+
+Parameters:
+MediaFile- the MediaFile object, must be a Video file (no BluRays or DVDs)
+Time- the offset time in seconds at which the thumbnail should be generated (relative to the start of the file), while fractional seconds are supported, accuracy cannot be guaranteed
+Width- the width in pixels of the desired thumbnail
+Height- the height in pixels of the desired thumbnail
+File- the file path to save the thumbnail to
+Returns:
+true if the generation succeeded, false if it failed
+Since:
+7.1
+ */
+public static boolean GenerateThumbnail (Object MediaFile, float Time, int Width, int Height, java.io.File File) {
+  Object o = sagex.SageAPI.call("GenerateThumbnail", new Object[] {MediaFile,Time,Width,Height,File});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Generates a thumbnail for the specified MediaFile at the requested offset time in the file using the desired width & height.
+ The resulting thumbnail will be saved to the specified file. This call DOES NOT need to be used for GetThumbnail to work properly; this
+ API call is intended as an extra for developers who want additional thumbnails beyond the one that is normally auto-generated for MediaFiles.
+ This API call will not return until the generation of the thumbnail is complete. If both width & height are zero, then the size will be determined
+ automatically to match the aspect ratio of the video (the largest dimension will match what SageTV uses internally for thumbnail sizes). If only one
+ of width or height is zero, then the other dimension will be determined automatically to match the aspect ratio of the video.
+
+Parameters:
+MediaFile- the MediaFile object, must be a Video file (no BluRays or DVDs)
+Time- the offset time in seconds at which the thumbnail should be generated (relative to the start of the file), while fractional seconds are supported, accuracy cannot be guaranteed
+Width- the width in pixels of the desired thumbnail
+Height- the height in pixels of the desired thumbnail
+File- the file path to save the thumbnail to
+Returns:
+true if the generation succeeded, false if it failed
+Since:
+7.1
+ */
+public static boolean GenerateThumbnail (UIContext _uicontext,Object MediaFile, float Time, int Width, int Height, java.io.File File) {
+  Object o = sagex.SageAPI.call(_uicontext, "GenerateThumbnail", new Object[] {MediaFile,Time,Width,Height,File});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -1506,8 +1557,9 @@ Returns a string for the corresponding metadata property in the MediaFile's form
  Names set in the property "custom_metadata_properties" (which is a semicolon/comma delimited list) will be available; as well
  as all standard SageTV metadata fields and details on format information. 
  These include Title, Description, EpisodeName, Track, Duration, Genre, Language, RunningTime,
- Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere,
- SeasonFinale, SeriesFinale, ExternalID, Album, Year, OriginalAirDate, ExtendedRatings, Misc, All "Role" Names, Format.Video.Codec,
+ Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, 3D, DD5.1, Dolby, Letterbox, Live, New, Widescreen, Surround, 
+ Dubbed, Taped, Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere, SeasonFinale, SeriesFinale,  SeasonNumber, EpisodeNumber, 
+ ExternalID, Album, Year, OriginalAirDate, ExtendedRatings, Misc, All "Role" Names, Format.Video.Codec,
  Format.Video.Resolution, Format.Video.Aspect, Format.Video.Bitrate, Format.Video.Width, Format.Video.Height, Format.Video.FPS,
  Format.Video.Interlaced, Format.Video.Progressive, Format.Video.Index, Format.Video.ID, Format.Audio.NumStreams, Format.Audio[.#].Codec, Format.Audio[.#].Channels,
  Format.Audio[.#].Language, Format.Audio[.#].SampleRate, Format.Audio[.#].BitsPerSample, Format.Audio[.#].Index, Format.Audio[.#].ID, Format.Subtitle.NumStreams,
@@ -1533,8 +1585,9 @@ Returns a string for the corresponding metadata property in the MediaFile's form
  Names set in the property "custom_metadata_properties" (which is a semicolon/comma delimited list) will be available; as well
  as all standard SageTV metadata fields and details on format information. 
  These include Title, Description, EpisodeName, Track, Duration, Genre, Language, RunningTime,
- Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere,
- SeasonFinale, SeriesFinale, ExternalID, Album, Year, OriginalAirDate, ExtendedRatings, Misc, All "Role" Names, Format.Video.Codec,
+ Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, 3D, DD5.1, Dolby, Letterbox, Live, New, Widescreen, Surround, 
+ Dubbed, Taped, Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere, SeasonFinale, SeriesFinale,  SeasonNumber, EpisodeNumber, 
+ ExternalID, Album, Year, OriginalAirDate, ExtendedRatings, Misc, All "Role" Names, Format.Video.Codec,
  Format.Video.Resolution, Format.Video.Aspect, Format.Video.Bitrate, Format.Video.Width, Format.Video.Height, Format.Video.FPS,
  Format.Video.Interlaced, Format.Video.Progressive, Format.Video.Index, Format.Video.ID, Format.Audio.NumStreams, Format.Audio[.#].Codec, Format.Audio[.#].Channels,
  Format.Audio[.#].Language, Format.Audio[.#].SampleRate, Format.Audio[.#].BitsPerSample, Format.Audio[.#].Index, Format.Audio[.#].ID, Format.Subtitle.NumStreams,
@@ -1555,12 +1608,56 @@ public static java.lang.String GetMediaFileMetadata (UIContext _uicontext,Object
 }
 
 /**
+Returns a java.util.Properties object that contains all of the metadata properties for a MediaFile object.
+ This will only include properties that can be modified (i.e. no format information is included). These properties will include all
+ the standard database fields, as well as any custom metadata properties that were set for this MediaFile object.
+ SeeSetMediaFileMetadata()
+andGetMediaFileMetadata()
+for more details on those properties.
+
+Parameters:
+MediaFile- the MediaFile object
+Returns:
+a java.util.Properties object with all the metadata properties for this MediaFile, this is a copy and is safe to modify
+Since:
+7.1
+ */
+public static java.util.Properties GetMediaFileMetadataProperties (Object MediaFile) {
+  Object o = sagex.SageAPI.call("GetMediaFileMetadataProperties", new Object[] {MediaFile});
+  if (o!=null) return (java.util.Properties) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a java.util.Properties object that contains all of the metadata properties for a MediaFile object.
+ This will only include properties that can be modified (i.e. no format information is included). These properties will include all
+ the standard database fields, as well as any custom metadata properties that were set for this MediaFile object.
+ SeeSetMediaFileMetadata()
+andGetMediaFileMetadata()
+for more details on those properties.
+
+Parameters:
+MediaFile- the MediaFile object
+Returns:
+a java.util.Properties object with all the metadata properties for this MediaFile, this is a copy and is safe to modify
+Since:
+7.1
+ */
+public static java.util.Properties GetMediaFileMetadataProperties (UIContext _uicontext,Object MediaFile) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetMediaFileMetadataProperties", new Object[] {MediaFile});
+  if (o!=null) return (java.util.Properties) o;
+  return null;
+}
+
+/**
 Sets the corresponding metadata property in the MediaFile's format. These are set in the database and are also exported
  to the corresponding .properties file for that MediaFile. When it exports it will append these updates to the .properties file.
  It will also update the property "custom_metadata_properties" (which is a semicolon/comma delimited list) which tracks the extra
  metadata properties that should be retained. Usage of any of the following names will update the corresponding Airing/Show object
  for the MediaFile as well: Title, Description, EpisodeName, Track, Duration, Genre, Language, RunningTime,
- Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere,
+ Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, 3D, DD5.1, Dolby, Letterbox, Live, New, 
+ Widescreen, Surround, Dubbed, Taped, SeasonNumber, EpisodeNumber Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere,
  SeasonFinale, SeriesFinale, ExternalID, Album, Year, OriginalAirDate, ExtendedRatings, Misc and All "Role" Names
 
 Parameters:
@@ -1581,7 +1678,8 @@ Sets the corresponding metadata property in the MediaFile's format. These are se
  It will also update the property "custom_metadata_properties" (which is a semicolon/comma delimited list) which tracks the extra
  metadata properties that should be retained. Usage of any of the following names will update the corresponding Airing/Show object
  for the MediaFile as well: Title, Description, EpisodeName, Track, Duration, Genre, Language, RunningTime,
- Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere,
+ Rated, ParentalRating, PartNumber, TotalParts, HDTV, CC, Stereo, SAP, Subtitled, 3D, DD5.1, Dolby, Letterbox, Live, New, 
+ Widescreen, Surround, Dubbed, Taped, SeasonNumber, EpisodeNumber Premiere, SeasonPremiere, SeriesPremiere, ChannelPremiere,
  SeasonFinale, SeriesFinale, ExternalID, Album, Year, OriginalAirDate, ExtendedRatings, Misc and All "Role" Names
 
 Parameters:

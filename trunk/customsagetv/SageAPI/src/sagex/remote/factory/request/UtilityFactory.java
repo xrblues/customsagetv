@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/UtilityFactory.html'>UtilityFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class UtilityFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -167,6 +169,15 @@ public class UtilityFactory {
    if (command.equals("LoadImage")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"LoadImage",parameters,java.lang.Object.class);
    }
+   if (command.equals("SaveImageToFile")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SaveImageToFile",parameters,Object.class,java.io.File.class,int.class,int.class);
+   }
+   if (command.equals("GetMetaImageSourceFile")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMetaImageSourceFile",parameters,Object.class);
+   }
+   if (command.equals("IsMetaImage")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsMetaImage",parameters,java.lang.Object.class);
+   }
    if (command.equals("GetImageAsBufferedImage")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetImageAsBufferedImage",parameters,java.lang.Object.class);
    }
@@ -294,11 +305,23 @@ public class UtilityFactory {
    if (command.equals("IsImportableFileType")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsImportableFileType",parameters,java.lang.String.class);
    }
+   if (command.equals("GetSubnetMask")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSubnetMask",parameters,null);
+   }
+   if (command.equals("GetGatewayAddress")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetGatewayAddress",parameters,null);
+   }
+   if (command.equals("GetDNSAddress")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetDNSAddress",parameters,null);
+   }
    if (command.equals("GuessMajorFileType")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GuessMajorFileType",parameters,java.lang.String.class);
    }
    if (command.equals("TestPlaceshifterConnectivity")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"TestPlaceshifterConnectivity",parameters,java.lang.String.class);
+   }
+   if (command.equals("LookupIPForLocatorID")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"LookupIPForLocatorID",parameters,java.lang.String.class);
    }
    if (command.equals("CreateArray")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CreateArray",parameters,java.lang.Object.class);
@@ -339,6 +362,9 @@ public class UtilityFactory {
    if (command.equals("CalculateMD5Sum")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"CalculateMD5Sum",parameters,java.io.File.class);
    }
+   if (command.equals("ReloadNameserverCache")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"ReloadNameserverCache",parameters,null);
+   }
    if (command.equals("GetTimeSinceLastInput")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetTimeSinceLastInput",parameters,null);
    }
@@ -359,6 +385,9 @@ public class UtilityFactory {
    }
    if (command.equals("QueryServerMacAddress")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"QueryServerMacAddress",parameters,java.lang.String.class);
+   }
+   if (command.equals("ScanWirelessAPs")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"ScanWirelessAPs",parameters,null);
    }
    throw new RuntimeException("Invalid UtilityFactory Command: "+command);
    }

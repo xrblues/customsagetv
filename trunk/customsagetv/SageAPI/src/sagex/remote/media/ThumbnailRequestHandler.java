@@ -42,11 +42,12 @@ public class ThumbnailRequestHandler implements SageMediaRequestHandler {
         	thFile = MetaImageUtil.getThumbnailImageFile(sagefile, 100, 2000);
         }
 
-        resp.setContentType("image/jpeg");
-        resp.setHeader("Content-Length", String.valueOf(thFile.length()));
-        OutputStream os = resp.getOutputStream();
-        MediaHandler.copyStream(new FileInputStream(thFile), os);
-        os.flush();
+        MediaHandler.writeSageImageFile(thFile, req, resp);
+//        resp.setContentType("image/jpeg");
+//        resp.setHeader("Content-Length", String.valueOf(thFile.length()));
+//        OutputStream os = resp.getOutputStream();
+//        MediaHandler.copyStream(new FileInputStream(thFile), os);
+//        os.flush();
     }
 
 }

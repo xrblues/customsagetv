@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ChannelAPIFactory.html'>ChannelAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class ChannelAPIFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -85,6 +87,9 @@ public class ChannelAPIFactory {
    }
    if (command.equals("GetAllChannels")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAllChannels",parameters,null);
+   }
+   if (command.equals("GetChannelLogoCount")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetChannelLogoCount",parameters,Object.class);
    }
    throw new RuntimeException("Invalid ChannelAPIFactory Command: "+command);
    }

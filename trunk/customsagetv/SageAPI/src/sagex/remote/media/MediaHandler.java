@@ -193,4 +193,32 @@ public class MediaHandler implements SageHandler {
         ImageIO.write((RenderedImage) img, "png", os);
         os.flush();
     }
+
+    /**
+     * like writeSageImageFile except that it will also check if the request has scaling requests
+     *  
+     * @param getAlbumArt
+     * @param req
+     * @param resp
+     * @throws IOException 
+     */
+	public static void writeSageImageFile(Object sageImage, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if (sageImage==null) throw new FileNotFoundException("No Image");
+        // SEAN: Should block until the image is loaded
+        sageImage = Utility.LoadImage(sageImage);
+        
+        BufferedImage img = null;
+        int scale[] = ScaleUtils.getScaleFromRequest(req);
+        if (scale==null) {
+        	img = Utility.GetImageAsBufferedImage(sageImage);
+        } else {
+        	img = Utility.GetScaledImageAsBufferedImage(sageImage, scale[0], scale[1]);
+        }
+        
+        if (img==null) throw new FileNotFoundException("Unable to get BufferedImage");
+        resp.setContentType("image/png");
+        OutputStream os = resp.getOutputStream();
+        ImageIO.write((RenderedImage) img, "png", os);
+        os.flush();
+	}
 }
