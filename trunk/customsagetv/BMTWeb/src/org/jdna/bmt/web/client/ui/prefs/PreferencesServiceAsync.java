@@ -28,4 +28,8 @@ public interface PreferencesServiceAsync {
 	void refreshCustomMetadataFields(AsyncCallback<Void> callback);
 	void getPlugins(PluginQuery query, AsyncCallback<ArrayList<PluginDetail>> callback);
 	void getPluginDetails(String id, AsyncCallback<PluginDetail> callback);
+	
+	void getMenus(AsyncCallback<ArrayList<String>> callback);
+	void loadMenu(String id, AsyncCallback<String> callback);
+	void saveMenu(String menu, AsyncCallback<String> callback);
 }

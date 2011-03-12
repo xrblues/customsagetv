@@ -38,6 +38,8 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 	protected static final int MENU_RECORD_ONCE = 6;
 
 	protected static final int MENU_SET_WATCHED = 7;
+	protected static final int MENU_VIEW = 8;
+	protected static final int MENU_EDIT = 9;
 
 	private GWTMediaResource res;
 	private VerticalPanel vpanel = new VerticalPanel();
@@ -187,11 +189,9 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 					((GWTMediaFolder) res).getPageSize());
 		} else {
 			if (res.isAiring()) {
-				controller.setDisplay(new ViewAiringItemDetails(
-						(GWTMediaFile) res, controller));
+				controller.view(res);
 			} else {
-				controller.setDisplay(new MediaEditorMetadataPanel(
-						(GWTMediaFile) res, controller));
+				controller.edit(res);
 			}
 		}
 	}
@@ -199,7 +199,7 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 	public void onLongPress() {
 		if (res instanceof GWTMediaFile) {
 			if (res.isAiring()) {
-				PopupMenu pm = new PopupMenu("Select MediaFile Action",
+				PopupMenu pm = new PopupMenu("Select Airing Action",
 						new PopupMenu.MenuSelectionHandler() {
 							@Override
 							public void onMenuItemSelected(Object data) {
@@ -213,8 +213,14 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 								case MENU_RECORD_ONCE:
 									controller.record((GWTMediaFile) res);
 									break;
+								case MENU_DEBUG:
+									DebugDialog.show((GWTMediaFile) res);
+									break;
 								case MENU_SET_WATCHED:
 									controller.setWatched((GWTMediaFile) res, !((GWTMediaFile)res).getIsWatched().get());
+									break;
+								case MENU_VIEW:
+									controller.view(res);
 									break;
 								}
 							}
@@ -225,6 +231,8 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 				sma.addItem(MENU_RECORD_FAVORITE, "Add as Favorite");
 				sma.addItem(MENU_RECORD_ONCE, "Record Once");
 				sma.addItem(MENU_SET_WATCHED, "Toggle Watched");
+				sma.addItem(MENU_VIEW, "View Details");
+				sma.addItem(MENU_DEBUG, "View Debug Metadata Details");
 				sma.fireDataChanged();
 				pm.center();
 				pm.show();
@@ -258,6 +266,12 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 									controller
 											.showViewThumbnails((GWTMediaFile) res);
 									break;
+								case MENU_VIEW:
+									controller.view(res);
+									break;
+								case MENU_EDIT:
+									controller.edit(res);
+									break;
 								}
 							}
 						});
@@ -271,6 +285,7 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 							"Delete, Wrong Recording");
 				}
 				sma.addItem(MENU_SET_WATCHED, "Toggle Watched");
+				sma.addItem(MENU_EDIT, "Edit Details");
 				sma.addItem(MENU_DEBUG, "View Debug Metadata Details");
 				sma.fireDataChanged();
 				pm.center();

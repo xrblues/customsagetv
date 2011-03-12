@@ -41,6 +41,7 @@ public class ViewAiringItemDetails extends Composite implements MessageHandler, 
 	@UiField Image watchedMarker;
 	@UiField Image manualRecord;
 	@UiField Label category;
+	@UiField Label airingid;
 	
 	private GWTMediaFile file=null;
 	private BrowsePanel controller = null;
@@ -62,7 +63,7 @@ public class ViewAiringItemDetails extends Composite implements MessageHandler, 
 				poster.setUrl("images/128x128/video2.png");
 			}
 		});
-		poster.setUrl("fanart?title=" + URL.encode(file.getTitle()) + "&mediatype="+"TV"+"&scalex=200&artifact=poster");
+		poster.setUrl("fanart?mediafile=" + gfile.getAiringId() + "&scalex=200&artifact=poster");
 
 		showTitle.setText(file.getTitle());
 		episodeName.setText("\""+file.getMinorTitle()+"\"");
@@ -78,12 +79,17 @@ public class ViewAiringItemDetails extends Composite implements MessageHandler, 
 				Application.fireErrorEvent("Unable to load metadata for " + file.getTitle(), caught);
 			}
 		});
-		aired.setText(DateFormatUtil.formatAiredDate(file.getAiringDetails().getStartTime()));
-		duration.setText(DateFormatUtil.formatDuration(file.getAiringDetails().getDuration()));
-		channel.setText(file.getAiringDetails().getChannel() + " (" + file.getAiringDetails().getNetwork() + ")");
-		firstRun.setVisible(file.getAiringDetails().isFirtRun());
+		
+		if (file.getAiringDetails()!=null) {
+			aired.setText(DateFormatUtil.formatAiredDate(file.getAiringDetails().getStartTime()));
+			duration.setText(DateFormatUtil.formatDuration(file.getAiringDetails().getDuration()));
+			channel.setText(file.getAiringDetails().getChannel() + " (" + file.getAiringDetails().getNetwork() + ")");
+			firstRun.setVisible(file.getAiringDetails().isFirtRun());
+			manualRecord.setVisible(file.getAiringDetails().isManualRecord());
+		}
+		
 		watchedMarker.setVisible(file.getIsWatched().get());
-		manualRecord.setVisible(file.getAiringDetails().isManualRecord());
+		airingid.setText(file.getAiringId());
 	}
 	
 	protected void updateDisplay(GWTMediaMetadata result) {
