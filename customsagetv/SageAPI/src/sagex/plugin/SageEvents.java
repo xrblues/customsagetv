@@ -43,21 +43,54 @@ public final class SageEvents {
 	 public static final String RecordingCompleted="RecordingCompleted"; 
 	 public static final String RecordingStarted="RecordingStarted";
 	 public static final String RecordingStopped="RecordingStopped";
+	 
+	 /**
+	  * @since 7.0.16
+	  */
+	 public static final String RecordingSegmentAdded="RecordingSegmentAdded";
+	 
 	 public static final String AllPluginsLoaded="AllPluginsLoaded";
+	 
+	 
 	 public static final String RecordingScheduleChanged="RecordingScheduleChanged";
 	 public static final String ConflictStatusChanged="ConflictStatusChanged";
 	 public static final String SystemMessagePosted="SystemMessagePosted";
 	 public static final String EPGUpdateCompleted="EPGUpdateCompleted";
 	 public static final String MediaFileRemoved="MediaFileRemoved";
+	 
+	 /**
+	  * @since 7.012
+	  */
 	 public static final String PlaybackStopped="PlaybackStopped";
+	 
+	 /**
+	  * @since 7.012
+	  */
 	 public static final String PlaybackFinished="PlaybackFinished";
+
+	 /**
+	  * @since 7.012
+	  */
 	 public static final String PlaybackStarted="PlaybackStarted";
+	 
+	 /**
+	  * @since 7.1.3
+	  */
+	 public static final String PlaybackPaused="PlaybackPaused";
+	 
+	 /**
+	  * @since 7.1.3
+	  */
+	 public static final String PlaybackResumed="PlaybackResumed";
+	 
 	 public static final String FavoriteAdded="FavoriteAdded";
 	 public static final String FavoriteModified="FavoriteModified";
 	 public static final String FavoriteRemoved="FavoriteRemoved";
+	 
 	 public static final String PlaylistAdded="PlaylistAdded";
 	 public static final String PlaylistModified="PlaylistModified";
 	 public static final String PlaylistRemoved="PlaylistRemoved";
+	 
 	 public static final String ClientConnected="ClientConnected";
 	 public static final String ClientDisconnected="ClientDisconnected";
 }

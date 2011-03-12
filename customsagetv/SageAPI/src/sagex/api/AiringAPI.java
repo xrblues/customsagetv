@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AiringAPI.html'>AiringAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1419,7 +1419,7 @@ Stereo- true if it's a stereo recording, false otherwise
 ClosedCaptioning- true if the airing has closed captioning, false otherwise
 SAP- true if the Airing has a Secondary Audio Program (SAP), false otherwise
 Subtitled- true if the Airing is subtitled, false otherwise
-PremierFinale- should be the empty string or a localized value from the list "Premier", "Channel Premier", "Season Premier", "Series Premier", "Season Finale", "Series Finale"
+PremierFinale- should be the empty string or a localized value from the list "Premiere", "Channel Premiere", "Season Premiere", "Series Premiere", "Season Finale", "Series Finale"
 Returns:
 the newly added Airing
 Since:
@@ -1449,7 +1449,7 @@ Stereo- true if it's a stereo recording, false otherwise
 ClosedCaptioning- true if the airing has closed captioning, false otherwise
 SAP- true if the Airing has a Secondary Audio Program (SAP), false otherwise
 Subtitled- true if the Airing is subtitled, false otherwise
-PremierFinale- should be the empty string or a localized value from the list "Premier", "Channel Premier", "Season Premier", "Series Premier", "Season Finale", "Series Finale"
+PremierFinale- should be the empty string or a localized value from the list "Premiere", "Channel Premiere", "Season Premiere", "Series Premiere", "Season Finale", "Series Finale"
 Returns:
 the newly added Airing
 Since:
@@ -1458,6 +1458,169 @@ Since:
 public static Object AddAiringDetailed (UIContext _uicontext,java.lang.String ShowExternalID, int StationID, long StartTime, long Duration, int PartNumber, int TotalParts, java.lang.String ParentalRating, boolean HDTV, boolean Stereo, boolean ClosedCaptioning, boolean SAP, boolean Subtitled, java.lang.String PremierFinale) {
   Object o = sagex.SageAPI.call(_uicontext, "AddAiringDetailed", new Object[] {ShowExternalID,StationID,StartTime,Duration,PartNumber,TotalParts,ParentalRating,HDTV,Stereo,ClosedCaptioning,SAP,Subtitled,PremierFinale});
   if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+Returns whether or not the specificed attibute is set for this Airing
+
+Parameters:
+Airing- the Airing object
+Attribute- the following String values may be used: HDTV, Stereo, CC, SAP, Subtitled, 3D, DD5.1, Dolby, Letterbox, Live, New, Widescreen, Surround, Dubbed or Taped
+Returns:
+true if the specified Attribute is set for this Airing, false otherwise
+Since:
+7.1
+ */
+public static boolean IsAiringAttributeSet (Object Airing, java.lang.String Attribute) {
+  Object o = sagex.SageAPI.call("IsAiringAttributeSet", new Object[] {Airing,Attribute});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns whether or not the specificed attibute is set for this Airing
+
+Parameters:
+Airing- the Airing object
+Attribute- the following String values may be used: HDTV, Stereo, CC, SAP, Subtitled, 3D, DD5.1, Dolby, Letterbox, Live, New, Widescreen, Surround, Dubbed or Taped
+Returns:
+true if the specified Attribute is set for this Airing, false otherwise
+Since:
+7.1
+ */
+public static boolean IsAiringAttributeSet (UIContext _uicontext,Object Airing, java.lang.String Attribute) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsAiringAttributeSet", new Object[] {Airing,Attribute});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Gets a list of attributes that are set for this Airing.
+
+Parameters:
+Airing- the Airing object
+Returns:
+a String array of the attributes set for this Airing, the following values may be in this array: HDTV, Stereo, CC, SAP, Subtitled, 3D, DD5.1, Dolby, Letterbox, Live, New, Widescreen, Surround, Dubbed or Taped
+Since:
+7.1
+ */
+public static java.lang.String[] GetAiringAttributeList (Object Airing) {
+  return (java.lang.String[]) sagex.SageAPI.call("GetAiringAttributeList", new Object[] {Airing});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Gets a list of attributes that are set for this Airing.
+
+Parameters:
+Airing- the Airing object
+Returns:
+a String array of the attributes set for this Airing, the following values may be in this array: HDTV, Stereo, CC, SAP, Subtitled, 3D, DD5.1, Dolby, Letterbox, Live, New, Widescreen, Surround, Dubbed or Taped
+Since:
+7.1
+ */
+public static java.lang.String[] GetAiringAttributeList (UIContext _uicontext,Object Airing) {
+  return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetAiringAttributeList", new Object[] {Airing});
+}
+
+/**
+Returns the part number for this Airing if it is a multi-part Airing.
+
+Parameters:
+Airing- the Airing object
+Returns:
+the part number for this Airing if it is a multi-part Airing, 1 otherwise
+Since:
+7.1
+ */
+public static int GetAiringPartNumber (Object Airing) {
+  Object o = sagex.SageAPI.call("GetAiringPartNumber", new Object[] {Airing});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the part number for this Airing if it is a multi-part Airing.
+
+Parameters:
+Airing- the Airing object
+Returns:
+the part number for this Airing if it is a multi-part Airing, 1 otherwise
+Since:
+7.1
+ */
+public static int GetAiringPartNumber (UIContext _uicontext,Object Airing) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetAiringPartNumber", new Object[] {Airing});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Returns the number of parts for this Airing if it is a multi-part Airing.
+
+Parameters:
+Airing- the Airing object
+Returns:
+the number of parts for this Airing if it is a multi-part Airing, 1 otherwise
+Since:
+7.1
+ */
+public static int GetAiringTotalParts (Object Airing) {
+  Object o = sagex.SageAPI.call("GetAiringTotalParts", new Object[] {Airing});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the number of parts for this Airing if it is a multi-part Airing.
+
+Parameters:
+Airing- the Airing object
+Returns:
+the number of parts for this Airing if it is a multi-part Airing, 1 otherwise
+Since:
+7.1
+ */
+public static int GetAiringTotalParts (UIContext _uicontext,Object Airing) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetAiringTotalParts", new Object[] {Airing});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Returns a String which describes any kind of Premiere, Finale info for this Airing
+
+Parameters:
+Airing- the Airing object
+Returns:
+a String which describes any kind of Premiere, Finale info for this Airing, can be one of: "Premiere", "Channel Premiere", "Season Premiere", "Series Premiere", "Season Finale", "Series Finale" or the empty String if none apply
+Since:
+7.1
+ */
+public static java.lang.String GetAiringPremiereFinaleInfo (Object Airing) {
+  Object o = sagex.SageAPI.call("GetAiringPremiereFinaleInfo", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a String which describes any kind of Premiere, Finale info for this Airing
+
+Parameters:
+Airing- the Airing object
+Returns:
+a String which describes any kind of Premiere, Finale info for this Airing, can be one of: "Premiere", "Channel Premiere", "Season Premiere", "Series Premiere", "Season Finale", "Series Finale" or the empty String if none apply
+Since:
+7.1
+ */
+public static java.lang.String GetAiringPremiereFinaleInfo (UIContext _uicontext,Object Airing) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetAiringPremiereFinaleInfo", new Object[] {Airing});
+  if (o!=null) return (java.lang.String) o;
   return null;
 }
 

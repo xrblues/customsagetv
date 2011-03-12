@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import sagex.api.AiringAPI;
 import sagex.api.AlbumAPI;
@@ -15,9 +16,11 @@ import sagex.api.ChannelAPI;
 import sagex.api.FavoriteAPI;
 import sagex.api.MediaFileAPI;
 import sagex.api.PlaylistAPI;
+import sagex.api.PluginAPI;
 import sagex.api.SeriesInfoAPI;
 import sagex.api.ShowAPI;
 import sagex.api.SystemMessageAPI;
+import sagex.api.Utility;
 
 public class SageAPIBuilder {
     public static final SageAPIBuilder INSTANCE = new SageAPIBuilder();
@@ -33,6 +36,8 @@ public class SageAPIBuilder {
             } else {
                 buildSimpleData(name, parent, handler);
             }
+        } else if (parent instanceof Map) {
+            buildMap(name, (Map) parent, handler);
         } else if (parent instanceof Collection) {
             buildCollection(name, (Collection) parent, handler);
         } else if (parent instanceof File) {
@@ -57,27 +62,35 @@ public class SageAPIBuilder {
             buildChannel(parent, handler);
         } else if(SystemMessageAPI.IsSystemMessageObject(parent)) {
             buildSystemMessage(parent, handler);
-        } else if(PlaylistAPI.IsPlaylistObject(parent) || parent.toString().startsWith("Playlist[")) {
+        } else if(PlaylistAPI.IsPlaylistObject(parent)) {
             buildPlaylist(parent, handler);
-            
-        // TODO use SeriesInfoAPI.IsSeriesInfoObject(parent) if Sage implements this method in the SeriesInfoAPI
-        // until then, this test needs to be last so that other object types don't inadvertently get converted to a SeriesInfo
-        // object when calling GetSeriesID.  (e.g. a Show object will be automatically converted to SeriesInfo and thus pass this test
-        } else if(SeriesInfoAPI.GetSeriesID(parent) != null) {
+        } else if(SeriesInfoAPI.IsSeriesInfoObject(parent)) {
             buildSeriesInfo(parent, handler);
+        } else if(Utility.IsMetaImage(parent)) {
+            buildImage(name, parent, handler);
+        } else if(parent.toString().contains("SageTVPlugin[")) {
+            buildPlugin(name, parent, handler);
         } else {
             String msg = "Unknown Object Type: " + parent.getClass().getName() + " for Sage Object: " + parent;
             handler.handleError(msg, new Exception(msg));
         }
     }
 
-    private void buildSimpleData(String name, Object data, BuilderHandler handler) {
+	private void buildImage(String name, Object parent, BuilderHandler handler) {
+        buildFile(name, Utility.GetMetaImageSourceFile(parent), handler);
+	}
+
+	private void buildSimpleData(String name, Object data, BuilderHandler handler) {
         handler.handleField(makeName(name), data);
     }
 
     public void buildFile(String name, File parent, BuilderHandler handler) {
         try {
-            buildSimpleData(name, parent.getCanonicalPath(), handler);
+        	if (parent==null) {
+        		buildSimpleData(name, "", handler);
+        	} else {
+        		buildSimpleData(name, parent.getCanonicalPath(), handler);
+        	}
         } catch (IOException e) {
             buildSimpleData(name, parent.getAbsolutePath(), handler);
         }
@@ -90,6 +103,10 @@ public class SageAPIBuilder {
     public void buildFavorite(Object parent, BuilderHandler handler) throws Exception {
         buildObject("Favorite", FavoriteAPI.class, parent, handler, null);
     }
+
+    private void buildPlugin(String name, Object parent, BuilderHandler handler) throws Exception {
+        buildObject("Plugin", PluginAPI.class, parent, handler, new String[] {"GetAllPluginVersions", "GetSageTVPluginRegistry", "GetPluginProgress", "GetPluginImplementation"});
+	}
 
     private void buildSystemMessage(Object parent, BuilderHandler handler) throws Exception {
         buildObject("SystemMessage", SystemMessageAPI.class, parent, handler, new String[] {"DeleteSystemMessage"});
@@ -136,7 +153,6 @@ public class SageAPIBuilder {
         handler.endObject(makeName(objectName));
     }
     
-
     private Method[] getMethods(Class klass, String[] ignoreMethods) {
         Method m[] = reflectionMap.get(klass);
         
@@ -183,6 +199,16 @@ public class SageAPIBuilder {
         }
         handler.endArray(makeName(name));
     }
+
+    private void buildMap(String name, Map parent, BuilderHandler handler) throws Exception {
+        handler.beginObject(name);
+        for (Object o: parent.entrySet()) {
+        	Map.Entry me = (Entry) o;
+        	build(String.valueOf(me.getKey()), me.getValue(), handler, true);
+        }
+        handler.endObject(name);
+	}
+
     
     public String makeName(String name) {
         if (name!=null) name=name.replaceFirst("^Get", "");

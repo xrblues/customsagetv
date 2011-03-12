@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaFileAPIFactory.html'>MediaFileAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class MediaFileAPIFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -90,6 +92,9 @@ public class MediaFileAPIFactory {
    if (command.equals("GetFullImage")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetFullImage",parameters,Object.class);
    }
+   if (command.equals("GenerateThumbnail")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GenerateThumbnail",parameters,Object.class,float.class,int.class,int.class,java.io.File.class);
+   }
    if (command.equals("GetThumbnail")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetThumbnail",parameters,Object.class);
    }
@@ -170,6 +175,9 @@ public class MediaFileAPIFactory {
    }
    if (command.equals("GetMediaFileMetadata")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMediaFileMetadata",parameters,Object.class,java.lang.String.class);
+   }
+   if (command.equals("GetMediaFileMetadataProperties")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetMediaFileMetadataProperties",parameters,Object.class);
    }
    if (command.equals("SetMediaFileMetadata")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetMediaFileMetadata",parameters,Object.class,java.lang.String.class,java.lang.String.class);

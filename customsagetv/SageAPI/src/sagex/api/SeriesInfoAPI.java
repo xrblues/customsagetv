@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SeriesInfoAPI.html'>SeriesInfoAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -511,10 +511,8 @@ a list of the names of the actors/actresses in the specified SeriesInfo
 Since:
 5.1
  */
-public static java.lang.String GetSeriesActorList (Object SeriesInfo) {
-  Object o = sagex.SageAPI.call("GetSeriesActorList", new Object[] {SeriesInfo});
-  if (o!=null) return (java.lang.String) o;
-  return null;
+public static java.lang.String[] GetSeriesActorList (Object SeriesInfo) {
+  return (java.lang.String[]) sagex.SageAPI.call("GetSeriesActorList", new Object[] {SeriesInfo});
 }
 
 /**
@@ -528,10 +526,8 @@ a list of the names of the actors/actresses in the specified SeriesInfo
 Since:
 5.1
  */
-public static java.lang.String GetSeriesActorList (UIContext _uicontext,Object SeriesInfo) {
-  Object o = sagex.SageAPI.call(_uicontext, "GetSeriesActorList", new Object[] {SeriesInfo});
-  if (o!=null) return (java.lang.String) o;
-  return null;
+public static java.lang.String[] GetSeriesActorList (UIContext _uicontext,Object SeriesInfo) {
+  return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetSeriesActorList", new Object[] {SeriesInfo});
 }
 
 /**
@@ -583,10 +579,8 @@ a list of the names of the characters in the specified SeriesInfo
 Since:
 5.1
  */
-public static java.lang.String GetSeriesCharacterList (Object SeriesInfo) {
-  Object o = sagex.SageAPI.call("GetSeriesCharacterList", new Object[] {SeriesInfo});
-  if (o!=null) return (java.lang.String) o;
-  return null;
+public static java.lang.String[] GetSeriesCharacterList (Object SeriesInfo) {
+  return (java.lang.String[]) sagex.SageAPI.call("GetSeriesCharacterList", new Object[] {SeriesInfo});
 }
 
 /**
@@ -600,10 +594,8 @@ a list of the names of the characters in the specified SeriesInfo
 Since:
 5.1
  */
-public static java.lang.String GetSeriesCharacterList (UIContext _uicontext,Object SeriesInfo) {
-  Object o = sagex.SageAPI.call(_uicontext, "GetSeriesCharacterList", new Object[] {SeriesInfo});
-  if (o!=null) return (java.lang.String) o;
-  return null;
+public static java.lang.String[] GetSeriesCharacterList (UIContext _uicontext,Object SeriesInfo) {
+  return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetSeriesCharacterList", new Object[] {SeriesInfo});
 }
 
 /**
@@ -828,6 +820,39 @@ Since:
  */
 public static void SetSeriesInfoProperty (UIContext _uicontext,Object SeriesInfo, java.lang.String PropertyName, java.lang.String PropertyValue) {
    sagex.SageAPI.call(_uicontext, "SetSeriesInfoProperty", new Object[] {SeriesInfo,PropertyName,PropertyValue});
+}
+
+/**
+Returns true if the argument is a SeriesInfo object. Automatic type conversion is NOT done in this call.
+
+Parameters:
+SeriesInfo- the object to test
+Returns:
+true if the argument is an SeriesInfo object
+Since:
+7.1
+ */
+public static boolean IsSeriesInfoObject (java.lang.Object SeriesInfo) {
+  Object o = sagex.SageAPI.call("IsSeriesInfoObject", new Object[] {SeriesInfo});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the argument is a SeriesInfo object. Automatic type conversion is NOT done in this call.
+
+Parameters:
+SeriesInfo- the object to test
+Returns:
+true if the argument is an SeriesInfo object
+Since:
+7.1
+ */
+public static boolean IsSeriesInfoObject (UIContext _uicontext,java.lang.Object SeriesInfo) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsSeriesInfoObject", new Object[] {SeriesInfo});
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 }

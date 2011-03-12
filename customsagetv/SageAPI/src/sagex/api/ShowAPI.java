@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ShowAPI.html'>ShowAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -128,6 +128,68 @@ public static java.lang.String GetShowSubCategory (UIContext _uicontext,Object S
   Object o = sagex.SageAPI.call(_uicontext, "GetShowSubCategory", new Object[] {Show});
   if (o!=null) return (java.lang.String) o;
   return null;
+}
+
+/**
+Returns a String of categories for the Show, separated by '/' if there are multiple levels of categories. For music files, this will be the genre.
+
+Parameters:
+Show- the Show object
+Returns:
+the categories for the Show
+Since:
+7.1
+ */
+public static java.lang.String GetShowCategoriesString (Object Show) {
+  Object o = sagex.SageAPI.call("GetShowCategoriesString", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a String of categories for the Show, separated by '/' if there are multiple levels of categories. For music files, this will be the genre.
+
+Parameters:
+Show- the Show object
+Returns:
+the categories for the Show
+Since:
+7.1
+ */
+public static java.lang.String GetShowCategoriesString (UIContext _uicontext,Object Show) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetShowCategoriesString", new Object[] {Show});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Returns a String array of categories for the Show. For music files, this will be the genre.
+
+Parameters:
+Show- the Show object
+Returns:
+the categories for the Show
+Since:
+7.1
+ */
+public static java.lang.String[] GetShowCategoriesList (Object Show) {
+  return (java.lang.String[]) sagex.SageAPI.call("GetShowCategoriesList", new Object[] {Show});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a String array of categories for the Show. For music files, this will be the genre.
+
+Parameters:
+Show- the Show object
+Returns:
+the categories for the Show
+Since:
+7.1
+ */
+public static java.lang.String[] GetShowCategoriesList (UIContext _uicontext,Object Show) {
+  return (java.lang.String[]) sagex.SageAPI.call(_uicontext, "GetShowCategoriesList", new Object[] {Show});
 }
 
 /**
@@ -1117,6 +1179,158 @@ public static Object GetShowSeriesInfo (UIContext _uicontext,Object Show) {
   Object o = sagex.SageAPI.call(_uicontext, "GetShowSeriesInfo", new Object[] {Show});
   if (o!=null) return (Object) o;
   return null;
+}
+
+/**
+Returns the season number of the specified Show. For episodic content; sometimes a numeric value is given to the
+ season. If that information exists, this will return it.
+
+Parameters:
+Show- the Show object
+Returns:
+the season number of the specified Show, 0 if it is not set
+Since:
+7.1
+ */
+public static int GetSeasonNumber (Object Show) {
+  Object o = sagex.SageAPI.call("GetSeasonNumber", new Object[] {Show});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the season number of the specified Show. For episodic content; sometimes a numeric value is given to the
+ season. If that information exists, this will return it.
+
+Parameters:
+Show- the Show object
+Returns:
+the season number of the specified Show, 0 if it is not set
+Since:
+7.1
+ */
+public static int GetSeasonNumber (UIContext _uicontext,Object Show) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetSeasonNumber", new Object[] {Show});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Returns the episode number of the specified Show. For episodic content; sometimes a numeric value is given to the
+ episode in a season. If that information exists, this will return it.
+
+Parameters:
+Show- the Show object
+Returns:
+the episode number of the specified Show, 0 if it is not set
+Since:
+7.1
+ */
+public static int GetEpisodeNumber (Object Show) {
+  Object o = sagex.SageAPI.call("GetEpisodeNumber", new Object[] {Show});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the episode number of the specified Show. For episodic content; sometimes a numeric value is given to the
+ episode in a season. If that information exists, this will return it.
+
+Parameters:
+Show- the Show object
+Returns:
+the episode number of the specified Show, 0 if it is not set
+Since:
+7.1
+ */
+public static int GetEpisodeNumber (UIContext _uicontext,Object Show) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetEpisodeNumber", new Object[] {Show});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+Returns an image specific to this Show. For the standard implementation, this will only return values for Movies (and not all movies have images).
+ UseGetShowImageCount
+to determine what the valid values are for the Index parameter.
+ In the future this will be expanded to support plugin image providers to extend what is returned.
+
+Parameters:
+Show- the Show object
+Type- the type of image, can be one of "PhotoTall", "PhotoWide", "PhotoThumbTall", "PhotoThumbWide", "PosterTall", "PosterWide", "PosterThumbTall" or "PosterThumbWide". In the future, there will be support to expand these types using image plugin providers.
+Index- the 0-based index of the image to retrieve when multiple images exist for a given Type
+Fallback- should be 3 if the returned image must match the requested parameters, 2 if a substitute image may be used that requires a similar type, 1 if a substitute image may be used that requires the same size, or 0 if any image type may be substituted (size is preferred over type)
+Returns:
+a MetaImage corresponding to the requested image, or null if no image matching the requested parameters is found or an invalid Type is specified
+Since:
+7.1
+ */
+public static Object GetShowImage (Object Show, java.lang.String Type, int Index, int Fallback) {
+  Object o = sagex.SageAPI.call("GetShowImage", new Object[] {Show,Type,Index,Fallback});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns an image specific to this Show. For the standard implementation, this will only return values for Movies (and not all movies have images).
+ UseGetShowImageCount
+to determine what the valid values are for the Index parameter.
+ In the future this will be expanded to support plugin image providers to extend what is returned.
+
+Parameters:
+Show- the Show object
+Type- the type of image, can be one of "PhotoTall", "PhotoWide", "PhotoThumbTall", "PhotoThumbWide", "PosterTall", "PosterWide", "PosterThumbTall" or "PosterThumbWide". In the future, there will be support to expand these types using image plugin providers.
+Index- the 0-based index of the image to retrieve when multiple images exist for a given Type
+Fallback- should be 3 if the returned image must match the requested parameters, 2 if a substitute image may be used that requires a similar type, 1 if a substitute image may be used that requires the same size, or 0 if any image type may be substituted (size is preferred over type)
+Returns:
+a MetaImage corresponding to the requested image, or null if no image matching the requested parameters is found or an invalid Type is specified
+Since:
+7.1
+ */
+public static Object GetShowImage (UIContext _uicontext,Object Show, java.lang.String Type, int Index, int Fallback) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetShowImage", new Object[] {Show,Type,Index,Fallback});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+Returns a count of images specific to this Show. For the standard implementation, this will only return non-zero values for Movies (and not all movies have images).
+ In the future this will be expanded to support plugin image providers to extend what is returned.
+
+Parameters:
+Show- the Show object
+Type- the type of image, can be one of "PhotoTall", "PhotoWide", "PhotoThumbTall", "PhotoThumbWide", "PosterTall", "PosterWide", "PosterThumbTall" or "PosterThumbWide". If this is null or the empty string, then it will return 1 if any images exist and zero if none exist. In the future, there will be support to expand these types using image plugin providers.
+Returns:
+the number of images that match the requested type for the specified Show
+Since:
+7.1
+ */
+public static int GetShowImageCount (Object Show, java.lang.String Type) {
+  Object o = sagex.SageAPI.call("GetShowImageCount", new Object[] {Show,Type});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a count of images specific to this Show. For the standard implementation, this will only return non-zero values for Movies (and not all movies have images).
+ In the future this will be expanded to support plugin image providers to extend what is returned.
+
+Parameters:
+Show- the Show object
+Type- the type of image, can be one of "PhotoTall", "PhotoWide", "PhotoThumbTall", "PhotoThumbWide", "PosterTall", "PosterWide", "PosterThumbTall" or "PosterThumbWide". If this is null or the empty string, then it will return 1 if any images exist and zero if none exist. In the future, there will be support to expand these types using image plugin providers.
+Returns:
+the number of images that match the requested type for the specified Show
+Since:
+7.1
+ */
+public static int GetShowImageCount (UIContext _uicontext,Object Show, java.lang.String Type) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetShowImageCount", new Object[] {Show,Type});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 }

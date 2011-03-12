@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Global.html'>Global</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -959,6 +959,80 @@ Closes the last OptionsMenu that was shown and continues execution of the Action
  */
 public static void CloseOptionsMenu (UIContext _uicontext) {
    sagex.SageAPI.call(_uicontext, "CloseOptionsMenu", (Object[])null);
+}
+
+/**
+Closes the OptionsMenu who's Widget name (or themed Widget name) matches that of the argument and continues execution of the Action 
+ chain that spawned that OptionsMenu at the sibling after this OptionsMenu. The 
+ feature of continuing execution can be used to prompt the user with a question 
+ through an OptionsMenu before continuing on execution of an Action chain.
+ An example is confirming something they just did before it actually gets done.
+ If this OptionsMenu is not on top, then it cannot be closed until it becomes the one on top.
+
+Parameters:
+WidgetName- the name of the Widget for the OptionsMenu or the themed OptionsMenu source for that Widget that should be closed
+WaitForClose- if true then this call will not return until the specified OptionsMenu target is closed
+Returns:
+returns true if the target OptionsMenu is not open or if it was closed as a result of this call, will only return false if waitForClose is true and the target OptionsMenu is not on top
+Since:
+7.1
+ */
+public static boolean CloseOptionsMenu (java.lang.String WidgetName, boolean WaitForClose) {
+  Object o = sagex.SageAPI.call("CloseOptionsMenu", new Object[] {WidgetName,WaitForClose});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Closes the OptionsMenu who's Widget name (or themed Widget name) matches that of the argument and continues execution of the Action 
+ chain that spawned that OptionsMenu at the sibling after this OptionsMenu. The 
+ feature of continuing execution can be used to prompt the user with a question 
+ through an OptionsMenu before continuing on execution of an Action chain.
+ An example is confirming something they just did before it actually gets done.
+ If this OptionsMenu is not on top, then it cannot be closed until it becomes the one on top.
+
+Parameters:
+WidgetName- the name of the Widget for the OptionsMenu or the themed OptionsMenu source for that Widget that should be closed
+WaitForClose- if true then this call will not return until the specified OptionsMenu target is closed
+Returns:
+returns true if the target OptionsMenu is not open or if it was closed as a result of this call, will only return false if waitForClose is true and the target OptionsMenu is not on top
+Since:
+7.1
+ */
+public static boolean CloseOptionsMenu (UIContext _uicontext,java.lang.String WidgetName, boolean WaitForClose) {
+  Object o = sagex.SageAPI.call(_uicontext, "CloseOptionsMenu", new Object[] {WidgetName,WaitForClose});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Returns true if an options menu is currently open in the UI.
+
+Returns:
+true if an options menu is currently open in the UI, false otherwise
+Since:
+7.1
+ */
+public static boolean IsOptionsMenuOpen () {
+  Object o = sagex.SageAPI.call("IsOptionsMenuOpen", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if an options menu is currently open in the UI.
+
+Returns:
+true if an options menu is currently open in the UI, false otherwise
+Since:
+7.1
+ */
+public static boolean IsOptionsMenuOpen (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsOptionsMenuOpen", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
 }
 
 /**
@@ -2287,7 +2361,7 @@ public static java.lang.String GetRemoteClientVersion (UIContext _uicontext) {
 Returns the type of client that is connected on this remote interface
 
 Returns:
-the type of client that is connected on this remote interface; this can be one of "SD Media Extender", "HD Media Extender", "Placeshifter" or "Local"
+the type of client that is connected on this remote interface; this can be one of "SD Media Extender", "HD Media Extender", "HD Media Player", "Placeshifter" or "Local"
 Since:
 6.4
  */
@@ -2302,7 +2376,7 @@ public static java.lang.String GetRemoteUIType () {
 Returns the type of client that is connected on this remote interface
 
 Returns:
-the type of client that is connected on this remote interface; this can be one of "SD Media Extender", "HD Media Extender", "Placeshifter" or "Local"
+the type of client that is connected on this remote interface; this can be one of "SD Media Extender", "HD Media Extender", "HD Media Player", "Placeshifter" or "Local"
 Since:
 6.4
  */
@@ -3566,6 +3640,37 @@ public static java.lang.String[] GetDisplayResolutionOptions (UIContext _uiconte
 }
 
 /**
+Returns the detailed format description for the specific resolution returned from GetDisplayResolutionOptions()
+ NOTE: This API call is only valid on embedded platforms.
+
+Returns:
+a the detailed format description for a specific Resolution
+Since:
+6.4
+ */
+public static java.lang.String GetDisplayResolutionDetails (java.lang.String Resolution) {
+  Object o = sagex.SageAPI.call("GetDisplayResolutionDetails", new Object[] {Resolution});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the detailed format description for the specific resolution returned from GetDisplayResolutionOptions()
+ NOTE: This API call is only valid on embedded platforms.
+
+Returns:
+a the detailed format description for a specific Resolution
+Since:
+6.4
+ */
+public static java.lang.String GetDisplayResolutionDetails (UIContext _uicontext,java.lang.String Resolution) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetDisplayResolutionDetails", new Object[] {Resolution});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
 Returns a list of the preferred display resolutions. This is currently only used
  on media extender devices that have adjustable output resolution. This information is obtained from the HDMI/DVI connector
 
@@ -3656,6 +3761,8 @@ Returns true if running on an 'embedded' platform. This will be true for the sta
 
 Returns:
 true if running on an embedded system, false otherwise
+Since:
+7.0
  */
 public static boolean IsEmbeddedSystem () {
   Object o = sagex.SageAPI.call("IsEmbeddedSystem", (Object[])null);
@@ -3670,11 +3777,164 @@ Returns true if running on an 'embedded' platform. This will be true for the sta
 
 Returns:
 true if running on an embedded system, false otherwise
+Since:
+7.0
  */
 public static boolean IsEmbeddedSystem (UIContext _uicontext) {
   Object o = sagex.SageAPI.call(_uicontext, "IsEmbeddedSystem", (Object[])null);
   if (o!=null) return (Boolean) o;
   return false;
+}
+
+/**
+Returns true if running on an 'embedded' platform in standalone mode or running as a SageTV Client that is connected to a server running on an embedded platform. 
+ This will be true for the standalone environment on products like the HD300
+ and false otherwise. Used for making STVs that have different options based on whether they're on a PC vs. embedded system.
+
+Returns:
+true if running against an embedded server, false otherwise
+Since:
+7.1
+ */
+public static boolean IsEmbeddedServer () {
+  Object o = sagex.SageAPI.call("IsEmbeddedServer", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if running on an 'embedded' platform in standalone mode or running as a SageTV Client that is connected to a server running on an embedded platform. 
+ This will be true for the standalone environment on products like the HD300
+ and false otherwise. Used for making STVs that have different options based on whether they're on a PC vs. embedded system.
+
+Returns:
+true if running against an embedded server, false otherwise
+Since:
+7.1
+ */
+public static boolean IsEmbeddedServer (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsEmbeddedServer", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Returns true if running on a system or connected to a server that has PVR functionality. Used for making STVs that have different options based on whether
+ or not PVR functionality is available. Even if no capture devices are configured and the system is PVR capable, this will still return true.
+
+Returns:
+true if PVR is available, false otherwise
+Since:
+7.1
+ */
+public static boolean IsPVR () {
+  Object o = sagex.SageAPI.call("IsPVR", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if running on a system or connected to a server that has PVR functionality. Used for making STVs that have different options based on whether
+ or not PVR functionality is available. Even if no capture devices are configured and the system is PVR capable, this will still return true.
+
+Returns:
+true if PVR is available, false otherwise
+Since:
+7.1
+ */
+public static boolean IsPVR (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsPVR", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Returns a map of name->file for any hotplug storage devies on the system. The
+ names are user-presentable and the path is the java.io.File root which corresponds to the root of that device.
+ NOTE: This is only valid on embedded platforms.
+
+Returns:
+a Map of name->file for hotplugged storage devices
+Since:
+6.4
+ */
+public static java.util.Map GetHotplugStorageMap () {
+  Object o = sagex.SageAPI.call("GetHotplugStorageMap", (Object[])null);
+  if (o!=null) return (java.util.Map) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a map of name->file for any hotplug storage devies on the system. The
+ names are user-presentable and the path is the java.io.File root which corresponds to the root of that device.
+ NOTE: This is only valid on embedded platforms.
+
+Returns:
+a Map of name->file for hotplugged storage devices
+Since:
+6.4
+ */
+public static java.util.Map GetHotplugStorageMap (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetHotplugStorageMap", (Object[])null);
+  if (o!=null) return (java.util.Map) o;
+  return null;
+}
+
+/**
+Returns true if the server is currently scanning the import directories for new files
+
+Returns:
+true if the server is currently scanning the import directories for new files
+Since:
+6.6
+ */
+public static boolean IsDoingLibraryImportScan () {
+  Object o = sagex.SageAPI.call("IsDoingLibraryImportScan", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the server is currently scanning the import directories for new files
+
+Returns:
+true if the server is currently scanning the import directories for new files
+Since:
+6.6
+ */
+public static boolean IsDoingLibraryImportScan (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsDoingLibraryImportScan", (Object[])null);
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Prepares the device for a firmware download & flash. This internally will stop the library importing process,
+ empty all of the database tables, clear the UI caches, and then force a complete garbage collection.
+ NOTE: This is only valid on embedded platforms.
+
+Since:
+7.0
+ */
+public static void PrepareForFirmwareLoad () {
+   sagex.SageAPI.call("PrepareForFirmwareLoad", (Object[])null);
+}
+
+/**
+ * UI Context Aware Call<br/>
+Prepares the device for a firmware download & flash. This internally will stop the library importing process,
+ empty all of the database tables, clear the UI caches, and then force a complete garbage collection.
+ NOTE: This is only valid on embedded platforms.
+
+Since:
+7.0
+ */
+public static void PrepareForFirmwareLoad (UIContext _uicontext) {
+   sagex.SageAPI.call(_uicontext, "PrepareForFirmwareLoad", (Object[])null);
 }
 
 /**
@@ -4075,95 +4335,6 @@ public static boolean TvtvConfigureInput (UIContext _uicontext,java.lang.String 
   Object o = sagex.SageAPI.call(_uicontext, "TvtvConfigureInput", new Object[] {CaptureDeviceInput,Username,Password});
   if (o!=null) return (Boolean) o;
   return false;
-}
-
-/**
-Returns a map of name->file for any hotplug storage devies on the system. The
- names are user-presentable and the path is the java.io.File root which corresponds to the root of that device.
-
-Returns:
-a Map of name->file for hotplugged storage devices
-Since:
-6.4
- */
-public static java.util.Map GetHotplugStorageMap () {
-  Object o = sagex.SageAPI.call("GetHotplugStorageMap", (Object[])null);
-  if (o!=null) return (java.util.Map) o;
-  return null;
-}
-
-/**
- * UI Context Aware Call<br/>
-Returns a map of name->file for any hotplug storage devies on the system. The
- names are user-presentable and the path is the java.io.File root which corresponds to the root of that device.
-
-Returns:
-a Map of name->file for hotplugged storage devices
-Since:
-6.4
- */
-public static java.util.Map GetHotplugStorageMap (UIContext _uicontext) {
-  Object o = sagex.SageAPI.call(_uicontext, "GetHotplugStorageMap", (Object[])null);
-  if (o!=null) return (java.util.Map) o;
-  return null;
-}
-
-/**
-Returns true if the server is currently scanning the import directories for new files
-
-Returns:
-true if the server is currently scanning the import directories for new files
-Since:
-6.6
- */
-public static boolean IsDoingLibraryImportScan () {
-  Object o = sagex.SageAPI.call("IsDoingLibraryImportScan", (Object[])null);
-  if (o!=null) return (Boolean) o;
-  return false;
-}
-
-/**
- * UI Context Aware Call<br/>
-Returns true if the server is currently scanning the import directories for new files
-
-Returns:
-true if the server is currently scanning the import directories for new files
-Since:
-6.6
- */
-public static boolean IsDoingLibraryImportScan (UIContext _uicontext) {
-  Object o = sagex.SageAPI.call(_uicontext, "IsDoingLibraryImportScan", (Object[])null);
-  if (o!=null) return (Boolean) o;
-  return false;
-}
-
-/**
-Returns a list of local directory paths (Strings) that did not mount properly as part of the library scanning process
-
-Returns:
-a list of local directory paths (Strings) that did not mount properly as part of the library scanning process
-Since:
-6.4
- */
-public static java.util.Set GetFailedNetworkMounts () {
-  Object o = sagex.SageAPI.call("GetFailedNetworkMounts", (Object[])null);
-  if (o!=null) return (java.util.Set) o;
-  return null;
-}
-
-/**
- * UI Context Aware Call<br/>
-Returns a list of local directory paths (Strings) that did not mount properly as part of the library scanning process
-
-Returns:
-a list of local directory paths (Strings) that did not mount properly as part of the library scanning process
-Since:
-6.4
- */
-public static java.util.Set GetFailedNetworkMounts (UIContext _uicontext) {
-  Object o = sagex.SageAPI.call(_uicontext, "GetFailedNetworkMounts", (Object[])null);
-  if (o!=null) return (java.util.Set) o;
-  return null;
 }
 
 }

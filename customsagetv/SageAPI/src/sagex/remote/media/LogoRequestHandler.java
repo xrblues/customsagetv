@@ -13,6 +13,6 @@ import sagex.api.Global;
  */
 public class LogoRequestHandler implements SageMediaRequestHandler {
     public void processRequest(HttpServletRequest req, HttpServletResponse resp, Object logo) throws Exception {
-        MediaHandler.writeSageImageFile(Global.GetLogo((String)logo), resp);
+        MediaHandler.writeSageImageFile(Global.GetLogo((String)logo), req, resp);
     }
 }

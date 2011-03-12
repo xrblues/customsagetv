@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ShowAPIFactory.html'>ShowAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class ShowAPIFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -22,6 +24,12 @@ public class ShowAPIFactory {
    }
    if (command.equals("GetShowSubCategory")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowSubCategory",parameters,Object.class);
+   }
+   if (command.equals("GetShowCategoriesString")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowCategoriesString",parameters,Object.class);
+   }
+   if (command.equals("GetShowCategoriesList")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowCategoriesList",parameters,Object.class);
    }
    if (command.equals("GetShowDescription")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowDescription",parameters,Object.class);
@@ -115,6 +123,18 @@ public class ShowAPIFactory {
    }
    if (command.equals("GetShowSeriesInfo")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowSeriesInfo",parameters,Object.class);
+   }
+   if (command.equals("GetSeasonNumber")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSeasonNumber",parameters,Object.class);
+   }
+   if (command.equals("GetEpisodeNumber")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetEpisodeNumber",parameters,Object.class);
+   }
+   if (command.equals("GetShowImage")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowImage",parameters,Object.class,java.lang.String.class,int.class,int.class);
+   }
+   if (command.equals("GetShowImageCount")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowImageCount",parameters,Object.class,java.lang.String.class);
    }
    throw new RuntimeException("Invalid ShowAPIFactory Command: "+command);
    }

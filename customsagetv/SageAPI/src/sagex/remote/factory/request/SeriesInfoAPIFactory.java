@@ -2,12 +2,14 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SeriesInfoAPIFactory.html'>SeriesInfoAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
 
+import java.util.Map;
 import sagex.remote.RemoteRequest;
+import sagex.remote.xmlrpc.RequestHelper;
 
 public class SeriesInfoAPIFactory {
    public static RemoteRequest createRequest(String context, String command, String[] parameters) {
@@ -82,6 +84,9 @@ public class SeriesInfoAPIFactory {
    }
    if (command.equals("SetSeriesInfoProperty")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"SetSeriesInfoProperty",parameters,Object.class,java.lang.String.class,java.lang.String.class);
+   }
+   if (command.equals("IsSeriesInfoObject")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsSeriesInfoObject",parameters,java.lang.Object.class);
    }
    throw new RuntimeException("Invalid SeriesInfoAPIFactory Command: "+command);
    }

@@ -2,7 +2,7 @@ package sagex.api.enums;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ChannelAPIEnum.html'>ChannelAPIEnum</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -32,5 +32,6 @@ SetChannelViewabilityForChannelNumberOnLineup,
 SetChannelViewabilityForChannelOnLineup,
 GetChannelForStationID,
 AddChannel,
-GetAllChannels
+GetAllChannels,
+GetChannelLogoCount
 }

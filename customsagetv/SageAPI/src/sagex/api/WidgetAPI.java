@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/WidgetAPI.html'>WidgetAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -579,7 +579,9 @@ public static java.lang.Object ExecuteWidgetChain (UIContext _uicontext,Object W
 
 /**
 Executes a Widget and the chain of child Widgets underneath it. This will use the context of the currently loaded menu to do this which
- is useful if you want to launch an OptionsMenu programatically w/ the proper parent context.
+ is useful if you want to launch an OptionsMenu programatically w/ the proper parent context. NOTE: If this does launch an OptionsMenu then the
+ value returned from this function will not be usable and this call will return once the OptionsMenu is launched. Once it is closed the core
+ will resume execution of the widget chain using one of its own internal threads at that point.
 
 Parameters:
 Widget- the root of the Widget (or a String which represents the symbol for that Widget) action chain to execute
@@ -597,7 +599,9 @@ public static java.lang.Object ExecuteWidgetChainInCurrentMenuContext (Object Wi
 /**
  * UI Context Aware Call<br/>
 Executes a Widget and the chain of child Widgets underneath it. This will use the context of the currently loaded menu to do this which
- is useful if you want to launch an OptionsMenu programatically w/ the proper parent context.
+ is useful if you want to launch an OptionsMenu programatically w/ the proper parent context. NOTE: If this does launch an OptionsMenu then the
+ value returned from this function will not be usable and this call will return once the OptionsMenu is launched. Once it is closed the core
+ will resume execution of the widget chain using one of its own internal threads at that point.
 
 Parameters:
 Widget- the root of the Widget (or a String which represents the symbol for that Widget) action chain to execute

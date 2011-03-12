@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPI.html'>FavoriteAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1829,6 +1829,39 @@ Since:
  */
 public static void SetFavoriteProperty (UIContext _uicontext,Object Favorite, java.lang.String PropertyName, java.lang.String PropertyValue) {
    sagex.SageAPI.call(_uicontext, "SetFavoriteProperty", new Object[] {Favorite,PropertyName,PropertyValue});
+}
+
+/**
+Returns a java.util.Properties object that has all of the user-set properties for this Favorite in it.
+
+Parameters:
+Favorite- the Favorite object
+Returns:
+a java.util.Properties object that has all of the user-set properties for this Favorite in it; this is a copy of the original one so it is safe to modify it
+Since:
+7.1
+ */
+public static java.util.Properties GetFavoriteProperties (Object Favorite) {
+  Object o = sagex.SageAPI.call("GetFavoriteProperties", new Object[] {Favorite});
+  if (o!=null) return (java.util.Properties) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a java.util.Properties object that has all of the user-set properties for this Favorite in it.
+
+Parameters:
+Favorite- the Favorite object
+Returns:
+a java.util.Properties object that has all of the user-set properties for this Favorite in it; this is a copy of the original one so it is safe to modify it
+Since:
+7.1
+ */
+public static java.util.Properties GetFavoriteProperties (UIContext _uicontext,Object Favorite) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetFavoriteProperties", new Object[] {Favorite});
+  if (o!=null) return (java.util.Properties) o;
+  return null;
 }
 
 }

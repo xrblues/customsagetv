@@ -20,6 +20,14 @@
   </Package>
 
   <ReleaseNotes>
+7.1.5
+* Refreshed the APIs
+* Updated Event Constants to reflect new events in 7.1.5
+* Added SeriesInfo lookups via json (ie, series:SeriesInfoID)
+* Added Favorite lookups vis json (ie, favorite:FavoriteID)
+* Added Plugin lookups vis json (ie, plugin:PluginID)
+* Added scaling processing to logos, albumart, and thumbnails
+
 7.0.23.6
 * Added serialization for SeriesInfo from skiingwiz
 

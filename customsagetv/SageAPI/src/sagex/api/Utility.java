@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 04/12/10 4:02 PM
+ * Generated Date/Time: 12/03/11 8:10 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1645,6 +1645,115 @@ public static Object LoadImage (UIContext _uicontext,java.lang.Object Resource) 
 }
 
 /**
+Saves a MetaImage object to a file using the specified image size. The supported formats are JPG and PNG. The format is determined by the file extension, which must be either .jpg or .png.
+ Use zero for the width and height to save it at the original image size.
+ NOTE: This call is a NOOP on embedded platforms
+
+Parameters:
+MetaImage- the MetaImage object that should be saved to the specified file
+File- the file to save the image to
+Width- the width to use in the saved image file
+Height- the height to use in the saved image file
+Returns:
+returns true on success or false on failure
+Since:
+7.1
+ */
+public static boolean SaveImageToFile (Object MetaImage, java.io.File File, int Width, int Height) {
+  Object o = sagex.SageAPI.call("SaveImageToFile", new Object[] {MetaImage,File,Width,Height});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Saves a MetaImage object to a file using the specified image size. The supported formats are JPG and PNG. The format is determined by the file extension, which must be either .jpg or .png.
+ Use zero for the width and height to save it at the original image size.
+ NOTE: This call is a NOOP on embedded platforms
+
+Parameters:
+MetaImage- the MetaImage object that should be saved to the specified file
+File- the file to save the image to
+Width- the width to use in the saved image file
+Height- the height to use in the saved image file
+Returns:
+returns true on success or false on failure
+Since:
+7.1
+ */
+public static boolean SaveImageToFile (UIContext _uicontext,Object MetaImage, java.io.File File, int Width, int Height) {
+  Object o = sagex.SageAPI.call(_uicontext, "SaveImageToFile", new Object[] {MetaImage,File,Width,Height});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+Returns the file path that a MetaImage was loaded from. Since not all MetaImage objects come from file paths, this will return null for any non-file based images.
+
+Parameters:
+MetaImage- the MetaImage to get the file path for
+Returns:
+the file path for the specified MetaImage, or null if it wasn't loaded from a file path
+Since:
+7.1
+ */
+public static java.io.File GetMetaImageSourceFile (Object MetaImage) {
+  Object o = sagex.SageAPI.call("GetMetaImageSourceFile", new Object[] {MetaImage});
+  if (o!=null) return (java.io.File) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the file path that a MetaImage was loaded from. Since not all MetaImage objects come from file paths, this will return null for any non-file based images.
+
+Parameters:
+MetaImage- the MetaImage to get the file path for
+Returns:
+the file path for the specified MetaImage, or null if it wasn't loaded from a file path
+Since:
+7.1
+ */
+public static java.io.File GetMetaImageSourceFile (UIContext _uicontext,Object MetaImage) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetMetaImageSourceFile", new Object[] {MetaImage});
+  if (o!=null) return (java.io.File) o;
+  return null;
+}
+
+/**
+Returns true if the argument is a MetaImage object.
+
+Parameters:
+MetaImage- the Object to test
+Returns:
+true if the argument is a MetaImage object, false otherwise
+Since:
+7.1
+ */
+public static boolean IsMetaImage (java.lang.Object MetaImage) {
+  Object o = sagex.SageAPI.call("IsMetaImage", new Object[] {MetaImage});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns true if the argument is a MetaImage object.
+
+Parameters:
+MetaImage- the Object to test
+Returns:
+true if the argument is a MetaImage object, false otherwise
+Since:
+7.1
+ */
+public static boolean IsMetaImage (UIContext _uicontext,java.lang.Object MetaImage) {
+  Object o = sagex.SageAPI.call(_uicontext, "IsMetaImage", new Object[] {MetaImage});
+  if (o!=null) return (Boolean) o;
+  return false;
+}
+
+/**
 Returns a java.awt.image.BufferedImage object. This can be used to load images from URLs, JAR resources or the file system.
 
 
@@ -2850,6 +2959,87 @@ public static boolean IsImportableFileType (UIContext _uicontext,java.lang.Strin
 }
 
 /**
+Returns the subnet mask for the currently configured network adapter.
+ NOTE: This is only valid on embedded platforms.
+
+Returns:
+the subnet mask for the currently configured network adapter
+ */
+public static java.lang.String GetSubnetMask () {
+  Object o = sagex.SageAPI.call("GetSubnetMask", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the subnet mask for the currently configured network adapter.
+ NOTE: This is only valid on embedded platforms.
+
+Returns:
+the subnet mask for the currently configured network adapter
+ */
+public static java.lang.String GetSubnetMask (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetSubnetMask", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Returns the gateway address for the currently configured network adapter.
+ NOTE: This is only valid on embedded platforms.
+
+Returns:
+the gateway address for the currently configured network adapter
+ */
+public static java.lang.String GetGatewayAddress () {
+  Object o = sagex.SageAPI.call("GetGatewayAddress", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the gateway address for the currently configured network adapter.
+ NOTE: This is only valid on embedded platforms.
+
+Returns:
+the gateway address for the currently configured network adapter
+ */
+public static java.lang.String GetGatewayAddress (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetGatewayAddress", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Returns the DNS address for the currently configured network adapter.
+ NOTE: This is only valid on embedded platforms.
+
+Returns:
+the DNS address for the currently configured network adapter
+ */
+public static java.lang.String GetDNSAddress () {
+  Object o = sagex.SageAPI.call("GetDNSAddress", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns the DNS address for the currently configured network adapter.
+ NOTE: This is only valid on embedded platforms.
+
+Returns:
+the DNS address for the currently configured network adapter
+ */
+public static java.lang.String GetDNSAddress (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetDNSAddress", (Object[])null);
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
 Guesses what media type the specified filename corresponds to. It does this based on the configuration 
  for the import library file types.
 
@@ -2925,6 +3115,37 @@ public static int TestPlaceshifterConnectivity (UIContext _uicontext,java.lang.S
   Object o = sagex.SageAPI.call(_uicontext, "TestPlaceshifterConnectivity", new Object[] {LocatorID});
   if (o!=null) return (Integer) o;
   return 0;
+}
+
+/**
+Connects to the SageTV Locator server and submits the specified Locator ID for a IP lookup. The Locator server will
+ then lookup the IP for that GUID and report it back.
+
+Parameters:
+LocatorID- the GUID that should be used for the lookup
+Returns:
+an String of IP address:port or null if the lookup failed
+ */
+public static java.lang.String LookupIPForLocatorID (java.lang.String LocatorID) {
+  Object o = sagex.SageAPI.call("LookupIPForLocatorID", new Object[] {LocatorID});
+  if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Connects to the SageTV Locator server and submits the specified Locator ID for a IP lookup. The Locator server will
+ then lookup the IP for that GUID and report it back.
+
+Parameters:
+LocatorID- the GUID that should be used for the lookup
+Returns:
+an String of IP address:port or null if the lookup failed
+ */
+public static java.lang.String LookupIPForLocatorID (UIContext _uicontext,java.lang.String LocatorID) {
+  Object o = sagex.SageAPI.call(_uicontext, "LookupIPForLocatorID", new Object[] {LocatorID});
+  if (o!=null) return (java.lang.String) o;
+  return null;
 }
 
 /**
@@ -3495,6 +3716,23 @@ public static java.lang.String CalculateMD5Sum (UIContext _uicontext,java.io.Fil
 }
 
 /**
+Reloads the name server cache. Should be used after reconfiguring the network adapter.
+ NOTE: This is only valid on embedded platforms.
+ */
+public static void ReloadNameserverCache () {
+   sagex.SageAPI.call("ReloadNameserverCache", (Object[])null);
+}
+
+/**
+ * UI Context Aware Call<br/>
+Reloads the name server cache. Should be used after reconfiguring the network adapter.
+ NOTE: This is only valid on embedded platforms.
+ */
+public static void ReloadNameserverCache (UIContext _uicontext) {
+   sagex.SageAPI.call(_uicontext, "ReloadNameserverCache", (Object[])null);
+}
+
+/**
 Returns the amount of time in milliseconds since the last user input occurred for this UI (used for doing things while the user is idle)
 
 Returns:
@@ -3716,6 +3954,39 @@ Since:
 public static java.lang.String QueryServerMacAddress (UIContext _uicontext,java.lang.String Hostname) {
   Object o = sagex.SageAPI.call(_uicontext, "QueryServerMacAddress", new Object[] {Hostname});
   if (o!=null) return (java.lang.String) o;
+  return null;
+}
+
+/**
+Scans for wireless access points and returns the results as a map. The keys are the SSID names and the values are Security;Strength where
+ Security will be WEP/WPA/None and strength will be an integer between 0 and 100
+ NOTE: This is only valid on embedded platforms.
+
+Returns:
+a Map describing the results of the access point scan
+Since:
+6.6
+ */
+public static java.util.Map ScanWirelessAPs () {
+  Object o = sagex.SageAPI.call("ScanWirelessAPs", (Object[])null);
+  if (o!=null) return (java.util.Map) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Scans for wireless access points and returns the results as a map. The keys are the SSID names and the values are Security;Strength where
+ Security will be WEP/WPA/None and strength will be an integer between 0 and 100
+ NOTE: This is only valid on embedded platforms.
+
+Returns:
+a Map describing the results of the access point scan
+Since:
+6.6
+ */
+public static java.util.Map ScanWirelessAPs (UIContext _uicontext) {
+  Object o = sagex.SageAPI.call(_uicontext, "ScanWirelessAPs", (Object[])null);
+  if (o!=null) return (java.util.Map) o;
   return null;
 }
 

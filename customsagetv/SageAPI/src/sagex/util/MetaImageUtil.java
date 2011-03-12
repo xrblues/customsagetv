@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import sagex.SageAPI;
 import sagex.api.MediaFileAPI;
+import sagex.api.Utility;
 import sagex.api.WidgetAPI;
 
 public class MetaImageUtil {
@@ -25,6 +26,7 @@ public class MetaImageUtil {
 	 */
 	public static File getThumbnailImageFile(Object file, long checkdelay, long waitms) throws FileNotFoundException {
 		if (file==null) throw new FileNotFoundException("No Image");
+		
 		int mfid = MediaFileAPI.GetMediaFileID(file);
 
 		if (!MediaFileAPI.HasAnyThumbnail(file)) throw new FileNotFoundException("No available thumbnail for " + mfid);
@@ -37,6 +39,12 @@ public class MetaImageUtil {
 		// force the thubmanil to load
 		Object mi = MediaFileAPI.GetThumbnail(file);
 		if (mi==null) throw new FileNotFoundException("No Thumbnail for: " + mfid);
+		
+		// try Sage7 api for 
+		File f = Utility.GetMetaImageSourceFile(mi);
+		if (f!=null) {
+			return waitForImage(f, checkdelay, waitms);
+		}
 		
 		// now wait for it to load
 		// MetaImage[MediaFileThumbnail[MediaFile[id=650447 A[650450,650448,"IMG_20100721_112056",0@0721.11:20,0] mask=P host=sean-desktop encodedBy= format=JPEG 0:00:00 0 kbps [] /home/sean/BETA/MEDIA/Images/IMG_20100721_112056.jpg, Seg0[Wed 7/21 11:20:55.999-Wed 7/21 11:20:56.000]
@@ -75,5 +83,28 @@ public class MetaImageUtil {
 		}
 		
 		return image;
+	}
+
+	private static File waitForImage(File f, long checkdelay, long waitms) throws FileNotFoundException {
+		if (f==null) throw new FileNotFoundException("No Image");
+		
+		if (f.exists()) return f;
+		
+		long timeout = System.currentTimeMillis() + waitms;
+		do {
+			if (f.exists()) break;
+			
+			if (System.currentTimeMillis()<timeout) {
+				//log.debug("waiting for image to be created: " + f);
+				try {
+					Thread.sleep(checkdelay);
+				} catch (InterruptedException e) {
+				}
+			}
+		} while (System.currentTimeMillis()<timeout);
+
+		if (!f.exists()) throw new FileNotFoundException("File wasn't created " + f);
+		
+		return f;
 	}
 }
