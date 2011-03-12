@@ -1,0 +1,8 @@
+
+Clean up Titles task (basically add/remove relative path to/from titles)
+
+# create thumbnail at specific location
+mplayer -ss 1500 -nosound -vo jpeg -vf scale=320:320 -frames 1 TheMentalist-RedGold-2493037-0.ts
+
+# montage to stitch together several files
+http://www.imagemagick.org/script/montage.php

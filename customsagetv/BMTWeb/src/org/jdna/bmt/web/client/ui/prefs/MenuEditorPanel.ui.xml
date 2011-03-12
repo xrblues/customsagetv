@@ -1,0 +1,19 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:org.jdna.bmt.web.client.ui.util">
+	<ui:style>
+		.panel {
+		}
+	</ui:style>
+	<g:VerticalPanel styleName="{style.panel}" width="100%">
+		<my:HorizontalButtonBar width="100%">
+					<g:Button ui:field="new_menu">New Menu</g:Button>
+					<g:ListBox ui:field="menusList"/>			
+					<g:Button ui:field="save_menu">Save Menu</g:Button>
+		</my:HorizontalButtonBar>
+		<g:TextArea ui:field="menuXML" characterWidth="80" visibleLines="50"/>
+		
+		
+
+	</g:VerticalPanel></ui:UiBinder> 

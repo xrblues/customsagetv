@@ -166,10 +166,13 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 				}
 				Object sageMedia = r.getMediaObject();
 				if (sageMedia != null) {
-					int id = MediaFileAPI.GetMediaFileID(sageMedia);
+					int mfid = MediaFileAPI.GetMediaFileID(sageMedia);
+					int arid = AiringAPI.GetAiringID(sageMedia);
 					Map<String,String> args= new HashMap<String, String>();
-					if (id>0) {
-						args.put(AdvancedFanartMediaRequestHandler.PARAM_MEDIAFILE, String.valueOf(id));
+					if (mfid>0) {
+						args.put(AdvancedFanartMediaRequestHandler.PARAM_MEDIAFILE, String.valueOf(mfid));
+					} else if (arid>0) {
+						args.put(AdvancedFanartMediaRequestHandler.PARAM_MEDIAFILE, String.valueOf(arid));
 					} else {
 						if (MetadataUtil.isRecordedMovie((IMediaFile) r)) {
 							args.put(AdvancedFanartMediaRequestHandler.PARAM_MEDIATYPE, MediaType.MOVIE.name());
@@ -187,8 +190,8 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 					}
 					
 					file.setThumbnailUrl(UrlUtil.buildURL("fanart", args));
-					file.setSageMediaFileId(id);
-					file.setAiringId(String.valueOf(AiringAPI.GetAiringID(sageMedia)));
+					file.setSageMediaFileId(mfid);
+					file.setAiringId(String.valueOf(arid));
 					file.setShowId(ShowAPI.GetShowExternalID(sageMedia));
 					File f = new File(phoenix.api.GetFanartBackgroundPath(sageMedia));
 					f = f.getParentFile();

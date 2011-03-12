@@ -683,4 +683,14 @@ public class BrowsePanel extends Composite implements BrowserView {
 			}
 		});
 	}
+
+	public void view(GWTMediaResource res) {
+		setDisplay(new ViewAiringItemDetails(
+				(GWTMediaFile) res, this));
+	}
+
+	public void edit(GWTMediaResource res) {
+		setDisplay(new MediaEditorMetadataPanel(
+				(GWTMediaFile) res, this));
+	}
 }

@@ -67,6 +67,8 @@
 				<g:Label text="Actors" styleName="{style.label}"/>
 				<g:HTMLPanel ui:field="actors"/>
 				-->
+				<g:Label text="Airing Id" styleName="{style.label}"/>
+				<g:Label ui:field="airingid"/>
 			</g:VerticalPanel>
 		</g:HorizontalPanel>
 		</g:Cell>

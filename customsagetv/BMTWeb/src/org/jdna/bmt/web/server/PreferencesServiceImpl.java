@@ -1,5 +1,6 @@
 package org.jdna.bmt.web.server;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -36,9 +37,13 @@ import sagex.api.ChannelAPI;
 import sagex.api.Configuration;
 import sagex.api.Global;
 import sagex.api.PluginAPI;
+import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.Group;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.NewSearchGroup;
+import sagex.phoenix.menu.Menu;
+import sagex.phoenix.menu.MenuBuilder;
+import sagex.phoenix.menu.XmlMenuSerializer;
 import sagex.phoenix.plugin.PhoenixPlugin;
 import sagex.phoenix.util.PropertiesUtils;
 import sagex.phoenix.util.SortedProperties;
@@ -537,5 +542,33 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public ArrayList<String> getMenus() {
+		ArrayList<String> l = new ArrayList<String>();
+		for (Menu m: Phoenix.getInstance().getMenuManager().getMenus()) {
+			l.add(m.getId());
+		}
+		return l;
+	}
+
+	@Override
+	public String loadMenu(String id) {
+		Menu m = Phoenix.getInstance().getMenuManager().getMenu(id);
+		XmlMenuSerializer ser= new XmlMenuSerializer();
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		try {
+			ser.serialize(m, os);
+		} catch (IOException e) {
+			log.warn("Failed to load menu: " + m, e);
+			throw new RuntimeException("Unable to load menu");
+		}
+		return os.toString();
+	}
+
+	@Override
+	public String saveMenu(String menu) throws Exception {
+		return menu;
 	}
 }

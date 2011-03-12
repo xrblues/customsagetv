@@ -36,4 +36,8 @@ public interface PreferencesService extends RemoteService {
     public void refreshCustomMetadataFields();
     public ArrayList<PluginDetail> getPlugins(PluginQuery query);
     public PluginDetail getPluginDetails(String id);
+    
+    public ArrayList<String> getMenus();
+    public String loadMenu(String id);
+    public String saveMenu(String menu) throws Exception;
 }
