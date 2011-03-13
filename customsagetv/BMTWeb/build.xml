@@ -30,8 +30,12 @@
 
 	<path id="project.class.path">
 		<fileset dir="war/WEB-INF/lib" includes="**/*.jar" />
+		<!--
 		<fileset dir="${bmt.lib.dir}" includes="**/*.jar" />
 		<pathelement location="${bmt.core.lib}" />
+		-->
+		<pathelement location="${phoenix.lib}" />
+		
 		<pathelement location="${gwt.sdk}/gwt-user.jar" />
 		<fileset dir="${gwt.sdk}" includes="gwt-dev*.jar" />
 	</path>
