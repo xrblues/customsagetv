@@ -24,17 +24,26 @@ public class ServicesInit {
                 System.out.println("*** USING TEST PHOENIX DIR ****");
                 
                 try {
-                	String phoenixSrc = System.getProperty("PHOENIX_SRC", System.getenv("PHOENIX_SRC"));
-                    System.out.println("*** PHOENIX_SRC: " + phoenixSrc);
-                    if (phoenixSrc == null) {
-                    	System.out.println("*** Need to PHOENIX_SRC property to the Phoenix Project Src ** ");
-                    	return;
-                    }
-                    File project = new File(phoenixSrc);
-                    File phoenix = new File(project, "src/main/STVs/Phoenix/");
+                	File phoenixDir = new File("../../Phoenix");
+                	if (!phoenixDir.exists()) {
+                		phoenixDir = new File("../Phoenix");
+                	}
+                	
+                	if (!phoenixDir.exists()) {
+	                	String phoenixSrc = System.getProperty("PHOENIX_SRC", System.getenv("PHOENIX_SRC"));
+	                    System.out.println("*** PHOENIX_SRC: " + phoenixSrc);
+	                    if (phoenixSrc == null) {
+	                    	System.out.println("*** Need to PHOENIX_SRC property to the Phoenix Project Src ** ");
+	                    	return;
+	                    }
+	                    phoenixDir = new File(phoenixSrc);
+                	}
+                	
+                    File phoenix = new File(phoenixDir, "src/main/STVs/Phoenix/");
                     if (!phoenix.exists()) {
                     	throw new IOException("Invalid Phoenix Dir: " + phoenix);
                     }
+                    
                     System.out.println("*** BEGIN Copying Phoenix files for Testing from " + phoenix);
                     FileUtils.copyDirectory(phoenix, new File("testing/Phoenix/"), new FileFilter() {
 						@Override
