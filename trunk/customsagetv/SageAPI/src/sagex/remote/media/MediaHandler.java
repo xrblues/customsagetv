@@ -205,7 +205,10 @@ public class MediaHandler implements SageHandler {
 	public static void writeSageImageFile(Object sageImage, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (sageImage==null) throw new FileNotFoundException("No Image");
         // SEAN: Should block until the image is loaded
-        sageImage = Utility.LoadImage(sageImage);
+        Object newImage = Utility.LoadImage(sageImage);
+        if (newImage!=null) {
+        	sageImage = newImage;
+        }
         
         BufferedImage img = null;
         int scale[] = ScaleUtils.getScaleFromRequest(req);
@@ -213,6 +216,9 @@ public class MediaHandler implements SageHandler {
         	img = Utility.GetImageAsBufferedImage(sageImage);
         } else {
         	img = Utility.GetScaledImageAsBufferedImage(sageImage, scale[0], scale[1]);
+        	if (img==null) {
+            	img = Utility.GetImageAsBufferedImage(sageImage);
+        	}
         }
         
         if (img==null) throw new FileNotFoundException("Unable to get BufferedImage");

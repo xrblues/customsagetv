@@ -20,6 +20,9 @@
   </Package>
 
   <ReleaseNotes>
+7.1.5.1
+* Fixed bug in MediaHandler that prevented it from working in 7.0x in some cases (album art) 
+
 7.1.5
 * Refreshed the APIs
 * Updated Event Constants to reflect new events in 7.1.5
