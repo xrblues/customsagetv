@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 12/03/11 8:10 AM
+ * Generated Date/Time: 19/03/11 9:16 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AiringAPI.html'>AiringAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1457,6 +1457,57 @@ Since:
  */
 public static Object AddAiringDetailed (UIContext _uicontext,java.lang.String ShowExternalID, int StationID, long StartTime, long Duration, int PartNumber, int TotalParts, java.lang.String ParentalRating, boolean HDTV, boolean Stereo, boolean ClosedCaptioning, boolean SAP, boolean Subtitled, java.lang.String PremierFinale) {
   Object o = sagex.SageAPI.call(_uicontext, "AddAiringDetailed", new Object[] {ShowExternalID,StationID,StartTime,Duration,PartNumber,TotalParts,ParentalRating,HDTV,Stereo,ClosedCaptioning,SAP,Subtitled,PremierFinale});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+Adds a new Airing object to the database. This call should be used with caution. (it has more details you can specify than the
+ standard AddAiring API call)
+
+Parameters:
+ShowExternalID- a GUID which uniquely identifies the Show that correlates with this Airing, this Show should already have been added
+StationID- the GUID which uniquely identifies a "Station" (sort of like a Channel)
+StartTime- the time at which the new Airing starts
+Duration- the duration of the new Airing in milliseconds
+PartNumber- for music files, the track number; for TV shows if it is a multipart show this is the part number, otherwise this should be 0
+TotalParts- for multipart TV shows, this is the total number of parts otherwise this should be zero; for music files it should be zero
+ParentalRating- the parental rating for the show, should be a localized value from "TVY", "TVY7", "TVG", "TVPG", "TV14", "TVM" or the empty string
+Attributes- a list of attributes for this Airing, the following values may be used: HDTV, Stereo, CC, SAP, Subtitled, 3D, DD5.1, Dolby, Letterbox, Live, New, Widescreen, Surround, Dubbed or Taped
+PremierFinale- should be the empty string or a localized value from the list "Premiere", "Channel Premiere", "Season Premiere", "Series Premiere", "Season Finale", "Series Finale"
+Returns:
+the newly added Airing
+Since:
+7.1
+ */
+public static Object AddAiringDetailed (java.lang.String ShowExternalID, int StationID, long StartTime, long Duration, int PartNumber, int TotalParts, java.lang.String ParentalRating, java.lang.String[] Attributes, java.lang.String PremierFinale) {
+  Object o = sagex.SageAPI.call("AddAiringDetailed", new Object[] {ShowExternalID,StationID,StartTime,Duration,PartNumber,TotalParts,ParentalRating,Attributes,PremierFinale});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Adds a new Airing object to the database. This call should be used with caution. (it has more details you can specify than the
+ standard AddAiring API call)
+
+Parameters:
+ShowExternalID- a GUID which uniquely identifies the Show that correlates with this Airing, this Show should already have been added
+StationID- the GUID which uniquely identifies a "Station" (sort of like a Channel)
+StartTime- the time at which the new Airing starts
+Duration- the duration of the new Airing in milliseconds
+PartNumber- for music files, the track number; for TV shows if it is a multipart show this is the part number, otherwise this should be 0
+TotalParts- for multipart TV shows, this is the total number of parts otherwise this should be zero; for music files it should be zero
+ParentalRating- the parental rating for the show, should be a localized value from "TVY", "TVY7", "TVG", "TVPG", "TV14", "TVM" or the empty string
+Attributes- a list of attributes for this Airing, the following values may be used: HDTV, Stereo, CC, SAP, Subtitled, 3D, DD5.1, Dolby, Letterbox, Live, New, Widescreen, Surround, Dubbed or Taped
+PremierFinale- should be the empty string or a localized value from the list "Premiere", "Channel Premiere", "Season Premiere", "Series Premiere", "Season Finale", "Series Finale"
+Returns:
+the newly added Airing
+Since:
+7.1
+ */
+public static Object AddAiringDetailed (UIContext _uicontext,java.lang.String ShowExternalID, int StationID, long StartTime, long Duration, int PartNumber, int TotalParts, java.lang.String ParentalRating, java.lang.String[] Attributes, java.lang.String PremierFinale) {
+  Object o = sagex.SageAPI.call(_uicontext, "AddAiringDetailed", new Object[] {ShowExternalID,StationID,StartTime,Duration,PartNumber,TotalParts,ParentalRating,Attributes,PremierFinale});
   if (o!=null) return (Object) o;
   return null;
 }

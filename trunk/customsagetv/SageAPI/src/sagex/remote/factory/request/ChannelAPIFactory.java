@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 12/03/11 8:10 AM
+ * Generated Date/Time: 19/03/11 9:16 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ChannelAPIFactory.html'>ChannelAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -68,7 +68,20 @@ public class ChannelAPIFactory {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetStationID",parameters,Object.class);
    }
    if (command.equals("GetChannelLogo")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetChannelLogo",parameters,Object.class);
+      if (parameters!=null && parameters.length == 1) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "GetChannelLogo", parameters, Object.class);
+      }
+      if (parameters!=null && parameters.length == 4) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "GetChannelLogo", parameters, Object.class,java.lang.String.class,int.class,boolean.class);
+      }
+   }
+   if (command.equals("GetChannelLogo")) {
+      if (parameters!=null && parameters.length == 1) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "GetChannelLogo", parameters, Object.class);
+      }
+      if (parameters!=null && parameters.length == 4) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "GetChannelLogo", parameters, Object.class,java.lang.String.class,int.class,boolean.class);
+      }
    }
    if (command.equals("IsChannelObject")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsChannelObject",parameters,Object.class);

@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 12/03/11 8:10 AM
+ * Generated Date/Time: 19/03/11 9:16 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ChannelAPI.html'>ChannelAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -567,6 +567,45 @@ the logo image for the Channel
  */
 public static Object GetChannelLogo (UIContext _uicontext,Object Channel) {
   Object o = sagex.SageAPI.call(_uicontext, "GetChannelLogo", new Object[] {Channel});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+Returns a Channel logo for the requested Channel if one exists. This can provide more detailed requests then the single argument GetChannelLogo call.
+
+Parameters:
+Channel- the Channel object
+Type- the type of image, can be one of "Small", "Med" or "Large" (all logos have all sizes available, w/ the exception of user-supplied logos)
+Index- the 0-based index of the image to retrieve when multiple images exist for a given Type (there are only ever 0, 1 or 2 logos for a channel)
+Fallback- should be true if an alternate image is allowed (this enables checking user-supplied logos first, as well as falling back to the primary logo if a secondary one is requested but does not exist)
+Returns:
+a MetaImage corresponding to the requested image, or null if no image matching the requested parameters is found or an invalid Type is specified
+Since:
+7.1
+ */
+public static Object GetChannelLogo (Object Channel, java.lang.String Type, int Index, boolean Fallback) {
+  Object o = sagex.SageAPI.call("GetChannelLogo", new Object[] {Channel,Type,Index,Fallback});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Returns a Channel logo for the requested Channel if one exists. This can provide more detailed requests then the single argument GetChannelLogo call.
+
+Parameters:
+Channel- the Channel object
+Type- the type of image, can be one of "Small", "Med" or "Large" (all logos have all sizes available, w/ the exception of user-supplied logos)
+Index- the 0-based index of the image to retrieve when multiple images exist for a given Type (there are only ever 0, 1 or 2 logos for a channel)
+Fallback- should be true if an alternate image is allowed (this enables checking user-supplied logos first, as well as falling back to the primary logo if a secondary one is requested but does not exist)
+Returns:
+a MetaImage corresponding to the requested image, or null if no image matching the requested parameters is found or an invalid Type is specified
+Since:
+7.1
+ */
+public static Object GetChannelLogo (UIContext _uicontext,Object Channel, java.lang.String Type, int Index, boolean Fallback) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetChannelLogo", new Object[] {Channel,Type,Index,Fallback});
   if (o!=null) return (Object) o;
   return null;
 }

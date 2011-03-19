@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 12/03/11 8:10 AM
+ * Generated Date/Time: 19/03/11 9:16 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ShowAPIFactory.html'>ShowAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -113,7 +113,20 @@ public class ShowAPIFactory {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowLanguage",parameters,Object.class);
    }
    if (command.equals("AddShow")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AddShow",parameters,java.lang.String.class,boolean.class,java.lang.String.class,java.lang.String.class,long.class,java.lang.String.class,java.lang.String.class,java.lang.String[].class,java.lang.String[].class,java.lang.String.class,java.lang.String[].class,java.lang.String.class,java.lang.String.class,java.lang.String[].class,java.lang.String.class,java.lang.String.class,long.class);
+      if (parameters!=null && parameters.length == 17) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "AddShow", parameters, java.lang.String.class,boolean.class,java.lang.String.class,java.lang.String.class,long.class,java.lang.String.class,java.lang.String.class,java.lang.String[].class,java.lang.String[].class,java.lang.String.class,java.lang.String[].class,java.lang.String.class,java.lang.String.class,java.lang.String[].class,java.lang.String.class,java.lang.String.class,long.class);
+      }
+      if (parameters!=null && parameters.length == 18) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "AddShow", parameters, java.lang.String.class,boolean.class,java.lang.String.class,java.lang.String.class,long.class,java.lang.String[].class,java.lang.String[].class,java.lang.String[].class,java.lang.String.class,java.lang.String[].class,java.lang.String.class,java.lang.String.class,java.lang.String[].class,java.lang.String.class,java.lang.String.class,long.class,int.class,int.class);
+      }
+   }
+   if (command.equals("AddShow")) {
+      if (parameters!=null && parameters.length == 17) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "AddShow", parameters, java.lang.String.class,boolean.class,java.lang.String.class,java.lang.String.class,long.class,java.lang.String.class,java.lang.String.class,java.lang.String[].class,java.lang.String[].class,java.lang.String.class,java.lang.String[].class,java.lang.String.class,java.lang.String.class,java.lang.String[].class,java.lang.String.class,java.lang.String.class,long.class);
+      }
+      if (parameters!=null && parameters.length == 18) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "AddShow", parameters, java.lang.String.class,boolean.class,java.lang.String.class,java.lang.String.class,long.class,java.lang.String[].class,java.lang.String[].class,java.lang.String[].class,java.lang.String.class,java.lang.String[].class,java.lang.String.class,java.lang.String.class,java.lang.String[].class,java.lang.String.class,java.lang.String.class,long.class,int.class,int.class);
+      }
    }
    if (command.equals("GetAiringsForShow")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetAiringsForShow",parameters,Object.class,long.class);
