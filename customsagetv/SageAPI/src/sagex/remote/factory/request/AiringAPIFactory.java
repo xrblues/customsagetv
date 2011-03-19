@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 12/03/11 8:10 AM
+ * Generated Date/Time: 19/03/11 9:16 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AiringAPIFactory.html'>AiringAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -158,7 +158,20 @@ public class AiringAPIFactory {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AddAiring",parameters,java.lang.String.class,int.class,long.class,long.class);
    }
    if (command.equals("AddAiringDetailed")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"AddAiringDetailed",parameters,java.lang.String.class,int.class,long.class,long.class,int.class,int.class,java.lang.String.class,boolean.class,boolean.class,boolean.class,boolean.class,boolean.class,java.lang.String.class);
+      if (parameters!=null && parameters.length == 13) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "AddAiringDetailed", parameters, java.lang.String.class,int.class,long.class,long.class,int.class,int.class,java.lang.String.class,boolean.class,boolean.class,boolean.class,boolean.class,boolean.class,java.lang.String.class);
+      }
+      if (parameters!=null && parameters.length == 9) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "AddAiringDetailed", parameters, java.lang.String.class,int.class,long.class,long.class,int.class,int.class,java.lang.String.class,java.lang.String[].class,java.lang.String.class);
+      }
+   }
+   if (command.equals("AddAiringDetailed")) {
+      if (parameters!=null && parameters.length == 13) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "AddAiringDetailed", parameters, java.lang.String.class,int.class,long.class,long.class,int.class,int.class,java.lang.String.class,boolean.class,boolean.class,boolean.class,boolean.class,boolean.class,java.lang.String.class);
+      }
+      if (parameters!=null && parameters.length == 9) {
+         return sagex.remote.xmlrpc.RequestHelper.createRequest(context, "AddAiringDetailed", parameters, java.lang.String.class,int.class,long.class,long.class,int.class,int.class,java.lang.String.class,java.lang.String[].class,java.lang.String.class);
+      }
    }
    if (command.equals("IsAiringAttributeSet")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"IsAiringAttributeSet",parameters,Object.class,java.lang.String.class);

@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 12/03/11 8:10 AM
+ * Generated Date/Time: 19/03/11 9:16 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -62,6 +62,7 @@ static {
    commands.put("GetAiringID","AiringAPI");
    commands.put("GetAiringForID","AiringAPI");
    commands.put("AddAiring","AiringAPI");
+   commands.put("AddAiringDetailed","AiringAPI");
    commands.put("AddAiringDetailed","AiringAPI");
    commands.put("IsAiringAttributeSet","AiringAPI");
    commands.put("GetAiringAttributeList","AiringAPI");
@@ -160,6 +161,7 @@ static {
    commands.put("IsPhysicalChannelRemappedOnLineup","ChannelAPI");
    commands.put("SetPhysicalChannelMappingForLineup","ChannelAPI");
    commands.put("GetStationID","ChannelAPI");
+   commands.put("GetChannelLogo","ChannelAPI");
    commands.put("GetChannelLogo","ChannelAPI");
    commands.put("IsChannelObject","ChannelAPI");
    commands.put("SetChannelViewabilityForChannelNumberOnLineup","ChannelAPI");
@@ -967,6 +969,7 @@ static {
    commands.put("IsShowFirstRun","ShowAPI");
    commands.put("IsShowReRun","ShowAPI");
    commands.put("GetShowLanguage","ShowAPI");
+   commands.put("AddShow","ShowAPI");
    commands.put("AddShow","ShowAPI");
    commands.put("GetAiringsForShow","ShowAPI");
    commands.put("GetShowForExternalID","ShowAPI");

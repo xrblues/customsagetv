@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 12/03/11 8:10 AM
+ * Generated Date/Time: 19/03/11 9:16 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ShowAPI.html'>ShowAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1082,6 +1082,77 @@ the newly created Show object
  */
 public static Object AddShow (UIContext _uicontext,java.lang.String Title, boolean IsFirstRun, java.lang.String Episode, java.lang.String Description, long Duration, java.lang.String Category, java.lang.String SubCategory, java.lang.String[] PeopleList, java.lang.String[] RolesListForPeopleList, java.lang.String Rated, java.lang.String[] ExpandedRatingsList, java.lang.String Year, java.lang.String ParentalRating, java.lang.String[] MiscList, java.lang.String ExternalID, java.lang.String Language, long OriginalAirDate) {
   Object o = sagex.SageAPI.call(_uicontext, "AddShow", new Object[] {Title,IsFirstRun,Episode,Description,Duration,Category,SubCategory,PeopleList,RolesListForPeopleList,Rated,ExpandedRatingsList,Year,ParentalRating,MiscList,ExternalID,Language,OriginalAirDate});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+Adds a new Show to the database. Null or the empty string ("") can be passed in for any unneeded fields.
+
+Parameters:
+Title- the title of the Show (for music this should be album name)
+IsFirstRun- true if this Show is a first run, false otherwise (this parameter has no effect anymore since Airings determine first/rerun status)
+Episode- the episode name for this Show (for music this should be the song title)
+Description- the description of the Show
+Duration- the duration of the Show, not necessary and can be zero; this is only used for indicating differences between Airing duration and the actual content duration
+Categories- an array of the categories of the Show (should be genre for music)
+PeopleList- a list of all of the people in the Show, the roles of the people should correspond to the RolesListForPeopleList argument
+RolesListForPeopleList- a list of the roles for the people in the Show, this should correspond to the PeopleList argument
+Rated- the rating for the Show seeGetShowRated()
+
+ExpandedRatingsList- the expanded ratings list for the show, seeGetShowExpandedRatings()
+
+Year- the year of the Show
+ParentalRating- the parental rating for the Show (this is no longer used since Airing contains the parental rating)
+MiscList- miscellaneous metadata for the Show
+ExternalID- the global ID which should be used to uniquely identify this Show
+Language- the language for the Show
+OriginalAirDate- the original airing date of the Show
+SeasonNumber- the season number of the Show
+EpisodeNumber- the episode number for the specific season for the Show
+Returns:
+the newly created Show object
+Since:
+7.1
+ */
+public static Object AddShow (java.lang.String Title, boolean IsFirstRun, java.lang.String Episode, java.lang.String Description, long Duration, java.lang.String[] Categories, java.lang.String[] PeopleList, java.lang.String[] RolesListForPeopleList, java.lang.String Rated, java.lang.String[] ExpandedRatingsList, java.lang.String Year, java.lang.String ParentalRating, java.lang.String[] MiscList, java.lang.String ExternalID, java.lang.String Language, long OriginalAirDate, int SeasonNumber, int EpisodeNumber) {
+  Object o = sagex.SageAPI.call("AddShow", new Object[] {Title,IsFirstRun,Episode,Description,Duration,Categories,PeopleList,RolesListForPeopleList,Rated,ExpandedRatingsList,Year,ParentalRating,MiscList,ExternalID,Language,OriginalAirDate,SeasonNumber,EpisodeNumber});
+  if (o!=null) return (Object) o;
+  return null;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Adds a new Show to the database. Null or the empty string ("") can be passed in for any unneeded fields.
+
+Parameters:
+Title- the title of the Show (for music this should be album name)
+IsFirstRun- true if this Show is a first run, false otherwise (this parameter has no effect anymore since Airings determine first/rerun status)
+Episode- the episode name for this Show (for music this should be the song title)
+Description- the description of the Show
+Duration- the duration of the Show, not necessary and can be zero; this is only used for indicating differences between Airing duration and the actual content duration
+Categories- an array of the categories of the Show (should be genre for music)
+PeopleList- a list of all of the people in the Show, the roles of the people should correspond to the RolesListForPeopleList argument
+RolesListForPeopleList- a list of the roles for the people in the Show, this should correspond to the PeopleList argument
+Rated- the rating for the Show seeGetShowRated()
+
+ExpandedRatingsList- the expanded ratings list for the show, seeGetShowExpandedRatings()
+
+Year- the year of the Show
+ParentalRating- the parental rating for the Show (this is no longer used since Airing contains the parental rating)
+MiscList- miscellaneous metadata for the Show
+ExternalID- the global ID which should be used to uniquely identify this Show
+Language- the language for the Show
+OriginalAirDate- the original airing date of the Show
+SeasonNumber- the season number of the Show
+EpisodeNumber- the episode number for the specific season for the Show
+Returns:
+the newly created Show object
+Since:
+7.1
+ */
+public static Object AddShow (UIContext _uicontext,java.lang.String Title, boolean IsFirstRun, java.lang.String Episode, java.lang.String Description, long Duration, java.lang.String[] Categories, java.lang.String[] PeopleList, java.lang.String[] RolesListForPeopleList, java.lang.String Rated, java.lang.String[] ExpandedRatingsList, java.lang.String Year, java.lang.String ParentalRating, java.lang.String[] MiscList, java.lang.String ExternalID, java.lang.String Language, long OriginalAirDate, int SeasonNumber, int EpisodeNumber) {
+  Object o = sagex.SageAPI.call(_uicontext, "AddShow", new Object[] {Title,IsFirstRun,Episode,Description,Duration,Categories,PeopleList,RolesListForPeopleList,Rated,ExpandedRatingsList,Year,ParentalRating,MiscList,ExternalID,Language,OriginalAirDate,SeasonNumber,EpisodeNumber});
   if (o!=null) return (Object) o;
   return null;
 }
