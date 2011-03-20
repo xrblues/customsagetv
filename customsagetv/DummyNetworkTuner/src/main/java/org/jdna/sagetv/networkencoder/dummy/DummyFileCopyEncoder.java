@@ -8,7 +8,7 @@ import org.jdna.sagetv.networkencoder.GetFileSizeCommand;
 import org.jdna.sagetv.networkencoder.INetworkEncoder;
 import org.jdna.sagetv.networkencoder.StartCommand;
 import org.jdna.sagetv.networkencoder.StopCommand;
-import org.jdna.sagetv.networkencoder.impl.dvb.linux.cmdline.CopyEncoder;
+import org.jdna.sagetv.networkencoder.util.CopyEncoder;
 
 /**
  * When a recording starts, it simply copies the source file to the destination file to provider a dummy recording.

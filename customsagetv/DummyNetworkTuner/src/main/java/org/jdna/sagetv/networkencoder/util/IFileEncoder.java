@@ -1,4 +1,4 @@
-package org.jdna.sagetv.networkencoder.impl.dvb.linux;
+package org.jdna.sagetv.networkencoder.util;
 
 import java.io.File;
 

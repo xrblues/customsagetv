@@ -1,4 +1,4 @@
-package org.jdna.sagetv.networkencoder.impl.dvb.linux.cmdline;
+package org.jdna.sagetv.networkencoder.util;
 
 public class WaitFor {
     public WaitFor() {

@@ -1,4 +1,4 @@
-package org.jdna.sagetv.networkencoder.impl.dvb.linux.cmdline;
+package org.jdna.sagetv.networkencoder.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -12,7 +12,6 @@ import java.io.OutputStream;
 import java.text.MessageFormat;
 
 import org.apache.log4j.Logger;
-import org.jdna.sagetv.networkencoder.impl.dvb.linux.IFileEncoder;
 
 public class CopyEncoder implements IFileEncoder {
 	public static final Logger logger = Logger.getLogger(CopyEncoder.class);
