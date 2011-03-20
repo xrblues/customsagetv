@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 19/03/11 9:16 AM
+ * Generated Date/Time: 20/03/11 9:05 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ShowAPI.html'>ShowAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1253,6 +1253,7 @@ public static Object GetShowSeriesInfo (UIContext _uicontext,Object Show) {
 }
 
 /**
+<i>NOTE: API Was Renamed from <b>GetSeasonNumber</b> to <b>GetShowSeasonNumber</b></i><br/></br>
 Returns the season number of the specified Show. For episodic content; sometimes a numeric value is given to the
  season. If that information exists, this will return it.
 
@@ -1263,14 +1264,15 @@ the season number of the specified Show, 0 if it is not set
 Since:
 7.1
  */
-public static int GetSeasonNumber (Object Show) {
-  Object o = sagex.SageAPI.call("GetSeasonNumber", new Object[] {Show});
+public static int GetShowSeasonNumber (Object Show) {
+  Object o = sagex.SageAPI.call("GetShowSeasonNumber", new Object[] {Show});
   if (o!=null) return (Integer) o;
   return 0;
 }
 
 /**
  * UI Context Aware Call<br/>
+<i>NOTE: API Was Renamed from <b>GetSeasonNumber</b> to <b>GetShowSeasonNumber</b></i><br/></br>
 Returns the season number of the specified Show. For episodic content; sometimes a numeric value is given to the
  season. If that information exists, this will return it.
 
@@ -1281,13 +1283,14 @@ the season number of the specified Show, 0 if it is not set
 Since:
 7.1
  */
-public static int GetSeasonNumber (UIContext _uicontext,Object Show) {
-  Object o = sagex.SageAPI.call(_uicontext, "GetSeasonNumber", new Object[] {Show});
+public static int GetShowSeasonNumber (UIContext _uicontext,Object Show) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetShowSeasonNumber", new Object[] {Show});
   if (o!=null) return (Integer) o;
   return 0;
 }
 
 /**
+<i>NOTE: API Was Renamed from <b>GetEpisodeNumber</b> to <b>GetShowEpisodeNumber</b></i><br/></br>
 Returns the episode number of the specified Show. For episodic content; sometimes a numeric value is given to the
  episode in a season. If that information exists, this will return it.
 
@@ -1298,14 +1301,15 @@ the episode number of the specified Show, 0 if it is not set
 Since:
 7.1
  */
-public static int GetEpisodeNumber (Object Show) {
-  Object o = sagex.SageAPI.call("GetEpisodeNumber", new Object[] {Show});
+public static int GetShowEpisodeNumber (Object Show) {
+  Object o = sagex.SageAPI.call("GetShowEpisodeNumber", new Object[] {Show});
   if (o!=null) return (Integer) o;
   return 0;
 }
 
 /**
  * UI Context Aware Call<br/>
+<i>NOTE: API Was Renamed from <b>GetEpisodeNumber</b> to <b>GetShowEpisodeNumber</b></i><br/></br>
 Returns the episode number of the specified Show. For episodic content; sometimes a numeric value is given to the
  episode in a season. If that information exists, this will return it.
 
@@ -1316,8 +1320,8 @@ the episode number of the specified Show, 0 if it is not set
 Since:
 7.1
  */
-public static int GetEpisodeNumber (UIContext _uicontext,Object Show) {
-  Object o = sagex.SageAPI.call(_uicontext, "GetEpisodeNumber", new Object[] {Show});
+public static int GetShowEpisodeNumber (UIContext _uicontext,Object Show) {
+  Object o = sagex.SageAPI.call(_uicontext, "GetShowEpisodeNumber", new Object[] {Show});
   if (o!=null) return (Integer) o;
   return 0;
 }

@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 19/03/11 9:16 AM
+ * Generated Date/Time: 20/03/11 9:05 AM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ShowAPIFactory.html'>ShowAPIFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -137,11 +137,11 @@ public class ShowAPIFactory {
    if (command.equals("GetShowSeriesInfo")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowSeriesInfo",parameters,Object.class);
    }
-   if (command.equals("GetSeasonNumber")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetSeasonNumber",parameters,Object.class);
+   if (command.equals("GetShowSeasonNumber")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowSeasonNumber",parameters,Object.class);
    }
-   if (command.equals("GetEpisodeNumber")) {
-      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetEpisodeNumber",parameters,Object.class);
+   if (command.equals("GetShowEpisodeNumber")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowEpisodeNumber",parameters,Object.class);
    }
    if (command.equals("GetShowImage")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"GetShowImage",parameters,Object.class,java.lang.String.class,int.class,int.class);
