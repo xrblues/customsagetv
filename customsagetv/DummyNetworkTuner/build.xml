@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="package" name="dummy-network-tuner" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<tstamp/>
+	
+	<property environment="env" />
+
+	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
+	<property file="${user.home}/AntCommon/build.properties" />
+	
+	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
+	<property file="build.properties" />
+	
+	<!-- sage.lib.dir should be defined in the build.properties -->
+	<!-- <property name="sage.lib.dir"/> -->
+	<!-- bmt.lib.dir should be defined in the build.properties -->
+	<!-- <property name="bmt.lib.dir"/> -->
+	<!-- bmt.core.lib should be defined in the build.properties -->
+	<!-- <property name="bmt.core.lib"/> -->
+	<!-- Configure path to GWT SDK  in the build .properties -->
+	<!-- <property name="gwt.sdk" location="" /> -->
+
+	<property name="src.dir" location="src" />
+	<property name="target" location="target" />
+	<property name="build.dir" location="${target}/build" />
+	<property name="dist.dir" location="${target}/dist" />
+
+	<property name="name" value="dummy-network-tuner" />
+	<property name="version" value="1.0" />
+	<property name="jarname" value="${name}.jar" />
+
+	<property name="createJAVADOC" value="true"/>
+	
+	<path id="AppClasspath">
+		<pathelement location="${sage.home}/Sage.jar" />
+		<pathelement location="target/classes" />
+		<fileset dir="lib" includes="*.jar" />
+	</path>
+
+	<target name="package" depends="init,build,jar,package-jar">
+	</target>
+
+	<target name="build">
+		<copy todir="target/classes">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
+		<javac debug="true" classpathref="AppClasspath" source="1.5" target="1.5" srcdir="src" destdir="target/classes">
+		</javac>
+	</target>
+
+	<target name="jar">
+		<jar destfile="${target}/${jarname}">
+			<fileset dir="${target}/classes" includes="org/**" />
+			<fileset dir="src" includes="*.properties" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Specification-Title" value="${name}" />
+				<attribute name="Specification-Version" value="${version}  ${TODAY}" />
+				<attribute name="Specification-Vendor" value="Sean Stuckless" />
+				<attribute name="Implementation-Title" value="${name}" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Vendor" value="Sean Stuckless" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="init" depends="clean">
+		<!-- <delete dir="cache" failonerror="false"/> -->
+		<mkdir dir="${target}" />
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${dist.dir}/packages" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src" excludes="**/*.launch, **/*.java" />
+		</copy>
+	</target>
+
+	<target name="clean">
+		<delete dir="target" />
+	</target>
+
+	<target name="package-jar">
+		<zip destfile="${dist.dir}/packages/${name}-${version}.zip">
+			<zipfileset file="${target}/${jarname}" prefix="" />
+		</zip>
+	</target>
+
+	<!-- Create the plugin's package for SageTV 7.0 and later -->
+	<target name="dist-plugin" depends="package" description="Creates all the zips, plugins, etc (calls basic jar packager as well)">
+		<copy tofile="${dist.dir}/packages/${name}-${version}.xml" file="src/main/resources/plugin/plugin-jar.xml" />
+
+		<checksum file="${dist.dir}/packages/${name}-${version}.zip" property="md5.jar" />
+
+		<tstamp>
+			<format property="last-modified" pattern="yyyy.MM.dd" />
+		</tstamp>
+
+		<replace file="${dist.dir}/packages/${name}-${version}.xml" summary="yes">
+			<replacefilter token="@@last-modified@@" value="${last-modified}" />
+			<replacefilter token="@@version@@" value="${version}" />
+			<replacefilter token="@@system-checksum@@" value="${md5.system}" />
+			<replacefilter token="@@jar-checksum@@" value="${md5.jar}" />
+		</replace>
+
+		<!-- copy to the s7 local dir for testing -->
+		<copy todir="${sage.home}/DeveloperPlugins/" failonerror="false">
+			<fileset dir="${dist.dir}/packages/"/>
+		</copy>
+	</target>
+
+	<target name="notify-sagetv-about-updated-plugins" depends="notify-sagetv-plugin" description="calls both the notify and notify services to let sage know that new plugins are available"/>
+	
+	<target name="notify-sagetv-plugin" description="Notifies SageTV about the new Plugin">
+		<get dest="target/slugger.zip" src="http://sagetv-addons.googlecode.com/files/slugger-dev-tools-0.0.1.zip"/>
+		<unzip dest="${user.home}/.ant/lib/" src="target/slugger.zip"/>
+        <taskdef classname="com.google.code.sagetvaddons.dev.ant.task.SageTvPluginSubmitter" name="sagesubmit">
+			<classpath>
+			      <fileset dir="${user.home}/.ant/lib/">
+			        <include name="**/*.jar"/>
+			      </fileset>
+			</classpath>
+        </taskdef>
+        <sagesubmit name="Sean Stuckless" user="${sage.forumuser}" email="sean.stuckless@gmail.com" pluginid="${name}" reqtype="UPGRADE" descriptor="${dist.dir}/packages/${name}-${version}.xml" />
+	</target>
+
+	<target name="publish-googlecode" description="Upload build to Google Code">
+		<get dest="${user.home}/.ant/lib/ant-googlecode.jar" src="http://ant-googlecode.googlecode.com/files/ant-googlecode-0.0.2.jar" usetimestamp="true"/>
+		<available file="${gc.upload.settings}" property="gc.upload.enable" />
+		<fail message="gc.username must be defined in ${gc.upload.settings}" unless="gc.username" />
+		<fail message="gc.password must be defined in ${gc.upload.settings}" unless="gc.password" />
+		<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" name="gcupload">
+			<classpath>
+			      <fileset dir="${user.home}/.ant/lib/">
+			        <include name="**/*.jar"/>
+			      </fileset>
+			</classpath>
+		</taskdef>
+		<gcupload targetfilename="${name}-${version}.zip"  filename="${target}/${name}-${version}.zip" username="${gc.username}" password="${gc.password}" projectname="customsagetv" summary="Dummy Network Tuner ${version} (Sage7)" labels="QA-Snapshot,Type-Archive,OpSys-All" />
+	</target>
+</project>
