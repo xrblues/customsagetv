@@ -32,6 +32,8 @@
 	
 	<path id="AppClasspath">
 		<pathelement location="${sage.home}/Sage.jar" />
+		<pathelement location="${phoenix.lib}" />
+		<pathelement location="${sagex-api.lib}" />
 		<pathelement location="target/classes" />
 		<fileset dir="lib" includes="*.jar" />
 	</path>

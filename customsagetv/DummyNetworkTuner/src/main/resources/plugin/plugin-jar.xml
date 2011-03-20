@@ -9,18 +9,18 @@ This is a developer plugin that allows developers to add a Tuner to their system
 dummy file to allow SageTV to think that it has a real tuner from which to record.
 </Description>
   <Author>stuckless</Author>
-  <CreationDate>2010.07.05</CreationDate>
+  <CreationDate>2011.03.20</CreationDate>
   <ModificationDate>@@last-modified@@</ModificationDate>
   <Version>@@version@@</Version>
 
   <Dependency>
     <Plugin>phoenix-api</Plugin>
-    <MinVersion>2.3</MinVersion>
+    <MinVersion>2.3.23</MinVersion>
   </Dependency>
   
   <Dependency>
     <Plugin>sagex-api</Plugin>
-    <MinVersion>7.1.15.3</MinVersion>
+    <MinVersion>7.1.5.3</MinVersion>
   </Dependency>
 
   <Dependency>
