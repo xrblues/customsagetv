@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.jdna.sagetv.networkencoder.impl.dvb.linux.IFileEncoder;
+import org.jdna.sagetv.networkencoder.util.IFileEncoder;
+import org.jdna.sagetv.networkencoder.util.IStreamListener;
+import org.jdna.sagetv.networkencoder.util.StreamConsumerThread;
+import org.jdna.sagetv.networkencoder.util.WaitFor;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
 

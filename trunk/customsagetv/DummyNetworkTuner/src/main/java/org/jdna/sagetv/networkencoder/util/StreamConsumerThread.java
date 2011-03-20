@@ -1,4 +1,4 @@
-package org.jdna.sagetv.networkencoder.impl.dvb.linux.cmdline;
+package org.jdna.sagetv.networkencoder.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -13,7 +13,7 @@ import org.jdna.sagetv.networkencoder.StartCommand;
 import org.jdna.sagetv.networkencoder.StopCommand;
 import org.jdna.sagetv.networkencoder.impl.dvb.linux.cmdline.DVBStreamTuner;
 import org.jdna.sagetv.networkencoder.impl.dvb.linux.cmdline.SZAPConfiguration;
-import org.jdna.sagetv.networkencoder.impl.dvb.linux.cmdline.WaitFor;
+import org.jdna.sagetv.networkencoder.util.WaitFor;
 
 import sagex.phoenix.configuration.proxy.GroupProxy;
 
