@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SageTVPlugin>
+  <Name>Dummy Network Tuner (jdna)</Name>
+  <Identifier>sagex-dummynetworktuner</Identifier>
+  <Description>
+Dummy Network Tuner to allow SageTV to think it has a network Tuner.
+
+This is a developer plugin that allows developers to add a Tuner to their system that can record from a
+dummy file to allow SageTV to think that it has a real tuner from which to record.
+</Description>
+  <Author>stuckless</Author>
+  <CreationDate>2010.07.05</CreationDate>
+  <ModificationDate>@@last-modified@@</ModificationDate>
+  <Version>@@version@@</Version>
+
+  <Dependency>
+    <Plugin>phoenix-api</Plugin>
+    <MinVersion>2.3</MinVersion>
+  </Dependency>
+  
+  <Dependency>
+    <Plugin>sagex-api</Plugin>
+    <MinVersion>7.1.15.3</MinVersion>
+  </Dependency>
+
+  <Dependency>
+    <Plugin>commons-io</Plugin>
+    <MinVersion>1.4</MinVersion>
+  </Dependency>
+
+  <Dependency>
+    <Plugin>commons-lang</Plugin>
+    <MinVersion>2.4</MinVersion>
+  </Dependency>
+
+  <Dependency>
+    <Plugin>log4j</Plugin>
+    <MinVersion>1.2</MinVersion>
+  </Dependency>
+
+  <PluginType>Standard</PluginType>
+
+  <Package>
+    <PackageType>JAR</PackageType>
+    <Location>http://customsagetv.googlecode.com/files/dummy-network-tuner-@@version@@.zip</Location>
+    <MD5>@@jar-checksum@@</MD5>
+  </Package>
+
+  <ImplementationClass>org.jdna.sagetv.networkencoder.sage7.DummyNetworkEncoderPlugin</ImplementationClass>
+  
+  <ReleaseNotes>
+1.0 - Initial Dummy Release
+  </ReleaseNotes>
+</SageTVPlugin>

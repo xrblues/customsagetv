@@ -1,0 +1,18 @@
+<ivy-module version="2.0">
+    <info organisation="apache" module="hello-ivy"/>
+    <dependencies>
+        <dependency org="commons-io" name="commons-io" rev="1.4"/>
+        <dependency org="commons-lang" name="commons-lang" rev="2.4"/>
+        <dependency org="log4j" name="log4j" rev="1.2.15" transitive="false"/>
+		
+		<dependency org="org.easymock" name="easymock" rev="2.5.2" transitive="false">
+			<artifact name="easymock" type="jar" url="http://mirrors.ibiblio.org/pub/mirrors/maven2/org/easymock/easymock/2.5.2/easymock-2.5.2.jar"/>
+		</dependency>
+
+<!-- TODO: Get it dynamically
+		<dependency org="phoenix" name="phoenix" rev="current" transitive="false">
+			<artifact name="phoenix" type="jar" file="../Phoenix/target/phoenix.jar"/>
+		</dependency>
+ -->
+    </dependencies>
+</ivy-module>
