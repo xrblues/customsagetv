@@ -20,6 +20,9 @@
   </Package>
 
   <ReleaseNotes>
+7.1.5.3
+* Renamed some Show APIs since they are incorrect in the JavaDoc
+
 7.1.5.2
 * Another API refresh, since some APIs were apparently missing.
 

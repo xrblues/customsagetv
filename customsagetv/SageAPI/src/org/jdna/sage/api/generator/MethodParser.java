@@ -80,6 +80,8 @@ public class MethodParser extends URLSaxParser {
 
 	private List<SageMethod> methods = new ArrayList<SageMethod>();
 
+	private APIRules rules = new APIRules();
+	
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		super.characters(ch, start, length);
@@ -113,6 +115,19 @@ public class MethodParser extends URLSaxParser {
 			// state = READ_METHODS;
 
 			methods.add(method);
+			
+			// let's fix up the API if necessary...
+			APIRule rule = rules.getRule(method.name);
+			if (rule!=null) {
+				if (rule.getRenameTo()!=null) {
+					String oldName = method.name;
+					System.out.printf("Renaming API from %s to %s\n", oldName, rule.getRenameTo());
+					method.name=rule.getRenameTo();
+					method.comment = String.format("<i>NOTE: API Was Renamed from <b>%s</b> to <b>%s</b></i><br/></br>\n", oldName, rule.getRenameTo()) + (method.comment==null?"":method.comment);
+					// renaming API
+				}
+			}
+			
 			// method = null;
 			state = LOOK_JAVADOC;
 		} else if (state == READ_JAVADOC) {
@@ -131,7 +146,9 @@ public class MethodParser extends URLSaxParser {
 		} else if (state == READ_JAVADOC) {
 		} else if (state == LOOK_JAVADOC) {
 			if (isTag("dl", localName)) {
-				method.comment = "";
+				if (method.comment==null) {
+					method.comment = "";
+				}
 				state = READ_JAVADOC;
 			}
 		} else if (isTag("A", localName)) {
