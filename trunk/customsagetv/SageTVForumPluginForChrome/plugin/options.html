@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+<head>
+<style>
+input {
+	border: 1px solid black;
+}
+</style>
+<script>
+function replaceAll(txt, replace, with_this) {
+	  return txt.replace(new RegExp(replace, 'g'),with_this);
+}
+
+var html5rocks = {};
+html5rocks.webdb = {};
+html5rocks.webdb.db = null;
+
+html5rocks.webdb.open = function() {
+  var dbSize = 5 * 1024 * 1024; // 5MB
+  html5rocks.webdb.db = openDatabase('hisagetv1', '1.0', 'Sage Forum Highlighter', dbSize);
+}
+
+html5rocks.webdb.onError = function(tx, e) {
+  alert('Something unexpected happened: ' + e.message );
+}
+
+html5rocks.webdb.onSuccess = function(tx, r) {
+  // re-render all the data
+  // loadTodoItems is defined in Step 4a
+  html5rocks.webdb.getAllItems(renderItems);
+}
+
+html5rocks.webdb.createTable = function() {
+	  html5rocks.webdb.db.transaction(function(tx) {
+	    tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 
+	                  'highlites(ID INTEGER PRIMARY KEY ASC, forum TEXT, color TEXT, background TEXT, hide INTEGER, added_on DATETIME)', []);
+	  });
+}
+
+html5rocks.webdb.addItem = function(forum, color, background, hide) {
+	  html5rocks.webdb.db.transaction(function(tx){
+	    var addedOn = new Date();
+	    tx.executeSql('INSERT INTO highlites(forum, color, background, hide, added_on) VALUES (?,?,?,?,?)', 
+	        [forum, color, background, hide?1:0, addedOn],
+	        html5rocks.webdb.onSuccess,
+	        html5rocks.webdb.onError);
+	    });
+}
+
+html5rocks.webdb.updateItem = function(row, forum, color, background, hide) {
+	  html5rocks.webdb.db.transaction(function(tx){
+	    var addedOn = new Date();
+	    tx.executeSql('UPDATE highlites set forum = ?, color = ?, background = ?, hide = ? WHERE ID=?', 
+	        [forum, color, background, hide?1:0, row],
+	        html5rocks.webdb.onSuccess,
+	        html5rocks.webdb.onError);
+	    });
+}
+
+
+html5rocks.webdb.getAllItems = function(renderFunc) {
+	  html5rocks.webdb.db.transaction(function(tx) {
+	    tx.executeSql('SELECT * FROM highlites', [], renderFunc, 
+	        html5rocks.webdb.onError);
+	  });
+}
+
+html5rocks.webdb.deleteItem = function(id) {
+	  html5rocks.webdb.db.transaction(function(tx) {
+	    tx.executeSql('DELETE FROM highlites WHERE ID=?', [id],
+	    	html5rocks.webdb.onSuccess, html5rocks.webdb.onError);
+	  });
+}
+
+
+
+function renderItems(tx, rs) {
+	  var rowOutput = "";
+	  for (var i=0; i < rs.rows.length; i++) {
+	    rowOutput += renderRow(rs.rows.item(i));
+	  }
+	  var output = $('rows');
+	  output.innerHTML = rowOutput;
+}
+
+function renderRow(row) {
+	var o = $('row_template').innerHTML;
+	o = replaceAll(o, '{forum}',row.forum);
+	o = replaceAll(o, '{ID}',row.ID);
+	o = replaceAll(o, '{color}',row.color);
+	o = replaceAll(o, '{background}',row.background);
+	o = replaceAll(o, '{checked}',(row.hide==true||row.hide==1?'CHECKED="true"':'x=y'));
+	return o;
+}
+
+function $(id) {
+	return document.getElementById(id);
+}
+
+function deleteItem(rowId) {
+	html5rocks.webdb.deleteItem(rowId);	
+}
+
+function updateSample(row) {
+	var td = $("td_sample_"+row);
+	td.style['color']=$("color_"+row).value;	
+	td.style['background-color']=$("background_"+row).value;	
+	td.innerHTML=$("forum_"+row).value;	
+}
+
+function saveItem(row) {
+	html5rocks.webdb.updateItem(row, $('forum_'+row).value, $('color_'+row).value, $('background_'+row).value, $('hide_'+row).checked==true);
+}
+
+function newRow() {
+	html5rocks.webdb.addItem('New Row','#FFFFFF','#000000',false);
+}
+
+function init() {
+	  html5rocks.webdb.open();
+	  html5rocks.webdb.createTable();
+	  html5rocks.webdb.getAllItems(renderItems);
+}
+
+</script>
+</head>
+<body onload="init()">
+<h1>SageTV Forum Highlighter Options</h1>
+<table>
+   <thead>
+   	<tr>
+   		<th>Sample</th>
+   		<th>Forum Name</th>
+   		<th>Color</th>
+   		<th>Background</th>
+   		<th>Hide Forum</th>
+   		<th>Actions</th>
+   	</tr>
+   </thead>
+   <tbody id="rows">
+   </tbody>
+   <tbody id="row_template" style="display: none;">
+   	<tr>
+   	    <td id="td_sample_{ID}" style="color: {color}; background-color: {background}">{forum}</td>
+   	    <td><input id="forum_{ID}" value="{forum}" onkeyup="updateSample({ID})"></td>
+   	    <td id="td_color_{ID}"><input id="color_{ID}" value="{color}" onkeyup="updateSample({ID})"><a href="http://www.colorpicker.com/" target="_colorwindow"><img src="color.png"></a></td>
+   	    <td id="td_background_{ID}"><input id="background_{ID}" value="{background}" onkeyup="updateSample({ID})"><a href="http://www.colorpicker.com/" target="_colorwindow"><img src="color.png"></a></td>
+   	    <td id="td_hide_{ID}" align="center"><input id="hide_{ID}" type="checkbox" {checked}/></td>
+   	    <td><button onclick="deleteItem({ID})">Delete</button><button onclick="saveItem({ID})">Save</button></td>
+   	</tr>
+   </tbody>
+   <tfoot>
+   	<tr>
+   	   <td colspan="*">
+   	   		<button onclick="newRow()">New Row</button>
+   	   </td>
+   	</tr>
+   </tfoot>
+</table>
+</body>
+</html>
