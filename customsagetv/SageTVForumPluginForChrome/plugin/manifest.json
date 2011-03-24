@@ -1,0 +1,15 @@
+{
+  "name": "SageTV Forum Highlighter by Stuckless",
+  "version": "1.0",
+  "description": "Highlights posts with certain keywords",
+  "options_page": "options.html",
+  "background_page": "background.html",
+  "content_scripts": [
+    {
+      "matches": ["http://forums.sagetv.com/forums/search*"],
+      "js" : ["contentscript.js"]
+    }
+  ],
+  
+  "icons": {"128": "icon.png" }
+}

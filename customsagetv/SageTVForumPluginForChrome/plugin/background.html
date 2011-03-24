@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<script>
+var html5rocks = {};
+html5rocks.webdb = {};
+html5rocks.webdb.db = null;
+
+html5rocks.webdb.open = function() {
+  var dbSize = 5 * 1024 * 1024; // 5MB
+  html5rocks.webdb.db = openDatabase('hisagetv1', '1.0', 'Sage Forum Highlighter', dbSize);
+}
+
+html5rocks.webdb.onError = function(tx, e) {
+  alert('Something unexpected happened: ' + e.message );
+}
+
+html5rocks.webdb.onSuccess = function(tx, r) {
+}
+
+html5rocks.webdb.getAllItems = function(renderFunc) {
+	  html5rocks.webdb.db.transaction(function(tx) {
+	    tx.executeSql('SELECT * FROM highlites', [], renderFunc, 
+	        html5rocks.webdb.onError);
+	  });
+}
+
+function init() {
+	// when asked, send the currently configured highlighted data
+	chrome.extension.onRequest.addListener(
+			  function(request, sender, sendResponse) {
+				  html5rocks.webdb.open();
+				  html5rocks.webdb.getAllItems(function(tx, rs) {
+					  // need to copy the rows, since it doesn't appear to get passed correctly
+					  var rows = [];
+					  for (var i=0;i<rs.rows.length;i++) {
+						  var row = rs.rows.item(i);
+						  rows.push(row);
+					  } 
+					  
+					  sendResponse(rows);
+				  });
+			  });}
+
+</script>
+</head>
+<body onload="init()">
+</body>
+</html>
