@@ -1,0 +1,17 @@
+[
+   {
+      match: "Batch Metadata Tools", color: "#FFFFFF", background: "#000080", hide: false
+   }
+   ,
+   {
+      match: "Phoenix", color: "#000000", background: "#FF0000", hide: false
+   }
+   ,
+   {
+      match: "Project Phoenix", color: "#000000", background: "#E0741B", hide: false
+   }
+   ,
+   {
+      match: "BMT", color: "#FFFFFF", background: "#000080", hide: false
+   }
+]

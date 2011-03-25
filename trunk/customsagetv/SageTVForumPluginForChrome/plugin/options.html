@@ -2,8 +2,48 @@
 <html>
 <head>
 <style>
+body {
+	font-family: arial,sans-serif;
+}
 input {
 	border: 1px solid black;
+}
+#content {
+	background-color: white;
+	border-color: #B5C7DE;
+	border-style: solid;
+	border-width: 4px;
+	margin: 40px auto 20px;
+	padding: 12px;
+	width: 1024px;
+	-webkit-border-radius: 12px;
+}
+
+#help {
+   margin-bottom: 20px;
+	background-color: #EBEFF9;
+	border-color: #B5C7DE;
+	border-style: solid;
+	border-width: 1px;
+	padding: 12px;
+	-webkit-border-radius: 12px;
+}
+
+#importexport {
+  width: 85%;
+   margin-bottom: 20px;
+	background-color: #EBEFF9;
+	border-color: #B5C7DE;
+	border-style: solid;
+	border-width: 1px;
+	padding: 12px;
+	-webkit-border-radius: 12px;
+	margin-top: 20px;
+}
+
+h1 {
+	width:100%;
+	text-align: center;
 }
 </style>
 <script>
@@ -17,7 +57,7 @@ html5rocks.webdb.db = null;
 
 html5rocks.webdb.open = function() {
   var dbSize = 5 * 1024 * 1024; // 5MB
-  html5rocks.webdb.db = openDatabase('hisagetv1', '1.0', 'Sage Forum Highlighter', dbSize);
+  html5rocks.webdb.db = openDatabase('hisagetv3', '1.0', 'Sage Forum Highlighter', dbSize);
 }
 
 html5rocks.webdb.onError = function(tx, e) {
@@ -33,34 +73,33 @@ html5rocks.webdb.onSuccess = function(tx, r) {
 html5rocks.webdb.createTable = function() {
 	  html5rocks.webdb.db.transaction(function(tx) {
 	    tx.executeSql('CREATE TABLE IF NOT EXISTS ' + 
-	                  'highlites(ID INTEGER PRIMARY KEY ASC, forum TEXT, color TEXT, background TEXT, hide INTEGER, added_on DATETIME)', []);
+	                  'highlites(ID INTEGER PRIMARY KEY ASC, match TEXT, color TEXT, background TEXT, hide INTEGER, zorder INTEGER, added_on DATETIME)', []);
 	  });
 }
 
-html5rocks.webdb.addItem = function(forum, color, background, hide) {
+html5rocks.webdb.addItem = function(match, color, background, hide, zorder) {
 	  html5rocks.webdb.db.transaction(function(tx){
 	    var addedOn = new Date();
-	    tx.executeSql('INSERT INTO highlites(forum, color, background, hide, added_on) VALUES (?,?,?,?,?)', 
-	        [forum, color, background, hide?1:0, addedOn],
+	    tx.executeSql('INSERT INTO highlites(match, color, background, hide, zorder, added_on) VALUES (?,?,?,?,?,?)', 
+	        [match, color, background, hide?1:0, zorder?zorder:0, addedOn],
 	        html5rocks.webdb.onSuccess,
 	        html5rocks.webdb.onError);
 	    });
 }
 
-html5rocks.webdb.updateItem = function(row, forum, color, background, hide) {
+html5rocks.webdb.updateItem = function(row, match, color, background, hide, zorder) {
 	  html5rocks.webdb.db.transaction(function(tx){
 	    var addedOn = new Date();
-	    tx.executeSql('UPDATE highlites set forum = ?, color = ?, background = ?, hide = ? WHERE ID=?', 
-	        [forum, color, background, hide?1:0, row],
+	    tx.executeSql('UPDATE highlites set match = ?, color = ?, background = ?, hide = ?, zorder = ? WHERE ID=?', 
+	        [match, color, background, hide?1:0, zorder?zorder:0, row],
 	        html5rocks.webdb.onSuccess,
 	        html5rocks.webdb.onError);
 	    });
 }
-
 
 html5rocks.webdb.getAllItems = function(renderFunc) {
 	  html5rocks.webdb.db.transaction(function(tx) {
-	    tx.executeSql('SELECT * FROM highlites', [], renderFunc, 
+	    tx.executeSql('SELECT * FROM highlites order by zorder', [], renderFunc, 
 	        html5rocks.webdb.onError);
 	  });
 }
@@ -71,8 +110,6 @@ html5rocks.webdb.deleteItem = function(id) {
 	    	html5rocks.webdb.onSuccess, html5rocks.webdb.onError);
 	  });
 }
-
-
 
 function renderItems(tx, rs) {
 	  var rowOutput = "";
@@ -85,7 +122,8 @@ function renderItems(tx, rs) {
 
 function renderRow(row) {
 	var o = $('row_template').innerHTML;
-	o = replaceAll(o, '{forum}',row.forum);
+	o = replaceAll(o, '{match}',row.match);
+	o = replaceAll(o, '{zorder}',row.zorder);
 	o = replaceAll(o, '{ID}',row.ID);
 	o = replaceAll(o, '{color}',row.color);
 	o = replaceAll(o, '{background}',row.background);
@@ -105,15 +143,15 @@ function updateSample(row) {
 	var td = $("td_sample_"+row);
 	td.style['color']=$("color_"+row).value;	
 	td.style['background-color']=$("background_"+row).value;	
-	td.innerHTML=$("forum_"+row).value;	
+	td.innerHTML=$("match_"+row).value;	
 }
 
 function saveItem(row) {
-	html5rocks.webdb.updateItem(row, $('forum_'+row).value, $('color_'+row).value, $('background_'+row).value, $('hide_'+row).checked==true);
+	html5rocks.webdb.updateItem(row, $('match_'+row).value, $('color_'+row).value, $('background_'+row).value, $('hide_'+row).checked==true, $('zorder_'+row).value);
 }
 
 function newRow() {
-	html5rocks.webdb.addItem('New Row','#FFFFFF','#000000',false);
+	html5rocks.webdb.addItem('New Row','#FFFFFF','#000000',false,0);
 }
 
 function init() {
@@ -122,40 +160,108 @@ function init() {
 	  html5rocks.webdb.getAllItems(renderItems);
 }
 
+function showImportExport() {
+	$("importexport").style.display='';
+}
+
+function export() {
+    var txt = $('import');
+    txt.value="";
+	html5rocks.webdb.getAllItems(function(tx,rs) {
+	  txt.value = "[\n";
+	  for (var i=0; i < rs.rows.length; i++) {
+	     if (i>0) txt.value += "   ,\n";
+	     txt.value += "   {\n";
+	     var row = rs.rows.item(i);
+	     
+	     txt.value += '      zorder: '+ row.zorder +', match: "' + row.match+'", color: "' + row.color + '", background: "' + row.background + '", hide: ' + (row.hide==true||row.hide==1) + '\n';
+	     
+	     txt.value += "   }\n";
+	  }
+	  txt.value += "]";		
+	});
+}
+
+function import() {
+    var txt = $('import').value;
+    if (txt==null||txt.trim().length==0) {
+        console.log('nothing to import');
+    	return;
+    }
+    
+    var obj = eval(txt);
+    if (obj==null||obj.length==0) {
+    	console.log('nothing to import');
+    	return;
+    }
+    for (var i=0;i<obj.length;i++) {
+    	var row = obj[i];
+    	html5rocks.webdb.addItem(row.match, row.color, row.background, row.hide, row.zorder);
+    }
+    $('import').value;
+    $("importexport").style.display='none';
+}
+
 </script>
+<title>Highlighter for SageTV Forums</title>
 </head>
 <body onload="init()">
-<h1>SageTV Forum Highlighter Options</h1>
-<table>
+<div id="content" align="center">
+<h1>Forum Highlighter Options</h1>
+<div width="85%" id="help">
+Fill in a word or phrase to match on, and then fill in your font and background colors.  
+Be sure to hit save, or your changes will not take.  When you browse the SageTV forums, New Posts area,
+any threads match your keywords will be highlighted with the colors you provided.
+</div>
+<table cellpadding="2" cellspacing="0">
    <thead>
    	<tr>
    		<th>Sample</th>
-   		<th>Forum Name</th>
+   		<th>Order</th>
+   		<th>Keyword Match</th>
    		<th>Color</th>
    		<th>Background</th>
-   		<th>Hide Forum</th>
+   		<th>Hide Posts</th>
    		<th>Actions</th>
    	</tr>
    </thead>
    <tbody id="rows">
    </tbody>
-   <tbody id="row_template" style="display: none;">
+   <tfoot>
    	<tr>
-   	    <td id="td_sample_{ID}" style="color: {color}; background-color: {background}">{forum}</td>
-   	    <td><input id="forum_{ID}" value="{forum}" onkeyup="updateSample({ID})"></td>
+   	   <td colspan="6">
+   	   		<button onclick="newRow()">New Highlighter</button>
+   	   		<button onclick="showImportExport()">Import/Export</button>
+   	   </td>
+   	</tr>
+   </tfoot>
+</table>
+<table style="display: none;">
+   <tbody id="row_template">
+   	<tr>
+   	    <td id="td_sample_{ID}" style="color: {color}; background-color: {background}">{match}</td>
+   	    <td><input id="zorder_{ID}" value="{zorder}" size="5"></td>
+   	    <td><input id="match_{ID}" value="{match}" onkeyup="updateSample({ID})"></td>
    	    <td id="td_color_{ID}"><input id="color_{ID}" value="{color}" onkeyup="updateSample({ID})"><a href="http://www.colorpicker.com/" target="_colorwindow"><img src="color.png"></a></td>
    	    <td id="td_background_{ID}"><input id="background_{ID}" value="{background}" onkeyup="updateSample({ID})"><a href="http://www.colorpicker.com/" target="_colorwindow"><img src="color.png"></a></td>
    	    <td id="td_hide_{ID}" align="center"><input id="hide_{ID}" type="checkbox" {checked}/></td>
    	    <td><button onclick="deleteItem({ID})">Delete</button><button onclick="saveItem({ID})">Save</button></td>
    	</tr>
    </tbody>
-   <tfoot>
-   	<tr>
-   	   <td colspan="*">
-   	   		<button onclick="newRow()">New Row</button>
-   	   </td>
-   	</tr>
-   </tfoot>
 </table>
+<div id="importexport" style="display:none;padding-top:20px;">
+	<div>
+	You can export your current highlights by pressing export, and then copying the resulting text to another file.
+	You can import other hightlights by pasting the json data into the text box and press Import.
+	</div>
+	<div>
+		<textarea rows="15" cols="80" id="import"></textarea>
+	</div>
+	<div>
+		<button onclick="import()">Import</button>
+		<button onclick="export()">Export</button>
+	</div>
+</div>
+</div>
 </body>
 </html>

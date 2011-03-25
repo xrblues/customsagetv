@@ -8,7 +8,7 @@ html5rocks.webdb.db = null;
 
 html5rocks.webdb.open = function() {
   var dbSize = 5 * 1024 * 1024; // 5MB
-  html5rocks.webdb.db = openDatabase('hisagetv1', '1.0', 'Sage Forum Highlighter', dbSize);
+  html5rocks.webdb.db = openDatabase('hisagetv3', '1.0', 'Sage Forum Highlighter', dbSize);
 }
 
 html5rocks.webdb.onError = function(tx, e) {
@@ -20,7 +20,7 @@ html5rocks.webdb.onSuccess = function(tx, r) {
 
 html5rocks.webdb.getAllItems = function(renderFunc) {
 	  html5rocks.webdb.db.transaction(function(tx) {
-	    tx.executeSql('SELECT * FROM highlites', [], renderFunc, 
+	    tx.executeSql('SELECT * FROM highlites order by zorder', [], renderFunc, 
 	        html5rocks.webdb.onError);
 	  });
 }

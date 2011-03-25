@@ -1,7 +1,7 @@
 {
-  "name": "SageTV Forum Highlighter by Stuckless",
+  "name": "Highlighter for SageTV Forums",
   "version": "1.0",
-  "description": "Highlights posts with certain keywords",
+  "description": "Highlights posts with certain keywords.  Can only be used on the SageTV forums.",
   "options_page": "options.html",
   "background_page": "background.html",
   "content_scripts": [
