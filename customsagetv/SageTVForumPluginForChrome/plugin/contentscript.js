@@ -1,21 +1,18 @@
 function applyStyles(rows) {
-	var tags = document.getElementsByTagName('a');
+	if (!rows) return;
+	console.log('SageTVHighlighter: Applying ' + rows.length + ' Styles');
+	var tags = document.getElementById('threadslist').getElementsByTagName('tr');
 
 	if (tags!=null) {
 		var len=tags.length;
 		for (var i=0;i<len;i++) {
-			var t = tags[i];
-			if (t.href!=null && t.href.indexOf('forumdisplay.php?f=')!=-1) {
-				if (t.innerText!=null && t.parentNode!=null) {
-					var txt = t.innerText;
-					for (var h=0; h < rows.length; h++) {
-						if (txt.indexOf(rows[h].forum)!=-1) {
-							applyRowFeatures(t.parentNode.parentNode, rows[h]);
-							continue;
-						}
-					}					
+			var txt = tags[i].innerText;
+			for (var h=0; h < rows.length; h++) {
+				if (txt.indexOf(rows[h].match)!=-1) {
+					applyRowFeatures(tags[i], rows[h]);
+					continue;
 				}
-			}
+			}					
 		}
 	}
 }
