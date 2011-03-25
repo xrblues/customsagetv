@@ -1,17 +1,17 @@
 [
    {
-      match: "Batch Metadata Tools", color: "#FFFFFF", background: "#000080", hide: false
+      zorder: 0, match: "Phoenix", color: "#000000", background: "#FF0000", hide: false
    }
    ,
    {
-      match: "Phoenix", color: "#000000", background: "#FF0000", hide: false
+      zorder: 0, match: "Project Phoenix", color: "#000000", background: "#E0741B", hide: false
    }
    ,
    {
-      match: "Project Phoenix", color: "#000000", background: "#E0741B", hide: false
+      zorder: 10, match: "Batch Metadata Tools", color: "#FFFFFF", background: "#000080", hide: false
    }
    ,
    {
-      match: "BMT", color: "#FFFFFF", background: "#000080", hide: false
+      zorder: 15, match: "BMT", color: "#FFFFFF", background: "#000070", hide: false
    }
 ]
