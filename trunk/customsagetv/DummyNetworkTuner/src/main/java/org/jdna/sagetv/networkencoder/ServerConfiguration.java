@@ -33,7 +33,7 @@ public class ServerConfiguration extends GroupProxy {
      * @return the port
      */
     public int getPort() {
-        return port.getInt();
+        return port.get();
     }
 
     /**
@@ -47,7 +47,7 @@ public class ServerConfiguration extends GroupProxy {
      * @return the defaultEncoderClass
      */
     public String getDefaultEncoderClass() {
-        return defaultEncoderClass.getString();
+        return defaultEncoderClass.get();
     }
 
     /**
@@ -61,7 +61,7 @@ public class ServerConfiguration extends GroupProxy {
      * @return the discoveryEnabled
      */
     public boolean getDiscoveryEnabled() {
-        return discoveryEnabled.getBoolean();
+        return discoveryEnabled.get();
     }
 
     /**
