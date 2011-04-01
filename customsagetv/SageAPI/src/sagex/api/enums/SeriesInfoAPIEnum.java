@@ -2,7 +2,7 @@ package sagex.api.enums;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 20/03/11 9:05 AM
+ * Generated Date/Time: 01/04/11 7:26 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SeriesInfoAPIEnum.html'>SeriesInfoAPIEnum</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */

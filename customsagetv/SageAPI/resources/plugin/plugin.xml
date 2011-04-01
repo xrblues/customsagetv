@@ -20,6 +20,12 @@
   </Package>
 
   <ReleaseNotes>
+7.1.5.4
+* Changed Logging to use Rolling Appender with a Max size of 10mb
+* HTTP: Updated Logo APIs to use new Logos APIs
+* HTTP: Added Image Scaling to ALL Image APIs
+* HTTP: Ability to return Image data when requesting method that returns MetaImage
+
 7.1.5.3
 * Renamed some Show APIs since they are incorrect in the JavaDoc
 
