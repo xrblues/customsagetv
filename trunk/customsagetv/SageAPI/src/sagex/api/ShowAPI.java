@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 20/03/11 9:05 AM
+ * Generated Date/Time: 01/04/11 7:26 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/ShowAPI.html'>ShowAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1253,7 +1253,6 @@ public static Object GetShowSeriesInfo (UIContext _uicontext,Object Show) {
 }
 
 /**
-<i>NOTE: API Was Renamed from <b>GetSeasonNumber</b> to <b>GetShowSeasonNumber</b></i><br/></br>
 Returns the season number of the specified Show. For episodic content; sometimes a numeric value is given to the
  season. If that information exists, this will return it.
 
@@ -1272,7 +1271,6 @@ public static int GetShowSeasonNumber (Object Show) {
 
 /**
  * UI Context Aware Call<br/>
-<i>NOTE: API Was Renamed from <b>GetSeasonNumber</b> to <b>GetShowSeasonNumber</b></i><br/></br>
 Returns the season number of the specified Show. For episodic content; sometimes a numeric value is given to the
  season. If that information exists, this will return it.
 
@@ -1290,7 +1288,6 @@ public static int GetShowSeasonNumber (UIContext _uicontext,Object Show) {
 }
 
 /**
-<i>NOTE: API Was Renamed from <b>GetEpisodeNumber</b> to <b>GetShowEpisodeNumber</b></i><br/></br>
 Returns the episode number of the specified Show. For episodic content; sometimes a numeric value is given to the
  episode in a season. If that information exists, this will return it.
 
@@ -1309,7 +1306,6 @@ public static int GetShowEpisodeNumber (Object Show) {
 
 /**
  * UI Context Aware Call<br/>
-<i>NOTE: API Was Renamed from <b>GetEpisodeNumber</b> to <b>GetShowEpisodeNumber</b></i><br/></br>
 Returns the episode number of the specified Show. For episodic content; sometimes a numeric value is given to the
  episode in a season. If that information exists, this will return it.
 

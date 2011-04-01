@@ -30,6 +30,7 @@ import sagex.remote.factory.request.SageRPCRequestFactory;
 import sagex.remote.json.JSONArray;
 import sagex.remote.json.JSONException;
 import sagex.remote.json.JSONObject;
+import sagex.remote.media.MediaHandler;
 
 /**
  * Process a request in the format
@@ -66,6 +67,7 @@ public class ApiHandler implements SageHandler {
         encoders.put(DEFAULT_ENCODER, new XmlReplyEncoder());
         encoders.put("json", new JsonReplyEncoder());
         encoders.put("nielm", new NielmXmlReplyEncoder());
+        encoders.put("image", new ImageReplyEncoder());
         try {
             serviceFactory =new ServiceFactory();
         } catch (Throwable t) {
@@ -75,10 +77,12 @@ public class ApiHandler implements SageHandler {
     }
 
     public void handleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter pw = resp.getWriter();
+        PrintWriter pw = null;
 
         // 1=Arg1&2=Arg2&3=Arg3&context=123
         String encoder = req.getParameter("encoder");
+        boolean isImageReply = "image".equals(encoder);
+      
         if (encoder == null || encoder.trim().length() == 0) encoder = DEFAULT_ENCODER;
         ReplyEncoder replyEncoder = encoders.get(encoder);
 
@@ -86,6 +90,8 @@ public class ApiHandler implements SageHandler {
         if (req.getParameter("jsoncallback")!=null) {
             replyEncoder=encoders.get("json");
         }
+
+        if (!isImageReply) pw=resp.getWriter();
         
         try {
             if (replyEncoder == null) {
@@ -99,7 +105,7 @@ public class ApiHandler implements SageHandler {
                 return;
             }
 
-            resp.setContentType(replyEncoder.getContentType());
+            if (!isImageReply) resp.setContentType(replyEncoder.getContentType());
             
             String command = req.getParameter("command");
             if (command == null) command = req.getParameter("c");
@@ -152,22 +158,31 @@ public class ApiHandler implements SageHandler {
                 }
             }
 
-            // encode the reply
-            String reply = null;
-            try {
-                reply = replyEncoder.encodeReply(oreply, req);
-            } catch (Exception e) {
-                reply = replyEncoder.encodeError(e);
-            }
-
-            // finally write it
-            if (reply != null) {
-                pw.write(reply);
+            if (isImageReply) {
+            	try {
+            		MediaHandler.writeSageImageFile(oreply, req, resp);
+            	} catch (Throwable t) {
+            		t.printStackTrace();
+            		resp.sendError(500,"Image Failed: " + t.getMessage());
+            	}
+            } else {
+	            // encode the reply
+	            String reply = null;
+	            try {
+	                reply = replyEncoder.encodeReply(oreply, req);
+	            } catch (Exception e) {
+	                reply = replyEncoder.encodeError(e);
+	            }
+	
+	            // finally write it
+	            if (reply != null) {
+	                pw.write(reply);
+	            }
             }
         } catch (Exception e) {
-            pw.write(replyEncoder.encodeError(e));
+        	if (pw!=null) pw.write(replyEncoder.encodeError(e));
         }
-        pw.flush();
+        if (pw!=null) pw.flush();
     }
 
     private Object callService(String context, String packageName, String serviceName, String[] args) {

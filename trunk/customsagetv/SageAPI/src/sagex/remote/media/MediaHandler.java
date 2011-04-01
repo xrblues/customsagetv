@@ -215,7 +215,14 @@ public class MediaHandler implements SageHandler {
         if (scale==null) {
         	img = Utility.GetImageAsBufferedImage(sageImage);
         } else {
-        	img = Utility.GetScaledImageAsBufferedImage(sageImage, scale[0], scale[1]);
+        	if (scale[0]<=0 || scale[1]<=0) {
+        		// use proportional scaling
+        		img = Utility.GetImageAsBufferedImage(sageImage);
+        		scale = adjustScaling(img, scale[0], scale[1]);
+        		img = Utility.GetScaledImageAsBufferedImage(sageImage, scale[0], scale[1]);
+        	} else {
+        		img = Utility.GetScaledImageAsBufferedImage(sageImage, scale[0], scale[1]);
+        	}
         	if (img==null) {
             	img = Utility.GetImageAsBufferedImage(sageImage);
         	}
@@ -226,5 +233,30 @@ public class MediaHandler implements SageHandler {
         OutputStream os = resp.getOutputStream();
         ImageIO.write((RenderedImage) img, "png", os);
         os.flush();
+	}
+	
+	private static int[] adjustScaling(BufferedImage imageSrc, int scaleWidth, int scaleHeight) {
+        int origWidth = imageSrc.getWidth();
+        int origHeight = imageSrc.getHeight();
+        
+        
+        if (scaleWidth == -1) {
+            // scale to height
+            float div = (float) imageSrc.getHeight() / scaleHeight;
+            scaleWidth = (int) (imageSrc.getWidth() / div);
+        }
+
+        if (scaleHeight == -1) {
+            // scale to width
+            float div = (float) imageSrc.getWidth() / scaleWidth;
+            scaleHeight = (int) (imageSrc.getHeight() / div);
+        }
+        
+        // don't do anything if the scaling is larger than the original
+        if (scaleWidth >= origWidth && scaleHeight >= origHeight) {
+            return new int[] {origWidth, origHeight};
+        } else {
+            return new int[] {scaleWidth, scaleHeight};
+        }
 	}
 }
