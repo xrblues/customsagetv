@@ -20,6 +20,9 @@
   </Package>
 
   <ReleaseNotes>
+7.1.5.5
+* Airings will now return channel information
+
 7.1.5.4
 * Changed Logging to use Rolling Appender with a Max size of 10mb
 * HTTP: Updated Logo APIs to use new Logos APIs

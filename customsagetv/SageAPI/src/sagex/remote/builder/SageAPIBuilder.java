@@ -117,7 +117,7 @@ public class SageAPIBuilder {
     }
 
     public void buildAiring(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("Airing", AiringAPI.class, parent, handler, new String[] {"GetChannel", "GetMediaFileForAiring", "GetAiringOnAfter", "GetAiringOnBefore"});
+        buildObject("Airing", AiringAPI.class, parent, handler, new String[] {"GetMediaFileForAiring", "GetAiringOnAfter", "GetAiringOnBefore"});
     }
 
     public void buildShow(Object parent, BuilderHandler handler) throws Exception {
