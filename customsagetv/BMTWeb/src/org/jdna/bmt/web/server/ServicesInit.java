@@ -11,13 +11,17 @@ import org.jdna.bmt.web.client.ui.BatchOperations;
 
 import sagex.SageAPI;
 import sagex.phoenix.Phoenix;
+import sagex.util.Log4jConfigurator;
 
 public class ServicesInit {
     private static boolean initialized = false;
 
     public static void init() {
+
         if (!initialized) {
             initialized = true;
+            
+    		Log4jConfigurator.configureQuietly("bmtweb", ServicesInit.class.getClassLoader());
 
             if (SageAPI.isRemote()) {
                 BasicConfigurator.configure();

@@ -112,4 +112,19 @@ public class Dialogs {
             handler.onSave(null);
         }
     }
+    
+    public static DialogBox show(final DialogBox dialog) {
+    	dialog.setGlassEnabled(true);
+    	dialog.setModal(true);
+    	dialog.setAutoHideOnHistoryEventsEnabled(true);
+        dialog.center();
+        dialog.show();
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+                dialog.center();
+			}
+        });
+        return dialog;
+    }
 }

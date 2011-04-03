@@ -32,7 +32,7 @@ watched status on files, etc
 
 	<Dependency>
 		<Plugin>phoenix-core</Plugin>
-		<MinVersion>2.3.19</MinVersion>
+		<MinVersion>2.3.24</MinVersion>
 	</Dependency>
 
 	<PluginType>Standard</PluginType>
@@ -52,6 +52,23 @@ watched status on files, etc
 		<MD5>@@context-checksum@@</MD5>
 	</Package>
 	<ReleaseNotes>
+4.9.12
+* Added Batch Metadata Editor (can now batch edit multiple files)
+* Added RAW Metadata Editor to edit any Metadata field for a media item
+* Can download series only fanart
+* Fixed fanart download bug for manual fanart
+* Can enter runtime as '### mins' and shows runtime in minutes
+* Original Air Date now shows hh:mm
+* Can enter Original Air Date as a number or 'YYYY-MM-DD HH:MM'
+* Hides the view panel when editing metadata
+* Basic 'back' button navigation when in the Edit Metadata panel
+* Configuration Help now shows more information in the help dialog.
+* Fixed bug with support request generator that prevented it from created support requests
+* Home Videos now correctly uses semi-colon instead of comma
+* Home Videos now uses case insensitive paths
+* Fixed bug where genres was not using the new Sage7 / separator.  Genres will now use /
+* Added "Add File Matcher" from the metadata editor panel to quickly add an entry to the MediaTitles.xml 
+
 4.9.11
 * Minor enhancements to Airing type items
 * Added simple Airing viewer

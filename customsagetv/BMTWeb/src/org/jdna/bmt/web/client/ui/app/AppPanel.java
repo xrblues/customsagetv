@@ -22,6 +22,7 @@ import org.jdna.bmt.web.client.ui.util.CommandItem;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.util.Log;
+import org.jdna.bmt.web.client.util.StringUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -293,7 +294,7 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
     	}
         
         Log.debug("Setting Section: " + event.getValue());
-        if ("status".equals(section)) {
+        if ("status".equals(section) || StringUtils.isEmpty(event.getValue())) {
             setStatusPanel();
         } else if ("configure".equals(section)) {
             setConfigurePanel();
@@ -306,7 +307,7 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
         } else if ("backup".equals(section)) {
             setBackupPanel();
         } else {
-        	setStatusPanel();
+        	//setStatusPanel();
         }
     }
     

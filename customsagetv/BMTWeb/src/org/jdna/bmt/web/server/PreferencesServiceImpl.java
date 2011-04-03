@@ -38,11 +38,11 @@ import sagex.api.Configuration;
 import sagex.api.Global;
 import sagex.api.PluginAPI;
 import sagex.phoenix.Phoenix;
+import sagex.phoenix.configuration.Field;
 import sagex.phoenix.configuration.Group;
 import sagex.phoenix.configuration.IConfigurationElement;
 import sagex.phoenix.configuration.NewSearchGroup;
 import sagex.phoenix.menu.Menu;
-import sagex.phoenix.menu.MenuBuilder;
 import sagex.phoenix.menu.XmlMenuSerializer;
 import sagex.phoenix.plugin.PhoenixPlugin;
 import sagex.phoenix.util.PropertiesUtils;
@@ -103,7 +103,7 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
             if (NewSearchGroup.NEW_SEARCH_GROUP_ID.equals(g.getId())) continue;
 
             PrefItem pi = new PrefItem();
-            pi.setEditor(g.getEditor());
+            pi.setHints(g.getHints());
             pi.setLabel(g.getLabel());
             pi.setDescription(g.getDescription());
             pi.setKey(g.getId());
@@ -125,6 +125,7 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
                     pi.setDefaultValue(String.valueOf(o));
                 }
                 pi.setType(phoenix.config.GetConfigurationFieldType(g));
+                pi.setListSeparator(((Field)g).getListSeparator());
             }
             items.add(pi);
         }

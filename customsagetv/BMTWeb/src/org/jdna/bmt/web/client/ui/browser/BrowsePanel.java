@@ -24,6 +24,7 @@ import org.jdna.bmt.web.client.ui.util.OKDialogHandler;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
 import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.MessageBus;
+import org.jdna.bmt.web.client.util.MessageHandler;
 import org.jdna.bmt.web.client.util.StringUtils;
 
 import sagex.phoenix.metadata.MediaArtifactType;
@@ -33,11 +34,16 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -49,12 +55,15 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class BrowsePanel extends Composite implements BrowserView {
+public class BrowsePanel extends Composite implements BrowserView, ValueChangeHandler<String> {
 	public static final String MSG_PROGRESS_UPDATED = "progressupdated";
 	public static final String MSG_NEW_SCAN_STARTED = "newscanstarted";
 	public static final String MSG_METADATA_CHANGED = "metadatachanged";
 	public static final String MSG_RECORDING_ADDED = "recording_added";
 	public static final String MSG_FILE_WATCHED = "filewatched";
+	
+	public static final String MSG_HIDE_VIEWS = "hide-views";
+	public static final String MSG_SHOW_VIEWS = "show-views";
 
 	private static BrowsingServiceAsync browser = GWT
 			.create(BrowsingService.class);
@@ -83,6 +92,8 @@ public class BrowsePanel extends Composite implements BrowserView {
 	private MessageBus messageBus = new MessageBus();
 
 	private ListBox batchOperations;
+	private Button batchUpdate;
+	private HandlerRegistration historyHandler;
 
 	public BrowsePanel(List<String> paths) {
 		super();
@@ -185,6 +196,14 @@ public class BrowsePanel extends Composite implements BrowserView {
 		browserActions.add(batchOperations);
 		setActionsVisible(false);
 
+		batchUpdate = new Button("Batch Update", new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				editraw(currentFolder);
+			}
+		});
+		
+		browserActions.add(batchUpdate);
+
 		browserScroller.setWidget(mainItems);
 
 		vbrowser.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
@@ -206,6 +225,20 @@ public class BrowsePanel extends Composite implements BrowserView {
 
 		initWidget(hpanel);
 		setParams(paths);
+		
+		messageBus.addHandler(MSG_SHOW_VIEWS, new MessageHandler() {
+			@Override
+			public void onMessageReceived(String msg, Map<String, ?> args) {
+				sideSource.setVisible(true);
+			}
+		});
+		
+		messageBus.addHandler(MSG_HIDE_VIEWS, new MessageHandler() {
+			@Override
+			public void onMessageReceived(String msg, Map<String, ?> args) {
+				sideSource.setVisible(false);
+			}
+		});
 	}
 
 	public void onBrowseReply(GWTMediaFolder browseableFolder, int start,
@@ -287,6 +320,10 @@ public class BrowsePanel extends Composite implements BrowserView {
 	public void back() {
 		// just restore the mainitems
 		setActionsVisible(true);
+
+		// restore the side panel
+		sideSource.setVisible(true);
+		
 		browserScroller.setWidget(mainItems);
 
 		Window.scrollTo(0, lastScrollPosition);
@@ -328,6 +365,8 @@ public class BrowsePanel extends Composite implements BrowserView {
 	}
 
 	public void getView(final GWTView view) {
+		History.newItem("viewitem", false);
+		
 		final PopupPanel panel = Dialogs
 				.showWaitingPopup("Loading view items....");
 		Log.debug("Browse View: " + view.getLabel());
@@ -692,5 +731,35 @@ public class BrowsePanel extends Composite implements BrowserView {
 	public void edit(GWTMediaResource res) {
 		setDisplay(new MediaEditorMetadataPanel(
 				(GWTMediaFile) res, this));
+	}
+
+	public void editraw(GWTMediaResource res) {
+		setDisplay(new SimpleBatchMetadataEditor(res, BrowsePanel.this));		
+	}
+
+	@Override
+	protected void onAttach() {
+		super.onAttach();
+		historyHandler = History.addValueChangeHandler(this);
+	}
+
+	@Override
+	protected void onDetach() {
+		super.onDetach();
+		historyHandler.removeHandler();
+	}
+
+	@Override
+	public void onValueChange(ValueChangeEvent<String> event) {
+		System.out.println("BrowsePanel: Fired History Change: " + event.getValue());
+		if (event.getValue()!=null) {
+			//if (event.getValue().startsWith("browse") || event.getValue().startsWith("viewitem")) {
+				back();
+			//}
+		}
+	}
+
+	public void addmatcher(GWTMediaFile mediaFile) {
+		Dialogs.show(new AddMediaTitleDialogPanel(mediaFile));
 	}
 }

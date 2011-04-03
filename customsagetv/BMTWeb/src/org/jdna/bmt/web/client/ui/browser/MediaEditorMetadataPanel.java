@@ -21,7 +21,9 @@ import org.jdna.bmt.web.client.ui.util.binder.ListBinder;
 import org.jdna.bmt.web.client.ui.util.binder.NumberBinder;
 import org.jdna.bmt.web.client.ui.util.binder.TextAreaBinder;
 import org.jdna.bmt.web.client.ui.util.binder.TextBinder;
+import org.jdna.bmt.web.client.util.DateFormatUtil;
 import org.jdna.bmt.web.client.util.MessageHandler;
+import org.jdna.bmt.web.client.util.NumberUtil;
 
 import sagex.phoenix.metadata.IMediaArt;
 
@@ -33,6 +35,7 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -66,7 +69,7 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
 	private TextBinder mpaaRatings;
 	private TextBinder parentalRatings;
 	private TextBinder extendedRatings;
-	private NumberBinder runningTime;
+	private TextBinder runningTime;
 	private TextBinder misc;
 	private TextBinder externalId;
 	private CheckBinder sageRecording;
@@ -80,6 +83,10 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
 	private BrowsePanel controller;
     
     public MediaEditorMetadataPanel(GWTMediaFile mediaFile, BrowsePanel controller) {
+		controller.getMessageBus().postMessage(BrowsePanel.MSG_HIDE_VIEWS, null);
+
+		History.newItem("editmetadata", false);
+		
         this.controller = controller;
         metadataPanel.setWidth("100%");
         metadataPanel.setSpacing(5);
@@ -105,7 +112,6 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         Button saveFanart = new Button("Save");
         saveFanart.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-            	
             	saveMetadata(null);
             }
         });
@@ -118,15 +124,24 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
             }
         });
 
-        Button clearMetadata = new Button("Clear Metadata");
-        clearMetadata.addClickHandler(new ClickHandler() {
+        Button rawMetadata = new Button("Edit Raw Metadata");
+        rawMetadata.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
+            	controller.editraw(mediaFile);
             }
         });
 
+        Button newMediatitles = new Button("Add Matcher");
+        newMediatitles.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+            	controller.addmatcher(mediaFile);
+            }
+        });
+        
         Button back = new Button("Back");
         back.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
+        		controller.getMessageBus().postMessage(BrowsePanel.MSG_SHOW_VIEWS, null);
                 controller.back();
             }
         });
@@ -149,10 +164,10 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         hp.add(img, Layout.Right);
 
         hp.add(back);
-        //if (mf.getSageMediaFileId()>0) {
-	        hp.add(find);
-	        hp.add(saveFanart);
-        //}
+        hp.add(find);
+        hp.add(rawMetadata);
+        hp.add(newMediatitles);
+        hp.add(saveFanart);
         
         metadataPanel.add(hp);
         metadataPanel.setCellHorizontalAlignment(hp, HasHorizontalAlignment.ALIGN_RIGHT);
@@ -234,10 +249,10 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         movieRows.add(panel.getFlexTable().getRowCount()-1);
         
         genres = (TextBinder) fields.addField("genres", new TextBinder(metadata.getGenres()));
-        panel.add("Genres (Comma Separated)", genres.getWidget());
+        panel.add("Genres (Separate with forward Slash '/')", genres.getWidget());
         
-        originalAirDate=(DateBinder) fields.addField("oad", new DateBinder(metadata.getOriginalAirDate(),"yyyy-MM-dd"));
-        panel.add("Original Air Date", originalAirDate.getWidget());
+        originalAirDate=(DateBinder) fields.addField("oad", new DateBinder(metadata.getOriginalAirDate(),"yyyy-MM-dd HH:mm"));
+        panel.add("Original Air Date (YYY-MM-DD hh:mm)", originalAirDate.getWidget());
         
         panel.add("Disc #", fields.addField("disc", new NumberBinder(metadata.getDiscNumber(),true)).getWidget());
 
@@ -253,8 +268,10 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         panel.add("Extended Ratings", extendedRatings.getWidget());
         panel.add("User Rating", fields.addField("user-rating", new NumberBinder(metadata.getUserRating(), true)).getWidget());
 
-        runningTime=(NumberBinder) fields.addField("running-time", new NumberBinder(metadata.getRunningTime()));
-        panel.add("Running Time", runningTime.getWidget());
+        metadata.getRunningTime().set(DateFormatUtil.formatDuration(NumberUtil.toLong(metadata.getRunningTime().get(),0)));
+        
+        runningTime=(TextBinder) fields.addField("running-time", new TextBinder(metadata.getRunningTime()));
+        panel.add("Running Time ('### min' or exact milliseconds)", runningTime.getWidget());
         
         misc=(TextBinder) fields.addField("misc", new TextBinder(metadata.getMisc()));
         panel.add("Misc", misc.getWidget());

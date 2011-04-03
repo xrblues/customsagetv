@@ -4,15 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
@@ -77,10 +74,10 @@ public class VideoThumbnailServlet extends HttpServlet {
 		} else {
 			prefix = "S" + seconds;
 		}
-		File f = new File(dir, prefix + "_" + width + "_" + height + ".jpg");
+		File f = new File(dir, prefix + "_" + width + "_" + height + ".jpg").getCanonicalFile();
 		if (!f.exists()) {
 			try {
-				generateThumbnail(MediaFileAPI.GetFileForSegment(sageFile, 0), f, seconds, offset, width, height);
+				generateThumbnailNew(sageFile, f, seconds, offset, width, height);
 			} catch (Exception e) {
 				e.printStackTrace();
 				resp.sendError(503, "Failed to generate thumbnail\n " + e.getMessage());
@@ -111,54 +108,11 @@ public class VideoThumbnailServlet extends HttpServlet {
 		}
 	}
 
-	private void generateThumbnail(File inFile, File outFile, int seconds, long offset,
+	private void generateThumbnailNew(Object inFile, File outFile, int seconds, long offset,
 			int w, int h) throws IOException {
-		File parent = outFile.getParentFile();
-		File tmp = parent.createTempFile("tmp-", "-mplayer", parent);
-		if (tmp.exists()) tmp.delete();
-		tmp.mkdirs();
-		try {
-			List<String> process = new ArrayList<String>();
-			process.add(tools.getMplayerLocation());
-			if (offset>0) {
-				process.add("-sb");
-				process.add(String.valueOf(offset));
-			} else {
-				process.add("-ss");
-				process.add(String.valueOf(seconds));
-			}
-			process.add("-nosound");
-			process.add("-vo");
-			process.add("jpeg");
-			process.add("-vf");
-			process.add("scale=" + String.valueOf(w) + ":" + String.valueOf(h));
-			process.add("-frames");
-			process.add("1");
-			process.add(inFile.getAbsolutePath());
-			ProcessBuilder pb = new ProcessBuilder(process);
-			pb.directory(tmp);
-			pb.redirectErrorStream(true);
-			Process proc = pb.start();
-			try {
-				int result = proc.waitFor();
-				if (result!=0) {
-					throw new IOException(IOUtils.toString(proc.getInputStream()));
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			File created = new File(tmp, "00000001.jpg");
-			if (created.exists()) {
-				created.renameTo(outFile);
-			} else {
-				throw new IOException("Failed to create thumbnail from file");
-			}
-		} finally {
-			try {
-				FileUtils.deleteDirectory(tmp);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		MediaFileAPI.GenerateThumbnail(inFile, seconds, w, h, outFile);
+		if (!outFile.exists()) {
+			throw new IOException("Failed to create thumnail for file " + inFile);
 		}
 	}
 }
