@@ -23,6 +23,7 @@ public class ToastMessage extends Composite implements HasText {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
+	
 	@UiField
 	SpanElement message; 
 

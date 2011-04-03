@@ -2,6 +2,7 @@ package org.jdna.bmt.web.client.ui.browser;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jdna.bmt.web.client.media.GWTMediaArt;
@@ -15,6 +16,7 @@ import org.jdna.bmt.web.client.media.GWTProviderInfo;
 import org.jdna.bmt.web.client.media.GWTView;
 import org.jdna.bmt.web.client.media.GWTViewCategories;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
+import org.jdna.bmt.web.client.util.NamedProperty;
 
 import sagex.phoenix.metadata.MediaArtifactType;
 
@@ -45,4 +47,7 @@ public interface BrowsingServiceAsync {
 	void record(GWTMediaFile file, AsyncCallback<String> callback);
 	void setWatched(GWTMediaFile file, boolean watched,	AsyncCallback<Void> callback);
 	void cancelRecord(GWTMediaFile file, AsyncCallback<Void> callback);
+	void getEditableMetadataFields(GWTMediaResource res, AsyncCallback<ArrayList<NamedProperty<String>>> callback);
+	void batchUpdateMetadata(GWTMediaResource res,	ArrayList<NamedProperty<String>> props,	AsyncCallback<Boolean> callback);
+	void addMediaTitle(HashMap<String, String> fields,	AsyncCallback<ServiceReply<Boolean>> callback);
 }

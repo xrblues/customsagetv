@@ -40,6 +40,7 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 	protected static final int MENU_SET_WATCHED = 7;
 	protected static final int MENU_VIEW = 8;
 	protected static final int MENU_EDIT = 9;
+	protected static final int MENU_EDIT_RAW = 10;
 
 	private GWTMediaResource res;
 	private VerticalPanel vpanel = new VerticalPanel();
@@ -269,6 +270,9 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 								case MENU_VIEW:
 									controller.view(res);
 									break;
+								case MENU_EDIT_RAW:
+									controller.editraw(res);
+									break;
 								case MENU_EDIT:
 									controller.edit(res);
 									break;
@@ -286,6 +290,7 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 				}
 				sma.addItem(MENU_SET_WATCHED, "Toggle Watched");
 				sma.addItem(MENU_EDIT, "Edit Details");
+				sma.addItem(MENU_EDIT_RAW, "Edit Raw Metadata Details");
 				sma.addItem(MENU_DEBUG, "View Debug Metadata Details");
 				sma.fireDataChanged();
 				pm.center();

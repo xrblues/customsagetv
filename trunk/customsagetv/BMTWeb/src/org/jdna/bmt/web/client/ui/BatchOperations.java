@@ -111,7 +111,7 @@ public class BatchOperations {
 		op.setStartMessage("Fixing Genres");
 		op.setCompleteMessage("Genres has been fixed");
 		op.setBackground(true);
-		op.setConfirm("Press OK to fix Genres.  This will replace all genres like 'Action/Adventure' with 2 genres 'Action' and 'Adventure'.  It will enforce that there never more than 2 genres per media item.");
+		op.setConfirm("Press OK to fix Genres.  This will replace all genres like 'Action/Adventure' with 2 genres 'Action' and 'Adventure'");
 		operations.add(op);
 
 		op = new BatchOperation();

@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.fieldBox {
+			border-bottom: 2px solid #000080;
+			padding-bottom: 5px; 
+		}
+		
+		.label {
+			color: #000080;
+			font-weight: bold;
+		}
+	</ui:style>
+	<g:HTMLPanel width="100%" styleName="{style.fieldBox}">
+		<g:Label ui:field="name" styleName="{style.label}"/>
+		<table>
+			<tr>
+				<td>
+				    <g:TextBox ui:field="value" visibleLength="60"/>
+	    		</td>
+				<td><span style="color: #000080; font-style: italic;">Clear Field?</span></td>
+				<td>
+				    <g:CheckBox ui:field="clearfield"/>
+	    		</td>
+	    	</tr>
+	    </table>
+	</g:HTMLPanel>
+</ui:UiBinder> 

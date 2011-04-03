@@ -147,4 +147,7 @@ public interface Labels extends Constants {
 
     @DefaultStringValue("Batch Operations")
 	String batchOperations();
+
+    @DefaultStringValue("Add New MediaTitle Matcher")
+	String addMediaTitlesDialog();
 }

@@ -4,19 +4,29 @@ import java.io.Serializable;
 
 import org.jdna.bmt.web.client.util.Property;
 
+import sagex.phoenix.util.Hints;
+
 public class PrefItem extends Property<String> implements Serializable {
-    private String label = null;
+	private static final long serialVersionUID = 1L;
+	private String label = null;
     private String description = null;
     private String key = null;
     private boolean isGroup = false;
     private String defaultValue = null;
     private String resetValue = null;
-    private boolean isArray = false;
-    private String editor = null;
-    
     private String type = null;
+    private Hints hints = new Hints();
+	private PrefItem[] children = null;
+	private String listSeparator;
     
-    private PrefItem[] children = null;
+    public Hints getHints() {
+		return hints;
+	}
+
+	public void setHints(Hints hints) {
+		this.hints = hints;
+	}
+
 
     public PrefItem() {
         super(null);
@@ -98,19 +108,12 @@ public class PrefItem extends Property<String> implements Serializable {
         return (get()!=null && !get().equals(resetValue));
     }
 
-    public boolean isArray() {
-        return isArray;
-    }
-
-    public void setArray(boolean isArray) {
-        this.isArray = isArray;
-    }
-
-    public String getEditor() {
-        return editor;
-    }
-
-    public void setEditor(String editor) {
-        this.editor = editor;
-    }
+	public void setListSeparator(String listSeparator) {
+		if (listSeparator==null||listSeparator.trim().length()==0) listSeparator=null;
+		this.listSeparator = listSeparator;
+	}
+	
+	public String getListSeparator() {
+		return listSeparator;
+	}
 }

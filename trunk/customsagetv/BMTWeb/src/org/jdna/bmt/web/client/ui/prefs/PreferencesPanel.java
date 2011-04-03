@@ -281,7 +281,9 @@ public class PreferencesPanel extends Composite {
     	PrefItem pi = new PrefItem();
     	pi.setDescription(description);
     	pi.setLabel(label);
-    	pi.setEditor(editor);
+    	if (!StringUtils.isEmpty(editor)) {
+    		pi.getHints().setHint("editor", editor);
+    	}
     	ti.setUserObject(pi);
     	return ti;
     }
@@ -290,8 +292,10 @@ public class PreferencesPanel extends Composite {
         if (ti==null) return;
         
         PrefItem prefGroup = (PrefItem) ti.getUserObject();
-        if (!StringUtils.isEmpty(prefGroup.getEditor())) {
-            editPanel.setEditorWidget(EditorFactory.createEditor(prefGroup.getEditor()));
+        if (!StringUtils.isEmpty(prefGroup.getHints().getHint("editor"))) {
+            editPanel.setEditorWidget(EditorFactory.createEditor(prefGroup.getHints().getHint("editor")));
+        } else if (prefGroup.getHints().getBooleanValue("log4jEditor", false)) {
+            editPanel.setEditorWidget(EditorFactory.createEditor("log4jEditor"));
         } else {
             if (prefGroup.getChildren()==null || prefGroup.getChildren().length==0) {
                 // fetch items

@@ -1,6 +1,8 @@
 package org.jdna.bmt.web.client.ui.util.binder;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.jdna.bmt.web.client.util.Property;
 
@@ -9,10 +11,16 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class DateBinder extends FieldBinder<String> {
-	private String mask = "yyyy-MM-dd";
+	private List<String> masks = new ArrayList<String>();
+	
 	public DateBinder(Property<String> prop, String mask) {
 		super(new TextBox(), prop);
-		setMask(mask);
+		masks.add("yyyy-MM-dd");
+		masks.add("yyyy-MM-dd HH:mm");
+		masks.add("yyyy-MM-dd HH:mm:ss");
+		if (!mask.contains(mask)) {
+			masks.add(mask);
+		}
 	}
 	
 	public void updateField() {
@@ -32,25 +40,19 @@ public class DateBinder extends FieldBinder<String> {
 	public void setText(String text) {
 		((HasText) getWidget()).setText(getDate(text));
 	}
-	public String getMask() {
-		return mask;
-	}
-
-	public void setMask(String mask) {
-		this.mask = mask;
-	}
 	
 	private String getDate(String in) {
-		if (mask==null) {
-			return in;
+		for (String mask : masks) {
+			try {
+				DateTimeFormat fmt = DateTimeFormat.getFormat(mask);
+				Date d = fmt.parse(in);
+				return fmt.format(d);
+			} catch (Exception e) {
+				//e.printStackTrace();
+				//return null;
+			}
 		}
-		try {
-			DateTimeFormat fmt = DateTimeFormat.getFormat(mask);
-			Date d = fmt.parse(in);
-			return fmt.format(d);
-		} catch (Exception e) {
-			return null;
-		}
+		return null;
 	}
 	
 }

@@ -15,10 +15,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
@@ -53,6 +53,8 @@ public class ViewAiringItemDetails extends Composite implements MessageHandler, 
 	public ViewAiringItemDetails(GWTMediaFile gfile, BrowsePanel controller) {
 		initWidget(uiBinder.createAndBindUi(this));
 		
+		History.newItem("viewairing", false);
+		
 		this.file=gfile;
 		this.controller=controller;
 
@@ -82,7 +84,7 @@ public class ViewAiringItemDetails extends Composite implements MessageHandler, 
 		
 		if (file.getAiringDetails()!=null) {
 			aired.setText(DateFormatUtil.formatAiredDate(file.getAiringDetails().getStartTime()));
-			duration.setText(DateFormatUtil.formatDuration(file.getAiringDetails().getDuration()));
+			duration.setText(DateFormatUtil.formatDurationFancy(file.getAiringDetails().getDuration()));
 			channel.setText(file.getAiringDetails().getChannel() + " (" + file.getAiringDetails().getNetwork() + ")");
 			firstRun.setVisible(file.getAiringDetails().isFirtRun());
 			manualRecord.setVisible(file.getAiringDetails().isManualRecord());

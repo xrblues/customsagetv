@@ -13,6 +13,16 @@ public class DateFormatUtil {
 	
 	public static String formatDuration(long in) {
 		int mins = (int)(in / 1000 / 60) % 60;
+		
+		if (mins>0) {
+		   return mins + " min";
+		}
+		
+		return "";
+	}
+	
+	public static String formatDurationFancy(long in) {
+		int mins = (int)(in / 1000 / 60) % 60;
 		int hrs = (int)(in / 1000 / 60 / 60) % 60;
 		NumberFormat nf = NumberFormat.getFormat("00");
 		String smins = nf.format(mins);
@@ -26,4 +36,5 @@ public class DateFormatUtil {
 			return smins + " min";
 		}
 	}
+	
 }

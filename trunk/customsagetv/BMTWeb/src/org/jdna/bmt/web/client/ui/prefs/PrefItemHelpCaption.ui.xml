@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder">
+	<ui:style>
+		table#prefhelp span {
+			font-weight: bold;
+			color: #000080;
+			white-space: nowrap;
+			padding-right: 20px;
+		}
+		
+		table#prefhelp td {
+			border-bottom: 1px dashed grey;
+		}
+
+		table#prefhelp em {
+			font-style: italic;
+		}
+	</ui:style>
+	<div>
+		<table id="prefhelp">
+			<tr>
+				<td valign="top"><span>Sage Property</span></td>
+				<td ui:field="property"></td>
+			</tr>
+			<tr>
+				<td valign="top"><span>Data Type</span></td>
+				<td ui:field="type"></td>
+			</tr>
+			<tr>
+				<td align="top"><span>Description</span></td>
+				<td ui:field="description"></td>
+			</tr>
+			<tr>
+				<td valign="top" colspan="2"><em ui:field="separator"/></td>
+			</tr>
+		</table>
+	</div>
+</ui:UiBinder>

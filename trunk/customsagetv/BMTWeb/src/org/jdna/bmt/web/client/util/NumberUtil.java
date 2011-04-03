@@ -9,4 +9,12 @@ public class NumberUtil {
 			return def;
 		}
 	}
+	public static long toLong(String in, long def) {
+		try {
+			if (in==null) return def;
+			return Long.parseLong(in);
+		} catch (Exception e) {
+			return def;
+		}
+	}
 }	

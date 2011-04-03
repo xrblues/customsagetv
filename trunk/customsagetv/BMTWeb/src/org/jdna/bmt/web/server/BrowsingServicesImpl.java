@@ -1,6 +1,7 @@
 package org.jdna.bmt.web.server;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,6 +36,7 @@ import org.jdna.bmt.web.client.ui.browser.PersistenceOptionsUI;
 import org.jdna.bmt.web.client.ui.browser.ProgressStatus;
 import org.jdna.bmt.web.client.ui.browser.SearchQueryOptions;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
+import org.jdna.bmt.web.client.util.NamedProperty;
 
 import sagex.api.AiringAPI;
 import sagex.api.ChannelAPI;
@@ -42,12 +45,15 @@ import sagex.api.ShowAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.fanart.AdvancedFanartMediaRequestHandler;
+import sagex.phoenix.metadata.BatchUpdateVisitor;
 import sagex.phoenix.metadata.CastMember;
 import sagex.phoenix.metadata.ICastMember;
 import sagex.phoenix.metadata.IMediaArt;
 import sagex.phoenix.metadata.IMetadata;
 import sagex.phoenix.metadata.IMetadataProvider;
 import sagex.phoenix.metadata.IMetadataSearchResult;
+import sagex.phoenix.metadata.ISageCustomMetadataRW;
+import sagex.phoenix.metadata.ISagePropertyRW;
 import sagex.phoenix.metadata.ISeriesInfo;
 import sagex.phoenix.metadata.MediaArt;
 import sagex.phoenix.metadata.MediaArtifactType;
@@ -60,10 +66,13 @@ import sagex.phoenix.metadata.PhoenixMetadataSupport;
 import sagex.phoenix.metadata.persistence.PersistenceUtil;
 import sagex.phoenix.metadata.provider.tvdb.TVDBMetadataProvider;
 import sagex.phoenix.metadata.proxy.MetadataProxy;
+import sagex.phoenix.metadata.search.FileMatcher;
+import sagex.phoenix.metadata.search.ID;
 import sagex.phoenix.metadata.search.MediaSearchResult;
 import sagex.phoenix.metadata.search.MetadataSearchUtil;
 import sagex.phoenix.metadata.search.SearchQuery;
 import sagex.phoenix.metadata.search.SearchQuery.Field;
+import sagex.phoenix.progress.NullProgressMonitor;
 import sagex.phoenix.progress.TrackedItem;
 import sagex.phoenix.util.DateUtils;
 import sagex.phoenix.util.Hints;
@@ -119,7 +128,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 
 			int maxItems = 5;
 			try {
-				maxItems = (Integer) phoenix.config.GetProperty("bmt/web/maxItemsPerView");
+				maxItems = NumberUtils.toInt(phoenix.config.GetProperty("bmt/web/maxItemsPerView"),30);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -193,7 +202,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 					file.setSageMediaFileId(mfid);
 					file.setAiringId(String.valueOf(arid));
 					file.setShowId(ShowAPI.GetShowExternalID(sageMedia));
-					File f = new File(phoenix.api.GetFanartBackgroundPath(sageMedia));
+					File f = new File(phoenix.fanart.GetFanartBackgroundPath(sageMedia));
 					f = f.getParentFile();
 					file.setFanartDir(f.getAbsolutePath());
 					file.getSageRecording().set(MediaFileAPI.IsTVFile(sageMedia));
@@ -364,7 +373,9 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			mi.getMediaTitle().set(source.getMediaTitle());
 			mi.getMediaType().set(source.getMediaType());
 			mi.getMisc().set(source.getMisc());
-			mi.getOriginalAirDate().set(DateUtils.formatDate(source.getOriginalAirDate()));
+			if (source.getOriginalAirDate()!=null) {
+				mi.getOriginalAirDate().set(DateUtils.formatDateTime(source.getOriginalAirDate().getTime()));
+			}
 			mi.getParentalRating().set(source.getParentalRating());
 			mi.getRated().set(source.getRated());
 			mi.getRunningTime().set(String.valueOf(source.getRunningTime()));
@@ -389,7 +400,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 				mi.getWriters().add(new GWTCastMember(cm));
 			}
 
-			String g = StringUtils.join(source.getGenres(), ",");
+			String g = StringUtils.join(source.getGenres(), "/");
 			if (!StringUtils.isEmpty(g)) {
 				mi.getGenres().set(g);
 			}
@@ -559,7 +570,11 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		options.setBooleanHint(MetadataHints.SCAN_SUBFOLDERS, false);
 		options.setBooleanHint(MetadataHints.PRESERVE_ORIGINAL_METADATA, file.getMetadata().getPreserveRecordingMetadata().get());
 		
-		Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
+		Object sageMF = getSageMediaFile(file);
+		if (sageMF==null) {
+			log.warn("Failed to save metadata/fanart since file was not found by it's id or airingid");
+			return new ServiceReply<GWTMediaFile>(2, "Failed to save metadata/fanart because file could not be located", file); 
+		}
 		IMediaFile mf = new SageMediaFile(null, sageMF);
 		IMetadata md = MetadataProxy.newInstance();
 		GWTMediaMetadata gmd = file.getMetadata();
@@ -586,7 +601,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		md.setOriginalAirDate(DateUtils.parseDate(gmd.getOriginalAirDate().get()));
 		md.setRated(gmd.getRated().get());
 		md.setParentalRating(gmd.getParentalRating().get());
-		md.setRunningTime(NumberUtils.toLong(gmd.getRunningTime().get()));
+		md.setRunningTime(DateUtils.parseRuntimeInMinutes(gmd.getRunningTime().get()));
 		md.setSeasonNumber(NumberUtils.toInt(gmd.getSeasonNumber().get()));
 		md.setRelativePathWithTitle(gmd.getTitle().get());
 		md.setUserRating(MetadataSearchUtil.parseUserRating(gmd.getUserRating().get()));
@@ -611,7 +626,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		String genres = gmd.getGenres().get();
 		if (!StringUtils.isEmpty(genres)) {
 			md.getGenres().clear();
-			String gens[] = genres.split("\\s*,\\s*");
+			String gens[] = genres.split("\\s*[/;,]\\s*");
 			for (String g: gens ) {
 				md.getGenres().add(g);
 			}
@@ -663,7 +678,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	}
 
 	public ArrayList<GWTMediaArt> getFanart(GWTMediaFile file, MediaArtifactType artifact) {
-		Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
+		Object sageMF = getSageMediaFile(file);
 		if (sageMF == null) {
 			log.error("Failed to get sage mediafile for: " + file);
 			return null;
@@ -685,7 +700,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	}
 
 	public GWTMediaArt downloadFanart(GWTMediaFile file, MediaArtifactType artifact, GWTMediaArt ma) {
-		Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
+		Object sageMF = getSageMediaFile(file);
 		if (sageMF == null) {
 			log.error("Failed to get sage mediafile for: " + file);
 			return null;
@@ -711,7 +726,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	}
 
 	public void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art) {
-		Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
+		Object sageMF = getSageMediaFile(file);
 		if (sageMF == null) {
 			log.error("Failed to get sage mediafile for: " + file);
 			return;
@@ -734,10 +749,32 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		return (GWTMediaFolder) convertResource(phoenix.umb.SearchMediaFiles(search));
 	}
 
+	private Object getSageMediaFile(GWTMediaFile file) {
+		Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
+		if (sageMF==null && !StringUtils.isEmpty(file.getAiringId())) {
+			sageMF = AiringAPI.GetAiringForID(NumberUtils.toInt(file.getAiringId()));
+		}
+		return sageMF;
+	}
+	
+	private IMediaFile getMediaRef(GWTMediaFile file) {
+		Object sageMF = getSageMediaFile(file);
+		IMediaFile mf = new SageMediaFile(null, sageMF);
+		return mf;
+	}
+	
+	private IMediaResource getResourceRef(GWTMediaResource res) {
+		if (res instanceof GWTMediaFolder) {
+			return getFolderRef((GWTMediaFolder) res);
+		} else {
+			return getMediaRef((GWTMediaFile) res);
+		}
+	}
+	
 	@Override
 	public SearchQueryOptions discoverQueryOptions(GWTMediaFile file) {
 		try {
-			Object sageMF = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
+			Object sageMF = getSageMediaFile(file);
 			IMediaFile mf = phoenix.media.GetMediaFile(sageMF);
 			SearchQuery query = Phoenix.getInstance().getSearchQueryFactory().createSageFriendlyQuery(mf, Phoenix.getInstance().getMetadataManager().getDefaultMetadataOptions());
 
@@ -867,5 +904,109 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	@Override
 	public void cancelRecord(GWTMediaFile file) {
 		AiringAPI.CancelRecord(AiringAPI.GetAiringForID(NumberUtils.toInt(file.getAiringId())));
+	}
+
+	@Override
+	public ArrayList<NamedProperty<String>> getEditableMetadataFields(GWTMediaResource res) {
+		ArrayList<String> keyset = new ArrayList<String>();
+		
+		// add in non-updateable files
+		keyset.add("ExternalID");
+		
+		keyset.add("ScrapedBy");
+		keyset.add("ScrapedDate");
+		
+		ArrayList<NamedProperty<String>> props = new ArrayList<NamedProperty<String>>();
+		String keys[] = MetadataUtil.getPropertyKeys(ISagePropertyRW.class);
+		for (String s: keys) {
+			if (!keyset.contains(s)) {
+				props.add(new NamedProperty<String>(s, ""));
+				keyset.add(s);
+			}
+		}
+		
+		keys = MetadataUtil.getPropertyKeys(ISageCustomMetadataRW.class);
+		for (String s: keys) {
+			if (!keyset.contains(s)) {
+				props.add(new NamedProperty<String>(s, ""));
+				keyset.add(s);
+			}
+		}
+		
+		Collections.sort(props, new Comparator<NamedProperty<String>>() {
+			@Override
+			public int compare(NamedProperty<String> o1, NamedProperty<String> o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		
+		// populate mediafile details
+		if (res instanceof GWTMediaFile) {
+			IMediaFile mf = getMediaRef((GWTMediaFile) res);
+			IMetadata md = mf.getMetadata();
+			for (NamedProperty<String> np: props) {
+				np.set(MetadataUtil.getProperty(md, np.getName()));
+			}
+		}
+		
+		return props;
+	}
+
+	@Override
+	public boolean batchUpdateMetadata(GWTMediaResource res, ArrayList<NamedProperty<String>> props) {
+		IMediaResource resource = getResourceRef(res);
+		if (resource==null) {
+			log.warn("Invalid Reference: " + res);
+			return false;
+		}
+		
+		Map<String, String> update = new HashMap<String, String>();
+		for (NamedProperty<String> p: props) {
+			log.info("Batch Updating: " + p.getName() + " with value: " + p.get() + "; Clearing? " + p.isVisible());
+			update.put(p.getName(), p.get());
+		}
+		
+		log.debug("Begin Batch Updating...");
+		resource.accept(new BatchUpdateVisitor(update), NullProgressMonitor.INSTANCE, IMediaResource.DEEP_UNLIMITED);
+		log.debug("End Batch Updating");
+		return true;
+	}
+
+	@Override
+	public ServiceReply<Boolean> addMediaTitle(HashMap<String, String> fields) {
+		ServiceReply<Boolean> reply = new ServiceReply<Boolean>();
+		
+		FileMatcher fm = new FileMatcher();
+		fm.setMediaType(MediaType.toMediaType(fields.get("mediatype")));
+		try {
+			fm.setFileRegex(Pattern.compile(fields.get("regex")));
+		} catch (Exception e) {
+			reply.setData(false);
+			reply.setCode(1);
+			reply.setMessage("Invalid File Pattern: " + fields.get("regex"));
+			return reply;
+		}
+		fm.setMetadata(new ID(fields.get("providerid"), fields.get("dataid")));
+		
+		try {
+			Phoenix.getInstance().getMediaTitlesManager().addRegexMatcher(fm);
+		} catch (Exception e) {
+			reply.setData(false);
+			reply.setCode(2);
+			reply.setMessage("Failed to add matcher: " + e.getMessage());
+			return reply;
+		}
+		
+		try {
+			Phoenix.getInstance().getMediaTitlesManager().saveMatchers();
+		} catch (IOException e) {
+			reply.setData(false);
+			reply.setCode(3);
+			reply.setMessage("Failed to save matchers: " + e.getMessage());
+			return reply;
+		}
+		
+		reply.setData(true);
+		return reply;
 	}
 }
