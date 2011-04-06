@@ -12,7 +12,7 @@ public class DateFormatUtil {
 	}
 	
 	public static String formatDuration(long in) {
-		int mins = (int)(in / 1000 / 60) % 60;
+		int mins = (int)(in / 1000 / 60);
 		
 		if (mins>0) {
 		   return mins + " min";
