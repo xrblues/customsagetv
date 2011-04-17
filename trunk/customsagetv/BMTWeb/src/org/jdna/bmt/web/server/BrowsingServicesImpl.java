@@ -44,6 +44,8 @@ import sagex.api.MediaFileAPI;
 import sagex.api.ShowAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.proxy.GroupProxy;
+import sagex.phoenix.db.PQLParser;
+import sagex.phoenix.db.ParseException;
 import sagex.phoenix.fanart.AdvancedFanartMediaRequestHandler;
 import sagex.phoenix.metadata.BatchUpdateVisitor;
 import sagex.phoenix.metadata.CastMember;
@@ -81,6 +83,7 @@ import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaFolder;
 import sagex.phoenix.vfs.IMediaResource;
 import sagex.phoenix.vfs.MediaResourceType;
+import sagex.phoenix.vfs.filters.IResourceFilter;
 import sagex.phoenix.vfs.sage.SageMediaFile;
 import sagex.phoenix.vfs.util.PathUtils;
 import sagex.phoenix.vfs.views.ViewFactory;
@@ -239,6 +242,10 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 					det.setStartTime(AiringAPI.GetAiringStartTime(airing));
 					det.setManualRecord(AiringAPI.IsManualRecord(airing));
 					file.setAiringDetails(det);
+					IMetadata md = ((IMediaFile)r).getMetadata();
+					det.setYear(md.getYear());
+					det.setSeason(md.getSeasonNumber());
+					det.setEpisode(md.getEpisodeNumber());
 				}
 			}
 			file.setPath(PathUtils.getLocation(r));
@@ -348,7 +355,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		}
 	}
 
-	public GWTMediaMetadata newMetadata(IMediaFile file, IMetadata source) {
+	public static GWTMediaMetadata newMetadata(IMediaFile file, IMetadata source) {
 		GWTMediaMetadata mi = new GWTMediaMetadata();
 		if (source != null) {
 			mi.getDescription().set(source.getDescription());
@@ -378,7 +385,12 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			}
 			mi.getParentalRating().set(source.getParentalRating());
 			mi.getRated().set(source.getRated());
-			mi.getRunningTime().set(String.valueOf(source.getRunningTime()));
+			if (source.getRunningTime()>0) {
+				mi.getRunningTime().set(String.valueOf(source.getRunningTime()));
+			} else {
+				long dur = AiringAPI.GetAiringDuration(file.getMediaObject());
+				mi.getRunningTime().set(String.valueOf(dur));
+			}
 			mi.getSeasonNumber().set(String.valueOf(source.getSeasonNumber()));
 			mi.getTitle().set(source.getRelativePathWithTitle());
 			mi.getUserRating().set(String.valueOf(source.getUserRating()));
@@ -745,8 +757,19 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	}
 
 	@Override
-	public GWTMediaFolder searchMediaFiles(String search) {
-		return (GWTMediaFolder) convertResource(phoenix.umb.SearchMediaFiles(search));
+	public ServiceReply<GWTMediaFolder> searchMediaFiles(String search) {
+		if (search==null) return new ServiceReply<GWTMediaFolder>(1, "No Search", null);
+		
+		try {
+			return new ServiceReply<GWTMediaFolder>(0,"ok",(GWTMediaFolder) convertResource(phoenix.umb.SearchMediaFiles(search)));
+		} catch (Throwable t) {
+			log.warn("Query Failed for " + search, t);
+			if (t.getCause()!=null && t.getCause() instanceof ParseException) {
+				return new ServiceReply<GWTMediaFolder>(2, t.getCause().getMessage(), null);
+			} else {
+				return new ServiceReply<GWTMediaFolder>(4, "Unknown Error", null);
+			}
+		}
 	}
 
 	private Object getSageMediaFile(GWTMediaFile file) {

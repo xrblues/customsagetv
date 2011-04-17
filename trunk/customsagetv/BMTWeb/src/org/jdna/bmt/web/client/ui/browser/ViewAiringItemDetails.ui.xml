@@ -49,9 +49,8 @@
 				</g:VerticalPanel>
 			<g:VerticalPanel>
 				<g:Label text="Show Title" ui:field="showTitle" styleName="{style.title}" />
-				<g:Label text="Episode Name" ui:field="episodeName"
-					styleName="{style.episode}" />
-				<g:Label text="Season/Episode" styleName="{style.label}" />
+				<g:Label ui:field="episodeName"	styleName="{style.episode}" />
+				<g:Label ui:field="seasonEpLabel" text="Season/Episode" styleName="{style.label}"/>
 				<g:Label ui:field="seasonEp"/>
 				<g:Label text="Description" styleName="{style.label}" />
 				<g:Label text="Description Text" ui:field="description" styleName="{style.description}"/>
@@ -63,10 +62,8 @@
 				<g:Label ui:field="channel"/>
 				<g:Label text="Category" styleName="{style.label}"/>
 				<g:Label ui:field="category"/>
-				<!-- 
-				<g:Label text="Actors" styleName="{style.label}"/>
+				<g:Label text="Cast" styleName="{style.label}"/>
 				<g:HTMLPanel ui:field="actors"/>
-				-->
 				<g:Label text="Airing Id" styleName="{style.label}"/>
 				<g:Label ui:field="airingid"/>
 			</g:VerticalPanel>

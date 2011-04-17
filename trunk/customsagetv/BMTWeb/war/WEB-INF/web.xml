@@ -46,6 +46,11 @@
   </servlet>
 
   <servlet>
+    <servlet-name>databrowser</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.DataBrowserServicesImpl</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>sage</servlet-name>
     <servlet-class>org.jdna.bmt.web.server.SageServicesImpl</servlet-class>
   </servlet>
@@ -96,7 +101,20 @@
     <description>Provider Images for Phoenix REST Media</description>
     <servlet-class>sagex.phoenix.rest.FanartServlet</servlet-class>
   </servlet>
+
+  <!-- Custom Video Servlet -->
+  <servlet>
+    <servlet-name>customvideos</servlet-name>
+    <display-name>customvideos</display-name>
+    <description>Custom Videos Servlet</description>
+    <servlet-class>sagex.phoenix.rest.CustomVideoServlet</servlet-class>
+  </servlet>
   
+  <servlet-mapping>
+    <servlet-name>customvideos</servlet-name>
+    <url-pattern>customvideos</url-pattern>
+  </servlet-mapping>
+
   <servlet-mapping>
     <servlet-name>view</servlet-name>
     <url-pattern>view</url-pattern>
@@ -130,6 +148,11 @@
   <servlet-mapping>
     <servlet-name>status</servlet-name>
     <url-pattern>/bmtweb/status</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>databrowser</servlet-name>
+    <url-pattern>/bmtweb/databrowser</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

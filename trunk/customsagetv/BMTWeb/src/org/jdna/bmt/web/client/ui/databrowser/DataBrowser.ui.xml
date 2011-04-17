@@ -1,0 +1,15 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:my="urn:import:org.jdna.bmt.web.client.ui.util">
+	<ui:style>
+		
+	</ui:style>
+	<g:VerticalPanel>
+		<my:HorizontalButtonBar width="100%">
+			<!-- <g:Button ui:field="watched">Toggle Watched</g:Button>  -->
+			<g:ListBox ui:field="userstores"></g:ListBox>
+		</my:HorizontalButtonBar>
+		<g:SimplePanel ui:field="panel"></g:SimplePanel>
+	</g:VerticalPanel>
+</ui:UiBinder> 

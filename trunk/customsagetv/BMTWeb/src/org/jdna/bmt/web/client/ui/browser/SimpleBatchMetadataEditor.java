@@ -34,6 +34,8 @@ public class SimpleBatchMetadataEditor extends Composite {
 	@UiField Button save;
 	@UiField Label title;
 
+	
+	
 	interface SimpleBatchMetadataEditorUiBinder extends
 			UiBinder<Widget, SimpleBatchMetadataEditor> {
 	}
@@ -46,7 +48,7 @@ public class SimpleBatchMetadataEditor extends Composite {
 		
 		History.newItem("batchedit", false);
 		
-		controller.getMessageBus().postMessage(BrowsePanel.MSG_HIDE_VIEWS, null);
+		controller.getMessageBus().postMessage(BrowsePanel.MSG_HIDE_VIEWS);
 		this.baseResource = res;
 		this.controller=controller;
 		this.title.setText(res.getPath());
@@ -65,7 +67,7 @@ public class SimpleBatchMetadataEditor extends Composite {
 
 	@UiHandler("back")
 	public void back(ClickEvent evt) {
-		controller.getMessageBus().postMessage(BrowsePanel.MSG_SHOW_VIEWS, null);
+		controller.getMessageBus().postMessage(BrowsePanel.MSG_SHOW_VIEWS);
 		controller.back();
 	}
 

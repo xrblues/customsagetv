@@ -3,6 +3,7 @@ package org.jdna.bmt.web.client.ui.browser;
 import java.util.Map;
 
 import org.jdna.bmt.web.client.Application;
+import org.jdna.bmt.web.client.media.GWTCastMember;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
@@ -10,6 +11,7 @@ import org.jdna.bmt.web.client.util.DateFormatUtil;
 import org.jdna.bmt.web.client.util.MessageHandler;
 import org.jdna.bmt.web.client.util.NotificationCallback;
 import org.jdna.bmt.web.client.util.NumberUtil;
+import org.jdna.bmt.web.client.util.StringUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -21,6 +23,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -34,6 +38,7 @@ public class ViewAiringItemDetails extends Composite implements MessageHandler, 
 	@UiField Label description;
 	@UiField Image poster;
 	@UiField Label seasonEp;
+	@UiField Label seasonEpLabel;
 	@UiField Label aired;
 	@UiField Label duration;
 	@UiField Label channel;
@@ -42,6 +47,7 @@ public class ViewAiringItemDetails extends Composite implements MessageHandler, 
 	@UiField Image manualRecord;
 	@UiField Label category;
 	@UiField Label airingid;
+	@UiField HTMLPanel actors;
 	
 	private GWTMediaFile file=null;
 	private BrowsePanel controller = null;
@@ -68,7 +74,9 @@ public class ViewAiringItemDetails extends Composite implements MessageHandler, 
 		poster.setUrl("fanart?mediafile=" + gfile.getAiringId() + "&scalex=200&artifact=poster");
 
 		showTitle.setText(file.getTitle());
-		episodeName.setText("\""+file.getMinorTitle()+"\"");
+		if (file.getMinorTitle()!=null && !file.getMinorTitle().equals(file.getTitle())) {
+			episodeName.setText("\""+file.getMinorTitle()+"\"");
+		}
 		description.setText("");
 		controller.getServices().loadMetadata(file, new AsyncCallback<GWTMediaMetadata>() {
 			@Override
@@ -88,6 +96,9 @@ public class ViewAiringItemDetails extends Composite implements MessageHandler, 
 			channel.setText(file.getAiringDetails().getChannel() + " (" + file.getAiringDetails().getNetwork() + ")");
 			firstRun.setVisible(file.getAiringDetails().isFirtRun());
 			manualRecord.setVisible(file.getAiringDetails().isManualRecord());
+			if (file.getAiringDetails().getYear()>0) {
+				showTitle.setText(file.getTitle() + " ("+file.getAiringDetails().getYear()+")");
+			}
 		}
 		
 		watchedMarker.setVisible(file.getIsWatched().get());
@@ -100,21 +111,22 @@ public class ViewAiringItemDetails extends Composite implements MessageHandler, 
 		if (ep>0) {
 			seasonEp.setText(result.getSeasonNumber().get() + " x " + result.getEpisodeNumber().get());
 		} else {
-			seasonEp.setText("-");
+			seasonEp.setVisible(false);
+			seasonEpLabel.setVisible(false);
 		}
 		
 		description.setText(result.getDescription().get());
 		category.setText(result.getGenres().get());
 		
-//		StringBuilder sb = new StringBuilder();
-//		for (GWTCastMember c: result.getActors()) {
-//			sb.append(c.getName());
-//			if (!StringUtils.isEmpty(c.getRole())) {
-//				sb.append(" -- ").append(c.getRole());
-//			}
-//			sb.append("<br/>");
-//		}
-//		actors.add(new HTML(sb.toString()));
+		StringBuilder sb = new StringBuilder();
+		for (GWTCastMember c: result.getActors()) {
+			sb.append(c.getName());
+			if (!StringUtils.isEmpty(c.getRole())) {
+				sb.append(" -- ").append(c.getRole());
+			}
+			sb.append("<br/>");
+		}
+		actors.add(new HTML(sb.toString()));
 	}
 
 	@UiHandler("back")

@@ -3,7 +3,6 @@ package org.jdna.bmt.web.client.ui.browser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
@@ -48,7 +47,7 @@ public interface BrowsingService extends RemoteService {
     public boolean deleteFanart(GWTMediaArt art);
     public void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art);
     
-    public GWTMediaFolder searchMediaFiles(String search);
+    public ServiceReply<GWTMediaFolder> searchMediaFiles(String search);
     public SearchQueryOptions discoverQueryOptions(GWTMediaFile file);
     
     public ArrayList<GWTView> getViewCategories();
