@@ -32,7 +32,7 @@ watched status on files, etc
 
 	<Dependency>
 		<Plugin>phoenix-core</Plugin>
-		<MinVersion>2.3.24</MinVersion>
+		<MinVersion>2.3.26</MinVersion>
 	</Dependency>
 
 	<PluginType>Standard</PluginType>
@@ -52,6 +52,15 @@ watched status on files, etc
 		<MD5>@@context-checksum@@</MD5>
 	</Package>
 	<ReleaseNotes>
+4.9.14
+* Added Year to upcoming movies
+* Changed the Search to use PQL so that you can do advanced searches using the search bar
+* Batch Updater now supports +Genre or -Genre to add or remove a specific Genre
+* Verified that Batch Import As Recording does work
+
+4.9.13
+* Fixed display issue with runtime 
+
 4.9.12
 * Added Batch Metadata Editor (can now batch edit multiple files)
 * Added RAW Metadata Editor to edit any Metadata field for a media item

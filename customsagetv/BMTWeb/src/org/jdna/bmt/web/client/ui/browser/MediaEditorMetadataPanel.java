@@ -83,7 +83,7 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
 	private BrowsePanel controller;
     
     public MediaEditorMetadataPanel(GWTMediaFile mediaFile, BrowsePanel controller) {
-		controller.getMessageBus().postMessage(BrowsePanel.MSG_HIDE_VIEWS, null);
+		controller.getMessageBus().postMessage(BrowsePanel.MSG_HIDE_VIEWS);
 
 		History.newItem("editmetadata", false);
 		
@@ -141,7 +141,7 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         Button back = new Button("Back");
         back.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-        		controller.getMessageBus().postMessage(BrowsePanel.MSG_SHOW_VIEWS, null);
+        		controller.getMessageBus().postMessage(BrowsePanel.MSG_SHOW_VIEWS);
                 controller.back();
             }
         });

@@ -33,9 +33,29 @@ public class MessageBus {
 		return h;
 	}
 
+	/**
+	 * converts the args into a map where each arg is assigned value# as the key
+	 *  
+	 * @param id
+	 * @param args
+	 */
+	public void postMessage(String id, Object... args) {
+		Map<String, Object> data = new HashMap();
+		if (args!=null&&args.length>0) {
+			for (int i=0;i<args.length;i++) {
+				data.put("value"+i, args[i]);
+			}
+		}
+		postMessage(id, data);
+	}
+
 	public void postMessage(String id, Map<String, ?> args) {
 		for (MessageHandler mh : getHandlers(id)) {
 			mh.onMessageReceived(id, args);
 		}
+	}
+	
+	public void postMessage(String id) {
+		postMessage(id, (Map)null);
 	}
 }

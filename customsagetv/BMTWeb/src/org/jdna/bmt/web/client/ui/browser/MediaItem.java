@@ -145,8 +145,20 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 	}
 
 	private void setTitles(GWTMediaResource res2) {
+		GWTAiringDetails airing = (res instanceof GWTMediaFile)?((GWTMediaFile)res2).getAiringDetails():null;
 		titles.clear();
-		Label title1 = new Label(res2.getTitle());
+		Label title1 = new Label();
+		if (airing!=null) {
+			if (airing.getYear()>0) {
+			title1.setText(res2.getTitle() + " ("+ airing.getYear()+")");
+			} else {
+				title1.setText(res2.getTitle());
+			}
+		} else {
+			title1.setText(res2.getTitle());
+		}
+		
+		
 		titles.add(title1);
 		titles.setCellHorizontalAlignment(title1,
 				HasHorizontalAlignment.ALIGN_CENTER);
@@ -227,7 +239,6 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 							}
 						});
 
-				GWTMediaFile f = (GWTMediaFile) res;
 				SimpleMenuAdapter sma = (SimpleMenuAdapter) pm.getListAdapter();
 				sma.addItem(MENU_RECORD_FAVORITE, "Add as Favorite");
 				sma.addItem(MENU_RECORD_ONCE, "Record Once");

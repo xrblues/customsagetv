@@ -8,6 +8,10 @@ public class GWTAiringDetails implements Serializable {
 	public long startTime;
 	public boolean firtRun;
 	public long duration;
+	public int year;
+	public int season;
+	public int episode;
+	
 	public long getStartTime() {
 		return startTime;
 	}
@@ -61,5 +65,29 @@ public class GWTAiringDetails implements Serializable {
 	
 	public void setManualRecord(boolean record) {
 		this.manual=record;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
+	}
+
+	public int getSeason() {
+		return season;
+	}
+
+	public void setSeason(int season) {
+		this.season = season;
+	}
+
+	public int getEpisode() {
+		return episode;
+	}
+
+	public void setEpisode(int episode) {
+		this.episode = episode;
 	}
 }

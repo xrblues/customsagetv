@@ -16,18 +16,14 @@ import org.apache.log4j.Logger;
 
 import sagex.api.MediaFileAPI;
 import sagex.phoenix.Phoenix;
-import sagex.phoenix.configuration.proxy.GroupProxy;
-import sagex.phoenix.util.ToolsConfiguration;
 
 public class VideoThumbnailServlet extends HttpServlet {
 	private transient Logger log = Logger
 			.getLogger(VideoThumbnailServlet.class);
 
 	private static final long serialVersionUID = 1L;
-	private ToolsConfiguration tools = null;
 
 	public VideoThumbnailServlet() {
-		tools = GroupProxy.get(ToolsConfiguration.class);
 	}
 
 	/*

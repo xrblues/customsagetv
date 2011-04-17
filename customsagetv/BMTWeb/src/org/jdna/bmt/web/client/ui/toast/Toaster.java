@@ -55,7 +55,7 @@ public class Toaster {
 				mf.run(300);
 				return false;
 			}
-		}, 4000);
+		}, 5000);
 		
 		show();
 	}

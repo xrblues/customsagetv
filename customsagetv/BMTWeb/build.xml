@@ -23,7 +23,7 @@
 	<property name="build.dir" location="${target}/build" />
 	<property name="dist.dir" location="${target}/dist" />
 
-	<property name="version" value="4.9.12" />
+	<property name="version" value="4.9.13" />
 
 	<!-- for debugging turn off gwt compile -->
 	<!-- <property name="no-gwt-compile" value="true" /> -->
@@ -87,6 +87,7 @@
 	<target name="war" depends="compile">
 		<war destfile="${build.dir}/bmt.war">
 			<fileset dir="war" excludes="**/*.log*,log4j.properties,**/cache/**,**/scrapers/**,**/testing/**,**/STVs/**,Sage.properties,**/logs/**,**/Backups/**" />
+			<zipfileset prefix="WEB-INF/classes" file="src/bmtweb.log4j.properties"/>
 		</war>
 	</target>
 

@@ -2,6 +2,7 @@ package org.jdna.bmt.web.client.ui.browser;
 
 import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
+import org.jdna.bmt.web.client.ui.util.ServiceReply;
 import org.jdna.bmt.web.client.ui.util.SideMenuItem;
 import org.jdna.bmt.web.client.util.StringUtils;
 
@@ -82,30 +83,35 @@ public class SearchPanel extends Composite {
 			return;
 		}
 		
-		controller.getServices().searchMediaFiles(searchBox.getText(), new AsyncCallback<GWTMediaFolder>() {
+		controller.getServices().searchMediaFiles(searchBox.getText(), new AsyncCallback<ServiceReply<GWTMediaFolder>>() {
 			@Override
-			public void onSuccess(final GWTMediaFolder result) {
-				if (result!=null) {
+			public void onSuccess(final ServiceReply<GWTMediaFolder> result) {
+				if (result==null) {
+					Application.fireErrorEvent("Nothing found for " + searchBox.getText());
+					return;
+				}
+				
+				if (result.getCode()==0) {
 					SideMenuItem<GWTMediaFolder> smi = new SideMenuItem<GWTMediaFolder>(searchBox.getText(), null, new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
-							controller.browseFolder(result, 0, result.getPageSize());
+							controller.browseFolder(result.getData(), 0, result.getData().getPageSize());
 						}
 					});
 					smi.setWidth("100%");
 					searchResultsPanel.setVisible(true);
 					searchResultsPanel.add(smi);
-					controller.browseFolder(result, 0, result.getPageSize());
+					controller.browseFolder(result.getData(), 0, result.getData().getPageSize());
+					reset();
 				} else {
-					Application.fireErrorEvent("Nothing found for " + searchBox.getText());
+					Application.fireErrorEvent("Error in search " + searchBox.getText() + ";  Error was " + result.getMessage());
 				}
-				reset();
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				Application.fireErrorEvent("Search Failed for " + searchBox.getText(), caught);
-				reset();
+				//reset();
 			}
 		});
 	}

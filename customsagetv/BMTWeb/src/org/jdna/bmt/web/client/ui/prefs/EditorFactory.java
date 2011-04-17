@@ -1,5 +1,6 @@
 package org.jdna.bmt.web.client.ui.prefs;
 
+import org.jdna.bmt.web.client.ui.databrowser.DataBrowser;
 import org.jdna.bmt.web.client.ui.input.FileChooserTextBox;
 import org.jdna.bmt.web.client.util.Log;
 
@@ -37,6 +38,8 @@ public class EditorFactory {
             return new PluginsEditorPanel();
         } else if ("menus".equals(editor)) {
             return new MenuEditorPanel();
+        } else if ("userstores".equals(editor)) {
+            return new DataBrowser();
         } else {
         	return new Label("Unknown Editor: " + editor);
         }
