@@ -48,6 +48,7 @@ public class GlobalServicesImpl extends RemoteServiceServlet implements GlobalSe
 
 	public void batchOperation(final IMediaResource res, final BatchOperation op) {
 		try {
+			log.info("Running Batch Operation " + op.getLabel());
 			final IMediaResourceVisitor vis = createVisitor(op);
 			final IProgressMonitor monitor = new BasicProgressMonitor();
 

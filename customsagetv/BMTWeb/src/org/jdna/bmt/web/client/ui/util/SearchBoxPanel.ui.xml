@@ -26,5 +26,6 @@
 	<g:HorizontalPanel ui:field="panel" styleName="{style.searchBox}">
 		<g:TextBox ui:field="text" styleName="{style.textbox}"></g:TextBox>
 		<g:Image ui:field="icon" url="images/16x16/system-search.png" styleName="{style.image}"></g:Image>
+		<g:Image ui:field="help" url="images/16x16/help-browser.png" styleName="{style.image}"></g:Image>
 	</g:HorizontalPanel>
 </ui:UiBinder> 

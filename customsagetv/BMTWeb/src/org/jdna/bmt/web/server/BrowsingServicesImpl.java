@@ -760,6 +760,11 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 	public ServiceReply<GWTMediaFolder> searchMediaFiles(String search) {
 		if (search==null) return new ServiceReply<GWTMediaFolder>(1, "No Search", null);
 		
+		if (search.split(" ").length<3) {
+			// assume it's a title search
+			search = "Title = '" + search + "'";
+		}
+		
 		try {
 			return new ServiceReply<GWTMediaFolder>(0,"ok",(GWTMediaFolder) convertResource(phoenix.umb.SearchMediaFiles(search)));
 		} catch (Throwable t) {

@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Phoenix Query Language</title>
+    <style type="text/css">
+    body {
+    	font-family: Arial;
+    }
+    em {
+    	font-weight: bold;
+    }
+    </style>
+  </head>
+
+  <body>
+	<h2>PQL Searches</h2>
+	<div>You can use PQL (Phoenix Query Language) to construct simple or complex searches against metadata fields.</div>
+	<h3>Examples</h3>
+	
+	<div>The following query search for all media files where the genre contains horror or thriller</div>
+	<pre>Genre contains 'Horror' or Genre contains 'Thriller'</pre>
+
+	<div>The following query search for all media files where the MediaType has not been set</div>
+	<pre>MediaType is null</pre>
+
+	<div>You can also group conditions and use <em>and</em> or <em>or</em> to create a more complex query.  The following query is basically what BMT uses to find missing metadata</div>
+	<pre>MediaType is null <b>or</b> MediaTitle is null <b>or</b> (MediaType = 'TV' <b>and</b> EpisodeNumber = 0)</pre>
+
+	<div>If you enter a search with only 1 or 2 words then that search will be treated a <em>Title = 'Search Criteria'</em>.  i.e., the follow query will search for all shows with a <em>Title</em> of <em>House</em></div>
+	<pre>House</pre>
+	
+
+	<h3>Notes</h3>
+	<ul>
+		<li>FieldName are case sensitive</li>
+		<li><em>and</em> and <em>or</em> is case sensitive</li>
+		<li>The following operands are supported: <em>=, &gt;, &lt;, &lt;&gt;, is null, is not null, contains</em></li>
+		<li>The complete list of Metadata is not nicely documented but you can decipher the Field Names from this <a href="http://code.google.com/p/sagephoenix/source/browse/trunk/Phoenix/src/main/java/sagex/phoenix/metadata/FieldName.java" target="_help">file</a>.</li> 
+	</ul>	
+  </body>
+</html>
