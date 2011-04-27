@@ -21,6 +21,9 @@ import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar;
 import org.jdna.bmt.web.client.ui.util.OKDialogHandler;
+import org.jdna.bmt.web.client.ui.util.SearchBoxPanel;
+import org.jdna.bmt.web.client.ui.util.SideMenuItem;
+import org.jdna.bmt.web.client.ui.util.SearchBoxPanel.SearchHandler;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
 import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.MessageBus;
@@ -186,6 +189,7 @@ public class BrowsePanel extends Composite implements BrowserView, ValueChangeHa
 						.getBatchOperations()) {
 					if (value.equals(bo.getLabel())) {
 						Application.runBatchOperation(currentFolder, bo);
+						batchOperations.setSelectedIndex(0);
 						break;
 					}
 				}

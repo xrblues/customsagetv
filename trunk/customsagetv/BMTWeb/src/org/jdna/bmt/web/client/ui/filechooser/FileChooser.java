@@ -41,7 +41,7 @@ public class FileChooser extends Composite implements HasValue<String> {
         vp.setSpacing(5);
         vp.add(fileSelection);
         fileSelection.setWidth("100%");
-        fileSelection.setReadOnly(true);
+        fileSelection.setReadOnly(false);
         vp.setCellWidth(fileSelection, "100%");
         
         dirs = new ListBox(false);

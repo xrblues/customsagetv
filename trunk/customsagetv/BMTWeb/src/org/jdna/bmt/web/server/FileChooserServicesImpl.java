@@ -70,7 +70,7 @@ public class FileChooserServicesImpl extends RemoteServiceServlet implements Fil
         for (File f1 : f.listFiles()) {
             files.add(toJSFile(f1));
         }
-        if (files.size()==0) return null;
+        //if (files.size()==0) return null;
         return new JSFileResult(toJSFile(new File(base.getPath()).getParentFile()), base, files.toArray(new JSFile[files.size()]));
     }
     

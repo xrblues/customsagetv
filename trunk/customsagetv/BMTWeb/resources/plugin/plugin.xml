@@ -32,7 +32,7 @@ watched status on files, etc
 
 	<Dependency>
 		<Plugin>phoenix-core</Plugin>
-		<MinVersion>2.3.26</MinVersion>
+		<MinVersion>2.3.30</MinVersion>
 	</Dependency>
 
 	<PluginType>Standard</PluginType>
@@ -52,6 +52,14 @@ watched status on files, etc
 		<MD5>@@context-checksum@@</MD5>
 	</Package>
 	<ReleaseNotes>
+4.9.15
+* Search box will now treat 1 and 2 word searches as Title search.
+* Search box will now accept "Enter" to invoke search
+* Added simple help icon/dialog for the new PQL Search
+* Fixed bug in FileChooser that would not let you choose a directory that was empty
+* PQL Search is not cleared when it fails
+* Reset the batch operations list after each operation
+
 4.9.14
 * Added Year to upcoming movies
 * Changed the Search to use PQL so that you can do advanced searches using the search bar
