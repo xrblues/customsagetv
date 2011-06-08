@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 01/04/11 7:26 PM
+ * Generated Date/Time: 07/06/11 8:40 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Utility.html'>Utility</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -3988,6 +3988,43 @@ public static java.util.Map ScanWirelessAPs (UIContext _uicontext) {
   Object o = sagex.SageAPI.call(_uicontext, "ScanWirelessAPs", (Object[])null);
   if (o!=null) return (java.util.Map) o;
   return null;
+}
+
+/**
+Determines the device that is mounted at the specified path, and then repartitions it to have a single EXT3 partition and then
+ formats that partition. WARNING: THIS WILL DESTROY ALL INFORMATION ON THE TARGET DEVICE AND REFORMAT IT
+ NOTE: This is only valid on embedded platforms.
+
+Parameters:
+DrivePath- the path string of a disk to reformat
+Returns:
+zero upon success, -1 if it is unable to find a device that corresponds to the requested path, -2 if it is unable to unmount that path, -3 if there was a problem re-partitioning or reformatting the drive, and -4 if there was a failure remounting the newly formatted drive
+Since:
+7.1
+ */
+public static int ReformatDeviceAtPathAsEXT3 (java.lang.String DrivePath) {
+  Object o = sagex.SageAPI.call("ReformatDeviceAtPathAsEXT3", new Object[] {DrivePath});
+  if (o!=null) return (Integer) o;
+  return 0;
+}
+
+/**
+ * UI Context Aware Call<br/>
+Determines the device that is mounted at the specified path, and then repartitions it to have a single EXT3 partition and then
+ formats that partition. WARNING: THIS WILL DESTROY ALL INFORMATION ON THE TARGET DEVICE AND REFORMAT IT
+ NOTE: This is only valid on embedded platforms.
+
+Parameters:
+DrivePath- the path string of a disk to reformat
+Returns:
+zero upon success, -1 if it is unable to find a device that corresponds to the requested path, -2 if it is unable to unmount that path, -3 if there was a problem re-partitioning or reformatting the drive, and -4 if there was a failure remounting the newly formatted drive
+Since:
+7.1
+ */
+public static int ReformatDeviceAtPathAsEXT3 (UIContext _uicontext,java.lang.String DrivePath) {
+  Object o = sagex.SageAPI.call(_uicontext, "ReformatDeviceAtPathAsEXT3", new Object[] {DrivePath});
+  if (o!=null) return (Integer) o;
+  return 0;
 }
 
 }

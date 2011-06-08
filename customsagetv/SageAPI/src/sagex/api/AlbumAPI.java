@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 01/04/11 7:25 PM
+ * Generated Date/Time: 07/06/11 8:39 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/AlbumAPI.html'>AlbumAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */

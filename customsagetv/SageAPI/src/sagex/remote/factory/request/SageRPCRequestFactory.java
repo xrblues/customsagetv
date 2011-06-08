@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 01/04/11 7:26 PM
+ * Generated Date/Time: 07/06/11 8:40 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/SageRPCRequestFactory.html'>SageRPCRequestFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -572,6 +572,7 @@ static {
    commands.put("SendEventToUIComponent","Global");
    commands.put("GetChildUIComponentForVariable","Global");
    commands.put("GetVariableFromUIComponent","Global");
+   commands.put("SetVariableForUIComponent","Global");
    commands.put("PassiveListen","Global");
    commands.put("GetAiringsThatWontBeRecorded","Global");
    commands.put("IsClient","Global");
@@ -911,6 +912,17 @@ static {
    commands.put("IsPluginConfigurable","PluginAPI");
    commands.put("GetPluginImplementation","PluginAPI");
    commands.put("IsPluginStartupComplete","PluginAPI");
+   commands.put("GetActiveSecurityProfile","Security");
+   commands.put("GetDefaultSecurityProfile","Security");
+   commands.put("SetActiveSecurityProfile","Security");
+   commands.put("SetDefaultSecurityProfile","Security");
+   commands.put("GetSecurityProfiles","Security");
+   commands.put("AddSecurityProfile","Security");
+   commands.put("RemoveSecurityProfile","Security");
+   commands.put("GetPredefinedPermissions","Security");
+   commands.put("SetPermission","Security");
+   commands.put("HasPermission","Security");
+   commands.put("HasPermission","Security");
    commands.put("GetAllSeriesInfo","SeriesInfoAPI");
    commands.put("GetSeriesTitle","SeriesInfoAPI");
    commands.put("GetSeriesDescription","SeriesInfoAPI");
@@ -1152,6 +1164,7 @@ static {
    commands.put("ServerRestart","Utility");
    commands.put("QueryServerMacAddress","Utility");
    commands.put("ScanWirelessAPs","Utility");
+   commands.put("ReformatDeviceAtPathAsEXT3","Utility");
    commands.put("LoadSTVFile","WidgetAPI");
    commands.put("ImportSTVFile","WidgetAPI");
    commands.put("IsSTVModified","WidgetAPI");
@@ -1241,6 +1254,9 @@ static {
       }
       if ("PluginAPI".equals(api)) {
          return PluginAPIFactory.createRequest(context, command, parameters);
+      }
+      if ("Security".equals(api)) {
+         return SecurityFactory.createRequest(context, command, parameters);
       }
       if ("SeriesInfoAPI".equals(api)) {
          return SeriesInfoAPIFactory.createRequest(context, command, parameters);

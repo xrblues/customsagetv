@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 01/04/11 7:26 PM
+ * Generated Date/Time: 07/06/11 8:40 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaFileAPI.html'>MediaFileAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1270,8 +1270,8 @@ MediaFile- the MediaFile object
 Returns:
 a list of all of the start times of the segments in the specified MediaFile
  */
-public static long[] GetStartTimesForSegments (Object MediaFile) {
-  return (long[]) sagex.SageAPI.call("GetStartTimesForSegments", new Object[] {MediaFile});
+public static long[][] GetStartTimesForSegments (Object MediaFile) {
+  return (long[][]) sagex.SageAPI.call("GetStartTimesForSegments", new Object[] {MediaFile});
 }
 
 /**
@@ -1283,8 +1283,8 @@ MediaFile- the MediaFile object
 Returns:
 a list of all of the start times of the segments in the specified MediaFile
  */
-public static long[] GetStartTimesForSegments (UIContext _uicontext,Object MediaFile) {
-  return (long[]) sagex.SageAPI.call(_uicontext, "GetStartTimesForSegments", new Object[] {MediaFile});
+public static long[][] GetStartTimesForSegments (UIContext _uicontext,Object MediaFile) {
+  return (long[][]) sagex.SageAPI.call(_uicontext, "GetStartTimesForSegments", new Object[] {MediaFile});
 }
 
 /**

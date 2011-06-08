@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 01/04/11 7:26 PM
+ * Generated Date/Time: 07/06/11 8:40 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/MediaPlayerAPI.html'>MediaPlayerAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -662,10 +662,10 @@ Playlist- the Playlist to being playback of
 Returns:
 true if the request was successful, a localized error message otherwise (failure will only occur due to parental control issues)
  */
-public static int StartPlaylist (Object Playlist) {
+public static java.lang.Object StartPlaylist (Object Playlist) {
   Object o = sagex.SageAPI.call("StartPlaylist", new Object[] {Playlist});
-  if (o!=null) return (Integer) o;
-  return 0;
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -678,10 +678,10 @@ Playlist- the Playlist to being playback of
 Returns:
 true if the request was successful, a localized error message otherwise (failure will only occur due to parental control issues)
  */
-public static int StartPlaylist (UIContext _uicontext,Object Playlist) {
+public static java.lang.Object StartPlaylist (UIContext _uicontext,Object Playlist) {
   Object o = sagex.SageAPI.call(_uicontext, "StartPlaylist", new Object[] {Playlist});
-  if (o!=null) return (Integer) o;
-  return 0;
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -694,10 +694,10 @@ StartIndex- the index in the playlist to start playing at (1-based index)
 Returns:
 true if the request was successful, a localized error message otherwise (failure will only occur due to parental control issues)
  */
-public static int StartPlaylistAt (Object Playlist, int StartIndex) {
+public static java.lang.Object StartPlaylistAt (Object Playlist, int StartIndex) {
   Object o = sagex.SageAPI.call("StartPlaylistAt", new Object[] {Playlist,StartIndex});
-  if (o!=null) return (Integer) o;
-  return 0;
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
@@ -711,10 +711,10 @@ StartIndex- the index in the playlist to start playing at (1-based index)
 Returns:
 true if the request was successful, a localized error message otherwise (failure will only occur due to parental control issues)
  */
-public static int StartPlaylistAt (UIContext _uicontext,Object Playlist, int StartIndex) {
+public static java.lang.Object StartPlaylistAt (UIContext _uicontext,Object Playlist, int StartIndex) {
   Object o = sagex.SageAPI.call(_uicontext, "StartPlaylistAt", new Object[] {Playlist,StartIndex});
-  if (o!=null) return (Integer) o;
-  return 0;
+  if (o!=null) return (java.lang.Object) o;
+  return null;
 }
 
 /**
