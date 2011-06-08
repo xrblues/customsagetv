@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 01/04/11 7:25 PM
+ * Generated Date/Time: 07/06/11 8:40 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/FavoriteAPI.html'>FavoriteAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -1071,7 +1071,7 @@ Favorite- the Favorite object
 FirstRuns- true if first runs should be recorded with this favorite, false otherwise
 ReRuns- true if rerusn should be recorded with this Favorite, false otherwise
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetRunStatus (Object Favorite, boolean FirstRuns, boolean ReRuns) {
   Object o = sagex.SageAPI.call("SetRunStatus", new Object[] {Favorite,FirstRuns,ReRuns});
@@ -1089,7 +1089,7 @@ Favorite- the Favorite object
 FirstRuns- true if first runs should be recorded with this favorite, false otherwise
 ReRuns- true if rerusn should be recorded with this Favorite, false otherwise
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetRunStatus (UIContext _uicontext,Object Favorite, boolean FirstRuns, boolean ReRuns) {
   Object o = sagex.SageAPI.call(_uicontext, "SetRunStatus", new Object[] {Favorite,FirstRuns,ReRuns});
@@ -1104,7 +1104,7 @@ Parameters:
 Favorite- the Favorite object
 Title- the title that an Airing must match to be included in this Favorite, use the empty string or null if the title isn't a field that needs to match
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteTitle (Object Favorite, java.lang.String Title) {
   Object o = sagex.SageAPI.call("SetFavoriteTitle", new Object[] {Favorite,Title});
@@ -1120,7 +1120,7 @@ Parameters:
 Favorite- the Favorite object
 Title- the title that an Airing must match to be included in this Favorite, use the empty string or null if the title isn't a field that needs to match
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteTitle (UIContext _uicontext,Object Favorite, java.lang.String Title) {
   Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteTitle", new Object[] {Favorite,Title});
@@ -1136,7 +1136,7 @@ Favorite- the Favorite object
 Category- the category that an Airing must match to be included in this Favorite, use the empty string or null if the category isn't a field that needs to match
 SubCategory- the category that an Airing must match to be included in this Favorite, use the empty string the subcategory doesn't need to match
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteCategories (Object Favorite, java.lang.String Category, java.lang.String SubCategory) {
   Object o = sagex.SageAPI.call("SetFavoriteCategories", new Object[] {Favorite,Category,SubCategory});
@@ -1153,7 +1153,7 @@ Favorite- the Favorite object
 Category- the category that an Airing must match to be included in this Favorite, use the empty string or null if the category isn't a field that needs to match
 SubCategory- the category that an Airing must match to be included in this Favorite, use the empty string the subcategory doesn't need to match
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteCategories (UIContext _uicontext,Object Favorite, java.lang.String Category, java.lang.String SubCategory) {
   Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteCategories", new Object[] {Favorite,Category,SubCategory});
@@ -1169,7 +1169,7 @@ Favorite- the Favorite object
 Person- the name of the person that needs to be included in an Airing for it to match this Favorite, use the empty string or null if person doesn't need to match
 Role- the name of the role the corresponding person needs to be in, or the emptry string or null if role doesn't matter
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoritePerson (Object Favorite, java.lang.String Person, java.lang.String Role) {
   Object o = sagex.SageAPI.call("SetFavoritePerson", new Object[] {Favorite,Person,Role});
@@ -1186,7 +1186,7 @@ Favorite- the Favorite object
 Person- the name of the person that needs to be included in an Airing for it to match this Favorite, use the empty string or null if person doesn't need to match
 Role- the name of the role the corresponding person needs to be in, or the emptry string or null if role doesn't matter
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoritePerson (UIContext _uicontext,Object Favorite, java.lang.String Person, java.lang.String Role) {
   Object o = sagex.SageAPI.call(_uicontext, "SetFavoritePerson", new Object[] {Favorite,Person,Role});
@@ -1201,7 +1201,7 @@ Parameters:
 Favorite- the Favorite object
 Rated- the rating that an Airing must match to be included in this Favorite, use the empty string or null if rating isn't a field that needs to match
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteRated (Object Favorite, java.lang.String Rated) {
   Object o = sagex.SageAPI.call("SetFavoriteRated", new Object[] {Favorite,Rated});
@@ -1217,7 +1217,7 @@ Parameters:
 Favorite- the Favorite object
 Rated- the rating that an Airing must match to be included in this Favorite, use the empty string or null if rating isn't a field that needs to match
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteRated (UIContext _uicontext,Object Favorite, java.lang.String Rated) {
   Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteRated", new Object[] {Favorite,Rated});
@@ -1232,7 +1232,7 @@ Parameters:
 Favorite- the Favorite object
 Year- the year that an Airing must match to be included in this Favorite, use the empty string or null if year isn't a field that needs to match
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteYear (Object Favorite, java.lang.String Year) {
   Object o = sagex.SageAPI.call("SetFavoriteYear", new Object[] {Favorite,Year});
@@ -1248,7 +1248,7 @@ Parameters:
 Favorite- the Favorite object
 Year- the year that an Airing must match to be included in this Favorite, use the empty string or null if year isn't a field that needs to match
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteYear (UIContext _uicontext,Object Favorite, java.lang.String Year) {
   Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteYear", new Object[] {Favorite,Year});
@@ -1263,7 +1263,7 @@ Parameters:
 Favorite- the Favorite object
 ParentalRating- the parental rating that an Airing must match to be included in this Favorite, use the empty string or null if parental rating isn't a field that needs to match
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteParentalRating (Object Favorite, java.lang.String ParentalRating) {
   Object o = sagex.SageAPI.call("SetFavoriteParentalRating", new Object[] {Favorite,ParentalRating});
@@ -1279,7 +1279,7 @@ Parameters:
 Favorite- the Favorite object
 ParentalRating- the parental rating that an Airing must match to be included in this Favorite, use the empty string or null if parental rating isn't a field that needs to match
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteParentalRating (UIContext _uicontext,Object Favorite, java.lang.String ParentalRating) {
   Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteParentalRating", new Object[] {Favorite,ParentalRating});
@@ -1298,7 +1298,7 @@ Parameters:
 Favorite- the Favorite object
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteKeyword (Object Favorite, java.lang.String Keyword) {
   Object o = sagex.SageAPI.call("SetFavoriteKeyword", new Object[] {Favorite,Keyword});
@@ -1318,7 +1318,7 @@ Parameters:
 Favorite- the Favorite object
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteKeyword (UIContext _uicontext,Object Favorite, java.lang.String Keyword) {
   Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteKeyword", new Object[] {Favorite,Keyword});
@@ -1333,7 +1333,7 @@ Parameters:
 Favorite- the Favorite object
 Channel- the channel name (String) or Channel object (Channel) that an Airing must be on to be included in this Favorite, use null or the empty string if channel doesn't matter; you may also use a semicolon or comma-delimited list of channel names for mult-channel favorites
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteChannel (Object Favorite, java.lang.Object Channel) {
   Object o = sagex.SageAPI.call("SetFavoriteChannel", new Object[] {Favorite,Channel});
@@ -1349,7 +1349,7 @@ Parameters:
 Favorite- the Favorite object
 Channel- the channel name (String) or Channel object (Channel) that an Airing must be on to be included in this Favorite, use null or the empty string if channel doesn't matter; you may also use a semicolon or comma-delimited list of channel names for mult-channel favorites
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteChannel (UIContext _uicontext,Object Favorite, java.lang.Object Channel) {
   Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteChannel", new Object[] {Favorite,Channel});
@@ -1364,7 +1364,7 @@ Parameters:
 Favorite- the Favorite object
 Network- the network name that an Airing must be on to be included in this Favorite, use null or the empty string if network doesn't matter
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteNetwork (Object Favorite, java.lang.String Network) {
   Object o = sagex.SageAPI.call("SetFavoriteNetwork", new Object[] {Favorite,Network});
@@ -1380,7 +1380,7 @@ Parameters:
 Favorite- the Favorite object
 Network- the network name that an Airing must be on to be included in this Favorite, use null or the empty string if network doesn't matter
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteNetwork (UIContext _uicontext,Object Favorite, java.lang.String Network) {
   Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteNetwork", new Object[] {Favorite,Network});
@@ -1395,9 +1395,11 @@ Parameters:
 Favorite- the Favorite object
 Timeslot- the timeslot that an Airing must be in to be included in this Favorite, use null or the empty string if timeslot doesn't matter.
          The timeslot should be in one of three formats: 1) Day Time, 2) Day, 3) Time. Where Day is a day of the week, and Time is an
-         hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
+         hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00).
+         Multiple timeslots are allowed and should be sent as a semicolon delimited list; an Airing only needs to overlap one of the timeslots to match the Favorite then.
+                   Multiple timeslots must also all be of the same type (i.e. all DayTime, all Day or all Time).
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteTimeslot (Object Favorite, java.lang.String Timeslot) {
   Object o = sagex.SageAPI.call("SetFavoriteTimeslot", new Object[] {Favorite,Timeslot});
@@ -1413,9 +1415,11 @@ Parameters:
 Favorite- the Favorite object
 Timeslot- the timeslot that an Airing must be in to be included in this Favorite, use null or the empty string if timeslot doesn't matter.
          The timeslot should be in one of three formats: 1) Day Time, 2) Day, 3) Time. Where Day is a day of the week, and Time is an
-         hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
+         hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00).
+         Multiple timeslots are allowed and should be sent as a semicolon delimited list; an Airing only needs to overlap one of the timeslots to match the Favorite then.
+                   Multiple timeslots must also all be of the same type (i.e. all DayTime, all Day or all Time).
 Returns:
-true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite
+true if the change was successful, false if the change would alter this Favorite to be identical to an existing Favorite or if the user doesn't have permissions to make this change
  */
 public static boolean SetFavoriteTimeslot (UIContext _uicontext,Object Favorite, java.lang.String Timeslot) {
   Object o = sagex.SageAPI.call(_uicontext, "SetFavoriteTimeslot", new Object[] {Favorite,Timeslot});
@@ -1533,6 +1537,8 @@ ChannelCallSign- the channel name that an Airing must be on to be included in th
 Timeslot- the timeslot that an Airing must be in to be included in this Favorite, use null or the empty string if timeslot doesn't matter.
          The timeslot should be in one of three formats: 1) Day Time, 2) Day, 3) Time. Where Day is a day of the week, and Time is an
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
+         Multiple timeslots are allowed and should be sent as a semicolon delimited list; an Airing only needs to overlap one of the timeslots to match the Favorite then.
+                   Multiple timeslots must also all be of the same type (i.e. all DayTime, all Day or all Time).
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
 the updated Favorite object, or if the changes would make this Favorite the same as an existing Favorite, the other existing Favorite is returned, null is returned if there was no valid criteria specified in the arguments
@@ -1565,6 +1571,8 @@ ChannelCallSign- the channel name that an Airing must be on to be included in th
 Timeslot- the timeslot that an Airing must be in to be included in this Favorite, use null or the empty string if timeslot doesn't matter.
          The timeslot should be in one of three formats: 1) Day Time, 2) Day, 3) Time. Where Day is a day of the week, and Time is an
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
+         Multiple timeslots are allowed and should be sent as a semicolon delimited list; an Airing only needs to overlap one of the timeslots to match the Favorite then.
+                   Multiple timeslots must also all be of the same type (i.e. all DayTime, all Day or all Time).
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
 the updated Favorite object, or if the changes would make this Favorite the same as an existing Favorite, the other existing Favorite is returned, null is returned if there was no valid criteria specified in the arguments
@@ -1723,6 +1731,8 @@ ChannelCallSign- the channel name that an Airing must be on to be included in th
 Timeslot- the timeslot that an Airing must be in to be included in this Favorite, use null or the empty string if timeslot doesn't matter.
          The timeslot should be in one of three formats: 1) Day Time, 2) Day, 3) Time. Where Day is a day of the week, and Time is an
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
+         Multiple timeslots are allowed and should be sent as a semicolon delimited list; an Airing only needs to overlap one of the timeslots to match the Favorite then.
+                   Multiple timeslots must also all be of the same type (i.e. all DayTime, all Day or all Time).
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
 the newly created Favorite object, null is returned if there was no valid criteria specified in the arguments
@@ -1753,6 +1763,8 @@ ChannelCallSign- the channel name that an Airing must be on to be included in th
 Timeslot- the timeslot that an Airing must be in to be included in this Favorite, use null or the empty string if timeslot doesn't matter.
          The timeslot should be in one of three formats: 1) Day Time, 2) Day, 3) Time. Where Day is a day of the week, and Time is an
          hour of the day such as 3pm or 8:00 (if the user's locale uses am/pm then it'll be like 3pm, otherwise it'll use like 8:00)
+         Multiple timeslots are allowed and should be sent as a semicolon delimited list; an Airing only needs to overlap one of the timeslots to match the Favorite then.
+                   Multiple timeslots must also all be of the same type (i.e. all DayTime, all Day or all Time).
 Keyword- the keyword that an Airing must match to be included in this Favorite, use the empty string or null if keyword doesn't matter
 Returns:
 the newly created Favorite object, null is returned if there was no valid criteria specified in the arguments

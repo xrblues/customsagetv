@@ -2,7 +2,7 @@ package sagex.api.enums;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 01/04/11 7:26 PM
+ * Generated Date/Time: 07/06/11 8:40 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/UtilityEnum.html'>UtilityEnum</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -128,5 +128,6 @@ IsServerRestartNeeded,
 Restart,
 ServerRestart,
 QueryServerMacAddress,
-ScanWirelessAPs
+ScanWirelessAPs,
+ReformatDeviceAtPathAsEXT3
 }

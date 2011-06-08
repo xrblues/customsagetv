@@ -18,7 +18,7 @@
 
   <Dependency>
     <Plugin>sagex-api</Plugin>
-    <MinVersion>7.1.5.5</MinVersion>
+    <MinVersion>7.1.8</MinVersion>
   </Dependency>
 
   <PluginType>Standard</PluginType>
@@ -33,6 +33,9 @@
   <ImplementationClass>sagex.plugin.impl.SagexRemoteAPIPlugin</ImplementationClass>
 
   <ReleaseNotes>
+7.1.8
+* API Refresh
+
 7.0.23.9
 * Now depends on .9 (which is required in order for the startup to work correctly)
 

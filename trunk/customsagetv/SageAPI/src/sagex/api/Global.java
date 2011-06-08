@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 01/04/11 7:26 PM
+ * Generated Date/Time: 07/06/11 8:40 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/Global.html'>Global</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -2067,6 +2067,39 @@ public static java.lang.Object GetVariableFromUIComponent (UIContext _uicontext,
   Object o = sagex.SageAPI.call(_uicontext, "GetVariableFromUIComponent", new Object[] {UIComponent,VarName});
   if (o!=null) return (java.lang.Object) o;
   return null;
+}
+
+/**
+Sets the variable with the specified name in the context of the passed in UIComponent. This behaves the same way as
+ if an assignment was done to that variable within the passed in UIComponent context within the Studio. This may result
+ in setting the value at a higher level in the hierarchy if the variable is defined above the specified component.
+
+Parameters:
+UIComponent- the UI component who's context should be used when setting the variable
+VarName- the name of the variable to set
+VarValue- the value to set the variable to
+Since:
+7.1
+ */
+public static void SetVariableForUIComponent (java.lang.Object UIComponent, java.lang.String VarName, java.lang.Object VarValue) {
+   sagex.SageAPI.call("SetVariableForUIComponent", new Object[] {UIComponent,VarName,VarValue});
+}
+
+/**
+ * UI Context Aware Call<br/>
+Sets the variable with the specified name in the context of the passed in UIComponent. This behaves the same way as
+ if an assignment was done to that variable within the passed in UIComponent context within the Studio. This may result
+ in setting the value at a higher level in the hierarchy if the variable is defined above the specified component.
+
+Parameters:
+UIComponent- the UI component who's context should be used when setting the variable
+VarName- the name of the variable to set
+VarValue- the value to set the variable to
+Since:
+7.1
+ */
+public static void SetVariableForUIComponent (UIContext _uicontext,java.lang.Object UIComponent, java.lang.String VarName, java.lang.Object VarValue) {
+   sagex.SageAPI.call(_uicontext, "SetVariableForUIComponent", new Object[] {UIComponent,VarName,VarValue});
 }
 
 /**

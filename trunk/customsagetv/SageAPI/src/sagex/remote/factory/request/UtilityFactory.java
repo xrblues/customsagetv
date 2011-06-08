@@ -2,7 +2,7 @@ package sagex.remote.factory.request;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 01/04/11 7:26 PM
+ * Generated Date/Time: 07/06/11 8:40 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/UtilityFactory.html'>UtilityFactory</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */
@@ -388,6 +388,9 @@ public class UtilityFactory {
    }
    if (command.equals("ScanWirelessAPs")) {
       return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"ScanWirelessAPs",parameters,null);
+   }
+   if (command.equals("ReformatDeviceAtPathAsEXT3")) {
+      return sagex.remote.xmlrpc.RequestHelper.createRequest(context,"ReformatDeviceAtPathAsEXT3",parameters,java.lang.String.class);
    }
    throw new RuntimeException("Invalid UtilityFactory Command: "+command);
    }
