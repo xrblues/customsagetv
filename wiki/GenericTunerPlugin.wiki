@@ -110,17 +110,11 @@ And you should have a `GenericTunerPlugin.so`.
  cp gentuner.LOCAL /opt/sagetv/server/gentuner
  }}}
  * Configure each video source to use the Generic Tuner Plugin.
-
-  Unfortunately, SageTV does not provide an easy way to change the tuning plugin for a video souce after the source is initially configured.
- Your options are:
-   * Remove the video source and re-add it, selecting "Generic Tuner" when asked to select a tuning plugin. Note that removing and re-adding the video source will likely involve other work to get the configuration back to where you had it.
- Or: _(not recommended, does not work as expected)_ 
-   * After stopping the SageTV process, edit the Sage.properties file and change the appropriate "tuning_plugin" value to be:
-     {{{/opt/sagetv/server/irtunerplugins/GenericTunerPlugin.so}}}
+ Unfortunately, SageTV does not provide any way to change the tuning plugin for a video souce after the source is initially configured. You must remove and readd the video source, selecting "Generic Tuner" when asked to select a tuning plugin. *Note that removing and re-adding the video source will likely involve other work to get the configuration back to where you had it.*
  * Stop and start SageTV
  * In SageTV, go to the Setup -> Setup Video Sources menu, select the video source that uses the Generic Tuner, click on "Tuner Control", then "Change Tuning Device". You should see the list of the remotes your gentuner script reports. Select it.
 
-Note: Currently debugging is enabled and lots of stuff will get logged to `/opt/sagetv/server/gentuner.log`. You can disable that in the source if desired. An option will be added later.
+Note: Currently debugging is enabled and lots of stuff will get logged to `/opt/sagetv/server/gentuner.log`. You can disable that in the source if desired. An option may be added later.
 
 = History =
 The Generic Tuner Plugin is based on [http://sourceforge.net/projects/multidcttuner/ MultiDCTTunerDLL] which is Copyright (C) 2004 Sean Newman and was licensed under the GPLv2 license.
