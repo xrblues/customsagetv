@@ -83,7 +83,6 @@ public class VideoThumbnailsPanel extends Composite {
         int secs=(int) (dursec/thumbs);
         long size = mediaFile.getSize();
         long size_onesec = size/dursec;
-        System.out.println("Size: " + size + "; " + dursec + "; " + size_onesec);
         for (int i=0;i<thumbs;i++) {
         	flow.add(createImageWidget(i*secs, w, h, /*disabled*/0*i*secs*size_onesec));
         }

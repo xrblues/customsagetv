@@ -41,4 +41,14 @@ public abstract class FieldBinder<T> {
 		}
 		return true;
 	}
+
+	public FieldBinder<T> setWidth(String width) {
+		widget.setWidth(width);
+		return this;
+	}
+	
+	public FieldBinder<T> addStyle(String style) {
+		widget.addStyleName(style);
+		return this;
+	}
 }

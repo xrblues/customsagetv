@@ -76,7 +76,7 @@ public class ListView extends Composite {
 				itemList.add(new ListItem(this, i, w));
 			}
 		} else {
-			System.out.println("ListView: No Adapter");
+			System.out.println("ListView: No Adapter or Adapterw as empty??");
 		}
 	}
 	

@@ -4,6 +4,8 @@ package org.jdna.bmt.web.client.ui.prefs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jdna.bmt.web.client.ui.util.ServiceReply;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface PreferencesServiceAsync {
@@ -32,4 +34,6 @@ public interface PreferencesServiceAsync {
 	void getMenus(AsyncCallback<ArrayList<String>> callback);
 	void loadMenu(String id, AsyncCallback<String> callback);
 	void saveMenu(String menu, AsyncCallback<String> callback);
+	void refreshConfigurations(
+			AsyncCallback<ServiceReply<ArrayList<ConfigError>>> callback);
 }

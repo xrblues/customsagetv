@@ -14,13 +14,12 @@ public class ViewsListAdapter extends SimpleListAdapter implements SimpleListAda
 
 	@Override
 	public Widget createView(int pos) {
-		return new ViewItem();
+		return new ViewItem((GWTView)getItem(pos));
 	}
 
 	@Override
 	public void bindView(Widget w, Object data) {
 		ViewItem item = (ViewItem)w;
-		GWTView view = (GWTView) data;
-		item.setText(view.getLabel());
+		item.update();
 	}
 }

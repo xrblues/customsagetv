@@ -42,7 +42,7 @@ public interface BrowsingService extends RemoteService {
     
     public List<GWTProviderInfo> getProviders();
     public ArrayList<GWTMediaArt> getFanart(GWTMediaFile file, MediaArtifactType artifact);
-    public GWTMediaArt downloadFanart(GWTMediaFile file, MediaArtifactType artifact, GWTMediaArt ma);
+    public ServiceReply<GWTMediaArt> downloadFanart(GWTMediaFile file, MediaArtifactType artifact, GWTMediaArt ma);
     
     public boolean deleteFanart(GWTMediaArt art);
     public void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art);
@@ -62,4 +62,7 @@ public interface BrowsingService extends RemoteService {
 	public boolean batchUpdateMetadata(GWTMediaResource res, ArrayList<NamedProperty<String>> props);
 	
 	public ServiceReply<Boolean> addMediaTitle(HashMap<String, String> fields);
+	public ArrayList<String> loadFiles(String dir, String mask);
+	
+	public void toggleViewVisibility(GWTView view);
 }

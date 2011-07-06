@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.jdna.bmt.web.client.ui.prefs.Channel;
 import org.jdna.bmt.web.client.ui.prefs.ChannelNumberComparator;
+import org.jdna.bmt.web.client.ui.prefs.ConfigError;
 import org.jdna.bmt.web.client.ui.prefs.Log4jPrefs;
 import org.jdna.bmt.web.client.ui.prefs.PluginDetail;
 import org.jdna.bmt.web.client.ui.prefs.PluginQuery;
@@ -32,11 +33,15 @@ import org.jdna.bmt.web.client.ui.prefs.PreferencesService;
 import org.jdna.bmt.web.client.ui.prefs.RegexValidation;
 import org.jdna.bmt.web.client.ui.prefs.VideoSource;
 import org.jdna.bmt.web.client.ui.prefs.VideoSource.SourceType;
+import org.jdna.bmt.web.client.ui.util.ServiceReply;
 
+import sage.SageTVEventListener;
 import sagex.api.ChannelAPI;
 import sagex.api.Configuration;
 import sagex.api.Global;
 import sagex.api.PluginAPI;
+import sagex.phoenix.ConfigurationErrorEventBus;
+import sagex.phoenix.ConfigurationErrorEventBus.ConfigurationErrorItem;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.Field;
 import sagex.phoenix.configuration.Group;
@@ -373,6 +378,8 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
 			throw new RuntimeException("Invalid Configuration to Refresh: " + id);
 		}
 	}
+	
+	
 
 	@Override
 	public ArrayList<Channel> getChannels() {
@@ -571,5 +578,39 @@ public class PreferencesServiceImpl extends RemoteServiceServlet implements Pref
 	@Override
 	public String saveMenu(String menu) throws Exception {
 		return menu;
+	}
+
+	@Override
+	public synchronized ServiceReply<ArrayList<ConfigError>> refreshConfigurations() {
+		final ArrayList<ConfigError> msgs = new ArrayList<ConfigError>();
+		final SageTVEventListener l = new SageTVEventListener() {
+			@Override
+			public void sageEvent(String name, Map args) {
+				ConfigurationErrorEventBus.ConfigurationErrorItem ci = (ConfigurationErrorItem) args.get(ConfigurationErrorEventBus.ERROR_KEY);
+				if (ci.exception!=null) {
+					ConfigError ce = new ConfigError();
+					ce.file=ci.name;
+					ce.message=ci.exception.getMessage();
+					ce.datetime = ci.datetime;
+					ce.line =ci.exception.getLineNumber();
+					ce.column=ci.exception.getColumnNumber();
+					msgs.add(ce);
+				} else {
+					ConfigError ce =new ConfigError();
+					ce.file=ci.name;
+					ce.datetime=ci.datetime;
+					msgs.add(ce);
+				}
+			}
+		};
+		ConfigurationErrorEventBus.getBus().addListener(ConfigurationErrorEventBus.EVENT_NEW_ERROR, l);
+		try {
+			phoenix.umb.ReloadViews();
+			phoenix.menu.ReloadMenus();
+			phoenix.umb.ReloadMediaTitles();
+		} finally {
+			ConfigurationErrorEventBus.getBus().removeListener(ConfigurationErrorEventBus.EVENT_NEW_ERROR, l);
+		}
+		return new ServiceReply<ArrayList<ConfigError>>(msgs);
 	}
 }

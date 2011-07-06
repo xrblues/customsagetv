@@ -10,17 +10,22 @@ import org.jdna.bmt.web.client.event.NotificationEvent.MessageType;
 import org.jdna.bmt.web.client.event.NotificationEventHandler;
 import org.jdna.bmt.web.client.ui.BatchOperation;
 import org.jdna.bmt.web.client.ui.BatchOperations;
+import org.jdna.bmt.web.client.ui.HTMLTemplates;
 import org.jdna.bmt.web.client.ui.browser.BrowsePanel;
 import org.jdna.bmt.web.client.ui.debug.BackupPanel;
 import org.jdna.bmt.web.client.ui.portal.Portal;
+import org.jdna.bmt.web.client.ui.prefs.ConfigError;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesPanel;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesService;
 import org.jdna.bmt.web.client.ui.prefs.PreferencesServiceAsync;
 import org.jdna.bmt.web.client.ui.status.StatusPanel;
 import org.jdna.bmt.web.client.ui.toast.Toaster;
+import org.jdna.bmt.web.client.ui.util.AsyncServiceReply;
 import org.jdna.bmt.web.client.ui.util.CommandItem;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
+import org.jdna.bmt.web.client.ui.util.MessageDialog;
+import org.jdna.bmt.web.client.ui.xmleditor.XMLEditorWindow;
 import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.StringUtils;
 
@@ -33,6 +38,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
@@ -50,6 +56,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AppPanel extends Composite implements ValueChangeHandler<String>, NotificationEventHandler {
+    private final PreferencesServiceAsync preferencesService = GWT.create(PreferencesService.class);
+    
     public static AppPanel INSTANCE = null;
    
     private VerticalPanel vp = new VerticalPanel();
@@ -58,6 +66,8 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
     final GlobalServiceAsync global = GWT.create(GlobalService.class);
 
     Toaster toaster = new Toaster();
+
+    private static final HTMLTemplates templates = GWT.create(HTMLTemplates.class);
     
     public AppPanel() {
         INSTANCE = this;
@@ -76,18 +86,43 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
         Hyperlink browse = new Hyperlink(Application.labels().browse(), "browse");
         browse.addStyleName("App-Browse");
 
-        Label refresh = new Label(Application.labels().refreshLibrary());
+        final Label refresh = new Label(Application.labels().refreshLibrary());
         refresh.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                SageAPI.refreshLibrary(false, new AsyncCallback<String>() {
-                    public void onFailure(Throwable caught) {
-                        Application.fireErrorEvent(Application.messages().failedToStartScan(), caught);
-                    }
+                final PopupPanel pp = new PopupPanel();
+                pp.setAutoHideEnabled(true);
+                VerticalPanel vp = new VerticalPanel();
+                vp.add(new CommandItem(null, "Notify SageTV to Look for new Media", new Command() {
+                    public void execute() {
+                        pp.hide();
+                        SageAPI.refreshLibrary(false, new AsyncCallback<String>() {
+                            public void onFailure(Throwable caught) {
+                                Application.fireErrorEvent(Application.messages().failedToStartScan(), caught);
+                            }
 
-                    public void onSuccess(String result) {
-                        Application.fireNotification(result);
+                            public void onSuccess(String result) {
+                                Application.fireNotification(result);
+                            }
+                        });
                     }
-                });
+                }));
+                
+                vp.add(new CommandItem(null, "Refresh Configurations", new Command() {
+                    public void execute() {
+                        pp.hide();
+                        refreshConfigurations();
+                    }
+                }));
+
+                vp.add(new CommandItem(null, "Clear Fanart Caches", new Command() {
+                    public void execute() {
+                        pp.hide();
+                    	clearFanartCaches();
+                    }
+                }));
+                
+                pp.setWidget(vp);
+                pp.showRelativeTo(refresh);
             }
         });
         refresh.addStyleName("App-Refresh");
@@ -114,6 +149,13 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
                 final PopupPanel pp = new PopupPanel();
                 pp.setAutoHideEnabled(true);
                 VerticalPanel vp = new VerticalPanel();
+                vp.add(new CommandItem(null, "Edit Xml Configurations (VFS, Menus, etc)", new Command() {
+                    public void execute() {
+                        pp.hide();
+                        History.newItem("xmleditor");
+                    }
+                }));
+
                 vp.add(new CommandItem(null, "Create Support Request", new Command() {
                     public void execute() {
                         pp.hide();
@@ -233,6 +275,28 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
 			}
 		});
     }
+    
+	private void refreshConfigurations() {
+		Dialogs.showWaiting("Refreshing configurations...");
+	    preferencesService.refreshConfigurations(new AsyncServiceReply<ArrayList<ConfigError>>() {
+			@Override
+			public void onOK(ArrayList<ConfigError> result) {
+				if (result.size()==0) {
+					Application.fireNotification("Configurations are refreshed");
+				} else {
+					ArrayList<String> al = new ArrayList<String>();
+					for (ConfigError ce : result) {
+						SafeHtml msg = templates.createConfigError(ce.file, ce.message, ce.line, ce.column);
+						al.add(msg.asString());
+					}
+					
+					MessageDialog dlg = new MessageDialog("Some configurations have errors", al);
+					dlg.center();
+					dlg.show();
+				}
+			}
+		});
+	}
 
     private void showSupportRequestDialog() {
         DataDialog.showDialog(new SupportDialog());
@@ -306,6 +370,8 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
             showSupportRequestDialog();
         } else if ("backup".equals(section)) {
             setBackupPanel();
+        } else if ("xmleditor".equals(section)) {
+            showEditXml();
         } else {
         	//setStatusPanel();
         }
@@ -340,5 +406,22 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
 				Application.fireNotification("The custom metadata fields have been reset.  SageTV will need to be restarted for the changes to take effect.");
 			}
 		});
+	}
+    
+	private void clearFanartCaches() {
+		preferencesService.refreshConfiguration(PreferencesService.REFRESH_IMAGE_CACHE, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				Application.fireNotification("Fanart caches are cleared");
+			}
+		});
+	}
+	
+	private void showEditXml() {
+		setPanel(new XMLEditorWindow());
 	}
 }

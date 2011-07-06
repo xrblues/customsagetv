@@ -268,7 +268,7 @@ public class PreferencesPanel extends Composite {
         	tree.addItem(createFakePanel("Sage Properties", "View Sage Properties (Server)", "viewSageProperties"));
         	tree.addItem(createFakePanel("Channels", "Configure Channels", "channels"));
         	tree.addItem(createFakePanel("SageTV Plugins", "Manage Plugins", "plugins"));
-        	tree.addItem(createFakePanel("Manage Menus", "Manage Menus", "menus"));
+        	//tree.addItem(createFakePanel("Manage Menus", "Manage Menus", "menus"));
         	tree.addItem(createFakePanel("Data Browser", "Manage UserRecord Stores", "userstores"));
         }
         

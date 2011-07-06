@@ -1,0 +1,19 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+	.label {
+		color: #000080;
+	}
+	.panel {
+		padding-bottom: 15px;
+	}
+	</ui:style>
+	<g:VerticalPanel styleName="{style.panel}">
+		<g:Label ui:field="label" styleName="{style.label}"></g:Label>
+		<g:HorizontalPanel width="100px">
+			<g:TextBox ui:field="url" visibleLength="80"></g:TextBox>
+			<g:Button text="Download" ui:field="download"></g:Button>
+		</g:HorizontalPanel>
+	</g:VerticalPanel>
+</ui:UiBinder> 

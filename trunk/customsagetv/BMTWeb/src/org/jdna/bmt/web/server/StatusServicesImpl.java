@@ -18,6 +18,7 @@ import org.jdna.bmt.web.client.ui.status.SystemMessage;
 import sagex.api.Global;
 import sagex.api.PluginAPI;
 import sagex.api.SystemMessageAPI;
+import sagex.phoenix.ConfigurationErrorEventBus;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.proxy.GroupProxy;
 import sagex.phoenix.download.DownloadManager;
@@ -234,5 +235,9 @@ public class StatusServicesImpl extends RemoteServiceServlet implements
 			systemMessages.remove(id);
 			SystemMessageAPI.DeleteSystemMessage(o);
 		}
+	}
+	
+	public boolean hasConfigurationErrors() {
+		return ConfigurationErrorEventBus.getBus().getErrors().size() > 0;
 	}
 }

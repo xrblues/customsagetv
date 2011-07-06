@@ -18,6 +18,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Dialogs {
+	private static PopupPanel modelWaitingDialog=null;
+	
 	public interface NeedsDialog {
 		public void setDialogReference(DialogBox dialog);
 	}
@@ -33,6 +35,16 @@ public class Dialogs {
         pop.setWidget(hp);
         pop.show();
         return pop;
+    }
+    
+    public static void showWaiting(String message) {
+    	modelWaitingDialog = showWaitingPopup(message);
+    }
+    
+    public static void hideWaiting() {
+    	if (modelWaitingDialog!=null) {
+    		modelWaitingDialog.hide();
+    	}
     }
 
     public static void hidePopup(final PopupPanel popup, final int ms) {

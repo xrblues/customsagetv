@@ -17,6 +17,7 @@
 		<ul>
 			<li><a target="_userguide" ui:field="userGuide">User Guide</a></li>
 			<li><a target="_aboutguide" ui:field="aboutGuide">About Guide</a></li>
+			<li><a href="http://www.youtube.com/user/TutorialsForBMT" target="_youtubechannel">YouTube Channel (Tutorials)</a></li>
 			<li><a target="_searchforums" href="http://forums.sagetv.com/forums/search.php?f=46">Search the Forums</a></li>
 			<li><a target="_browseforums" href="http://forums.sagetv.com/forums/forumdisplay.php?f=46">Browse the Forums</a></li>
 			<li><a href="#support">Create a Support Request</a></li>

@@ -1,9 +1,6 @@
 package sagex.phoenix.rest;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
@@ -11,17 +8,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 
-import sagex.api.MediaFileAPI;
-import sagex.phoenix.Phoenix;
-import sagex.phoenix.vfs.IMediaFolder;
 import sagex.phoenix.vfs.IMediaResource;
 import sagex.phoenix.vfs.VirtualMediaFile;
-import sagex.phoenix.vfs.VirtualMediaFolder;
 import sagex.phoenix.vfs.custom.CustomFolder;
 import sagex.phoenix.vfs.custom.CustomFolders;
 

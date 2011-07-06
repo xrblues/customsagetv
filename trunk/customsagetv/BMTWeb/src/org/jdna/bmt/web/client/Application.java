@@ -12,15 +12,23 @@ import org.jdna.bmt.web.client.ui.app.GlobalServiceAsync;
 import org.jdna.bmt.web.client.ui.util.DialogHandler;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.VoidCallback;
+import org.jdna.bmt.web.client.util.MessageBus;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 
 public class Application {
+
+	public static final String MSG_REQUEST_CURRENT_VIEW_INFO = "bmt.req.currentview";
+	public static final String MSG_RESPONSE_CURRENT_VIEW_INFO = "bmt.resp.currentview";
+	public static final String PARAM_MSG_RESPONSE_CURRENT_VIEW_VIEWNAME = "view";
+	public static final String PARAM_MSG_RESPONSE_CURRENT_VIEW_PATH = "path";
+
     private static final Labels i18nLabels = GWT.create(Labels.class);
     private static final Msgs i18nMessages = GWT.create(Msgs.class);
     private static final HandlerManager eventBus = EventBus.getHandlerManager();
     private static final GlobalServiceAsync global = GWT.create(GlobalService.class);
+    private static final MessageBus messageBus = new MessageBus();
     
     public static boolean BMT5 = false;
     
@@ -83,4 +91,8 @@ public class Application {
 			global.batchOperation(op, new VoidCallback<Void>());
 		}
     }
+
+	public static MessageBus getMessagebus() {
+		return messageBus;
+	}
 }

@@ -1,0 +1,23 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:my="urn:import:org.jdna.bmt.web.client.ui.util">
+	<ui:style>
+	</ui:style>
+	<g:VerticalPanel width="100%" spacing="5">
+		<my:HorizontalButtonBar width="100%">
+			<g:Button ui:field="newfile">New File ...</g:Button>
+			<g:Button ui:field="load">Load ...</g:Button>
+			<g:Button ui:field="save">Save</g:Button>
+			<!-- <g:Button ui:field="saveas">Save As ...</g:Button> -->
+		</my:HorizontalButtonBar>
+		<g:HorizontalPanel spacing="5">
+			<g:Label>File: </g:Label>
+			<g:Label ui:field="filename"></g:Label>
+		</g:HorizontalPanel>
+		<g:cell horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_MIDDLE">
+			<g:Label ui:field="error" styleName="XMLError"/>
+		</g:cell>
+		<g:SimplePanel ui:field="panel">
+		</g:SimplePanel>
+	</g:VerticalPanel>
+</ui:UiBinder> 

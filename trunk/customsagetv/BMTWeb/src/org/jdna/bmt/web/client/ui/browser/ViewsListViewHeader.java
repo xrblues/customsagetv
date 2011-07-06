@@ -10,6 +10,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,8 +32,9 @@ public class ViewsListViewHeader extends Composite implements HasText {
 	}
 
 	@UiField Label headerText;
+	@UiField Image selectViewImage;
 	
-	@UiHandler("headerText")
+	@UiHandler("selectViewImage")
 	void onClick(ClickEvent e) {
 		PopupMenu pm = new PopupMenu("Select View Category", new ViewCategoriesListAdapter(), new PopupMenu.MenuSelectionHandler() {
 			@Override

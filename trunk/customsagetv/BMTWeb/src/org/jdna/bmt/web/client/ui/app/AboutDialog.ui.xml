@@ -20,6 +20,10 @@
 		</div>
 		
 		<div class="{style.info}">
+		BMT now has a <a href="http://www.youtube.com/user/TutorialsForBMT" target="_youtubechannel">YouTube Channel</a> where you can find Videos and Tutorials.
+		</div>
+		
+		<div class="{style.info}">
 		This message appears after a new installation or upgrade of Batch Metadata Tools.  This will not appear again until
 		a new update or installation happens.  You can still access the guides from the Help menu after you close this message.
 		</div>

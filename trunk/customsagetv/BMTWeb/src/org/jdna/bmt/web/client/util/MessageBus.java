@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jdna.bmt.web.client.ui.input.NVP;
+
 /**
  * Very simply message bus
  * 
@@ -44,6 +46,21 @@ public class MessageBus {
 		if (args!=null&&args.length>0) {
 			for (int i=0;i<args.length;i++) {
 				data.put("value"+i, args[i]);
+			}
+		}
+		postMessage(id, data);
+	}
+
+	/**
+	 * Posts a message where each object is a name value pair
+	 * @param id
+	 * @param args
+	 */
+	public void postMessage(String id, NVP<?>... args) {
+		Map<String, Object> data = new HashMap();
+		if (args!=null&&args.length>0) {
+			for (int i=0;i<args.length;i++) {
+				data.put(args[i].getName(), args[i].getValue());
 			}
 		}
 		postMessage(id, data);

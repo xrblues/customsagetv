@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.ui.app.SupportOptions;
 import org.jdna.bmt.web.client.ui.debug.DebugService;
+import org.jdna.bmt.web.client.ui.util.ServiceReply;
 
 import sagex.SageAPI;
 import sagex.api.AiringAPI;
@@ -42,7 +43,7 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
     public DebugServicesImpl() {
     }
 
-    public Map<String, String> getMetadata(String source, GWTMediaFile file) {
+    public ServiceReply<Map<String, String>> getMetadata(String source, GWTMediaFile file) {
         if ("Wiz.bin".equalsIgnoreCase(source)) {
             return wizbin(file);
         }
@@ -63,10 +64,6 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
             return getMediaFileMetaData(file);
         }
 
-        if ("fanart".equals(source)) {
-            return fanart(file);
-        }
-
         if ("sage7metadata".equals(source)) {
             return sage7metadata(file);
         }
@@ -74,7 +71,7 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
         return error("Source Not Implemented: " + source);
     }
 
-    private Map<String, String> sage7metadata(GWTMediaFile file) {
+    private ServiceReply<Map<String, String>> sage7metadata(GWTMediaFile file) {
         Map<String,String> map = new HashMap<String, String>();
         
         Object sage = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
@@ -86,7 +83,7 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
         try {
 			MetadataUtil.copyMetadata(md, newMD);
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to create metadata!", e);
+			return error("Failed to create metadata!");
 		}
         
         for (Map.Entry<String,String> me : props.entrySet()) {
@@ -94,14 +91,15 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
         		map.put(String.valueOf(me.getKey()), String.valueOf(me.getValue()));
         	}
         }
-        return map;
+        
+        return new ServiceReply<Map<String,String>>(map);
 	}
 
-	private Map<String, String> getMediaFileMetaData(GWTMediaFile file) {
+	private ServiceReply<Map<String, String>> getMediaFileMetaData(GWTMediaFile file) {
 		return sage7metadata(file);
     }
 
-    private Map<String, String> getMediaFileData(GWTMediaFile file) {
+    private ServiceReply<Map<String, String>> getMediaFileData(GWTMediaFile file) {
         Map<String,String> map = new HashMap<String, String>();
         map.put("getAiringId", file.getAiringId());
         map.put("getMinorTitle", file.getMinorTitle());
@@ -111,20 +109,10 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
         map.put("getTitle", file.getTitle());
         map.put("getSageMediaFileId", String.valueOf(file.getSageMediaFileId()));
         map.put("isReadOnly", String.valueOf(file.isReadOnly()));
-        return map;
+        return new ServiceReply<Map<String,String>>(map);
     }
 
-    private Map<String, String> fanart(GWTMediaFile file) {
-        Map<String,String> map = new HashMap<String, String>();
-        Object sage = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
-        if (sage==null) {
-            return error("Not a sagetv media file");
-        }
-
-        return map;
-    }
-
-    private Map<String, String> custom(GWTMediaFile file) {
+    private ServiceReply<Map<String, String>> custom(GWTMediaFile file) {
         Map<String,String> map = new HashMap<String, String>();
         Object sage = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
         if (sage==null) {
@@ -133,8 +121,7 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
         
         String props = Configuration.GetProperty("custom_metadata_properties", null);
         if (props==null) {
-            error("No Properties defined for: custom_metadata_properties");
-            return map;
+            return error("No Properties defined for: custom_metadata_properties");
         }
         
         String all[] = props.split("\\s*;\\s*");
@@ -142,12 +129,12 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
             map.put(s, MediaFileAPI.GetMediaFileMetadata(sage, s));
         }
 
-        return map;
+        return new ServiceReply<Map<String,String>>(map);
     }
 
-    private Map<String, String> properties(GWTMediaFile file) {
+    private ServiceReply<Map<String, String>> properties(GWTMediaFile file) {
         Map<String,String> map = new HashMap<String, String>();
-        Object sage = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
+        Object sage = phoenix.media.GetSageMediaFile(file.getSageMediaFileId());
         if (sage==null) {
             return error("Not a sagetv media file");
         }
@@ -173,10 +160,10 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
             map.put(String.valueOf(s), String.valueOf(props.getProperty(String.valueOf(s))));
         }
         
-        return map;
+        return new ServiceReply<Map<String,String>>(map);
     }
 
-    private Map<String, String> wizbin(GWTMediaFile file) {
+    private ServiceReply<Map<String, String>> wizbin(GWTMediaFile file) {
         Map<String,String> map = new HashMap<String, String>();
         Object sage = phoenix.api.GetSageMediaFile(file.getSageMediaFileId());
         if (sage==null) {
@@ -248,13 +235,11 @@ public class DebugServicesImpl extends RemoteServiceServlet implements DebugServ
         	map.put("No Actors", "GetPeopleAndCharacterListInShowInRole() returned nothing");
         }
         
-        return map;
+        return new ServiceReply<Map<String,String>>(map);
     }
 
-    private Map<String, String> error(String string) {
-        Map<String,String> map = new java.util.HashMap<String, String>();
-        map.put("Error", string);
-        return map;
+    private ServiceReply<Map<String, String>> error(String string) {
+    	return new ServiceReply<Map<String,String>>(1, string);
     }
 
     public long updateTimestamp(GWTMediaFile file) {

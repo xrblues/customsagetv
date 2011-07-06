@@ -25,7 +25,7 @@ public interface Labels extends Constants {
     @DefaultStringValue("Browse")
     String browse();
 
-    @DefaultStringValue("Refresh Library")
+    @DefaultStringValue("Refresh")
     String refreshLibrary();
 
     @DefaultStringValue("Batch Metadata Tools")

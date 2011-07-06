@@ -18,9 +18,9 @@ public class FanartImage extends AbstractClickableItem {
     }
 
     private GWTMediaArt art = null;
-    private FanartManagerPanel panel;
+    private FanartPanel panel;
     @UiField Image image;
-    public FanartImage(GWTMediaArt ma, FanartManagerPanel panel) {
+    public FanartImage(GWTMediaArt ma, FanartPanel panel) {
         initWidget(uiBinder.createAndBindUi(this));
         image.setUrl(ma.getDisplayUrl());
         this.panel=panel;

@@ -45,7 +45,7 @@ public class ViewCategoriesListAdapter extends SimpleListAdapter implements Simp
 	@Override
 	public void setViewCategories(ArrayList<GWTView> result) {
 		result.add(0, new GWTView(null, "All Views"));
+		result.add(1, new GWTView("hidden", "Hidden Views"));
 		setList(result);
-		System.out.println("Set the list");
 	}
 }

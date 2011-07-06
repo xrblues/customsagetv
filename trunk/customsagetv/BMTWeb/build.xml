@@ -23,7 +23,7 @@
 	<property name="build.dir" location="${target}/build" />
 	<property name="dist.dir" location="${target}/dist" />
 
-	<property name="version" value="4.9.15" />
+	<property name="version" value="4.9.20" />
 
 	<!-- for debugging turn off gwt compile -->
 	<!-- <property name="no-gwt-compile" value="true" /> -->
@@ -38,6 +38,7 @@
 		
 		<pathelement location="${gwt.sdk}/gwt-user.jar" />
 		<fileset dir="${gwt.sdk}" includes="gwt-dev*.jar" />
+		<fileset dir="${gwt.sdk}" includes="validation*.jar" />
 	</path>
 
 
@@ -78,7 +79,7 @@
 				<path refid="project.class.path" />
 			</classpath>
 			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
-			<jvmarg value="-Xmx256M" />
+			<jvmarg value="-Xmx512M" />
 			<!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
 			<arg value="org.jdna.bmt.web.BMTWeb" />
 		</java>

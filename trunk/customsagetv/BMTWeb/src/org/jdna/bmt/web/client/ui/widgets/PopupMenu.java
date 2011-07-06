@@ -90,7 +90,6 @@ public class PopupMenu extends PopupPanel {
 		menuItems.setClickListener(new ListView.OnItemClickListener() {
 			@Override
 			public void onItemClick(ListView view, ListItem item, int pos) {
-				System.out.println("** clicked ");
 				hide();
 				handler.onMenuItemSelected(view.getListAdapter().getItem(pos));
 			}

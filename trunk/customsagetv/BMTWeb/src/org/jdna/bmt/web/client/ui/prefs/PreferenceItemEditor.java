@@ -17,10 +17,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class PreferenceItemEditor extends Composite {
     private HelpLabel  label  = null;
     private Widget   editor = null;
-    private PrefItem item   = null;
 
     public PreferenceItemEditor(final PrefItem item) {
-        this.item = item;
         this.label = new HelpLabel(item.getLabel(), createHelpText(item));
 
         if (item.getHints()!=null) {

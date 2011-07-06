@@ -7,6 +7,7 @@
 		}
 	</ui:style>
 	<g:HTMLPanel>
+		<g:Label ui:field="filename" wordWrap="false" horizontalAlignment="ALIGN_CENTER"/>
 		<table>
 			<tr>
 				<td><g:RadioButton name="matchtype" ui:field="selectFile" checked="true"/></td>

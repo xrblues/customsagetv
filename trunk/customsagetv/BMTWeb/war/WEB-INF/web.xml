@@ -36,6 +36,11 @@
   </servlet>
 
   <servlet>
+    <servlet-name>phoenixconfig</servlet-name>
+    <servlet-class>org.jdna.bmt.web.server.PhoenixConfigurationImpl</servlet-class>
+  </servlet>
+
+  <servlet>
     <servlet-name>status</servlet-name>
     <servlet-class>org.jdna.bmt.web.server.StatusServicesImpl</servlet-class>
   </servlet>
@@ -143,6 +148,11 @@
   <servlet-mapping>
     <servlet-name>filechooser</servlet-name>
     <url-pattern>/bmtweb/filechooser</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>phoenixconfig</servlet-name>
+    <url-pattern>/bmtweb/phoenixconfig</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

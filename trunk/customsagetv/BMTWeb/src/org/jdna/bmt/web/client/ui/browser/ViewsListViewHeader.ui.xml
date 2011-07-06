@@ -7,10 +7,15 @@
 		border-bottom: 2px solid #000080;
 		padding-top: 3px;
 		padding-bottom: 3px;
+	}
+	.selectView {
 		cursor: pointer;
 	}
 	</ui:style>
-	<g:HTMLPanel addStyleNames="{style.header}" width="100%">
+	<g:HorizontalPanel addStyleNames="{style.header}" width="100%" spacing="5">
 		<g:Label  ui:field="headerText" width="100%"></g:Label>
-	</g:HTMLPanel>
+		<g:cell width="16px" horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_MIDDLE">
+			<g:Image title="Change view category" addStyleNames="{style.selectView}" ui:field="selectViewImage" url="images/16x16/preferences-system-windows.png"/>
+		</g:cell>
+	</g:HorizontalPanel>
 </ui:UiBinder> 

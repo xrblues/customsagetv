@@ -4,6 +4,8 @@ package org.jdna.bmt.web.client.ui.prefs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jdna.bmt.web.client.ui.util.ServiceReply;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -40,4 +42,6 @@ public interface PreferencesService extends RemoteService {
     public ArrayList<String> getMenus();
     public String loadMenu(String id);
     public String saveMenu(String menu) throws Exception;
+    
+    public ServiceReply<ArrayList<ConfigError>> refreshConfigurations();
 }
