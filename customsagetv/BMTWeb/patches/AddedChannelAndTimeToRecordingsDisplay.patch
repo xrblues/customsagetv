@@ -1,0 +1,26 @@
+### Eclipse Workspace Patch 1.0
+#P BMTWeb
+Index: src/org/jdna/bmt/web/client/ui/browser/MediaItem.java
+===================================================================
+--- src/org/jdna/bmt/web/client/ui/browser/MediaItem.java	(revision 404)
++++ src/org/jdna/bmt/web/client/ui/browser/MediaItem.java	(working copy)
+@@ -90,8 +90,7 @@
+ 			if (!(res instanceof GWTMediaFolder)) {
+ 				watchedIcon = new Image("images/marker_watched.png");
+ 				watchedIcon.setSize("16px", "16px");
+-				watchedIcon.setVisible(((GWTMediaFile) res).getIsWatched()
+-						.get());
++				watchedIcon.setVisible(((GWTMediaFile) res).getIsWatched().get());
+ 				actions.insert(watchedIcon, 0);
+ 
+ 				if (!res.isAiring()) {
+@@ -161,7 +160,8 @@
+ 		}
+ 
+ 		if (res2 instanceof GWTMediaFile
+-				&& ((GWTMediaFile) res2).getAiringDetails() != null) {
++				&& ((GWTMediaFile) res2).getAiringDetails() != null
++				&& ((GWTMediaFile) res2).getSageRecording().get()) {
+ 			GWTAiringDetails det = ((GWTMediaFile) res2).getAiringDetails();
+ 			StringBuilder sb = new StringBuilder();
+ 

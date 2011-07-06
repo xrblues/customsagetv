@@ -2,12 +2,8 @@ package org.jdna.bmt.web.client.ui.databrowser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeSet;
 
 import org.jdna.bmt.web.client.Application;
-import org.jdna.bmt.web.client.event.EventBus;
-import org.jdna.bmt.web.client.util.MessageBus;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -34,7 +30,6 @@ public class DataBrowser extends Composite {
 
 	@UiField
 	protected ListBox userstores;
-	private MessageBus bus = new MessageBus();
 	
 	@UiField
 	protected SimplePanel panel;

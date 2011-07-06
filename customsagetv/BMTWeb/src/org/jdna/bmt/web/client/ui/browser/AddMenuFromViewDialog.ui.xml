@@ -1,0 +1,114 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:bmt="urn:import:org.jdna.bmt.web.client.ui.layout">
+	<ui:style>
+		
+	</ui:style>
+
+	<g:VerticalPanel>
+		<g:HTMLPanel>
+			<table>
+				<tr>
+					<td>
+						<g:Label text="Menu Item Id" wordWrap="false" />
+					</td>
+					<td>
+						<g:TextBox ui:field="menuId"></g:TextBox>
+					</td>
+				</tr>
+			
+				<tr>
+					<td>
+						<g:Label text="Menu Item Label" wordWrap="false" />
+					</td>
+					<td>
+						<g:TextBox ui:field="menuLabel"></g:TextBox>
+					</td>
+				</tr>
+			
+				<tr>
+					<td>
+						<g:Label text="Menu Description" wordWrap="false" />
+					</td>
+					<td>
+						<g:TextArea width="100%" visibleLines="3" ui:field="menuDescription"/>
+					</td>
+				</tr>
+			
+				<tr>
+					<td>
+						<g:Label text="Link to View Id" wordWrap="false" />
+					</td>
+					<td>
+						<g:TextBox ui:field="viewName"></g:TextBox>
+					</td>
+				</tr>
+
+				<tr style="display:none;">
+					<td>
+						<g:Label text="Path" wordWrap="false"/>
+					</td>
+					<td>
+						<g:TextBox ui:field="folderPath"></g:TextBox>
+					</td>
+				</tr>
+
+				<tr style="display:none;">
+					<td>
+						<g:Label text="Use Path as Root" wordWrap="false"/>
+					</td>
+					<td>
+						<g:CheckBox></g:CheckBox>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<g:Label text="Insert in Menu" wordWrap="false"/>
+					</td>
+					<td>
+						<g:ListBox ui:field="menus"></g:ListBox>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<g:Label text="Position" />
+					</td>
+					<td>
+						<g:HorizontalPanel spacing="5">
+							<g:RadioButton name="insertLocation" checked="true"
+								text="Before Item" ui:field="insertBefore"></g:RadioButton>
+							<g:RadioButton name="insertLocation" text="After Item"></g:RadioButton>
+						</g:HorizontalPanel>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<g:Label text="Item" wordWrap="false"/>
+					</td>
+					<td>
+						<g:ListBox ui:field="menuItems"></g:ListBox>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<g:Label text="Display As" wordWrap="false"/>
+					</td>
+					<td>
+						<g:ListBox ui:field="flowType"></g:ListBox>
+					</td>
+				</tr>
+
+			</table>
+		</g:HTMLPanel>
+		<g:cell horizontalAlignment="ALIGN_CENTER">
+			<g:HorizontalPanel spacing="5">
+				<g:Button text="OK" width="2cm" ui:field="btnOK"></g:Button>
+				<g:Button text="Cancel" width="2cm" ui:field="btnCancel"></g:Button>
+			</g:HorizontalPanel>
+		</g:cell>
+	</g:VerticalPanel>
+</ui:UiBinder> 

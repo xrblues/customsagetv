@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaMetadata;
+import org.jdna.bmt.web.client.media.GWTMediaResource;
+import org.jdna.bmt.web.client.ui.HTMLTemplates;
 import org.jdna.bmt.web.client.ui.layout.Simple2ColFormLayoutPanel;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
-import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar.Layout;
-import org.jdna.bmt.web.client.ui.util.ImagePopupLabel;
 import org.jdna.bmt.web.client.ui.util.WaitingPanel;
 import org.jdna.bmt.web.client.ui.util.binder.CheckBinder;
 import org.jdna.bmt.web.client.ui.util.binder.DateBinder;
@@ -24,9 +25,10 @@ import org.jdna.bmt.web.client.ui.util.binder.TextBinder;
 import org.jdna.bmt.web.client.util.DateFormatUtil;
 import org.jdna.bmt.web.client.util.MessageHandler;
 import org.jdna.bmt.web.client.util.NumberUtil;
+import org.jdna.bmt.web.client.util.StringUtils;
 
-import sagex.phoenix.metadata.IMediaArt;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,10 +37,14 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DecoratedTabPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -47,6 +53,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class MediaEditorMetadataPanel extends Composite implements ChangeHandler, HasMediaFile, MessageHandler {
     private GWTMediaFile mediaFile = null;
@@ -59,6 +66,8 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
     private List<Integer> tvRows = new ArrayList<Integer>();
     private List<Integer> movieRows = new ArrayList<Integer>();
 
+    private static final HTMLTemplates templates = GWT.create(HTMLTemplates.class);
+    
     private ListBinder typeListBox=null;
 	private TextBinder movieTitle;
 	private TextBinder showTitle;
@@ -81,7 +90,12 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
 	
 	private FieldManager fields = new FieldManager();
 	private BrowsePanel controller;
+
+	private Image posterImage = new Image();
     
+	DecoratedTabPanel tabs = new DecoratedTabPanel();
+	private Button saveFanart;
+	private Button saveNextFanart;
     public MediaEditorMetadataPanel(GWTMediaFile mediaFile, BrowsePanel controller) {
 		controller.getMessageBus().postMessage(BrowsePanel.MSG_HIDE_VIEWS);
 
@@ -96,23 +110,51 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         metadataPanel.setCellVerticalAlignment(p, HasVerticalAlignment.ALIGN_MIDDLE);
         initWidget(metadataPanel);
         this.mediaFile = mediaFile;
+
+        tabs.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>() {
+			@Override
+			public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
+				int tab = event.getItem();
+				Widget w = tabs.getWidget(tab);
+				if (w instanceof Label) {
+					if (tab == 2) {
+						tabs.remove(tab);
+						tabs.insert(new FanartManagerPanel(MediaEditorMetadataPanel.this.controller, MediaEditorMetadataPanel.this.mediaFile), "Fanart", tab);
+					} else if (tab == 3) {
+						tabs.remove(tab);
+						tabs.insert(new PropertiesPanel(MediaEditorMetadataPanel.this.mediaFile), "Properties File", tab);
+					}
+				}
+			}
+		});
         
         controller.requestUpdatedMetadata(mediaFile, this);
     }
     
     private void init(GWTMediaFile mf) {
+    	int selected = tabs.getTabBar().getSelectedTab();
+    	if (selected < 0) selected=0;
+    	tabs.clear();
+    	
         mediaFile = mf;
         metadata = mf.getMetadata();
 
         metadataPanel.clear();
         metadataPanel.setWidth("100%");
-        
+
         HorizontalButtonBar hp = new HorizontalButtonBar();
 
-        Button saveFanart = new Button("Save");
+        saveFanart = new Button("Save");
         saveFanart.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
             	saveMetadata(null);
+            }
+        });
+
+        saveNextFanart = new Button("Save and Next");
+        saveNextFanart.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+            	saveMetadataAndMoveNext(null);
             }
         });
         
@@ -145,32 +187,84 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
                 controller.back();
             }
         });
-        
-        // add our icon to the panel
-        final Image img = new Image();
-        img.addErrorHandler(new ErrorHandler() {
-            public void onError(ErrorEvent event) {
-                img.setUrl("images/128x128/video.png");
+
+        Button next = new Button("Next");
+        next.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+            	next();
             }
         });
-        img.setUrl(mf.getThumbnailUrl());
-        img.addStyleName("MediaMetadata-PosterSmall");
-        img.addStyleName("clickable");
-        img.addClickHandler(new ClickHandler() {
+        Button previous = new Button("Previous");
+        previous.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+            	previous();
+            }
+        });
+        
+        // add our icon to the panel
+        posterImage.addErrorHandler(new ErrorHandler() {
+            public void onError(ErrorEvent event) {
+                posterImage.setUrl("images/128x128/video.png");
+            }
+        });
+        posterImage.setUrl(mf.getThumbnailUrl());
+        posterImage.addStyleName("MediaMetadata-PosterSmall");
+        posterImage.addStyleName("clickable");
+        posterImage.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 showFanartDialog();
             }
         });
-        hp.add(img, Layout.Right);
+        hp.add(posterImage, Layout.Right);
 
         hp.add(back);
+        hp.add(previous);
+        hp.add(next);
         hp.add(find);
         hp.add(rawMetadata);
         hp.add(newMediatitles);
         hp.add(saveFanart);
+        hp.add(saveNextFanart);
         
         metadataPanel.add(hp);
         metadataPanel.setCellHorizontalAlignment(hp, HasHorizontalAlignment.ALIGN_RIGHT);
+
+        
+        HorizontalPanel titleArea = new HorizontalPanel();
+        titleArea.setSpacing(5);
+        
+        Label l = new Label(mediaFile.getFormattedTitle(), false);
+        l.addStyleName("MediaMetadata-LargeTitle");
+        titleArea.add(l);
+        
+        if (!StringUtils.isEmpty(metadata.getIMDBID().get())) {
+        	String url = "http://www.imdb.com/title/"+metadata.getIMDBID().get()+"/";
+        	HTMLPanel p = new HTMLPanel(templates.createMetadataPunchout("IMDb", url, "imdb"));
+        	titleArea.add(p);
+        }
+        
+        if (!StringUtils.isEmpty(metadata.getMediaProviderID().get())) {
+        	String url = null;
+        	String label = null;
+        	if ("tmdb".equals(metadata.getMediaProviderID().get())) {
+        		label = "TMDb";
+        		url = "http://www.themoviedb.org/movie/" + metadata.getMediaProviderDataID().get();
+        	} else if ("tvdb".equals(metadata.getMediaProviderID().get())) {
+            	label = "TheTVDB";
+            	url = "http://thetvdb.com/?tab=series&id="+metadata.getMediaProviderDataID().get();
+        	} else {
+        		GWT.log("Unknown Provider: " + metadata.getMediaProviderID().get());
+        	}
+        	
+        	if (url!=null) {
+            	HTMLPanel p = new HTMLPanel(templates.createMetadataPunchout(label, url, "_"+"label"));
+            	titleArea.add(p);
+        	}
+        }
+        
+        metadataPanel.add(titleArea);
+        
+        metadataPanel.add(tabs);
         
         if (metadata.getPreserveRecordingMetadata().get() && mediaFile.getSageRecording().get()) {
 	        HorizontalPanel headerWidget = new HorizontalPanel();
@@ -183,22 +277,19 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
 	        metadataPanel.add(headerWidget);
         }
         
-        HorizontalPanel cols = new HorizontalPanel();
-        cols.setWidth("100%");
-        metadataPanel.add(cols);
-        metadataPanel.setCellWidth(cols, "100%");
-        
+//        HorizontalPanel cols = new HorizontalPanel();
+//        cols.setWidth("100%");
+//        metadataPanel.add(cols);
+//        metadataPanel.setCellWidth(cols, "100%");
+        tabs.setWidth("100%");
+        tabs.getDeckPanel().setWidth("100%");
+        tabs.getDeckPanel().getElement().getStyle().setBorderStyle(BorderStyle.NONE);
+        //tabs.getDeckPanel().getElement().getStyle().setProperty("border-top", "2px solid black");
+
         // Metadata
         Simple2ColFormLayoutPanel panel = new Simple2ColFormLayoutPanel();
-        panel.setWidth("99%");
+        panel.setWidth("100%");
         metadataContainer = panel;
-        
-        Label l = new Label(mediaFile.getFormattedTitle(), false);
-        l.addStyleName("MediaMetadata-LargeTitle");
-        metadataPanel.add(l);
-        
-        panel.add(l,new Label());
-
 
         if (mediaFile.getSageRecording().get()) {
 	        preserveMetadata = (CheckBinder) fields.addField("preserveRecording", new CheckBinder(metadata.getPreserveRecordingMetadata()));
@@ -219,17 +310,17 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         ((ListBox) typeListBox.getWidget()).addChangeHandler(this);
         panel.add("Media Type", typeListBox.getWidget());
         
-        panel.add("Fanart Title", fields.addField("fanart-title", new TextBinder(metadata.getMediaTitle())).getWidget());
+        panel.add("Fanart Title", fields.addField("fanart-title", new TextBinder(metadata.getMediaTitle())).addStyle("MetadataInput").getWidget());
 
-        showTitle=(TextBinder) fields.addField("tv-title", new TextBinder(metadata.getTitle()));
+        showTitle=(TextBinder) fields.addField("tv-title", new TextBinder(metadata.getTitle())).addStyle("MetadataInput");
         panel.add("Show Title", showTitle.getWidget());
         tvRows.add(panel.getFlexTable().getRowCount()-1);
         
-        episodeName=(TextBinder) fields.addField("episode-name", new TextBinder(metadata.getEpisodeName()));
+        episodeName=(TextBinder) fields.addField("episode-name", new TextBinder(metadata.getEpisodeName())).addStyle("MetadataInput");
         panel.add("Episode Name", episodeName.getWidget());
         tvRows.add(panel.getFlexTable().getRowCount()-1);
         
-        movieTitle=(TextBinder) fields.addField("movie-title", new TextBinder(metadata.getEpisodeName()));
+        movieTitle=(TextBinder) fields.addField("movie-title", new TextBinder(metadata.getEpisodeName())).addStyle("MetadataInput");
         panel.add("Movie Title", movieTitle.getWidget());
         movieRows.add(panel.getFlexTable().getRowCount()-1);
         
@@ -239,8 +330,7 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         panel.add("Episode #", fields.addField("tv-episode", new NumberBinder(metadata.getEpisodeNumber(), true)).getWidget());
         tvRows.add(panel.getFlexTable().getRowCount()-1);
 
-        description = (TextAreaBinder) fields.addField("description", new TextAreaBinder(metadata.getDescription()));
-        description.getWidget().setWidth("300px");
+        description = (TextAreaBinder) fields.addField("description", new TextAreaBinder(metadata.getDescription())).addStyle("MetadataInput");
         ((TextArea) description.getWidget()).setVisibleLines(5);
         panel.add("Description", description.getWidget());
 
@@ -292,8 +382,24 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         watched=(CheckBinder) fields.addField("watched",new CheckBinder(mediaFile.getIsWatched()));
         panel.add("Watched?", watched.getWidget());
         
-        panel.add("IMDb Id", new Label(metadata.getIMDBID().get()));
-        panel.add("Metadata Id", new Label(metadata.getMediaProviderDataID().get()));
+        if (!StringUtils.isEmpty(metadata.getIMDBID().get())) {
+        	panel.add("IMDb Id", new HTMLPanel(templates.createIMDBPunchout(metadata.getIMDBID().get(), metadata.getIMDBID().get())));
+        }
+        
+        if (!StringUtils.isEmpty(metadata.getMediaProviderDataID().get())) {
+        	Widget p = null;
+        	if ("imdb".equals(metadata.getMediaProviderID().get())) {
+        		p = new HTMLPanel(templates.createIMDBPunchout(metadata.getMediaProviderDataID().get(), metadata.getMediaProviderDataID().get()));
+        	} else if ("tvdb".equals(metadata.getMediaProviderID().get())) {
+        		p = new HTMLPanel(templates.createTVDBPunchout(metadata.getMediaProviderDataID().get(), metadata.getMediaProviderDataID().get()));
+        	} else if ("tmdb".equals(metadata.getMediaProviderID().get())) {
+        		p = new HTMLPanel(templates.createTMDBPunchout(metadata.getMediaProviderDataID().get(), metadata.getMediaProviderDataID().get()));
+        	} else {
+        		p = new Label(metadata.getMediaProviderDataID().get());
+        	}
+        	panel.add("Metadata Id", p);
+        }
+        
         panel.add("Sage MediaFile Id", new Label(String.valueOf(mediaFile.getSageMediaFileId())));
         panel.add("Sage Airing Id", new Label(String.valueOf(mediaFile.getAiringId())));
         panel.add("Sage Show Id", new Label(String.valueOf(mediaFile.getShowId())));
@@ -301,22 +407,32 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         panel.add("VFS Id", new Label(mediaFile.getVFSID()));
         panel.add("Location", new Label(mediaFile.getPath()));
 
-        cols.add(panel);
-        cols.setCellWidth(panel, "75%");
+        tabs.add(panel, "Metadata");
+        
+        
+        //cols.add(panel);
+        //cols.setCellWidth(panel, "75%");
 
         panel.add("Fanart Location", new Label(mf.getFanartDir()));
-        List<GWTMediaArt> fanart = metadata.getFanart();
-        if (fanart!=null) {
-            for (int row=0;row<fanart.size();row++) {
-                IMediaArt ma = fanart.get(row);
-                panel.add("Fanart " + ma.getType().name(),  new ImagePopupLabel(ma.getDownloadUrl(), ma.getDownloadUrl()));
-            }
-        }
+//        List<GWTMediaArt> fanart = metadata.getFanart();
+//        if (fanart!=null) {
+//            for (int row=0;row<fanart.size();row++) {
+//                IMediaArt ma = fanart.get(row);
+//                panel.add("Fanart " + ma.getType().name(),  new ImagePopupLabel(ma.getDownloadUrl(), ma.getDownloadUrl()));
+//            }
+//        }
         
         // Cast Members
         CastMemberPanel cmPanel = new CastMemberPanel(mf);
-        cols.add(cmPanel);
-        cols.setCellWidth(cmPanel, "25%");
+        //cols.add(cmPanel);
+        //cols.setCellWidth(cmPanel, "25%");
+        tabs.add(cmPanel, "Cast");
+        
+        //FanartManagerPanel mgr = new FanartManagerPanel(controller, mf);
+        //mgr.setWidth("100%");
+        tabs.add(new Label(), "Fanart");
+        tabs.add(new Label(), "Properties File");
+        tabs.selectTab(selected, true);
         
         // update the UI
         fields.updateFields();
@@ -324,10 +440,8 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
         onChange(null);
     }
 
-    protected void showFanartDialog() {
-    	Composite c = new FanartManagerPanel(controller, mediaFile);
-    	//c.setPixelSize(600, 400);
-        Dialogs.showAsDialog("Fanart", c);
+	protected void showFanartDialog() {
+		tabs.selectTab(2, true);
     }
 
     protected void saveMetadata(PersistenceOptionsUI options) {
@@ -337,6 +451,30 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
     	fields.updateProperties();
     	
         controller.saveMetadata(mediaFile, options, this);
+    }
+
+    protected void saveMetadataAndMoveNext(PersistenceOptionsUI options) {
+    	fields.updateProperties();
+        controller.saveMetadata(mediaFile, options, this, true);
+    	next();
+	}
+    
+    protected void next() {
+    	GWTMediaResource r = controller.getFolder().next(mediaFile);
+    	if (r instanceof GWTMediaFile) {
+    		controller.requestUpdatedMetadata((GWTMediaFile) r, this);
+    	} else {
+    		Application.fireNotification("No more files");
+    	}
+    }
+
+    protected void previous() {
+    	GWTMediaResource r = controller.getFolder().previous(mediaFile);
+    	if (r instanceof GWTMediaFile) {
+    		controller.requestUpdatedMetadata((GWTMediaFile) r, this);
+    	} else {
+    		Application.fireNotification("No previous file");
+    	}
     }
 
     public void onChange(ChangeEvent event) {
@@ -389,6 +527,11 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
 	public void onMessageReceived(String msg, Map<String, ?> args) {
 		if (BrowsePanel.MSG_METADATA_CHANGED.equals(msg)) {
 			setMediaFile((GWTMediaFile) args.get("mediafile"));
+		} else if (BrowsePanel.MSG_POSTER_UPDATED.equals(msg)) {
+			GWTMediaArt file = (GWTMediaArt) args.get("poster");
+			if (file!=null) {
+				posterImage.setUrl(file.getDisplayUrl());
+			}
 		}
 	}
 
@@ -396,11 +539,13 @@ public class MediaEditorMetadataPanel extends Composite implements ChangeHandler
 	protected void onAttach() {
 		super.onAttach();
 		controller.getMessageBus().addHandler(BrowsePanel.MSG_METADATA_CHANGED, this);
+		controller.getMessageBus().addHandler(BrowsePanel.MSG_POSTER_UPDATED, this);
 	}
 
 	@Override
 	protected void onDetach() {
 		super.onDetach();
 		controller.getMessageBus().removeHandler(BrowsePanel.MSG_METADATA_CHANGED, this);
+		controller.getMessageBus().removeHandler(BrowsePanel.MSG_POSTER_UPDATED, this);
 	}
 }

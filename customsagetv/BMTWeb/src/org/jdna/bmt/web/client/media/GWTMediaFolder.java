@@ -78,4 +78,30 @@ public class GWTMediaFolder extends GWTMediaResource implements Serializable {
 	public void setPageSize(int pageSize) {
 		this.pageSize=pageSize;
 	}
+	
+	public int indexOf(GWTMediaResource res) {
+		if (children==null || res==null || res.getPath()==null) return -1;
+		for (int i=0;i<children.size();i++) {
+			if (res.getPath().equals(children.get(i).getPath())) return i;
+		}
+		return -1;
+	}
+	
+	public GWTMediaResource next(GWTMediaResource res) {
+		int i=indexOf(res);
+		if (i>=0) {
+			if (i+1 < getLoaded()) {
+				return children.get(i+1);
+			}
+		}
+		return null;
+	}
+
+	public GWTMediaResource previous(GWTMediaResource res) {
+		int i=indexOf(res);
+		if ((i-1)>=0) {
+			return children.get(i-1);
+		}
+		return null;
+	}
 }

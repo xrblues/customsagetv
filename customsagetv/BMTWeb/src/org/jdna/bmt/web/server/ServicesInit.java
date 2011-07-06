@@ -56,6 +56,28 @@ public class ServicesInit {
 							return true;
 						}
 					});
+                    
+                    
+                    // now copy from phoenix UI area
+                	phoenixDir = new File("../../PhoenixUI");
+                	if (!phoenixDir.exists()) {
+                		phoenixDir = new File("../PhoenixUI");
+                	}
+                	
+                    phoenix = new File(phoenixDir, "STVs/Phoenix/");
+                    if (!phoenix.exists()) {
+                    	System.out.println("** NO PHOENIX UI **");
+                    } else {
+                        System.out.println("*** BEGIN Copying Phoenix files for Testing from " + phoenix);
+                        FileUtils.copyDirectory(phoenix, new File("testing/Phoenix/"), new FileFilter() {
+    						@Override
+    						public boolean accept(File pathname) {
+    							if (pathname.getName().endsWith(".svn")) return false;
+    							return true;
+    						}
+    					});
+                    }
+                    
                     System.out.println("*** END Copying Phoenix files for Testing.... ***");
                 } catch (IOException e) {
                     // TODO Auto-generated catch block

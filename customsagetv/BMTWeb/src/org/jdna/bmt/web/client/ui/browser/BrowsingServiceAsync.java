@@ -36,7 +36,7 @@ public interface BrowsingServiceAsync {
     void removeScan(String progressId, AsyncCallback<Void> asyncCallback);
     void getProgressItems(String progressId, boolean b, AsyncCallback<GWTMediaResource[]> asyncCallback);
     void getFanart(GWTMediaFile file, MediaArtifactType artifact, AsyncCallback<ArrayList<GWTMediaArt>> callback);
-    void downloadFanart(GWTMediaFile file, MediaArtifactType artifact, GWTMediaArt ma, AsyncCallback<GWTMediaArt> callback);
+    void downloadFanart(GWTMediaFile file, MediaArtifactType artifact, GWTMediaArt ma, AsyncCallback<ServiceReply<GWTMediaArt>> callback);
     void deleteFanart(GWTMediaArt art, AsyncCallback<Boolean> callback);
     void makeDefaultFanart(GWTMediaFile file, MediaArtifactType type, GWTMediaArt art, AsyncCallback<Void> callback);
 	void searchMediaFiles(String search, AsyncCallback<ServiceReply<GWTMediaFolder>> callback);
@@ -50,4 +50,6 @@ public interface BrowsingServiceAsync {
 	void getEditableMetadataFields(GWTMediaResource res, AsyncCallback<ArrayList<NamedProperty<String>>> callback);
 	void batchUpdateMetadata(GWTMediaResource res,	ArrayList<NamedProperty<String>> props,	AsyncCallback<Boolean> callback);
 	void addMediaTitle(HashMap<String, String> fields,	AsyncCallback<ServiceReply<Boolean>> callback);
+	void loadFiles(String dir, String mask, AsyncCallback<ArrayList<String>> files);
+	void toggleViewVisibility(GWTView view, AsyncCallback<Void> callback);
 }

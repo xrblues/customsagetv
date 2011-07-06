@@ -16,6 +16,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -36,6 +37,7 @@ public class AddMediaTitleDialogPanel extends DialogBox {
 	@UiField TextBox mediatype;
 	@UiField Button save;
 	@UiField Button cancel;
+	@UiField Label filename;
 
 	private GWTMediaFile mediaFile;
 
@@ -47,6 +49,9 @@ public class AddMediaTitleDialogPanel extends DialogBox {
 		setText(Application.labels().addMediaTitlesDialog());
 		setWidget(uiBinder.createAndBindUi(this));
 		this.mediaFile=mediaFile;
+		
+		filename.setText(mediaFile.getPath());
+		
 		GWTMediaMetadata md = mediaFile.getMetadata();
 		if (md!=null) {
 			String path = mediaFile.getPath();

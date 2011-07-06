@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.ui.layout.Simple2ColFormLayoutPanel;
+import org.jdna.bmt.web.client.ui.util.AsyncServiceReply;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -56,7 +55,6 @@ public class DebugPanel extends Composite {
         listbox.addItem("BMT Metadata", "metadata");
         listbox.addItem(".properties", ".properties");
         listbox.addItem("sage7metadata", "sage7metadata");
-        //listbox.addItem("Fanart Metadata", "fanart");
         listbox.addChangeHandler(new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 updateValues(listbox.getValue(listbox.getSelectedIndex()));
@@ -88,15 +86,12 @@ public class DebugPanel extends Composite {
     }
 
     private void updateValues(final String value) {
-        debug.getMetadata(value, file, new AsyncCallback<Map<String,String>>() {
-            public void onFailure(Throwable caught) {
-                Application.fireErrorEvent("Failed to get debug info for: " + value);
-            }
-            
-            public void onSuccess(Map<String, String> result) {
+    	debug.getMetadata(value, file, new AsyncServiceReply<Map<String,String>>() {
+			@Override
+			public void onOK(Map<String, String> result) {
                 updatePanels(result);
-            }
-        });
+			}
+		});
     }
 
     protected void updatePanels(Map<String, String> result) {

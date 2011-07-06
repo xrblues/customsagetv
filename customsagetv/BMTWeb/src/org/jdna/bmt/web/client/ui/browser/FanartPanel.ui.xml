@@ -1,0 +1,42 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+.fanart {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #000080;
+}
+
+.leftPanel {
+	padding-left: 5px;
+}
+
+.emphasis {
+	font-size: .5cm;
+	color: #000080;
+}
+
+.mainImage {
+	padding: 5 5 5 5;
+	margin: 5 5 5 5;
+}
+
+	</ui:style>
+	<g:HorizontalPanel styleName="{style.fanart}">
+		<g:VerticalPanel>
+			<g:Label ui:field="header" text="Poster" styleName="{style.emphasis}"></g:Label>
+			<g:Image ui:field="mainImage" styleName="mainImage"></g:Image>
+			<g:cell horizontalAlignment="ALIGN_LEFT">
+				<g:HorizontalPanel>
+					<g:Button ui:field="btnMakeDefault" text="Make Default"></g:Button>
+					<g:Button ui:field="btnDelete" text="Delete"></g:Button>
+				</g:HorizontalPanel>
+			</g:cell>
+		</g:VerticalPanel>
+		<g:cell verticalAlignment="ALIGN_MIDDLE">
+			<g:ScrollPanel ui:field="scrollerImages"></g:ScrollPanel>
+		</g:cell>
+	</g:HorizontalPanel>
+</ui:UiBinder> 

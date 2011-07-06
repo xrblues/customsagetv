@@ -20,7 +20,8 @@ import org.apache.log4j.Logger;
 import sagex.remote.media.MediaHandler;
 
 public class MediaHandlerServlet extends HttpServlet {
-    private transient MediaHandler mediaHandler = null;
+	private static final long serialVersionUID = 1L;
+	private transient MediaHandler mediaHandler = null;
     private transient Logger log = null;
     public MediaHandlerServlet() {
         ServicesInit.init();

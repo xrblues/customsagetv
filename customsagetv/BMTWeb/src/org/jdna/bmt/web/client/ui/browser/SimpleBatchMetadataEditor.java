@@ -33,9 +33,10 @@ public class SimpleBatchMetadataEditor extends Composite {
 	@UiField VerticalPanel fieldListPanel;
 	@UiField Button save;
 	@UiField Label title;
+	@UiField Button savenext;
+	@UiField Button next;
+	@UiField Button previous;
 
-	
-	
 	interface SimpleBatchMetadataEditorUiBinder extends
 			UiBinder<Widget, SimpleBatchMetadataEditor> {
 	}
@@ -49,8 +50,12 @@ public class SimpleBatchMetadataEditor extends Composite {
 		History.newItem("batchedit", false);
 		
 		controller.getMessageBus().postMessage(BrowsePanel.MSG_HIDE_VIEWS);
-		this.baseResource = res;
 		this.controller=controller;
+		updateUI(res);
+	}
+	
+	protected void updateUI(GWTMediaResource res) {
+		this.baseResource=res;
 		this.title.setText(res.getPath());
 		browser.getEditableMetadataFields(res, new AsyncCallback<ArrayList<NamedProperty<String>>>() {
 			@Override
@@ -69,6 +74,32 @@ public class SimpleBatchMetadataEditor extends Composite {
 	public void back(ClickEvent evt) {
 		controller.getMessageBus().postMessage(BrowsePanel.MSG_SHOW_VIEWS);
 		controller.back();
+	}
+
+	@UiHandler("savenext")
+	public void saveAndNext(ClickEvent evt) {
+		save(evt);
+		next(evt);
+	}
+
+	@UiHandler("next")
+	public void next(ClickEvent evt) {
+    	GWTMediaResource r = controller.getFolder().next(baseResource);
+    	if (r instanceof GWTMediaFile) {
+    		updateUI(r);
+    	} else {
+    		Application.fireNotification("No more files");
+    	}
+	}
+
+	@UiHandler("previous")
+	public void previous(ClickEvent evt) {
+    	GWTMediaResource r = controller.getFolder().previous(baseResource);
+    	if (r instanceof GWTMediaFile) {
+    		updateUI(r);
+    	} else {
+    		Application.fireNotification("No previous file");
+    	}
 	}
 
 	@UiHandler("save")

@@ -32,7 +32,7 @@ watched status on files, etc
 
 	<Dependency>
 		<Plugin>phoenix-core</Plugin>
-		<MinVersion>2.3.30</MinVersion>
+		<MinVersion>2.3.36</MinVersion>
 	</Dependency>
 
 	<PluginType>Standard</PluginType>
@@ -52,6 +52,22 @@ watched status on files, etc
 		<MD5>@@context-checksum@@</MD5>
 	</Package>
 	<ReleaseNotes>
+4.9.21
+* Increased field sizes for description and titles
+* Added link to imdb
+* Added Xml Editor for editing VFS and Menus
+* Added icon to the Views to show/hide views
+* Added icon to the Views to quickly add a view as a menu
+
+4.9.20
+* Added Previous/Next and "Save and Next" to the Metadata Editor panels
+* Added File path to the MediaTitles dialog 
+* Browser view resets to the top when you select a view or navigate a folder
+* New fanart configuration panel
+* New Tabebed Metadata Editor panel
+* Refresh has menu of items that can be refreshed
+* Refreshing configurations now give an indication of the error
+
 4.9.15
 * Search box will now treat 1 and 2 word searches as Title search.
 * Search box will now accept "Enter" to invoke search

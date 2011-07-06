@@ -4,8 +4,9 @@ import java.io.Serializable;
 
 public class GWTView implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
 	private String id, label;
+	private boolean visible=true;
+	
 	public String getId() {
 		return id;
 	}
@@ -28,5 +29,19 @@ public class GWTView implements Serializable {
 	public GWTView(String id, String label) {
 		this.id=id;
 		this.label=label;
+	}
+
+	public GWTView(String id, String label, boolean visible) {
+		this.id=id;
+		this.label=label;
+		this.visible=visible;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 }

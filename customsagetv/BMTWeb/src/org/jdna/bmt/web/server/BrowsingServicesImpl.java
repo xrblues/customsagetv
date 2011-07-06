@@ -14,8 +14,10 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
@@ -44,7 +46,6 @@ import sagex.api.MediaFileAPI;
 import sagex.api.ShowAPI;
 import sagex.phoenix.Phoenix;
 import sagex.phoenix.configuration.proxy.GroupProxy;
-import sagex.phoenix.db.PQLParser;
 import sagex.phoenix.db.ParseException;
 import sagex.phoenix.fanart.AdvancedFanartMediaRequestHandler;
 import sagex.phoenix.metadata.BatchUpdateVisitor;
@@ -83,7 +84,6 @@ import sagex.phoenix.vfs.IMediaFile;
 import sagex.phoenix.vfs.IMediaFolder;
 import sagex.phoenix.vfs.IMediaResource;
 import sagex.phoenix.vfs.MediaResourceType;
-import sagex.phoenix.vfs.filters.IResourceFilter;
 import sagex.phoenix.vfs.sage.SageMediaFile;
 import sagex.phoenix.vfs.util.PathUtils;
 import sagex.phoenix.vfs.views.ViewFactory;
@@ -711,28 +711,52 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		return files;
 	}
 
-	public GWTMediaArt downloadFanart(GWTMediaFile file, MediaArtifactType artifact, GWTMediaArt ma) {
+	public ServiceReply<GWTMediaArt> downloadFanart(GWTMediaFile file, MediaArtifactType artifact, GWTMediaArt ma) {
 		Object sageMF = getSageMediaFile(file);
 		if (sageMF == null) {
-			log.error("Failed to get sage mediafile for: " + file);
-			return null;
+			return new ServiceReply<GWTMediaArt>(1, "Unknown media file");
 		}
+		
 		String fanartDir = phoenix.fanart.GetFanartArtifactDir(sageMF, null, null, artifact.name(), null, null, true);
+		log.debug("Fanart dir is " + fanartDir);
 		File dir = new File(fanartDir);
 		String name = new File(ma.getDownloadUrl()).getName();
 		File local = new File(dir, name);
+		log.debug("Downloaded file will be " + local);
 		PersistenceUtil.writeImageFromUrl(ma.getDownloadUrl(), local);
+		
+		if (!local.exists()) {
+			return new ServiceReply<GWTMediaArt>(2, "Failed to download image from url " + ma.getDownloadUrl());
+		}
+		
+		if (!local.exists() || local.length()==0) {
+			local.delete();
+			return new ServiceReply(3, "Downloaded image was empty");
+		}
+		
+		try {
+			ImageIO.read(local);
+		} catch (Exception e) {
+			throw new RuntimeException("Downloaded Image was corrupt");
+		}
+		
 		ma.setLocal(true);
 		ma.setLocalFile(local.getAbsolutePath());
 		ma.setDisplayUrl(makeLocalMediaUrl(local.getAbsolutePath()));
-		return ma;
+		// clear caches so that ui can be updated
+		phoenix.fanart.ClearMemoryCaches();
+		return new ServiceReply(ma);
 	}
 
 	public boolean deleteFanart(GWTMediaArt art) {
 		File f = new File(art.getLocalFile());
 		if (f.exists()) {
 			log.info("Removing Fanart Image: " + f);
-			return f.delete();
+			boolean deleted = f.delete();
+			if (deleted) {
+				phoenix.fanart.ClearMemoryCaches();
+			}
+			return deleted;
 		}
 		return false;
 	}
@@ -753,6 +777,7 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 			} else if (type == MediaArtifactType.BANNER) {
 				phoenix.fanart.SetFanartBanner(sageMF, img);
 			}
+			phoenix.fanart.ClearMemoryCaches();
 		}
 	}
 
@@ -845,18 +870,19 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		
 
 		Collection<ViewFactory> factories = null;
-		if (tag==null) {
+		if (tag==null || "all".equals(tag)) {
 			cats = new GWTViewCategories(null, "All Views");
-			factories = phoenix.umb.GetViewFactories();
+			factories = phoenix.umb.GetVisibleViews();
+		} else if ("hidden".equals(tag)) {
+			cats = new GWTViewCategories(tag, "Hidden Views");
+			factories = phoenix.umb.GetHiddenViews();
 		} else {
 			cats = new GWTViewCategories(tag, phoenix.umb.GetTagLabel(tag));
 			factories = phoenix.umb.GetViewFactories(tag);
 		}
 		
 		for (ViewFactory f : factories) {
-			if (f.isVisible()) {
-				cats.getViews().add(new GWTView(f.getName(), f.getLabel()));
-			}
+			cats.getViews().add(new GWTView(f.getName(), f.getLabel(), phoenix.umb.IsVisible(f)));
 		}
 
 		Collections.sort(cats.getViews(), new Comparator<GWTView>() {
@@ -1036,5 +1062,24 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		
 		reply.setData(true);
 		return reply;
+	}
+
+	@Override
+	public ArrayList<String> loadFiles(String dir, String mask) {
+		ArrayList<String> files = new ArrayList<String>();
+		Collection<File> coll = (FileUtils.listFiles(new File(dir), mask.split(","), true));
+		if (coll!=null&&coll.size()>0) {
+			for (File f: coll) {
+				files.add(f.getAbsolutePath());
+			}
+		}
+		return files;
+	}
+
+	@Override
+	public void toggleViewVisibility(GWTView view) {
+		ViewFactory vf = Phoenix.getInstance().getVFSManager().getVFSViewFactory().getFactory(view.getId());
+		if (vf==null) return;
+		phoenix.umb.SetVisible(vf, !phoenix.umb.IsVisible(vf));
 	}
 }

@@ -453,9 +453,11 @@ h1 {
 }
 
 .FanartImageHover {
+	border-bottom: 3px solid #000080;
 }
 
 .FanartImageNormal {
+	border-bottom: 3px solid white;
 }
 
 .LoadMoreButton {
@@ -516,4 +518,31 @@ h1 {
 
 .PopupMenu .ListItem-Hover {
 	background-color: rgba(0,0,128,0.8);
+}
+
+.gwt-DecoratedTabBar {
+	border-bottom: 1px solid black;
+}
+
+.MetadataInput {
+	width: 500px;
+}
+
+/** XML Editor */
+.activeline {background: #f0fcff !important;}
+.CodeMirror { font-size: 12px; }
+.CodeMirror-scroll {
+  height: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+.CodeMirror-gutter {
+  width: 3em;
+  xbackground: white;
+}
+
+
+.XMLError {
+	color: red;
+	font-weight: bold;
 }

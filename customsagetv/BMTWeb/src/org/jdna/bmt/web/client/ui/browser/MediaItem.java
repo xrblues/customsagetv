@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.jdna.bmt.web.client.Application;
 import org.jdna.bmt.web.client.media.GWTAiringDetails;
+import org.jdna.bmt.web.client.media.GWTMediaArt;
 import org.jdna.bmt.web.client.media.GWTMediaFile;
 import org.jdna.bmt.web.client.media.GWTMediaFolder;
 import org.jdna.bmt.web.client.media.GWTMediaResource;
@@ -48,6 +49,7 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 	private HorizontalPanel actions = new HorizontalPanel();
 	private BrowsePanel controller;
 	private Image watchedIcon;
+	Image posterImage = new Image();
 
 	public MediaItem(final GWTMediaResource res, BrowsePanel controller) {
 		super();
@@ -62,30 +64,30 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 		vpanel.setStyleName("MediaItem");
 		setTitles(res);
 
-		final Image img = new Image();
-		img.addStyleName("MediaItem-Image");
-		img.addErrorHandler(new ErrorHandler() {
+		posterImage.addStyleName("MediaItem-Image");
+		posterImage.addErrorHandler(new ErrorHandler() {
 			public void onError(ErrorEvent event) {
-				String url = img.getUrl();
+				String url = posterImage.getUrl();
 				GWT.log("Could not load image: " + url);
 				if (res instanceof GWTMediaFolder) {
-					img.setUrl("images/128x128/folder_video2.png");
+					posterImage.setUrl("images/128x128/folder_video2.png");
 				} else {
-					img.setUrl("images/128x128/video2.png");
+					posterImage.setUrl("images/128x128/video2.png");
 				}
-				img.setTitle(url);
+				posterImage.setTitle(url);
 			}
 		});
 
 		if (res instanceof GWTMediaFolder) {
 			if (res.getThumbnailUrl() != null) {
-				img.setUrl(res.getThumbnailUrl());
+				String url = GWT.getModuleBaseURL() + res.getThumbnailUrl();
+				posterImage.setUrl(url);
 			} else {
-				img.addStyleName("MediaItemPoster-Folder");
-				img.setUrl("images/128x128/folder_video2.png");
+				posterImage.addStyleName("MediaItemPoster-Folder");
+				posterImage.setUrl("images/128x128/folder_video2.png");
 			}
 		} else {
-			img.setUrl(res.getThumbnailUrl());
+			posterImage.setUrl(res.getThumbnailUrl());
 			// set the actions
 			actions.setSpacing(10);
 			if (!(res instanceof GWTMediaFolder)) {
@@ -117,10 +119,10 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 			}
 		}
 
-		vpanel.add(img);
-		vpanel.setCellHorizontalAlignment(img,
+		vpanel.add(posterImage);
+		vpanel.setCellHorizontalAlignment(posterImage,
 				HasHorizontalAlignment.ALIGN_CENTER);
-		vpanel.setCellVerticalAlignment(img, HasVerticalAlignment.ALIGN_BOTTOM);
+		vpanel.setCellVerticalAlignment(posterImage, HasVerticalAlignment.ALIGN_BOTTOM);
 
 		vpanel.add(actions);
 		vpanel.setCellHorizontalAlignment(actions,
@@ -136,6 +138,10 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 		if (res.getMessage() != null) {
 			vpanel.setTitle(res.getMessage());
 		}
+
+		// we are attaching here, and never letting go, since we need to know the poster updated, even if the icon is not attached.
+		controller.getMessageBus().addHandler(BrowsePanel.MSG_POSTER_UPDATED,
+				this);
 
 		initWidget(vpanel);
 	}
@@ -176,7 +182,6 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 		if (res2 instanceof GWTMediaFile
 				&& ((GWTMediaFile) res2).getAiringDetails() != null) {
 			GWTAiringDetails det = ((GWTMediaFile) res2).getAiringDetails();
-			StringBuilder sb = new StringBuilder();
 
 			Label title = new Label(DateFormatUtil.formatAiredDate(det
 					.getStartTime()));
@@ -333,6 +338,17 @@ public class MediaItem extends AbstractMouseAdapter implements MessageHandler {
 					&& f.getAiringId().equals(((GWTMediaFile)res).getAiringId())) {
 				    ((GWTMediaFile)res).getIsWatched().set(watched);
 					watchedIcon.setVisible(watched);
+			}
+		} else if (BrowsePanel.MSG_POSTER_UPDATED.equals(msg)) {
+			GWT.log("updating poster...");
+			GWTMediaFile file = (GWTMediaFile) args.get("file");
+			if (file!=null && file.getPath().equals(res.getPath())) {
+				GWT.log("updating poster for " + file.getPath());
+				GWTMediaArt art = (GWTMediaArt) args.get("poster");
+				if (art!=null) {
+					GWT.log("Poster updated...");
+					posterImage.setUrl(art.getDisplayUrl());
+				}
 			}
 		}
 	}

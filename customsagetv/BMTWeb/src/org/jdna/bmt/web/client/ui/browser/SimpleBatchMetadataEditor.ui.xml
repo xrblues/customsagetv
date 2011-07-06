@@ -12,7 +12,10 @@
 	<g:VerticalPanel width="100%">
 		<my:HorizontalButtonBar width="100%">
 			<g:Button ui:field="back">Back</g:Button>
+			<g:Button ui:field="previous">Previous</g:Button>
+			<g:Button ui:field="next">Next</g:Button>
 			<g:Button ui:field="save">Save</g:Button>
+			<g:Button ui:field="savenext">Save and Next</g:Button>
 		</my:HorizontalButtonBar>
 		<g:HTMLPanel>
 			<g:Label ui:field="title" wordWrap="false" styleName="{style.header}"></g:Label>

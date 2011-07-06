@@ -3,7 +3,13 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<ui:style>
 	</ui:style>
-	<g:HTMLPanel width="100%">
-		<div ui:field="label" width="100%"/>
-	</g:HTMLPanel>
+	<g:HorizontalPanel width="100%" spacing="5">
+		<g:Label ui:field="label"/>
+		<g:cell width="16px" horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_MIDDLE">
+			<g:Image ui:field="createViewMenuAction" url="images/16x16/bookmark-new.png" title="Add View as Menu"/>
+		</g:cell>
+		<g:cell width="16px" horizontalAlignment="ALIGN_CENTER" verticalAlignment="ALIGN_MIDDLE">
+			<g:Image ui:field="hideViewAction" url="images/16x16/list-remove.png" title="Hide View"/>
+		</g:cell>
+	</g:HorizontalPanel>
 </ui:UiBinder> 

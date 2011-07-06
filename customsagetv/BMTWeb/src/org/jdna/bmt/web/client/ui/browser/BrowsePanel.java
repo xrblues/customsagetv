@@ -17,13 +17,11 @@ import org.jdna.bmt.web.client.media.GWTView;
 import org.jdna.bmt.web.client.media.GWTViewCategories;
 import org.jdna.bmt.web.client.ui.BatchOperation;
 import org.jdna.bmt.web.client.ui.BatchOperations;
+import org.jdna.bmt.web.client.ui.input.NVP;
 import org.jdna.bmt.web.client.ui.util.DataDialog;
 import org.jdna.bmt.web.client.ui.util.Dialogs;
 import org.jdna.bmt.web.client.ui.util.HorizontalButtonBar;
 import org.jdna.bmt.web.client.ui.util.OKDialogHandler;
-import org.jdna.bmt.web.client.ui.util.SearchBoxPanel;
-import org.jdna.bmt.web.client.ui.util.SideMenuItem;
-import org.jdna.bmt.web.client.ui.util.SearchBoxPanel.SearchHandler;
 import org.jdna.bmt.web.client.ui.util.ServiceReply;
 import org.jdna.bmt.web.client.util.Log;
 import org.jdna.bmt.web.client.util.MessageBus;
@@ -57,12 +55,13 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class BrowsePanel extends Composite implements BrowserView, ValueChangeHandler<String> {
+public class BrowsePanel extends Composite implements BrowserView, ValueChangeHandler<String>, MessageHandler {
 	public static final String MSG_PROGRESS_UPDATED = "progressupdated";
 	public static final String MSG_NEW_SCAN_STARTED = "newscanstarted";
 	public static final String MSG_METADATA_CHANGED = "metadatachanged";
 	public static final String MSG_RECORDING_ADDED = "recording_added";
 	public static final String MSG_FILE_WATCHED = "filewatched";
+	public static final String MSG_POSTER_UPDATED = "posterupdated";
 	
 	public static final String MSG_HIDE_VIEWS = "hide-views";
 	public static final String MSG_SHOW_VIEWS = "show-views";
@@ -96,6 +95,7 @@ public class BrowsePanel extends Composite implements BrowserView, ValueChangeHa
 	private ListBox batchOperations;
 	private Button batchUpdate;
 	private HandlerRegistration historyHandler;
+	private GWTView currentView;
 
 	public BrowsePanel(List<String> paths) {
 		super();
@@ -298,6 +298,9 @@ public class BrowsePanel extends Composite implements BrowserView, ValueChangeHa
 			loadMoreButton.setVisible(true);
 		}
 
+		// reset the window
+		Window.scrollTo(0, 0);
+		
 		headerPanel.update(currentFolder);
 	}
 
@@ -368,6 +371,7 @@ public class BrowsePanel extends Composite implements BrowserView, ValueChangeHa
 	}
 
 	public void getView(final GWTView view) {
+		currentView = view;
 		History.newItem("viewitem", false);
 		
 		final PopupPanel panel = Dialogs
@@ -559,8 +563,11 @@ public class BrowsePanel extends Composite implements BrowserView, ValueChangeHa
 		});
 	}
 
-	public void saveMetadata(final GWTMediaFile file,
-			PersistenceOptionsUI options, final HasMediaFile hasMediaFile) {
+	public void saveMetadata(final GWTMediaFile file, PersistenceOptionsUI options, final HasMediaFile hasMediaFile) {
+		saveMetadata(file, options, hasMediaFile, false);
+	}
+	
+	public void saveMetadata(final GWTMediaFile file, PersistenceOptionsUI options, final HasMediaFile hasMediaFile, final boolean background) {
 		// Sage Bug: ExternalID cannot be null
 		if (file.getMetadata() != null) {
 			if (!file.isAiring()) {
@@ -595,7 +602,9 @@ public class BrowsePanel extends Composite implements BrowserView, ValueChangeHa
 										null);
 							}
 						} else {
-							hasMediaFile.setMediaFile(result.getData());
+							if (!background) {
+								hasMediaFile.setMediaFile(result.getData());
+							}
 						}
 					}
 				});
@@ -607,7 +616,7 @@ public class BrowsePanel extends Composite implements BrowserView, ValueChangeHa
 	}
 
 	public void downloadFanart(GWTMediaFile file, MediaArtifactType type,
-			GWTMediaArt ma, AsyncCallback<GWTMediaArt> callback) {
+			GWTMediaArt ma, AsyncCallback<ServiceReply<GWTMediaArt>> callback) {
 		browser.downloadFanart(file, type, ma, callback);
 	}
 
@@ -744,25 +753,51 @@ public class BrowsePanel extends Composite implements BrowserView, ValueChangeHa
 	protected void onAttach() {
 		super.onAttach();
 		historyHandler = History.addValueChangeHandler(this);
+		Application.getMessagebus().addHandler(Application.MSG_REQUEST_CURRENT_VIEW_INFO, this);
 	}
 
 	@Override
 	protected void onDetach() {
 		super.onDetach();
 		historyHandler.removeHandler();
+		Application.getMessagebus().removeHandler(Application.MSG_REQUEST_CURRENT_VIEW_INFO, this);
 	}
 
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
-		System.out.println("BrowsePanel: Fired History Change: " + event.getValue());
 		if (event.getValue()!=null) {
-			//if (event.getValue().startsWith("browse") || event.getValue().startsWith("viewitem")) {
 				back();
-			//}
 		}
 	}
 
 	public void addmatcher(GWTMediaFile mediaFile) {
 		Dialogs.show(new AddMediaTitleDialogPanel(mediaFile));
+	}
+
+	public void next(GWTMediaResource res) {
+		GWTMediaResource next = currentFolder.next(res);
+		if (next!=null && next instanceof GWTMediaFile) {
+			GWTMediaFile file = (GWTMediaFile) next;
+			if (file.isAiring()) {
+				view(next);
+			} else {
+				edit(next);
+			}
+		} else {
+			Application.fireNotification("No next item");
+		}
+	}
+
+	public void loadFiles(String fanartDir, String mask, AsyncCallback<ArrayList<String>> asyncCallback) {
+		browser.loadFiles(fanartDir, mask, asyncCallback);
+	}
+
+	@Override
+	public void onMessageReceived(String msg, Map<String, ?> args) {
+		if (Application.MSG_REQUEST_CURRENT_VIEW_INFO.equals(msg)) {
+			if (currentView!=null) {
+				Application.getMessagebus().postMessage(Application.MSG_RESPONSE_CURRENT_VIEW_INFO, new NVP<String>(Application.PARAM_MSG_RESPONSE_CURRENT_VIEW_PATH, currentFolder.getPath()), new NVP<String>(Application.PARAM_MSG_RESPONSE_CURRENT_VIEW_VIEWNAME, currentView.getId()));
+			}
+		}
 	}
 }

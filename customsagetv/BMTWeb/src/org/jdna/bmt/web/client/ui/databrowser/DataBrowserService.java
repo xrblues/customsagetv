@@ -2,7 +2,6 @@ package org.jdna.bmt.web.client.ui.databrowser;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;

@@ -3,7 +3,14 @@ package org.jdna.bmt.web.client.ui.util;
 import java.io.Serializable;
 
 public class ServiceReply<T> implements Serializable{
-    private int code;
+	public ServiceReply(T data) {
+		super();
+		this.data = data;
+	}
+
+	private static final long serialVersionUID = 1L;
+	
+	private int code=0;
     private String message;
     private T data = null;
     
@@ -16,7 +23,13 @@ public class ServiceReply<T> implements Serializable{
         this.data=data;
     }
 
-    public int getCode() {
+    public ServiceReply(int code, String message) {
+		super();
+		this.code = code;
+		this.message = message;
+	}
+
+	public int getCode() {
         return code;
     }
 
