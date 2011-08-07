@@ -31,7 +31,8 @@ public class JsonReplyEncoder implements ReplyEncoder {
 
     public String encodeReply(Object o, HttpServletRequest req) throws Exception {
         SimpleJSONBuilder builder = new SimpleJSONBuilder();
-        SageAPIBuilder.INSTANCE.build("Result", o, builder, false);
+        String inclOnly = req.getParameter("filter");
+        SageAPIBuilder.INSTANCE.build("Result", o, builder, false, inclOnly == null ? null : inclOnly.split("\\|"));
 
         String jsonCallback = req.getParameter("jsoncallback");
         if (jsonCallback!=null && jsonCallback.trim().length()>0) {

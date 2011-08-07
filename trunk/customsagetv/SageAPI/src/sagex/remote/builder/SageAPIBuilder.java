@@ -3,6 +3,7 @@ package sagex.remote.builder;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -27,7 +28,7 @@ public class SageAPIBuilder {
     
     private Map<Class, Method[]>  reflectionMap = new HashMap<Class, Method[]>();
     
-    public void build(String name, Object parent, BuilderHandler handler, boolean arrayItem) throws Exception {
+    public void build(String name, Object parent, BuilderHandler handler, boolean arrayItem, String[] filter) throws Exception {
         if (parent==null) {
             buildSimpleData(name, parent, handler);
         } else if (parent instanceof String || parent.getClass().isPrimitive() || Number.class.isAssignableFrom(parent.getClass()) || Boolean.class.isAssignableFrom(parent.getClass())) {
@@ -37,9 +38,9 @@ public class SageAPIBuilder {
                 buildSimpleData(name, parent, handler);
             }
         } else if (parent instanceof Map) {
-            buildMap(name, (Map) parent, handler);
+            buildMap(name, (Map) parent, handler, filter);
         } else if (parent instanceof Collection) {
-            buildCollection(name, (Collection) parent, handler);
+            buildCollection(name, (Collection) parent, handler, filter);
         } else if (parent instanceof File) {
             if (arrayItem) {
                 buildFile("File", (File)parent, handler);
@@ -47,29 +48,29 @@ public class SageAPIBuilder {
                 buildFile(name, (File)parent, handler);
             }
         } else if (parent.getClass().isArray()) {
-            buildArray(name, (Object[])parent, handler);
+            buildArray(name, (Object[])parent, handler, filter);
         } else if (MediaFileAPI.IsMediaFileObject(parent)) {
-            buildMediaFile(parent, handler);
+            buildMediaFile(parent, handler, filter);
         } else if(ShowAPI.IsShowObject(parent)) {
-            buildShow(parent, handler);
+            buildShow(parent, handler, filter);
         } else if(AiringAPI.IsAiringObject(parent)) {
-            buildAiring(parent, handler);
+            buildAiring(parent, handler, filter);
         } else if(AlbumAPI.IsAlbumObject(parent)) {
-            buildAlbum(parent, handler);
+            buildAlbum(parent, handler, filter);
         } else if(FavoriteAPI.IsFavoriteObject(parent)) {
-            buildFavorite(parent, handler);
+            buildFavorite(parent, handler, filter);
         } else if(ChannelAPI.IsChannelObject(parent)) {
-            buildChannel(parent, handler);
+            buildChannel(parent, handler, filter);
         } else if(SystemMessageAPI.IsSystemMessageObject(parent)) {
-            buildSystemMessage(parent, handler);
+            buildSystemMessage(parent, handler, filter);
         } else if(PlaylistAPI.IsPlaylistObject(parent)) {
-            buildPlaylist(parent, handler);
+            buildPlaylist(parent, handler, filter);
         } else if(SeriesInfoAPI.IsSeriesInfoObject(parent)) {
-            buildSeriesInfo(parent, handler);
+            buildSeriesInfo(parent, handler, filter);
         } else if(Utility.IsMetaImage(parent)) {
             buildImage(name, parent, handler);
         } else if(parent.toString().contains("SageTVPlugin[")) {
-            buildPlugin(name, parent, handler);
+            buildPlugin(name, parent, handler, filter);
         } else {
             String msg = "Unknown Object Type: " + parent.getClass().getName() + " for Sage Object: " + parent;
             handler.handleError(msg, new Exception(msg));
@@ -96,56 +97,62 @@ public class SageAPIBuilder {
         }
     }
 
-    public void buildChannel(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("Channel", ChannelAPI.class, parent, handler, new String[] {"GetChannelLogo"});
+    public void buildChannel(Object parent, BuilderHandler handler, String[] filter) throws Exception {
+        buildObject("Channel", ChannelAPI.class, parent, handler, new String[] {"GetChannelLogo"}, filter);
     }
 
-    public void buildFavorite(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("Favorite", FavoriteAPI.class, parent, handler, null);
+    public void buildFavorite(Object parent, BuilderHandler handler, String[] filter) throws Exception {
+        buildObject("Favorite", FavoriteAPI.class, parent, handler, null, filter);
     }
 
-    private void buildPlugin(String name, Object parent, BuilderHandler handler) throws Exception {
-        buildObject("Plugin", PluginAPI.class, parent, handler, new String[] {"GetAllPluginVersions", "GetSageTVPluginRegistry", "GetPluginProgress", "GetPluginImplementation"});
+    private void buildPlugin(String name, Object parent, BuilderHandler handler, String[] filter) throws Exception {
+        buildObject("Plugin", PluginAPI.class, parent, handler, new String[] {"GetAllPluginVersions", "GetSageTVPluginRegistry", "GetPluginProgress", "GetPluginImplementation"}, filter);
 	}
 
-    private void buildSystemMessage(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("SystemMessage", SystemMessageAPI.class, parent, handler, new String[] {"DeleteSystemMessage"});
+    private void buildSystemMessage(Object parent, BuilderHandler handler, String[] filter) throws Exception {
+        buildObject("SystemMessage", SystemMessageAPI.class, parent, handler, new String[] {"DeleteSystemMessage"}, filter);
     }
 
-    public void buildAlbum(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("Album", AlbumAPI.class, parent, handler, new String[] {"GetAlbumArt", "GetAlbumTracks"});
+    public void buildAlbum(Object parent, BuilderHandler handler, String[] filter) throws Exception {
+        buildObject("Album", AlbumAPI.class, parent, handler, new String[] {"GetAlbumArt", "GetAlbumTracks"}, filter);
     }
 
-    public void buildAiring(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("Airing", AiringAPI.class, parent, handler, new String[] {"GetMediaFileForAiring", "GetAiringOnAfter", "GetAiringOnBefore"});
+    public void buildAiring(Object parent, BuilderHandler handler, String[] filter) throws Exception {
+        buildObject("Airing", AiringAPI.class, parent, handler, new String[] {"GetMediaFileForAiring", "GetAiringOnAfter", "GetAiringOnBefore"}, filter);
     }
 
-    public void buildShow(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("Show", ShowAPI.class, parent, handler, new String[] {"GetShowSeriesInfo"});
+    public void buildShow(Object parent, BuilderHandler handler, String[] filter) throws Exception {
+        buildObject("Show", ShowAPI.class, parent, handler, new String[] {"GetShowSeriesInfo"}, filter);
     }
 
-    public void buildMediaFile(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("MediaFile", MediaFileAPI.class, parent, handler, new String[] {"GetFullImage", "GetThumbnail", "GetStartTimesForSegments"});
+    public void buildMediaFile(Object parent, BuilderHandler handler, String[] filter) throws Exception {
+        buildObject("MediaFile", MediaFileAPI.class, parent, handler, new String[] {"GetFullImage", "GetThumbnail", "GetStartTimesForSegments"}, filter);
     }
 
-    public void buildPlaylist(Object parent, BuilderHandler handler) throws Exception {
-        buildObject("Playlist", PlaylistAPI.class, parent, handler, null);
+    public void buildPlaylist(Object parent, BuilderHandler handler, String[] filter) throws Exception {
+        buildObject("Playlist", PlaylistAPI.class, parent, handler, null, filter);
     }
 
-    public void buildSeriesInfo(Object parent, BuilderHandler handler) throws Exception {
+    public void buildSeriesInfo(Object parent, BuilderHandler handler, String[] filter) throws Exception {
         buildObject("SeriesInfo", SeriesInfoAPI.class, parent, handler, new String[]{"GerSeriesInfoForID", "GetAllSeriesInfo", 
         	//TODO These next 2 only need to be excluded until Sage fixes the API documentation to reflect that they return String[]
         	//  so that the generated API signature can be corrected.
-        	"GetSeriesActorList", "GetSeriesCharacterList"});
+        	"GetSeriesActorList", "GetSeriesCharacterList"}, filter);
     }
     
-    public void buildObject(String objectName, Class staticObjectClass, Object parent, BuilderHandler handler, String[] ignoreMethods) throws Exception {
+    public void buildObject(String objectName, Class staticObjectClass, Object parent, BuilderHandler handler, String[] ignoreMethods, String[] filter) throws Exception {
         Method methods[] = getMethods(staticObjectClass, ignoreMethods);
         handler.beginObject(makeName(objectName));
+        if(filter != null && filter.length > 0)
+        	Arrays.sort(filter);
+        else
+        	filter = null;
         for (Method m : methods) {
+        	if(filter != null && Arrays.binarySearch(filter, makeName(m.getName())) < 0)
+        		continue;
             try {
                 Object result = m.invoke(null, parent);
-                build(m.getName(), result, handler, false);
+                build(m.getName(), result, handler, false, filter);
             } catch (Exception e) {
                 handler.handleError("Failed while Calling "+objectName+" Method: " + m.getName() + " on Object: " + objectName + "; (Sage Object: "+ parent+")", e);
             }
@@ -184,27 +191,27 @@ public class SageAPIBuilder {
         return false;
     }
 
-    public void buildArray(String name, Object[] parent, BuilderHandler handler) throws Exception {
+    public void buildArray(String name, Object[] parent, BuilderHandler handler, String[] filter) throws Exception {
         handler.beginArray(makeName(name), parent.length);
         for (Object o : parent) {
-            build(name, o, handler, true);
+            build(name, o, handler, true, filter);
         }
         handler.endArray(makeName(name));
     }
 
-    public void buildCollection(String name, Collection parent, BuilderHandler handler) throws Exception {
+    public void buildCollection(String name, Collection parent, BuilderHandler handler, String[] filter) throws Exception {
         handler.beginArray(makeName(name), parent.size());
         for (Object o : parent) {
-            build(name, o, handler, true);
+            build(name, o, handler, true, filter);
         }
         handler.endArray(makeName(name));
     }
 
-    private void buildMap(String name, Map parent, BuilderHandler handler) throws Exception {
+    private void buildMap(String name, Map parent, BuilderHandler handler, String[] filter) throws Exception {
         handler.beginObject(name);
         for (Object o: parent.entrySet()) {
         	Map.Entry me = (Entry) o;
-        	build(String.valueOf(me.getKey()), me.getValue(), handler, true);
+        	build(String.valueOf(me.getKey()), me.getValue(), handler, true, filter);
         }
         handler.endObject(name);
 	}
