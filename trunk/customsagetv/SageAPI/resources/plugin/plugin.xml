@@ -20,6 +20,10 @@
   </Package>
 
   <ReleaseNotes>
+7.1.9.1
+* Applied patches by slugger that fixes a couple of issues
+* Fixed bug where IsShowFirstRun was returning false 
+
 7.1.5.5
 * Airings will now return channel information
 

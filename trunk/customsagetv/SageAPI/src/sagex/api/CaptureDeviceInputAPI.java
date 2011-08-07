@@ -2,7 +2,7 @@ package sagex.api;
 
 /**
  * Unofficial SageTV Generated File - Never Edit
- * Generated Date/Time: 07/06/11 8:39 PM
+ * Generated Date/Time: 07/08/11 5:32 PM
  * See Official Sage Documentation at <a href='http://download.sage.tv/api/sage/api/CaptureDeviceInputAPI.html'>CaptureDeviceInputAPI</a>
  * This Generated API is not Affiliated with SageTV.  It is user contributed.
  */

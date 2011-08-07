@@ -122,7 +122,7 @@ public class SageAPIBuilder {
     }
 
     public void buildShow(Object parent, BuilderHandler handler, String[] filter) throws Exception {
-        buildObject("Show", ShowAPI.class, parent, handler, new String[] {"GetShowSeriesInfo"}, filter);
+        buildObject("Show", ShowAPI.class, parent, handler, new String[] {"GetShowSeriesInfo", "IsShowFirstRun", "IsShowReRun"}, filter);
     }
 
     public void buildMediaFile(Object parent, BuilderHandler handler, String[] filter) throws Exception {
@@ -170,10 +170,23 @@ public class SageAPIBuilder {
                 if (meth.getName().startsWith("Get") || meth.getName().startsWith("Is")) {
                     Class p[] = meth.getParameterTypes();
                     if (p!=null && p.length==1 && p[0].equals(Object.class) &&!ignoreMethod(meth.getName(), ignoreMethods)) {
-                        methods.add(meth);
+                   		methods.add(meth);
                     }
                 }
             }
+            
+            // hack because ShowAPI.IsShowFirstRun doesn't work on Show Object
+            if (klass == MediaFileAPI.class || klass == AiringAPI.class) {
+            	try {
+					methods.add(ShowAPI.class.getMethod("IsShowFirstRun", Object.class));
+					methods.add(ShowAPI.class.getMethod("IsShowReRun", Object.class));
+				} catch (SecurityException e) {
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
+				}
+            }
+            
             m = methods.toArray(new Method[methods.size()]);
             reflectionMap.put(klass, m);
         }
