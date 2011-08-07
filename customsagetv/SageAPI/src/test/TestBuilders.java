@@ -20,7 +20,16 @@ public class TestBuilders {
         //SimpleXmlBuilder builder = new SimpleXmlBuilder();
         SimpleJSONBuilder builder = new SimpleJSONBuilder();
         try {
-            SageAPIBuilder.INSTANCE.build("Result", mediafile, builder, false);
+            SageAPIBuilder.INSTANCE.build("Result", mediafile, builder, false, null);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println(builder.toString());
+
+        builder = new SimpleJSONBuilder();
+        try {
+            SageAPIBuilder.INSTANCE.build("Result", mediafile, builder, false, new String[] {"MediaTitle"});
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

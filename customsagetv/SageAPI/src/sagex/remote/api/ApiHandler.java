@@ -91,7 +91,10 @@ public class ApiHandler implements SageHandler {
             replyEncoder=encoders.get("json");
         }
 
-        if (!isImageReply) pw=resp.getWriter();
+        if (!isImageReply) {
+        	resp.setCharacterEncoding("UTF-8");
+        	pw=resp.getWriter();
+        }
         
         try {
             if (replyEncoder == null) {
@@ -176,7 +179,7 @@ public class ApiHandler implements SageHandler {
 	
 	            // finally write it
 	            if (reply != null) {
-	                pw.write(reply);
+	            	pw.write(reply);
 	            }
             }
         } catch (Exception e) {
