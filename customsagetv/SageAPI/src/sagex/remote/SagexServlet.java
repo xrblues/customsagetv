@@ -108,6 +108,13 @@ public class SagexServlet extends HttpServlet {
             // This API handler handles json, nielm, and xml
             sageHandlers.put(ApiHandler.SAGE_RPC_PATH, new ApiHandler());
 
+            try {
+            	// hack for now to register the Phoenix apis... need to do this dynamically
+            	sageHandlers.put("phoenix", (SageHandler) Class.forName("sagex.phoenix.remote.PhoenixAPIHander").newInstance());
+            } catch (Throwable t) {
+            	log.warn("Failed to load the Phoenix API Handler", t);
+            }
+            
             log.info("Registered Handlers.");
 
             // check if the RMI server is running... it may already be running

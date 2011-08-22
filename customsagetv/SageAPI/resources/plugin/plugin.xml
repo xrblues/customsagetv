@@ -20,6 +20,10 @@
   </Package>
 
   <ReleaseNotes>
+7.1.9.2
+* JSON/XML Serializers now will encode the error instead of allowing the webserver to send it back
+* Added Support for Phoenix Remote API
+
 7.1.9.1
 * Applied patches by slugger that fixes a couple of issues
 * Fixed bug where IsShowFirstRun was returning false 

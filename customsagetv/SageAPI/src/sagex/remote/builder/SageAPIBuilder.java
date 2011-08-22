@@ -72,8 +72,7 @@ public class SageAPIBuilder {
         } else if(parent.toString().contains("SageTVPlugin[")) {
             buildPlugin(name, parent, handler, filter);
         } else {
-            String msg = "Unknown Object Type: " + parent.getClass().getName() + " for Sage Object: " + parent;
-            handler.handleError(msg, new Exception(msg));
+            handler.handleError("Cannot Serialize Reply", new BuilderException(name, parent));
         }
     }
 
