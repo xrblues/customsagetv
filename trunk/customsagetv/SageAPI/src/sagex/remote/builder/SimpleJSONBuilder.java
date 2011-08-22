@@ -1,5 +1,6 @@
 package sagex.remote.builder;
 
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Stack;
 
@@ -60,12 +61,22 @@ public class SimpleJSONBuilder implements BuilderHandler {
         cur = objs.lastElement();
     }
 
-    public void handleError(String string, Exception e) throws Exception {
-        //beginObject("error");
-        //handleField("field", string);
-        //handleField("message", e.getMessage());
-        //endObject("error");
-        throw new Exception(string, e);
+    public void handleError(String message, Exception e) throws Exception {
+        beginObject("error");
+        handleField("message", message);
+        if (e!=null) {
+        	if (e instanceof BuilderException) {
+        		if (((BuilderException)e).getData()!=null) {
+	        		handleField("class", ((BuilderException)e).getData().getClass().getName());
+	        		handleField("data", ((BuilderException)e).getData());
+        		}
+        	}
+        	// don't dump stack traces
+        	//StringWriter sw = new StringWriter();
+        	//e.printStackTrace(new PrintWriter(sw));
+        	handleField("exception", e.getMessage());
+        }
+        endObject("error");
     }
 
     public void handleField(String name, Object data) {

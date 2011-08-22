@@ -1,5 +1,8 @@
 package sagex.remote.builder;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public class SimpleXmlBuilder implements BuilderHandler {
     private StringBuilder sb = new StringBuilder();
     
@@ -34,8 +37,22 @@ public class SimpleXmlBuilder implements BuilderHandler {
         sb.append("</").append(name).append(">\n");
     }
 
-    public void handleError(String msg, Exception e) throws Exception {
-        throw new Exception(msg, e);
+    public void handleError(String message, Exception e) throws Exception {
+        beginObject("error");
+        handleField("message", message);
+        if (e!=null) {
+        	if (e instanceof BuilderException) {
+        		if (((BuilderException)e).getData()!=null) {
+	        		handleField("class", ((BuilderException)e).getData().getClass().getName());
+	        		handleField("data", ((BuilderException)e).getData());
+        		}
+        	}
+        	// don't dump stack traces
+        	//StringWriter sw = new StringWriter();
+        	//e.printStackTrace(new PrintWriter(sw));
+        	handleField("exception", e.getMessage());
+        }
+        endObject("error");
     }
 
     public String toString() {
