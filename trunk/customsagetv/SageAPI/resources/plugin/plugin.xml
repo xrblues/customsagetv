@@ -20,6 +20,9 @@
   </Package>
 
   <ReleaseNotes>
+7.1.9.3
+* Changed 'call()' behaviour so that EvaluateExpression will allow the Exceptions to bubble up
+
 7.1.9.2
 * JSON/XML Serializers now will encode the error instead of allowing the webserver to send it back
 * Added Support for Phoenix Remote API

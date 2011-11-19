@@ -466,7 +466,8 @@ public class AbstractPlugin implements SageTVPlugin {
         if (values != null) {
             String v = "";
             for (int i = 0; i < values.length; i++) {
-                if (i > 0) v += p.getValueSep();
+                //if (i > 0) v += p.getValueSep();
+            	if (v.length()>0) v += p.getValueSep();
                 v += values[i];
             }
             setConfigValue(setting, v);

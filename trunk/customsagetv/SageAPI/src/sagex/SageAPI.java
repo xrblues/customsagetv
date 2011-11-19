@@ -8,6 +8,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 import sagex.api.Global;
 import sagex.api.MediaFileAPI;
@@ -88,12 +90,17 @@ public class SageAPI {
     // list of all the known remote providers...
     private static List<Properties> remoteProviders           = new ArrayList<Properties>();
 
+    private static final Set<String> bubbleExceptions = new TreeSet<String>();
+    
     static {
         try {
             scriptingServices = new ServiceFactory();
         } catch (Throwable t) {
             log.warn("Scripting Services Disabled", t);
         }
+        
+        // these APIs will allow their Exceptions to be bubbled up
+        bubbleExceptions.add("EvaluateExpression");
     }
 
     public static ISageAPIProvider getProvider() {
@@ -162,16 +169,24 @@ public class SageAPI {
     public static Object call(String serviceName, Object[] args) {
         try {
             return SageAPI.getProvider().callService(serviceName, args);
-        } catch (InvocationTargetException ite) {
-        	if (ite.getTargetException()!=null) {
-        		logError(serviceName, args, ite.getTargetException());
-        	} else {
-        		logError(serviceName, args, ite);
-        	}
         } catch (Throwable e) {
-    		logError(serviceName, args, e);
+    		processCallError(serviceName, args, e);
         }
         return null;
+    }
+    
+    private static void processCallError(String serviceName, Object[] args, Throwable t) {
+    	if (bubbleExceptions.contains(serviceName)) {
+    		throw new RuntimeException("Sage API Failed for " + serviceName + "; Args: " + args, t);
+    	} else {
+    		if (t instanceof InvocationTargetException) {
+	        	if (((InvocationTargetException) t).getTargetException()!=null) {
+	        		logError(serviceName, args, ((InvocationTargetException) t).getTargetException());
+	        	}
+    		} else {
+        		logError(serviceName, args, t);
+    		}
+    	}
     }
 
     private static void logError(String serviceName, Object[] args, Throwable t) {
@@ -190,14 +205,8 @@ public class SageAPI {
 	public static Object call(String context, String serviceName, Object[] args) {
         try {
             return SageAPI.getProvider().callService(context, serviceName, args);
-        } catch (InvocationTargetException ite) {
-        	if (ite.getTargetException()!=null) {
-        		logError(serviceName, args, ite.getTargetException());
-        	} else {
-        		logError(serviceName, args, ite);
-        	}
         } catch (Throwable e) {
-    		logError(serviceName, args, e);
+    		processCallError(serviceName, args, e);
         }
         return null;
     }
