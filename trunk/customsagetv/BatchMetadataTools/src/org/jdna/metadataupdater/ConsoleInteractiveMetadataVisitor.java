@@ -38,7 +38,7 @@ public class ConsoleInteractiveMetadataVisitor implements IMediaResourceVisitor 
 		state = State.Search;
 		while (state == State.Search && !(monitor.isCancelled() || monitor.isDone())) {
 			try {
-				SearchQuery query = SearchQueryFactory.getInstance().createQueryFromFilename((IMediaFile) res, options);
+				SearchQuery query = Phoenix.getInstance().getSearchQueryFactory().createQueryFromFilename((IMediaFile) res, options);
 				List<IMetadataSearchResult> results = Phoenix.getInstance().getMetadataManager().search(query);
 				IMetadataSearchResult result = selectResult((IMediaFile)res, query, results, (ProgressTracker<IMediaFile>) monitor);
 				if (state!=State.Ignore && result!=null) {
@@ -105,7 +105,7 @@ public class ConsoleInteractiveMetadataVisitor implements IMediaResourceVisitor 
                     log.debug("Processing JSON Query: " + data);
                     try {
                         // if the user specified a json query, then process it
-                        SearchQueryFactory.getInstance().updateQueryFromJSON(query,data);
+                        Phoenix.getInstance().getSearchQueryFactory().updateQueryFromJSON(query,data);
                     } catch (Exception e1) {
                         monitor.setTaskName("Failed to process query string: " + data + "; Message: " + e1.getMessage());
                     }
