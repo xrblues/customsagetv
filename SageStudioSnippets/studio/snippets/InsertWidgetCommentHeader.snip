@@ -1,0 +1,18 @@
+<snippet label="Insert Widget Comment Header">
+    <input name="widgetName" label="Widget Name" required="true"/>
+    <input name="widgetDescription" label="Widget Description" required="true"/>
+    <input name="externalFiles" label="External Files"/>
+	
+    <stv><![CDATA[
+  <Action Name="&quot;Widget: ${widgetName}&quot;" Sym="STUCKLESS-2734"/>
+  <Action Name="&quot;Description: ${widgetDescription}&quot;" Sym="STUCKLESS-2735"/>
+  <Action Name="&quot;Input Parameters:&quot;" Sym="STUCKLESS-2736">
+   <Action Name="&quot;param1, Type, DefaultValue&quot;" Sym="STUCKLESS-2737"/>
+  </Action>
+  <Action Name="&quot;Output Parameters:&quot;" Sym="STUCKLESS-2738">
+   <Action Name="&quot;param1, Type, DefaultValue&quot;" Sym="STUCKLESS-2739"/>
+  </Action>
+  <Action Name="&quot;Required External Files: ${externalFiles}&quot;" Sym="STUCKLESS-2740"/>
+  <Action Name="&quot;- Begin of code -&quot;" Sym="STUCKLESS-2741"/>
+     ]]></stv>
+</snippet>

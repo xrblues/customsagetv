@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="SageStudioSnippets">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
+    <path id="SageStudioSnippets.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="lib/gkusnick.sagetv.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src" excludes="**/*.launch, **/*.java"/>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="SageStudioSnippets.classpath"/>
+        </javac>
+    </target>
+	
+	<target name="jar" depends="build">
+		<delete dir="target"/>
+		<mkdir dir="target"/>
+		<jar destfile="target/studio-snippets.jar">
+			<fileset dir="bin" includes="**/**"></fileset>
+		</jar>
+	</target>
+	
+	<target name="package" depends="jar">
+		<mkdir dir="target/package"/>
+		<mkdir dir="target/package/JARs"/>
+		<mkdir dir="target/package/studio"/>
+		<mkdir dir="target/package/studio/snippets"/>
+		<copy file="target/studio-snippets.jar" todir="target/package/JARs"/>
+		<copy todir="target/package/studio">
+			<fileset dir="studio" includes="**/**"/>
+		</copy>
+		<zip destfile="target/studio-snippets.zip">
+			<fileset dir="target/package" includes="**/**"></fileset>
+		</zip>
+	</target>
+	
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+</project>

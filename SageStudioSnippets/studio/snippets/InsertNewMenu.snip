@@ -1,0 +1,48 @@
+<snippet label="Insert New Menu" icon="new_menu.jpg" location="both" onBeforeInsert="beforeInsert" onAfterInsert="afterInsert">
+	<script>
+		function beforeInsert() {
+			// add quotes to title, if it's not an expression
+			if (!isTitleExpression) {
+				plugin.logDebug("Adding quotes to the title");
+				form.put('menuTitle', "\"" + menuTitle + "\"");
+			}
+		}
+		
+		function afterInsert() {
+			if (launchMenu) {
+				try {
+					var w = api.widgetAPI.FindWidget("Menu", menuName);
+					w.LaunchMenuWidget();
+				} catch (ex) {
+					plugin.alert("Failed to launch new menu: " + menuName);
+				}
+			}
+		}
+	</script>
+
+    <input name="menuName" label="Menu Name" required="true"/>
+    <input name="menuTitle" label="Menu Title" required="false" value="Sample Title"/>
+    <input name="isTitleExpression" label="Is Title an Expression?" required="false" type="checkbox"/>
+    <input name="launchMenu" label="Launch Menu?" required="false" type="checkbox"/>
+
+    <stv insert="top" requireSelection="false"><![CDATA[
+ <Menu Name="${menuName}" Sym="STUCKLESS-2724">
+  <VideoBackground>false</VideoBackground>
+  <Theme Ref="1" Name="MenuTheme"/>
+  <Panel Name="Menu Title" Sym="STUCKLESS-2751">
+   <AnchorX>0.0</AnchorX>
+   <AnchorY>0.0</AnchorY>
+   <FixedWidth>1.0</FixedWidth>
+   <FixedHeight>0.1</FixedHeight>
+   <WrapHNav>false</WrapHNav>
+   <WrapVNav>false</WrapVNav>
+   <IgnoreThemeProps>false</IgnoreThemeProps>
+   <BackgroundComponent>false</BackgroundComponent>
+   <MouseTransparency>false</MouseTransparency>
+   <Action Name="${menuTitle}" Sym="STUCKLESS-2752">
+    <Text Name="" Sym="STUCKLESS-2753"/>
+   </Action>
+  </Panel>
+ </Menu>
+     ]]></stv>
+</snippet>
