@@ -76,7 +76,7 @@ public class ScriptingFrameworkLauncher {
         }
 
         // add in each jar in the libs
-        File libDir = new File(homeDir, "libs");
+        File libDir = new File(homeDir, "JARs");
         File libs[] = libDir.listFiles();
 
         for (File lib : libs) {

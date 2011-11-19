@@ -1,0 +1,16 @@
+#!/bin/sh
+
+CP=""
+for file in libs ; do
+	CP="${CP}:${file}"
+done
+
+CP="${CP}:scripts:scriptsLib"
+
+CMD=$1
+shift
+CMD_ARGS=$@
+
+java -classpath "$CP" "$CMD_ARGS"
+
+  

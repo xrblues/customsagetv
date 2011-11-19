@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+	<widgets>
+		<popupPanel id="sagex-MetadataSearchPanel" width="1" height=".75" align=".5" valign=".5" scopeVarId="vars">			
+			<script id="script"><![CDATA[
+				function getName() {
+					return "My Name";
+				}
+			]]></script>
+			
+			
+			<vbox width="100%">
+				<label>{script.getName()}</label>
+				<hbox>
+					<label>Title:</label>
+					<textbox bind="{var.SearchTitle}"/>
+				</hbox>
+
+				<hbox>
+					<label>Search Type:</label>
+					<choice bind="{var.SearchType}" model="{script.getOptions()}" />
+				</hbox>
+
+				<vbox visible="{script.isTV()}">
+					<hbox>
+						<label>Season:</label>
+						<textbox bind="{var.SearchSeason}"/>
+					</hbox>
+
+					<hbox>
+						<label>Episode:</label>
+						<textbox bind="{var.searchEpisode}"/>
+					</hbox>
+				</vbox>
+
+				<button onClick="{script.search()}">Search</button>
+			</vbox>
+		</popupPanel>
+
+		<button id="sagex-MetadataButton" label="Metadata Fanart"
+			showId="sagex-MetadataSearchPanel" />
+	</widgets>
+
+	<attach widget="sagex-MetadataButton" reference="BASE-50064"
+		stv="SageTV3" location="child" />
+</app>
