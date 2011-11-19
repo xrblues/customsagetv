@@ -3,6 +3,7 @@ package org.jdna.bmt.web.server;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1081,5 +1082,29 @@ public class BrowsingServicesImpl extends RemoteServiceServlet implements Browsi
 		ViewFactory vf = Phoenix.getInstance().getVFSManager().getVFSViewFactory().getFactory(view.getId());
 		if (vf==null) return;
 		phoenix.umb.SetVisible(vf, !phoenix.umb.IsVisible(vf));
+	}
+
+	@Override
+	public ArrayList<String> getFanartFiles(GWTMediaFile file) {
+		ArrayList<String> files = new ArrayList<String>();
+		IMediaFile mf = getMediaRef(file);
+		if (mf==null) {
+			log.warn("Invalid Mediafile: " + file);
+			return files;
+		}
+		
+		addFanartFiles(files, mf, MediaArtifactType.POSTER);
+		addFanartFiles(files, mf, MediaArtifactType.BACKGROUND);
+		addFanartFiles(files, mf, MediaArtifactType.BANNER);
+		addFanartFiles(files, mf, MediaArtifactType.EPISODE);
+		
+		return files;
+	}
+
+	private void addFanartFiles(ArrayList<String> files, IMediaFile mf,	MediaArtifactType artifact) {
+		String list[] = phoenix.fanart.GetFanartArtifacts(mf, null, null, artifact.name(), null, null);
+		if (list!=null && list.length>0) {
+			files.addAll(Arrays.asList(list));
+		}
 	}
 }

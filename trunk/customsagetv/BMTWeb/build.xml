@@ -23,7 +23,7 @@
 	<property name="build.dir" location="${target}/build" />
 	<property name="dist.dir" location="${target}/dist" />
 
-	<property name="version" value="4.9.20" />
+	<property name="version" value="4.9.21" />
 
 	<!-- for debugging turn off gwt compile -->
 	<!-- <property name="no-gwt-compile" value="true" /> -->
@@ -104,6 +104,7 @@
 		<zip destfile="${dist.dir}/packages/bmtweb-context-${version}.zip">
 			<zipfileset file="resources/jetty/bmt.xml" prefix="jetty/contexts" />
 			<zipfileset file="resources/configuration/bmt.xml" prefix="plugins/bmtweb/Phoenix/Configuration/" />
+			<zipfileset file="resources/vfs/bmt.xml" prefix="plugins/bmtweb/Phoenix/vfs/" />
 		</zip>
 	</target>
 

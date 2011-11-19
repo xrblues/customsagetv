@@ -52,6 +52,11 @@ watched status on files, etc
 		<MD5>@@context-checksum@@</MD5>
 	</Package>
 	<ReleaseNotes>
+4.10
+* Added code to automatically download the x-vfs.xml (Phoenix vfs file) if it is missing
+* Movied BMT views from the Phoenix vfs file to the bmt.xml vfs file
+* Fixed missing BatchOperation dependency on "allvideos"
+
 4.9.21
 * Increased field sizes for description and titles
 * Added link to imdb

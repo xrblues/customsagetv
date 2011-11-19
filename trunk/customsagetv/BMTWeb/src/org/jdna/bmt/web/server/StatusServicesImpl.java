@@ -105,6 +105,13 @@ public class StatusServicesImpl extends RemoteServiceServlet implements
 						}
 					}
 				}
+				
+				File masterXml = new File(Phoenix.getInstance().getVFSManager().getSystemFiles().getDir(), "x-vfs.xml");
+				if (!masterXml.exists()) {
+					status.add(new StatusValue("Missing Views", "Missing x-vfs.xml file", StatusValue.ERROR, "Missing Phoenix Master VFS file: " + masterXml));
+				}
+				
+				status.add(new StatusValue("Loaded VFS Views", String.valueOf(phoenix.umb.GetVisibleViews().size())));
 			} else if ("sagetv".equals(statusType)) {
 				status.add(new StatusValue("Version", SageTV.getSageVersion()));
 				status.add(new StatusValue("Required Version", phoenix.system

@@ -3,14 +3,17 @@ package org.jdna.bmt.web.server;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.jdna.bmt.web.client.ui.BatchOperation;
 import org.jdna.bmt.web.client.ui.BatchOperations;
+import org.mortbay.log.Log;
 
 import sagex.SageAPI;
 import sagex.phoenix.Phoenix;
+import sagex.phoenix.download.DownloadItem;
 import sagex.util.Log4jConfigurator;
 
 public class ServicesInit {
@@ -104,6 +107,31 @@ public class ServicesInit {
             		t.printStackTrace();
             	}
             }
+            
+            // see if we have any views... if not, then check if we have the x-vfs.xml file, and download one if missing
+            try {
+           		downloadMissingViews();
+            } catch (Exception e) {
+            	e.printStackTrace();
+            }
         }
     }
+
+	private static void downloadMissingViews() {
+		File files[] = Phoenix.getInstance().getVFSManager().getSystemFiles().getFiles();
+		File masterXml = new File(Phoenix.getInstance().getVFSManager().getSystemFiles().getDir(), "x-vfs.xml");
+		if (files==null||files.length==0||!masterXml.exists()) {
+			// download the missing views
+			try {
+				Log.info("Downloading x-vfs.xml view from Phoenix, since it appears to be missing");
+				DownloadItem item = new DownloadItem(new URL("http://sagephoenix.googlecode.com/svn/trunk/PhoenixUI/STVs/Phoenix/vfs/x-vfs.xml"), masterXml);
+				item.setOverwrite(false);
+				Phoenix.getInstance().getDownloadManager().downloadAndWait(item);
+				Phoenix.getInstance().getVFSManager().loadConfigurations();
+			} catch (IOException e) {
+				e.printStackTrace();
+				Phoenix.fireError("Unable to download/update the missing BMT views", e);
+			}
+		}
+	}
 }

@@ -16,8 +16,12 @@ import org.jdna.bmt.web.client.ui.app.GlobalService;
 import sagex.api.Configuration;
 import sagex.phoenix.progress.BasicProgressMonitor;
 import sagex.phoenix.progress.IProgressMonitor;
+import sagex.phoenix.vfs.IMediaFolder;
 import sagex.phoenix.vfs.IMediaResource;
 import sagex.phoenix.vfs.IMediaResourceVisitor;
+import sagex.phoenix.vfs.sage.SageSourcesMediaFolder;
+import sagex.phoenix.vfs.sources.SageSourcesFactory;
+import sagex.phoenix.vfs.views.ViewFolder;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -43,7 +47,11 @@ public class GlobalServicesImpl extends RemoteServiceServlet implements GlobalSe
 
 	@Override
 	public void batchOperation(BatchOperation op) {
-		batchOperation(phoenix.umb.CreateView("allvideos"), op);
+		IMediaFolder vf = phoenix.umb.CreateView("phoenix.view.bmt.allvideos");
+		if (vf==null||vf.getChildren().size()==0) {
+			vf = new SageSourcesMediaFolder("TVL", "All Files");
+		}
+		batchOperation(vf, op);
 	}
 
 	public void batchOperation(final IMediaResource res, final BatchOperation op) {

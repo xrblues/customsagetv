@@ -77,7 +77,7 @@ public class FanartManagerPanel extends Composite {
     }
 
 	private Widget createFiles() {
-		controller.loadFiles(file.getFanartDir(), "jpg,png", new AsyncCallback<ArrayList<String>>() {
+		controller.loadFanartFiles(file, new AsyncCallback<ArrayList<String>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 			}
