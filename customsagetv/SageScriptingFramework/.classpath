@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="libs/jython.jar"/>
 	<classpathentry kind="lib" path="libs/jython-engine.jar"/>
 	<classpathentry kind="lib" path="libs/sagex.api.jar"/>
+	<classpathentry kind="lib" path="libs/gkusnick.sagetv.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
