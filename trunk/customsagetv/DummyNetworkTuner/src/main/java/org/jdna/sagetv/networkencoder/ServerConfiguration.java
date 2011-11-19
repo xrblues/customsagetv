@@ -2,6 +2,7 @@ package org.jdna.sagetv.networkencoder;
 
 import org.jdna.sagetv.networkencoder.dummy.DummyNetworkEncoder;
 
+import sagex.phoenix.configuration.ConfigType;
 import sagex.phoenix.configuration.proxy.AField;
 import sagex.phoenix.configuration.proxy.AGroup;
 import sagex.phoenix.configuration.proxy.FieldProxy;
@@ -12,13 +13,13 @@ public class ServerConfiguration extends GroupProxy {
     @AField(label="Port", description = "Network Encoder Port")
     private FieldProxy<Integer>  port = new FieldProxy<Integer>(5000);
 
-    @AField(label="Default Encoder Class", description = "Default Encoder Class", visible=false)
+    @AField(label="Default Encoder Class", description = "Default Encoder Class", visible="false")
     private FieldProxy<String>  defaultEncoderClass   = new FieldProxy<String>(DummyNetworkEncoder.class.getName());
 
     @AField(label="Enable Discovery?", description = "If true, then the sage discovery server will be started.")
     private FieldProxy<Boolean>  discoveryEnabled   = new FieldProxy<Boolean>(true);
 
-    @AField(label="Dummy Recording File", description = "Full path to a video file that will be used by the encoder when a recording is requested.  Should be as large as the longest show you will dummy record.", editor="fileChooser")
+    @AField(label="Dummy Recording File", description = "Full path to a video file that will be used by the encoder when a recording is requested.  Should be as large as the longest show you will dummy record.", type=ConfigType.FILE)
     private FieldProxy<String>  recordingFile   = new FieldProxy<String>("dummy-recording.mpg");
 
     @AField(label="Device Name", description = "Just a human readable device name")
