@@ -45,6 +45,12 @@ public class SagexRemoteAPIPlugin extends AbstractPlugin {
         }
 
         addProperty(SageTVPlugin.CONFIG_INTEGER, SagexConfiguration.PROP_HTTP_PORT, defPort, "HTTP Port", "This value should be the same as youre Jetty HTTP Port (usually autodetected)").setVisibleOnSetting(this, SagexConfiguration.PROP_ENABLE_HTTP);
+        
+        // test for multi choice
+//        addProperty(SageTVPlugin.CONFIG_CHOICE, "sagex/test/testChoice1", "1", "Test Choice 1", "Tests Multiple Choice 1", new String[] {"1","2","3","4","5"});
+//        addProperty(SageTVPlugin.CONFIG_CHOICE, "sagex/test/testChoice2", "1", "Test Choice 2", "Tests Multiple Choice 2", new String[] {"1","2","3","4","5"}, ",");
+//        addProperty(SageTVPlugin.CONFIG_MULTICHOICE, "sagex/test/testChoice3", "", "Test Choice 3", "Tests Multiple Choice 3", new String[] {"1","2","3","4","5"});
+//        addProperty(SageTVPlugin.CONFIG_MULTICHOICE, "sagex/test/testChoice4", "", "Test Choice 4", "Tests Multiple Choice 4", new String[] {"1","2","3","4","5"}, ",");
     }
 
     @ConfigValueChangeHandler(SagexConfiguration.PROP_SECURE_HTTP)

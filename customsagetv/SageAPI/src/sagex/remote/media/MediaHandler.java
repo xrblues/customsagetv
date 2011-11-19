@@ -40,6 +40,8 @@ public class MediaHandler implements SageHandler {
         handlers.put("poster", new ProxySageMediaRequestHandler("sagex.phoenix.fanart.FanartMediaRequestHandler", "poster"));
         handlers.put("background", new ProxySageMediaRequestHandler("sagex.phoenix.fanart.FanartMediaRequestHandler", "background"));
         handlers.put("banner", new ProxySageMediaRequestHandler("sagex.phoenix.fanart.FanartMediaRequestHandler", "banner"));
+
+        handlers.put("fanart", new ProxySageMediaRequestHandler("sagex.phoenix.fanart.FanartMediaRequestHandler2", null));
     }
 
     public void handleRequest(String args[], HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
