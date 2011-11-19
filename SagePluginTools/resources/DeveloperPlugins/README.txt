@@ -1,0 +1,1 @@
+Place your developer plugin manifest files in this folder, and the run Merge Developer Plugins from the STV

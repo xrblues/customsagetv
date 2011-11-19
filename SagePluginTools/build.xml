@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="package" name="SagePluginTools" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<!-- Put Host specific properties here, ie sage path, bmt path, etc -->
+	<property file="build.properties" />
+
+	<property environment="env" />
+
+	<property name="src.dir" location="src" />
+	<property name="target.dir" location="target" />
+	<property name="build.dir" location="${target.dir}/build" />
+	<property name="dist.dir" location="${target.dir}/dist" />
+	<property name="libs" value="lib" />
+
+	<property name="name" value="sage-plugin-tools" />
+	<property name="version" value="0.9.3" />
+
+	<path id="project.class.path">
+		<pathelement location="${build.dir}/classes" />
+		<fileset dir="${libs}" includes="*.jar" />
+	</path>
+
+	<!-- BEGIN IVY DEPENDENDCY MANAGER -->
+	<property name="ivy.install.version" value="2.0.0-beta1" />
+	<condition property="ivy.home" value="${env.IVY_HOME}">
+		<isset property="env.IVY_HOME" />
+	</condition>
+	<property name="ivy.home" value="${user.home}/.ant" />
+	<property name="ivy.jar.dir" value="${ivy.home}/lib" />
+	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
+	<target name="download-ivy" unless="offline">
+		<mkdir dir="${ivy.jar.dir}" />
+		<!-- download Ivy from web site so that it can be used even without any special installation -->
+		<get src="http://www.apache.org/dist/ant/ivy/${ivy.install.version}/ivy.jar" dest="${ivy.jar.file}" usetimestamp="true" />
+	</target>
+
+	<target name="init-ivy" depends="download-ivy">
+		<!-- try to load ivy here from ivy home, in case the user has not already dropped
+              it into ant's lib dir (note that the latter copy will always take precedence).
+              We will not fail as long as local lib dir exists (it may be empty) and
+              ivy is in at least one of ant's lib dir or the local lib dir. -->
+		<path id="ivy.lib.path">
+			<fileset dir="${ivy.jar.dir}" includes="*.jar" />
+		</path>
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+	</target>
+
+	<target name="resolve" description="retrieve dependencies with ivy">
+		<ivy:retrieve />
+	</target>
+
+	<!-- END IVY DEPENDENDCY MANAGER -->
+
+	<target name="init" depends="clean,init-ivy,resolve">
+		<mkdir dir="${target.dir}" />
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.dir}/sage" />
+		<mkdir dir="${build.dir}/sage/JARs" />
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${dist.dir}/packages/" />
+
+		<echo message="SageTV library location: ${sage.lib.dir}" />
+
+		<!-- Pull these dependencies from the SageHome/JARs folder -->
+		<copy todir="lib" file="${sage.lib.dir}/JARs/Sage.jar" failonerror="false" />
+	</target>
+
+	<target name="package" depends="init,compile,jar" />
+
+	<target name="compile">
+		<mkdir dir="${build.dir}/classes" />
+		<copy includeemptydirs="false" todir="${build.dir}/classes">
+			<fileset dir="src" excludes="**/*.launch, **/*.java" />
+		</copy>
+		<javac debug="true" source="1.5" target="1.5" classpathref="project.class.path" srcdir="${src.dir}" destdir="${build.dir}/classes">
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="${build.dir}/sage/JARs/${name}.jar">
+			<fileset dir="${build.dir}/classes" />
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Specification-Title" value="Plugin Development Tools for SageTV" />
+				<attribute name="Specification-Version" value="${version}  ${TODAY}" />
+				<attribute name="Specification-Vendor" value="Sean Stuckless" />
+				<attribute name="Implementation-Title" value="Plugin Development for SageTV" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Vendor" value="Sean Stuckless" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="clean">
+		<delete dir="${target.dir}" failonerror="true" />
+	</target>
+
+	<target name="package-plugin" depends="package">
+		<mkdir dir="${dist.dir}/packages/" />
+
+		<zip destfile="${dist.dir}/packages/sage-plugin-tools-jar-${version}.zip">
+			<zipfileset dir="${build.dir}/sage/JARs/" prefix="" />
+		</zip>
+		
+		<zip destfile="${dist.dir}/packages/sage-plugin-tools-system-${version}.zip">
+			<zipfileset file="resources/DeveloperPlugins/README.txt" prefix="DeveloperPlugins" />
+		</zip>
+
+		<zip destfile="${dist.dir}/packages/sage-plugin-tools-stvi-${version}.zip">
+			<zipfileset file="resources/stvi/sage-plugin-tools.stvi" prefix="" />
+		</zip>
+	</target>
+
+	<!-- Create the plugin's package for SageTV 7.0 and later -->
+	<target name="dist-plugin" depends="package-plugin">
+		<copy tofile="${dist.dir}/packages/plugin-${version}.xml" file="resources/plugin/plugin.xml">
+		</copy>
+
+		<checksum file="${dist.dir}/packages/sage-plugin-tools-jar-${version}.zip" property="md5.jar" />
+		<checksum file="${dist.dir}/packages/sage-plugin-tools-system-${version}.zip" property="md5.system" />
+		<checksum file="${dist.dir}/packages/sage-plugin-tools-stvi-${version}.zip" property="md5.stvi" />
+
+		<tstamp>
+			<format property="last-modified" pattern="yyyy.MM.dd" />
+		</tstamp>
+
+		<replace file="${dist.dir}/packages/plugin-${version}.xml" summary="yes">
+			<replacefilter token="@@last-modified@@" value="${last-modified}" />
+			<replacefilter token="@@version@@" value="${version}" />
+			<replacefilter token="@@jar-checksum@@" value="${md5.jar}" />
+			<replacefilter token="@@system-checksum@@" value="${md5.system}" />
+			<replacefilter token="@@stvi-checksum@@" value="${md5.stvi}" />
+		</replace>
+	</target>
+	
+	<target name="publish-local" depends="dist-plugin">
+		<copy file="${dist.dir}/packages/plugin-${version}.xml" todir="${sage.home}/DeveloperPlugins/"/>
+	</target>
+
+	<!-- upload to sagetv plugin area -->
+	<target name="publish-plugin" depends="dist-plugin">
+		<!-- download commons-net so that we can use the ftp plugin -->
+		<mkdir dir="${user.home}/.ant/lib"/>
+		<get src="http://repo1.maven.org/maven2/commons-net/commons-net/1.4.1/commons-net-1.4.1.jar" dest="${user.home}/.ant/lib/commons-net-1.4.1.jar" usetimestamp="true" />
+		
+		<ftp remotedir="plugins/stuckless/sage-plugin-tools/" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" action="mkdir"/>		
+		<ftp remotedir="plugins/stuckless/sage-plugin-tools/" password="${sage.uploadpass}" server="download2.sagetv.com" userid="${sage.uploaduser}" binary="true" action="send" verbose="true">
+			<fileset dir="${dist.dir}/packages/"/>
+		</ftp>
+	</target>
+</project>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project SagePluginTools with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="/home/seans/BETA/server_7.0.11/DeveloperPlugins/DevPluginTool.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="sagex.plugintools.PluginTool"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ sagex-api-7.0.6.2.jar dom4j-1.6.1.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="/home/seans/DevelopmentProjects/workspaces/sagetv/SagePluginTools/bin"/>
+            <zipfileset dir="/home/seans/DevelopmentProjects/workspaces/sagetv/SagePluginTools/lib" includes="sagex-api-7.0.6.2.jar"/>
+            <zipfileset dir="/home/seans/DevelopmentProjects/workspaces/sagetv/SagePluginTools/lib" includes="dom4j-1.6.1.jar"/>
+        </jar>
+    </target>
+</project>

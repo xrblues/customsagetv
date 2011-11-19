@@ -1,0 +1,9 @@
+<ivy-module version="2.0">
+    <info organisation="apache" module="hello-ivy"/>
+    <dependencies>
+        <dependency org="commons-io" name="commons-io" rev="1.4"/>
+		<dependency org="dom4j" name="dom4j" rev="1.6.1">
+			<artifact name="dom4j" type="jar" url="http://downloads.sourceforge.net/project/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar?use_mirror=voxel"/>
+		</dependency>
+    </dependencies>
+</ivy-module>

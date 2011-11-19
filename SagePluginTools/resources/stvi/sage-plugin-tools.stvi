@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module xmlns="urn:tv.sage/stv" Name="default" PersistentPrimaryRefs="true">
+ <Hook Name="STVImported" Sym="IHCSZ-55">
+  <Action Name="&quot;REM Deletion of Widgets&quot;" Sym="IHCSZ-56"/>
+  <Action Name="&quot;REM Renaming of Widgets&quot;" Sym="IHCSZ-57"/>
+  <Action Name="&quot;REM Resetting of Widget properties&quot;" Sym="IHCSZ-58"/>
+  <Action Name="&quot;REM Removal of Widget children relationships&quot;" Sym="IHCSZ-59"/>
+  <Action Name="&quot;REM Adding of Widget children relationships&quot;" Sym="IHCSZ-60">
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;NFLX1-1589258&quot;)" Sym="IHCSZ-62">
+    <Branch Name="else" Sym="IHCSZ-63">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-11&quot;)" Sym="IHCSZ-66">
+      <Branch Name="else" Sym="IHCSZ-67">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-70"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-68">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-11 \&quot;Tertiary Menu Items Area\&quot; could not add as child; parent symbol=NFLX1-1589258 \&quot;Refresh Plugins\&quot;&quot;)" Sym="IHCSZ-69"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-64">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=NFLX1-1589258 \&quot;Tertiary Menu Items Area\&quot; missing parent; could not add child with symbol=IHCSZ-11 \&quot;Refresh Plugins\&quot;&quot;)" Sym="IHCSZ-65"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;NFLX1-1589258&quot;)" Sym="IHCSZ-71">
+    <Branch Name="else" Sym="IHCSZ-72">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-26&quot;)" Sym="IHCSZ-75">
+      <Branch Name="else" Sym="IHCSZ-76">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-79"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-77">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-26 \&quot;Tertiary Menu Items Area\&quot; could not add as child; parent symbol=NFLX1-1589258 \&quot;GetServerProperty(\&quot;disable_plugin_repository_updates\&quot;,\&quot;false\&quot;)==\&quot;false\&quot;\&quot;&quot;)" Sym="IHCSZ-78"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-73">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=NFLX1-1589258 \&quot;Tertiary Menu Items Area\&quot; missing parent; could not add child with symbol=IHCSZ-26 \&quot;GetServerProperty(\&quot;disable_plugin_repository_updates\&quot;,\&quot;false\&quot;)==\&quot;false\&quot;\&quot;&quot;)" Sym="IHCSZ-74"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;NFLX1-1589258&quot;)" Sym="IHCSZ-80">
+    <Branch Name="else" Sym="IHCSZ-81">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-41&quot;)" Sym="IHCSZ-84">
+      <Branch Name="else" Sym="IHCSZ-85">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-88"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-86">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-41 \&quot;Tertiary Menu Items Area\&quot; could not add as child; parent symbol=NFLX1-1589258 \&quot;Refresh Developer Plugins\&quot;&quot;)" Sym="IHCSZ-87"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-82">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=NFLX1-1589258 \&quot;Tertiary Menu Items Area\&quot; missing parent; could not add child with symbol=IHCSZ-41 \&quot;Refresh Developer Plugins\&quot;&quot;)" Sym="IHCSZ-83"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-11&quot;)" Sym="IHCSZ-89">
+    <Branch Name="else" Sym="IHCSZ-90">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-12&quot;)" Sym="IHCSZ-93">
+      <Branch Name="else" Sym="IHCSZ-94">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-97"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-95">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-12 \&quot;Refresh Plugins\&quot; could not add as child; parent symbol=IHCSZ-11 \&quot;ButtonText\&quot;&quot;)" Sym="IHCSZ-96"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-91">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-11 \&quot;Refresh Plugins\&quot; missing parent; could not add child with symbol=IHCSZ-12 \&quot;ButtonText\&quot;&quot;)" Sym="IHCSZ-92"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-11&quot;)" Sym="IHCSZ-98">
+    <Branch Name="else" Sym="IHCSZ-99">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-13&quot;)" Sym="IHCSZ-102">
+      <Branch Name="else" Sym="IHCSZ-103">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-106"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-104">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-13 \&quot;Refresh Plugins\&quot; could not add as child; parent symbol=IHCSZ-11 \&quot;ThisItem\&quot;&quot;)" Sym="IHCSZ-105"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-100">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-11 \&quot;Refresh Plugins\&quot; missing parent; could not add child with symbol=IHCSZ-13 \&quot;ThisItem\&quot;&quot;)" Sym="IHCSZ-101"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-11&quot;)" Sym="IHCSZ-107">
+    <Branch Name="else" Sym="IHCSZ-108">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-14&quot;)" Sym="IHCSZ-111">
+      <Branch Name="else" Sym="IHCSZ-112">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-115"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-113">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-14 \&quot;Refresh Plugins\&quot; could not add as child; parent symbol=IHCSZ-11 \&quot;SubMenuType\&quot;&quot;)" Sym="IHCSZ-114"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-109">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-11 \&quot;Refresh Plugins\&quot; missing parent; could not add child with symbol=IHCSZ-14 \&quot;SubMenuType\&quot;&quot;)" Sym="IHCSZ-110"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-11&quot;)" Sym="IHCSZ-116">
+    <Branch Name="else" Sym="IHCSZ-117">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-15&quot;)" Sym="IHCSZ-120">
+      <Branch Name="else" Sym="IHCSZ-121">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-124"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-122">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-15 \&quot;Refresh Plugins\&quot; could not add as child; parent symbol=IHCSZ-11 \&quot;RefreshAvailablePlugins()\&quot;&quot;)" Sym="IHCSZ-123"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-118">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-11 \&quot;Refresh Plugins\&quot; missing parent; could not add child with symbol=IHCSZ-15 \&quot;RefreshAvailablePlugins()\&quot;&quot;)" Sym="IHCSZ-119"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-15&quot;)" Sym="IHCSZ-125">
+    <Branch Name="else" Sym="IHCSZ-126">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-48&quot;)" Sym="IHCSZ-129">
+      <Branch Name="else" Sym="IHCSZ-130">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-133"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-131">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-48 \&quot;RefreshAvailablePlugins()\&quot; could not add as child; parent symbol=IHCSZ-15 \&quot;DevPluginOKDialog\&quot;&quot;)" Sym="IHCSZ-132"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-127">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-15 \&quot;RefreshAvailablePlugins()\&quot; missing parent; could not add child with symbol=IHCSZ-48 \&quot;DevPluginOKDialog\&quot;&quot;)" Sym="IHCSZ-128"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-26&quot;)" Sym="IHCSZ-134">
+    <Branch Name="else" Sym="IHCSZ-135">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-28&quot;)" Sym="IHCSZ-138">
+      <Branch Name="else" Sym="IHCSZ-139">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-142"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-140">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-28 \&quot;GetServerProperty(\&quot;disable_plugin_repository_updates\&quot;,\&quot;false\&quot;)==\&quot;false\&quot;\&quot; could not add as child; parent symbol=IHCSZ-26 \&quot;true\&quot;&quot;)" Sym="IHCSZ-141"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-136">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-26 \&quot;GetServerProperty(\&quot;disable_plugin_repository_updates\&quot;,\&quot;false\&quot;)==\&quot;false\&quot;\&quot; missing parent; could not add child with symbol=IHCSZ-28 \&quot;true\&quot;&quot;)" Sym="IHCSZ-137"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-26&quot;)" Sym="IHCSZ-143">
+    <Branch Name="else" Sym="IHCSZ-144">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-33&quot;)" Sym="IHCSZ-147">
+      <Branch Name="else" Sym="IHCSZ-148">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-151"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-149">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-33 \&quot;GetServerProperty(\&quot;disable_plugin_repository_updates\&quot;,\&quot;false\&quot;)==\&quot;false\&quot;\&quot; could not add as child; parent symbol=IHCSZ-26 \&quot;false\&quot;&quot;)" Sym="IHCSZ-150"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-145">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-26 \&quot;GetServerProperty(\&quot;disable_plugin_repository_updates\&quot;,\&quot;false\&quot;)==\&quot;false\&quot;\&quot; missing parent; could not add child with symbol=IHCSZ-33 \&quot;false\&quot;&quot;)" Sym="IHCSZ-146"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-28&quot;)" Sym="IHCSZ-152">
+    <Branch Name="else" Sym="IHCSZ-153">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-16&quot;)" Sym="IHCSZ-156">
+      <Branch Name="else" Sym="IHCSZ-157">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-160"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-158">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-16 \&quot;true\&quot; could not add as child; parent symbol=IHCSZ-28 \&quot;Disable Remote Repository\&quot;&quot;)" Sym="IHCSZ-159"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-154">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-28 \&quot;true\&quot; missing parent; could not add child with symbol=IHCSZ-16 \&quot;Disable Remote Repository\&quot;&quot;)" Sym="IHCSZ-155"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-16&quot;)" Sym="IHCSZ-161">
+    <Branch Name="else" Sym="IHCSZ-162">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-30&quot;)" Sym="IHCSZ-165">
+      <Branch Name="else" Sym="IHCSZ-166">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-169"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-167">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-30 \&quot;Disable Remote Repository\&quot; could not add as child; parent symbol=IHCSZ-16 \&quot;ButtonText\&quot;&quot;)" Sym="IHCSZ-168"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-163">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-16 \&quot;Disable Remote Repository\&quot; missing parent; could not add child with symbol=IHCSZ-30 \&quot;ButtonText\&quot;&quot;)" Sym="IHCSZ-164"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-16&quot;)" Sym="IHCSZ-170">
+    <Branch Name="else" Sym="IHCSZ-171">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-31&quot;)" Sym="IHCSZ-174">
+      <Branch Name="else" Sym="IHCSZ-175">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-178"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-176">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-31 \&quot;Disable Remote Repository\&quot; could not add as child; parent symbol=IHCSZ-16 \&quot;ThisItem\&quot;&quot;)" Sym="IHCSZ-177"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-172">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-16 \&quot;Disable Remote Repository\&quot; missing parent; could not add child with symbol=IHCSZ-31 \&quot;ThisItem\&quot;&quot;)" Sym="IHCSZ-173"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-16&quot;)" Sym="IHCSZ-179">
+    <Branch Name="else" Sym="IHCSZ-180">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-32&quot;)" Sym="IHCSZ-183">
+      <Branch Name="else" Sym="IHCSZ-184">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-187"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-185">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-32 \&quot;Disable Remote Repository\&quot; could not add as child; parent symbol=IHCSZ-16 \&quot;SubMenuType\&quot;&quot;)" Sym="IHCSZ-186"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-181">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-16 \&quot;Disable Remote Repository\&quot; missing parent; could not add child with symbol=IHCSZ-32 \&quot;SubMenuType\&quot;&quot;)" Sym="IHCSZ-182"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-16&quot;)" Sym="IHCSZ-188">
+    <Branch Name="else" Sym="IHCSZ-189">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-25&quot;)" Sym="IHCSZ-192">
+      <Branch Name="else" Sym="IHCSZ-193">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-196"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-194">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-25 \&quot;Disable Remote Repository\&quot; could not add as child; parent symbol=IHCSZ-16 \&quot;SetServerProperty(\&quot;disable_plugin_repository_updates\&quot;, \&quot;true\&quot;)\&quot;&quot;)" Sym="IHCSZ-195"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-190">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-16 \&quot;Disable Remote Repository\&quot; missing parent; could not add child with symbol=IHCSZ-25 \&quot;SetServerProperty(\&quot;disable_plugin_repository_updates\&quot;, \&quot;true\&quot;)\&quot;&quot;)" Sym="IHCSZ-191"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-25&quot;)" Sym="IHCSZ-197">
+    <Branch Name="else" Sym="IHCSZ-198">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-40&quot;)" Sym="IHCSZ-201">
+      <Branch Name="else" Sym="IHCSZ-202">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-205"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-203">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-40 \&quot;SetServerProperty(\&quot;disable_plugin_repository_updates\&quot;, \&quot;true\&quot;)\&quot; could not add as child; parent symbol=IHCSZ-25 \&quot;RefreshArea(\&quot;Main Menu\&quot;)\&quot;&quot;)" Sym="IHCSZ-204"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-199">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-25 \&quot;SetServerProperty(\&quot;disable_plugin_repository_updates\&quot;, \&quot;true\&quot;)\&quot; missing parent; could not add child with symbol=IHCSZ-40 \&quot;RefreshArea(\&quot;Main Menu\&quot;)\&quot;&quot;)" Sym="IHCSZ-200"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-33&quot;)" Sym="IHCSZ-206">
+    <Branch Name="else" Sym="IHCSZ-207">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-34&quot;)" Sym="IHCSZ-210">
+      <Branch Name="else" Sym="IHCSZ-211">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-214"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-212">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-34 \&quot;false\&quot; could not add as child; parent symbol=IHCSZ-33 \&quot;Enable Remote Repository\&quot;&quot;)" Sym="IHCSZ-213"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-208">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-33 \&quot;false\&quot; missing parent; could not add child with symbol=IHCSZ-34 \&quot;Enable Remote Repository\&quot;&quot;)" Sym="IHCSZ-209"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-34&quot;)" Sym="IHCSZ-215">
+    <Branch Name="else" Sym="IHCSZ-216">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-35&quot;)" Sym="IHCSZ-219">
+      <Branch Name="else" Sym="IHCSZ-220">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-223"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-221">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-35 \&quot;Enable Remote Repository\&quot; could not add as child; parent symbol=IHCSZ-34 \&quot;ButtonText\&quot;&quot;)" Sym="IHCSZ-222"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-217">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-34 \&quot;Enable Remote Repository\&quot; missing parent; could not add child with symbol=IHCSZ-35 \&quot;ButtonText\&quot;&quot;)" Sym="IHCSZ-218"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-34&quot;)" Sym="IHCSZ-224">
+    <Branch Name="else" Sym="IHCSZ-225">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-36&quot;)" Sym="IHCSZ-228">
+      <Branch Name="else" Sym="IHCSZ-229">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-232"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-230">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-36 \&quot;Enable Remote Repository\&quot; could not add as child; parent symbol=IHCSZ-34 \&quot;ThisItem\&quot;&quot;)" Sym="IHCSZ-231"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-226">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-34 \&quot;Enable Remote Repository\&quot; missing parent; could not add child with symbol=IHCSZ-36 \&quot;ThisItem\&quot;&quot;)" Sym="IHCSZ-227"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-34&quot;)" Sym="IHCSZ-233">
+    <Branch Name="else" Sym="IHCSZ-234">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-37&quot;)" Sym="IHCSZ-237">
+      <Branch Name="else" Sym="IHCSZ-238">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-241"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-239">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-37 \&quot;Enable Remote Repository\&quot; could not add as child; parent symbol=IHCSZ-34 \&quot;SubMenuType\&quot;&quot;)" Sym="IHCSZ-240"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-235">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-34 \&quot;Enable Remote Repository\&quot; missing parent; could not add child with symbol=IHCSZ-37 \&quot;SubMenuType\&quot;&quot;)" Sym="IHCSZ-236"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-34&quot;)" Sym="IHCSZ-242">
+    <Branch Name="else" Sym="IHCSZ-243">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-38&quot;)" Sym="IHCSZ-246">
+      <Branch Name="else" Sym="IHCSZ-247">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-250"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-248">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-38 \&quot;Enable Remote Repository\&quot; could not add as child; parent symbol=IHCSZ-34 \&quot;SetServerProperty(\&quot;disable_plugin_repository_updates\&quot;, \&quot;false\&quot;)\&quot;&quot;)" Sym="IHCSZ-249"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-244">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-34 \&quot;Enable Remote Repository\&quot; missing parent; could not add child with symbol=IHCSZ-38 \&quot;SetServerProperty(\&quot;disable_plugin_repository_updates\&quot;, \&quot;false\&quot;)\&quot;&quot;)" Sym="IHCSZ-245"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-38&quot;)" Sym="IHCSZ-251">
+    <Branch Name="else" Sym="IHCSZ-252">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-39&quot;)" Sym="IHCSZ-255">
+      <Branch Name="else" Sym="IHCSZ-256">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-259"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-257">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-39 \&quot;SetServerProperty(\&quot;disable_plugin_repository_updates\&quot;, \&quot;false\&quot;)\&quot; could not add as child; parent symbol=IHCSZ-38 \&quot;RefreshArea(\&quot;Main Menu\&quot;)\&quot;&quot;)" Sym="IHCSZ-258"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-253">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-38 \&quot;SetServerProperty(\&quot;disable_plugin_repository_updates\&quot;, \&quot;false\&quot;)\&quot; missing parent; could not add child with symbol=IHCSZ-39 \&quot;RefreshArea(\&quot;Main Menu\&quot;)\&quot;&quot;)" Sym="IHCSZ-254"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-41&quot;)" Sym="IHCSZ-260">
+    <Branch Name="else" Sym="IHCSZ-261">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-42&quot;)" Sym="IHCSZ-264">
+      <Branch Name="else" Sym="IHCSZ-265">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-268"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-266">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-42 \&quot;Refresh Developer Plugins\&quot; could not add as child; parent symbol=IHCSZ-41 \&quot;ButtonText\&quot;&quot;)" Sym="IHCSZ-267"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-262">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-41 \&quot;Refresh Developer Plugins\&quot; missing parent; could not add child with symbol=IHCSZ-42 \&quot;ButtonText\&quot;&quot;)" Sym="IHCSZ-263"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-41&quot;)" Sym="IHCSZ-269">
+    <Branch Name="else" Sym="IHCSZ-270">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-43&quot;)" Sym="IHCSZ-273">
+      <Branch Name="else" Sym="IHCSZ-274">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-277"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-275">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-43 \&quot;Refresh Developer Plugins\&quot; could not add as child; parent symbol=IHCSZ-41 \&quot;ThisItem\&quot;&quot;)" Sym="IHCSZ-276"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-271">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-41 \&quot;Refresh Developer Plugins\&quot; missing parent; could not add child with symbol=IHCSZ-43 \&quot;ThisItem\&quot;&quot;)" Sym="IHCSZ-272"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-41&quot;)" Sym="IHCSZ-278">
+    <Branch Name="else" Sym="IHCSZ-279">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-44&quot;)" Sym="IHCSZ-282">
+      <Branch Name="else" Sym="IHCSZ-283">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-286"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-284">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-44 \&quot;Refresh Developer Plugins\&quot; could not add as child; parent symbol=IHCSZ-41 \&quot;SubMenuType\&quot;&quot;)" Sym="IHCSZ-285"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-280">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-41 \&quot;Refresh Developer Plugins\&quot; missing parent; could not add child with symbol=IHCSZ-44 \&quot;SubMenuType\&quot;&quot;)" Sym="IHCSZ-281"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-41&quot;)" Sym="IHCSZ-287">
+    <Branch Name="else" Sym="IHCSZ-288">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-45&quot;)" Sym="IHCSZ-291">
+      <Branch Name="else" Sym="IHCSZ-292">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-295"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-293">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-45 \&quot;Refresh Developer Plugins\&quot; could not add as child; parent symbol=IHCSZ-41 \&quot;sagex_plugintools_PluginTool_MergePlugins()\&quot;&quot;)" Sym="IHCSZ-294"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-289">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-41 \&quot;Refresh Developer Plugins\&quot; missing parent; could not add child with symbol=IHCSZ-45 \&quot;sagex_plugintools_PluginTool_MergePlugins()\&quot;&quot;)" Sym="IHCSZ-290"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-45&quot;)" Sym="IHCSZ-296">
+    <Branch Name="else" Sym="IHCSZ-297">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-46&quot;)" Sym="IHCSZ-300">
+      <Branch Name="else" Sym="IHCSZ-301">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-304"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-302">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-46 \&quot;sagex_plugintools_PluginTool_MergePlugins()\&quot; could not add as child; parent symbol=IHCSZ-45 \&quot;RefreshAvailablePlugins()\&quot;&quot;)" Sym="IHCSZ-303"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-298">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-45 \&quot;sagex_plugintools_PluginTool_MergePlugins()\&quot; missing parent; could not add child with symbol=IHCSZ-46 \&quot;RefreshAvailablePlugins()\&quot;&quot;)" Sym="IHCSZ-299"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-46&quot;)" Sym="IHCSZ-305">
+    <Branch Name="else" Sym="IHCSZ-306">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-48&quot;)" Sym="IHCSZ-309">
+      <Branch Name="else" Sym="IHCSZ-310">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-313"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-311">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-48 \&quot;RefreshAvailablePlugins()\&quot; could not add as child; parent symbol=IHCSZ-46 \&quot;DevPluginOKDialog\&quot;&quot;)" Sym="IHCSZ-312"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-307">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-46 \&quot;RefreshAvailablePlugins()\&quot; missing parent; could not add child with symbol=IHCSZ-48 \&quot;DevPluginOKDialog\&quot;&quot;)" Sym="IHCSZ-308"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-48&quot;)" Sym="IHCSZ-314">
+    <Branch Name="else" Sym="IHCSZ-315">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;BASE-44416&quot;)" Sym="IHCSZ-318">
+      <Branch Name="else" Sym="IHCSZ-319">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-322"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-320">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=BASE-44416 \&quot;DevPluginOKDialog\&quot; could not add as child; parent symbol=IHCSZ-48 \&quot;OptionsConfirmTheme\&quot;&quot;)" Sym="IHCSZ-321"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-316">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-48 \&quot;DevPluginOKDialog\&quot; missing parent; could not add child with symbol=BASE-44416 \&quot;OptionsConfirmTheme\&quot;&quot;)" Sym="IHCSZ-317"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-48&quot;)" Sym="IHCSZ-323">
+    <Branch Name="else" Sym="IHCSZ-324">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-50&quot;)" Sym="IHCSZ-327">
+      <Branch Name="else" Sym="IHCSZ-328">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-331"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-329">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-50 \&quot;DevPluginOKDialog\&quot; could not add as child; parent symbol=IHCSZ-48 \&quot;Done\&quot;&quot;)" Sym="IHCSZ-330"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-325">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-48 \&quot;DevPluginOKDialog\&quot; missing parent; could not add child with symbol=IHCSZ-50 \&quot;Done\&quot;&quot;)" Sym="IHCSZ-326"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-48&quot;)" Sym="IHCSZ-332">
+    <Branch Name="else" Sym="IHCSZ-333">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-51&quot;)" Sym="IHCSZ-336">
+      <Branch Name="else" Sym="IHCSZ-337">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-340"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-338">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-51 \&quot;DevPluginOKDialog\&quot; could not add as child; parent symbol=IHCSZ-48 \&quot;Close\&quot;&quot;)" Sym="IHCSZ-339"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-334">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-48 \&quot;DevPluginOKDialog\&quot; missing parent; could not add child with symbol=IHCSZ-51 \&quot;Close\&quot;&quot;)" Sym="IHCSZ-335"/>
+    </Branch>
+   </Conditional>
+   <Conditional Name="Widg1 = FindWidgetBySymbol(&quot;IHCSZ-51&quot;)" Sym="IHCSZ-341">
+    <Branch Name="else" Sym="IHCSZ-342">
+     <Conditional Name="Widg2 = FindWidgetBySymbol(&quot;IHCSZ-52&quot;)" Sym="IHCSZ-345">
+      <Branch Name="else" Sym="IHCSZ-346">
+       <Action Name="AddWidgetChild(Widg1, Widg2)" Sym="IHCSZ-349"/>
+      </Branch>
+      <Branch Name="null" Sym="IHCSZ-347">
+       <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-52 \&quot;Close\&quot; could not add as child; parent symbol=IHCSZ-51 \&quot;CloseOptionsMenu()\&quot;&quot;)" Sym="IHCSZ-348"/>
+      </Branch>
+     </Conditional>
+    </Branch>
+    <Branch Name="null" Sym="IHCSZ-343">
+     <Action Name="DebugLog(&quot;PATCH ERROR Missing Widget - Symbol=IHCSZ-51 \&quot;Close\&quot; missing parent; could not add child with symbol=IHCSZ-52 \&quot;CloseOptionsMenu()\&quot;&quot;)" Sym="IHCSZ-344"/>
+    </Branch>
+   </Conditional>
+  </Action>
+  <Action Name="&quot;REM Repositioning of child Widgets&quot;" Sym="IHCSZ-61"/>
+  <Action Name="ReturnValue = &quot;AutoCleanupSTVImportedHook&quot;" Sym="IHCSZ-350"/>
+ </Hook>
+ <OptionsMenu Name="DevPluginOKDialog" Sym="IHCSZ-48"/>
+ <Action Name="RefreshAvailablePlugins()" Sym="IHCSZ-15"/>
+ <Action Name="SetServerProperty(&quot;disable_plugin_repository_updates&quot;, &quot;true&quot;)" Sym="IHCSZ-25"/>
+ <Action Name="RefreshArea(&quot;Main Menu&quot;)" Sym="IHCSZ-40"/>
+ <Action Name="SetServerProperty(&quot;disable_plugin_repository_updates&quot;, &quot;false&quot;)" Sym="IHCSZ-38"/>
+ <Action Name="RefreshArea(&quot;Main Menu&quot;)" Sym="IHCSZ-39"/>
+ <Action Name="sagex_plugintools_PluginTool_MergePlugins()" Sym="IHCSZ-45"/>
+ <Action Name="RefreshAvailablePlugins()" Sym="IHCSZ-46"/>
+ <Action Name="CloseOptionsMenu()" Sym="IHCSZ-52"/>
+ <Conditional Name="GetServerProperty(&quot;disable_plugin_repository_updates&quot;,&quot;false&quot;)==&quot;false&quot;" Sym="IHCSZ-26"/>
+ <Branch Name="true" Sym="IHCSZ-28"/>
+ <Branch Name="false" Sym="IHCSZ-33"/>
+ <Item Name="Refresh Plugins" Sym="IHCSZ-11"/>
+ <Item Name="Disable Remote Repository" Sym="IHCSZ-16"/>
+ <Item Name="Enable Remote Repository" Sym="IHCSZ-34"/>
+ <Item Name="Refresh Developer Plugins" Sym="IHCSZ-41"/>
+ <Item Name="Close" Sym="IHCSZ-51"/>
+ <Text Name="Done" Sym="IHCSZ-50">
+  <AutosizeText>false</AutosizeText>
+  <WrapText>false</WrapText>
+  <TextShadow>false</TextShadow>
+  <DisableFontScaling>false</DisableFontScaling>
+  <IgnoreThemeProps>false</IgnoreThemeProps>
+  <BackgroundComponent>false</BackgroundComponent>
+  <MouseTransparency>false</MouseTransparency>
+ </Text>
+ <Attribute Name="ButtonText" Sym="IHCSZ-12">
+  <Value>"Refresh Plugin List"</Value>
+ </Attribute>
+ <Attribute Name="ThisItem" Sym="IHCSZ-13">
+  <Value>"xItemPlugins"</Value>
+ </Attribute>
+ <Attribute Name="SubMenuType" Sym="IHCSZ-14">
+  <Value>null</Value>
+ </Attribute>
+ <Attribute Name="ButtonText" Sym="IHCSZ-30">
+  <Value>"Disable Remote Repository"</Value>
+ </Attribute>
+ <Attribute Name="ThisItem" Sym="IHCSZ-31">
+  <Value>"xItemPlugins"</Value>
+ </Attribute>
+ <Attribute Name="SubMenuType" Sym="IHCSZ-32">
+  <Value>null</Value>
+ </Attribute>
+ <Attribute Name="ButtonText" Sym="IHCSZ-35">
+  <Value>"Enable Remote Repository"</Value>
+ </Attribute>
+ <Attribute Name="ThisItem" Sym="IHCSZ-36">
+  <Value>="xItemPlugins"</Value>
+ </Attribute>
+ <Attribute Name="SubMenuType" Sym="IHCSZ-37">
+  <Value>null</Value>
+ </Attribute>
+ <Attribute Name="ButtonText" Sym="IHCSZ-42">
+  <Value>"Merge Developer Plugins"</Value>
+ </Attribute>
+ <Attribute Name="ThisItem" Sym="IHCSZ-43">
+  <Value>"xItemPlugins"</Value>
+ </Attribute>
+ <Attribute Name="SubMenuType" Sym="IHCSZ-44">
+  <Value>null</Value>
+ </Attribute>
+</Module>
