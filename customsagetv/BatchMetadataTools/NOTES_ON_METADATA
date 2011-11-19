@@ -1,0 +1,33 @@
+========= TV Show Not Recorded ==========
+NOTE: TITLE contains relative path
+NOTE: EpisodeName contains the Display Title
+
+EpisodeName
+House - S03E04 - Lines in the Sand
+
+EpisodeTitle
+Lines in the Sand
+
+MediaTitle
+House
+
+MediaType
+TV
+
+Title
+Shows/House/Season 3/House - S03E04 - Lines in the Sand
+
+========== DVD Sample ============
+EpisodeName
+Twilight
+
+EpisodeTitle
+	
+MediaTitle
+Twilight
+
+MediaType
+Movie
+
+Title
+DVDs/TWILIGHT/Twilight

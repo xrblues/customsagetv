@@ -16,7 +16,7 @@ want to run BMT from a console to generate .properties.
 
   <Dependency>
     <Plugin>phoenix-core</Plugin>
-    <MinVersion>2.3.10</MinVersion>
+    <MinVersion>2.3.14</MinVersion>
   </Dependency>
 
   <PluginType>Library</PluginType>
@@ -33,6 +33,7 @@ want to run BMT from a console to generate .properties.
     <MD5>@@system-checksum@@</MD5>
   </Package>
   <ReleaseNotes>
+  
 4.9.6
 * Fixed build issue to make it compatible with phoenix changes in 2.3.10
 

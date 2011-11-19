@@ -15,7 +15,7 @@
 	<property name="libs" value="lib" />
 
 	<property name="name" value="metadata-updater" />
-	<property name="version" value="4.9.6" />
+	<property name="version" value="4.9.8" />
 
 	<property name="launcher" value="MetadataTool" />
 	<property name="mainClass" value="org.jdna.metadataupdater.MetadataUpdater" />
