@@ -51,5 +51,6 @@ public interface BrowsingServiceAsync {
 	void batchUpdateMetadata(GWTMediaResource res,	ArrayList<NamedProperty<String>> props,	AsyncCallback<Boolean> callback);
 	void addMediaTitle(HashMap<String, String> fields,	AsyncCallback<ServiceReply<Boolean>> callback);
 	void loadFiles(String dir, String mask, AsyncCallback<ArrayList<String>> files);
+	void getFanartFiles(GWTMediaFile file, AsyncCallback<ArrayList<String>> files);
 	void toggleViewVisibility(GWTView view, AsyncCallback<Void> callback);
 }

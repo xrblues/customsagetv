@@ -22,9 +22,6 @@ import sagex.phoenix.metadata.MediaArtifactType;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-
-
-
 @RemoteServiceRelativePath("browsing")
 public interface BrowsingService extends RemoteService {
     public String scan(GWTMediaFolder folder, PersistenceOptionsUI options);
@@ -65,4 +62,5 @@ public interface BrowsingService extends RemoteService {
 	public ArrayList<String> loadFiles(String dir, String mask);
 	
 	public void toggleViewVisibility(GWTView view);
+	public ArrayList<String> getFanartFiles(GWTMediaFile file);
 }

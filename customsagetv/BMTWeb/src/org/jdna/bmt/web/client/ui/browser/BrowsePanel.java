@@ -788,8 +788,8 @@ public class BrowsePanel extends Composite implements BrowserView, ValueChangeHa
 		}
 	}
 
-	public void loadFiles(String fanartDir, String mask, AsyncCallback<ArrayList<String>> asyncCallback) {
-		browser.loadFiles(fanartDir, mask, asyncCallback);
+	public void loadFanartFiles(GWTMediaFile file, AsyncCallback<ArrayList<String>> asyncCallback) {
+		browser.getFanartFiles(file, asyncCallback);
 	}
 
 	@Override

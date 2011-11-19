@@ -41,6 +41,7 @@ public class ViewItem extends Composite implements HasText {
 
 	public void update() {
 		setText(view.getLabel());
+		label.setTitle(view.getId());
 		hideViewAction.setUrl((view.isVisible()?VISIBLE_ICON:HIDDEN_ICON));
 		hideViewAction.setTitle((view.isVisible()?"Hide View":"Show View"));
 	}
