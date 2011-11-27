@@ -175,17 +175,7 @@ public class AppPanel extends Composite implements ValueChangeHandler<String>, N
                     	fixCustomMetadataFields();
                     }
                 }));
-                
-                for (BatchOperation op: BatchOperations.getInstance().getBatchOperations()) {
-                	final BatchOperation opFinal = op;
-                    vp.add(new CommandItem(null, op.getLabel(), new Command() {
-                        public void execute() {
-                            pp.hide();
-                            Application.runBatchOperation(null, opFinal);
-                        }
-                    }));
-                }
-                
+                                
                 pp.setWidget(vp);
                 pp.showRelativeTo(offset);
             }
