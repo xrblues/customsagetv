@@ -78,6 +78,9 @@ public class GlobalServicesImpl extends RemoteServiceServlet implements GlobalSe
 				}
 			}
 		} catch (Exception e) {
+			// reset the timer if we get an error, since it somehow appear to think it's cancelled.
+			timer.cancel();
+			timer = new Timer("BatchOperations");
 			log.warn("Batch Operation Failed!", e);
 			NotificationManager.getInstance().addError("Failed to create video list for operation; Reason: " + e.getMessage());
 		}
