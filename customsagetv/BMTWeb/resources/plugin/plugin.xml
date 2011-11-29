@@ -32,7 +32,7 @@ watched status on files, etc
 
 	<Dependency>
 		<Plugin>phoenix-core</Plugin>
-		<MinVersion>2.3.36</MinVersion>
+		<MinVersion>2.3.47</MinVersion>
 	</Dependency>
 
 	<PluginType>Standard</PluginType>
