@@ -185,6 +185,11 @@ public class SageAPI {
 	        	}
     		} else {
         		logError(serviceName, args, t);
+        		if (isRemote()) {
+        			// As per Slugger's Request, REMOTE api failures will
+        			// bubble up
+        			throw new RuntimeException("Remote API Failed", t);
+        		}
     		}
     	}
     }
