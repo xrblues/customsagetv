@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -29,6 +30,8 @@ public class Log4jConfigurator {
 		public String id;
 		public Properties properties;
 	}
+
+	private static boolean ALL_CONFIGURED = false;
 
 	private static Map<String, LogStruct> logs = new HashMap<String, LogStruct>();
 
@@ -100,6 +103,27 @@ public class Log4jConfigurator {
 	 */
 	public static synchronized void configure(String id, ClassLoader loader)
 			throws Exception {
+
+		if (ALL_CONFIGURED) {
+			return;
+		}
+		
+		if (System.getProperty("sagex.log4j.logfile",null)!=null) {
+			ALL_CONFIGURED=true;
+			String sagexLogger = System.getProperty("sagex.log4j.logfile");
+			File sageProps = new File(sagexLogger);
+			if (sageProps.exists() && sageProps.getName().endsWith(".properties")) {
+				configureFile("sagex.logger", sageProps);
+			} else {
+				FileAppender fa = new FileAppender(new SimpleLayout(), sagexLogger);
+				fa.setAppend(false);
+				Logger.getRootLogger().addAppender(fa);
+				Logger.getRootLogger().setLevel(Level.INFO);
+			}
+			Logger.getRootLogger().info("Configured System Wide logging");
+			return;
+		}
+		
 		// see if users are using a default override, if so, then just configure
 		// that
 		File override = new File("default.log4j.properties");
@@ -275,6 +299,8 @@ public class Log4jConfigurator {
 	 * @param props
 	 */
 	public static void reconfigure(String id, Properties props) {
+		if (ALL_CONFIGURED) return;
+		
 		LogStruct log = logs.get(id);
 		if (log == null) {
 			log("No Logger for: " + id);
