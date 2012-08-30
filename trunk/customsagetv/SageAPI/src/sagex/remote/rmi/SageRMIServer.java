@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import sagex.SageAPI;
 import sagex.api.Global;
+import sagex.api.Utility;
 import sagex.plugin.impl.SagexConfiguration;
 import sagex.remote.server.DatagramListener;
 import sagex.remote.server.DatagramServer;
@@ -134,6 +135,7 @@ public class SageRMIServer {
     private void discoverProperties(SagexConfiguration plugin) {
         serverInfo = new Properties();
         serverInfo.put("server", Global.GetServerAddress());
+        serverInfo.put("server.ip", Utility.GetLocalIPAddress());
         serverInfo.put("rmi.port", plugin.get(SagexConfiguration.PROP_RMI_PORT, "1098"));
         serverInfo.put("http.port", plugin.get(SagexConfiguration.PROP_HTTP_PORT, "8080"));
         SageAPI.setProviderProperties(serverInfo);
