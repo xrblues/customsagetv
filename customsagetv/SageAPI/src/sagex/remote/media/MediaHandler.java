@@ -53,33 +53,33 @@ public class MediaHandler implements SageHandler {
         // 3 - media id
         try {
             if (args.length < 3) {
-                throw new ServletException("missing media artifact type (ie, thumbnail, poster, etc)");
+                throw new ServletException("missing media artifact type (ie, thumbnail, poster, fanart, [should be something like /sagex/media/poster])");
             }
-            
-            // special case for logos
-            if ("logo".equals(args[2])) {
-            	SageMediaRequestHandler handler = handlers.get("logo");
-            	handler.processRequest(req, resp, args[3]);
-            	return;
-            }
-            
-            // process mediafile requests
-            String mediaFileId = req.getParameter("mediafile");
-            if (mediaFileId == null) {
-                mediaFileId = args[3];
-            }
-            
-            if (mediaFileId == null) {
-                throw new Exception("Missing mediafile parameter");
-            }
-            
-            Object sageMedia = getMediaFile(mediaFileId);
 
             SageMediaRequestHandler handler = handlers.get(args[2]);
             if (handler == null) {
                 throw new Exception("Unknown Media Handler: " + args[2]);
             }
+
+            // special case for logos
+            if ("logo".equals(args[2])) {
+            	handler.processRequest(req, resp, args[3]);
+            	return;
+            }
             
+            // process mediafile requests if required
+            Object sageMedia = null;
+
+            String mediaFileId = req.getParameter("mediafile");
+            if (mediaFileId == null && args.length>3) {
+                mediaFileId = args[3];
+            }
+
+            if (mediaFileId!=null) {
+            	// if we have a mediafileid, then validate it
+            	sageMedia = getMediaFile(mediaFileId);
+            }
+
             handler.processRequest(req, resp, sageMedia);
         } catch (FileNotFoundException e) {
         	log.warn("404 - Not Found - " + req.getRequestURI() + "; " + e.getMessage());
@@ -132,6 +132,10 @@ public class MediaHandler implements SageHandler {
         w.println("");
         w.println("You can also fetch logos");
         w.println("/sagex/media/logo/WTVDDT");
+        w.println("");
+        w.println("Full Phoenix Fanart is also supported");
+        w.println("/sagex/media/fanart?title=ShowName&mediatype=tv|movie|music&artifact=poster|banner|background&artifactTitle=&season=#&overwrite=true|false&transform=json_transform&scalex=#&scaley=#&tag=web&mediafile=sageid|filename");
+        w.println("You can mix and match whatever parameters you want for the fanart to get the exact fanart required");
         w.println("</pre>");
         w.flush();
     }
