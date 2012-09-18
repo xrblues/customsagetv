@@ -20,6 +20,9 @@
   </Package>
 
   <ReleaseNotes>
+7.1.9.9
+* Minor changes in the REST api handling to support Phoenix REST services 
+
 7.1.9.3
 * Changed 'call()' behaviour so that EvaluateExpression will allow the Exceptions to bubble up
 

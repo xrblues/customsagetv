@@ -223,7 +223,7 @@ public class SageAPIBuilder {
         handler.beginObject(name);
         for (Object o: parent.entrySet()) {
         	Map.Entry me = (Entry) o;
-        	build(String.valueOf(me.getKey()), me.getValue(), handler, true, filter);
+        	build(String.valueOf(me.getKey()), me.getValue(), handler, false, filter);
         }
         handler.endObject(name);
 	}
