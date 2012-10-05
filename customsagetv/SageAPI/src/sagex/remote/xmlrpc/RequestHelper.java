@@ -10,6 +10,7 @@ import sagex.api.PlaylistAPI;
 import sagex.api.PluginAPI;
 import sagex.api.SeriesInfoAPI;
 import sagex.api.ShowAPI;
+import sagex.api.WidgetAPI;
 import sagex.remote.RemoteObjectRef;
 import sagex.remote.RemoteRequest;
 
@@ -141,6 +142,14 @@ public class RequestHelper {
                 }
                 return retObj;
             } catch (Exception e) { }
+            return retObj;
+        } else if (str.startsWith("widget")){
+            String cargs[] = str.split(":");
+            Object retObj = new Object();
+            try {
+                retObj = WidgetAPI.FindWidgetBySymbol(cargs[1]);
+            } catch (Exception e) { }
+            
             return retObj;
         }
         return null;

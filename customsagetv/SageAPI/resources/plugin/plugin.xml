@@ -20,6 +20,9 @@
   </Package>
 
   <ReleaseNotes>
+7.1.9.10
+* Fixed Map serialization error 
+
 7.1.9.9
 * Minor changes in the REST api handling to support Phoenix REST services 
 

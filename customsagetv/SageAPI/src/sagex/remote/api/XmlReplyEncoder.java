@@ -23,7 +23,8 @@ public class XmlReplyEncoder implements ReplyEncoder {
 
     public String encodeReply(Object o, HttpServletRequest req) throws Exception {
         SimpleXmlBuilder builder = new SimpleXmlBuilder();
-        SageAPIBuilder.INSTANCE.build("Result", o, builder, false, null);
+        String inclOnly = req.getParameter("filter");
+        SageAPIBuilder.INSTANCE.build("Result", o, builder, false, inclOnly == null ? null : inclOnly.split("\\|"));
         return builder.toString();
     }
 
