@@ -220,17 +220,26 @@ public class SageAPIBuilder {
     }
 
     private void buildMap(String name, Map parent, BuilderHandler handler, String[] filter) throws Exception {
-        handler.beginObject(name);
+        handler.beginObject(makeName(name));
         for (Object o: parent.entrySet()) {
         	Map.Entry me = (Entry) o;
         	build(String.valueOf(me.getKey()), me.getValue(), handler, false, filter);
         }
-        handler.endObject(name);
+        handler.endObject(makeName(name));
 	}
 
     
     public String makeName(String name) {
-        if (name!=null) name=name.replaceFirst("^Get", "");
+        if (name!=null) {
+        	name=name.replaceFirst("^Get", "");
+        	name=name.replaceAll("[^A-Za-z0-9]+", "");
+        	if (name.length()==0) {
+        		name="Item";
+        	}
+        	if (Character.isDigit(name.charAt(0))) {
+        		name = "X" + name;
+        	}
+        }
         return name;
     }
 }

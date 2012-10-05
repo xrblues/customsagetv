@@ -249,21 +249,22 @@ public class ApiHandler implements SageHandler {
         pw.println("</style>");
         pw.println("<table>");
         pw.println("<tr><td colspan=2><form method=get action=/sagex/api><input name=q><input type=submit value=Filter></form></td></tr>");
-        pw.println("<tr><td class=l nowrap>Url Format:</td><td nowrap>/sagex/api&<b>command</b>=SAGE_COMMAND&<b>1</b>=arg1&<b>2</b>=arg2...&<b>start</b>=#&<b>size</b>=#&<b>context</b>=SAGE_UI_CONTEXT&<b>encoder</b>=xml|json|nielm&<b>jsoncallback</b>=functionName</td></tr>");
+        pw.println("<tr><td class=l nowrap>Url Format:</td><td nowrap>/sagex/api&<b>command</b>=SAGE_COMMAND&<b>1</b>=arg1&<b>2</b>=arg2...&<b>start</b>=#&<b>size</b>=#&<b>context</b>=SAGE_UI_CONTEXT&<b>encoder</b>=xml|json|nielm&<b>jsoncallback</b>=functionName&<b>filter</b>=Field1|Field2|Field3|...</td></tr>");
         pw.println("<tr><td class=ll>command</td><td>SageTV Command (can also use c= as a short form)</td></tr>");
         pw.println("<tr><td class=ll>start</td><td>If the return type is an array, start at this element (0 is the first element)</td></tr>");
         pw.println("<tr><td class=ll>size</td><td>If the return type is an array, return this # of elements</td></tr>");
         pw.println("<tr><td class=ll>context</td><td>SageTV UI Context (only needed for UI Commands)</td></tr>");
         pw.println("<tr><td class=ll>encoder</td><td>Which encoder to use for encoding the results. xml is default.</td></tr>");
         pw.println("<tr><td class=ll>jsoncallback</td><td>(json only) The callback function name if you want to return the result as a JSONP string rather than a normal JSON string</td></tr>");
+        pw.println("<tr><td class=ll>filter</td><td>(json and xml only) A pipe(|) separated list of field names that will be returned.  When present ONLY field names matching the list supplied will be returned.</td></tr>");
         pw.println("<tr><td colspan=2><hr/></td></tr>");
-        pw.println("<tr><td class=l>Example</td><td>/sagex/api?c=GetMediaFiles&start=10&size=20</td></tr>");
+        pw.println("<tr><td class=l>Example</td><td>/sagex/api?c=GetMediaFiles&start=10&size=20&filter=IsLocalFile|MediaTitle|MediaFileID</td></tr>");
         pw.println("<tr><td class=l>Example</td><td>/sagex/api?c=GetMediaFiles&1=T</td></tr>");
         pw.println("<tr><td class=l>Example</td><td>/sagex/api?c=GetMediaFiles&1=T&encoder=nielm</td></tr>");
         pw.println("<tr><td class=l>Example</td><td>/sagex/api?c=EvaluateExpression&1=Sort(GetMediaFiles(\"T\"),false,\"Intelligent\")</td></tr>");
         pw.println("<tr><td colspan=2><hr/></td></tr>");
         
-        pw.println("<p><b><i>NOTE: If the command arg expects a sage object, such mediafile, ariing, playlist, channel, show, plugin, favorite, series, etc, then you can still pass a reference to sage object, using mediafile:MEDIAFILE_ID, airing:AIRING_ID, playlist:PLAYLIST_NAME, etc.</i></b></p>");
+        pw.println("<p><b><i>NOTE: If the command arg expects a sage object, such mediafile, ariing, playlist, channel, show, plugin, favorite, series, etc, then you can still pass a reference to sage object, using mediafile:MEDIAFILE_ID, airing:AIRING_ID, playlist:PLAYLIST_NAME, channel:CHANNEL_NUMBER, show:EXTERNAL_ID, series:SERIES_INFO_ID, favorite:FAVORITE_ID, plugin:PLUGIN_ID, playlist:PLAYLIST_NAME, widget:SYMBOL, etc.</i></b></p>");
         pw.println("<p>Example: /sages/api?c=IsMediaFileObject&1=mediafile:3231112");
         pw.println("<br/>");
 
