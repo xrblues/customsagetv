@@ -20,6 +20,9 @@
   </Package>
 
   <ReleaseNotes>
+7.1.9.12
+* Added encoder=raw to allow the api to stream back a reply without json or xml formatting
+
 7.1.9.10
 * Fixed Map serialization error 
 

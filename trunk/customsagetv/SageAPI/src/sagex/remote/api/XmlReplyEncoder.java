@@ -28,7 +28,7 @@ public class XmlReplyEncoder implements ReplyEncoder {
         return builder.toString();
     }
 
-    public String getContentType() {
+    public String getContentType(HttpServletRequest req) {
         return "text/xml";
     }
 

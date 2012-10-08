@@ -13,7 +13,7 @@ public class ImageReplyEncoder implements ReplyEncoder {
 	}
 
 	@Override
-	public String getContentType() {
+	public String getContentType(HttpServletRequest req) {
 		return "image/png";
 	}
 

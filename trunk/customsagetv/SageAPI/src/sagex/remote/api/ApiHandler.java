@@ -68,6 +68,7 @@ public class ApiHandler implements SageHandler {
         encoders.put("json", new JsonReplyEncoder());
         encoders.put("nielm", new NielmXmlReplyEncoder());
         encoders.put("image", new ImageReplyEncoder());
+        encoders.put("raw", new RawReplyEncoder());
         try {
             serviceFactory =new ServiceFactory();
         } catch (Throwable t) {
@@ -108,7 +109,7 @@ public class ApiHandler implements SageHandler {
                 return;
             }
 
-            if (!isImageReply) resp.setContentType(replyEncoder.getContentType());
+            if (!isImageReply) resp.setContentType(replyEncoder.getContentType(req));
             
             String command = req.getParameter("command");
             if (command == null) command = req.getParameter("c");
@@ -129,7 +130,6 @@ public class ApiHandler implements SageHandler {
             args = argsList.toArray(new String[argsList.size()]);
             
             Object oreply = null;
-
             
             String servicePackage = null;
             String serviceName = null;
@@ -173,6 +173,10 @@ public class ApiHandler implements SageHandler {
 	            String reply = null;
 	            try {
 	                reply = replyEncoder.encodeReply(oreply, req);
+	                String ctype = replyEncoder.getContentType(req);
+	                if (reply!=null && ctype!=null) {
+		            	resp.setContentType(ctype);
+	                }
 	            } catch (Exception e) {
 	                reply = replyEncoder.encodeError(e);
 	            }
@@ -249,7 +253,7 @@ public class ApiHandler implements SageHandler {
         pw.println("</style>");
         pw.println("<table>");
         pw.println("<tr><td colspan=2><form method=get action=/sagex/api><input name=q><input type=submit value=Filter></form></td></tr>");
-        pw.println("<tr><td class=l nowrap>Url Format:</td><td nowrap>/sagex/api&<b>command</b>=SAGE_COMMAND&<b>1</b>=arg1&<b>2</b>=arg2...&<b>start</b>=#&<b>size</b>=#&<b>context</b>=SAGE_UI_CONTEXT&<b>encoder</b>=xml|json|nielm&<b>jsoncallback</b>=functionName&<b>filter</b>=Field1|Field2|Field3|...</td></tr>");
+        pw.println("<tr><td class=l nowrap>Url Format:</td><td nowrap>/sagex/api&<b>command</b>=SAGE_COMMAND&<b>1</b>=arg1&<b>2</b>=arg2...&<b>start</b>=#&<b>size</b>=#&<b>context</b>=SAGE_UI_CONTEXT&<b>encoder</b>=xml|json|nielm|image|raw&<b>jsoncallback</b>=functionName&<b>filter</b>=Field1|Field2|Field3|...&<b>raw_content_type</b>=audio/x-mpegurl</td></tr>");
         pw.println("<tr><td class=ll>command</td><td>SageTV Command (can also use c= as a short form)</td></tr>");
         pw.println("<tr><td class=ll>start</td><td>If the return type is an array, start at this element (0 is the first element)</td></tr>");
         pw.println("<tr><td class=ll>size</td><td>If the return type is an array, return this # of elements</td></tr>");
@@ -257,6 +261,7 @@ public class ApiHandler implements SageHandler {
         pw.println("<tr><td class=ll>encoder</td><td>Which encoder to use for encoding the results. xml is default.</td></tr>");
         pw.println("<tr><td class=ll>jsoncallback</td><td>(json only) The callback function name if you want to return the result as a JSONP string rather than a normal JSON string</td></tr>");
         pw.println("<tr><td class=ll>filter</td><td>(json and xml only) A pipe(|) separated list of field names that will be returned.  When present ONLY field names matching the list supplied will be returned.</td></tr>");
+        pw.println("<tr><td class=ll>raw_content_type</td><td>(raw only) Sets the content type reply header to the be value you specify here.</td></tr>");
         pw.println("<tr><td colspan=2><hr/></td></tr>");
         pw.println("<tr><td class=l>Example</td><td>/sagex/api?c=GetMediaFiles&start=10&size=20&filter=IsLocalFile|MediaTitle|MediaFileID</td></tr>");
         pw.println("<tr><td class=l>Example</td><td>/sagex/api?c=GetMediaFiles&1=T</td></tr>");
