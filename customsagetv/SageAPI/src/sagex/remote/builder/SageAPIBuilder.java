@@ -147,8 +147,10 @@ public class SageAPIBuilder {
         else
         	filter = null;
         for (Method m : methods) {
-        	if(filter != null && Arrays.binarySearch(filter, makeName(m.getName())) < 0)
+        	if(filter != null && Arrays.binarySearch(filter, makeName(m.getName()))<0) { 
+        		// System.out.println("SKIPPING: " + m.getName());
         		continue;
+        	}
             try {
                 Object result = m.invoke(null, parent);
                 build(m.getName(), result, handler, false, filter);

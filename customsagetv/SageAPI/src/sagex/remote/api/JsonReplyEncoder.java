@@ -46,7 +46,7 @@ public class JsonReplyEncoder implements ReplyEncoder {
         }
     }
 
-    public String getContentType() {
+    public String getContentType(HttpServletRequest req) {
         return "application/json";
     }
 }
