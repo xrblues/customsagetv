@@ -20,6 +20,9 @@
   </Package>
 
   <ReleaseNotes>
+7.1.9.14
+* Added Range Header support to the sagex/media/mediafile handler
+
 7.1.9.12
 * Added encoder=raw to allow the api to stream back a reply without json or xml formatting
 
