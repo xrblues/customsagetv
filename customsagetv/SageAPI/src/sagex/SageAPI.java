@@ -383,7 +383,12 @@ public class SageAPI {
                     try {
                         Properties props = new Properties();
                         props.load(bais);
-                        System.out.println("Adding Remote Server: " + props.getProperty("server"));
+                        try {
+                        	props.put("server.ip", packet.getAddress().getHostAddress());
+                        } catch (Exception e) {
+                        	
+                        }
+                        System.out.println("Adding Remote Server: " + props.getProperty("server.ip"));
                         SageAPI.addRemoteProvider(props);
                     } catch (IOException e) {
                         onFailure(e);
