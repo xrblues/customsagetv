@@ -22,6 +22,7 @@ import sagex.api.MediaFileAPI;
 import sagex.api.Utility;
 import sagex.remote.SagexServlet.SageHandler;
 import sagex.util.ILog;
+import sagex.util.ImageUtil;
 import sagex.util.LogProvider;
 
 public class MediaHandler implements SageHandler {
@@ -194,9 +195,9 @@ public class MediaHandler implements SageHandler {
         
         BufferedImage img = Utility.GetImageAsBufferedImage(sageImage);
         if (img==null) throw new FileNotFoundException("Unable to get BufferedImage");
-        resp.setContentType("image/png");
+        resp.setContentType(ImageUtil.DEFAULT_IMAGE_MIME_TYPE);
         OutputStream os = resp.getOutputStream();
-        ImageIO.write((RenderedImage) img, "png", os);
+        ImageIO.write((RenderedImage) img, ImageUtil.DEFAULT_IMAGE_FORMAT, os);
         os.flush();
     }
 
@@ -235,9 +236,9 @@ public class MediaHandler implements SageHandler {
         }
         
         if (img==null) throw new FileNotFoundException("Unable to get BufferedImage");
-        resp.setContentType("image/png");
+        resp.setContentType(ImageUtil.DEFAULT_IMAGE_MIME_TYPE);
         OutputStream os = resp.getOutputStream();
-        ImageIO.write((RenderedImage) img, "png", os);
+        ImageIO.write((RenderedImage) img, ImageUtil.DEFAULT_IMAGE_FORMAT, os);
         os.flush();
 	}
 	

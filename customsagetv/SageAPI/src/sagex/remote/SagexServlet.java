@@ -114,6 +114,13 @@ public class SagexServlet extends HttpServlet {
             } catch (Throwable t) {
             	log.warn("Failed to load the Phoenix API Handler", t);
             }
+
+            try {
+            	// hack for now to register the Phoenix apis... need to do this dynamically
+            	sageHandlers.put("streaming", (SageHandler) Class.forName("sagex.phoenix.remote.streaming.PhoenixStreamingHandler").newInstance());
+            } catch (Throwable t) {
+            	log.warn("Failed to load the Phoenix API Handler", t);
+            }
             
             log.info("Registered Handlers.");
 

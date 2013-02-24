@@ -20,6 +20,9 @@
   </Package>
 
   <ReleaseNotes>
+7.1.9.15
+* Added Phoenix Streaming api handler to the list of media handlers
+
 7.1.9.14
 * Added Range Header support to the sagex/media/mediafile handler
 
