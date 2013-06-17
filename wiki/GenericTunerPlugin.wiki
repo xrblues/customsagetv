@@ -1,5 +1,5 @@
+#summary The source repository for the Generic Tuner Plugin has moved to GitHub
 #labels Featured
-#The source repository for the Generic Tuner Plugin has moved to GitHub
 
 The source repository for the Generic Tuner Plugin has moved to:
 
